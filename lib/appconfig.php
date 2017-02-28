@@ -78,7 +78,10 @@ class AppConfig {
      * @param string $documentServer - document service address
      */
     public function SetDocumentServerUrl($documentServer) {
-        $documentServer = rtrim(trim($documentServer), "/");
+        $documentServer = strtolower(rtrim(trim($documentServer), "/"));
+        if (strlen($documentServer) > 0 && !preg_match("/^https?:\/\//i", $documentServer)) {
+            $documentServer = "http://" . $documentServer;
+        }
         $this->config->setAppValue($this->appName, $this->_documentserver, $documentServer);
         $this->DropSKey();
     }
