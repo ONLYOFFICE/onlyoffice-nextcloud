@@ -37,7 +37,6 @@
         p($_["documentServerUrl"]) .
         print_unescaped("/web-apps/apps/api/documents/api.js\" type=\"text/javascript\"></script>");
     } ?>
-    
 
     <script type="text/javascript">
         OCA.Onlyoffice.OpenEditor ({
