@@ -164,7 +164,7 @@
             menu.addMenuEntry({
                 id: "onlyofficeDocx",
                 displayName: t(OCA.Onlyoffice.AppName, "Document"),
-                iconClass: "onlyoffice-new-docx",
+                iconClass: "icon-onlyoffice-new-docx",
                 fileType: "docx",
                 actionHandler: function (name) {
                     OCA.Onlyoffice.CreateFile(name + ".docx", fileList);
@@ -174,7 +174,7 @@
             menu.addMenuEntry({
                 id: "onlyofficeXlsx",
                 displayName: t(OCA.Onlyoffice.AppName, "Spreadsheet"),
-                iconClass: "onlyoffice-new-xlsx",
+                iconClass: "icon-onlyoffice-new-xlsx",
                 fileType: "xlsx",
                 actionHandler: function (name) {
                     OCA.Onlyoffice.CreateFile(name + ".xlsx", fileList);
@@ -184,7 +184,7 @@
             menu.addMenuEntry({
                 id: "onlyofficePpts",
                 displayName: t(OCA.Onlyoffice.AppName, "Presentation"),
-                iconClass: "onlyoffice-new-pptx",
+                iconClass: "icon-onlyoffice-new-pptx",
                 fileType: "pptx",
                 actionHandler: function (name) {
                     OCA.Onlyoffice.CreateFile(name + ".pptx", fileList);
