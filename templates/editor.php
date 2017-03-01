@@ -38,7 +38,7 @@
         print_unescaped("/web-apps/apps/api/documents/api.js\" type=\"text/javascript\"></script>");
     } ?>
 
-    <script type="text/javascript">
+    <script type="text/javascript" nonce="<?php p(base64_encode($_["requesttoken"])) ?>">
         OCA.Onlyoffice.OpenEditor ({
             error: "<?php empty($_["error"]) ? "" : p($_["error"]) ?>",
 
