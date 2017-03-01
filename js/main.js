@@ -80,8 +80,8 @@
         }
     };
 
-    OCA.Onlyoffice.FileClick = function (context, attr) {
-        var fileInfoModel = context.fileInfoModel;
+    OCA.Onlyoffice.FileClick = function (fileName, context, attr) {
+        var fileInfoModel = context.fileInfoModel || context.fileList.getModelForFile(fileName);
         var fileList = context.fileList;
         if (!attr.conv) {
             OCA.Onlyoffice.OpenEditor(fileInfoModel.id);
@@ -140,9 +140,13 @@
                                 return OC.imagePath(OCA.Onlyoffice.AppName, "btn-edit");
                             },
                             actionHandler: function (fileName, context) {
-                                OCA.Onlyoffice.FileClick(context, attr);
+                                OCA.Onlyoffice.FileClick(fileName, context, attr);
                             }
                         });
+
+                        if (attr.def && !fileList.fileActions.getDefaultFileAction(attr.mime, "file", OC.PERMISSION_READ)) {
+                            fileList.fileActions.setDefault(attr.mime, "onlyofficeOpen");
+                        }
                     });
                 }
             );
