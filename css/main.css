@@ -23,12 +23,12 @@
  *
 */
 
-.onlyoffice-new-docx {
+.icon-onlyoffice-new-docx {
     background-image: url("../img/new-docx.svg");
 }
-.onlyoffice-new-xlsx {
+.icon-onlyoffice-new-xlsx {
     background-image: url("../img/new-xlsx.svg");
 }
-.onlyoffice-new-pptx {
+.icon-onlyoffice-new-pptx {
     background-image: url("../img/new-pptx.svg");
 }

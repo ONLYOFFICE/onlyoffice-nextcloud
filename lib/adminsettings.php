@@ -24,32 +24,47 @@
  *
 */
 
-    style("onlyoffice", "editor");
-    script("onlyoffice", "editor");
-?>
+namespace OCA\Onlyoffice;
 
-<div id="app">
+use OCP\Settings\ISettings;
 
-    <div id="iframeEditor"></div>
+use OCA\Onlyoffice\AppInfo\Application;
 
-    <?php if (!empty($_["documentServerUrl"])) {
-        print_unescaped("<script src=\"") .
-        p($_["documentServerUrl"]) .
-        print_unescaped("/web-apps/apps/api/documents/api.js\" type=\"text/javascript\"></script>");
-    } ?>
+/**
+ * Settings controller for the administration page
+ */
+class AdminSettings implements ISettings {
 
-    <script type="text/javascript" nonce="<?php p(base64_encode($_["requesttoken"])) ?>">
-        OCA.Onlyoffice.OpenEditor ({
-            error: "<?php empty($_["error"]) ? "" : p($_["error"]) ?>",
+    public function __construct() {
+    }
 
-            callbackUrl: "<?php print_unescaped($_["callback"]) ?>",
-            key: "<?php p($_["key"]) ?>",
-            title: "<?php p($_["fileName"]) ?>",
-            url: "<?php print_unescaped($_["url"]) ?>",
-            userId: "<?php p($_["userId"]) ?>",
-            userName: "<?php p($_["userName"]) ?>",
-            documentType: "<?php p($_["documentType"]) ?>",
-        });
-    </script>
+    /**
+     * Print config section
+     *
+     * @return TemplateResponse
+     */
+    public function getForm() {
+        $app = new Application();
+        $container = $app->getContainer();
+        $response = $container->query("\OCA\Onlyoffice\Controller\SettingsController")->index();
+        return $response;
+    }
 
-</div>
+    /**
+     * Get section ID
+     *
+     * @return string
+     */
+    public function getSection() {
+        return "server";
+    }
+
+    /**
+     * Get priority order
+     *
+     * @return int
+     */
+    public function getPriority() {
+        return 50;
+    }
+}
