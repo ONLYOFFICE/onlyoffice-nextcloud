@@ -26,6 +26,7 @@
 
 namespace OCA\Onlyoffice\Controller;
 
+use OCP\App;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Http\ContentSecurityPolicy;
 use OCP\AppFramework\Controller;
@@ -379,12 +380,11 @@ class EditorController extends Controller {
 
         $key = $fileId . $file->getMtime();
 
-        $ownerView = new View('/'.$ownerId.'/files');
+        $ownerView = new View("/" . $ownerId . "/files");
         $filePath = $ownerView->getPath($fileId);
-        $versions = "";
-        try {
+        $versions = [];
+        if (App::isEnabled("files_versions")) {
             $versions = Storage::getVersions($ownerId, $filePath);
-        } catch (AutoloadNotAllowedException $e) {
         }
 
         $countVersions = count($versions);

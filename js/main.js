@@ -80,8 +80,8 @@
         }
     };
 
-    OCA.Onlyoffice.FileClick = function (context, attr) {
-        var fileInfoModel = context.fileInfoModel;
+    OCA.Onlyoffice.FileClick = function (fileName, context, attr) {
+        var fileInfoModel = context.fileInfoModel || context.fileList.getModelForFile(fileName);
         var fileList = context.fileList;
         if (!attr.conv) {
             OCA.Onlyoffice.OpenEditor(fileInfoModel.id);
@@ -140,9 +140,13 @@
                                 return OC.imagePath(OCA.Onlyoffice.AppName, "btn-edit");
                             },
                             actionHandler: function (fileName, context) {
-                                OCA.Onlyoffice.FileClick(context, attr);
+                                OCA.Onlyoffice.FileClick(fileName, context, attr);
                             }
                         });
+
+                        if (attr.def && !fileList.fileActions.getDefaultFileAction(attr.mime, "file", OC.PERMISSION_READ)) {
+                            fileList.fileActions.setDefault(attr.mime, "onlyofficeOpen");
+                        }
                     });
                 }
             );
@@ -160,7 +164,7 @@
             menu.addMenuEntry({
                 id: "onlyofficeDocx",
                 displayName: t(OCA.Onlyoffice.AppName, "Document"),
-                iconClass: "onlyoffice-new-docx",
+                iconClass: "icon-onlyoffice-new-docx",
                 fileType: "docx",
                 actionHandler: function (name) {
                     OCA.Onlyoffice.CreateFile(name + ".docx", fileList);
@@ -170,7 +174,7 @@
             menu.addMenuEntry({
                 id: "onlyofficeXlsx",
                 displayName: t(OCA.Onlyoffice.AppName, "Spreadsheet"),
-                iconClass: "onlyoffice-new-xlsx",
+                iconClass: "icon-onlyoffice-new-xlsx",
                 fileType: "xlsx",
                 actionHandler: function (name) {
                     OCA.Onlyoffice.CreateFile(name + ".xlsx", fileList);
@@ -180,7 +184,7 @@
             menu.addMenuEntry({
                 id: "onlyofficePpts",
                 displayName: t(OCA.Onlyoffice.AppName, "Presentation"),
-                iconClass: "onlyoffice-new-pptx",
+                iconClass: "icon-onlyoffice-new-pptx",
                 fileType: "pptx",
                 actionHandler: function (name) {
                     OCA.Onlyoffice.CreateFile(name + ".pptx", fileList);

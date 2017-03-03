@@ -64,7 +64,7 @@ class SettingsController extends Controller {
      * @return TemplateResponse
      */
     public function index() {
-        $data = [ "documentserver" => $this->config->GetDocumentServerUrl()];
+        $data = ["documentserver" => $this->config->GetDocumentServerUrl()];
         return new TemplateResponse($this->appName, "settings", $data, "blank");
     }
 
@@ -77,7 +77,7 @@ class SettingsController extends Controller {
      */
     public function settings($documentserver) {
         $this->config->SetDocumentServerUrl($documentserver);
-        return [ "documentserver" => $this->config->GetDocumentServerUrl()];
+        return ["documentserver" => $this->config->GetDocumentServerUrl()];
     }
 
     /**
