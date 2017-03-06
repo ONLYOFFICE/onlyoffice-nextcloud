@@ -60,7 +60,8 @@ class Application extends App {
         $this->crypt = new Crypt($this->appConfig);
 
         // Default script and style if configured
-        if (!empty($this->appConfig->GetDocumentServerUrl()))
+        if (!empty($this->appConfig->GetDocumentServerUrl())
+            && array_key_exists("REQUEST_URI", \OC::$server->getRequest()->server))
         {
             $url = \OC::$server->getRequest()->server["REQUEST_URI"];
 
