@@ -15,6 +15,11 @@
     <documentation>
         <admin>https://api.onlyoffice.com/editors/owncloud</admin>
     </documentation>
+    <category>files</category>
+    <category>integration</category>
+    <category>office</category>
+    <category>organization</category>
+    <category>tools</category>
     <category>tool</category>
     <website>https://www.onlyoffice.com</website>
     <bugs>https://github.com/ONLYOFFICE/onlyoffice-owncloud/issues</bugs>
