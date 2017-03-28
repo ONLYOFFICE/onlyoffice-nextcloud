@@ -87,6 +87,10 @@ class Application extends App {
             return $c->query("ServerContainer")->getUserSession();
         });
 
+        $container->registerService("Logger", function($c) {
+            return $c->query("ServerContainer")->getLogger();
+        });
+
 
         // Controllers
         $container->registerService("SettingsController", function($c) {
@@ -105,6 +109,7 @@ class Application extends App {
                 $c->query("UserSession")->getUser(),
                 $c->query("ServerContainer")->getURLGenerator(),
                 $c->query("L10N"),
+                $c->query("Logger"),
                 $this->appConfig,
                 $this->crypt
             );

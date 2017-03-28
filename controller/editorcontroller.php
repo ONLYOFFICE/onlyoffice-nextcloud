@@ -34,6 +34,7 @@ use OCP\AutoloadNotAllowedException;
 use OCP\Files\FileInfo;
 use OCP\Files\IRootFolder;
 use OCP\IL10N;
+use OCP\ILogger;
 use OCP\IRequest;
 use OCP\IURLGenerator;
 use OCP\IUser;
@@ -83,6 +84,13 @@ class EditorController extends Controller {
     private $trans;
 
     /**
+     * Logger
+     *
+     * @var OCP\ILogger
+     */
+    private $logger;
+
+    /**
      * Application configuration
      *
      * @var OCA\Onlyoffice\AppConfig
@@ -102,7 +110,8 @@ class EditorController extends Controller {
      * @param IRootFolder $root root folder
      * @param IUser $user current user
      * @param IURLGenerator $urlGenerator url generator service
-     * @param IL10N $l10n l10n service
+     * @param IL10N $trans l10n service
+     * @param ILogger $logger logger
      * @param OCA\Onlyoffice\AppConfig $config application configuration
      * @param OCA\Onlyoffice\Crypt $crypt hash generator
      */
@@ -112,6 +121,7 @@ class EditorController extends Controller {
                                     IUser $user,
                                     IURLGenerator $urlGenerator,
                                     IL10N $trans,
+                                    ILogger $logger,
                                     AppConfig $config,
                                     Crypt $crypt
                                     ) {
@@ -121,6 +131,7 @@ class EditorController extends Controller {
         $this->root = $root;
         $this->urlGenerator = $urlGenerator;
         $this->trans = $trans;
+        $this->logger = $logger;
         $this->config = $config;
         $this->crypt = $crypt;
     }
@@ -142,9 +153,11 @@ class EditorController extends Controller {
         $folder = $userFolder->get($dir);
 
         if ($folder === NULL) {
+            $this->logger->info("Folder for file creation was not found: " . $dir, array("app" => $this->appName));
             return ["error" => $this->trans->t("The required folder was not found")];
         }
         if (!$folder->isCreatable()) {
+            $this->logger->info("Folder for file creation without permission: " . $dir, array("app" => $this->appName));
             return ["error" => $this->trans->t("You don't have enough permission to create")];
         }
 
@@ -155,17 +168,20 @@ class EditorController extends Controller {
 
         $template = file_get_contents($templatePath);
         if (!$template) {
+            $this->logger->info("Template for file creation not found: " . $templatePath, array("app" => $this->appName));
             return ["error" => $this->trans->t("Template not found")];
         }
 
         $view = Filesystem::getView();
         if (!$view->file_put_contents($filePath, $template)) {
+            $this->logger->error("Can't create file: " . $filePath, array("app" => $this->appName));
             return ["error" => $this->trans->t("Can't create file")];
         }
 
         $fileInfo = $view->getFileInfo($filePath);
 
         if ($fileInfo === false) {
+            $this->logger->info("File not found: " . $filePath, array("app" => $this->appName));
             return ["error" => $this->trans->t("File not found")];
         }
 
@@ -186,6 +202,7 @@ class EditorController extends Controller {
         list ($file, $error) = $this->getFile($fileId);
 
         if (isset($error)) {
+            $this->logger->error("Convertion: " . $fileId . " " . $error, array("app" => $this->appName));
             return ["error" => $error];
         }
 
@@ -193,10 +210,12 @@ class EditorController extends Controller {
         $ext = pathinfo($fileName, PATHINFO_EXTENSION);
         $format = $this->config->formats[$ext];
         if (!isset($format)) {
+            $this->logger->info("Format for convertion not supported: " . $fileName, array("app" => $this->appName));
             return ["error" => $this->trans->t("Format do not supported")];
         }
 
-        if(!isset($format["conv"]) || $format["conv"] !== TRUE) {
+        if (!isset($format["conv"]) || $format["conv"] !== TRUE) {
+            $this->logger->debug("Conversion not required: " . $fileName, array("app" => $this->appName));
             return ["error" => $this->trans->t("Conversion not required")];
         }
 
@@ -217,6 +236,7 @@ class EditorController extends Controller {
         try {
             $documentService->GetConvertedUri($fileUrl, $ext, $internalExtension, $key, FALSE, $newFileUri);
         } catch (\Exception $e) {
+            $this->logger->error("GetConvertedUri: " . $fileId . " " . $e->getMessage(), array("app" => $this->appName));
             return ["error" => $e->getMessage()];
         }
 
@@ -234,17 +254,20 @@ class EditorController extends Controller {
         $newFilePath = $newFolderPath . DIRECTORY_SEPARATOR . $newFileName;
         
         if (($newData = file_get_contents($newFileUri)) === FALSE){
+            $this->logger->error("Failed download converted file: " . $newFileUri, array("app" => $this->appName));
             return ["error" => $this->trans->t("Failed download converted file")];
         }
 
         $view = Filesystem::getView();
         if (!$view->file_put_contents($newFilePath, $newData)) {
+            $this->logger->error("Can't create file after convertion: " . $newFilePath, array("app" => $this->appName));
             return ["error" => $this->trans->t("Can't create file")];
         }
 
         $fileInfo = $view->getFileInfo($newFilePath);
 
         if ($fileInfo === false) {
+            $this->logger->info("File not found: " . $newFilePath, array("app" => $this->appName));
             return ["error" => $this->trans->t("File not found")];
         }
 
@@ -291,6 +314,7 @@ class EditorController extends Controller {
         list ($file, $error) = $this->getFile($fileId);
 
         if (isset($error)) {
+            $this->logger->error("Convertion: " . $fileId . " " . $error, array("app" => $this->appName));
             return ["error" => $error];
         }
 
@@ -298,12 +322,14 @@ class EditorController extends Controller {
         $ext = pathinfo($fileName, PATHINFO_EXTENSION);
         $format = $this->config->formats[$ext];
         if (!isset($format)) {
+            $this->logger->info("Format do not supported for editing: " . $fileName, array("app" => $this->appName));
             return ["error" => $this->trans->t("Format do not supported")];
         }
 
         $documentServerUrl = $this->config->GetDocumentServerUrl();
 
         if (empty($documentServerUrl)) {
+            $this->logger->error("documentServerUrl is empty", array("app" => $this->appName));
             return ["error" => $this->trans->t("ONLYOFFICE app not configured. Please contact admin")];
         }
 
@@ -350,7 +376,7 @@ class EditorController extends Controller {
         }
 
         $files = $this->root->getById($fileId);
-        if(empty($files)) {
+        if (empty($files)) {
             return [NULL, $this->trans->t("File not found")];
         }
         $file = $files[0];
