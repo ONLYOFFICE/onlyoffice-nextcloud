@@ -123,6 +123,7 @@ class Application extends App {
                 $c->query("UserSession"),
                 $c->query("ServerContainer")->getUserManager(),
                 $c->query("L10N"),
+                $c->query("Logger"),
                 $this->appConfig,
                 $this->crypt
             );

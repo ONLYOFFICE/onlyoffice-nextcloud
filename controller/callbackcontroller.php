@@ -31,6 +31,7 @@ use OCP\AppFramework\Http;
 use OCP\Files\File;
 use OCP\Files\IRootFolder;
 use OCP\IL10N;
+use OCP\ILogger;
 use OCP\IRequest;
 use OCP\IUserManager;
 use OCP\IUserSession;
@@ -77,6 +78,13 @@ class CallbackController extends Controller {
     private $trans;
 
     /**
+     * Logger
+     *
+     * @var OCP\ILogger
+     */
+    private $logger;
+
+    /**
      * Application configuration
      *
      * @var OCA\Onlyoffice\AppConfig
@@ -109,7 +117,9 @@ class CallbackController extends Controller {
      * @param IRootFolder $root root folder
      * @param IUserSession $userSession user session
      * @param IUserManager $userManager user manager
-     * @param IL10N $l10n l10n service
+     * @param IL10N $trans l10n service
+     * @param ILogger $logger logger
+     * @param OCA\Onlyoffice\AppConfig $config application configuration
      * @param OCA\Onlyoffice\Crypt $crypt hash generator
      */
     public function __construct($AppName, 
@@ -118,6 +128,7 @@ class CallbackController extends Controller {
                                     IUserSession $userSession,
                                     IUserManager $userManager,
                                     IL10N $trans,
+                                    ILogger $logger,
                                     AppConfig $config,
                                     Crypt $crypt
                                     ) {
@@ -127,6 +138,7 @@ class CallbackController extends Controller {
         $this->userSession = $userSession;
         $this->userManager = $userManager;
         $this->trans = $trans;
+        $this->logger = $logger;
         $this->config = $config;
         $this->crypt = $crypt;
     }
@@ -148,9 +160,11 @@ class CallbackController extends Controller {
 
         $hashData = $this->crypt->ReadHash($doc);
         if ($hashData === NULL) {
+            $this->logger->info("Download with empty or not correct hash", array("app" => $this->appName));
             return new ErrorResponse(Http::STATUS_FORBIDDEN, $this->trans->t("Access deny"));
         }
         if ($hashData->action !== "download") {
+            $this->logger->info("Download with other action", array("app" => $this->appName));
             return new ErrorResponse(Http::STATUS_BAD_REQUEST, $this->trans->t("Invalid request"));
         }
 
@@ -158,18 +172,21 @@ class CallbackController extends Controller {
         $ownerId = $hashData->ownerId;
 
         $files = $this->root->getUserFolder($ownerId)->getById($fileId);
-        if(empty($files)) {
+        if (empty($files)) {
+            $this->logger->info("Files for download not found: " . $fileId, array("app" => $this->appName));
             return new ErrorResponse(Http::STATUS_NOT_FOUND, $this->trans->t("Files not found"));
         }
         $file = $files[0];
 
         if (! $file instanceof File) {
+            $this->logger->info("File for download not found: " . $fileId, array("app" => $this->appName));
             return new ErrorResponse(Http::STATUS_NOT_FOUND, $this->trans->t("File not found"));
         }
 
         try {
             return new DownloadResponse($file);
         } catch(\OCP\Files\NotPermittedException  $e) {
+            $this->logger->info("Download Not permitted: " . $fileId . " " . $e->getMessage(), array("app" => $this->appName));
             return new ErrorResponse(Http::STATUS_FORBIDDEN, $this->trans->t("Not permitted"));
         }
         return new ErrorResponse(Http::STATUS_INTERNAL_SERVER_ERROR, $this->trans->t("Download failed"));
@@ -194,9 +211,11 @@ class CallbackController extends Controller {
 
         $hashData = $this->crypt->ReadHash($doc);
         if ($hashData === NULL) {
+            $this->logger->info("Track with empty or not correct hash", array("app" => $this->appName));
             return ["message" => $this->trans->t("Access deny")];
         }
         if ($hashData->action !== "track") {
+            $this->logger->info("Track with other action", array("app" => $this->appName));
             return ["message" => $this->trans->t("Invalid request")];
         }
 
@@ -211,12 +230,14 @@ class CallbackController extends Controller {
                 $ownerId = $hashData->ownerId;
 
                 $files = $this->root->getUserFolder($ownerId)->getById($fileId);
-                if(empty($files)) {
+                if (empty($files)) {
+                    $this->logger->info("Files for track not found: " . $fileId, array("app" => $this->appName));
                     return ["message" => $this->trans->t("Files not found")];
                 }
                 $file = $files[0];
 
                 if (! $file instanceof File) {
+                    $this->logger->info("File for track not found: " . $fileId, array("app" => $this->appName));
                     return ["message" => $this->trans->t("File not found")];
                 }
 
@@ -233,6 +254,7 @@ class CallbackController extends Controller {
                         $documentService->GetConvertedUri($url, $downloadExt, $curExt, $key, FALSE, $newFileUri);
                         $url = $newFileUri;
                     } catch (\Exception $e) {
+                        $this->logger->error("GetConvertedUri in track: " . $url . " " . $e->getMessage(), array("app" => $this->appName));
                         return ["message" => $e->getMessage()];
                     }
                 }
