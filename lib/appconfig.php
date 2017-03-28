@@ -27,6 +27,7 @@
 namespace OCA\Onlyoffice;
 
 use OCP\IConfig;
+use OCP\ILogger;
 
 /**
  * Application configutarion
@@ -50,6 +51,13 @@ class AppConfig {
     private $config;
 
     /**
+     * Logger
+     *
+     * @var OCP\ILogger
+     */
+    private $logger;
+
+    /**
      * The config key for the document server address
      *
      * @var string
@@ -67,9 +75,11 @@ class AppConfig {
      * @param string $AppName application name
      */
     public function __construct($AppName) {
-        
+
         $this->appName = $AppName;
+
         $this->config = \OC::$server->getConfig();
+        $this->logger = \OC::$server->getLogger();
     }
 
     /**
@@ -82,6 +92,9 @@ class AppConfig {
         if (strlen($documentServer) > 0 && !preg_match("/^https?:\/\//i", $documentServer)) {
             $documentServer = "http://" . $documentServer;
         }
+
+        $this->logger->info("SetDocumentServerUrl: " . $documentServer, array("app" => $this->appName));
+
         $this->config->setAppValue($this->appName, $this->_documentserver, $documentServer);
         $this->DropSKey();
     }
