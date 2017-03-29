@@ -37,7 +37,7 @@ use OCP\IL10N;
 use OCP\ILogger;
 use OCP\IRequest;
 use OCP\IURLGenerator;
-use OCP\IUser;
+use OCP\IUserSession;
 
 use OC\Files\Filesystem;
 use OC\Files\View;
@@ -56,11 +56,11 @@ use OCA\Onlyoffice\DocumentService;
 class EditorController extends Controller {
 
     /**
-     * Current user
+     * Current user session
      *
-     * @var IUser
+     * @var IUserSession
      */
-    private $user;
+    private $userSession;
 
     /**
      * Root folder
@@ -86,7 +86,7 @@ class EditorController extends Controller {
     /**
      * Logger
      *
-     * @var OCP\ILogger
+     * @var ILogger
      */
     private $logger;
 
@@ -108,7 +108,7 @@ class EditorController extends Controller {
      * @param string $AppName application name
      * @param IRequest $request request object
      * @param IRootFolder $root root folder
-     * @param IUser $user current user
+     * @param IUserSession $userSession current user session
      * @param IURLGenerator $urlGenerator url generator service
      * @param IL10N $trans l10n service
      * @param ILogger $logger logger
@@ -118,7 +118,7 @@ class EditorController extends Controller {
     public function __construct($AppName,
                                     IRequest $request,
                                     IRootFolder $root,
-                                    IUser $user,
+                                    IUserSession $userSession,
                                     IURLGenerator $urlGenerator,
                                     IL10N $trans,
                                     ILogger $logger,
@@ -127,7 +127,7 @@ class EditorController extends Controller {
                                     ) {
         parent::__construct($AppName, $request);
 
-        $this->user = $user;
+        $this->userSession = $userSession;
         $this->root = $root;
         $this->urlGenerator = $urlGenerator;
         $this->trans = $trans;
@@ -148,7 +148,7 @@ class EditorController extends Controller {
      */
     public function create($name, $dir) {
 
-        $userId = $this->user->getUID();
+        $userId = $this->userSession->getUser()->getUID();
         $userFolder = $this->root->getUserFolder($userId);
         $folder = $userFolder->get($dir);
 
@@ -240,7 +240,7 @@ class EditorController extends Controller {
             return ["error" => $e->getMessage()];
         }
 
-        $userId = $this->user->getUID();
+        $userId = $this->userSession->getUser()->getUID();
         $folder = $file->getParent();
         if (!$folder->isCreatable()) {
             $folder = $this->root->getUserFolder($userId);
@@ -333,7 +333,7 @@ class EditorController extends Controller {
             return ["error" => $this->trans->t("ONLYOFFICE app not configured. Please contact admin")];
         }
 
-        $userId = $this->user->getUID();
+        $userId = $this->userSession->getUser()->getUID();
         $ownerId = $file->getOwner()->getUID();
         try {
             $this->root->getUserFolder($ownerId);
@@ -356,7 +356,7 @@ class EditorController extends Controller {
             "key" => DocumentService::GenerateRevisionId($key),
             "url" => $fileUrl,
             "userId" => $userId,
-            "userName" => $this->user->getDisplayName(),
+            "userName" => $this->userSession->getUser()->getDisplayName(),
             "documentType" => $format["type"]
         ];
 
@@ -401,7 +401,7 @@ class EditorController extends Controller {
         try {
             $this->root->getUserFolder($ownerId);
         } catch (NoUserException $e) {
-            $ownerId = $this->user->getUID();
+            $ownerId = $this->userSession->getUser()->getUID();
         }
 
         $key = $fileId . $file->getMtime();

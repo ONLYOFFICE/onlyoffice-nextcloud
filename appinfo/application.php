@@ -106,7 +106,7 @@ class Application extends App {
                 $c->query("AppName"),
                 $c->query("Request"),
                 $c->query("RootStorage"),
-                $c->query("UserSession")->getUser(),
+                $c->query("UserSession"),
                 $c->query("ServerContainer")->getURLGenerator(),
                 $c->query("L10N"),
                 $c->query("Logger"),
