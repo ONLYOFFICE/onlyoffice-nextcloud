@@ -43,7 +43,12 @@
                 success: function onSuccess(response) {
                     if (response && response.documentserver != null) {
                         $("#docServiceUrlApi").val(response.documentserver);
-                        var row = OC.Notification.show(t(OCA.Onlyoffice.AppName, "Settings have been successfully updated"));
+
+                        var message =
+                            response.error
+                                ? (t(OCA.Onlyoffice.AppName, "Error when trying to connect") + " (" + response.error + ")")
+                                : t(OCA.Onlyoffice.AppName, "Settings have been successfully updated");
+                        var row = OC.Notification.show(message);
                         setTimeout(function () {
                             OC.Notification.hide(row);
                         }, 3000);

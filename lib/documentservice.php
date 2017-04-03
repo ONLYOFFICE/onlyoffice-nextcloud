@@ -22,7 +22,7 @@
  * in every copy of the program you distribute. 
  * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
  *
-*/
+ */
 
 namespace OCA\Onlyoffice;
 
@@ -52,7 +52,8 @@ class DocumentService {
     private $config;
 
     /**
-     * @param OCA\Onlyoffice\AppConfig $config application configutarion
+     * @param IL10N $trans - l10n service
+     * @param OCA\Onlyoffice\AppConfig $config - application configutarion
      */
     public function __construct(IL10N $trans, AppConfig $appConfig) {
         $this->trans = $trans;
@@ -60,12 +61,12 @@ class DocumentService {
     }
 
     /**
-    * Translation key to a supported form.
-    *
-    * @param string $expected_key  Expected key
-    *
-    * @return Supported key
-    */
+     * Translation key to a supported form.
+     *
+     * @param string $expected_key - Expected key
+     *
+     * @return string
+     */
     public static function GenerateRevisionId($expected_key) {
         if (strlen($expected_key) > 20) {
             $expected_key = crc32( $expected_key);
@@ -76,17 +77,17 @@ class DocumentService {
     }
 
     /**
-    * The method is to convert the file to the required format
-    * 
-    * @param string $document_uri - Uri for the document to convert
-    * @param string $from_extension - Document extension
-    * @param string $to_extension - Extension to which to convert
-    * @param string $document_revision_id - Key for caching on service
-    * @param bool $is_async - Perform conversions asynchronously
-    * @param string $converted_document_uri - Uri to the converted document
-    *
-    * @return The percentage of completion of conversion
-    */
+     * The method is to convert the file to the required format and return the percentage of completion
+     * 
+     * @param string $document_uri - Uri for the document to convert
+     * @param string $from_extension - Document extension
+     * @param string $to_extension - Extension to which to convert
+     * @param string $document_revision_id - Key for caching on service
+     * @param bool $is_async - Perform conversions asynchronously
+     * @param string $converted_document_uri - Uri to the converted document
+     *
+     * @return int
+     */
     function GetConvertedUri($document_uri, $from_extension, $to_extension, $document_revision_id, $is_async, &$converted_document_uri) {
         $converted_document_uri = "";
         $responceFromConvertService = $this->SendRequestToConvertService($document_uri, $from_extension, $to_extension, $document_revision_id, $is_async);
@@ -110,16 +111,16 @@ class DocumentService {
     }
 
     /**
-    * Request for conversion to a service
-    *
-    * @param string $document_uri - Uri for the document to convert
-    * @param string $from_extension - Document extension
-    * @param string $to_extension - Extension to which to convert
-    * @param string $document_revision_id - Key for caching on service
-    * @param bool - $is_async - Perform conversions asynchronously
-    *
-    * @return Xml document request result of conversion
-    */
+     * Request for conversion to a service
+     *
+     * @param string $document_uri - Uri for the document to convert
+     * @param string $from_extension - Document extension
+     * @param string $to_extension - Extension to which to convert
+     * @param string $document_revision_id - Key for caching on service
+     * @param bool - $is_async - Perform conversions asynchronously
+     *
+     * @return array
+     */
     function SendRequestToConvertService($document_uri, $from_extension, $to_extension, $document_revision_id, $is_async) {
         if (empty($from_extension)) {
             $path_parts = pathinfo($document_uri);
@@ -200,12 +201,12 @@ class DocumentService {
     }
 
     /**
-    * Generate an error code table
-    *
-    * @param string $errorCode - Error code
-    *
-    * @return null
-    */
+     * Generate an error code table
+     *
+     * @param string $errorCode - Error code
+     *
+     * @return null
+     */
     function ProcessConvServResponceError($errorCode) {
         $errorMessageTemplate = $this->trans->t("Error occurred in the document service: ");
         $errorMessage = "";
@@ -243,5 +244,49 @@ class DocumentService {
         }
 
         throw new \Exception($errorMessage);
+    }
+
+    /**
+     * Send command
+     *
+     * @param string $method - type of command
+     *
+     * @return array
+     */
+    function CommandRequest($method) {
+
+        $documentServerUrl = $this->config->GetDocumentServerUrl();
+
+        if (empty($documentServerUrl)) {
+            throw new \Exception($this->trans->t("ONLYOFFICE app not configured. Please contact admin"));
+        }
+
+        $urlCommand = $documentServerUrl . "/coauthoring/CommandService.ashx";
+
+        $data = json_encode(
+            array(
+                "c" => $method
+            )
+        );
+
+        $opts = array("http" => array(
+                    "method"  => "POST",
+                    "timeout" => "120000",
+                    "header"=> "Content-type: application/json\r\n",
+                    "content" => $data
+                )
+            );
+
+        if (substr($urlCommand, 0, strlen("https")) === "https") {
+            $opts["ssl"] = array( "verify_peer"   => FALSE );
+        }
+
+        $context  = stream_context_create($opts);
+
+        if (($response = file_get_contents($urlCommand, FALSE, $context)) === FALSE){
+            throw new \Exception ($this->trans->t("Bad Request or timeout error"));
+        }
+
+        return json_decode($response);
     }
 }

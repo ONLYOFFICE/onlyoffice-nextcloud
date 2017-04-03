@@ -22,20 +22,37 @@
  * in every copy of the program you distribute. 
  * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
  *
-*/
+ */
 
 namespace OCA\Onlyoffice\Controller;
 
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\TemplateResponse;
+use OCP\IL10N;
+use OCP\ILogger;
 use OCP\IRequest;
 
 use OCA\Onlyoffice\AppConfig;
+use OCA\Onlyoffice\DocumentService;
 
 /**
  * Settings controller for the administration page
  */
 class SettingsController extends Controller {
+
+    /**
+     * l10n service
+     *
+     * @var IL10N
+     */
+    private $trans;
+
+    /**
+     * Logger
+     *
+     * @var ILogger
+     */
+    private $logger;
 
     /**
      * Application configuration
@@ -45,16 +62,22 @@ class SettingsController extends Controller {
     private $config;
 
     /**
-     * @param string $AppName application name
-     * @param IRequest $request request object
-     * @param OCA\Onlyoffice\AppConfig $config application configuration
+     * @param string $AppName - application name
+     * @param IRequest $request - request object
+     * @param IL10N $trans - l10n service
+     * @param ILogger $logger - logger
+     * @param OCA\Onlyoffice\AppConfig $config - application configuration
      */
-    public function __construct($AppName, 
+    public function __construct($AppName,
                                     IRequest $request,
+                                    IL10N $trans,
+                                    ILogger $logger,
                                     AppConfig $config
                                     ) {
         parent::__construct($AppName, $request);
 
+        $this->trans = $trans;
+        $this->logger = $logger;
         $this->config = $config;
     }
 
@@ -71,13 +94,19 @@ class SettingsController extends Controller {
     /**
      * Save the document server address
      *
-     * @param string $documentserver application name
+     * @param string $documentserver - document service address
      *
      * @return array
      */
     public function settings($documentserver) {
         $this->config->SetDocumentServerUrl($documentserver);
-        return ["documentserver" => $this->config->GetDocumentServerUrl()];
+
+        $error = $this->сheckDocServiceUrl();
+
+        return [
+            "documentserver" => $this->config->GetDocumentServerUrl(),
+            "error" => $error
+            ];
     }
 
     /**
@@ -89,5 +118,28 @@ class SettingsController extends Controller {
      */
     public function formats(){
         return $this->config->formats;
+    }
+
+
+    /**
+     * Checking document service location
+     *
+     * @param string $documentServer - document service address
+     *
+     * @return string
+     */
+    private function сheckDocServiceUrl() {
+
+        $documentService = new DocumentService($this->trans, $this->config);
+
+        try {
+            $response = $documentService->CommandRequest("version");
+            $this->logger->debug("CommandRequest on check: " . $response->error, array("app" => $this->appName));
+        } catch (\Exception $e) {
+            $this->logger->error("CommandRequest on check: " . $e->getMessage(), array("app" => $this->appName));
+            return $e->getMessage();
+        }
+
+        return "";
     }
 }

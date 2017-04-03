@@ -22,7 +22,7 @@
  * in every copy of the program you distribute. 
  * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
  *
-*/
+ */
 
 namespace OCA\Onlyoffice\AppInfo;
 
@@ -97,6 +97,8 @@ class Application extends App {
             return new SettingsController(
                 $c->query("AppName"),
                 $c->query("Request"),
+                $c->query("L10N"),
+                $c->query("Logger"),
                 $this->appConfig
             );
         });
