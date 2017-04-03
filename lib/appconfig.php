@@ -37,6 +37,14 @@ use OCP\ILogger;
 class AppConfig {
 
     /**
+     * Definition url on server
+     *
+     * @var string
+     */
+    private $predefDocumentServerUrl = "";
+
+
+    /**
      * Application name
      *
      * @var string
@@ -105,7 +113,11 @@ class AppConfig {
      * @return string
      */
     public function GetDocumentServerUrl() {
-        return $this->config->getAppValue($this->appName, $this->_documentserver, "");
+        $url = $this->config->getAppValue($this->appName, $this->_documentserver, "");
+        if (empty($url) || $url === "") {
+            $url = $this->predefDocumentServerUrl;
+        }
+        return $url;
     }
 
     /**
