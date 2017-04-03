@@ -22,7 +22,7 @@
  * in every copy of the program you distribute. 
  * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
  *
-*/
+ */
 
 namespace OCA\Onlyoffice;
 
@@ -72,7 +72,7 @@ class AppConfig {
     private $_cryptSecret = "skey";
 
     /**
-     * @param string $AppName application name
+     * @param string $AppName - application name
      */
     public function __construct($AppName) {
 
@@ -115,7 +115,7 @@ class AppConfig {
      */
     public function GetSKey() {
         $skey = $this->config->getAppValue($this->appName, $this->_cryptSecret, "");
-        if (empty($skey)) {
+        if (empty($skey) || $skey === "") {
             $skey = number_format(round(microtime(true) * 1000), 0, ".", "");
             $this->config->setAppValue($this->appName, $this->_cryptSecret, $skey);
         }
@@ -124,15 +124,9 @@ class AppConfig {
 
     /**
      * Regenerate the secret key
-     *
-     * @return string
      */
     private function DropSKey() {
-        $skey = $this->config->getAppValue($this->appName, $this->_cryptSecret, "");
-        if (!empty($skey)) {
-            $skey = number_format(round(microtime(true) * 1000), 0, ".", "");
-            $this->config->setAppValue($this->appName, $this->_cryptSecret, $skey);
-        }
+        $this->config->setAppValue($this->appName, $this->_cryptSecret, "");
     }
 
 
