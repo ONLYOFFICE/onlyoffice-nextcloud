@@ -133,8 +133,14 @@ class SettingsController extends Controller {
         $documentService = new DocumentService($this->trans, $this->config);
 
         try {
-            $response = $documentService->CommandRequest("version");
-            $this->logger->debug("CommandRequest on check: " . $response->error, array("app" => $this->appName));
+            $commandResponse = $documentService->CommandRequest("version");
+
+            $this->logger->debug("CommandRequest on check: " . $commandResponse->error . " version: " . $commandResponse->version, array("app" => $this->appName));
+
+            $version = floatval($commandResponse->version);
+            if ($version < 4.2) {
+                throw new \Exception($this->trans->t("Not supported version"));
+            }
         } catch (\Exception $e) {
             $this->logger->error("CommandRequest on check: " . $e->getMessage(), array("app" => $this->appName));
             return $e->getMessage();
