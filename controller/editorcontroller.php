@@ -22,7 +22,7 @@
  * in every copy of the program you distribute. 
  * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
  *
-*/
+ */
 
 namespace OCA\Onlyoffice\Controller;
 
@@ -105,15 +105,15 @@ class EditorController extends Controller {
     private $crypt;
 
     /**
-     * @param string $AppName application name
-     * @param IRequest $request request object
-     * @param IRootFolder $root root folder
-     * @param IUserSession $userSession current user session
-     * @param IURLGenerator $urlGenerator url generator service
-     * @param IL10N $trans l10n service
-     * @param ILogger $logger logger
-     * @param OCA\Onlyoffice\AppConfig $config application configuration
-     * @param OCA\Onlyoffice\Crypt $crypt hash generator
+     * @param string $AppName - application name
+     * @param IRequest $request - request object
+     * @param IRootFolder $root - root folder
+     * @param IUserSession $userSession - current user session
+     * @param IURLGenerator $urlGenerator - url generator service
+     * @param IL10N $trans - l10n service
+     * @param ILogger $logger - logger
+     * @param OCA\Onlyoffice\AppConfig $config - application configuration
+     * @param OCA\Onlyoffice\Crypt $crypt - hash generator
      */
     public function __construct($AppName,
                                     IRequest $request,
@@ -252,7 +252,7 @@ class EditorController extends Controller {
         $newFileName = $folder->getNonExistingName($fileNameWithoutExt . "." . $internalExtension);
 
         $newFilePath = $newFolderPath . DIRECTORY_SEPARATOR . $newFileName;
-        
+
         if (($newData = file_get_contents($newFileUri)) === FALSE){
             $this->logger->error("Failed download converted file: " . $newFileUri, array("app" => $this->appName));
             return ["error" => $this->trans->t("Failed download converted file")];
@@ -286,14 +286,23 @@ class EditorController extends Controller {
      * @NoCSRFRequired
      */
     public function index($fileId) {
-        $params = $this->getParam($fileId);
+        $documentServerUrl = $this->config->GetDocumentServerUrl();
+
+        if (empty($documentServerUrl)) {
+            $this->logger->error("documentServerUrl is empty", array("app" => $this->appName));
+            return ["error" => $this->trans->t("ONLYOFFICE app not configured. Please contact admin")];
+        }
+
+        $params = [
+            "documentServerUrl" => $documentServerUrl,
+            "fileId" => $fileId
+        ];
 
         $response = new TemplateResponse($this->appName, "editor", $params);
 
         $csp = new ContentSecurityPolicy();
         $csp->allowInlineScript(true);
 
-        $documentServerUrl = $params["documentServerUrl"];
         if (isset($documentServerUrl) && !empty($documentServerUrl)) {
             $csp->addAllowedScriptDomain($documentServerUrl);
             $csp->addAllowedFrameDomain($documentServerUrl);
@@ -309,8 +318,10 @@ class EditorController extends Controller {
      * @param integer $fileId - file identifier
      *
      * @return array
+     *
+     * @NoAdminRequired
      */
-    private function getParam($fileId) {
+    public function config($fileId) {
         list ($file, $error) = $this->getFile($fileId);
 
         if (isset($error)) {
@@ -324,13 +335,6 @@ class EditorController extends Controller {
         if (!isset($format)) {
             $this->logger->info("Format do not supported for editing: " . $fileName, array("app" => $this->appName));
             return ["error" => $this->trans->t("Format do not supported")];
-        }
-
-        $documentServerUrl = $this->config->GetDocumentServerUrl();
-
-        if (empty($documentServerUrl)) {
-            $this->logger->error("documentServerUrl is empty", array("app" => $this->appName));
-            return ["error" => $this->trans->t("ONLYOFFICE app not configured. Please contact admin")];
         }
 
         $userId = $this->userSession->getUser()->getUID();
@@ -347,17 +351,23 @@ class EditorController extends Controller {
         $key = $this->getKey($file);
 
         $canEdit = isset($format["edit"]) && $format["edit"];
+        $callback = ($file->isUpdateable() && $canEdit ? $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.track", ["doc" => $hashCallback]) : NULL);
 
         $params = [
-            "documentServerUrl" => $documentServerUrl,
-
-            "callback" => ($file->isUpdateable() && $canEdit ? $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.track", ["doc" => $hashCallback]) : NULL),
-            "fileName" => $fileName,
-            "key" => DocumentService::GenerateRevisionId($key),
-            "url" => $fileUrl,
-            "userId" => $userId,
-            "userName" => $this->userSession->getUser()->getDisplayName(),
-            "documentType" => $format["type"]
+            "document" => [
+                "key" => DocumentService::GenerateRevisionId($key),
+                "title" => $fileName,
+                "url" => $fileUrl,
+            ],
+            "documentType" => $format["type"],
+            "editorConfig" => [
+                "callbackUrl" => $callback,
+                "mode" => ($callback === NULL ? "view" : "edit"),
+                "user" => [
+                    "id" => $userId,
+                    "name" => $this->userSession->getUser()->getDisplayName()
+                ]
+            ]
         ];
 
         return $params;

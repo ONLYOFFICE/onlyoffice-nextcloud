@@ -22,7 +22,7 @@
  * in every copy of the program you distribute. 
  * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
  *
-*/
+ */
 
     style("onlyoffice", "editor");
     script("onlyoffice", "editor");
@@ -39,17 +39,7 @@
     } ?>
 
     <script type="text/javascript" nonce="<?php p(base64_encode($_["requesttoken"])) ?>">
-        OCA.Onlyoffice.OpenEditor ({
-            error: "<?php empty($_["error"]) ? "" : p($_["error"]) ?>",
-
-            callbackUrl: "<?php print_unescaped($_["callback"]) ?>",
-            key: "<?php p($_["key"]) ?>",
-            title: "<?php p($_["fileName"]) ?>",
-            url: "<?php print_unescaped($_["url"]) ?>",
-            userId: "<?php p($_["userId"]) ?>",
-            userName: "<?php p($_["userName"]) ?>",
-            documentType: "<?php p($_["documentType"]) ?>",
-        });
+        OCA.Onlyoffice.OpenEditor("<?php p($_["fileId"]) ?>", "<?php empty($_["error"]) ? "" : p($_["error"]) ?>");
     </script>
 
 </div>
