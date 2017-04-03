@@ -28,6 +28,7 @@ namespace OCA\Onlyoffice\Controller;
 
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
+use OCP\AppFramework\Http\DataDownloadResponse;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\Files\File;
 use OCP\Files\IRootFolder;
@@ -40,7 +41,6 @@ use OCP\IUserSession;
 use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\Crypt;
 use OCA\Onlyoffice\DocumentService;
-use OCA\Onlyoffice\DownloadResponse;
 
 /**
  * Callback handler for the document server.
@@ -149,7 +149,7 @@ class CallbackController extends Controller {
      *
      * @param string $doc - verification token with the file identifier
      *
-     * @return OCA\Onlyoffice\DownloadResponse
+     * @return DataDownloadResponse
      *
      * @NoAdminRequired
      * @NoCSRFRequired
@@ -184,7 +184,7 @@ class CallbackController extends Controller {
         }
 
         try {
-            return new DownloadResponse($file);
+            return new DataDownloadResponse($file->getContent(), $file->getName(), $file->getMimeType());
         } catch(\OCP\Files\NotPermittedException  $e) {
             $this->logger->info("Download Not permitted: " . $fileId . " " . $e->getMessage(), array("app" => $this->appName));
             return new JSONResponse(["message" => $this->trans->t("Not permitted")], Http::STATUS_FORBIDDEN);
