@@ -106,7 +106,7 @@ class SettingsController extends Controller {
         $this->config->SetDocumentServerUrl($documentserver);
         $this->config->SetDocumentServerSecret($secret);
 
-        $error = $this->сheckDocServiceUrl();
+        $error = $this->checkDocServiceUrl();
 
         return [
             "documentserver" => $this->config->GetDocumentServerUrl(),
@@ -133,21 +133,21 @@ class SettingsController extends Controller {
      *
      * @return string
      */
-    private function сheckDocServiceUrl() {
+    private function checkDocServiceUrl() {
 
         $documentService = new DocumentService($this->trans, $this->config);
 
         try {
             $commandResponse = $documentService->CommandRequest("version");
 
-            $this->logger->debug("CommandRequest on check: " . $commandResponse->error . " version: " . $commandResponse->version, array("app" => $this->appName));
+            $this->logger->debug("CommandRequest on check: " . json_encode($commandResponse), array("app" => $this->appName));
 
             $version = floatval($commandResponse->version);
             if ($version < 4.2) {
                 throw new \Exception($this->trans->t("Not supported version"));
             }
         } catch (\Exception $e) {
-            $this->logger->error("CommandRequest on check: " . $e->getMessage(), array("app" => $this->appName));
+            $this->logger->error("CommandRequest on check error: " . $e->getMessage(), array("app" => $this->appName));
             return $e->getMessage();
         }
 

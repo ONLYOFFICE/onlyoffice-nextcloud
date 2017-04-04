@@ -201,7 +201,7 @@ class DocumentService {
     }
 
     /**
-     * Generate an error code table
+     * Generate an error code table of convertion
      *
      * @param string $errorCode - Error code
      *
@@ -212,29 +212,32 @@ class DocumentService {
         $errorMessage = "";
 
         switch ($errorCode) {
+            case -20:
+                $errorMessage = $errorMessageTemplate . "Error encrypt signature";
+                break;
             case -8:
-                $errorMessage = $errorMessageTemplate . "Error document VKey";
+                $errorMessage = $errorMessageTemplate . "Invalid token";
                 break;
             case -7:
                 $errorMessage = $errorMessageTemplate . "Error document request";
                 break;
             case -6:
-                $errorMessage = $errorMessageTemplate . "Error database";
+                $errorMessage = $errorMessageTemplate . "Error while accessing the conversion result database";
                 break;
             case -5:
                 $errorMessage = $errorMessageTemplate . "Error unexpected guid";
                 break;
             case -4:
-                $errorMessage = $errorMessageTemplate . "Error download error";
+                $errorMessage = $errorMessageTemplate . "Error while downloading the document file to be converted.";
                 break;
             case -3:
-                $errorMessage = $errorMessageTemplate . "Error convertation error";
+                $errorMessage = $errorMessageTemplate . "Conversion error";
                 break;
             case -2:
-                $errorMessage = $errorMessageTemplate . "Error convertation timeout";
+                $errorMessage = $errorMessageTemplate . "Timeout conversion error";
                 break;
             case -1:
-                $errorMessage = $errorMessageTemplate . "Error convertation unknown";
+                $errorMessage = $errorMessageTemplate . "Unknown error";
                 break;
             case 0:
                 break;
@@ -287,6 +290,41 @@ class DocumentService {
             throw new \Exception ($this->trans->t("Bad Request or timeout error"));
         }
 
-        return json_decode($response);
+        $data = json_decode($response);
+
+        $this->ProcessCommandServResponceError($data->error);
+
+        return $data;
+    }
+
+    /**
+     * Generate an error code table of command
+     *
+     * @param string $errorCode - Error code
+     *
+     * @return null
+     */
+    function ProcessCommandServResponceError($errorCode) {
+        $errorMessageTemplate = $this->trans->t("Error occurred in the document service: ");
+        $errorMessage = "";
+
+        switch ($errorCode) {
+            case 6:
+                $errorMessage = $errorMessageTemplate . "Invalid token";
+                break;
+            case 5:
+                $errorMessage = $errorMessageTemplate . "Command not correсt";
+                break;
+            case 3:
+                $errorMessage = $errorMessageTemplate . "Internal server error";
+                break;
+            case 0:
+                return;
+            default:
+                $errorMessage = $errorMessageTemplate . "ErrorCode = " . $errorCode;
+                break;
+        }
+
+        throw new \Exception($errorMessage);
     }
 }
