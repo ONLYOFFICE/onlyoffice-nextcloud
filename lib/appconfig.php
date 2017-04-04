@@ -43,6 +43,13 @@ class AppConfig {
      */
     private $predefDocumentServerUrl = "";
 
+    /**
+     * Definition url on server
+     *
+     * @var string
+     */
+    private $predefDocumentServerSecret = "";
+
 
     /**
      * Application name
@@ -148,7 +155,11 @@ class AppConfig {
      * @return string
      */
     public function GetDocumentServerSecret() {
-        return $this->config->getAppValue($this->appName, $this->_secret, "");
+        $secret = $this->config->getAppValue($this->appName, $this->_secret, "");
+        if (empty($secret) || $secret == "") {
+            $secret = $this->predefDocumentServerSecret;
+        }
+        return $secret;
     }
 
     /**
