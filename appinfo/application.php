@@ -71,9 +71,9 @@ class Application extends App {
                     Util::addStyle($appName, "main");
                 }
             }
-
-            require_once __DIR__ . "/../3rdparty/jwt/JWT.php";
         }
+
+        require_once __DIR__ . "/../3rdparty/jwt/JWT.php";
 
         $container = $this->getContainer();
 

@@ -168,6 +168,14 @@ class DocumentService {
                 )
             );
 
+        if (!empty($this->config->GetDocumentServerSecret())) {
+            $params = [
+                "payload" => $data
+            ];
+            $token = \Firebase\JWT\JWT::encode($params, $this->config->GetDocumentServerSecret());
+            $opts["http"]["header"] = $opts["http"]["header"] . "Authorization: Bearer " . $token . "\r\n";
+        }
+
         if (substr($urlToConverter, 0, strlen("https")) === "https") {
             $opts["ssl"] = array( "verify_peer"   => FALSE );
         }
@@ -279,6 +287,14 @@ class DocumentService {
                     "content" => $data
                 )
             );
+
+        if (!empty($this->config->GetDocumentServerSecret())) {
+            $params = [
+                "payload" => $data
+            ];
+            $token = \Firebase\JWT\JWT::encode($params, $this->config->GetDocumentServerSecret());
+            $opts["http"]["header"] = $opts["http"]["header"] . "Authorization: Bearer " . $token . "\r\n";
+        }
 
         if (substr($urlCommand, 0, strlen("https")) === "https") {
             $opts["ssl"] = array( "verify_peer"   => FALSE );
