@@ -371,6 +371,11 @@ class EditorController extends Controller {
             ]
         ];
 
+        if (!empty($this->config->GetDocumentServerSecret())) {
+            $token = \Firebase\JWT\JWT::encode($params, $this->config->GetDocumentServerSecret());
+            $params->token = $token;
+        }
+
         return $params;
     }
 
