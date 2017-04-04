@@ -73,6 +73,13 @@ class AppConfig {
     private $_documentserver = "DocumentServerUrl";
 
     /**
+     * The config key for the secret key in jwt
+     *
+     * @var string
+     */
+    private $_secret = "DocumentServerSecret";
+
+    /**
      * The config key for the secret key
      *
      * @var string
@@ -118,6 +125,30 @@ class AppConfig {
             $url = $this->predefDocumentServerUrl;
         }
         return $url;
+    }
+
+    /**
+     * Save the document service secret key to the application configuration
+     *
+     * @param string $secret - secret key
+     */
+    public function SetDocumentServerSecret($secret) {
+        if (empty($secret)) {
+            $this->logger->info("Clear secret key", array("app" => $this->appName));
+        } else {
+            $this->logger->info("Set secret key", array("app" => $this->appName));
+        }
+
+        $this->config->setAppValue($this->appName, $this->_secret, $secret);
+    }
+
+    /**
+     * Get the document service secret key from the application configuration
+     *
+     * @return string
+     */
+    public function GetDocumentServerSecret() {
+        return $this->config->getAppValue($this->appName, $this->_secret, "");
     }
 
     /**

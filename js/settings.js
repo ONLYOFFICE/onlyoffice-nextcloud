@@ -34,15 +34,25 @@
         }
 
         $("#onlyofficeSave").click(function () {
-            var docServiceUrlApi = $("#docServiceUrlApi").val().trim();
+            var onlyofficeUrl = $("#onlyofficeUrl").val().trim();
+
+            if (!onlyofficeUrl.length) {
+                $("#onlyofficeSecret").val("");
+            }
+            var onlyofficeSecret = $("#onlyofficeSecret").val();
 
             $.ajax({
                 method: "PUT",
                 url: OC.generateUrl("apps/onlyoffice/ajax/settings"),
-                data: { documentserver: docServiceUrlApi },
+                data: {
+                    documentserver: onlyofficeUrl,
+                    secret: onlyofficeSecret
+                },
                 success: function onSuccess(response) {
                     if (response && response.documentserver != null) {
-                        $("#docServiceUrlApi").val(response.documentserver);
+                        $("#onlyofficeUrl").val(response.documentserver);
+
+                        $("#onlyofficeSecretPanel").toggleClass("onlyoffice-hide", !response.documentserver.length);
 
                         var message =
                             response.error
@@ -57,7 +67,7 @@
             });
         });
 
-        $("#docServiceUrlApi").keypress(function (e) {
+        $("#onlyofficeUrl, #onlyofficeSecret").keypress(function (e) {
             var code = e.keyCode || e.which;
             if (code === 13) {
                 $("#onlyofficeSave").click();

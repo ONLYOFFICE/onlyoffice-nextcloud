@@ -87,7 +87,10 @@ class SettingsController extends Controller {
      * @return TemplateResponse
      */
     public function index() {
-        $data = ["documentserver" => $this->config->GetDocumentServerUrl()];
+        $data = [
+            "documentserver" => $this->config->GetDocumentServerUrl(),
+            "secret" => $this->config->GetDocumentServerSecret()
+        ];
         return new TemplateResponse($this->appName, "settings", $data, "blank");
     }
 
@@ -95,11 +98,13 @@ class SettingsController extends Controller {
      * Save the document server address
      *
      * @param string $documentserver - document service address
+     * @param string $secret - secret key for signature
      *
      * @return array
      */
-    public function settings($documentserver) {
+    public function settings($documentserver, $secret) {
         $this->config->SetDocumentServerUrl($documentserver);
+        $this->config->SetDocumentServerSecret($secret);
 
         $error = $this->сheckDocServiceUrl();
 
