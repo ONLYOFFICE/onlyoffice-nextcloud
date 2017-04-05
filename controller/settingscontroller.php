@@ -106,7 +106,10 @@ class SettingsController extends Controller {
         $this->config->SetDocumentServerUrl($documentserver);
         $this->config->SetDocumentServerSecret($secret);
 
-        $error = $this->checkDocServiceUrl();
+        $documentserver = $this->config->GetDocumentServerUrl();
+        if (!empty($documentserver)) {
+            $error = $this->checkDocServiceUrl();
+        }
 
         return [
             "documentserver" => $this->config->GetDocumentServerUrl(),

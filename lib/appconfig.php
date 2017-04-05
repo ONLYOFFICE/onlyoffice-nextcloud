@@ -128,7 +128,7 @@ class AppConfig {
      */
     public function GetDocumentServerUrl() {
         $url = $this->config->getAppValue($this->appName, $this->_documentserver, "");
-        if (empty($url) || $url === "") {
+        if (empty($url)) {
             $url = $this->predefDocumentServerUrl;
         }
         return $url;
@@ -156,7 +156,7 @@ class AppConfig {
      */
     public function GetDocumentServerSecret() {
         $secret = $this->config->getAppValue($this->appName, $this->_secret, "");
-        if (empty($secret) || $secret == "") {
+        if (empty($secret)) {
             $secret = $this->predefDocumentServerSecret;
         }
         return $secret;
@@ -169,7 +169,7 @@ class AppConfig {
      */
     public function GetSKey() {
         $skey = $this->config->getAppValue($this->appName, $this->_cryptSecret, "");
-        if (empty($skey) || $skey === "") {
+        if (empty($skey)) {
             $skey = number_format(round(microtime(true) * 1000), 0, ".", "");
             $this->config->setAppValue($this->appName, $this->_cryptSecret, $skey);
         }
