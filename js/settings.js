@@ -34,16 +34,31 @@
         }
 
         $("#onlyofficeSave").click(function () {
-            var docServiceUrlApi = $("#docServiceUrlApi").val().trim();
+            var onlyofficeUrl = $("#onlyofficeUrl").val().trim();
+
+            if (!onlyofficeUrl.length) {
+                $("#onlyofficeSecret").val("");
+            }
+            var onlyofficeSecret = $("#onlyofficeSecret").val();
 
             $.ajax({
                 method: "PUT",
                 url: OC.generateUrl("apps/onlyoffice/ajax/settings"),
-                data: { documentserver: docServiceUrlApi },
+                data: {
+                    documentserver: onlyofficeUrl,
+                    secret: onlyofficeSecret
+                },
                 success: function onSuccess(response) {
                     if (response && response.documentserver != null) {
-                        $("#docServiceUrlApi").val(response.documentserver);
-                        var row = OC.Notification.show(t(OCA.Onlyoffice.AppName, "Settings have been successfully updated"));
+                        $("#onlyofficeUrl").val(response.documentserver);
+
+                        $("#onlyofficeSecretPanel").toggleClass("onlyoffice-hide", !response.documentserver.length);
+
+                        var message =
+                            response.error
+                                ? (t(OCA.Onlyoffice.AppName, "Error when trying to connect") + " (" + response.error + ")")
+                                : t(OCA.Onlyoffice.AppName, "Settings have been successfully updated");
+                        var row = OC.Notification.show(message);
                         setTimeout(function () {
                             OC.Notification.hide(row);
                         }, 3000);
@@ -52,7 +67,7 @@
             });
         });
 
-        $("#docServiceUrlApi").keypress(function (e) {
+        $("#onlyofficeUrl, #onlyofficeSecret").keypress(function (e) {
             var code = e.keyCode || e.which;
             if (code === 13) {
                 $("#onlyofficeSave").click();

@@ -22,7 +22,7 @@
  * in every copy of the program you distribute. 
  * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
  *
-*/
+ */
 
     style("onlyoffice", "settings");
     script("onlyoffice", "settings");
@@ -34,7 +34,12 @@
     <p><?php p($l->t("ONLYOFFICE Document Service Location specifies the address of the server with the document services installed. Please change the '<documentserver>' for the server address in the below line.")) ?></p>
 
     <p class="onlyoffice-header"><?php p($l->t("Document Editing Service Address")) ?></p>
-    <input id="docServiceUrlApi" value="<?php p($_["documentserver"]) ?>" placeholder="https://<documentserver>" type="text">
+    <input id="onlyofficeUrl" value="<?php p($_["documentserver"]) ?>" placeholder="https://<documentserver>" type="text">
+
+    <div id="onlyofficeSecretPanel" class="<?php echo (empty($_["documentserver"]) ? "onlyoffice-hide" : "") ?>">
+        <p class="onlyoffice-header"><?php p($l->t("Secret key (leave blank to disable)")) ?></p>
+        <input id="onlyofficeSecret" value="<?php p($_["secret"]) ?>" placeholder="secret" type="text">
+    </div>
 
     <br />
     <a id="onlyofficeSave" class="button"><?php p($l->t("Save")) ?></a>

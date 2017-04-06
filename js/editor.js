@@ -32,41 +32,40 @@
         };
     }
 
-    OCA.Onlyoffice.OpenEditor = function (data) {
-        if (typeof DocsAPI === "undefined" && !data.error.length) {
-            data.error = t(OCA.Onlyoffice.AppName, "ONLYOFFICE app not configured. Please contact admin");
-        }
+    OCA.Onlyoffice.OpenEditor = function (fileId, error) {
 
-        if (data.error.length) {
-            $("#iframeEditor").text(data.error).addClass("error");
+        var displayError = function (error) {
+            $("#iframeEditor").text(error).addClass("error");
+        };
+
+        if (error.length) {
+            displayError(error)
             return;
         }
 
-        var ext = (data.title || "").toLowerCase().split(".").pop();
+        if (!fileId.length) {
+            displayError(t(OCA.Onlyoffice.AppName, "FileId is empty"));
+            return;
+        }
 
-        var config = {
-            "document": {
-                "fileType": ext,
-                "key": data.key,
-                "title": data.title,
-                "url": data.url
-            },
-            "documentType": data.documentType,
-            "editorConfig": {
-                "callbackUrl": (data.callbackUrl ? data.callbackUrl : null),
-                "lang": "en-US",
-                "mode": (data.callbackUrl ? "edit" : "view"),
-                "user": {
-                    "id": data.userId,
-                    "name": data.userName
+        if (typeof DocsAPI === "undefined" && !error.length) {
+            displayError(t(OCA.Onlyoffice.AppName, "ONLYOFFICE not reached. Please contact admin"));
+            return;
+        }
+
+        $.ajax({
+            url: OC.generateUrl("apps/onlyoffice/ajax/config/" + fileId),
+            success: function onSuccess(config) {
+                if (config) {
+                    if (config.error != null) {
+                        displayError(config.error);
+                        return;
+                    }
+
+                    var docEditor = new DocsAPI.DocEditor("iframeEditor", config);
                 }
-            },
-            "height": "100%",
-            "type": "desktop",
-            "width": "100%"
-        };
-
-        var docEditor = new DocsAPI.DocEditor("iframeEditor", config);
+            }
+        });
     };
 
 })(jQuery, OCA);

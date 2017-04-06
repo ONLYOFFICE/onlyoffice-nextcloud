@@ -22,7 +22,7 @@
  * in every copy of the program you distribute. 
  * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
  *
-*/
+ */
 
 namespace OCA\Onlyoffice\Controller;
 
@@ -34,9 +34,10 @@ use OCP\AutoloadNotAllowedException;
 use OCP\Files\FileInfo;
 use OCP\Files\IRootFolder;
 use OCP\IL10N;
+use OCP\ILogger;
 use OCP\IRequest;
 use OCP\IURLGenerator;
-use OCP\IUser;
+use OCP\IUserSession;
 
 use OC\Files\Filesystem;
 use OC\Files\View;
@@ -55,11 +56,11 @@ use OCA\Onlyoffice\DocumentService;
 class EditorController extends Controller {
 
     /**
-     * Current user
+     * Current user session
      *
-     * @var IUser
+     * @var IUserSession
      */
-    private $user;
+    private $userSession;
 
     /**
      * Root folder
@@ -83,6 +84,13 @@ class EditorController extends Controller {
     private $trans;
 
     /**
+     * Logger
+     *
+     * @var ILogger
+     */
+    private $logger;
+
+    /**
      * Application configuration
      *
      * @var OCA\Onlyoffice\AppConfig
@@ -97,30 +105,33 @@ class EditorController extends Controller {
     private $crypt;
 
     /**
-     * @param string $AppName application name
-     * @param IRequest $request request object
-     * @param IRootFolder $root root folder
-     * @param IUser $user current user
-     * @param IURLGenerator $urlGenerator url generator service
-     * @param IL10N $l10n l10n service
-     * @param OCA\Onlyoffice\AppConfig $config application configuration
-     * @param OCA\Onlyoffice\Crypt $crypt hash generator
+     * @param string $AppName - application name
+     * @param IRequest $request - request object
+     * @param IRootFolder $root - root folder
+     * @param IUserSession $userSession - current user session
+     * @param IURLGenerator $urlGenerator - url generator service
+     * @param IL10N $trans - l10n service
+     * @param ILogger $logger - logger
+     * @param OCA\Onlyoffice\AppConfig $config - application configuration
+     * @param OCA\Onlyoffice\Crypt $crypt - hash generator
      */
     public function __construct($AppName,
                                     IRequest $request,
                                     IRootFolder $root,
-                                    IUser $user,
+                                    IUserSession $userSession,
                                     IURLGenerator $urlGenerator,
                                     IL10N $trans,
+                                    ILogger $logger,
                                     AppConfig $config,
                                     Crypt $crypt
                                     ) {
         parent::__construct($AppName, $request);
 
-        $this->user = $user;
+        $this->userSession = $userSession;
         $this->root = $root;
         $this->urlGenerator = $urlGenerator;
         $this->trans = $trans;
+        $this->logger = $logger;
         $this->config = $config;
         $this->crypt = $crypt;
     }
@@ -137,14 +148,16 @@ class EditorController extends Controller {
      */
     public function create($name, $dir) {
 
-        $userId = $this->user->getUID();
+        $userId = $this->userSession->getUser()->getUID();
         $userFolder = $this->root->getUserFolder($userId);
         $folder = $userFolder->get($dir);
 
         if ($folder === NULL) {
+            $this->logger->info("Folder for file creation was not found: " . $dir, array("app" => $this->appName));
             return ["error" => $this->trans->t("The required folder was not found")];
         }
         if (!$folder->isCreatable()) {
+            $this->logger->info("Folder for file creation without permission: " . $dir, array("app" => $this->appName));
             return ["error" => $this->trans->t("You don't have enough permission to create")];
         }
 
@@ -155,17 +168,20 @@ class EditorController extends Controller {
 
         $template = file_get_contents($templatePath);
         if (!$template) {
+            $this->logger->info("Template for file creation not found: " . $templatePath, array("app" => $this->appName));
             return ["error" => $this->trans->t("Template not found")];
         }
 
         $view = Filesystem::getView();
         if (!$view->file_put_contents($filePath, $template)) {
+            $this->logger->error("Can't create file: " . $filePath, array("app" => $this->appName));
             return ["error" => $this->trans->t("Can't create file")];
         }
 
         $fileInfo = $view->getFileInfo($filePath);
 
         if ($fileInfo === false) {
+            $this->logger->info("File not found: " . $filePath, array("app" => $this->appName));
             return ["error" => $this->trans->t("File not found")];
         }
 
@@ -186,6 +202,7 @@ class EditorController extends Controller {
         list ($file, $error) = $this->getFile($fileId);
 
         if (isset($error)) {
+            $this->logger->error("Convertion: " . $fileId . " " . $error, array("app" => $this->appName));
             return ["error" => $error];
         }
 
@@ -193,10 +210,12 @@ class EditorController extends Controller {
         $ext = pathinfo($fileName, PATHINFO_EXTENSION);
         $format = $this->config->formats[$ext];
         if (!isset($format)) {
+            $this->logger->info("Format for convertion not supported: " . $fileName, array("app" => $this->appName));
             return ["error" => $this->trans->t("Format do not supported")];
         }
 
-        if(!isset($format["conv"]) || $format["conv"] !== TRUE) {
+        if (!isset($format["conv"]) || $format["conv"] !== TRUE) {
+            $this->logger->debug("Conversion not required: " . $fileName, array("app" => $this->appName));
             return ["error" => $this->trans->t("Conversion not required")];
         }
 
@@ -217,10 +236,11 @@ class EditorController extends Controller {
         try {
             $documentService->GetConvertedUri($fileUrl, $ext, $internalExtension, $key, FALSE, $newFileUri);
         } catch (\Exception $e) {
+            $this->logger->error("GetConvertedUri: " . $fileId . " " . $e->getMessage(), array("app" => $this->appName));
             return ["error" => $e->getMessage()];
         }
 
-        $userId = $this->user->getUID();
+        $userId = $this->userSession->getUser()->getUID();
         $folder = $file->getParent();
         if (!$folder->isCreatable()) {
             $folder = $this->root->getUserFolder($userId);
@@ -232,19 +252,22 @@ class EditorController extends Controller {
         $newFileName = $folder->getNonExistingName($fileNameWithoutExt . "." . $internalExtension);
 
         $newFilePath = $newFolderPath . DIRECTORY_SEPARATOR . $newFileName;
-        
+
         if (($newData = file_get_contents($newFileUri)) === FALSE){
+            $this->logger->error("Failed download converted file: " . $newFileUri, array("app" => $this->appName));
             return ["error" => $this->trans->t("Failed download converted file")];
         }
 
         $view = Filesystem::getView();
         if (!$view->file_put_contents($newFilePath, $newData)) {
+            $this->logger->error("Can't create file after convertion: " . $newFilePath, array("app" => $this->appName));
             return ["error" => $this->trans->t("Can't create file")];
         }
 
         $fileInfo = $view->getFileInfo($newFilePath);
 
         if ($fileInfo === false) {
+            $this->logger->info("File not found: " . $newFilePath, array("app" => $this->appName));
             return ["error" => $this->trans->t("File not found")];
         }
 
@@ -263,14 +286,23 @@ class EditorController extends Controller {
      * @NoCSRFRequired
      */
     public function index($fileId) {
-        $params = $this->getParam($fileId);
+        $documentServerUrl = $this->config->GetDocumentServerUrl();
+
+        if (empty($documentServerUrl)) {
+            $this->logger->error("documentServerUrl is empty", array("app" => $this->appName));
+            return ["error" => $this->trans->t("ONLYOFFICE app not configured. Please contact admin")];
+        }
+
+        $params = [
+            "documentServerUrl" => $documentServerUrl,
+            "fileId" => $fileId
+        ];
 
         $response = new TemplateResponse($this->appName, "editor", $params);
 
         $csp = new ContentSecurityPolicy();
         $csp->allowInlineScript(true);
 
-        $documentServerUrl = $params["documentServerUrl"];
         if (isset($documentServerUrl) && !empty($documentServerUrl)) {
             $csp->addAllowedScriptDomain($documentServerUrl);
             $csp->addAllowedFrameDomain($documentServerUrl);
@@ -286,11 +318,14 @@ class EditorController extends Controller {
      * @param integer $fileId - file identifier
      *
      * @return array
+     *
+     * @NoAdminRequired
      */
-    private function getParam($fileId) {
+    public function config($fileId) {
         list ($file, $error) = $this->getFile($fileId);
 
         if (isset($error)) {
+            $this->logger->error("Convertion: " . $fileId . " " . $error, array("app" => $this->appName));
             return ["error" => $error];
         }
 
@@ -298,16 +333,11 @@ class EditorController extends Controller {
         $ext = pathinfo($fileName, PATHINFO_EXTENSION);
         $format = $this->config->formats[$ext];
         if (!isset($format)) {
+            $this->logger->info("Format do not supported for editing: " . $fileName, array("app" => $this->appName));
             return ["error" => $this->trans->t("Format do not supported")];
         }
 
-        $documentServerUrl = $this->config->GetDocumentServerUrl();
-
-        if (empty($documentServerUrl)) {
-            return ["error" => $this->trans->t("ONLYOFFICE app not configured. Please contact admin")];
-        }
-
-        $userId = $this->user->getUID();
+        $userId = $this->userSession->getUser()->getUID();
         $ownerId = $file->getOwner()->getUID();
         try {
             $this->root->getUserFolder($ownerId);
@@ -321,18 +351,31 @@ class EditorController extends Controller {
         $key = $this->getKey($file);
 
         $canEdit = isset($format["edit"]) && $format["edit"];
+        $callback = ($file->isUpdateable() && $canEdit ? $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.track", ["doc" => $hashCallback]) : NULL);
 
         $params = [
-            "documentServerUrl" => $documentServerUrl,
-
-            "callback" => ($file->isUpdateable() && $canEdit ? $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.track", ["doc" => $hashCallback]) : NULL),
-            "fileName" => $fileName,
-            "key" => DocumentService::GenerateRevisionId($key),
-            "url" => $fileUrl,
-            "userId" => $userId,
-            "userName" => $this->user->getDisplayName(),
-            "documentType" => $format["type"]
+            "document" => [
+                "fileType" => pathinfo($fileName, PATHINFO_EXTENSION),
+                "key" => DocumentService::GenerateRevisionId($key),
+                "title" => $fileName,
+                "url" => $fileUrl,
+            ],
+            "documentType" => $format["type"],
+            "editorConfig" => [
+                "callbackUrl" => $callback,
+                "lang" => \OC::$server->getL10NFactory("")->get("")->getLanguageCode(),
+                "mode" => ($callback === NULL ? "view" : "edit"),
+                "user" => [
+                    "id" => $userId,
+                    "name" => $this->userSession->getUser()->getDisplayName()
+                ]
+            ]
         ];
+
+        if (!empty($this->config->GetDocumentServerSecret())) {
+            $token = \Firebase\JWT\JWT::encode($params, $this->config->GetDocumentServerSecret());
+            $params["token"] = $token;
+        }
 
         return $params;
     }
@@ -350,7 +393,7 @@ class EditorController extends Controller {
         }
 
         $files = $this->root->getById($fileId);
-        if(empty($files)) {
+        if (empty($files)) {
             return [NULL, $this->trans->t("File not found")];
         }
         $file = $files[0];
@@ -375,7 +418,7 @@ class EditorController extends Controller {
         try {
             $this->root->getUserFolder($ownerId);
         } catch (NoUserException $e) {
-            $ownerId = $this->user->getUID();
+            $ownerId = $this->userSession->getUser()->getUID();
         }
 
         $key = $fileId . $file->getMtime();

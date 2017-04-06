@@ -22,7 +22,7 @@
  * in every copy of the program you distribute. 
  * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
  *
-*/
+ */
 
 namespace OCA\Onlyoffice;
 
@@ -43,7 +43,7 @@ class Crypt {
     private $skey;
 
     /**
-     * @param OCA\Onlyoffice\AppConfig $config application configutarion
+     * @param OCA\Onlyoffice\AppConfig $config - application configutarion
      */
     public function __construct(AppConfig $appConfig) {
         $this->skey = $appConfig->GetSKey();

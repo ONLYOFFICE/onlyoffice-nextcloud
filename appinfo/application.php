@@ -22,7 +22,7 @@
  * in every copy of the program you distribute. 
  * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
  *
-*/
+ */
 
 namespace OCA\Onlyoffice\AppInfo;
 
@@ -60,7 +60,8 @@ class Application extends App {
         $this->crypt = new Crypt($this->appConfig);
 
         // Default script and style if configured
-        if (!empty($this->appConfig->GetDocumentServerUrl()))
+        if (!empty($this->appConfig->GetDocumentServerUrl())
+            && array_key_exists("REQUEST_URI", \OC::$server->getRequest()->server))
         {
             $url = \OC::$server->getRequest()->server["REQUEST_URI"];
 
@@ -71,6 +72,8 @@ class Application extends App {
                 }
             }
         }
+
+        require_once __DIR__ . "/../3rdparty/jwt/JWT.php";
 
         $container = $this->getContainer();
 
@@ -86,12 +89,18 @@ class Application extends App {
             return $c->query("ServerContainer")->getUserSession();
         });
 
+        $container->registerService("Logger", function($c) {
+            return $c->query("ServerContainer")->getLogger();
+        });
+
 
         // Controllers
         $container->registerService("SettingsController", function($c) {
             return new SettingsController(
                 $c->query("AppName"),
                 $c->query("Request"),
+                $c->query("L10N"),
+                $c->query("Logger"),
                 $this->appConfig
             );
         });
@@ -101,9 +110,10 @@ class Application extends App {
                 $c->query("AppName"),
                 $c->query("Request"),
                 $c->query("RootStorage"),
-                $c->query("UserSession")->getUser(),
+                $c->query("UserSession"),
                 $c->query("ServerContainer")->getURLGenerator(),
                 $c->query("L10N"),
+                $c->query("Logger"),
                 $this->appConfig,
                 $this->crypt
             );
@@ -117,6 +127,7 @@ class Application extends App {
                 $c->query("UserSession"),
                 $c->query("ServerContainer")->getUserManager(),
                 $c->query("L10N"),
+                $c->query("Logger"),
                 $this->appConfig,
                 $this->crypt
             );

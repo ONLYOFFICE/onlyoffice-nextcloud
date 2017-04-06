@@ -22,11 +22,12 @@
  * in every copy of the program you distribute. 
  * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
  *
-*/
+ */
 
 namespace OCA\Onlyoffice;
 
 use OCP\IConfig;
+use OCP\ILogger;
 
 /**
  * Application configutarion
@@ -34,6 +35,21 @@ use OCP\IConfig;
  * @package OCA\Onlyoffice
  */
 class AppConfig {
+
+    /**
+     * Definition url on server
+     *
+     * @var string
+     */
+    private $predefDocumentServerUrl = "";
+
+    /**
+     * Definition url on server
+     *
+     * @var string
+     */
+    private $predefDocumentServerSecret = "";
+
 
     /**
      * Application name
@@ -50,11 +66,25 @@ class AppConfig {
     private $config;
 
     /**
+     * Logger
+     *
+     * @var OCP\ILogger
+     */
+    private $logger;
+
+    /**
      * The config key for the document server address
      *
      * @var string
      */
     private $_documentserver = "DocumentServerUrl";
+
+    /**
+     * The config key for the secret key in jwt
+     *
+     * @var string
+     */
+    private $_secret = "DocumentServerSecret";
 
     /**
      * The config key for the secret key
@@ -64,12 +94,14 @@ class AppConfig {
     private $_cryptSecret = "skey";
 
     /**
-     * @param string $AppName application name
+     * @param string $AppName - application name
      */
     public function __construct($AppName) {
-        
+
         $this->appName = $AppName;
+
         $this->config = \OC::$server->getConfig();
+        $this->logger = \OC::$server->getLogger();
     }
 
     /**
@@ -82,6 +114,9 @@ class AppConfig {
         if (strlen($documentServer) > 0 && !preg_match("/^https?:\/\//i", $documentServer)) {
             $documentServer = "http://" . $documentServer;
         }
+
+        $this->logger->info("SetDocumentServerUrl: " . $documentServer, array("app" => $this->appName));
+
         $this->config->setAppValue($this->appName, $this->_documentserver, $documentServer);
         $this->DropSKey();
     }
@@ -92,7 +127,39 @@ class AppConfig {
      * @return string
      */
     public function GetDocumentServerUrl() {
-        return $this->config->getAppValue($this->appName, $this->_documentserver, "");
+        $url = $this->config->getAppValue($this->appName, $this->_documentserver, "");
+        if (empty($url)) {
+            $url = $this->predefDocumentServerUrl;
+        }
+        return $url;
+    }
+
+    /**
+     * Save the document service secret key to the application configuration
+     *
+     * @param string $secret - secret key
+     */
+    public function SetDocumentServerSecret($secret) {
+        if (empty($secret)) {
+            $this->logger->info("Clear secret key", array("app" => $this->appName));
+        } else {
+            $this->logger->info("Set secret key", array("app" => $this->appName));
+        }
+
+        $this->config->setAppValue($this->appName, $this->_secret, $secret);
+    }
+
+    /**
+     * Get the document service secret key from the application configuration
+     *
+     * @return string
+     */
+    public function GetDocumentServerSecret() {
+        $secret = $this->config->getAppValue($this->appName, $this->_secret, "");
+        if (empty($secret)) {
+            $secret = $this->predefDocumentServerSecret;
+        }
+        return $secret;
     }
 
     /**
@@ -111,15 +178,9 @@ class AppConfig {
 
     /**
      * Regenerate the secret key
-     *
-     * @return string
      */
     private function DropSKey() {
-        $skey = $this->config->getAppValue($this->appName, $this->_cryptSecret, "");
-        if (!empty($skey)) {
-            $skey = number_format(round(microtime(true) * 1000), 0, ".", "");
-            $this->config->setAppValue($this->appName, $this->_cryptSecret, $skey);
-        }
+        $this->config->setAppValue($this->appName, $this->_cryptSecret, "");
     }
 
 
