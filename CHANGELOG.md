@@ -7,7 +7,7 @@
 - checking version of onlyoffice
 - set language of editor
 
-# Changed
+### Changed
 - replace own Response class to OCP\AppFramework\Http class from core
 
 ### Security
