@@ -355,6 +355,7 @@ class EditorController extends Controller {
 
         $params = [
             "document" => [
+                "fileType" => pathinfo($fileName, PATHINFO_EXTENSION),
                 "key" => DocumentService::GenerateRevisionId($key),
                 "title" => $fileName,
                 "url" => $fileUrl,
