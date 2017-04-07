@@ -71,8 +71,9 @@ class Crypt {
      */
     public function ReadHash($hash) {
         $result = NULL;
+        $error = NULL;
         if ($hash === NULL) {
-            return $result;
+            return [$result, "hash is empty"];
         }
         try {
             $payload = base64_decode($hash);
@@ -82,10 +83,13 @@ class Crypt {
 
             if ($payloadParts[0] === $encode) {
                 $result = json_decode($payloadParts[1]);
+            } else {
+                $error = "hash not equal";
             }
         } catch (\Exception $e) {
+            $error = $e->getMessage();
         }
-        return $result;
+        return [$result, $error];
     }
 
     /**

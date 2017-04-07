@@ -158,9 +158,9 @@ class CallbackController extends Controller {
      */
     public function download($doc) {
 
-        $hashData = $this->crypt->ReadHash($doc);
+        list ($hashData, $error) = $this->crypt->ReadHash($doc);
         if ($hashData === NULL) {
-            $this->logger->info("Download with empty or not correct hash", array("app" => $this->appName));
+            $this->logger->info("Download with empty or not correct hash: " . $error, array("app" => $this->appName));
             return new JSONResponse(["message" => $this->trans->t("Access deny")], Http::STATUS_FORBIDDEN);
         }
         if ($hashData->action !== "download") {
@@ -209,9 +209,9 @@ class CallbackController extends Controller {
      */
     public function track($doc, $users, $key, $status, $url) {
 
-        $hashData = $this->crypt->ReadHash($doc);
+        list ($hashData, $error) = $this->crypt->ReadHash($doc);
         if ($hashData === NULL) {
-            $this->logger->info("Track with empty or not correct hash", array("app" => $this->appName));
+            $this->logger->info("Track with empty or not correct hash: " . $error, array("app" => $this->appName));
             return new JSONResponse(["message" => $this->trans->t("Access deny")], Http::STATUS_FORBIDDEN);
         }
         if ($hashData->action !== "track") {
