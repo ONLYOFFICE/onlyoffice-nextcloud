@@ -269,6 +269,7 @@ class CallbackController extends Controller {
                 break;
 
             case "Editing":
+            case "Closed":
                 $error = 0;
                 break;
         }
