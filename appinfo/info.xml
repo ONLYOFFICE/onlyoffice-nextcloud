@@ -28,7 +28,7 @@
     <screenshot>https://raw.githubusercontent.com/ONLYOFFICE/onlyoffice-owncloud/master/screenshots/open.png</screenshot>
     <screenshot>https://raw.githubusercontent.com/ONLYOFFICE/onlyoffice-owncloud/master/screenshots/settings.png</screenshot>
     <dependencies>
-        <owncloud min-version="9.0" max-version="9.2" />
+        <owncloud min-version="9.0" max-version="10.0" />
         <nextcloud min-version="11" max-version="11"/>
     </dependencies>
     <settings>
