@@ -41,6 +41,9 @@
         <p class="onlyoffice-header"><?php p($l->t("Document Editing Service Address for internal requests from the server")) ?></p>
         <input id="onlyofficeInternalUrl" value="<?php p($_["documentserverInternal"]) ?>" placeholder="https://<documentserver>" type="text">
 
+        <p class="onlyoffice-header"><?php p($l->t("Server Address for internal requests from the Document Editing Service")) ?></p>
+        <input id="onlyofficeStorageUrl" value="<?php p($_["storageUrl"]) ?>" placeholder="<?php p($_["currentServer"]) ?>" type="text">
+
         <p class="onlyoffice-header"><?php p($l->t("Secret key (leave blank to disable)")) ?></p>
         <input id="onlyofficeSecret" value="<?php p($_["secret"]) ?>" placeholder="secret" type="text">
     </div>

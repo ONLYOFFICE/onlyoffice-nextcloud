@@ -39,7 +39,8 @@
         };
 
         if ($("#onlyofficeInternalUrl").val().length
-            || $("#onlyofficeSecret").val().length) {
+            || $("#onlyofficeSecret").val().length
+            || $("#onlyofficeStorageUrl").val().length) {
             advToogle(false);
         }
 
@@ -51,11 +52,12 @@
             var onlyofficeUrl = $("#onlyofficeUrl").val().trim();
 
             if (!onlyofficeUrl.length) {
-                $("#onlyofficeInternalUrl, #onlyofficeSecret").val("");
+                $("#onlyofficeInternalUrl, #onlyofficeStorageUrl, #onlyofficeSecret").val("");
             }
 
-            var onlyofficeSecret = $("#onlyofficeSecret:visible").val() || "";
             var onlyofficeInternalUrl = ($("#onlyofficeInternalUrl:visible").val() || "").trim();
+            var onlyofficeStorageUrl = ($("#onlyofficeStorageUrl:visible").val() || "").trim();
+            var onlyofficeSecret = $("#onlyofficeSecret:visible").val() || "";
 
             $.ajax({
                 method: "PUT",
@@ -63,12 +65,14 @@
                 data: {
                     documentserver: onlyofficeUrl,
                     documentserverInternal: onlyofficeInternalUrl,
+                    storageUrl: onlyofficeStorageUrl,
                     secret: onlyofficeSecret
                 },
                 success: function onSuccess(response) {
                     if (response && response.documentserver != null) {
                         $("#onlyofficeUrl").val(response.documentserver);
                         $("#onlyofficeInternalUrl").val(response.documentserverInternal);
+                        $("#onlyofficeStorageUrl").val(response.storageUrl);
                         $("#onlyofficeSecret").val(response.secret);
 
                         var message =

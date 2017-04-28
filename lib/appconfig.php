@@ -51,6 +51,13 @@ class AppConfig {
     private $predefDocumentServerInternalUrl = "";
 
     /**
+     * Definition url on server to ownCloud
+     *
+     * @var string
+     */
+    private $predefStorageUrl = "";
+
+    /**
      * Definition url on server
      *
      * @var string
@@ -87,11 +94,18 @@ class AppConfig {
     private $_documentserver = "DocumentServerUrl";
 
     /**
-     * The config key for the document server address from ownCloud
+     * The config key for the document server address available from ownCloud
      *
      * @var string
      */
     private $_documentserverInternal = "DocumentServerInternalUrl";
+
+    /**
+     * The config key for the ownCloud address available from document server
+     *
+     * @var string
+     */
+    private $_storageUrl = "StorageUrl";
 
     /**
      * The config key for the secret key in jwt
@@ -162,7 +176,6 @@ class AppConfig {
         $this->logger->info("SetDocumentServerInternalUrl: " . $documentServerInternal, array("app" => $this->appName));
 
         $this->config->setAppValue($this->appName, $this->_documentserverInternal, $documentServerInternal);
-        $this->DropSKey();
     }
 
     /**
@@ -177,6 +190,35 @@ class AppConfig {
         }
         if (!$origin && empty($url)) {
             $url = $this->GetDocumentServerUrl();
+        }
+        return $url;
+    }
+
+    /**
+     * Save the document service address available from ownCloud to the application configuration
+     *
+     * @param string $documentServer - document service address
+     */
+    public function SetStorageUrl($storageUrl) {
+        $storageUrl = strtolower(rtrim(trim($storageUrl), "/")) . "/";
+        if (strlen($storageUrl) > 0 && !preg_match("/^https?:\/\//i", $storageUrl)) {
+            $storageUrl = "http://" . $storageUrl;
+        }
+
+        $this->logger->info("SetStorageUrl: " . $storageUrl, array("app" => $this->appName));
+
+        $this->config->setAppValue($this->appName, $this->_storageUrl, $storageUrl);
+    }
+
+    /**
+     * Get the document service address available from ownCloud from the application configuration
+     *
+     * @return string
+     */
+    public function GetStorageUrl() {
+        $url = $this->config->getAppValue($this->appName, $this->_storageUrl, "");
+        if (empty($url)) {
+            $url = $this->predefStorageUrl;
         }
         return $url;
     }

@@ -99,6 +99,7 @@ class Application extends App {
             return new SettingsController(
                 $c->query("AppName"),
                 $c->query("Request"),
+                $c->query("ServerContainer")->getURLGenerator(),
                 $c->query("L10N"),
                 $c->query("Logger"),
                 $this->appConfig

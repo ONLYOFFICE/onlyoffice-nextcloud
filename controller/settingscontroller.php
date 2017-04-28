@@ -31,6 +31,7 @@ use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IL10N;
 use OCP\ILogger;
 use OCP\IRequest;
+use OCP\IURLGenerator;
 
 use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\DocumentService;
@@ -62,20 +63,30 @@ class SettingsController extends Controller {
     private $config;
 
     /**
+     * Url generator service
+     *
+     * @var IURLGenerator
+     */
+    private $urlGenerator;
+
+    /**
      * @param string $AppName - application name
      * @param IRequest $request - request object
+     * @param IURLGenerator $urlGenerator - url generator service
      * @param IL10N $trans - l10n service
      * @param ILogger $logger - logger
      * @param OCA\Onlyoffice\AppConfig $config - application configuration
      */
     public function __construct($AppName,
                                     IRequest $request,
+                                    IURLGenerator $urlGenerator,
                                     IL10N $trans,
                                     ILogger $logger,
                                     AppConfig $config
                                     ) {
         parent::__construct($AppName, $request);
 
+        $this->urlGenerator = $urlGenerator;
         $this->trans = $trans;
         $this->logger = $logger;
         $this->config = $config;
@@ -90,7 +101,9 @@ class SettingsController extends Controller {
         $data = [
             "documentserver" => $this->config->GetDocumentServerUrl(),
             "documentserverInternal" => $this->config->GetDocumentServerInternalUrl(true),
-            "secret" => $this->config->GetDocumentServerSecret()
+            "storageUrl" => $this->config->GetStorageUrl(),
+            "secret" => $this->config->GetDocumentServerSecret(),
+            "currentServer" => $this->urlGenerator->getAbsoluteURL("/")
         ];
         return new TemplateResponse($this->appName, "settings", $data, "blank");
     }
@@ -103,9 +116,10 @@ class SettingsController extends Controller {
      *
      * @return array
      */
-    public function settings($documentserver, $documentserverInternal, $secret) {
+    public function settings($documentserver, $documentserverInternal, $storageUrl, $secret) {
         $this->config->SetDocumentServerUrl($documentserver);
         $this->config->SetDocumentServerInternalUrl($documentserverInternal);
+        $this->config->SetStorageUrl($storageUrl);
         $this->config->SetDocumentServerSecret($secret);
 
         $documentserver = $this->config->GetDocumentServerUrl();
@@ -116,6 +130,7 @@ class SettingsController extends Controller {
         return [
             "documentserver" => $this->config->GetDocumentServerUrl(),
             "documentserverInternal" => $this->config->GetDocumentServerInternalUrl(true),
+            "storageUrl" => $this->config->GetStorageUrl(),
             "secret" => $this->config->GetDocumentServerSecret(),
             "error" => $error
             ];
