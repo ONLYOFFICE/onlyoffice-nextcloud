@@ -1,5 +1,8 @@
 # Change Log
 
+## 1.0.3
+- compatible with ownCloud 10
+
 ## 1.0.2
 ### Added
 - logging

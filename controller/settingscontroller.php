@@ -145,6 +145,10 @@ class SettingsController extends Controller {
 
             $this->logger->debug("CommandRequest on check: " . json_encode($commandResponse), array("app" => $this->appName));
 
+            if (empty($commandResponse)) {
+                throw new \Exception($this->trans->t("Error occurred in the document service"));
+            }
+
             $version = floatval($commandResponse->version);
             if ($version < 4.2) {
                 throw new \Exception($this->trans->t("Not supported version"));
