@@ -138,7 +138,7 @@ class DocumentService {
 
         $document_revision_id = self::GenerateRevisionId($document_revision_id);
 
-        $documentServerUrl = $this->config->GetDocumentServerUrl();
+        $documentServerUrl = $this->config->GetDocumentServerInternalUrl(false);
 
         if (empty($documentServerUrl)) {
             throw new \Exception($this->trans->t("ONLYOFFICE app not configured. Please contact admin"));
@@ -266,7 +266,7 @@ class DocumentService {
      */
     function CommandRequest($method) {
 
-        $documentServerUrl = $this->config->GetDocumentServerUrl();
+        $documentServerUrl = $this->config->GetDocumentServerInternalUrl(false);
 
         if (empty($documentServerUrl)) {
             throw new \Exception($this->trans->t("ONLYOFFICE app not configured. Please contact admin"));

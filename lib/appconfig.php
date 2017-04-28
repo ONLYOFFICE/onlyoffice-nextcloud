@@ -170,10 +170,13 @@ class AppConfig {
      *
      * @return string
      */
-    public function GetDocumentServerInternalUrl() {
+    public function GetDocumentServerInternalUrl($origin) {
         $url = $this->config->getAppValue($this->appName, $this->_documentserverInternal, "");
         if (empty($url)) {
             $url = $this->predefDocumentServerInternalUrl;
+        }
+        if (!$origin && empty($url)) {
+            $url = $this->GetDocumentServerUrl();
         }
         return $url;
     }

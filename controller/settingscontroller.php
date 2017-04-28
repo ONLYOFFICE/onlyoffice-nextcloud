@@ -89,7 +89,7 @@ class SettingsController extends Controller {
     public function index() {
         $data = [
             "documentserver" => $this->config->GetDocumentServerUrl(),
-            "documentserverInternal" => $this->config->GetDocumentServerInternalUrl(),
+            "documentserverInternal" => $this->config->GetDocumentServerInternalUrl(true),
             "secret" => $this->config->GetDocumentServerSecret()
         ];
         return new TemplateResponse($this->appName, "settings", $data, "blank");
@@ -115,7 +115,8 @@ class SettingsController extends Controller {
 
         return [
             "documentserver" => $this->config->GetDocumentServerUrl(),
-            "documentserverInternal" => $this->config->GetDocumentServerInternalUrl(),
+            "documentserverInternal" => $this->config->GetDocumentServerInternalUrl(true),
+            "secret" => $this->config->GetDocumentServerSecret(),
             "error" => $error
             ];
     }

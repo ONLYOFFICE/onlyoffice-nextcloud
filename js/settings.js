@@ -54,7 +54,7 @@
                 $("#onlyofficeInternalUrl, #onlyofficeSecret").val("");
             }
 
-            var onlyofficeSecret = $("#onlyofficeSecret:visible").val();
+            var onlyofficeSecret = $("#onlyofficeSecret:visible").val() || "";
             var onlyofficeInternalUrl = ($("#onlyofficeInternalUrl:visible").val() || "").trim();
 
             $.ajax({
@@ -69,6 +69,7 @@
                     if (response && response.documentserver != null) {
                         $("#onlyofficeUrl").val(response.documentserver);
                         $("#onlyofficeInternalUrl").val(response.documentserverInternal);
+                        $("#onlyofficeSecret").val(response.secret);
 
                         var message =
                             response.error
