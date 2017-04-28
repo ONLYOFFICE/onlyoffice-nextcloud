@@ -33,6 +33,15 @@
             };
         }
 
+        var advToogle = function (toggle) {
+            $("#onlyofficeSecretPanel").toggleClass("onlyoffice-hide", toggle);
+            $("#onlyofficeSaveBreak").toggleClass("onlyoffice-hide", toggle || null);
+        };
+
+        $("#onlyofficeAdv").click(function () {
+            advToogle();
+        });
+
         $("#onlyofficeSave").click(function () {
             var onlyofficeUrl = $("#onlyofficeUrl").val().trim();
 
@@ -52,7 +61,7 @@
                     if (response && response.documentserver != null) {
                         $("#onlyofficeUrl").val(response.documentserver);
 
-                        $("#onlyofficeSecretPanel").toggleClass("onlyoffice-hide", !response.documentserver.length);
+                        advToogle(!response.documentserver.length);
 
                         var message =
                             response.error

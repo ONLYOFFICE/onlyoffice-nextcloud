@@ -27,6 +27,7 @@
     display: inline;
 }
 .onlyoffice-header {
+    display: inline-block;
     margin-top: 16px;
 }
 .section-onlyoffice input {
@@ -36,4 +37,9 @@
 }
 .onlyoffice-hide {
     display: none;
+}
+.onlyoffice-link-action {
+    border-bottom: 1px dotted;
+    cursor: pointer;
+    text-decoration: none;
 }
