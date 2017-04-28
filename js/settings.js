@@ -38,6 +38,11 @@
             $("#onlyofficeSaveBreak").toggleClass("onlyoffice-hide", toggle || null);
         };
 
+        if ($("#onlyofficeInternalUrl").val().length
+            || $("#onlyofficeSecret").val().length) {
+            advToogle(false);
+        }
+
         $("#onlyofficeAdv").click(function () {
             advToogle();
         });
@@ -46,22 +51,24 @@
             var onlyofficeUrl = $("#onlyofficeUrl").val().trim();
 
             if (!onlyofficeUrl.length) {
-                $("#onlyofficeSecret").val("");
+                $("#onlyofficeInternalUrl, #onlyofficeSecret").val("");
             }
-            var onlyofficeSecret = $("#onlyofficeSecret").val();
+
+            var onlyofficeSecret = $("#onlyofficeSecret:visible").val();
+            var onlyofficeInternalUrl = ($("#onlyofficeInternalUrl:visible").val() || "").trim();
 
             $.ajax({
                 method: "PUT",
                 url: OC.generateUrl("apps/onlyoffice/ajax/settings"),
                 data: {
                     documentserver: onlyofficeUrl,
+                    documentserverInternal: onlyofficeInternalUrl,
                     secret: onlyofficeSecret
                 },
                 success: function onSuccess(response) {
                     if (response && response.documentserver != null) {
                         $("#onlyofficeUrl").val(response.documentserver);
-
-                        advToogle(!response.documentserver.length);
+                        $("#onlyofficeInternalUrl").val(response.documentserverInternal);
 
                         var message =
                             response.error
@@ -76,7 +83,7 @@
             });
         });
 
-        $("#onlyofficeUrl, #onlyofficeSecret").keypress(function (e) {
+        $(".section-onlyoffice input").keypress(function (e) {
             var code = e.keyCode || e.which;
             if (code === 13) {
                 $("#onlyofficeSave").click();

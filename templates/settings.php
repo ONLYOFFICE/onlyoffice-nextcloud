@@ -37,11 +37,14 @@
     <input id="onlyofficeUrl" value="<?php p($_["documentserver"]) ?>" placeholder="https://<documentserver>" type="text">
 
     <a id="onlyofficeAdv" class="onlyoffice-link-action onlyoffice-header"><?php p($l->t("Advanced settings")) ?></a>
-    <div id="onlyofficeSecretPanel" class="<?php echo (empty($_["documentserver"]) ? "onlyoffice-hide" : "") ?>">
+    <div id="onlyofficeSecretPanel" class="onlyoffice-hide">
+        <p class="onlyoffice-header"><?php p($l->t("Document Editing Service Address for internal requests from the server")) ?></p>
+        <input id="onlyofficeInternalUrl" value="<?php p($_["documentserverInternal"]) ?>" placeholder="https://<documentserver>" type="text">
+
         <p class="onlyoffice-header"><?php p($l->t("Secret key (leave blank to disable)")) ?></p>
         <input id="onlyofficeSecret" value="<?php p($_["secret"]) ?>" placeholder="secret" type="text">
     </div>
-    <br id="onlyofficeSaveBreak" class="<?php echo (!empty($_["documentserver"]) ? "onlyoffice-hide" : "") ?>" />
+    <br id="onlyofficeSaveBreak" />
 
     <a id="onlyofficeSave" class="button onlyoffice-header"><?php p($l->t("Save")) ?></a>
 </div>

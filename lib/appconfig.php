@@ -44,6 +44,13 @@ class AppConfig {
     private $predefDocumentServerUrl = "";
 
     /**
+     * Definition url on server from ownCloud
+     *
+     * @var string
+     */
+    private $predefDocumentServerInternalUrl = "";
+
+    /**
      * Definition url on server
      *
      * @var string
@@ -78,6 +85,13 @@ class AppConfig {
      * @var string
      */
     private $_documentserver = "DocumentServerUrl";
+
+    /**
+     * The config key for the document server address from ownCloud
+     *
+     * @var string
+     */
+    private $_documentserverInternal = "DocumentServerInternalUrl";
 
     /**
      * The config key for the secret key in jwt
@@ -130,6 +144,36 @@ class AppConfig {
         $url = $this->config->getAppValue($this->appName, $this->_documentserver, "");
         if (empty($url)) {
             $url = $this->predefDocumentServerUrl;
+        }
+        return $url;
+    }
+
+    /**
+     * Save the document service address available from ownCloud to the application configuration
+     *
+     * @param string $documentServer - document service address
+     */
+    public function SetDocumentServerInternalUrl($documentServerInternal) {
+        $documentServerInternal = strtolower(rtrim(trim($documentServerInternal), "/"));
+        if (strlen($documentServerInternal) > 0 && !preg_match("/^https?:\/\//i", $documentServerInternal)) {
+            $documentServerInternal = "http://" . $documentServerInternal;
+        }
+
+        $this->logger->info("SetDocumentServerInternalUrl: " . $documentServerInternal, array("app" => $this->appName));
+
+        $this->config->setAppValue($this->appName, $this->_documentserverInternal, $documentServerInternal);
+        $this->DropSKey();
+    }
+
+    /**
+     * Get the document service address available from ownCloud from the application configuration
+     *
+     * @return string
+     */
+    public function GetDocumentServerInternalUrl() {
+        $url = $this->config->getAppValue($this->appName, $this->_documentserverInternal, "");
+        if (empty($url)) {
+            $url = $this->predefDocumentServerInternalUrl;
         }
         return $url;
     }
