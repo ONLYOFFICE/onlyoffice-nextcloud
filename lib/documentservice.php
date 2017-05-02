@@ -144,7 +144,7 @@ class DocumentService {
             throw new \Exception($this->trans->t("ONLYOFFICE app not configured. Please contact admin"));
         }
 
-        $urlToConverter = $documentServerUrl . "/ConvertService.ashx";
+        $urlToConverter = $documentServerUrl . "ConvertService.ashx";
 
         $data = json_encode(
             array(
@@ -272,7 +272,7 @@ class DocumentService {
             throw new \Exception($this->trans->t("ONLYOFFICE app not configured. Please contact admin"));
         }
 
-        $urlCommand = $documentServerUrl . "/coauthoring/CommandService.ashx";
+        $urlCommand = $documentServerUrl . "coauthoring/CommandService.ashx";
 
         $data = json_encode(
             array(

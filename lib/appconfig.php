@@ -138,9 +138,12 @@ class AppConfig {
      * @param string $documentServer - document service address
      */
     public function SetDocumentServerUrl($documentServer) {
-        $documentServer = strtolower(rtrim(trim($documentServer), "/"));
-        if (strlen($documentServer) > 0 && !preg_match("/^https?:\/\//i", $documentServer)) {
-            $documentServer = "http://" . $documentServer;
+        $documentServer = strtolower(trim($documentServer));
+        if (strlen($documentServer) > 0) {
+            $documentServer = rtrim($documentServer, "/") . "/";
+            if (!preg_match("/^https?:\/\//i", $documentServer)) {
+                $documentServer = "http://" . $documentServer;
+            }
         }
 
         $this->logger->info("SetDocumentServerUrl: " . $documentServer, array("app" => $this->appName));
@@ -169,8 +172,11 @@ class AppConfig {
      */
     public function SetDocumentServerInternalUrl($documentServerInternal) {
         $documentServerInternal = strtolower(rtrim(trim($documentServerInternal), "/"));
-        if (strlen($documentServerInternal) > 0 && !preg_match("/^https?:\/\//i", $documentServerInternal)) {
-            $documentServerInternal = "http://" . $documentServerInternal;
+        if (strlen($documentServerInternal) > 0) {
+            $documentServerInternal = $documentServerInternal . "/";
+            if (!preg_match("/^https?:\/\//i", $documentServerInternal)) {
+                $documentServerInternal = "http://" . $documentServerInternal;
+            }
         }
 
         $this->logger->info("SetDocumentServerInternalUrl: " . $documentServerInternal, array("app" => $this->appName));
