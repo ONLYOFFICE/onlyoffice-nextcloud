@@ -200,9 +200,12 @@ class AppConfig {
      * @param string $documentServer - document service address
      */
     public function SetStorageUrl($storageUrl) {
-        $storageUrl = strtolower(rtrim(trim($storageUrl), "/")) . "/";
-        if (strlen($storageUrl) > 0 && !preg_match("/^https?:\/\//i", $storageUrl)) {
-            $storageUrl = "http://" . $storageUrl;
+        $storageUrl = strtolower(rtrim(trim($storageUrl), "/"));
+        if (strlen($storageUrl) > 0) {
+            $storageUrl = $storageUrl . "/";
+            if (!preg_match("/^https?:\/\//i", $storageUrl)) {
+                $storageUrl = "http://" . $storageUrl;
+            }
         }
 
         $this->logger->info("SetStorageUrl: " . $storageUrl, array("app" => $this->appName));

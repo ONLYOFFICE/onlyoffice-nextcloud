@@ -259,6 +259,18 @@ class CallbackController extends Controller {
                     }
                 }
 
+                if (!empty($this->config->GetDocumentServerInternalUrl(true))) {
+                    $from = $this->config->GetDocumentServerUrl();
+
+                    if (!preg_match("/^https?:\/\//i", $from)) {
+                        $parsedUrl = parse_url($url);
+                        $from = $parsedUrl["scheme"] . "://" . $parsedUrl["host"] . (array_key_exists("port", $parsedUrl) ? (":" . $parsedUrl["port"]) : "");
+                    }
+
+                    $this->logger->debug("Replace in track from " . $from . " to " . $this->config->GetDocumentServerInternalUrl(true));
+                    $url = str_replace($from, $this->config->GetDocumentServerInternalUrl(true), $url);
+                }
+
                 if (($newData = file_get_contents($url))) {
 
                     $this->userSession->setUser($this->userManager->get($users[0]));
