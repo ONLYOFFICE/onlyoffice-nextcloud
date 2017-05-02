@@ -141,7 +141,7 @@ class AppConfig {
         $documentServer = strtolower(trim($documentServer));
         if (strlen($documentServer) > 0) {
             $documentServer = rtrim($documentServer, "/") . "/";
-            if (!preg_match("/^https?:\/\//i", $documentServer)) {
+            if (!preg_match("/(^https?:\/\/)|^\//i", $documentServer)) {
                 $documentServer = "http://" . $documentServer;
             }
         }

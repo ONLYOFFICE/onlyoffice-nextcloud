@@ -303,7 +303,7 @@ class EditorController extends Controller {
         $csp = new ContentSecurityPolicy();
         $csp->allowInlineScript(true);
 
-        if (isset($documentServerUrl) && !empty($documentServerUrl)) {
+        if (!preg_match("/^https?:\/\//i", ($documentServerUrl))) {
             $csp->addAllowedScriptDomain($documentServerUrl);
             $csp->addAllowedFrameDomain($documentServerUrl);
         }
