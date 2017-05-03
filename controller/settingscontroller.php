@@ -190,7 +190,7 @@ class SettingsController extends Controller {
                 $key = "check_" . rand();
 
                 $hashUrl = $this->crypt->GetHash(["action" => "empty"]);
-                $fileUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.empty", ["doc" => $hashUrl]);
+                $fileUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.emptyfile", ["doc" => $hashUrl]);
                 $fileUrl = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->config->GetStorageUrl(), $fileUrl);
 
                 $newFileUri;
