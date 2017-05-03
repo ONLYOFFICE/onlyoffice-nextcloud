@@ -149,7 +149,6 @@ class AppConfig {
         $this->logger->info("SetDocumentServerUrl: " . $documentServer, array("app" => $this->appName));
 
         $this->config->setAppValue($this->appName, $this->_documentserver, $documentServer);
-        $this->DropSKey();
     }
 
     /**
@@ -277,7 +276,7 @@ class AppConfig {
     /**
      * Regenerate the secret key
      */
-    private function DropSKey() {
+    public function DropSKey() {
         $this->config->setAppValue($this->appName, $this->_cryptSecret, "");
     }
 

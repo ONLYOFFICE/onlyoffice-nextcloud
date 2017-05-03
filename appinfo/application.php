@@ -102,7 +102,8 @@ class Application extends App {
                 $c->query("ServerContainer")->getURLGenerator(),
                 $c->query("L10N"),
                 $c->query("Logger"),
-                $this->appConfig
+                $this->appConfig,
+                $this->crypt
             );
         });
 

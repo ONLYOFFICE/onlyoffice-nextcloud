@@ -34,6 +34,7 @@ use OCP\IRequest;
 use OCP\IURLGenerator;
 
 use OCA\Onlyoffice\AppConfig;
+use OCA\Onlyoffice\Crypt;
 use OCA\Onlyoffice\DocumentService;
 
 /**
@@ -70,19 +71,28 @@ class SettingsController extends Controller {
     private $urlGenerator;
 
     /**
+     * Hash generator
+     *
+     * @var OCA\Onlyoffice\Crypt
+     */
+    private $crypt;
+
+    /**
      * @param string $AppName - application name
      * @param IRequest $request - request object
      * @param IURLGenerator $urlGenerator - url generator service
      * @param IL10N $trans - l10n service
      * @param ILogger $logger - logger
      * @param OCA\Onlyoffice\AppConfig $config - application configuration
+     * @param OCA\Onlyoffice\Crypt $crypt - hash generator
      */
     public function __construct($AppName,
                                     IRequest $request,
                                     IURLGenerator $urlGenerator,
                                     IL10N $trans,
                                     ILogger $logger,
-                                    AppConfig $config
+                                    AppConfig $config,
+                                    Crypt $crypt
                                     ) {
         parent::__construct($AppName, $request);
 
@@ -90,6 +100,7 @@ class SettingsController extends Controller {
         $this->trans = $trans;
         $this->logger = $logger;
         $this->config = $config;
+        $this->crypt = $crypt;
     }
 
     /**
@@ -126,6 +137,8 @@ class SettingsController extends Controller {
         if (!empty($documentserver)) {
             $error = $this->checkDocServiceUrl();
         }
+
+        $this->config->DropSKey();
 
         return [
             "documentserver" => $this->config->GetDocumentServerUrl(),
@@ -171,6 +184,18 @@ class SettingsController extends Controller {
             $version = floatval($commandResponse->version);
             if ($version < 4.2) {
                 throw new \Exception($this->trans->t("Not supported version"));
+            }
+
+            if (!empty($this->config->GetStorageUrl())) {
+                $key = "check_" . rand();
+
+                $hashUrl = $this->crypt->GetHash(["action" => "empty"]);
+                $fileUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.empty", ["doc" => $hashUrl]);
+                $fileUrl = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->config->GetStorageUrl(), $fileUrl);
+
+                $newFileUri;
+                $documentService->GetConvertedUri($fileUrl, "docx", "docx", $key, FALSE, $newFileUri);
+                $this->logger->debug("GetConvertedUri on check: " . $fileUrl . " return " . $newFileUri, array("app" => $this->appName));
             }
         } catch (\Exception $e) {
             $this->logger->error("CommandRequest on check error: " . $e->getMessage(), array("app" => $this->appName));
