@@ -93,13 +93,17 @@ class Application extends App {
             return $c->query("ServerContainer")->getLogger();
         });
 
+        $container->registerService("URLGenerator", function($c) {
+            return $c->query("ServerContainer")->getURLGenerator();
+        });
+
 
         // Controllers
         $container->registerService("SettingsController", function($c) {
             return new SettingsController(
                 $c->query("AppName"),
                 $c->query("Request"),
-                $c->query("ServerContainer")->getURLGenerator(),
+                $c->query("URLGenerator"),
                 $c->query("L10N"),
                 $c->query("Logger"),
                 $this->appConfig,
@@ -113,7 +117,7 @@ class Application extends App {
                 $c->query("Request"),
                 $c->query("RootStorage"),
                 $c->query("UserSession"),
-                $c->query("ServerContainer")->getURLGenerator(),
+                $c->query("URLGenerator"),
                 $c->query("L10N"),
                 $c->query("Logger"),
                 $this->appConfig,

@@ -204,7 +204,7 @@ class CallbackController extends Controller {
      * @PublicPage
      * @CORS
      */
-    public function empty($doc) {
+    public function emptyfile($doc) {
 
         list ($hashData, $error) = $this->crypt->ReadHash($doc);
         if ($hashData === NULL) {
