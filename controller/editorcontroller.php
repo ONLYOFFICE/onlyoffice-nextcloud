@@ -164,7 +164,14 @@ class EditorController extends Controller {
         $name = $userFolder->getNonExistingName($name);
         $filePath = $dir . DIRECTORY_SEPARATOR . $name;
         $ext = strtolower("." . pathinfo($filePath, PATHINFO_EXTENSION));
-        $templatePath = dirname(__DIR__) . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . "new" . $ext;
+
+        $lang = \OC::$server->getL10NFactory("")->get("")->getLanguageCode();
+
+        $templatePath = $this->getTemplatePath($lang, $ext);
+        if (!file_exists($templatePath)) {
+            $lang = "en";
+            $templatePath = $this->getTemplatePath($lang, $ext);
+        }
 
         $template = file_get_contents($templatePath);
         if (!$template) {
@@ -187,6 +194,10 @@ class EditorController extends Controller {
 
         $result = Helper::formatFileInfo($fileInfo);
         return $result;
+    }
+
+    private function getTemplatePath($lang, $ext) {
+        return dirname(__DIR__) . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . $lang . DIRECTORY_SEPARATOR . "new" . $ext;
     }
 
     /**
