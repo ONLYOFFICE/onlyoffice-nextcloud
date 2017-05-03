@@ -36,11 +36,18 @@
     <p class="onlyoffice-header"><?php p($l->t("Document Editing Service Address")) ?></p>
     <input id="onlyofficeUrl" value="<?php p($_["documentserver"]) ?>" placeholder="https://<documentserver>" type="text">
 
-    <div id="onlyofficeSecretPanel" class="<?php echo (empty($_["documentserver"]) ? "onlyoffice-hide" : "") ?>">
+    <a id="onlyofficeAdv" class="onlyoffice-link-action onlyoffice-header"><?php p($l->t("Advanced settings")) ?></a>
+    <div id="onlyofficeSecretPanel" class="onlyoffice-hide">
+        <p class="onlyoffice-header"><?php p($l->t("Document Editing Service Address for internal requests from the server")) ?></p>
+        <input id="onlyofficeInternalUrl" value="<?php p($_["documentserverInternal"]) ?>" placeholder="https://<documentserver>" type="text">
+
+        <p class="onlyoffice-header"><?php p($l->t("Server Address for internal requests from the Document Editing Service")) ?></p>
+        <input id="onlyofficeStorageUrl" value="<?php p($_["storageUrl"]) ?>" placeholder="<?php p($_["currentServer"]) ?>" type="text">
+
         <p class="onlyoffice-header"><?php p($l->t("Secret key (leave blank to disable)")) ?></p>
         <input id="onlyofficeSecret" value="<?php p($_["secret"]) ?>" placeholder="secret" type="text">
     </div>
+    <br id="onlyofficeSaveBreak" />
 
-    <br />
-    <a id="onlyofficeSave" class="button"><?php p($l->t("Save")) ?></a>
+    <a id="onlyofficeSave" class="button onlyoffice-header"><?php p($l->t("Save")) ?></a>
 </div>

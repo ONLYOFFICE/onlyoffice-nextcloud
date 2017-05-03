@@ -33,26 +33,47 @@
             };
         }
 
+        var advToogle = function (toggle) {
+            $("#onlyofficeSecretPanel").toggleClass("onlyoffice-hide", toggle);
+            $("#onlyofficeSaveBreak").toggleClass("onlyoffice-hide", toggle || null);
+        };
+
+        if ($("#onlyofficeInternalUrl").val().length
+            || $("#onlyofficeSecret").val().length
+            || $("#onlyofficeStorageUrl").val().length) {
+            advToogle(false);
+        }
+
+        $("#onlyofficeAdv").click(function () {
+            advToogle();
+        });
+
         $("#onlyofficeSave").click(function () {
             var onlyofficeUrl = $("#onlyofficeUrl").val().trim();
 
             if (!onlyofficeUrl.length) {
-                $("#onlyofficeSecret").val("");
+                $("#onlyofficeInternalUrl, #onlyofficeStorageUrl, #onlyofficeSecret").val("");
             }
-            var onlyofficeSecret = $("#onlyofficeSecret").val();
+
+            var onlyofficeInternalUrl = ($("#onlyofficeInternalUrl:visible").val() || "").trim();
+            var onlyofficeStorageUrl = ($("#onlyofficeStorageUrl:visible").val() || "").trim();
+            var onlyofficeSecret = $("#onlyofficeSecret:visible").val() || "";
 
             $.ajax({
                 method: "PUT",
                 url: OC.generateUrl("apps/onlyoffice/ajax/settings"),
                 data: {
                     documentserver: onlyofficeUrl,
+                    documentserverInternal: onlyofficeInternalUrl,
+                    storageUrl: onlyofficeStorageUrl,
                     secret: onlyofficeSecret
                 },
                 success: function onSuccess(response) {
                     if (response && response.documentserver != null) {
                         $("#onlyofficeUrl").val(response.documentserver);
-
-                        $("#onlyofficeSecretPanel").toggleClass("onlyoffice-hide", !response.documentserver.length);
+                        $("#onlyofficeInternalUrl").val(response.documentserverInternal);
+                        $("#onlyofficeStorageUrl").val(response.storageUrl);
+                        $("#onlyofficeSecret").val(response.secret);
 
                         var message =
                             response.error
@@ -67,7 +88,7 @@
             });
         });
 
-        $("#onlyofficeUrl, #onlyofficeSecret").keypress(function (e) {
+        $(".section-onlyoffice input").keypress(function (e) {
             var code = e.keyCode || e.which;
             if (code === 13) {
                 $("#onlyofficeSave").click();

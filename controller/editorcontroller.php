@@ -303,9 +303,11 @@ class EditorController extends Controller {
         $csp = new ContentSecurityPolicy();
         $csp->allowInlineScript(true);
 
-        if (isset($documentServerUrl) && !empty($documentServerUrl)) {
+        if (preg_match("/^https?:\/\//i", $documentServerUrl)) {
             $csp->addAllowedScriptDomain($documentServerUrl);
             $csp->addAllowedFrameDomain($documentServerUrl);
+        } else {
+            $csp->addAllowedFrameDomain($this->urlGenerator->getAbsoluteURL("/"));
         }
         $response->setContentSecurityPolicy($csp);
 
@@ -352,6 +354,10 @@ class EditorController extends Controller {
 
         $canEdit = isset($format["edit"]) && $format["edit"];
         $callback = ($file->isUpdateable() && $canEdit ? $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.track", ["doc" => $hashCallback]) : NULL);
+
+        if (!empty($this->config->GetStorageUrl())) {
+            $callback = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->config->GetStorageUrl(), $callback);
+        }
 
         $params = [
             "document" => [
@@ -457,6 +463,11 @@ class EditorController extends Controller {
         $hashUrl = $this->crypt->GetHash(["fileId" => $fileId, "ownerId" => $ownerId, "action" => "download"]);
 
         $fileUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.download", ["doc" => $hashUrl]);
+
+        if (!empty($this->config->GetStorageUrl())) {
+            $fileUrl = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->config->GetStorageUrl(), $fileUrl);
+        }
+
         return $fileUrl;
     }
 }

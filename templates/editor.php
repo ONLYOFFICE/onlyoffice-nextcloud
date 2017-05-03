@@ -35,7 +35,7 @@
     <?php if (!empty($_["documentServerUrl"])) {
         print_unescaped("<script src=\"") .
         p($_["documentServerUrl"]) .
-        print_unescaped("/web-apps/apps/api/documents/api.js\" type=\"text/javascript\"></script>");
+        print_unescaped("web-apps/apps/api/documents/api.js\" type=\"text/javascript\"></script>");
     } ?>
 
     <script type="text/javascript" nonce="<?php p(base64_encode($_["requesttoken"])) ?>">
