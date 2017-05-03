@@ -306,6 +306,8 @@ class EditorController extends Controller {
         if (!preg_match("/^https?:\/\//i", ($documentServerUrl))) {
             $csp->addAllowedScriptDomain($documentServerUrl);
             $csp->addAllowedFrameDomain($documentServerUrl);
+        } else {
+            $csp->addAllowedFrameDomain($this->urlGenerator->getAbsoluteURL("/"));
         }
         $response->setContentSecurityPolicy($csp);
 
