@@ -49,6 +49,7 @@
         });
 
         $("#onlyofficeSave").click(function () {
+            $(".section-onlyoffice").addClass("icon-loading");
             var onlyofficeUrl = $("#onlyofficeUrl").val().trim();
 
             if (!onlyofficeUrl.length) {
@@ -69,6 +70,7 @@
                     secret: onlyofficeSecret
                 },
                 success: function onSuccess(response) {
+                    $(".section-onlyoffice").removeClass("icon-loading");
                     if (response && response.documentserver != null) {
                         $("#onlyofficeUrl").val(response.documentserver);
                         $("#onlyofficeInternalUrl").val(response.documentserverInternal);
