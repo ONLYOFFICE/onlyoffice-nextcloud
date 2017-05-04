@@ -33,15 +33,14 @@
             };
         }
 
-        var advToogle = function (toggle) {
-            $("#onlyofficeSecretPanel").toggleClass("onlyoffice-hide", toggle);
-            $("#onlyofficeSaveBreak").toggleClass("onlyoffice-hide", toggle || null);
+        var advToogle = function () {
+            $("#onlyofficeSecretPanel, #onlyofficeSaveBreak").toggleClass("onlyoffice-hide");
         };
 
         if ($("#onlyofficeInternalUrl").val().length
             || $("#onlyofficeSecret").val().length
             || $("#onlyofficeStorageUrl").val().length) {
-            advToogle(false);
+            advToogle();
         }
 
         $("#onlyofficeAdv").click(function () {
@@ -60,6 +59,11 @@
             var onlyofficeStorageUrl = ($("#onlyofficeStorageUrl:visible").val() || "").trim();
             var onlyofficeSecret = $("#onlyofficeSecret:visible").val() || "";
 
+            var defFormats = {};
+            $("input[id^=\"onlyofficeDefFormat\"]").each(function() {
+                defFormats[this.name] = this.checked;
+            });
+
             $.ajax({
                 method: "PUT",
                 url: OC.generateUrl("apps/onlyoffice/ajax/settings"),
@@ -67,7 +71,8 @@
                     documentserver: onlyofficeUrl,
                     documentserverInternal: onlyofficeInternalUrl,
                     storageUrl: onlyofficeStorageUrl,
-                    secret: onlyofficeSecret
+                    secret: onlyofficeSecret,
+                    defFormats: defFormats
                 },
                 success: function onSuccess(response) {
                     $(".section-onlyoffice").removeClass("icon-loading");

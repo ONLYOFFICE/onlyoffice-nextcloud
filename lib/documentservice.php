@@ -185,7 +185,7 @@ class DocumentService {
         while ($countTry < $ServiceConverterMaxTry) {
             $countTry = $countTry + 1;
             $response_xml_data = file_get_contents($urlToConverter, FALSE, $context);
-            if ($response_xml_data !== false){ break; }
+            if ($response_xml_data !== false) { break; }
         }
 
         if ($countTry === $ServiceConverterMaxTry) {
@@ -302,7 +302,7 @@ class DocumentService {
 
         $context  = stream_context_create($opts);
 
-        if (($response = file_get_contents($urlCommand, FALSE, $context)) === FALSE){
+        if (($response = file_get_contents($urlCommand, FALSE, $context)) === FALSE) {
             throw new \Exception ($this->trans->t("Bad Request or timeout error"));
         }
 

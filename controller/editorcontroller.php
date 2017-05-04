@@ -264,7 +264,7 @@ class EditorController extends Controller {
 
         $newFilePath = $newFolderPath . DIRECTORY_SEPARATOR . $newFileName;
 
-        if (($newData = file_get_contents($newFileUri)) === FALSE){
+        if (($newData = file_get_contents($newFileUri)) === FALSE) {
             $this->logger->error("Failed download converted file: " . $newFileUri, array("app" => $this->appName));
             return ["error" => $this->trans->t("Failed download converted file")];
         }

@@ -109,12 +109,21 @@ class SettingsController extends Controller {
      * @return TemplateResponse
      */
     public function index() {
+        $formats = $this->formats();
+        $defFormats = array();
+        foreach ($formats as $format => $setting) {
+            if (array_key_exists("edit", $setting) && $setting["edit"]) {
+                $defFormats[$format] = array_key_exists("def", $setting) && $setting["def"];
+            }
+        }
+
         $data = [
             "documentserver" => $this->config->GetDocumentServerUrl(),
             "documentserverInternal" => $this->config->GetDocumentServerInternalUrl(true),
             "storageUrl" => $this->config->GetStorageUrl(),
             "secret" => $this->config->GetDocumentServerSecret(),
-            "currentServer" => $this->urlGenerator->getAbsoluteURL("/")
+            "currentServer" => $this->urlGenerator->getAbsoluteURL("/"),
+            "defFormats" => $defFormats
         ];
         return new TemplateResponse($this->appName, "settings", $data, "blank");
     }
@@ -123,11 +132,14 @@ class SettingsController extends Controller {
      * Save the document server address
      *
      * @param string $documentserver - document service address
+     * @param string $documentserverInternal - document service address available from ownCloud
+     * @param string $storageUrl - ownCloud address available from document server
      * @param string $secret - secret key for signature
+     * @param string $defFormats - formats array with default action
      *
      * @return array
      */
-    public function settings($documentserver, $documentserverInternal, $storageUrl, $secret) {
+    public function settings($documentserver, $documentserverInternal, $storageUrl, $secret, $defFormats) {
         $this->config->SetDocumentServerUrl($documentserver);
         $this->config->SetDocumentServerInternalUrl($documentserverInternal);
         $this->config->SetStorageUrl($storageUrl);
@@ -139,6 +151,8 @@ class SettingsController extends Controller {
         }
 
         $this->config->DropSKey();
+
+        $this->config->SetDefaultFormats($defFormats);
 
         return [
             "documentserver" => $this->config->GetDocumentServerUrl(),
@@ -156,8 +170,17 @@ class SettingsController extends Controller {
      *
      * @NoAdminRequired
      */
-    public function formats(){
-        return $this->config->formats;
+    public function formats() {
+        $defFormats = $this->config->GetDefaultFormats();
+
+        $result = $this->config->formats;
+        foreach ($result as $format => $setting) {
+            if (array_key_exists("edit", $setting) && $setting["edit"]
+                && array_key_exists($format, $defFormats)) {
+                $result[$format]["def"] = ($defFormats[$format] === true || $defFormats[$format] === "true");
+            }
+        }
+        return $result;
     }
 
 

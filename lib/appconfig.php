@@ -122,6 +122,13 @@ class AppConfig {
     private $_cryptSecret = "skey";
 
     /**
+     * The config key for the default formats
+     *
+     * @var string
+     */
+    private $_defFormats = "defFormats";
+
+    /**
      * @param string $AppName - application name
      */
     public function __construct($AppName) {
@@ -200,7 +207,7 @@ class AppConfig {
     }
 
     /**
-     * Save the document service address available from ownCloud to the application configuration
+     * Save the ownCloud address available from document server to the application configuration
      *
      * @param string $documentServer - document service address
      */
@@ -219,7 +226,7 @@ class AppConfig {
     }
 
     /**
-     * Get the document service address available from ownCloud from the application configuration
+     * Get the ownCloud address available from document server from the application configuration
      *
      * @return string
      */
@@ -278,6 +285,31 @@ class AppConfig {
      */
     public function DropSKey() {
         $this->config->setAppValue($this->appName, $this->_cryptSecret, "");
+    }
+
+    /**
+     * Save the formats array with default action
+     *
+     * @param array $formats - formats with status
+     */
+    public function SetDefaultFormats($formats) {
+        $value = json_encode($formats);
+        $this->logger->info("Set default formats: " . $value, array("app" => $this->appName));
+
+        $this->config->setAppValue($this->appName, $this->_defFormats, $value);
+    }
+
+    /**
+     * Get the formats array with default action
+     *
+     * @return array
+     */
+    public function GetDefaultFormats() {
+        $value = $this->config->getAppValue($this->appName, $this->_defFormats, "");
+        if (empty($value)) {
+            return array();
+        }
+        return json_decode($value, true);
     }
 
 
