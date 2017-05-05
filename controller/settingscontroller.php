@@ -123,7 +123,8 @@ class SettingsController extends Controller {
             "storageUrl" => $this->config->GetStorageUrl(),
             "secret" => $this->config->GetDocumentServerSecret(),
             "currentServer" => $this->urlGenerator->getAbsoluteURL("/"),
-            "defFormats" => $defFormats
+            "defFormats" => $defFormats,
+            "sameTab" => $this->config->GetSameTab()
         ];
         return new TemplateResponse($this->appName, "settings", $data, "blank");
     }
@@ -139,7 +140,13 @@ class SettingsController extends Controller {
      *
      * @return array
      */
-    public function SaveSettings($documentserver, $documentserverInternal, $storageUrl, $secret, $defFormats) {
+    public function SaveSettings($documentserver,
+                                    $documentserverInternal,
+                                    $storageUrl,
+                                    $secret,
+                                    $defFormats,
+                                    $sameTab
+                                    ) {
         $this->config->SetDocumentServerUrl($documentserver);
         $this->config->SetDocumentServerInternalUrl($documentserverInternal);
         $this->config->SetStorageUrl($storageUrl);
@@ -153,6 +160,7 @@ class SettingsController extends Controller {
         $this->config->DropSKey();
 
         $this->config->SetDefaultFormats($defFormats);
+        $this->config->SetSameTab($sameTab);
 
         return [
             "documentserver" => $this->config->GetDocumentServerUrl(),
@@ -172,7 +180,8 @@ class SettingsController extends Controller {
      */
     public function GetSettings() {
         $result = [
-            "formats" => $this->formats()
+            "formats" => $this->formats(),
+            "sameTab" => $this->config->GetSameTab()
         ];
         return $result;
     }

@@ -64,6 +64,8 @@
                 defFormats[this.name] = this.checked;
             });
 
+            var sameTab = $("#onlyofficeSameTab").is(":checked");
+
             $.ajax({
                 method: "PUT",
                 url: OC.generateUrl("apps/onlyoffice/ajax/settings"),
@@ -72,7 +74,8 @@
                     documentserverInternal: onlyofficeInternalUrl,
                     storageUrl: onlyofficeStorageUrl,
                     secret: onlyofficeSecret,
-                    defFormats: defFormats
+                    defFormats: defFormats,
+                    sameTab: sameTab
                 },
                 success: function onSuccess(response) {
                     $(".section-onlyoffice").removeClass("icon-loading");

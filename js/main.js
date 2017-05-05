@@ -32,13 +32,17 @@
         };
     }
 
+    OCA.Onlyoffice.setting = {};
+
     OCA.Onlyoffice.CreateFile = function (name, fileList) {
         var dir = fileList.getCurrentDirectory();
 
-        var winEditor = window.open("");
-        if (winEditor) {
-            winEditor.document.write(t(OCA.Onlyoffice.AppName, "Loading, please wait."));
-            winEditor.document.close();
+        if (!OCA.Onlyoffice.setting.sameTab) {
+            var winEditor = window.open("");
+            if (winEditor) {
+                winEditor.document.write(t(OCA.Onlyoffice.AppName, "Loading, please wait."));
+                winEditor.document.close();
+            }
         }
 
         $.post(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/new"),
@@ -48,7 +52,9 @@
             },
             function onSuccess(response) {
                 if (response.error) {
-                    winEditor.close();
+                    if (winEditor) {
+                        winEditor.close();
+                    }
                     var row = OC.Notification.show(response.error);
                     setTimeout(function () {
                         OC.Notification.hide(row);
@@ -75,8 +81,10 @@
 
         if (winEditor && winEditor.location) {
             winEditor.location.href = url;
-        } else {
+        } else if (!OCA.Onlyoffice.setting.sameTab) {
             winEditor = window.open(url, "_blank");
+        } else {
+            location.href = url;
         }
     };
 
@@ -128,7 +136,8 @@
 
             $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/settings"),
                 function onSuccess(settings) {
-                    var mimes = settings.formats;
+                    OCA.Onlyoffice.setting = settings;
+                    var mimes = OCA.Onlyoffice.setting.formats;
 
                     OCA.Onlyoffice.mimes = mimes;
                     $.each(mimes, function (ext, attr) {

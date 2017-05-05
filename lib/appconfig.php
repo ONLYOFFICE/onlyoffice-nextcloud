@@ -129,6 +129,13 @@ class AppConfig {
     private $_defFormats = "defFormats";
 
     /**
+     * The config key for the setting same tab
+     *
+     * @var string
+     */
+    private $_sameTab = "sameTab";
+
+    /**
      * @param string $AppName - application name
      */
     public function __construct($AppName) {
@@ -310,6 +317,26 @@ class AppConfig {
             return array();
         }
         return json_decode($value, true);
+    }
+
+    /**
+     * Save the opening setting in a same tab
+     *
+     * @param boolean $value - same tab
+     */
+    public function SetSameTab($value) {
+        $this->logger->info("Set opening in a same tab: " . $value, array("app" => $this->appName));
+
+        $this->config->setAppValue($this->appName, $this->_sameTab, $value);
+    }
+
+    /**
+     * Get the opening setting in a same tab
+     *
+     * @return boolean
+     */
+    public function GetSameTab() {
+        return $this->config->getAppValue($this->appName, $this->_sameTab, "false") === "true";
     }
 
 

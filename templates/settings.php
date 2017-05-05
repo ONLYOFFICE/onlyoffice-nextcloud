@@ -49,6 +49,13 @@
     </div>
     <br id="onlyofficeSaveBreak" />
 
+    <p class="onlyoffice-header">
+        <input type="checkbox" class="checkbox" id="onlyofficeSameTab"
+            <?php if ($_["sameTab"]) { ?>checked="checked"<?php } ?> />
+        <label for="onlyofficeSameTab"><?php p($l->t("Open file in the same tab")) ?></label>
+    </p>
+    <br />
+
     <h3 class="onlyoffice-header"><?php p($l->t("The default application for opening the format")) ?></h3>
     <?php foreach ($_["defFormats"] as $format => $setting) { ?>
     <p>
