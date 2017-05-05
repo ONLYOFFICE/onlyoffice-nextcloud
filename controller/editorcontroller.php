@@ -352,8 +352,10 @@ class EditorController extends Controller {
 
         $userId = $this->userSession->getUser()->getUID();
         $ownerId = $file->getOwner()->getUID();
+        $folderPath = NULL;
         try {
-            $this->root->getUserFolder($ownerId);
+            $userFolder = $this->root->getUserFolder($ownerId);
+            $folderPath = $userFolder->getRelativePath($file->getParent()->getPath());
         } catch (NoUserException $e) {
             $ownerId = $userId;
         }
@@ -388,6 +390,19 @@ class EditorController extends Controller {
                 ]
             ]
         ];
+
+        if (!empty($folderPath)) {
+            $args = [
+                "dir" => $folderPath,
+                "scrollto" => $file->getName()
+            ];
+
+            $params["editorConfig"]["customization"] = [
+                    "goback" => [
+                        "url" =>  $this->urlGenerator->linkToRouteAbsolute("files.view.index", $args)
+                    ]
+                ];
+        }
 
         if (!empty($this->config->GetDocumentServerSecret())) {
             $token = \Firebase\JWT\JWT::encode($params, $this->config->GetDocumentServerSecret());
