@@ -129,7 +129,7 @@ class SettingsController extends Controller {
     }
 
     /**
-     * Save the document server address
+     * Save app settings
      *
      * @param string $documentserver - document service address
      * @param string $documentserverInternal - document service address available from ownCloud
@@ -139,7 +139,7 @@ class SettingsController extends Controller {
      *
      * @return array
      */
-    public function settings($documentserver, $documentserverInternal, $storageUrl, $secret, $defFormats) {
+    public function SaveSettings($documentserver, $documentserverInternal, $storageUrl, $secret, $defFormats) {
         $this->config->SetDocumentServerUrl($documentserver);
         $this->config->SetDocumentServerInternalUrl($documentserverInternal);
         $this->config->SetStorageUrl($storageUrl);
@@ -164,13 +164,27 @@ class SettingsController extends Controller {
     }
 
     /**
+     * Get app settings
+     *
+     * @return array
+     *
+     * @NoAdminRequired
+     */
+    public function GetSettings() {
+        $result = [
+            "formats" => $this->formats()
+        ];
+        return $result;
+    }
+
+    /**
      * Get supported formats
      *
      * @return array
      *
      * @NoAdminRequired
      */
-    public function formats() {
+    private function formats() {
         $defFormats = $this->config->GetDefaultFormats();
 
         $result = $this->config->formats;
@@ -180,6 +194,7 @@ class SettingsController extends Controller {
                 $result[$format]["def"] = ($defFormats[$format] === true || $defFormats[$format] === "true");
             }
         }
+
         return $result;
     }
 

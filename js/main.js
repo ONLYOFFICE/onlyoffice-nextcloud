@@ -127,7 +127,8 @@
             }
 
             $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/settings"),
-                function onSuccess(mimes) {
+                function onSuccess(settings) {
+                    var mimes = settings.formats;
 
                     OCA.Onlyoffice.mimes = mimes;
                     $.each(mimes, function (ext, attr) {
