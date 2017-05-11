@@ -1,5 +1,15 @@
 # Change Log
 
+## 1.0.4
+### Added
+- advanced server settings for specifying internal addresses
+- opening file editor in a same tab
+
+### Changed
+- setting default aplication for editable formats
+- new file on user language
+- compatible with Nextcloud 12
+
 ## 1.0.3
 - compatible with ownCloud 10
 
