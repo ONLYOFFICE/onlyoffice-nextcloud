@@ -31,8 +31,10 @@ use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IL10N;
 use OCP\ILogger;
 use OCP\IRequest;
+use OCP\IURLGenerator;
 
 use OCA\Onlyoffice\AppConfig;
+use OCA\Onlyoffice\Crypt;
 use OCA\Onlyoffice\DocumentService;
 
 /**
@@ -62,23 +64,43 @@ class SettingsController extends Controller {
     private $config;
 
     /**
+     * Url generator service
+     *
+     * @var IURLGenerator
+     */
+    private $urlGenerator;
+
+    /**
+     * Hash generator
+     *
+     * @var OCA\Onlyoffice\Crypt
+     */
+    private $crypt;
+
+    /**
      * @param string $AppName - application name
      * @param IRequest $request - request object
+     * @param IURLGenerator $urlGenerator - url generator service
      * @param IL10N $trans - l10n service
      * @param ILogger $logger - logger
      * @param OCA\Onlyoffice\AppConfig $config - application configuration
+     * @param OCA\Onlyoffice\Crypt $crypt - hash generator
      */
     public function __construct($AppName,
                                     IRequest $request,
+                                    IURLGenerator $urlGenerator,
                                     IL10N $trans,
                                     ILogger $logger,
-                                    AppConfig $config
+                                    AppConfig $config,
+                                    Crypt $crypt
                                     ) {
         parent::__construct($AppName, $request);
 
+        $this->urlGenerator = $urlGenerator;
         $this->trans = $trans;
         $this->logger = $logger;
         $this->config = $config;
+        $this->crypt = $crypt;
     }
 
     /**
@@ -87,23 +109,47 @@ class SettingsController extends Controller {
      * @return TemplateResponse
      */
     public function index() {
+        $formats = $this->formats();
+        $defFormats = array();
+        foreach ($formats as $format => $setting) {
+            if (array_key_exists("edit", $setting) && $setting["edit"]) {
+                $defFormats[$format] = array_key_exists("def", $setting) && $setting["def"];
+            }
+        }
+
         $data = [
             "documentserver" => $this->config->GetDocumentServerUrl(),
-            "secret" => $this->config->GetDocumentServerSecret()
+            "documentserverInternal" => $this->config->GetDocumentServerInternalUrl(true),
+            "storageUrl" => $this->config->GetStorageUrl(),
+            "secret" => $this->config->GetDocumentServerSecret(),
+            "currentServer" => $this->urlGenerator->getAbsoluteURL("/"),
+            "defFormats" => $defFormats,
+            "sameTab" => $this->config->GetSameTab()
         ];
         return new TemplateResponse($this->appName, "settings", $data, "blank");
     }
 
     /**
-     * Save the document server address
+     * Save app settings
      *
      * @param string $documentserver - document service address
+     * @param string $documentserverInternal - document service address available from ownCloud
+     * @param string $storageUrl - ownCloud address available from document server
      * @param string $secret - secret key for signature
+     * @param string $defFormats - formats array with default action
      *
      * @return array
      */
-    public function settings($documentserver, $secret) {
+    public function SaveSettings($documentserver,
+                                    $documentserverInternal,
+                                    $storageUrl,
+                                    $secret,
+                                    $defFormats,
+                                    $sameTab
+                                    ) {
         $this->config->SetDocumentServerUrl($documentserver);
+        $this->config->SetDocumentServerInternalUrl($documentserverInternal);
+        $this->config->SetStorageUrl($storageUrl);
         $this->config->SetDocumentServerSecret($secret);
 
         $documentserver = $this->config->GetDocumentServerUrl();
@@ -111,10 +157,33 @@ class SettingsController extends Controller {
             $error = $this->checkDocServiceUrl();
         }
 
+        $this->config->DropSKey();
+
+        $this->config->SetDefaultFormats($defFormats);
+        $this->config->SetSameTab($sameTab);
+
         return [
             "documentserver" => $this->config->GetDocumentServerUrl(),
+            "documentserverInternal" => $this->config->GetDocumentServerInternalUrl(true),
+            "storageUrl" => $this->config->GetStorageUrl(),
+            "secret" => $this->config->GetDocumentServerSecret(),
             "error" => $error
             ];
+    }
+
+    /**
+     * Get app settings
+     *
+     * @return array
+     *
+     * @NoAdminRequired
+     */
+    public function GetSettings() {
+        $result = [
+            "formats" => $this->formats(),
+            "sameTab" => $this->config->GetSameTab()
+        ];
+        return $result;
     }
 
     /**
@@ -124,8 +193,18 @@ class SettingsController extends Controller {
      *
      * @NoAdminRequired
      */
-    public function formats(){
-        return $this->config->formats;
+    private function formats() {
+        $defFormats = $this->config->GetDefaultFormats();
+
+        $result = $this->config->formats;
+        foreach ($result as $format => $setting) {
+            if (array_key_exists("edit", $setting) && $setting["edit"]
+                && array_key_exists($format, $defFormats)) {
+                $result[$format]["def"] = ($defFormats[$format] === true || $defFormats[$format] === "true");
+            }
+        }
+
+        return $result;
     }
 
 
@@ -152,6 +231,18 @@ class SettingsController extends Controller {
             $version = floatval($commandResponse->version);
             if ($version < 4.2) {
                 throw new \Exception($this->trans->t("Not supported version"));
+            }
+
+            if (!empty($this->config->GetStorageUrl())) {
+                $key = "check_" . rand();
+
+                $hashUrl = $this->crypt->GetHash(["action" => "empty"]);
+                $fileUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.emptyfile", ["doc" => $hashUrl]);
+                $fileUrl = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->config->GetStorageUrl(), $fileUrl);
+
+                $newFileUri;
+                $documentService->GetConvertedUri($fileUrl, "docx", "docx", $key, FALSE, $newFileUri);
+                $this->logger->debug("GetConvertedUri on check: " . $fileUrl . " return " . $newFileUri, array("app" => $this->appName));
             }
         } catch (\Exception $e) {
             $this->logger->error("CommandRequest on check error: " . $e->getMessage(), array("app" => $this->appName));

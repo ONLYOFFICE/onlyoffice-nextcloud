@@ -138,13 +138,13 @@ class DocumentService {
 
         $document_revision_id = self::GenerateRevisionId($document_revision_id);
 
-        $documentServerUrl = $this->config->GetDocumentServerUrl();
+        $documentServerUrl = $this->config->GetDocumentServerInternalUrl(false);
 
         if (empty($documentServerUrl)) {
             throw new \Exception($this->trans->t("ONLYOFFICE app not configured. Please contact admin"));
         }
 
-        $urlToConverter = $documentServerUrl . "/ConvertService.ashx";
+        $urlToConverter = $documentServerUrl . "ConvertService.ashx";
 
         $data = json_encode(
             array(
@@ -185,7 +185,7 @@ class DocumentService {
         while ($countTry < $ServiceConverterMaxTry) {
             $countTry = $countTry + 1;
             $response_xml_data = file_get_contents($urlToConverter, FALSE, $context);
-            if ($response_xml_data !== false){ break; }
+            if ($response_xml_data !== false) { break; }
         }
 
         if ($countTry === $ServiceConverterMaxTry) {
@@ -266,13 +266,13 @@ class DocumentService {
      */
     function CommandRequest($method) {
 
-        $documentServerUrl = $this->config->GetDocumentServerUrl();
+        $documentServerUrl = $this->config->GetDocumentServerInternalUrl(false);
 
         if (empty($documentServerUrl)) {
             throw new \Exception($this->trans->t("ONLYOFFICE app not configured. Please contact admin"));
         }
 
-        $urlCommand = $documentServerUrl . "/coauthoring/CommandService.ashx";
+        $urlCommand = $documentServerUrl . "coauthoring/CommandService.ashx";
 
         $data = json_encode(
             array(
@@ -302,7 +302,7 @@ class DocumentService {
 
         $context  = stream_context_create($opts);
 
-        if (($response = file_get_contents($urlCommand, FALSE, $context)) === FALSE){
+        if (($response = file_get_contents($urlCommand, FALSE, $context)) === FALSE) {
             throw new \Exception ($this->trans->t("Bad Request or timeout error"));
         }
 

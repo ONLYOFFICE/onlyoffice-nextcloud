@@ -33,26 +33,57 @@
             };
         }
 
+        var advToogle = function () {
+            $("#onlyofficeSecretPanel, #onlyofficeSaveBreak").toggleClass("onlyoffice-hide");
+        };
+
+        if ($("#onlyofficeInternalUrl").val().length
+            || $("#onlyofficeSecret").val().length
+            || $("#onlyofficeStorageUrl").val().length) {
+            advToogle();
+        }
+
+        $("#onlyofficeAdv").click(function () {
+            advToogle();
+        });
+
         $("#onlyofficeSave").click(function () {
+            $(".section-onlyoffice").addClass("icon-loading");
             var onlyofficeUrl = $("#onlyofficeUrl").val().trim();
 
             if (!onlyofficeUrl.length) {
-                $("#onlyofficeSecret").val("");
+                $("#onlyofficeInternalUrl, #onlyofficeStorageUrl, #onlyofficeSecret").val("");
             }
-            var onlyofficeSecret = $("#onlyofficeSecret").val();
+
+            var onlyofficeInternalUrl = ($("#onlyofficeInternalUrl:visible").val() || "").trim();
+            var onlyofficeStorageUrl = ($("#onlyofficeStorageUrl:visible").val() || "").trim();
+            var onlyofficeSecret = $("#onlyofficeSecret:visible").val() || "";
+
+            var defFormats = {};
+            $("input[id^=\"onlyofficeDefFormat\"]").each(function() {
+                defFormats[this.name] = this.checked;
+            });
+
+            var sameTab = $("#onlyofficeSameTab").is(":checked");
 
             $.ajax({
                 method: "PUT",
                 url: OC.generateUrl("apps/onlyoffice/ajax/settings"),
                 data: {
                     documentserver: onlyofficeUrl,
-                    secret: onlyofficeSecret
+                    documentserverInternal: onlyofficeInternalUrl,
+                    storageUrl: onlyofficeStorageUrl,
+                    secret: onlyofficeSecret,
+                    defFormats: defFormats,
+                    sameTab: sameTab
                 },
                 success: function onSuccess(response) {
+                    $(".section-onlyoffice").removeClass("icon-loading");
                     if (response && response.documentserver != null) {
                         $("#onlyofficeUrl").val(response.documentserver);
-
-                        $("#onlyofficeSecretPanel").toggleClass("onlyoffice-hide", !response.documentserver.length);
+                        $("#onlyofficeInternalUrl").val(response.documentserverInternal);
+                        $("#onlyofficeStorageUrl").val(response.storageUrl);
+                        $("#onlyofficeSecret").val(response.secret);
 
                         var message =
                             response.error
@@ -67,7 +98,7 @@
             });
         });
 
-        $("#onlyofficeUrl, #onlyofficeSecret").keypress(function (e) {
+        $(".section-onlyoffice input").keypress(function (e) {
             var code = e.keyCode || e.which;
             if (code === 13) {
                 $("#onlyofficeSave").click();

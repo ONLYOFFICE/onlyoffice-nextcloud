@@ -193,6 +193,47 @@ class CallbackController extends Controller {
     }
 
     /**
+     * Downloading empty file by the document service
+     *
+     * @param string $doc - verification token with the file identifier
+     *
+     * @return OCA\Onlyoffice\DownloadResponse
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     * @PublicPage
+     * @CORS
+     */
+    public function emptyfile($doc) {
+
+        list ($hashData, $error) = $this->crypt->ReadHash($doc);
+        if ($hashData === NULL) {
+            $this->logger->info("Download empty with empty or not correct hash: " . $error, array("app" => $this->appName));
+            return new JSONResponse(["message" => $this->trans->t("Access deny")], Http::STATUS_FORBIDDEN);
+        }
+        if ($hashData->action !== "empty") {
+            $this->logger->info("Download empty with other action", array("app" => $this->appName));
+            return new JSONResponse(["message" => $this->trans->t("Invalid request")], Http::STATUS_BAD_REQUEST);
+        }
+
+        $templatePath = dirname(__DIR__) . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . "en" . DIRECTORY_SEPARATOR . "new.docx";
+
+        $template = file_get_contents($templatePath);
+        if (!$template) {
+            $this->logger->info("Template for download empty not found: " . $templatePath, array("app" => $this->appName));
+            return new JSONResponse(["message" => $this->trans->t("File not found")], Http::STATUS_NOT_FOUND);
+        }
+
+        try {
+            return new DataDownloadResponse($template, "new.docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+        } catch(\OCP\Files\NotPermittedException  $e) {
+            $this->logger->info("Download Not permitted: " . $fileId . " " . $e->getMessage(), array("app" => $this->appName));
+            return new JSONResponse(["message" => $this->trans->t("Not permitted")], Http::STATUS_FORBIDDEN);
+        }
+        return new JSONResponse(["message" => $this->trans->t("Download failed")], Http::STATUS_INTERNAL_SERVER_ERROR);
+    }
+
+    /**
      * Handle request from the document server with the document status information
      *
      * @param string $doc - verification token with the file identifier
@@ -257,6 +298,18 @@ class CallbackController extends Controller {
                         $this->logger->error("GetConvertedUri in track: " . $url . " " . $e->getMessage(), array("app" => $this->appName));
                         return new JSONResponse(["message" => $e->getMessage()], Http::STATUS_INTERNAL_SERVER_ERROR);
                     }
+                }
+
+                if (!empty($this->config->GetDocumentServerInternalUrl(true))) {
+                    $from = $this->config->GetDocumentServerUrl();
+
+                    if (!preg_match("/^https?:\/\//i", $from)) {
+                        $parsedUrl = parse_url($url);
+                        $from = $parsedUrl["scheme"] . "://" . $parsedUrl["host"] . (array_key_exists("port", $parsedUrl) ? (":" . $parsedUrl["port"]) : "") . "/";
+                    }
+
+                    $this->logger->debug("Replace in track from " . $from . " to " . $this->config->GetDocumentServerInternalUrl(true));
+                    $url = str_replace($from, $this->config->GetDocumentServerInternalUrl(true), $url);
                 }
 
                 if (($newData = file_get_contents($url))) {

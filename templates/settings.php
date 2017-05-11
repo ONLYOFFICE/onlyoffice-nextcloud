@@ -33,14 +33,39 @@
 
     <p><?php p($l->t("ONLYOFFICE Document Service Location specifies the address of the server with the document services installed. Please change the '<documentserver>' for the server address in the below line.")) ?></p>
 
-    <p class="onlyoffice-header"><?php p($l->t("Document Editing Service Address")) ?></p>
+    <p class="onlyoffice-header"><?php p($l->t("Document Editing Service address")) ?></p>
     <input id="onlyofficeUrl" value="<?php p($_["documentserver"]) ?>" placeholder="https://<documentserver>" type="text">
 
-    <div id="onlyofficeSecretPanel" class="<?php echo (empty($_["documentserver"]) ? "onlyoffice-hide" : "") ?>">
+    <a id="onlyofficeAdv" class="onlyoffice-link-action onlyoffice-header"><?php p($l->t("Advanced server settings")) ?></a>
+    <div id="onlyofficeSecretPanel" class="onlyoffice-hide">
+        <p class="onlyoffice-header"><?php p($l->t("Document Editing Service address for internal requests from the server")) ?></p>
+        <input id="onlyofficeInternalUrl" value="<?php p($_["documentserverInternal"]) ?>" placeholder="https://<documentserver>" type="text">
+
+        <p class="onlyoffice-header"><?php p($l->t("Server address for internal requests from the Document Editing Service")) ?></p>
+        <input id="onlyofficeStorageUrl" value="<?php p($_["storageUrl"]) ?>" placeholder="<?php p($_["currentServer"]) ?>" type="text">
+
         <p class="onlyoffice-header"><?php p($l->t("Secret key (leave blank to disable)")) ?></p>
         <input id="onlyofficeSecret" value="<?php p($_["secret"]) ?>" placeholder="secret" type="text">
     </div>
+    <br id="onlyofficeSaveBreak" />
 
+    <p class="onlyoffice-header">
+        <input type="checkbox" class="checkbox" id="onlyofficeSameTab"
+            <?php if ($_["sameTab"]) { ?>checked="checked"<?php } ?> />
+        <label for="onlyofficeSameTab"><?php p($l->t("Open file in the same tab")) ?></label>
+    </p>
     <br />
-    <a id="onlyofficeSave" class="button"><?php p($l->t("Save")) ?></a>
+
+    <h3 class="onlyoffice-header"><?php p($l->t("The default application for opening the format")) ?></h3>
+    <?php foreach ($_["defFormats"] as $format => $setting) { ?>
+    <p>
+        <input type="checkbox" class="checkbox"
+            id="onlyofficeDefFormat<?php p($format) ?>"
+            name="<?php p($format) ?>"
+            <?php if ($setting) { ?>checked="checked"<?php } ?> />
+        <label for="onlyofficeDefFormat<?php p($format) ?>"><?php p($format) ?></label>
+    </p>
+    <?php } ?>
+
+    <a id="onlyofficeSave" class="button onlyoffice-header"><?php p($l->t("Save")) ?></a>
 </div>

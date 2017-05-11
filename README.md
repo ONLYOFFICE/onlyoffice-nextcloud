@@ -30,13 +30,21 @@ git clone https://github.com/ONLYOFFICE/onlyoffice-owncloud.git onlyoffice
 
 ## Configuring ownCloud/Nextcloud ONLYOFFICE integration app
 
-In ownCloud/Nextcloud open the `~/index.php/settings/admin#onlyoffice` page with administrative settings for **ONLYOFFICE** section and enter the address 
+In ownCloud/Nextcloud open the `~/index.php/settings/admin#onlyoffice` page with administrative settings for **ONLYOFFICE** section. Enter the following address to connect ONLYOFFICE Document Server:
 
 ```
 https://<documentserver>
 ```
 
-Where the **documentserver** is the name of the server with the ONLYOFFICE Document Server installed. 
+Where the **documentserver** is the name of the server with the ONLYOFFICE Document Server installed. The address must be accessible for the user browser and from the ownCloud/Nextcloud server. The ownCloud/Nextcloud server address must also be accessible from ONLYOFFICE Document Server for correct work.
+
+Sometimes your network configuration might not allow the requests between installed ownCloud/Nextcloud and ONLYOFFICE Document Server using the public addresses. The _Advanced server settings_ allows to set the ONLYOFFICE Document Server address for internal requests from ownCloud/Nextcloud server and the returning ownCloud/Nextcloud address for the internal requests from ONLYOFFICE Document Server. You need to enter them in the appropriate fields.
+
+To restrict the access to ONLYOFFICE Document Server and for security reasons and data integrity the encrypted signature is used. Specify the _Secret key_ in the ownCloud/Nextcloud administrative configuration. In the ONLYOFFICE Document Server [config file](https://api.onlyoffice.com/editors/signature/) specify the same secret key and enable the validation.
+
+Enable or disable the _Open file in the same tab_ setting.
+
+The **Open in ONLYOFFICE** action will be added to the file context menu. You can specify this action as default and it will be used when the file name is clicked for the selected file types.
 
 
 

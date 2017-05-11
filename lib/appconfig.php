@@ -44,6 +44,20 @@ class AppConfig {
     private $predefDocumentServerUrl = "";
 
     /**
+     * Definition url on server from ownCloud
+     *
+     * @var string
+     */
+    private $predefDocumentServerInternalUrl = "";
+
+    /**
+     * Definition url on server to ownCloud
+     *
+     * @var string
+     */
+    private $predefStorageUrl = "";
+
+    /**
      * Definition url on server
      *
      * @var string
@@ -80,6 +94,20 @@ class AppConfig {
     private $_documentserver = "DocumentServerUrl";
 
     /**
+     * The config key for the document server address available from ownCloud
+     *
+     * @var string
+     */
+    private $_documentserverInternal = "DocumentServerInternalUrl";
+
+    /**
+     * The config key for the ownCloud address available from document server
+     *
+     * @var string
+     */
+    private $_storageUrl = "StorageUrl";
+
+    /**
      * The config key for the secret key in jwt
      *
      * @var string
@@ -92,6 +120,20 @@ class AppConfig {
      * @var string
      */
     private $_cryptSecret = "skey";
+
+    /**
+     * The config key for the default formats
+     *
+     * @var string
+     */
+    private $_defFormats = "defFormats";
+
+    /**
+     * The config key for the setting same tab
+     *
+     * @var string
+     */
+    private $_sameTab = "sameTab";
 
     /**
      * @param string $AppName - application name
@@ -110,15 +152,17 @@ class AppConfig {
      * @param string $documentServer - document service address
      */
     public function SetDocumentServerUrl($documentServer) {
-        $documentServer = strtolower(rtrim(trim($documentServer), "/"));
-        if (strlen($documentServer) > 0 && !preg_match("/^https?:\/\//i", $documentServer)) {
-            $documentServer = "http://" . $documentServer;
+        $documentServer = strtolower(trim($documentServer));
+        if (strlen($documentServer) > 0) {
+            $documentServer = rtrim($documentServer, "/") . "/";
+            if (!preg_match("/(^https?:\/\/)|^\//i", $documentServer)) {
+                $documentServer = "http://" . $documentServer;
+            }
         }
 
         $this->logger->info("SetDocumentServerUrl: " . $documentServer, array("app" => $this->appName));
 
         $this->config->setAppValue($this->appName, $this->_documentserver, $documentServer);
-        $this->DropSKey();
     }
 
     /**
@@ -130,6 +174,73 @@ class AppConfig {
         $url = $this->config->getAppValue($this->appName, $this->_documentserver, "");
         if (empty($url)) {
             $url = $this->predefDocumentServerUrl;
+        }
+        return $url;
+    }
+
+    /**
+     * Save the document service address available from ownCloud to the application configuration
+     *
+     * @param string $documentServer - document service address
+     */
+    public function SetDocumentServerInternalUrl($documentServerInternal) {
+        $documentServerInternal = strtolower(rtrim(trim($documentServerInternal), "/"));
+        if (strlen($documentServerInternal) > 0) {
+            $documentServerInternal = $documentServerInternal . "/";
+            if (!preg_match("/^https?:\/\//i", $documentServerInternal)) {
+                $documentServerInternal = "http://" . $documentServerInternal;
+            }
+        }
+
+        $this->logger->info("SetDocumentServerInternalUrl: " . $documentServerInternal, array("app" => $this->appName));
+
+        $this->config->setAppValue($this->appName, $this->_documentserverInternal, $documentServerInternal);
+    }
+
+    /**
+     * Get the document service address available from ownCloud from the application configuration
+     *
+     * @return string
+     */
+    public function GetDocumentServerInternalUrl($origin) {
+        $url = $this->config->getAppValue($this->appName, $this->_documentserverInternal, "");
+        if (empty($url)) {
+            $url = $this->predefDocumentServerInternalUrl;
+        }
+        if (!$origin && empty($url)) {
+            $url = $this->GetDocumentServerUrl();
+        }
+        return $url;
+    }
+
+    /**
+     * Save the ownCloud address available from document server to the application configuration
+     *
+     * @param string $documentServer - document service address
+     */
+    public function SetStorageUrl($storageUrl) {
+        $storageUrl = strtolower(rtrim(trim($storageUrl), "/"));
+        if (strlen($storageUrl) > 0) {
+            $storageUrl = $storageUrl . "/";
+            if (!preg_match("/^https?:\/\//i", $storageUrl)) {
+                $storageUrl = "http://" . $storageUrl;
+            }
+        }
+
+        $this->logger->info("SetStorageUrl: " . $storageUrl, array("app" => $this->appName));
+
+        $this->config->setAppValue($this->appName, $this->_storageUrl, $storageUrl);
+    }
+
+    /**
+     * Get the ownCloud address available from document server from the application configuration
+     *
+     * @return string
+     */
+    public function GetStorageUrl() {
+        $url = $this->config->getAppValue($this->appName, $this->_storageUrl, "");
+        if (empty($url)) {
+            $url = $this->predefStorageUrl;
         }
         return $url;
     }
@@ -179,8 +290,53 @@ class AppConfig {
     /**
      * Regenerate the secret key
      */
-    private function DropSKey() {
+    public function DropSKey() {
         $this->config->setAppValue($this->appName, $this->_cryptSecret, "");
+    }
+
+    /**
+     * Save the formats array with default action
+     *
+     * @param array $formats - formats with status
+     */
+    public function SetDefaultFormats($formats) {
+        $value = json_encode($formats);
+        $this->logger->info("Set default formats: " . $value, array("app" => $this->appName));
+
+        $this->config->setAppValue($this->appName, $this->_defFormats, $value);
+    }
+
+    /**
+     * Get the formats array with default action
+     *
+     * @return array
+     */
+    public function GetDefaultFormats() {
+        $value = $this->config->getAppValue($this->appName, $this->_defFormats, "");
+        if (empty($value)) {
+            return array();
+        }
+        return json_decode($value, true);
+    }
+
+    /**
+     * Save the opening setting in a same tab
+     *
+     * @param boolean $value - same tab
+     */
+    public function SetSameTab($value) {
+        $this->logger->info("Set opening in a same tab: " . $value, array("app" => $this->appName));
+
+        $this->config->setAppValue($this->appName, $this->_sameTab, $value);
+    }
+
+    /**
+     * Get the opening setting in a same tab
+     *
+     * @return boolean
+     */
+    public function GetSameTab() {
+        return $this->config->getAppValue($this->appName, $this->_sameTab, "false") === "true";
     }
 
 

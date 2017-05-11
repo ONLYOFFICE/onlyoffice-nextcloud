@@ -164,7 +164,14 @@ class EditorController extends Controller {
         $name = $userFolder->getNonExistingName($name);
         $filePath = $dir . DIRECTORY_SEPARATOR . $name;
         $ext = strtolower("." . pathinfo($filePath, PATHINFO_EXTENSION));
-        $templatePath = dirname(__DIR__) . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . "new" . $ext;
+
+        $lang = \OC::$server->getL10NFactory("")->get("")->getLanguageCode();
+
+        $templatePath = $this->getTemplatePath($lang, $ext);
+        if (!file_exists($templatePath)) {
+            $lang = "en";
+            $templatePath = $this->getTemplatePath($lang, $ext);
+        }
 
         $template = file_get_contents($templatePath);
         if (!$template) {
@@ -187,6 +194,10 @@ class EditorController extends Controller {
 
         $result = Helper::formatFileInfo($fileInfo);
         return $result;
+    }
+
+    private function getTemplatePath($lang, $ext) {
+        return dirname(__DIR__) . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . $lang . DIRECTORY_SEPARATOR . "new" . $ext;
     }
 
     /**
@@ -253,7 +264,7 @@ class EditorController extends Controller {
 
         $newFilePath = $newFolderPath . DIRECTORY_SEPARATOR . $newFileName;
 
-        if (($newData = file_get_contents($newFileUri)) === FALSE){
+        if (($newData = file_get_contents($newFileUri)) === FALSE) {
             $this->logger->error("Failed download converted file: " . $newFileUri, array("app" => $this->appName));
             return ["error" => $this->trans->t("Failed download converted file")];
         }
@@ -303,9 +314,11 @@ class EditorController extends Controller {
         $csp = new ContentSecurityPolicy();
         $csp->allowInlineScript(true);
 
-        if (isset($documentServerUrl) && !empty($documentServerUrl)) {
+        if (preg_match("/^https?:\/\//i", $documentServerUrl)) {
             $csp->addAllowedScriptDomain($documentServerUrl);
             $csp->addAllowedFrameDomain($documentServerUrl);
+        } else {
+            $csp->addAllowedFrameDomain($this->urlGenerator->getAbsoluteURL("/"));
         }
         $response->setContentSecurityPolicy($csp);
 
@@ -339,8 +352,10 @@ class EditorController extends Controller {
 
         $userId = $this->userSession->getUser()->getUID();
         $ownerId = $file->getOwner()->getUID();
+        $folderPath = NULL;
         try {
-            $this->root->getUserFolder($ownerId);
+            $userFolder = $this->root->getUserFolder($ownerId);
+            $folderPath = $userFolder->getRelativePath($file->getParent()->getPath());
         } catch (NoUserException $e) {
             $ownerId = $userId;
         }
@@ -352,6 +367,10 @@ class EditorController extends Controller {
 
         $canEdit = isset($format["edit"]) && $format["edit"];
         $callback = ($file->isUpdateable() && $canEdit ? $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.track", ["doc" => $hashCallback]) : NULL);
+
+        if (!empty($this->config->GetStorageUrl())) {
+            $callback = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->config->GetStorageUrl(), $callback);
+        }
 
         $params = [
             "document" => [
@@ -371,6 +390,19 @@ class EditorController extends Controller {
                 ]
             ]
         ];
+
+        if (!empty($folderPath)) {
+            $args = [
+                "dir" => $folderPath,
+                "scrollto" => $file->getName()
+            ];
+
+            $params["editorConfig"]["customization"] = [
+                    "goback" => [
+                        "url" =>  $this->urlGenerator->linkToRouteAbsolute("files.view.index", $args)
+                    ]
+                ];
+        }
 
         if (!empty($this->config->GetDocumentServerSecret())) {
             $token = \Firebase\JWT\JWT::encode($params, $this->config->GetDocumentServerSecret());
@@ -457,6 +489,11 @@ class EditorController extends Controller {
         $hashUrl = $this->crypt->GetHash(["fileId" => $fileId, "ownerId" => $ownerId, "action" => "download"]);
 
         $fileUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.download", ["doc" => $hashUrl]);
+
+        if (!empty($this->config->GetStorageUrl())) {
+            $fileUrl = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->config->GetStorageUrl(), $fileUrl);
+        }
+
         return $fileUrl;
     }
 }
