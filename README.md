@@ -18,7 +18,7 @@ The easiest way to start an instance of ONLYOFFICE Document Server is to use [Do
 
 To start using ONLYOFFICE Document Server with ownCloud/Nextcloud, the following steps must be performed:
 
-1. Place ownCloud/Nextcloud ONLYOFFICE integration app to your ownCloud/Nextcloud server into the _/apps_ (or some other) directory, [used](https://doc.owncloud.org/server/9.0/admin_manual/installation/apps_management_installation.html#using-custom-app-directories) to connect applications:
+1. Place ownCloud/Nextcloud ONLYOFFICE integration app to your ownCloud/Nextcloud server into the _apps/_ (or some other) directory, [used](https://doc.owncloud.org/server/9.0/admin_manual/installation/apps_management_installation.html#using-custom-app-directories) to connect applications:
 ```
 cd apps/
 git clone https://github.com/ONLYOFFICE/onlyoffice-owncloud.git onlyoffice
@@ -33,7 +33,7 @@ git clone https://github.com/ONLYOFFICE/onlyoffice-owncloud.git onlyoffice
 In ownCloud/Nextcloud open the `~/index.php/settings/admin#onlyoffice` page with administrative settings for **ONLYOFFICE** section. Enter the following address to connect ONLYOFFICE Document Server:
 
 ```
-https://<documentserver>
+https://<documentserver>/
 ```
 
 Where the **documentserver** is the name of the server with the ONLYOFFICE Document Server installed. The address must be accessible for the user browser and from the ownCloud/Nextcloud server. The ownCloud/Nextcloud server address must also be accessible from ONLYOFFICE Document Server for correct work.
