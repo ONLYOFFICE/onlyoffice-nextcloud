@@ -4,7 +4,7 @@ This app enables users to edit office documents from [ownCloud](https://owncloud
 
 The app will create an item in the `new` (+) menu to create **Document**, **Spreadsheet**, **Presentation**. It will also create a new **Open in ONLYOFFICE** menu option within the document library for Office documents. This allows multiple users to collaborate in real time and to save back those changes to ownCloud/Nextcloud.
 
-
+You can also use our **[Docker installation](https://github.com/ONLYOFFICE/docker-onlyoffice-owncloud)** to get installed and configured Document Server and ownCloud installation with a couple of commands.
 
 ## Installing ONLYOFFICE Document Server
 
