@@ -24,7 +24,12 @@ cd apps/
 git clone https://github.com/ONLYOFFICE/onlyoffice-owncloud.git onlyoffice
 ```
 
-2. In ownCloud/Nextcloud open the `~/index.php/settings/apps?category=disabled` page with _Not enabled_ apps by administrator and click _Enable_ for the **ONLYOFFICE** application.
+2. Change the owner to update the application right from ownCloud/Nextcloud web interface:
+```
+chown -R www-data:www-data onlyoffice
+```
+
+3. In ownCloud/Nextcloud open the `~/index.php/settings/apps?category=disabled` page with _Not enabled_ apps by administrator and click _Enable_ for the **ONLYOFFICE** application.
 
 
 

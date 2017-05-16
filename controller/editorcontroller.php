@@ -290,7 +290,7 @@ class EditorController extends Controller {
      * Print editor section
      *
      * @param integer $fileId - file identifier
-     * 
+     *
      * @return TemplateResponse
      *
      * @NoAdminRequired
