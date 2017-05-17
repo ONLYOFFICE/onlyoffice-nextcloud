@@ -168,6 +168,23 @@ class CallbackController extends Controller {
             return new JSONResponse(["message" => $this->trans->t("Invalid request")], Http::STATUS_BAD_REQUEST);
         }
 
+        if (!empty($this->config->GetDocumentServerSecret())) {
+            $header = \OC::$server->getRequest()->getHeader("Authorization");
+            if (empty($header)) {
+                $this->logger->info("Download without jwt", array("app" => $this->appName));
+                return new JSONResponse(["message" => $this->trans->t("Access deny")], Http::STATUS_FORBIDDEN);
+            }
+
+            $header = substr($header, strlen("Bearer "));
+
+            try {
+                $decodedHeader = \Firebase\JWT\JWT::decode($header, $this->config->GetDocumentServerSecret(), array("HS256"));
+            } catch (\UnexpectedValueException $e) {
+                $this->logger->info("Download with invalid jwt: " . $e->getMessage(), array("app" => $this->appName));
+                return new JSONResponse(["message" => $this->trans->t("Access deny")], Http::STATUS_FORBIDDEN);
+            }
+        }
+
         $fileId = $hashData->fileId;
         $ownerId = $hashData->ownerId;
 
@@ -185,7 +202,7 @@ class CallbackController extends Controller {
 
         try {
             return new DataDownloadResponse($file->getContent(), $file->getName(), $file->getMimeType());
-        } catch(\OCP\Files\NotPermittedException  $e) {
+        } catch (\OCP\Files\NotPermittedException  $e) {
             $this->logger->info("Download Not permitted: " . $fileId . " " . $e->getMessage(), array("app" => $this->appName));
             return new JSONResponse(["message" => $this->trans->t("Not permitted")], Http::STATUS_FORBIDDEN);
         }
@@ -216,6 +233,23 @@ class CallbackController extends Controller {
             return new JSONResponse(["message" => $this->trans->t("Invalid request")], Http::STATUS_BAD_REQUEST);
         }
 
+        if (!empty($this->config->GetDocumentServerSecret())) {
+            $header = \OC::$server->getRequest()->getHeader("Authorization");
+            if (empty($header)) {
+                $this->logger->info("Download empty without jwt", array("app" => $this->appName));
+                return new JSONResponse(["message" => $this->trans->t("Access deny")], Http::STATUS_FORBIDDEN);
+            }
+
+            $header = substr($header, strlen("Bearer "));
+
+            try {
+                $decodedHeader = \Firebase\JWT\JWT::decode($header, $this->config->GetDocumentServerSecret(), array("HS256"));
+            } catch (\UnexpectedValueException $e) {
+                $this->logger->info("Download empty with invalid jwt: " . $e->getMessage(), array("app" => $this->appName));
+                return new JSONResponse(["message" => $this->trans->t("Access deny")], Http::STATUS_FORBIDDEN);
+            }
+        }
+
         $templatePath = dirname(__DIR__) . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . "en" . DIRECTORY_SEPARATOR . "new.docx";
 
         $template = file_get_contents($templatePath);
@@ -226,7 +260,7 @@ class CallbackController extends Controller {
 
         try {
             return new DataDownloadResponse($template, "new.docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
-        } catch(\OCP\Files\NotPermittedException  $e) {
+        } catch (\OCP\Files\NotPermittedException  $e) {
             $this->logger->info("Download Not permitted: " . $fileId . " " . $e->getMessage(), array("app" => $this->appName));
             return new JSONResponse(["message" => $this->trans->t("Not permitted")], Http::STATUS_FORBIDDEN);
         }
