@@ -175,7 +175,12 @@ class AppConfig {
         if (empty($url)) {
             $url = $this->predefDocumentServerUrl;
         }
-        $url = rtrim($url, "/") . "/";
+        if ($url != "/") {
+            $url = rtrim($url, "/");
+            if (strlen($url) > 0) {
+                $url = $url . "/";
+            }
+        }
         return $url;
     }
 
