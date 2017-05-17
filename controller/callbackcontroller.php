@@ -294,6 +294,30 @@ class CallbackController extends Controller {
             return new JSONResponse(["message" => $this->trans->t("Invalid request")], Http::STATUS_BAD_REQUEST);
         }
 
+        if (!empty($this->config->GetDocumentServerSecret())) {
+            $header = \OC::$server->getRequest()->getHeader("Authorization");
+            if (empty($header)) {
+                $this->logger->info("Track without jwt", array("app" => $this->appName));
+                return new JSONResponse(["message" => $this->trans->t("Access deny")], Http::STATUS_FORBIDDEN);
+            }
+
+            $header = substr($header, strlen("Bearer "));
+
+            try {
+                $decodedHeader = \Firebase\JWT\JWT::decode($header, $this->config->GetDocumentServerSecret(), array("HS256"));
+                $this->logger->debug("Track HEADER : " . json_encode($decodedHeader), array("app" => $this->appName));
+
+                $payload = $decodedHeader->payload;
+                $users = isset($payload->users) ? $payload->users : NULL;
+                $key = $payload->key;
+                $status = $payload->status;
+                $url = isset($payload->url) ? $payload->url : NULL;
+            } catch (\UnexpectedValueException $e) {
+                $this->logger->info("Track with invalid jwt: " . $e->getMessage(), array("app" => $this->appName));
+                return new JSONResponse(["message" => $this->trans->t("Access deny")], Http::STATUS_FORBIDDEN);
+            }
+        }
+
         $trackerStatus = $this->_trackerStatus[$status];
 
         $error = 1;
@@ -342,7 +366,7 @@ class CallbackController extends Controller {
                         $from = $parsedUrl["scheme"] . "://" . $parsedUrl["host"] . (array_key_exists("port", $parsedUrl) ? (":" . $parsedUrl["port"]) : "") . "/";
                     }
 
-                    $this->logger->debug("Replace in track from " . $from . " to " . $this->config->GetDocumentServerInternalUrl(true));
+                    $this->logger->debug("Replace in track from " . $from . " to " . $this->config->GetDocumentServerInternalUrl(true), array("app" => $this->appName));
                     $url = str_replace($from, $this->config->GetDocumentServerInternalUrl(true), $url);
                 }
 
