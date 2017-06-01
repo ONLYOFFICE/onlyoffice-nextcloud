@@ -175,7 +175,7 @@ class AppConfig {
         if (empty($url)) {
             $url = $this->predefDocumentServerUrl;
         }
-        if (empty($url)) {
+        if (empty($url) && !empty($this->config->getSystemValue($this->appName))) {
             $url = $this->config->getSystemValue($this->appName)[$this->_documentserver];
         }
         if ($url != "/") {
@@ -216,7 +216,7 @@ class AppConfig {
         if (empty($url)) {
             $url = $this->predefDocumentServerInternalUrl;
         }
-        if (empty($url)) {
+        if (empty($url) && !empty($this->config->getSystemValue($this->appName))) {
             $url = $this->config->getSystemValue($this->appName)[$this->_documentserverInternal];
         }
         if (!$origin && empty($url)) {
@@ -254,7 +254,7 @@ class AppConfig {
         if (empty($url)) {
             $url = $this->predefStorageUrl;
         }
-        if (empty($url)) {
+        if (empty($url) && !empty($this->config->getSystemValue($this->appName))) {
             $url = $this->config->getSystemValue($this->appName)[$this->_storageUrl];
         }
         return $url;
@@ -285,7 +285,7 @@ class AppConfig {
         if (empty($secret)) {
             $secret = $this->predefDocumentServerSecret;
         }
-        if (empty($secret)) {
+        if (empty($secret) && !empty($this->config->getSystemValue($this->appName))) {
             $secret = $this->config->getSystemValue($this->appName)[$this->_secret];
         }
         return $secret;
