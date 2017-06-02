@@ -369,7 +369,7 @@ class AppConfig {
             "pptx" => [ "mime" => "application/vnd.openxmlformats-officedocument.presentationml.presentation", "type" => "presentation", "edit" => true, "def" => true ],
             "ppsx" => [ "mime" => "application/vnd.openxmlformats-officedocument.presentationml.slideshow", "type" => "presentation", "edit" => true, "def" => true ],
             "txt" => [ "mime" => "text/plain", "type" => "text", "edit" => true ],
-            "csv" => [ "mime" => "text/csv", "type" => "spreadsheet"/*, "edit" => true*/ ],
+            "csv" => [ "mime" => "text/csv", "type" => "spreadsheet", "edit" => true ],
             "odt" => [ "mime" => "application/vnd.oasis.opendocument.text", "type" => "text", "conv" => true ],
             "ods" => [ "mime" => "application/vnd.oasis.opendocument.spreadsheet", "type" => "spreadsheet", "conv" => true ],
             "odp" => [ "mime" => "application/vnd.oasis.opendocument.presentation", "type" => "presentation", "conv" => true ],
