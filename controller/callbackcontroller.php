@@ -328,6 +328,9 @@ class CallbackController extends Controller {
                 $fileId = $hashData->fileId;
                 $ownerId = $hashData->ownerId;
 
+                \OC_Util::tearDownFS();
+                \OC_Util::setupFS($ownerId);
+
                 $files = $this->root->getUserFolder($ownerId)->getById($fileId);
                 if (empty($files)) {
                     $this->logger->info("Files for track not found: " . $fileId, array("app" => $this->appName));
