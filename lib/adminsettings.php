@@ -29,6 +29,7 @@ namespace OCA\Onlyoffice;
 use OCP\Settings\ISettings;
 
 use OCA\Onlyoffice\AppInfo\Application;
+use OCA\Onlyoffice\Controller\SettingsController;
 
 /**
  * Settings controller for the administration page
@@ -64,7 +65,7 @@ class AdminSettings implements ISettings {
     public function getForm() {
         $app = new Application();
         $container = $app->getContainer();
-        $response = $container->query("\OCA\Onlyoffice\Controller\SettingsController")->index();
+        $response = $container->query(SettingsController::class)->index();
         return $response;
     }
 
