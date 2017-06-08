@@ -178,7 +178,7 @@ class AppConfig {
         if (empty($url) && !empty($this->config->getSystemValue($this->appName))) {
             $url = $this->config->getSystemValue($this->appName)[$this->_documentserver];
         }
-        if ($url != "/") {
+        if ($url !== "/") {
             $url = rtrim($url, "/");
             if (strlen($url) > 0) {
                 $url = $url . "/";
