@@ -43,3 +43,6 @@
     cursor: pointer;
     text-decoration: none;
 }
+.onlyoffice-error {
+    color: red;
+}

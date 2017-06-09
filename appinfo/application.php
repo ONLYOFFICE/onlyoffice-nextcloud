@@ -60,19 +60,18 @@ class Application extends App {
         $this->crypt = new Crypt($this->appConfig);
 
         // Default script and style if configured
-        if (!empty($this->appConfig->GetDocumentServerUrl())
-            && array_key_exists("REQUEST_URI", \OC::$server->getRequest()->server))
-        {
-            $url = \OC::$server->getRequest()->server["REQUEST_URI"];
-
-            if (isset($url)) {
-                if (preg_match("%/apps/files(/.*)?%", $url)) {
-                    Util::addScript($appName, "main");
-                    Util::addStyle($appName, "main");
+        $eventDispatcher = \OC::$server->getEventDispatcher();
+        $eventDispatcher->addListener("OCA\Files::loadAdditionalScripts",
+            function() {
+                if (!empty($this->appConfig->GetDocumentServerUrl())) {
+                    Util::addScript("onlyoffice", "main");
+                    Util::addStyle("onlyoffice", "main");
                 }
-            }
-        }
+            });
 
+        require_once __DIR__ . "/../3rdparty/jwt/BeforeValidException.php";
+        require_once __DIR__ . "/../3rdparty/jwt/ExpiredException.php";
+        require_once __DIR__ . "/../3rdparty/jwt/SignatureInvalidException.php";
         require_once __DIR__ . "/../3rdparty/jwt/JWT.php";
 
         $container = $this->getContainer();

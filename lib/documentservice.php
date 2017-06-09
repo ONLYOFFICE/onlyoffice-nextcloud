@@ -78,7 +78,7 @@ class DocumentService {
 
     /**
      * The method is to convert the file to the required format and return the percentage of completion
-     * 
+     *
      * @param string $document_uri - Uri for the document to convert
      * @param string $from_extension - Document extension
      * @param string $to_extension - Extension to which to convert

@@ -174,6 +174,7 @@
             menu.addMenuEntry({
                 id: "onlyofficeDocx",
                 displayName: t(OCA.Onlyoffice.AppName, "Document"),
+                templateName: t(OCA.Onlyoffice.AppName, "Document"),
                 iconClass: "icon-onlyoffice-new-docx",
                 fileType: "docx",
                 actionHandler: function (name) {
@@ -184,6 +185,7 @@
             menu.addMenuEntry({
                 id: "onlyofficeXlsx",
                 displayName: t(OCA.Onlyoffice.AppName, "Spreadsheet"),
+                templateName: t(OCA.Onlyoffice.AppName, "Spreadsheet"),
                 iconClass: "icon-onlyoffice-new-xlsx",
                 fileType: "xlsx",
                 actionHandler: function (name) {
@@ -194,6 +196,7 @@
             menu.addMenuEntry({
                 id: "onlyofficePpts",
                 displayName: t(OCA.Onlyoffice.AppName, "Presentation"),
+                templateName: t(OCA.Onlyoffice.AppName, "Presentation"),
                 iconClass: "icon-onlyoffice-new-pptx",
                 fileType: "pptx",
                 actionHandler: function (name) {

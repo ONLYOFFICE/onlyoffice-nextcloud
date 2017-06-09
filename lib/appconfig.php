@@ -175,6 +175,15 @@ class AppConfig {
         if (empty($url)) {
             $url = $this->predefDocumentServerUrl;
         }
+        if (empty($url) && !empty($this->config->getSystemValue($this->appName))) {
+            $url = $this->config->getSystemValue($this->appName)[$this->_documentserver];
+        }
+        if ($url !== "/") {
+            $url = rtrim($url, "/");
+            if (strlen($url) > 0) {
+                $url = $url . "/";
+            }
+        }
         return $url;
     }
 
@@ -206,6 +215,9 @@ class AppConfig {
         $url = $this->config->getAppValue($this->appName, $this->_documentserverInternal, "");
         if (empty($url)) {
             $url = $this->predefDocumentServerInternalUrl;
+        }
+        if (empty($url) && !empty($this->config->getSystemValue($this->appName))) {
+            $url = $this->config->getSystemValue($this->appName)[$this->_documentserverInternal];
         }
         if (!$origin && empty($url)) {
             $url = $this->GetDocumentServerUrl();
@@ -242,6 +254,9 @@ class AppConfig {
         if (empty($url)) {
             $url = $this->predefStorageUrl;
         }
+        if (empty($url) && !empty($this->config->getSystemValue($this->appName))) {
+            $url = $this->config->getSystemValue($this->appName)[$this->_storageUrl];
+        }
         return $url;
     }
 
@@ -269,6 +284,9 @@ class AppConfig {
         $secret = $this->config->getAppValue($this->appName, $this->_secret, "");
         if (empty($secret)) {
             $secret = $this->predefDocumentServerSecret;
+        }
+        if (empty($secret) && !empty($this->config->getSystemValue($this->appName))) {
+            $secret = $this->config->getSystemValue($this->appName)[$this->_secret];
         }
         return $secret;
     }
@@ -351,7 +369,7 @@ class AppConfig {
             "pptx" => [ "mime" => "application/vnd.openxmlformats-officedocument.presentationml.presentation", "type" => "presentation", "edit" => true, "def" => true ],
             "ppsx" => [ "mime" => "application/vnd.openxmlformats-officedocument.presentationml.slideshow", "type" => "presentation", "edit" => true, "def" => true ],
             "txt" => [ "mime" => "text/plain", "type" => "text", "edit" => true ],
-            "csv" => [ "mime" => "text/csv", "type" => "spreadsheet"/*, "edit" => true*/ ],
+            "csv" => [ "mime" => "text/csv", "type" => "spreadsheet", "edit" => true ],
             "odt" => [ "mime" => "application/vnd.oasis.opendocument.text", "type" => "text", "conv" => true ],
             "ods" => [ "mime" => "application/vnd.oasis.opendocument.spreadsheet", "type" => "spreadsheet", "conv" => true ],
             "odp" => [ "mime" => "application/vnd.oasis.opendocument.presentation", "type" => "presentation", "conv" => true ],

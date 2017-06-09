@@ -29,11 +29,12 @@ namespace OCA\Onlyoffice;
 use OCP\User;
 
 use OCA\Onlyoffice\AppInfo\Application;
+use OCA\Onlyoffice\Controller\SettingsController;
 
 User::checkAdminUser();
 
 $app = new Application();
 $container = $app->getContainer();
-$response = $container->query("\OCA\Onlyoffice\Controller\SettingsController")->index();
+$response = $container->query(SettingsController::class)->index();
 
 return $response->render();

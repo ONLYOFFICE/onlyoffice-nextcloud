@@ -1,14 +1,14 @@
 # ![](screenshots/icon.png) ownCloud/Nextcloud ONLYOFFICE integration app
 
-This app enables users to edit office documents from [ownCloud](https://owncloud.com)/[Nextcloud](https://nextcloud.com) using ONLYOFFICE Document Server. Currently the following document formats can be edited with this app: DOCX, XLSX, PPTX, TXT. The above mentioned formats are also available for viewing together with PDF and CSV. The edited files of the corresponding type can be converted into the Office Open XML formats: ODT, ODS, ODP, DOC, XLS, PPT, PPS, EPUB, RTF, HTML, HTM.
+This app enables users to edit office documents from [ownCloud](https://owncloud.com)/[Nextcloud](https://nextcloud.com) using ONLYOFFICE Document Server. Currently the following document formats can be edited with this app: DOCX, XLSX, PPTX, TXT, CSV. The above mentioned formats are also available for viewing together with PDF. The edited files of the corresponding type can be converted into the Office Open XML formats: ODT, ODS, ODP, DOC, XLS, PPT, PPS, EPUB, RTF, HTML, HTM.
 
 The app will create an item in the `new` (+) menu to create **Document**, **Spreadsheet**, **Presentation**. It will also create a new **Open in ONLYOFFICE** menu option within the document library for Office documents. This allows multiple users to collaborate in real time and to save back those changes to ownCloud/Nextcloud.
 
-
+You can also use our **[Docker installation](https://github.com/ONLYOFFICE/docker-onlyoffice-owncloud)** to get installed and configured Document Server and ownCloud installation with a couple of commands.
 
 ## Installing ONLYOFFICE Document Server
 
-You will need an instance of ONLYOFFICE Document Server that is resolvable and connectable both from ownCloud/Nextcloud and any end clients (version 4.2 and later are supported for use with the app). If that is not the case, use the official ONLYOFFICE Document Server documetnations page: [Document Server for Linux](http://helpcenter.onlyoffice.com/server/linux/document/linux-installation.aspx). ONLYOFFICE Document Server must also be able to POST to ownCloud/Nextcloud directly.
+You will need an instance of ONLYOFFICE Document Server that is resolvable and connectable both from ownCloud/Nextcloud and any end clients (version 4.2.7 and later are supported for use with the app). If that is not the case, use the official ONLYOFFICE Document Server documetnations page: [Document Server for Linux](http://helpcenter.onlyoffice.com/server/linux/document/linux-installation.aspx). ONLYOFFICE Document Server must also be able to POST to ownCloud/Nextcloud directly.
 
 The easiest way to start an instance of ONLYOFFICE Document Server is to use [Docker](https://github.com/ONLYOFFICE/Docker-DocumentServer).
 
@@ -18,13 +18,18 @@ The easiest way to start an instance of ONLYOFFICE Document Server is to use [Do
 
 To start using ONLYOFFICE Document Server with ownCloud/Nextcloud, the following steps must be performed:
 
-1. Place ownCloud/Nextcloud ONLYOFFICE integration app to your ownCloud/Nextcloud server into the _/apps_ (or some other) directory, [used](https://doc.owncloud.org/server/9.0/admin_manual/installation/apps_management_installation.html#using-custom-app-directories) to connect applications:
+1. Place ownCloud/Nextcloud ONLYOFFICE integration app to your ownCloud/Nextcloud server into the _apps/_ (or some other) directory, [used](https://doc.owncloud.org/server/9.0/admin_manual/installation/apps_management_installation.html#using-custom-app-directories) to connect applications:
 ```
 cd apps/
 git clone https://github.com/ONLYOFFICE/onlyoffice-owncloud.git onlyoffice
 ```
 
-2. In ownCloud/Nextcloud open the `~/index.php/settings/apps?category=disabled` page with _Not enabled_ apps by administrator and click _Enable_ for the **ONLYOFFICE** application.
+2. Change the owner to update the application right from ownCloud/Nextcloud web interface:
+```
+chown -R www-data:www-data onlyoffice
+```
+
+3. In ownCloud/Nextcloud open the `~/index.php/settings/apps?category=disabled` page with _Not enabled_ apps by administrator and click _Enable_ for the **ONLYOFFICE** application.
 
 
 
@@ -33,7 +38,7 @@ git clone https://github.com/ONLYOFFICE/onlyoffice-owncloud.git onlyoffice
 In ownCloud/Nextcloud open the `~/index.php/settings/admin#onlyoffice` page with administrative settings for **ONLYOFFICE** section. Enter the following address to connect ONLYOFFICE Document Server:
 
 ```
-https://<documentserver>
+https://<documentserver>/
 ```
 
 Where the **documentserver** is the name of the server with the ONLYOFFICE Document Server installed. The address must be accessible for the user browser and from the ownCloud/Nextcloud server. The ownCloud/Nextcloud server address must also be accessible from ONLYOFFICE Document Server for correct work.

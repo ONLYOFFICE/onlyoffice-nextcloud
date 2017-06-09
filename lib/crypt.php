@@ -51,7 +51,7 @@ class Crypt {
 
     /**
      * Generate base64 hash for the object
-     * 
+     *
      * @param array $object - object to signature hash
      *
      * @return string
@@ -64,7 +64,7 @@ class Crypt {
 
     /**
      * Create an object from the base64 hash
-     * 
+     *
      * @param string $hash - base64 hash
      *
      * @return array
@@ -94,7 +94,7 @@ class Crypt {
 
     /**
      * Generate base64 hash for the object
-     * 
+     *
      * @param string $primary_key - string to the signature hash
      *
      * @return string

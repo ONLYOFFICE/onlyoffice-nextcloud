@@ -1,5 +1,18 @@
 # Change Log
 
+## 1.0.5
+### Added
+- default name for new file
+- getting default value from server config
+- checking the encryption module
+
+### Changed
+- included editing for csv format
+- fix track activities and versions
+
+### Security
+- jwt signature for inbox request from Document Server
+
 ## 1.0.4
 ### Added
 - advanced server settings for specifying internal addresses
