@@ -49,7 +49,7 @@
         }
 
         if (typeof DocsAPI === "undefined" && !error.length) {
-            displayError(t(OCA.Onlyoffice.AppName, "ONLYOFFICE not reached. Please contact admin"));
+            displayError(t(OCA.Onlyoffice.AppName, "ONLYOFFICE cannot be reached. Please contact admin"));
             return;
         }
 
