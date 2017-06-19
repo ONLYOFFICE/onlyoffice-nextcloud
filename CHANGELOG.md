@@ -1,5 +1,10 @@
 # Change Log
 
+## 1.1.1
+## Added
+- translation
+- signed code
+
 ## 1.0.5
 ### Added
 - default name for new file
