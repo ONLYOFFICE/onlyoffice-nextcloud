@@ -141,7 +141,7 @@ class DocumentService {
         $documentServerUrl = $this->config->GetDocumentServerInternalUrl(false);
 
         if (empty($documentServerUrl)) {
-            throw new \Exception($this->trans->t("ONLYOFFICE app not configured. Please contact admin"));
+            throw new \Exception($this->trans->t("ONLYOFFICE app is not configured. Please contact admin"));
         }
 
         $urlToConverter = $documentServerUrl . "ConvertService.ashx";
@@ -269,7 +269,7 @@ class DocumentService {
         $documentServerUrl = $this->config->GetDocumentServerInternalUrl(false);
 
         if (empty($documentServerUrl)) {
-            throw new \Exception($this->trans->t("ONLYOFFICE app not configured. Please contact admin"));
+            throw new \Exception($this->trans->t("ONLYOFFICE app is not configured. Please contact admin"));
         }
 
         $urlCommand = $documentServerUrl . "coauthoring/CommandService.ashx";

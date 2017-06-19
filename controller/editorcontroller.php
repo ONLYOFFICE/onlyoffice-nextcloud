@@ -222,12 +222,12 @@ class EditorController extends Controller {
         $format = $this->config->formats[$ext];
         if (!isset($format)) {
             $this->logger->info("Format for convertion not supported: " . $fileName, array("app" => $this->appName));
-            return ["error" => $this->trans->t("Format do not supported")];
+            return ["error" => $this->trans->t("Format is not supported")];
         }
 
         if (!isset($format["conv"]) || $format["conv"] !== TRUE) {
-            $this->logger->debug("Conversion not required: " . $fileName, array("app" => $this->appName));
-            return ["error" => $this->trans->t("Conversion not required")];
+            $this->logger->debug("Conversion is not required: " . $fileName, array("app" => $this->appName));
+            return ["error" => $this->trans->t("Conversion is not required")];
         }
 
         $internalExtension = "docx";
@@ -265,8 +265,8 @@ class EditorController extends Controller {
         $newFilePath = $newFolderPath . DIRECTORY_SEPARATOR . $newFileName;
 
         if (($newData = file_get_contents($newFileUri)) === FALSE) {
-            $this->logger->error("Failed download converted file: " . $newFileUri, array("app" => $this->appName));
-            return ["error" => $this->trans->t("Failed download converted file")];
+            $this->logger->error("Failed to download converted file: " . $newFileUri, array("app" => $this->appName));
+            return ["error" => $this->trans->t("Failed to download converted file")];
         }
 
         $view = Filesystem::getView();
@@ -301,7 +301,7 @@ class EditorController extends Controller {
 
         if (empty($documentServerUrl)) {
             $this->logger->error("documentServerUrl is empty", array("app" => $this->appName));
-            return ["error" => $this->trans->t("ONLYOFFICE app not configured. Please contact admin")];
+            return ["error" => $this->trans->t("ONLYOFFICE app is not configured. Please contact admin")];
         }
 
         $params = [
@@ -346,8 +346,8 @@ class EditorController extends Controller {
         $ext = pathinfo($fileName, PATHINFO_EXTENSION);
         $format = $this->config->formats[$ext];
         if (!isset($format)) {
-            $this->logger->info("Format do not supported for editing: " . $fileName, array("app" => $this->appName));
-            return ["error" => $this->trans->t("Format do not supported")];
+            $this->logger->info("Format is not supported for editing: " . $fileName, array("app" => $this->appName));
+            return ["error" => $this->trans->t("Format is not supported")];
         }
 
         $userId = $this->userSession->getUser()->getUID();

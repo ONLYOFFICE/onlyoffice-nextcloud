@@ -161,7 +161,7 @@ class CallbackController extends Controller {
         list ($hashData, $error) = $this->crypt->ReadHash($doc);
         if ($hashData === NULL) {
             $this->logger->info("Download with empty or not correct hash: " . $error, array("app" => $this->appName));
-            return new JSONResponse(["message" => $this->trans->t("Access deny")], Http::STATUS_FORBIDDEN);
+            return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
         }
         if ($hashData->action !== "download") {
             $this->logger->info("Download with other action", array("app" => $this->appName));
@@ -172,7 +172,7 @@ class CallbackController extends Controller {
             $header = \OC::$server->getRequest()->getHeader("Authorization");
             if (empty($header)) {
                 $this->logger->info("Download without jwt", array("app" => $this->appName));
-                return new JSONResponse(["message" => $this->trans->t("Access deny")], Http::STATUS_FORBIDDEN);
+                return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
             }
 
             $header = substr($header, strlen("Bearer "));
@@ -181,7 +181,7 @@ class CallbackController extends Controller {
                 $decodedHeader = \Firebase\JWT\JWT::decode($header, $this->config->GetDocumentServerSecret(), array("HS256"));
             } catch (\UnexpectedValueException $e) {
                 $this->logger->info("Download with invalid jwt: " . $e->getMessage(), array("app" => $this->appName));
-                return new JSONResponse(["message" => $this->trans->t("Access deny")], Http::STATUS_FORBIDDEN);
+                return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
             }
         }
 
@@ -226,7 +226,7 @@ class CallbackController extends Controller {
         list ($hashData, $error) = $this->crypt->ReadHash($doc);
         if ($hashData === NULL) {
             $this->logger->info("Download empty with empty or not correct hash: " . $error, array("app" => $this->appName));
-            return new JSONResponse(["message" => $this->trans->t("Access deny")], Http::STATUS_FORBIDDEN);
+            return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
         }
         if ($hashData->action !== "empty") {
             $this->logger->info("Download empty with other action", array("app" => $this->appName));
@@ -237,7 +237,7 @@ class CallbackController extends Controller {
             $header = \OC::$server->getRequest()->getHeader("Authorization");
             if (empty($header)) {
                 $this->logger->info("Download empty without jwt", array("app" => $this->appName));
-                return new JSONResponse(["message" => $this->trans->t("Access deny")], Http::STATUS_FORBIDDEN);
+                return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
             }
 
             $header = substr($header, strlen("Bearer "));
@@ -246,7 +246,7 @@ class CallbackController extends Controller {
                 $decodedHeader = \Firebase\JWT\JWT::decode($header, $this->config->GetDocumentServerSecret(), array("HS256"));
             } catch (\UnexpectedValueException $e) {
                 $this->logger->info("Download empty with invalid jwt: " . $e->getMessage(), array("app" => $this->appName));
-                return new JSONResponse(["message" => $this->trans->t("Access deny")], Http::STATUS_FORBIDDEN);
+                return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
             }
         }
 
@@ -287,7 +287,7 @@ class CallbackController extends Controller {
         list ($hashData, $error) = $this->crypt->ReadHash($doc);
         if ($hashData === NULL) {
             $this->logger->info("Track with empty or not correct hash: " . $error, array("app" => $this->appName));
-            return new JSONResponse(["message" => $this->trans->t("Access deny")], Http::STATUS_FORBIDDEN);
+            return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
         }
         if ($hashData->action !== "track") {
             $this->logger->info("Track with other action", array("app" => $this->appName));
@@ -298,7 +298,7 @@ class CallbackController extends Controller {
             $header = \OC::$server->getRequest()->getHeader("Authorization");
             if (empty($header)) {
                 $this->logger->info("Track without jwt", array("app" => $this->appName));
-                return new JSONResponse(["message" => $this->trans->t("Access deny")], Http::STATUS_FORBIDDEN);
+                return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
             }
 
             $header = substr($header, strlen("Bearer "));
@@ -314,7 +314,7 @@ class CallbackController extends Controller {
                 $url = isset($payload->url) ? $payload->url : NULL;
             } catch (\UnexpectedValueException $e) {
                 $this->logger->info("Track with invalid jwt: " . $e->getMessage(), array("app" => $this->appName));
-                return new JSONResponse(["message" => $this->trans->t("Access deny")], Http::STATUS_FORBIDDEN);
+                return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
             }
         }
 
