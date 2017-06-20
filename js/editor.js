@@ -62,6 +62,31 @@
                         return;
                     }
 
+                    var docIsChanged = null;
+                    var docIsChangedTimeout = null;
+
+                    var setPageTitle = function(event) {
+                        clearTimeout(docIsChangedTimeout);
+
+                        if (docIsChanged !== event.data) {
+                            var titleChange = function () {
+                                window.document.title = config.document.title + (event.data ? " *" : "") + ' - ' + oc_defaults.title;
+                                docIsChanged = event.data;
+                            };
+
+                            if (event.data) {
+                                titleChange();
+                            } else {
+                                docIsChangedTimeout = setTimeout(titleChange, 500);
+                            }
+                        }
+                    };
+                    setPageTitle(false);
+
+                    config.events = {
+                        "onDocumentStateChange": setPageTitle,
+                    };
+
                     var docEditor = new DocsAPI.DocEditor("iframeEditor", config);
                 }
             }
