@@ -1,5 +1,10 @@
 # Change Log
 
+## 1.1.2
+## Added
+- translation
+- file name into page title
+
 ## 1.1.1
 ## Added
 - translation
