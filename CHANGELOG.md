@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.1.3
+## Added
+- fixing bug
+
 ## 1.1.2
 ## Added
 - translation

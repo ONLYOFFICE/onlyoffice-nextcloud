@@ -366,7 +366,7 @@ class EditorController extends Controller {
         $key = $this->getKey($file);
 
         $canEdit = isset($format["edit"]) && $format["edit"];
-        $callback = ($file->isUpdateable() && $canEdit ? $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.track", ["doc" => $hashCallback]) : NULL);
+        $callback = ($file->isUpdateable() && $canEdit ? $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.track", ["doc" => $hashCallback]) : "");
 
         if (!empty($this->config->GetStorageUrl())) {
             $callback = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->config->GetStorageUrl(), $callback);
@@ -383,7 +383,7 @@ class EditorController extends Controller {
             "editorConfig" => [
                 "callbackUrl" => $callback,
                 "lang" => \OC::$server->getL10NFactory("")->get("")->getLanguageCode(),
-                "mode" => ($callback === NULL ? "view" : "edit"),
+                "mode" => (empty($callback) ? "view" : "edit"),
                 "user" => [
                     "id" => $userId,
                     "name" => $this->userSession->getUser()->getDisplayName()
