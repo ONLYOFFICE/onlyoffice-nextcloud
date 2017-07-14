@@ -18,11 +18,23 @@ The easiest way to start an instance of ONLYOFFICE Document Server is to use [Do
 
 To start using ONLYOFFICE Document Server with ownCloud/Nextcloud, the following steps must be performed:
 
-1. Place ownCloud/Nextcloud ONLYOFFICE integration app to your ownCloud/Nextcloud server into the _apps/_ (or some other) directory, [used](https://doc.owncloud.org/server/9.0/admin_manual/installation/apps_management_installation.html#using-custom-app-directories) to connect applications:
+1. Go to the ownCloud/Nextcloud server _apps/_ directory (or some other directory [used](https://doc.owncloud.org/server/9.0/admin_manual/installation/apps_management_installation.html#using-custom-app-directories))
 ```
 cd apps/
+```
+
+2. Get the ownCloud/Nextcloud ONLYOFFICE integration app. There are several ways to do that:
+
+a. Download the latest signed version from the official store for [ownCloud 9](https://apps.owncloud.com/content/show.php?content=174798), [ownCloud 10](https://marketplace.owncloud.com/apps/onlyoffice) or [Nextcloud](https://apps.nextcloud.com/apps/onlyoffice).
+
+b. Or you can download the latest signed version from the application [release page](https://github.com/ONLYOFFICE/onlyoffice-owncloud/releases) on GitHub.
+
+c. Or you can clone the application source code and compile it yourself: 
+```
 git clone https://github.com/ONLYOFFICE/onlyoffice-owncloud.git onlyoffice
 ```
+
+> ownCloud version 10 does not work with unsigned applications giving an alert, so you will need to use either option **a** or **b** to get the application.
 
 2. Change the owner to update the application right from ownCloud/Nextcloud web interface:
 ```
