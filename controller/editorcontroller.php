@@ -382,7 +382,7 @@ class EditorController extends Controller {
             "documentType" => $format["type"],
             "editorConfig" => [
                 "callbackUrl" => $callback,
-                "lang" => \OC::$server->getL10NFactory("")->get("")->getLanguageCode(),
+                "lang" => str_replace("_", "-", \OC::$server->getL10NFactory("")->get("")->getLanguageCode()),
                 "mode" => (empty($callback) ? "view" : "edit"),
                 "user" => [
                     "id" => $userId,
