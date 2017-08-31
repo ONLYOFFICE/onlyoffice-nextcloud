@@ -346,7 +346,7 @@ class DocumentService {
             $opts = array();
         }
 
-        if (substr($url, 0, strlen("https")) === "https") {
+        if (substr($url, 0, strlen("https")) === "https" && $this->config->TurnOffVerification()) {
             $opts["ssl"] = array(
                 "verify_peer" => FALSE,
                 "verify_peer_name" => FALSE

@@ -136,6 +136,13 @@ class AppConfig {
     private $_sameTab = "sameTab";
 
     /**
+     * The config key for the verification
+     *
+     * @var string
+     */
+    private $_verification = "verify_peer_off";
+
+    /**
      * @param string $AppName - application name
      */
     public function __construct($AppName) {
@@ -356,6 +363,19 @@ class AppConfig {
     public function GetSameTab() {
         return $this->config->getAppValue($this->appName, $this->_sameTab, "false") === "true";
     }
+
+        /**
+         * Get the turn off verification setting
+         *
+         * @return boolean
+         */
+        public function TurnOffVerification() {
+            $turnOff = FALSE;
+            if (!empty($this->config->getSystemValue($this->appName))) {
+                $turnOff = $this->config->getSystemValue($this->appName)[$this->_verification];
+            }
+            return $turnOff === TRUE;
+        }
 
 
     /**
