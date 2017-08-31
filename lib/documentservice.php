@@ -176,15 +176,10 @@ class DocumentService {
             $opts["http"]["header"] = $opts["http"]["header"] . "Authorization: Bearer " . $token . "\r\n";
         }
 
-        if (substr($urlToConverter, 0, strlen("https")) === "https") {
-            $opts["ssl"] = array( "verify_peer"   => FALSE );
-        }
- 
-        $context  = stream_context_create($opts);
         $ServiceConverterMaxTry = 3;
         while ($countTry < $ServiceConverterMaxTry) {
             $countTry = $countTry + 1;
-            $response_xml_data = file_get_contents($urlToConverter, FALSE, $context);
+            $response_xml_data = $this->Request($urlToConverter, $opts);
             if ($response_xml_data !== false) { break; }
         }
 
@@ -296,13 +291,7 @@ class DocumentService {
             $opts["http"]["header"] = $opts["http"]["header"] . "Authorization: Bearer " . $token . "\r\n";
         }
 
-        if (substr($urlCommand, 0, strlen("https")) === "https") {
-            $opts["ssl"] = array( "verify_peer"   => FALSE );
-        }
-
-        $context  = stream_context_create($opts);
-
-        if (($response = file_get_contents($urlCommand, FALSE, $context)) === FALSE) {
+        if (($response = $this->Request($urlCommand, $opts)) === FALSE) {
             throw new \Exception ($this->trans->t("Bad Request or timeout error"));
         }
 
@@ -342,5 +331,30 @@ class DocumentService {
         }
 
         throw new \Exception($errorMessage);
+    }
+
+    /**
+     * Request to Document Server with turn off verification
+     *
+     * @param string $url - request address
+     * @param array $opts - stream context options
+     *
+     * @return string
+     */
+    public function Request($url, $opts = NULL) {
+        if (NULL === $opts) {
+            $opts = array();
+        }
+
+        if (substr($url, 0, strlen("https")) === "https") {
+            $opts["ssl"] = array(
+                "verify_peer" => FALSE,
+                "verify_peer_name" => FALSE
+            );
+        }
+
+        $context  = stream_context_create($opts);
+
+        return file_get_contents($url, FALSE, $context);
     }
 }

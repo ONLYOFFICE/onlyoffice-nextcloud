@@ -351,8 +351,8 @@ class CallbackController extends Controller {
                 $curExt = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
                 $downloadExt = strtolower(pathinfo($url, PATHINFO_EXTENSION));
 
+                $documentService = new DocumentService($this->trans, $this->config);
                 if ($downloadExt !== $curExt) {
-                    $documentService = new DocumentService($this->trans, $this->config);
                     $key =  DocumentService::GenerateRevisionId($fileId . $url);
 
                     try {
@@ -377,7 +377,7 @@ class CallbackController extends Controller {
                     $url = str_replace($from, $this->config->GetDocumentServerInternalUrl(true), $url);
                 }
 
-                if (($newData = file_get_contents($url))) {
+                if (($newData = $documentService->Request($url))) {
 
                     $this->userSession->setUser($this->userManager->get($users[0]));
 
