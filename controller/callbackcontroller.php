@@ -324,6 +324,10 @@ class CallbackController extends Controller {
         switch ($trackerStatus) {
             case "MustSave":
             case "Corrupted":
+                if (empty($url)) {
+                    $this->logger->info("Track without url: " . $fileId . " status " . $trackerStatus, array("app" => $this->appName));
+                    return new JSONResponse(["message" => $this->trans->t("Url not found")], Http::STATUS_BAD_REQUEST);
+                }
 
                 $fileId = $hashData->fileId;
                 $ownerId = $hashData->ownerId;
