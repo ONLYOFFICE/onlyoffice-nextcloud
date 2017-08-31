@@ -150,7 +150,9 @@ class AppConfig {
      */
     public function GetDocumentServerUrl() {
         $url = $this->config->getAppValue($this->appName, $this->_documentserver, "");
-        if (empty($url) && !empty($this->config->getSystemValue($this->appName))) {
+        if (empty($url)
+            && !empty($this->config->getSystemValue($this->appName))
+            && array_key_exists($this->_documentserver, $this->config->getSystemValue($this->appName))) {
             $url = $this->config->getSystemValue($this->appName)[$this->_documentserver];
         }
         if ($url !== "/") {
@@ -188,7 +190,9 @@ class AppConfig {
      */
     public function GetDocumentServerInternalUrl($origin) {
         $url = $this->config->getAppValue($this->appName, $this->_documentserverInternal, "");
-        if (empty($url) && !empty($this->config->getSystemValue($this->appName))) {
+        if (empty($url)
+            && !empty($this->config->getSystemValue($this->appName))
+            && array_key_exists($this->_documentserverInternal, $this->config->getSystemValue($this->appName))) {
             $url = $this->config->getSystemValue($this->appName)[$this->_documentserverInternal];
         }
         if (!$origin && empty($url)) {
@@ -223,7 +227,9 @@ class AppConfig {
      */
     public function GetStorageUrl() {
         $url = $this->config->getAppValue($this->appName, $this->_storageUrl, "");
-        if (empty($url) && !empty($this->config->getSystemValue($this->appName))) {
+        if (empty($url)
+            && !empty($this->config->getSystemValue($this->appName))
+            && array_key_exists($this->_storageUrl, $this->config->getSystemValue($this->appName))) {
             $url = $this->config->getSystemValue($this->appName)[$this->_storageUrl];
         }
         return $url;
@@ -251,7 +257,9 @@ class AppConfig {
      */
     public function GetDocumentServerSecret() {
         $secret = $this->config->getAppValue($this->appName, $this->_secret, "");
-        if (empty($secret) && !empty($this->config->getSystemValue($this->appName))) {
+        if (empty($secret)
+            && !empty($this->config->getSystemValue($this->appName))
+            && array_key_exists($this->_secret, $this->config->getSystemValue($this->appName))) {
             $secret = $this->config->getSystemValue($this->appName)[$this->_secret];
         }
         return $secret;
@@ -330,7 +338,8 @@ class AppConfig {
          */
         public function TurnOffVerification() {
             $turnOff = FALSE;
-            if (!empty($this->config->getSystemValue($this->appName))) {
+            if (!empty($this->config->getSystemValue($this->appName))
+                && array_key_exists($this->_verification, $this->config->getSystemValue($this->appName))) {
                 $turnOff = $this->config->getSystemValue($this->appName)[$this->_verification];
             }
             return $turnOff === TRUE;
