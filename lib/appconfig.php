@@ -37,35 +37,6 @@ use OCP\ILogger;
 class AppConfig {
 
     /**
-     * Definition url on server
-     *
-     * @var string
-     */
-    private $predefDocumentServerUrl = "";
-
-    /**
-     * Definition url on server from ownCloud
-     *
-     * @var string
-     */
-    private $predefDocumentServerInternalUrl = "";
-
-    /**
-     * Definition url on server to ownCloud
-     *
-     * @var string
-     */
-    private $predefStorageUrl = "";
-
-    /**
-     * Definition url on server
-     *
-     * @var string
-     */
-    private $predefDocumentServerSecret = "";
-
-
-    /**
      * Application name
      *
      * @var string
@@ -179,9 +150,6 @@ class AppConfig {
      */
     public function GetDocumentServerUrl() {
         $url = $this->config->getAppValue($this->appName, $this->_documentserver, "");
-        if (empty($url)) {
-            $url = $this->predefDocumentServerUrl;
-        }
         if (empty($url) && !empty($this->config->getSystemValue($this->appName))) {
             $url = $this->config->getSystemValue($this->appName)[$this->_documentserver];
         }
@@ -220,9 +188,6 @@ class AppConfig {
      */
     public function GetDocumentServerInternalUrl($origin) {
         $url = $this->config->getAppValue($this->appName, $this->_documentserverInternal, "");
-        if (empty($url)) {
-            $url = $this->predefDocumentServerInternalUrl;
-        }
         if (empty($url) && !empty($this->config->getSystemValue($this->appName))) {
             $url = $this->config->getSystemValue($this->appName)[$this->_documentserverInternal];
         }
@@ -258,9 +223,6 @@ class AppConfig {
      */
     public function GetStorageUrl() {
         $url = $this->config->getAppValue($this->appName, $this->_storageUrl, "");
-        if (empty($url)) {
-            $url = $this->predefStorageUrl;
-        }
         if (empty($url) && !empty($this->config->getSystemValue($this->appName))) {
             $url = $this->config->getSystemValue($this->appName)[$this->_storageUrl];
         }
@@ -289,9 +251,6 @@ class AppConfig {
      */
     public function GetDocumentServerSecret() {
         $secret = $this->config->getAppValue($this->appName, $this->_secret, "");
-        if (empty($secret)) {
-            $secret = $this->predefDocumentServerSecret;
-        }
         if (empty($secret) && !empty($this->config->getSystemValue($this->appName))) {
             $secret = $this->config->getSystemValue($this->appName)[$this->_secret];
         }
