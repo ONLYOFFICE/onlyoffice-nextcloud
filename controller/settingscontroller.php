@@ -223,9 +223,14 @@ class SettingsController extends Controller {
      */
     private function checkDocServiceUrl() {
 
-        $documentService = new DocumentService($this->trans, $this->config);
-
         try {
+            if (substr($this->urlGenerator->getAbsoluteURL("/"), 0, strlen("https")) === "https"
+                && substr($this->config->GetDocumentServerUrl("/"), 0, strlen("https")) !== "https") {
+                throw new \Exception($this->trans->t("Mixed Active Content is not allowed. Requires https address"));
+            }
+
+            $documentService = new DocumentService($this->trans, $this->config);
+
             $commandResponse = $documentService->CommandRequest("version");
 
             $this->logger->debug("CommandRequest on check: " . json_encode($commandResponse), array("app" => $this->appName));
