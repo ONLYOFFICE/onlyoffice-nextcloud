@@ -245,7 +245,7 @@ class EditorController extends Controller {
         $key = $this->getKey($file);
         $fileUrl = $this->getUrl($file);
         try {
-            $documentService->GetConvertedUri($fileUrl, $ext, $internalExtension, $key, FALSE, $newFileUri);
+            $newFileUri = $documentService->GetConvertedUri($fileUrl, $ext, $internalExtension, $key);
         } catch (\Exception $e) {
             $this->logger->error("GetConvertedUri: " . $fileId . " " . $e->getMessage(), array("app" => $this->appName));
             return ["error" => $e->getMessage()];

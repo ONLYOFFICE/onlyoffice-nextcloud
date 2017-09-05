@@ -250,9 +250,7 @@ class SettingsController extends Controller {
                 $fileUrl = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->config->GetStorageUrl(), $fileUrl);
             }
 
-            $newFileUri;
-            $documentService->GetConvertedUri($fileUrl, "docx", "docx", "check_" . rand(), FALSE, $newFileUri);
-            $this->logger->debug("GetConvertedUri on check: " . $fileUrl . " return " . $newFileUri, array("app" => $this->appName));
+            $documentService->GetConvertedUri($fileUrl, "docx", "docx", "check_" . rand());
 
         } catch (\Exception $e) {
             $this->logger->error("CommandRequest on check error: " . $e->getMessage(), array("app" => $this->appName));

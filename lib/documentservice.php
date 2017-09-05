@@ -77,37 +77,30 @@ class DocumentService {
     }
 
     /**
-     * The method is to convert the file to the required format and return the percentage of completion
+     * The method is to convert the file to the required format and return the result url
      *
      * @param string $document_uri - Uri for the document to convert
      * @param string $from_extension - Document extension
      * @param string $to_extension - Extension to which to convert
      * @param string $document_revision_id - Key for caching on service
-     * @param bool $is_async - Perform conversions asynchronously
-     * @param string $converted_document_uri - Uri to the converted document
      *
-     * @return int
+     * @return string
      */
-    function GetConvertedUri($document_uri, $from_extension, $to_extension, $document_revision_id, $is_async, &$converted_document_uri) {
-        $converted_document_uri = "";
-        $responceFromConvertService = $this->SendRequestToConvertService($document_uri, $from_extension, $to_extension, $document_revision_id, $is_async);
+    function GetConvertedUri($document_uri, $from_extension, $to_extension, $document_revision_id) {
+        $responceFromConvertService = $this->SendRequestToConvertService($document_uri, $from_extension, $to_extension, $document_revision_id, FALSE);
 
         $errorElement = $responceFromConvertService->Error;
         if ($errorElement->count() > 0) {
-            $this->ProcessConvServResponceError($errorElement."");
+            $this->ProcessConvServResponceError($errorElement . "");
         }
 
         $isEndConvert = $responceFromConvertService->EndConvert;
-        $percent = $responceFromConvertService->Percent . "";
 
         if ($isEndConvert !== NULL && strtolower($isEndConvert) === "true") {
-            $converted_document_uri = $responceFromConvertService->FileUrl;
-            $percent = 100;
-        } else if ($percent >= 100) {
-            $percent = 99;
+            return $responceFromConvertService->FileUrl;
         }
 
-        return $percent;
+        return "";
     }
 
     /**
