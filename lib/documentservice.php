@@ -3,9 +3,9 @@
  *
  * (c) Copyright Ascensio System Limited 2010-2017
  *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
+ * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU
+ * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html).
+ * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that
  * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
  *
  * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
@@ -13,13 +13,13 @@
  *
  * You can contact Ascensio System SIA by email at sales@onlyoffice.com
  *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
+ * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display
  * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
  *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
- * relevant author attributions when distributing the software. If the display of the logo in its graphic 
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
- * in every copy of the program you distribute. 
+ * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains
+ * relevant author attributions when distributing the software. If the display of the logo in its graphic
+ * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE"
+ * in every copy of the program you distribute.
  * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
  *
  */
@@ -77,37 +77,30 @@ class DocumentService {
     }
 
     /**
-     * The method is to convert the file to the required format and return the percentage of completion
+     * The method is to convert the file to the required format and return the result url
      *
      * @param string $document_uri - Uri for the document to convert
      * @param string $from_extension - Document extension
      * @param string $to_extension - Extension to which to convert
      * @param string $document_revision_id - Key for caching on service
-     * @param bool $is_async - Perform conversions asynchronously
-     * @param string $converted_document_uri - Uri to the converted document
      *
-     * @return int
+     * @return string
      */
-    function GetConvertedUri($document_uri, $from_extension, $to_extension, $document_revision_id, $is_async, &$converted_document_uri) {
-        $converted_document_uri = "";
-        $responceFromConvertService = $this->SendRequestToConvertService($document_uri, $from_extension, $to_extension, $document_revision_id, $is_async);
+    function GetConvertedUri($document_uri, $from_extension, $to_extension, $document_revision_id) {
+        $responceFromConvertService = $this->SendRequestToConvertService($document_uri, $from_extension, $to_extension, $document_revision_id, FALSE);
 
         $errorElement = $responceFromConvertService->Error;
         if ($errorElement->count() > 0) {
-            $this->ProcessConvServResponceError($errorElement."");
+            $this->ProcessConvServResponceError($errorElement . "");
         }
 
         $isEndConvert = $responceFromConvertService->EndConvert;
-        $percent = $responceFromConvertService->Percent . "";
 
         if ($isEndConvert !== NULL && strtolower($isEndConvert) === "true") {
-            $converted_document_uri = $responceFromConvertService->FileUrl;
-            $percent = 100;
-        } else if ($percent >= 100) {
-            $percent = 99;
+            return $responceFromConvertService->FileUrl;
         }
 
-        return $percent;
+        return "";
     }
 
     /**
@@ -176,15 +169,10 @@ class DocumentService {
             $opts["http"]["header"] = $opts["http"]["header"] . "Authorization: Bearer " . $token . "\r\n";
         }
 
-        if (substr($urlToConverter, 0, strlen("https")) === "https") {
-            $opts["ssl"] = array( "verify_peer"   => FALSE );
-        }
- 
-        $context  = stream_context_create($opts);
         $ServiceConverterMaxTry = 3;
         while ($countTry < $ServiceConverterMaxTry) {
             $countTry = $countTry + 1;
-            $response_xml_data = file_get_contents($urlToConverter, FALSE, $context);
+            $response_xml_data = $this->Request($urlToConverter, $opts);
             if ($response_xml_data !== false) { break; }
         }
 
@@ -296,13 +284,7 @@ class DocumentService {
             $opts["http"]["header"] = $opts["http"]["header"] . "Authorization: Bearer " . $token . "\r\n";
         }
 
-        if (substr($urlCommand, 0, strlen("https")) === "https") {
-            $opts["ssl"] = array( "verify_peer"   => FALSE );
-        }
-
-        $context  = stream_context_create($opts);
-
-        if (($response = file_get_contents($urlCommand, FALSE, $context)) === FALSE) {
+        if (($response = $this->Request($urlCommand, $opts)) === FALSE) {
             throw new \Exception ($this->trans->t("Bad Request or timeout error"));
         }
 
@@ -342,5 +324,30 @@ class DocumentService {
         }
 
         throw new \Exception($errorMessage);
+    }
+
+    /**
+     * Request to Document Server with turn off verification
+     *
+     * @param string $url - request address
+     * @param array $opts - stream context options
+     *
+     * @return string
+     */
+    public function Request($url, $opts = NULL) {
+        if (NULL === $opts) {
+            $opts = array();
+        }
+
+        if (substr($url, 0, strlen("https")) === "https" && $this->config->TurnOffVerification()) {
+            $opts["ssl"] = array(
+                "verify_peer" => FALSE,
+                "verify_peer_name" => FALSE
+            );
+        }
+
+        $context  = stream_context_create($opts);
+
+        return file_get_contents($url, FALSE, $context);
     }
 }

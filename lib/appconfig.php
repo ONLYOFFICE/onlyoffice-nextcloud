@@ -3,9 +3,9 @@
  *
  * (c) Copyright Ascensio System Limited 2010-2017
  *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
+ * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU
+ * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html).
+ * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that
  * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
  *
  * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
@@ -13,13 +13,13 @@
  *
  * You can contact Ascensio System SIA by email at sales@onlyoffice.com
  *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
+ * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display
  * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
  *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
- * relevant author attributions when distributing the software. If the display of the logo in its graphic 
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
- * in every copy of the program you distribute. 
+ * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains
+ * relevant author attributions when distributing the software. If the display of the logo in its graphic
+ * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE"
+ * in every copy of the program you distribute.
  * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
  *
  */
@@ -35,35 +35,6 @@ use OCP\ILogger;
  * @package OCA\Onlyoffice
  */
 class AppConfig {
-
-    /**
-     * Definition url on server
-     *
-     * @var string
-     */
-    private $predefDocumentServerUrl = "";
-
-    /**
-     * Definition url on server from ownCloud
-     *
-     * @var string
-     */
-    private $predefDocumentServerInternalUrl = "";
-
-    /**
-     * Definition url on server to ownCloud
-     *
-     * @var string
-     */
-    private $predefStorageUrl = "";
-
-    /**
-     * Definition url on server
-     *
-     * @var string
-     */
-    private $predefDocumentServerSecret = "";
-
 
     /**
      * Application name
@@ -136,6 +107,13 @@ class AppConfig {
     private $_sameTab = "sameTab";
 
     /**
+     * The config key for the verification
+     *
+     * @var string
+     */
+    private $_verification = "verify_peer_off";
+
+    /**
      * @param string $AppName - application name
      */
     public function __construct($AppName) {
@@ -172,10 +150,9 @@ class AppConfig {
      */
     public function GetDocumentServerUrl() {
         $url = $this->config->getAppValue($this->appName, $this->_documentserver, "");
-        if (empty($url)) {
-            $url = $this->predefDocumentServerUrl;
-        }
-        if (empty($url) && !empty($this->config->getSystemValue($this->appName))) {
+        if (empty($url)
+            && !empty($this->config->getSystemValue($this->appName))
+            && array_key_exists($this->_documentserver, $this->config->getSystemValue($this->appName))) {
             $url = $this->config->getSystemValue($this->appName)[$this->_documentserver];
         }
         if ($url !== "/") {
@@ -213,10 +190,9 @@ class AppConfig {
      */
     public function GetDocumentServerInternalUrl($origin) {
         $url = $this->config->getAppValue($this->appName, $this->_documentserverInternal, "");
-        if (empty($url)) {
-            $url = $this->predefDocumentServerInternalUrl;
-        }
-        if (empty($url) && !empty($this->config->getSystemValue($this->appName))) {
+        if (empty($url)
+            && !empty($this->config->getSystemValue($this->appName))
+            && array_key_exists($this->_documentserverInternal, $this->config->getSystemValue($this->appName))) {
             $url = $this->config->getSystemValue($this->appName)[$this->_documentserverInternal];
         }
         if (!$origin && empty($url)) {
@@ -251,10 +227,9 @@ class AppConfig {
      */
     public function GetStorageUrl() {
         $url = $this->config->getAppValue($this->appName, $this->_storageUrl, "");
-        if (empty($url)) {
-            $url = $this->predefStorageUrl;
-        }
-        if (empty($url) && !empty($this->config->getSystemValue($this->appName))) {
+        if (empty($url)
+            && !empty($this->config->getSystemValue($this->appName))
+            && array_key_exists($this->_storageUrl, $this->config->getSystemValue($this->appName))) {
             $url = $this->config->getSystemValue($this->appName)[$this->_storageUrl];
         }
         return $url;
@@ -282,10 +257,9 @@ class AppConfig {
      */
     public function GetDocumentServerSecret() {
         $secret = $this->config->getAppValue($this->appName, $this->_secret, "");
-        if (empty($secret)) {
-            $secret = $this->predefDocumentServerSecret;
-        }
-        if (empty($secret) && !empty($this->config->getSystemValue($this->appName))) {
+        if (empty($secret)
+            && !empty($this->config->getSystemValue($this->appName))
+            && array_key_exists($this->_secret, $this->config->getSystemValue($this->appName))) {
             $secret = $this->config->getSystemValue($this->appName)[$this->_secret];
         }
         return $secret;
@@ -356,6 +330,20 @@ class AppConfig {
     public function GetSameTab() {
         return $this->config->getAppValue($this->appName, $this->_sameTab, "false") === "true";
     }
+
+        /**
+         * Get the turn off verification setting
+         *
+         * @return boolean
+         */
+        public function TurnOffVerification() {
+            $turnOff = FALSE;
+            if (!empty($this->config->getSystemValue($this->appName))
+                && array_key_exists($this->_verification, $this->config->getSystemValue($this->appName))) {
+                $turnOff = $this->config->getSystemValue($this->appName)[$this->_verification];
+            }
+            return $turnOff === TRUE;
+        }
 
 
     /**

@@ -3,9 +3,9 @@
  *
  * (c) Copyright Ascensio System Limited 2010-2017
  *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
+ * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU
+ * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html).
+ * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that
  * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
  *
  * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
@@ -13,13 +13,13 @@
  *
  * You can contact Ascensio System SIA by email at sales@onlyoffice.com
  *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
+ * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display
  * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
  *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
- * relevant author attributions when distributing the software. If the display of the logo in its graphic 
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
- * in every copy of the program you distribute. 
+ * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains
+ * relevant author attributions when distributing the software. If the display of the logo in its graphic
+ * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE"
+ * in every copy of the program you distribute.
  * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
  *
  */
@@ -147,6 +147,7 @@ class EditorController extends Controller {
      * @NoAdminRequired
      */
     public function create($name, $dir) {
+        $this->logger->debug("Create: " . $name, array("app" => $this->appName));
 
         $userId = $this->userSession->getUser()->getUID();
         $userFolder = $this->root->getUserFolder($userId);
@@ -210,6 +211,8 @@ class EditorController extends Controller {
      * @NoAdminRequired
      */
     public function convert($fileId) {
+        $this->logger->debug("Convert: " . $fileId, array("app" => $this->appName));
+
         list ($file, $error) = $this->getFile($fileId);
 
         if (isset($error)) {
@@ -245,7 +248,7 @@ class EditorController extends Controller {
         $key = $this->getKey($file);
         $fileUrl = $this->getUrl($file);
         try {
-            $documentService->GetConvertedUri($fileUrl, $ext, $internalExtension, $key, FALSE, $newFileUri);
+            $newFileUri = $documentService->GetConvertedUri($fileUrl, $ext, $internalExtension, $key);
         } catch (\Exception $e) {
             $this->logger->error("GetConvertedUri: " . $fileId . " " . $e->getMessage(), array("app" => $this->appName));
             return ["error" => $e->getMessage()];
@@ -264,7 +267,7 @@ class EditorController extends Controller {
 
         $newFilePath = $newFolderPath . DIRECTORY_SEPARATOR . $newFileName;
 
-        if (($newData = file_get_contents($newFileUri)) === FALSE) {
+        if (($newData = $documentService->Request($newFileUri)) === FALSE) {
             $this->logger->error("Failed to download converted file: " . $newFileUri, array("app" => $this->appName));
             return ["error" => $this->trans->t("Failed to download converted file")];
         }
@@ -297,6 +300,8 @@ class EditorController extends Controller {
      * @NoCSRFRequired
      */
     public function index($fileId) {
+        $this->logger->debug("Open: " . $fileId, array("app" => $this->appName));
+
         $documentServerUrl = $this->config->GetDocumentServerUrl();
 
         if (empty($documentServerUrl)) {
@@ -335,6 +340,7 @@ class EditorController extends Controller {
      * @NoAdminRequired
      */
     public function config($fileId) {
+
         list ($file, $error) = $this->getFile($fileId);
 
         if (isset($error)) {
@@ -382,7 +388,7 @@ class EditorController extends Controller {
             "documentType" => $format["type"],
             "editorConfig" => [
                 "callbackUrl" => $callback,
-                "lang" => \OC::$server->getL10NFactory("")->get("")->getLanguageCode(),
+                "lang" => str_replace("_", "-", \OC::$server->getL10NFactory("")->get("")->getLanguageCode()),
                 "mode" => (empty($callback) ? "view" : "edit"),
                 "user" => [
                     "id" => $userId,

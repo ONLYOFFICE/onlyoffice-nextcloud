@@ -3,9 +3,9 @@
  *
  * (c) Copyright Ascensio System Limited 2010-2017
  *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
+ * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU
+ * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html).
+ * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that
  * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
  *
  * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
@@ -13,13 +13,13 @@
  *
  * You can contact Ascensio System SIA by email at sales@onlyoffice.com
  *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
+ * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display
  * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
  *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
- * relevant author attributions when distributing the software. If the display of the logo in its graphic 
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
- * in every copy of the program you distribute. 
+ * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains
+ * relevant author attributions when distributing the software. If the display of the logo in its graphic
+ * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE"
+ * in every copy of the program you distribute.
  * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
  *
  */
@@ -168,6 +168,9 @@ class CallbackController extends Controller {
             return new JSONResponse(["message" => $this->trans->t("Invalid request")], Http::STATUS_BAD_REQUEST);
         }
 
+        $fileId = $hashData->fileId;
+        $this->logger->debug("Download: " . $fileId, array("app" => $this->appName));
+
         if (!empty($this->config->GetDocumentServerSecret())) {
             $header = \OC::$server->getRequest()->getHeader("Authorization");
             if (empty($header)) {
@@ -185,7 +188,6 @@ class CallbackController extends Controller {
             }
         }
 
-        $fileId = $hashData->fileId;
         $ownerId = $hashData->ownerId;
 
         $files = $this->root->getUserFolder($ownerId)->getById($fileId);
@@ -222,6 +224,7 @@ class CallbackController extends Controller {
      * @CORS
      */
     public function emptyfile($doc) {
+        $this->logger->debug("Download empty", array("app" => $this->appName));
 
         list ($hashData, $error) = $this->crypt->ReadHash($doc);
         if ($hashData === NULL) {
@@ -294,6 +297,9 @@ class CallbackController extends Controller {
             return new JSONResponse(["message" => $this->trans->t("Invalid request")], Http::STATUS_BAD_REQUEST);
         }
 
+        $fileId = $hashData->fileId;
+        $this->logger->debug("Track: " . $fileId . " status " . $status, array("app" => $this->appName));
+
         if (!empty($this->config->GetDocumentServerSecret())) {
             $header = \OC::$server->getRequest()->getHeader("Authorization");
             if (empty($header)) {
@@ -324,8 +330,11 @@ class CallbackController extends Controller {
         switch ($trackerStatus) {
             case "MustSave":
             case "Corrupted":
+                if (empty($url)) {
+                    $this->logger->info("Track without url: " . $fileId . " status " . $trackerStatus, array("app" => $this->appName));
+                    return new JSONResponse(["message" => $this->trans->t("Url not found")], Http::STATUS_BAD_REQUEST);
+                }
 
-                $fileId = $hashData->fileId;
                 $ownerId = $hashData->ownerId;
 
                 \OC_Util::tearDownFS();
@@ -347,21 +356,20 @@ class CallbackController extends Controller {
                 $curExt = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
                 $downloadExt = strtolower(pathinfo($url, PATHINFO_EXTENSION));
 
+                $documentService = new DocumentService($this->trans, $this->config);
                 if ($downloadExt !== $curExt) {
-                    $documentService = new DocumentService($this->trans, $this->config);
                     $key =  DocumentService::GenerateRevisionId($fileId . $url);
 
                     try {
-                        $newFileUri;
-                        $documentService->GetConvertedUri($url, $downloadExt, $curExt, $key, FALSE, $newFileUri);
-                        $url = $newFileUri;
+                        $url = $documentService->GetConvertedUri($url, $downloadExt, $curExt, $key);
                     } catch (\Exception $e) {
-                        $this->logger->error("GetConvertedUri in track: " . $url . " " . $e->getMessage(), array("app" => $this->appName));
+                        $this->logger->error("GetConvertedUri on save error: " . $e->getMessage(), array("app" => $this->appName));
                         return new JSONResponse(["message" => $e->getMessage()], Http::STATUS_INTERNAL_SERVER_ERROR);
                     }
                 }
 
-                if (!empty($this->config->GetDocumentServerInternalUrl(true))) {
+                $documentServerUrl = $this->config->GetDocumentServerInternalUrl(true);
+                if (!empty($documentServerUrl)) {
                     $from = $this->config->GetDocumentServerUrl();
 
                     if (!preg_match("/^https?:\/\//i", $from)) {
@@ -369,11 +377,14 @@ class CallbackController extends Controller {
                         $from = $parsedUrl["scheme"] . "://" . $parsedUrl["host"] . (array_key_exists("port", $parsedUrl) ? (":" . $parsedUrl["port"]) : "") . "/";
                     }
 
-                    $this->logger->debug("Replace in track from " . $from . " to " . $this->config->GetDocumentServerInternalUrl(true), array("app" => $this->appName));
-                    $url = str_replace($from, $this->config->GetDocumentServerInternalUrl(true), $url);
+                    if ($from !== $documentServerUrl)
+                    {
+                        $this->logger->debug("Replace in track from " . $from . " to " . $documentServerUrl, array("app" => $this->appName));
+                        $url = str_replace($from, $documentServerUrl, $url);
+                    }
                 }
 
-                if (($newData = file_get_contents($url))) {
+                if (($newData = $documentService->Request($url))) {
 
                     $this->userSession->setUser($this->userManager->get($users[0]));
 

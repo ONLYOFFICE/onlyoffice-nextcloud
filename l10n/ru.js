@@ -43,6 +43,7 @@ OC.L10N.register(
     "Secret key (leave blank to disable)" : "Секретный ключ (оставьте пустым для отключения)",
     "Open file in the same tab" : "Открыть файл в той же вкладке",
     "The default application for opening the format" : "Приложение по умолчанию для открытия формата",
-    "Save" : "Сохранить"
+    "Save" : "Сохранить",
+    "Mixed Active Content is not allowed. HTTPS address for Document Server is required." : "Смешанное активное содержимое запрещено. Для Сервера документов необходимо использовать HTTPS-адрес."
 },
 "nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);");

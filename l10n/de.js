@@ -43,6 +43,7 @@ OC.L10N.register(
     "Secret key (leave blank to disable)" : "Geheimer Schlüssel (freilassen, um zu deaktivieren)",
     "Open file in the same tab" : "Datei in der gleichen Registerkarte öffnen",
     "The default application for opening the format" : "Die Standardanwendung zum Öffnen des Formats",
-    "Save" : "Speichern"
+    "Save" : "Speichern",
+    "Mixed Active Content is not allowed. HTTPS address for Document Server is required." : "Mixed Active Content ist nicht möglich. HTTPS-Adresse für Document Server ist erforderlich."
 },
 "nplurals=2; plural=(n != 1);");
