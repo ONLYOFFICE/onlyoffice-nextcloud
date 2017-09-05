@@ -168,6 +168,9 @@ class CallbackController extends Controller {
             return new JSONResponse(["message" => $this->trans->t("Invalid request")], Http::STATUS_BAD_REQUEST);
         }
 
+        $fileId = $hashData->fileId;
+        $this->logger->debug("Download: " . $fileId, array("app" => $this->appName));
+
         if (!empty($this->config->GetDocumentServerSecret())) {
             $header = \OC::$server->getRequest()->getHeader("Authorization");
             if (empty($header)) {
@@ -185,7 +188,6 @@ class CallbackController extends Controller {
             }
         }
 
-        $fileId = $hashData->fileId;
         $ownerId = $hashData->ownerId;
 
         $files = $this->root->getUserFolder($ownerId)->getById($fileId);
@@ -222,6 +224,7 @@ class CallbackController extends Controller {
      * @CORS
      */
     public function emptyfile($doc) {
+        $this->logger->debug("Download empty", array("app" => $this->appName));
 
         list ($hashData, $error) = $this->crypt->ReadHash($doc);
         if ($hashData === NULL) {
@@ -294,6 +297,9 @@ class CallbackController extends Controller {
             return new JSONResponse(["message" => $this->trans->t("Invalid request")], Http::STATUS_BAD_REQUEST);
         }
 
+        $fileId = $hashData->fileId;
+        $this->logger->debug("Track: " . $fileId . " status " . $status, array("app" => $this->appName));
+
         if (!empty($this->config->GetDocumentServerSecret())) {
             $header = \OC::$server->getRequest()->getHeader("Authorization");
             if (empty($header)) {
@@ -329,7 +335,6 @@ class CallbackController extends Controller {
                     return new JSONResponse(["message" => $this->trans->t("Url not found")], Http::STATUS_BAD_REQUEST);
                 }
 
-                $fileId = $hashData->fileId;
                 $ownerId = $hashData->ownerId;
 
                 \OC_Util::tearDownFS();
@@ -363,7 +368,8 @@ class CallbackController extends Controller {
                     }
                 }
 
-                if (!empty($this->config->GetDocumentServerInternalUrl(true))) {
+                $documentServerUrl = $this->config->GetDocumentServerInternalUrl(true);
+                if (!empty($documentServerUrl)) {
                     $from = $this->config->GetDocumentServerUrl();
 
                     if (!preg_match("/^https?:\/\//i", $from)) {
@@ -371,8 +377,11 @@ class CallbackController extends Controller {
                         $from = $parsedUrl["scheme"] . "://" . $parsedUrl["host"] . (array_key_exists("port", $parsedUrl) ? (":" . $parsedUrl["port"]) : "") . "/";
                     }
 
-                    $this->logger->debug("Replace in track from " . $from . " to " . $this->config->GetDocumentServerInternalUrl(true), array("app" => $this->appName));
-                    $url = str_replace($from, $this->config->GetDocumentServerInternalUrl(true), $url);
+                    if ($from !== $documentServerUrl)
+                    {
+                        $this->logger->debug("Replace in track from " . $from . " to " . $documentServerUrl, array("app" => $this->appName));
+                        $url = str_replace($from, $documentServerUrl, $url);
+                    }
                 }
 
                 if (($newData = $documentService->Request($url))) {

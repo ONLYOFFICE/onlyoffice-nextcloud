@@ -147,6 +147,7 @@ class EditorController extends Controller {
      * @NoAdminRequired
      */
     public function create($name, $dir) {
+        $this->logger->debug("Create: " . $name, array("app" => $this->appName));
 
         $userId = $this->userSession->getUser()->getUID();
         $userFolder = $this->root->getUserFolder($userId);
@@ -210,6 +211,8 @@ class EditorController extends Controller {
      * @NoAdminRequired
      */
     public function convert($fileId) {
+        $this->logger->debug("Convert: " . $fileId, array("app" => $this->appName));
+
         list ($file, $error) = $this->getFile($fileId);
 
         if (isset($error)) {
@@ -297,6 +300,8 @@ class EditorController extends Controller {
      * @NoCSRFRequired
      */
     public function index($fileId) {
+        $this->logger->debug("Open: " . $fileId, array("app" => $this->appName));
+
         $documentServerUrl = $this->config->GetDocumentServerUrl();
 
         if (empty($documentServerUrl)) {
@@ -335,6 +340,7 @@ class EditorController extends Controller {
      * @NoAdminRequired
      */
     public function config($fileId) {
+
         list ($file, $error) = $this->getFile($fileId);
 
         if (isset($error)) {
