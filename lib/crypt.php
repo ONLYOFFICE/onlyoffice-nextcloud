@@ -77,14 +77,18 @@ class Crypt {
         }
         try {
             $payload = base64_decode($hash);
-            $payloadParts = explode("?", $payload);
+            $payloadParts = explode("?", $payload, 2);
 
-            $encode = base64_encode( hash( "sha256", ($payloadParts[1] . $this->skey), true ) );
+            if (count($payloadParts) === 2) {
+                $encode = base64_encode( hash( "sha256", ($payloadParts[1] . $this->skey), true ) );
 
-            if ($payloadParts[0] === $encode) {
-                $result = json_decode($payloadParts[1]);
+                if ($payloadParts[0] === $encode) {
+                    $result = json_decode($payloadParts[1]);
+                } else {
+                    $error = "hash not equal";
+                }
             } else {
-                $error = "hash not equal";
+                $error = "incorrect hash";
             }
         } catch (\Exception $e) {
             $error = $e->getMessage();

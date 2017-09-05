@@ -244,17 +244,16 @@ class SettingsController extends Controller {
                 throw new \Exception($this->trans->t("Not supported version"));
             }
 
+            $hashUrl = $this->crypt->GetHash(["action" => "empty"]);
+            $fileUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.emptyfile", ["doc" => $hashUrl]);
             if (!empty($this->config->GetStorageUrl())) {
-                $key = "check_" . rand();
-
-                $hashUrl = $this->crypt->GetHash(["action" => "empty"]);
-                $fileUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.emptyfile", ["doc" => $hashUrl]);
                 $fileUrl = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->config->GetStorageUrl(), $fileUrl);
-
-                $newFileUri;
-                $documentService->GetConvertedUri($fileUrl, "docx", "docx", $key, FALSE, $newFileUri);
-                $this->logger->debug("GetConvertedUri on check: " . $fileUrl . " return " . $newFileUri, array("app" => $this->appName));
             }
+
+            $newFileUri;
+            $documentService->GetConvertedUri($fileUrl, "docx", "docx", "check_" . rand(), FALSE, $newFileUri);
+            $this->logger->debug("GetConvertedUri on check: " . $fileUrl . " return " . $newFileUri, array("app" => $this->appName));
+
         } catch (\Exception $e) {
             $this->logger->error("CommandRequest on check error: " . $e->getMessage(), array("app" => $this->appName));
             return $e->getMessage();
