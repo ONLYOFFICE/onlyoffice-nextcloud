@@ -226,7 +226,7 @@ class SettingsController extends Controller {
         try {
             if (substr($this->urlGenerator->getAbsoluteURL("/"), 0, strlen("https")) === "https"
                 && substr($this->config->GetDocumentServerUrl("/"), 0, strlen("https")) !== "https") {
-                throw new \Exception($this->trans->t("Mixed Active Content is not allowed. Requires https address"));
+                throw new \Exception($this->trans->t("Mixed Active Content is not allowed. HTTPS address for Document Server is required."));
             }
 
             $documentService = new DocumentService($this->trans, $this->config);
