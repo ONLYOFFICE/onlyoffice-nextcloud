@@ -1,5 +1,15 @@
 # Change Log
 
+## 1.1.4
+## Added
+- extended list of languages for new files
+- work with self-signed certificates
+
+## Changed
+- files of new presentations
+- fix German l10n
+- changed verification of settings
+
 ## 1.1.3
 ## Added
 - fixing bug
