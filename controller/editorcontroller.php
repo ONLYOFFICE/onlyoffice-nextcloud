@@ -358,13 +358,17 @@ class EditorController extends Controller {
 
         $userId = $this->userSession->getUser()->getUID();
         $ownerId = $file->getOwner()->getUID();
-        $folderPath = NULL;
         try {
-            $userFolder = $this->root->getUserFolder($ownerId);
-            $folderPath = $userFolder->getRelativePath($file->getParent()->getPath());
+            $this->root->getUserFolder($ownerId);
         } catch (NoUserException $e) {
             $ownerId = $userId;
         }
+        $userFolder = $this->root->getUserFolder($userId);
+        $folderPath = $userFolder->getRelativePath($file->getParent()->getPath());
+        $folderLink = $this->urlGenerator->linkToRouteAbsolute("files.view.index", [
+                "dir" => $folderPath,
+                "scrollto" => $file->getName()
+            ]);
 
         $fileId = $file->getId();
         $hashCallback = $this->crypt->GetHash(["fileId" => $fileId, "ownerId" => $ownerId, "action" => "track"]);
@@ -388,6 +392,11 @@ class EditorController extends Controller {
             "documentType" => $format["type"],
             "editorConfig" => [
                 "callbackUrl" => $callback,
+                "customization" => [
+                    "goback" => [
+                        "url" => $folderLink
+                    ]
+                ],
                 "lang" => str_replace("_", "-", \OC::$server->getL10NFactory("")->get("")->getLanguageCode()),
                 "mode" => (empty($callback) ? "view" : "edit"),
                 "user" => [
@@ -396,19 +405,6 @@ class EditorController extends Controller {
                 ]
             ]
         ];
-
-        if (!empty($folderPath)) {
-            $args = [
-                "dir" => $folderPath,
-                "scrollto" => $file->getName()
-            ];
-
-            $params["editorConfig"]["customization"] = [
-                    "goback" => [
-                        "url" =>  $this->urlGenerator->linkToRouteAbsolute("files.view.index", $args)
-                    ]
-                ];
-        }
 
         if (!empty($this->config->GetDocumentServerSecret())) {
             $token = \Firebase\JWT\JWT::encode($params, $this->config->GetDocumentServerSecret());
