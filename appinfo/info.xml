@@ -5,7 +5,7 @@
     <name>Onlyoffice</name>
     <summary>ownCloud ONLYOFFICE integration app</summary>
     <description>ONLYOFFICE integration app enables users to edit Office documents within ONLYOFFICE from OwnCloud. This will create a new Open in ONLYOFFICE action within the document library for Office documents. This allows multiple users to collaborate in real time and to save back those changes to OwnCloud.</description>
-    <licence>AGPL</licence>
+    <licence>agpl</licence>
     <author>Ascensio System SIA</author>
     <version>1.1.4</version>
     <namespace>Onlyoffice</namespace>
@@ -14,6 +14,8 @@
     </types>
     <documentation>
         <admin>https://api.onlyoffice.com/editors/owncloud</admin>
+        <developer>https://api.onlyoffice.com/editors/owncloud</developer>
+        <user>https://api.onlyoffice.com/editors/owncloud</user>
     </documentation>
     <category>files</category>
     <category>integration</category>
