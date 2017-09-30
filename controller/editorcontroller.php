@@ -485,7 +485,7 @@ class EditorController extends Controller {
         try {
             $this->root->getUserFolder($ownerId);
         } catch (NoUserException $e) {
-            $ownerId = $userId;
+            $ownerId = $this->userSession->getUser()->getUID();
         }
 
         $hashUrl = $this->crypt->GetHash(["fileId" => $fileId, "ownerId" => $ownerId, "action" => "download"]);
