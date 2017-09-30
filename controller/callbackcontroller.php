@@ -384,10 +384,14 @@ class CallbackController extends Controller {
                     }
                 }
 
+                $this->userSession->setUser($this->userManager->get($users[0]));
+
+                if (!$file->isUpdateable()) {
+                    $this->logger->error("Save error. File is not updateable: " . $fileId, array("app" => $this->appName));
+                    return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
+                }
+
                 if (($newData = $documentService->Request($url))) {
-
-                    $this->userSession->setUser($this->userManager->get($users[0]));
-
                     $file->putContent($newData);
                     $error = 0;
                 }
