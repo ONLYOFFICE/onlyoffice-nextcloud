@@ -405,6 +405,8 @@ class EditorController extends Controller {
             $params["token"] = $token;
         }
 
+        $this->logger->debug("Config is generated for: " . $fileId . " with key " . $key, array("app" => $this->appName));
+
         return $params;
     }
 
@@ -442,14 +444,14 @@ class EditorController extends Controller {
     private function getKey($file) {
         $fileId = $file->getId();
 
+        $key = $fileId . "_" . $file->getMtime();
+
         $ownerId = $file->getOwner()->getUID();
         try {
             $this->root->getUserFolder($ownerId);
         } catch (NoUserException $e) {
             $ownerId = $this->userSession->getUser()->getUID();
         }
-
-        $key = $fileId . $file->getMtime();
 
         $ownerView = new View("/" . $ownerId . "/files");
         $filePath = $ownerView->getPath($fileId);
@@ -460,8 +462,9 @@ class EditorController extends Controller {
 
         $countVersions = count($versions);
         if ($countVersions > 0) {
-            $key = $key . $countVersions;
+            $key = $key . "_" . $countVersions;
         }
+
         return $key;
     }
 
