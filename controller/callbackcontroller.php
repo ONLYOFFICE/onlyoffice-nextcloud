@@ -188,9 +188,9 @@ class CallbackController extends Controller {
             }
         }
 
-        $ownerId = $hashData->ownerId;
+        $userId = $hashData->userId;
 
-        $files = $this->root->getUserFolder($ownerId)->getById($fileId);
+        $files = $this->root->getUserFolder($userId)->getById($fileId);
         if (empty($files)) {
             $this->logger->info("Files for download not found: " . $fileId, array("app" => $this->appName));
             return new JSONResponse(["message" => $this->trans->t("Files not found")], Http::STATUS_NOT_FOUND);
@@ -335,12 +335,12 @@ class CallbackController extends Controller {
                     return new JSONResponse(["message" => $this->trans->t("Url not found")], Http::STATUS_BAD_REQUEST);
                 }
 
-                $ownerId = $hashData->ownerId;
+                $userId = $hashData->userId;
 
                 \OC_Util::tearDownFS();
-                \OC_Util::setupFS($ownerId);
+                \OC_Util::setupFS($userId);
 
-                $files = $this->root->getUserFolder($ownerId)->getById($fileId);
+                $files = $this->root->getUserFolder($userId)->getById($fileId);
                 if (empty($files)) {
                     $this->logger->info("Files for track not found: " . $fileId, array("app" => $this->appName));
                     return new JSONResponse(["message" => $this->trans->t("Files not found")], Http::STATUS_NOT_FOUND);

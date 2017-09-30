@@ -357,12 +357,6 @@ class EditorController extends Controller {
         }
 
         $userId = $this->userSession->getUser()->getUID();
-        $ownerId = $file->getOwner()->getUID();
-        try {
-            $this->root->getUserFolder($ownerId);
-        } catch (NoUserException $e) {
-            $ownerId = $userId;
-        }
         $userFolder = $this->root->getUserFolder($userId);
         $folderPath = $userFolder->getRelativePath($file->getParent()->getPath());
         $folderLink = $this->urlGenerator->linkToRouteAbsolute("files.view.index", [
@@ -371,7 +365,7 @@ class EditorController extends Controller {
             ]);
 
         $fileId = $file->getId();
-        $hashCallback = $this->crypt->GetHash(["fileId" => $fileId, "ownerId" => $ownerId, "action" => "track"]);
+        $hashCallback = $this->crypt->GetHash(["fileId" => $fileId, "userId" => $userId, "action" => "track"]);
         $fileUrl = $this->getUrl($file);
         $key = $this->getKey($file);
 
@@ -481,14 +475,9 @@ class EditorController extends Controller {
     private function getUrl($file) {
         $fileId = $file->getId();
 
-        $ownerId = $file->getOwner()->getUID();
-        try {
-            $this->root->getUserFolder($ownerId);
-        } catch (NoUserException $e) {
-            $ownerId = $this->userSession->getUser()->getUID();
-        }
+        $userId = $this->userSession->getUser()->getUID();
 
-        $hashUrl = $this->crypt->GetHash(["fileId" => $fileId, "ownerId" => $ownerId, "action" => "download"]);
+        $hashUrl = $this->crypt->GetHash(["fileId" => $fileId, "userId" => $userId, "action" => "download"]);
 
         $fileUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.download", ["doc" => $hashUrl]);
 
