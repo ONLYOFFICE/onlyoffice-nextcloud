@@ -166,7 +166,7 @@ class DocumentService {
                 "payload" => $data
             ];
             $token = \Firebase\JWT\JWT::encode($params, $this->config->GetDocumentServerSecret());
-            $opts["http"]["header"] = $opts["http"]["header"] . "Authorization: Bearer " . $token . "\r\n";
+            $opts["http"]["header"] = $opts["http"]["header"] . $this->config->JwtHeader() . ": Bearer " . $token . "\r\n";
         }
 
         $ServiceConverterMaxTry = 3;
@@ -281,7 +281,7 @@ class DocumentService {
                 "payload" => $data
             ];
             $token = \Firebase\JWT\JWT::encode($params, $this->config->GetDocumentServerSecret());
-            $opts["http"]["header"] = $opts["http"]["header"] . "Authorization: Bearer " . $token . "\r\n";
+            $opts["http"]["header"] = $opts["http"]["header"] . $this->config->JwtHeader() . ": Bearer " . $token . "\r\n";
         }
 
         if (($response = $this->Request($urlCommand, $opts)) === FALSE) {

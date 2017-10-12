@@ -114,6 +114,13 @@ class AppConfig {
     private $_verification = "verify_peer_off";
 
     /**
+     * The config key for the jwt header
+     *
+     * @var string
+     */
+    private $_jwtHeader = "jwt_header";
+
+    /**
      * @param string $AppName - application name
      */
     public function __construct($AppName) {
@@ -343,6 +350,20 @@ class AppConfig {
             $turnOff = $this->config->getSystemValue($this->appName)[$this->_verification];
         }
         return $turnOff === TRUE;
+    }
+
+    /**
+     * Get the jwt header setting
+     *
+     * @return boolean
+     */
+    public function JwtHeader() {
+        $header = "Authorization";
+        if (!empty($this->config->getSystemValue($this->appName))
+            && array_key_exists($this->_jwtHeader, $this->config->getSystemValue($this->appName))) {
+            $header = $this->config->getSystemValue($this->appName)[$this->_jwtHeader];
+        }
+        return $header;
     }
 
 

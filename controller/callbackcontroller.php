@@ -172,7 +172,7 @@ class CallbackController extends Controller {
         $this->logger->debug("Download: " . $fileId, array("app" => $this->appName));
 
         if (!empty($this->config->GetDocumentServerSecret())) {
-            $header = \OC::$server->getRequest()->getHeader("Authorization");
+            $header = \OC::$server->getRequest()->getHeader($this->config->JwtHeader());
             if (empty($header)) {
                 $this->logger->info("Download without jwt", array("app" => $this->appName));
                 return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
@@ -237,7 +237,7 @@ class CallbackController extends Controller {
         }
 
         if (!empty($this->config->GetDocumentServerSecret())) {
-            $header = \OC::$server->getRequest()->getHeader("Authorization");
+            $header = \OC::$server->getRequest()->getHeader($this->config->JwtHeader());
             if (empty($header)) {
                 $this->logger->info("Download empty without jwt", array("app" => $this->appName));
                 return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
@@ -301,7 +301,7 @@ class CallbackController extends Controller {
         $this->logger->debug("Track: " . $fileId . " status " . $status, array("app" => $this->appName));
 
         if (!empty($this->config->GetDocumentServerSecret())) {
-            $header = \OC::$server->getRequest()->getHeader("Authorization");
+            $header = \OC::$server->getRequest()->getHeader($this->config->JwtHeader());
             if (empty($header)) {
                 $this->logger->info("Track without jwt", array("app" => $this->appName));
                 return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
