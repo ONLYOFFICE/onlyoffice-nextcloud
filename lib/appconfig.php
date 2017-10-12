@@ -79,13 +79,6 @@ class AppConfig {
     private $_storageUrl = "StorageUrl";
 
     /**
-     * The config key for the secret key in jwt
-     *
-     * @var string
-     */
-    private $_secret = "DocumentServerSecret";
-
-    /**
      * The config key for the secret key
      *
      * @var string
@@ -112,6 +105,13 @@ class AppConfig {
      * @var string
      */
     private $_verification = "verify_peer_off";
+
+    /**
+     * The config key for the secret key in jwt
+     *
+     * @var string
+     */
+    private $_jwtSecret = "jwt_secret";
 
     /**
      * The config key for the jwt header
@@ -254,7 +254,7 @@ class AppConfig {
             $this->logger->info("Set secret key", array("app" => $this->appName));
         }
 
-        $this->config->setAppValue($this->appName, $this->_secret, $secret);
+        $this->config->setAppValue($this->appName, $this->_jwtSecret, $secret);
     }
 
     /**
@@ -263,11 +263,11 @@ class AppConfig {
      * @return string
      */
     public function GetDocumentServerSecret() {
-        $secret = $this->config->getAppValue($this->appName, $this->_secret, "");
+        $secret = $this->config->getAppValue($this->appName, $this->_jwtSecret, "");
         if (empty($secret)
             && !empty($this->config->getSystemValue($this->appName))
-            && array_key_exists($this->_secret, $this->config->getSystemValue($this->appName))) {
-            $secret = $this->config->getSystemValue($this->appName)[$this->_secret];
+            && array_key_exists($this->_jwtSecret, $this->config->getSystemValue($this->appName))) {
+            $secret = $this->config->getSystemValue($this->appName)[$this->_jwtSecret];
         }
         return $secret;
     }
