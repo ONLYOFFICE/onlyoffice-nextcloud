@@ -331,19 +331,19 @@ class AppConfig {
         return $this->config->getAppValue($this->appName, $this->_sameTab, "false") === "true";
     }
 
-        /**
-         * Get the turn off verification setting
-         *
-         * @return boolean
-         */
-        public function TurnOffVerification() {
-            $turnOff = FALSE;
-            if (!empty($this->config->getSystemValue($this->appName))
-                && array_key_exists($this->_verification, $this->config->getSystemValue($this->appName))) {
-                $turnOff = $this->config->getSystemValue($this->appName)[$this->_verification];
-            }
-            return $turnOff === TRUE;
+    /**
+     * Get the turn off verification setting
+     *
+     * @return boolean
+     */
+    public function TurnOffVerification() {
+        $turnOff = FALSE;
+        if (!empty($this->config->getSystemValue($this->appName))
+            && array_key_exists($this->_verification, $this->config->getSystemValue($this->appName))) {
+            $turnOff = $this->config->getSystemValue($this->appName)[$this->_verification];
         }
+        return $turnOff === TRUE;
+    }
 
 
     /**
