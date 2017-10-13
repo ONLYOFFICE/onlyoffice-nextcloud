@@ -172,7 +172,7 @@ class CallbackController extends Controller {
         $this->logger->debug("Download: " . $fileId, array("app" => $this->appName));
 
         if (!empty($this->config->GetDocumentServerSecret())) {
-            $header = \OC::$server->getRequest()->getHeader("Authorization");
+            $header = \OC::$server->getRequest()->getHeader($this->config->JwtHeader());
             if (empty($header)) {
                 $this->logger->info("Download without jwt", array("app" => $this->appName));
                 return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
@@ -188,9 +188,9 @@ class CallbackController extends Controller {
             }
         }
 
-        $ownerId = $hashData->ownerId;
+        $userId = $hashData->userId;
 
-        $files = $this->root->getUserFolder($ownerId)->getById($fileId);
+        $files = $this->root->getUserFolder($userId)->getById($fileId);
         if (empty($files)) {
             $this->logger->info("Files for download not found: " . $fileId, array("app" => $this->appName));
             return new JSONResponse(["message" => $this->trans->t("Files not found")], Http::STATUS_NOT_FOUND);
@@ -237,7 +237,7 @@ class CallbackController extends Controller {
         }
 
         if (!empty($this->config->GetDocumentServerSecret())) {
-            $header = \OC::$server->getRequest()->getHeader("Authorization");
+            $header = \OC::$server->getRequest()->getHeader($this->config->JwtHeader());
             if (empty($header)) {
                 $this->logger->info("Download empty without jwt", array("app" => $this->appName));
                 return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
@@ -301,7 +301,7 @@ class CallbackController extends Controller {
         $this->logger->debug("Track: " . $fileId . " status " . $status, array("app" => $this->appName));
 
         if (!empty($this->config->GetDocumentServerSecret())) {
-            $header = \OC::$server->getRequest()->getHeader("Authorization");
+            $header = \OC::$server->getRequest()->getHeader($this->config->JwtHeader());
             if (empty($header)) {
                 $this->logger->info("Track without jwt", array("app" => $this->appName));
                 return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
@@ -335,12 +335,12 @@ class CallbackController extends Controller {
                     return new JSONResponse(["message" => $this->trans->t("Url not found")], Http::STATUS_BAD_REQUEST);
                 }
 
-                $ownerId = $hashData->ownerId;
+                $userId = $hashData->userId;
 
                 \OC_Util::tearDownFS();
-                \OC_Util::setupFS($ownerId);
+                \OC_Util::setupFS($userId);
 
-                $files = $this->root->getUserFolder($ownerId)->getById($fileId);
+                $files = $this->root->getUserFolder($userId)->getById($fileId);
                 if (empty($files)) {
                     $this->logger->info("Files for track not found: " . $fileId, array("app" => $this->appName));
                     return new JSONResponse(["message" => $this->trans->t("Files not found")], Http::STATUS_NOT_FOUND);
@@ -384,10 +384,14 @@ class CallbackController extends Controller {
                     }
                 }
 
+                $this->userSession->setUser($this->userManager->get($users[0]));
+
+                if (!$file->isUpdateable()) {
+                    $this->logger->error("Save error. File is not updateable: " . $fileId, array("app" => $this->appName));
+                    return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
+                }
+
                 if (($newData = $documentService->Request($url))) {
-
-                    $this->userSession->setUser($this->userManager->get($users[0]));
-
                     $file->putContent($newData);
                     $error = 0;
                 }

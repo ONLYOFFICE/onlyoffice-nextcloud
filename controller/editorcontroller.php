@@ -357,17 +357,15 @@ class EditorController extends Controller {
         }
 
         $userId = $this->userSession->getUser()->getUID();
-        $ownerId = $file->getOwner()->getUID();
-        $folderPath = NULL;
-        try {
-            $userFolder = $this->root->getUserFolder($ownerId);
-            $folderPath = $userFolder->getRelativePath($file->getParent()->getPath());
-        } catch (NoUserException $e) {
-            $ownerId = $userId;
-        }
+        $userFolder = $this->root->getUserFolder($userId);
+        $folderPath = $userFolder->getRelativePath($file->getParent()->getPath());
+        $folderLink = $this->urlGenerator->linkToRouteAbsolute("files.view.index", [
+                "dir" => $folderPath,
+                "scrollto" => $file->getName()
+            ]);
 
         $fileId = $file->getId();
-        $hashCallback = $this->crypt->GetHash(["fileId" => $fileId, "ownerId" => $ownerId, "action" => "track"]);
+        $hashCallback = $this->crypt->GetHash(["fileId" => $fileId, "userId" => $userId, "action" => "track"]);
         $fileUrl = $this->getUrl($file);
         $key = $this->getKey($file);
 
@@ -388,6 +386,11 @@ class EditorController extends Controller {
             "documentType" => $format["type"],
             "editorConfig" => [
                 "callbackUrl" => $callback,
+                "customization" => [
+                    "goback" => [
+                        "url" => $folderLink
+                    ]
+                ],
                 "lang" => str_replace("_", "-", \OC::$server->getL10NFactory("")->get("")->getLanguageCode()),
                 "mode" => (empty($callback) ? "view" : "edit"),
                 "user" => [
@@ -397,23 +400,12 @@ class EditorController extends Controller {
             ]
         ];
 
-        if (!empty($folderPath)) {
-            $args = [
-                "dir" => $folderPath,
-                "scrollto" => $file->getName()
-            ];
-
-            $params["editorConfig"]["customization"] = [
-                    "goback" => [
-                        "url" =>  $this->urlGenerator->linkToRouteAbsolute("files.view.index", $args)
-                    ]
-                ];
-        }
-
         if (!empty($this->config->GetDocumentServerSecret())) {
             $token = \Firebase\JWT\JWT::encode($params, $this->config->GetDocumentServerSecret());
             $params["token"] = $token;
         }
+
+        $this->logger->debug("Config is generated for: " . $fileId . " with key " . $key, array("app" => $this->appName));
 
         return $params;
     }
@@ -452,14 +444,14 @@ class EditorController extends Controller {
     private function getKey($file) {
         $fileId = $file->getId();
 
+        $key = $fileId . "_" . $file->getMtime();
+
         $ownerId = $file->getOwner()->getUID();
         try {
             $this->root->getUserFolder($ownerId);
         } catch (NoUserException $e) {
             $ownerId = $this->userSession->getUser()->getUID();
         }
-
-        $key = $fileId . $file->getMtime();
 
         $ownerView = new View("/" . $ownerId . "/files");
         $filePath = $ownerView->getPath($fileId);
@@ -470,8 +462,9 @@ class EditorController extends Controller {
 
         $countVersions = count($versions);
         if ($countVersions > 0) {
-            $key = $key . $countVersions;
+            $key = $key . "_" . $countVersions;
         }
+
         return $key;
     }
 
@@ -485,14 +478,9 @@ class EditorController extends Controller {
     private function getUrl($file) {
         $fileId = $file->getId();
 
-        $ownerId = $file->getOwner()->getUID();
-        try {
-            $this->root->getUserFolder($ownerId);
-        } catch (NoUserException $e) {
-            $ownerId = $userId;
-        }
+        $userId = $this->userSession->getUser()->getUID();
 
-        $hashUrl = $this->crypt->GetHash(["fileId" => $fileId, "ownerId" => $ownerId, "action" => "download"]);
+        $hashUrl = $this->crypt->GetHash(["fileId" => $fileId, "userId" => $userId, "action" => "download"]);
 
         $fileUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.download", ["doc" => $hashUrl]);
 
