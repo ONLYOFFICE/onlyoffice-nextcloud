@@ -1,5 +1,13 @@
 # Change Log
 
+## 1.1.5
+## Added
+- the ability to change the header key
+
+## Changed
+- fix opening file from external storage
+- fix opening federated shared file
+
 ## 1.1.4
 ## Added
 - extended list of languages for new files
