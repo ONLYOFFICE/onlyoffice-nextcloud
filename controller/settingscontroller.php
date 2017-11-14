@@ -240,7 +240,7 @@ class SettingsController extends Controller {
             }
 
             $version = floatval($commandResponse->version);
-            if ($version < 4.2) {
+            if ($version > 0.0 && $version < 4.2) {
                 throw new \Exception($this->trans->t("Not supported version"));
             }
 
