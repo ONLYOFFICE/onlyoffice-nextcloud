@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.1.6
+## Changed
+- update description
+
 ## 1.1.5
 ## Added
 - the ability to change the header key
