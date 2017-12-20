@@ -30,7 +30,7 @@
 
 <div id="app">
 
-    <div id="iframeEditor"></div>
+    <div id="iframeEditor" data-id="<?php p($_["fileId"]) ?>"></div>
 
     <?php if (!empty($_["documentServerUrl"])) {
         print_unescaped("<script nonce=\"") .
@@ -39,9 +39,5 @@
         p($_["documentServerUrl"]) .
         print_unescaped("web-apps/apps/api/documents/api.js\" type=\"text/javascript\"></script>");
     } ?>
-
-    <script type="text/javascript" nonce="<?php p(base64_encode($_["requesttoken"])) ?>">
-        OCA.Onlyoffice.OpenEditor("<?php p($_["fileId"]) ?>", "<?php empty($_["error"]) ? "" : p($_["error"]) ?>");
-    </script>
 
 </div>
