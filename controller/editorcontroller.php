@@ -221,7 +221,7 @@ class EditorController extends Controller {
         }
 
         $fileName = $file->getName();
-        $ext = pathinfo($fileName, PATHINFO_EXTENSION);
+        $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
         $format = $this->config->formats[$ext];
         if (!isset($format)) {
             $this->logger->info("Format for convertion not supported: " . $fileName, array("app" => $this->appName));
@@ -349,7 +349,7 @@ class EditorController extends Controller {
         }
 
         $fileName = $file->getName();
-        $ext = pathinfo($fileName, PATHINFO_EXTENSION);
+        $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
         $format = $this->config->formats[$ext];
         if (!isset($format)) {
             $this->logger->info("Format is not supported for editing: " . $fileName, array("app" => $this->appName));
@@ -378,7 +378,7 @@ class EditorController extends Controller {
 
         $params = [
             "document" => [
-                "fileType" => pathinfo($fileName, PATHINFO_EXTENSION),
+                "fileType" => $ext,
                 "key" => DocumentService::GenerateRevisionId($key),
                 "title" => $fileName,
                 "url" => $fileUrl,
