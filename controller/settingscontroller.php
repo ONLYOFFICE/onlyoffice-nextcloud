@@ -157,6 +157,7 @@ class SettingsController extends Controller {
         $documentserver = $this->config->GetDocumentServerUrl();
         if (!empty($documentserver)) {
             $error = $this->checkDocServiceUrl();
+            $this->config->SetSettingsError($error);
         }
 
         $this->config->DropSKey();
