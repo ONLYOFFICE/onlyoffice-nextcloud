@@ -147,7 +147,7 @@
                             mime: attr.mime,
                             permissions: OC.PERMISSION_READ,
                             icon: function () {
-                                return OC.imagePath(OCA.Onlyoffice.AppName, "btn-edit");
+                                return OC.imagePath(OCA.Onlyoffice.AppName, "app-dark");
                             },
                             actionHandler: function (fileName, context) {
                                 OCA.Onlyoffice.FileClick(fileName, context, attr);
