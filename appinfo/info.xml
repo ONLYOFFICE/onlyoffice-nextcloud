@@ -33,5 +33,6 @@
     </dependencies>
     <settings>
         <admin>OCA\Onlyoffice\AdminSettings</admin>
+        <admin-section>OCA\Onlyoffice\AdminSection</admin-section>
     </settings>
 </info>

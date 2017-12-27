@@ -26,56 +26,33 @@
 
 namespace OCA\Onlyoffice;
 
-use OCP\Settings\ISettings;
-
-use OCA\Onlyoffice\AppInfo\Application;
-use OCA\Onlyoffice\Controller\SettingsController;
+use OCP\Settings\ISection;
 
 /**
- * Settings controller for the administration page
+ * Settings section for the administration page
  */
-class AdminSettings implements ISettings {
+class AdminSection implements ISection {
 
     public function __construct() {
     }
 
-    /**
-     * Print config section (ownCloud 10)
-     *
-     * @return TemplateResponse
-     */
-    public function getPanel() {
-        return $this->getForm();
-    }
 
     /**
-     * Get section ID (ownCloud 10)
+     * ID of the section
      *
-     * @return string
+     * @returns string
      */
-    public function getSectionID() {
-        return "general";
-    }
-
-    /**
-     * Print config section (Nextcloud)
-     *
-     * @return TemplateResponse
-     */
-    public function getForm() {
-        $app = new Application();
-        $container = $app->getContainer();
-        $response = $container->query(SettingsController::class)->index();
-        return $response;
-    }
-
-    /**
-     * Get section ID (Nextcloud)
-     *
-     * @return string
-     */
-    public function getSection() {
+    public function getID() {
         return "onlyoffice";
+    }
+
+    /**
+     * Name of the section
+     *
+     * @return string
+     */
+    public function getName() {
+        return "ONLYOFFICE";
     }
 
     /**
