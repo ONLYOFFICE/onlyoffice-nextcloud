@@ -26,16 +26,33 @@
 
 namespace OCA\Onlyoffice;
 
-use OCP\Settings\ISection;
+use OCP\IURLGenerator;
+use OCP\Settings\IIconSection;
 
 /**
  * Settings section for the administration page
  */
-class AdminSection implements ISection {
+class AdminSection implements IIconSection {
 
-    public function __construct() {
+    /** @var IURLGenerator */
+    private $urlGenerator;
+
+    /**
+     * @param IURLGenerator $urlGenerator - url generator service
+     */
+    public function __construct(IURLGenerator $urlGenerator) {
+        $this->urlGenerator = $urlGenerator;
     }
 
+
+    /**
+     * Path to an 16*16 icons
+     *
+     * @return strings
+     */
+    public function getIcon() {
+        return $this->urlGenerator->imagePath("onlyoffice", "app-dark.svg");
+    }
 
     /**
      * ID of the section
