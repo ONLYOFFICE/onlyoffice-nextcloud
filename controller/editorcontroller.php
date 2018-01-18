@@ -167,7 +167,7 @@ class EditorController extends Controller {
             return ["error" => $this->trans->t("You don't have enough permission to create")];
         }
 
-        $name = $userFolder->getNonExistingName($name);
+        $name = $folder->getNonExistingName($name);
         $filePath = $dir . DIRECTORY_SEPARATOR . $name;
         $ext = strtolower("." . pathinfo($filePath, PATHINFO_EXTENSION));
 
