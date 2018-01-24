@@ -7,7 +7,7 @@
     <description>ONLYOFFICE connector enables you to edit Office documents within ONLYOFFICE from the familiar web interface. This will create a new Open in ONLYOFFICE action within the document library for Office documents. This allows multiple users to collaborate in real time and to save back those changes to your file storage.</description>
     <licence>agpl</licence>
     <author>Ascensio System SIA</author>
-    <version>1.1.6</version>
+    <version>1.2.0</version>
     <namespace>Onlyoffice</namespace>
     <types>
         <filesystem/>
@@ -29,7 +29,7 @@
     <screenshot>https://raw.githubusercontent.com/ONLYOFFICE/onlyoffice-owncloud/master/screenshots/settings.png</screenshot>
     <dependencies>
         <owncloud min-version="9.0" max-version="10.0" />
-        <nextcloud min-version="11" max-version="12"/>
+        <nextcloud min-version="11" max-version="13"/>
     </dependencies>
     <settings>
         <admin>OCA\Onlyoffice\AdminSettings</admin>
