@@ -32,18 +32,13 @@
         };
     }
 
-    OCA.Onlyoffice.OpenEditor = function (fileId, error) {
-
+    OCA.Onlyoffice.InitEditor = function () {
         var displayError = function (error) {
             $("#iframeEditor").text(error).addClass("error");
         };
 
-        if (error.length) {
-            displayError(error)
-            return;
-        }
-
-        if (!fileId.length) {
+        var fileId = $("#iframeEditor").data("id");
+        if (!fileId) {
             displayError(t(OCA.Onlyoffice.AppName, "FileId is empty"));
             return;
         }
@@ -92,5 +87,7 @@
             }
         });
     };
+
+    $(document).ready(OCA.Onlyoffice.InitEditor);
 
 })(jQuery, OCA);

@@ -121,6 +121,13 @@ class AppConfig {
     private $_jwtHeader = "jwt_header";
 
     /**
+     * The config key for the settings error
+     *
+     * @var string
+     */
+    private $_settingsError = "settings_error";
+
+    /**
      * @param string $AppName - application name
      */
     public function __construct($AppName) {
@@ -364,6 +371,24 @@ class AppConfig {
             $header = $this->config->getSystemValue($this->appName)[$this->_jwtHeader];
         }
         return $header;
+    }
+
+    /**
+     * Save the status settings
+     *
+     * @param boolean $value - error
+     */
+    public function SetSettingsError($value) {
+        $this->config->setAppValue($this->appName, $this->_settingsError, $value);
+    }
+
+    /**
+     * Get the status settings
+     *
+     * @return boolean
+     */
+    public function SettingsAreSuccessful() {
+        return empty($this->config->getAppValue($this->appName, $this->_settingsError, ""));
     }
 
 

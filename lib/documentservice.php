@@ -155,7 +155,7 @@ class DocumentService {
 
         $opts = array("http" => array(
                     "method"  => "POST",
-                    "timeout" => "120000",
+                    "timeout" => "120",
                     "header"=> "Content-type: application/json\r\n",
                     "content" => $data
                 )
@@ -270,7 +270,7 @@ class DocumentService {
 
         $opts = array("http" => array(
                     "method"  => "POST",
-                    "timeout" => "120000",
+                    "timeout" => "60",
                     "header"=> "Content-type: application/json\r\n",
                     "content" => $data
                 )

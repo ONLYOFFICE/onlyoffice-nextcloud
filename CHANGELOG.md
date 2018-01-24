@@ -1,5 +1,16 @@
 # Change Log
 
+## 1.2.0
+## Added
+- disabling for incorrect settings
+- Brazilian Poruguese translation
+- detecting mobile
+
+## Changed
+- initialization script
+- case sensitivity in extension
+- сreating files with an existing name
+
 ## 1.1.6
 ## Changed
 - update description
