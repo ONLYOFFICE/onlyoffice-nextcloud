@@ -374,7 +374,7 @@ class CallbackController extends Controller {
 
                     if (!preg_match("/^https?:\/\//i", $from)) {
                         $parsedUrl = parse_url($url);
-                        $from = $parsedUrl["scheme"] . "://" . $parsedUrl["host"] . (array_key_exists("port", $parsedUrl) ? (":" . $parsedUrl["port"]) : "") . "/";
+                        $from = $parsedUrl["scheme"] . "://" . $parsedUrl["host"] . (array_key_exists("port", $parsedUrl) ? (":" . $parsedUrl["port"]) : "") . $from;
                     }
 
                     if ($from !== $documentServerUrl)
