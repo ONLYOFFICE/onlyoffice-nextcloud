@@ -26,56 +26,50 @@
 
 namespace OCA\Onlyoffice;
 
-use OCP\Settings\ISettings;
-
-use OCA\Onlyoffice\AppInfo\Application;
-use OCA\Onlyoffice\Controller\SettingsController;
+use OCP\IURLGenerator;
+use OCP\Settings\IIconSection;
 
 /**
- * Settings controller for the administration page
+ * Settings section for the administration page
  */
-class AdminSettings implements ISettings {
+class AdminSection implements IIconSection {
 
-    public function __construct() {
+    /** @var IURLGenerator */
+    private $urlGenerator;
+
+    /**
+     * @param IURLGenerator $urlGenerator - url generator service
+     */
+    public function __construct(IURLGenerator $urlGenerator) {
+        $this->urlGenerator = $urlGenerator;
+    }
+
+
+    /**
+     * Path to an 16*16 icons
+     *
+     * @return strings
+     */
+    public function getIcon() {
+        return $this->urlGenerator->imagePath("onlyoffice", "app-dark.svg");
     }
 
     /**
-     * Print config section (ownCloud 10)
+     * ID of the section
      *
-     * @return TemplateResponse
+     * @returns string
      */
-    public function getPanel() {
-        return $this->getForm();
-    }
-
-    /**
-     * Get section ID (ownCloud 10)
-     *
-     * @return string
-     */
-    public function getSectionID() {
-        return "general";
-    }
-
-    /**
-     * Print config section (Nextcloud)
-     *
-     * @return TemplateResponse
-     */
-    public function getForm() {
-        $app = new Application();
-        $container = $app->getContainer();
-        $response = $container->query(SettingsController::class)->index();
-        return $response;
-    }
-
-    /**
-     * Get section ID (Nextcloud)
-     *
-     * @return string
-     */
-    public function getSection() {
+    public function getID() {
         return "onlyoffice";
+    }
+
+    /**
+     * Name of the section
+     *
+     * @return string
+     */
+    public function getName() {
+        return "ONLYOFFICE";
     }
 
     /**
