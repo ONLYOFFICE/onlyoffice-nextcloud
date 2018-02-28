@@ -154,7 +154,7 @@
                             }
                         });
 
-                        if (attr.def && !fileList.fileActions.getDefaultFileAction(attr.mime, "file", OC.PERMISSION_READ)) {
+                        if (attr.def) {
                             fileList.fileActions.setDefault(attr.mime, "onlyofficeOpen");
                         }
                     });
