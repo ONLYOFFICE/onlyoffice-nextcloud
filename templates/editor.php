@@ -32,12 +32,9 @@
 
     <div id="iframeEditor" data-id="<?php p($_["fileId"]) ?>"></div>
 
-    <?php if (!empty($_["documentServerUrl"])) {
-        print_unescaped("<script nonce=\"") .
-        p(base64_encode($_["requesttoken"])) .
-        print_unescaped("\" src=\"") .
-        p($_["documentServerUrl"]) .
-        print_unescaped("web-apps/apps/api/documents/api.js\" type=\"text/javascript\"></script>");
-    } ?>
+    <?php if (!empty($_["documentServerUrl"])) { ?>
+        <script nonce="<?php p(base64_encode($_["requesttoken"])) ?>"
+            src="<?php p($_["documentServerUrl"]) ?>web-apps/apps/api/documents/api.js" type="text/javascript"></script>
+    <?php } ?>
 
 </div>
