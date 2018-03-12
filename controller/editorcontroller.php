@@ -363,13 +363,6 @@ class EditorController extends Controller {
         }
 
         $userId = $this->userSession->getUser()->getUID();
-        $userFolder = $this->root->getUserFolder($userId);
-        $folderPath = $userFolder->getRelativePath($file->getParent()->getPath());
-        $folderLink = $this->urlGenerator->linkToRouteAbsolute("files.view.index", [
-                "dir" => $folderPath,
-                "scrollto" => $file->getName()
-            ]);
-
         $fileId = $file->getId();
         $fileUrl = $this->getUrl($fileId);
         $key = $this->getKey($file);
@@ -383,11 +376,6 @@ class EditorController extends Controller {
             ],
             "documentType" => $format["type"],
             "editorConfig" => [
-                "customization" => [
-                    "goback" => [
-                        "url" => $folderLink
-                    ]
-                ],
                 "lang" => str_replace("_", "-", \OC::$server->getL10NFactory("")->get("")->getLanguageCode()),
                 "user" => [
                     "id" => $userId,
@@ -415,6 +403,20 @@ class EditorController extends Controller {
         } else {
             $params["editorConfig"]["mode"] = "view";
         }
+
+        $userFolder = $this->root->getUserFolder($userId);
+        $folderPath = $userFolder->getRelativePath($file->getParent()->getPath());
+        $linkAttr = [
+            "dir" => $folderPath,
+            "scrollto" => $file->getName()
+        ];
+        $folderLink = $this->urlGenerator->linkToRouteAbsolute("files.view.index", $linkAttr);
+
+        $params["editorConfig"]["customization"] = [
+            "goback" => [
+                "url"  => $folderLink
+            ]
+        ];
 
         if (!empty($this->config->GetDocumentServerSecret())) {
             $token = \Firebase\JWT\JWT::encode($params, $this->config->GetDocumentServerSecret());
