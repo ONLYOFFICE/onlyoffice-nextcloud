@@ -31,6 +31,7 @@ use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Http\ContentSecurityPolicy;
 use OCP\AppFramework\Controller;
 use OCP\AutoloadNotAllowedException;
+use OCP\Constants;
 use OCP\Files\FileInfo;
 use OCP\Files\IRootFolder;
 use OCP\IL10N;
@@ -38,6 +39,7 @@ use OCP\ILogger;
 use OCP\IRequest;
 use OCP\IURLGenerator;
 use OCP\IUserSession;
+use OCP\Share\IManager;
 
 use OC\Files\Filesystem;
 use OC\Files\View;
@@ -105,6 +107,13 @@ class EditorController extends Controller {
     private $crypt;
 
     /**
+     * Share manager
+     *
+     * @var IManager
+     */
+    private $shareManager;
+
+    /**
      * Mobile regex from https://github.com/ONLYOFFICE/CommunityServer/blob/v9.1.1/web/studio/ASC.Web.Studio/web.appsettings.config#L35
      */
     const USER_AGENT_MOBILE = "/android|avantgo|playbook|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od|ad)|iris|kindle|lge |maemo|midp|mmp|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\\/|plucker|pocket|psp|symbian|treo|up\\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i";
@@ -119,6 +128,7 @@ class EditorController extends Controller {
      * @param ILogger $logger - logger
      * @param OCA\Onlyoffice\AppConfig $config - application configuration
      * @param OCA\Onlyoffice\Crypt $crypt - hash generator
+     * @param IManager $shareManager - Share manager
      */
     public function __construct($AppName,
                                     IRequest $request,
@@ -128,7 +138,8 @@ class EditorController extends Controller {
                                     IL10N $trans,
                                     ILogger $logger,
                                     AppConfig $config,
-                                    Crypt $crypt
+                                    Crypt $crypt,
+                                    IManager $shareManager
                                     ) {
         parent::__construct($AppName, $request);
 
@@ -139,6 +150,7 @@ class EditorController extends Controller {
         $this->logger = $logger;
         $this->config = $config;
         $this->crypt = $crypt;
+        $this->shareManager = $shareManager;
     }
 
     /**
@@ -299,13 +311,14 @@ class EditorController extends Controller {
      * Print editor section
      *
      * @param integer $fileId - file identifier
+     * @param string $token - file token
      *
      * @return TemplateResponse
      *
      * @NoAdminRequired
      * @NoCSRFRequired
      */
-    public function index($fileId) {
+    public function index($fileId, $token = NULL) {
         $this->logger->debug("Open: " . $fileId, array("app" => $this->appName));
 
         $documentServerUrl = $this->config->GetDocumentServerUrl();
@@ -317,7 +330,8 @@ class EditorController extends Controller {
 
         $params = [
             "documentServerUrl" => $documentServerUrl,
-            "fileId" => $fileId
+            "fileId" => $fileId,
+            "token" => $token
         ];
 
         $response = new TemplateResponse($this->appName, "editor", $params);
@@ -337,17 +351,37 @@ class EditorController extends Controller {
     }
 
     /**
+     * Print public editor section
+     *
+     * @param string $token - file token
+     *
+     * @return TemplateResponse
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     * @PublicPage
+     */
+    public function PublicPage($token) {
+
+        list ($file, $error) = $this->getFileByToken($token);
+
+        return $this->index($file->getId(), $token);
+    }
+
+    /**
      * Collecting the file parameters for the document service
      *
      * @param integer $fileId - file identifier
+     * @param string $token - file token
      *
      * @return array
      *
      * @NoAdminRequired
+     * @PublicPage
      */
-    public function config($fileId) {
+    public function config($fileId, $token = NULL) {
 
-        list ($file, $error) = $this->getFile($fileId);
+        list ($file, $error) = empty($token) ? $this->getFile($fileId) : $this->getFileByToken($token);
 
         if (isset($error)) {
             $this->logger->error("Config: " . $fileId . " " . $error, array("app" => $this->appName));
@@ -362,9 +396,8 @@ class EditorController extends Controller {
             return ["error" => $this->trans->t("Format is not supported")];
         }
 
-        $userId = $this->userSession->getUser()->getUID();
         $fileId = $file->getId();
-        $fileUrl = $this->getUrl($fileId);
+        $fileUrl = $this->getUrl($fileId, $token);
         $key = $this->getKey($file);
 
         $params = [
@@ -376,16 +409,18 @@ class EditorController extends Controller {
             ],
             "documentType" => $format["type"],
             "editorConfig" => [
-                "lang" => str_replace("_", "-", \OC::$server->getL10NFactory("")->get("")->getLanguageCode()),
-                "user" => [
-                    "id" => $userId,
-                    "name" => $this->userSession->getUser()->getDisplayName()
-                ]
+                "lang" => str_replace("_", "-", \OC::$server->getL10NFactory("")->get("")->getLanguageCode())
             ]
         ];
 
         if (\OC::$server->getRequest()->isUserAgent([$this::USER_AGENT_MOBILE])) {
             $params["type"] = "mobile";
+        }
+
+        $user = $this->userSession->getUser();
+        $userId = NULL;
+        if (!empty($user)) {
+            $userId = $user->getUID();
         }
 
         $canEdit = isset($format["edit"]) && $format["edit"];
@@ -404,19 +439,29 @@ class EditorController extends Controller {
             $params["editorConfig"]["mode"] = "view";
         }
 
-        $userFolder = $this->root->getUserFolder($userId);
-        $folderPath = $userFolder->getRelativePath($file->getParent()->getPath());
-        $linkAttr = [
-            "dir" => $folderPath,
-            "scrollto" => $file->getName()
-        ];
-        $folderLink = $this->urlGenerator->linkToRouteAbsolute("files.view.index", $linkAttr);
+        if (!empty($userId)) {
+            $params["editorConfig"]["user"] = [
+                "id" => $userId,
+                "name" => $user->getDisplayName()
+            ];
 
-        $params["editorConfig"]["customization"] = [
-            "goback" => [
-                "url"  => $folderLink
-            ]
-        ];
+            $userFolder = $this->root->getUserFolder($userId);
+            $folderPath = $userFolder->getRelativePath($file->getParent()->getPath());
+            $linkAttr = NULL;
+            if (!empty($folderPath)) {
+                $linkAttr = [
+                    "dir" => $folderPath,
+                    "scrollto" => $file->getName()
+                ];
+            }
+            $folderLink = $this->urlGenerator->linkToRouteAbsolute("files.view.index", $linkAttr);
+
+            $params["editorConfig"]["customization"] = [
+                "goback" => [
+                    "url"  => $folderLink
+                ]
+            ];
+        }
 
         if (!empty($this->config->GetDocumentServerSecret())) {
             $token = \Firebase\JWT\JWT::encode($params, $this->config->GetDocumentServerSecret());
@@ -450,6 +495,49 @@ class EditorController extends Controller {
             return [NULL, $this->trans->t("You do not have enough permissions to view the file")];
         }
         return [$file, NULL];
+    }
+
+    /**
+     * Getting file by token
+     *
+     * @param string $token - file token
+     *
+     * @return array
+     */
+    private function getFileByToken($token) {
+        list ($share, $error) = $this->getShare($token);
+
+        if (isset($error)) {
+            return [NULL, $error];
+        }
+
+        if (($share->getPermissions() & Constants::PERMISSION_READ) === 0) {
+            return [NULL, $this->trans->t("You do not have enough permissions to view the file")];
+        }
+
+        $node = $share->getNode();
+
+        return [$node, NULL];
+    }
+
+    /**
+     * Getting share by token
+     *
+     * @param string $token - file token
+     *
+     * @return array
+     */
+    private function getShare($token) {
+        if (empty($token)) {
+            return [NULL, $this->trans->t("FileId is empty")];
+        }
+
+        $share = $this->shareManager->getShareByToken($token);
+        if ($share === NULL || $share === false) {
+            return [NULL, $this->trans->t("You do not have enough permissions to view the file")];
+        }
+
+        return [$share, NULL];
     }
 
     /**
@@ -490,14 +578,19 @@ class EditorController extends Controller {
      * Generate secure link to download document
      *
      * @param integer $fileId - file identifier
+     * @param string $token - file token
      *
      * @return string
      */
-    private function getUrl($fileId) {
+    private function getUrl($fileId, $token = NULL) {
 
-        $userId = $this->userSession->getUser()->getUID();
+        $user = $this->userSession->getUser();
+        $userId = NULL;
+        if (!empty($user)) {
+            $userId = $user->getUID();
+        }
 
-        $hashUrl = $this->crypt->GetHash(["fileId" => $fileId, "userId" => $userId, "action" => "download"]);
+        $hashUrl = $this->crypt->GetHash(["fileId" => $fileId, "userId" => $userId, "token" => $token, "action" => "download"]);
 
         $fileUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.download", ["doc" => $hashUrl]);
 

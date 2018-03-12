@@ -27,6 +27,7 @@
 namespace OCA\Onlyoffice\AppInfo;
 
 use OCP\AppFramework\App;
+use OCP\Share\IManager;
 use OCP\Util;
 
 use OCA\Onlyoffice\AppConfig;
@@ -66,6 +67,13 @@ class Application extends App {
                 if (!empty($this->appConfig->GetDocumentServerUrl()) && $this->appConfig->SettingsAreSuccessful()) {
                     Util::addScript("onlyoffice", "main");
                     Util::addStyle("onlyoffice", "main");
+                }
+            });
+
+        $eventDispatcher->addListener("OCA\Files_Sharing::loadAdditionalScripts",
+            function() {
+                if (!empty($this->appConfig->GetDocumentServerUrl()) && $this->appConfig->SettingsAreSuccessful()) {
+                    Util::addScript("onlyoffice", "public");
                 }
             });
 
@@ -120,7 +128,8 @@ class Application extends App {
                 $c->query("L10N"),
                 $c->query("Logger"),
                 $this->appConfig,
-                $this->crypt
+                $this->crypt,
+                $c->query("IManager")
             );
         });
 
@@ -134,7 +143,8 @@ class Application extends App {
                 $c->query("L10N"),
                 $c->query("Logger"),
                 $this->appConfig,
-                $this->crypt
+                $this->crypt,
+                $c->query("IManager")
             );
         });
     }

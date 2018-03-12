@@ -30,6 +30,7 @@ use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataDownloadResponse;
 use OCP\AppFramework\Http\JSONResponse;
+use OCP\Constants;
 use OCP\Files\File;
 use OCP\Files\IRootFolder;
 use OCP\Files\NotPermittedException;
@@ -38,6 +39,7 @@ use OCP\ILogger;
 use OCP\IRequest;
 use OCP\IUserManager;
 use OCP\IUserSession;
+use OCP\Share\IManager;
 
 use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\Crypt;
@@ -100,6 +102,13 @@ class CallbackController extends Controller {
     private $crypt;
 
     /**
+     * Share manager
+     *
+     * @var OCP\Share\IManager
+     */
+    private $shareManager;
+
+    /**
      * Status of the document
      *
      * @var Array
@@ -122,6 +131,7 @@ class CallbackController extends Controller {
      * @param ILogger $logger - logger
      * @param OCA\Onlyoffice\AppConfig $config - application configuration
      * @param OCA\Onlyoffice\Crypt $crypt - hash generator
+     * @param IManager $shareManager - Share manager
      */
     public function __construct($AppName, 
                                     IRequest $request,
@@ -131,7 +141,8 @@ class CallbackController extends Controller {
                                     IL10N $trans,
                                     ILogger $logger,
                                     AppConfig $config,
-                                    Crypt $crypt
+                                    Crypt $crypt,
+                                    IManager $shareManager
                                     ) {
         parent::__construct($AppName, $request);
 
@@ -142,6 +153,7 @@ class CallbackController extends Controller {
         $this->logger = $logger;
         $this->config = $config;
         $this->crypt = $crypt;
+        $this->shareManager = $shareManager;
     }
 
 
@@ -191,7 +203,8 @@ class CallbackController extends Controller {
 
         $userId = $hashData->userId;
 
-        list ($file, $error) = $this->getFile($userId, $fileId);
+        $token = $hashData->token;
+        list ($file, $error) = empty($token) ? $this->getFile($userId, $fileId) : $this->getFileByToken($token);
 
         if (isset($error)) {
             return $error;
@@ -335,7 +348,8 @@ class CallbackController extends Controller {
                 \OC_Util::tearDownFS();
                 \OC_Util::setupFS($userId);
 
-                list ($file, $error) = $this->getFile($userId, $fileId);
+                $token = $hashData->token;
+                list ($file, $error) = empty($token) ? $this->getFile($userId, $fileId) : $this->getFileByToken($token);
 
                 if (isset($error)) {
                     return $error;
@@ -373,11 +387,9 @@ class CallbackController extends Controller {
                     }
                 }
 
-                $this->userSession->setUser($this->userManager->get($users[0]));
-
-                if (!$file->isUpdateable()) {
-                    $this->logger->error("Save error. File is not updateable: " . $fileId, array("app" => $this->appName));
-                    return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
+                $user = $this->userManager->get($users[0]);
+                if (!empty($user)) {
+                    $this->userSession->setUser($user);
                 }
 
                 if (($newData = $documentService->Request($url))) {
@@ -422,5 +434,44 @@ class CallbackController extends Controller {
         }
 
         return [$file, NULL];
+    }
+
+    /**
+     * Getting file by token
+     *
+     * @param string $token - file token
+     *
+     * @return array
+     */
+    private function getFileByToken($token) {
+        list ($share, $error) = $this->getShare($token);
+
+        if (isset($error)) {
+            return [NULL, $error];
+        }
+
+        $node = $share->getNode();
+
+        return [$node, NULL];
+    }
+
+    /**
+     * Getting share by token
+     *
+     * @param string $token - file token
+     *
+     * @return array
+     */
+    private function getShare($token) {
+        if (empty($token)) {
+            return [NULL, $this->trans->t("FileId is empty")];
+        }
+
+        $share = $this->shareManager->getShareByToken($token);
+        if ($share === NULL || $share === false) {
+            return [NULL, $this->trans->t("You do not have enough permissions to view the file")];
+        }
+
+        return [$share, NULL];
     }
 }
