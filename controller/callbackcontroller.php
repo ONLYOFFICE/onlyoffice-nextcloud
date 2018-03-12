@@ -343,10 +343,20 @@ class CallbackController extends Controller {
                     return new JSONResponse(["message" => $this->trans->t("Url not found")], Http::STATUS_BAD_REQUEST);
                 }
 
-                $userId = $hashData->userId;
+                $userId = $users[0];
+                $user = $this->userManager->get($userId);
+                if (!empty($user)) {
+                    $this->logger->info("setupFS " . $userId, array("app" => $this->appName));
+                    \OC_Util::tearDownFS();
+                    \OC_Util::setupFS($userId);
 
-                \OC_Util::tearDownFS();
-                \OC_Util::setupFS($userId);
+                    $this->userSession->setUser($user);
+                } else {
+                    $ownerId = $hashData->ownerId;
+
+                    \OC_Util::tearDownFS();
+                    \OC_Util::setupFS($ownerId);
+                }
 
                 $token = $hashData->token;
                 list ($file, $error) = empty($token) ? $this->getFile($userId, $fileId) : $this->getFileByToken($token);
@@ -385,11 +395,6 @@ class CallbackController extends Controller {
                         $this->logger->debug("Replace in track from " . $from . " to " . $documentServerUrl, array("app" => $this->appName));
                         $url = str_replace($from, $documentServerUrl, $url);
                     }
-                }
-
-                $user = $this->userManager->get($users[0]);
-                if (!empty($user)) {
-                    $this->userSession->setUser($user);
                 }
 
                 if (($newData = $documentService->Request($url))) {

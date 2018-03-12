@@ -417,17 +417,11 @@ class EditorController extends Controller {
             $params["type"] = "mobile";
         }
 
-        $user = $this->userSession->getUser();
-        $userId = NULL;
-        if (!empty($user)) {
-            $userId = $user->getUID();
-        }
-
         $canEdit = isset($format["edit"]) && $format["edit"];
         $editable = $file->isUpdateable()
                     && (empty($token) || ($this->getShare($token)[0]->getPermissions() & Constants::PERMISSION_UPDATE) === Constants::PERMISSION_UPDATE);
         if ($editable && $canEdit) {
-            $hashCallback = $this->crypt->GetHash(["fileId" => $fileId, "userId" => $userId, "token" => $token, "action" => "track"]);
+            $hashCallback = $this->crypt->GetHash(["fileId" => $fileId, "ownerId" => $file->getOwner()->getUID(), "token" => $token, "action" => "track"]);
             $callback = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.track", ["doc" => $hashCallback]);
 
             if (!empty($this->config->GetStorageUrl())) {
@@ -437,6 +431,12 @@ class EditorController extends Controller {
             $params["editorConfig"]["callbackUrl"] = $callback;
         } else {
             $params["editorConfig"]["mode"] = "view";
+        }
+
+        $user = $this->userSession->getUser();
+        $userId = NULL;
+        if (!empty($user)) {
+            $userId = $user->getUID();
         }
 
         if (!empty($userId)) {
