@@ -251,7 +251,8 @@ class EditorController extends Controller {
         $newFileUri;
         $documentService = new DocumentService($this->trans, $this->config);
         $key = $this->getKey($file);
-        $fileUrl = $this->getUrl($file);
+        $fileId = $file->getId();
+        $fileUrl = $this->getUrl($fileId);
         try {
             $newFileUri = $documentService->GetConvertedUri($fileUrl, $ext, $internalExtension, $key);
         } catch (\Exception $e) {
@@ -370,7 +371,7 @@ class EditorController extends Controller {
             ]);
 
         $fileId = $file->getId();
-        $fileUrl = $this->getUrl($file);
+        $fileUrl = $this->getUrl($fileId);
         $key = $this->getKey($file);
 
         $params = [
@@ -486,12 +487,11 @@ class EditorController extends Controller {
     /**
      * Generate secure link to download document
      *
-     * @param File - file
+     * @param integer $fileId - file identifier
      *
      * @return string
      */
-    private function getUrl($file) {
-        $fileId = $file->getId();
+    private function getUrl($fileId) {
 
         $userId = $this->userSession->getUser()->getUID();
 
