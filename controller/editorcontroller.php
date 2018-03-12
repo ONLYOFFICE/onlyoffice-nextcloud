@@ -380,12 +380,6 @@ class EditorController extends Controller {
         if (!empty($this->config->GetStorageUrl())) {
             $callback = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->config->GetStorageUrl(), $callback);
         }
-
-        $type = "desktop";
-        if (\OC::$server->getRequest()->isUserAgent([$this::USER_AGENT_MOBILE])) {
-            $type = "mobile";
-        }
-
         $params = [
             "document" => [
                 "fileType" => $ext,
@@ -407,9 +401,12 @@ class EditorController extends Controller {
                     "id" => $userId,
                     "name" => $this->userSession->getUser()->getDisplayName()
                 ]
-            ],
-            "type" => $type
+            ]
         ];
+
+        if (\OC::$server->getRequest()->isUserAgent([$this::USER_AGENT_MOBILE])) {
+            $params["type"] = "mobile";
+        }
 
         if (!empty($this->config->GetDocumentServerSecret())) {
             $token = \Firebase\JWT\JWT::encode($params, $this->config->GetDocumentServerSecret());
