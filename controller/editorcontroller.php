@@ -448,7 +448,7 @@ class EditorController extends Controller {
     /**
      * Generate unique document identifier
      *
-     * @param \OCP\Files\File - file
+     * @param File - file
      *
      * @return string
      */
@@ -482,7 +482,7 @@ class EditorController extends Controller {
     /**
      * Generate secure link to download document
      *
-     * @param \OCP\Files\File - file
+     * @param File - file
      *
      * @return string
      */

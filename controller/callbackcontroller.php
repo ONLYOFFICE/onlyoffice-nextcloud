@@ -32,6 +32,7 @@ use OCP\AppFramework\Http\DataDownloadResponse;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\Files\File;
 use OCP\Files\IRootFolder;
+use OCP\Files\NotPermittedException;
 use OCP\IL10N;
 use OCP\ILogger;
 use OCP\IRequest;
@@ -204,7 +205,7 @@ class CallbackController extends Controller {
 
         try {
             return new DataDownloadResponse($file->getContent(), $file->getName(), $file->getMimeType());
-        } catch (\OCP\Files\NotPermittedException  $e) {
+        } catch (NotPermittedException  $e) {
             $this->logger->info("Download Not permitted: " . $fileId . " " . $e->getMessage(), array("app" => $this->appName));
             return new JSONResponse(["message" => $this->trans->t("Not permitted")], Http::STATUS_FORBIDDEN);
         }
@@ -263,7 +264,7 @@ class CallbackController extends Controller {
 
         try {
             return new DataDownloadResponse($template, "new.docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
-        } catch (\OCP\Files\NotPermittedException  $e) {
+        } catch (NotPermittedException  $e) {
             $this->logger->info("Download Not permitted: " . $fileId . " " . $e->getMessage(), array("app" => $this->appName));
             return new JSONResponse(["message" => $this->trans->t("Not permitted")], Http::STATUS_FORBIDDEN);
         }
