@@ -191,16 +191,10 @@ class CallbackController extends Controller {
 
         $userId = $hashData->userId;
 
-        $files = $this->root->getUserFolder($userId)->getById($fileId);
-        if (empty($files)) {
-            $this->logger->info("Files for download not found: " . $fileId, array("app" => $this->appName));
-            return new JSONResponse(["message" => $this->trans->t("Files not found")], Http::STATUS_NOT_FOUND);
-        }
-        $file = $files[0];
+        list ($file, $error) = $this->getFile($userId, $fileId);
 
-        if (! $file instanceof File) {
-            $this->logger->info("File for download not found: " . $fileId, array("app" => $this->appName));
-            return new JSONResponse(["message" => $this->trans->t("File not found")], Http::STATUS_NOT_FOUND);
+        if (isset($error)) {
+            return $error;
         }
 
         try {
@@ -341,16 +335,10 @@ class CallbackController extends Controller {
                 \OC_Util::tearDownFS();
                 \OC_Util::setupFS($userId);
 
-                $files = $this->root->getUserFolder($userId)->getById($fileId);
-                if (empty($files)) {
-                    $this->logger->info("Files for track not found: " . $fileId, array("app" => $this->appName));
-                    return new JSONResponse(["message" => $this->trans->t("Files not found")], Http::STATUS_NOT_FOUND);
-                }
-                $file = $files[0];
+                list ($file, $error) = $this->getFile($userId, $fileId);
 
-                if (! $file instanceof File) {
-                    $this->logger->info("File for track not found: " . $fileId, array("app" => $this->appName));
-                    return new JSONResponse(["message" => $this->trans->t("File not found")], Http::STATUS_NOT_FOUND);
+                if (isset($error)) {
+                    return $error;
                 }
 
                 $fileName = $file->getName();
@@ -405,5 +393,34 @@ class CallbackController extends Controller {
         }
 
         return new JSONResponse(["error" => $error], ($error === 0 ? Http::STATUS_OK : Http::STATUS_BAD_REQUEST));
+    }
+
+
+    /**
+     * Getting file by identifier
+     *
+     * @param integer $userId - user identifier
+     * @param integer $fileId - file identifier
+     *
+     * @return array
+     */
+    private function getFile($userId, $fileId) {
+        if (empty($fileId)) {
+            return [NULL, $this->trans->t("FileId is empty")];
+        }
+
+        $files = $this->root->getUserFolder($userId)->getById($fileId);
+        if (empty($files)) {
+            $this->logger->info("Files not found: " . $fileId, array("app" => $this->appName));
+            return new JSONResponse(["message" => $this->trans->t("Files not found")], Http::STATUS_NOT_FOUND);
+        }
+        $file = $files[0];
+
+        if (! $file instanceof File) {
+            $this->logger->info("File not found: " . $fileId, array("app" => $this->appName));
+            return new JSONResponse(["message" => $this->trans->t("File not found")], Http::STATUS_NOT_FOUND);
+        }
+
+        return [$file, NULL];
     }
 }
