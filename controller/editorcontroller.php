@@ -349,7 +349,7 @@ class EditorController extends Controller {
         list ($file, $error) = $this->getFile($fileId);
 
         if (isset($error)) {
-            $this->logger->error("Convertion: " . $fileId . " " . $error, array("app" => $this->appName));
+            $this->logger->error("Config: " . $fileId . " " . $error, array("app" => $this->appName));
             return ["error" => $error];
         }
 
@@ -370,16 +370,9 @@ class EditorController extends Controller {
             ]);
 
         $fileId = $file->getId();
-        $hashCallback = $this->crypt->GetHash(["fileId" => $fileId, "userId" => $userId, "action" => "track"]);
         $fileUrl = $this->getUrl($file);
         $key = $this->getKey($file);
 
-        $canEdit = isset($format["edit"]) && $format["edit"];
-        $callback = ($file->isUpdateable() && $canEdit ? $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.track", ["doc" => $hashCallback]) : "");
-
-        if (!empty($this->config->GetStorageUrl())) {
-            $callback = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->config->GetStorageUrl(), $callback);
-        }
         $params = [
             "document" => [
                 "fileType" => $ext,
@@ -389,14 +382,12 @@ class EditorController extends Controller {
             ],
             "documentType" => $format["type"],
             "editorConfig" => [
-                "callbackUrl" => $callback,
                 "customization" => [
                     "goback" => [
                         "url" => $folderLink
                     ]
                 ],
                 "lang" => str_replace("_", "-", \OC::$server->getL10NFactory("")->get("")->getLanguageCode()),
-                "mode" => (empty($callback) ? "view" : "edit"),
                 "user" => [
                     "id" => $userId,
                     "name" => $this->userSession->getUser()->getDisplayName()
@@ -406,6 +397,22 @@ class EditorController extends Controller {
 
         if (\OC::$server->getRequest()->isUserAgent([$this::USER_AGENT_MOBILE])) {
             $params["type"] = "mobile";
+        }
+
+        $canEdit = isset($format["edit"]) && $format["edit"];
+        $editable = $file->isUpdateable()
+                    && (empty($token) || ($this->getShare($token)[0]->getPermissions() & Constants::PERMISSION_UPDATE) === Constants::PERMISSION_UPDATE);
+        if ($editable && $canEdit) {
+            $hashCallback = $this->crypt->GetHash(["fileId" => $fileId, "userId" => $userId, "token" => $token, "action" => "track"]);
+            $callback = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.track", ["doc" => $hashCallback]);
+
+            if (!empty($this->config->GetStorageUrl())) {
+                $callback = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->config->GetStorageUrl(), $callback);
+            }
+
+            $params["editorConfig"]["callbackUrl"] = $callback;
+        } else {
+            $params["editorConfig"]["mode"] = "view";
         }
 
         if (!empty($this->config->GetDocumentServerSecret())) {
