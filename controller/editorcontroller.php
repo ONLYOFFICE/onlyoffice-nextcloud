@@ -37,6 +37,7 @@ use OCP\Files\IRootFolder;
 use OCP\IL10N;
 use OCP\ILogger;
 use OCP\IRequest;
+use OCP\ISession;
 use OCP\IURLGenerator;
 use OCP\IUserSession;
 use OCP\Share\IManager;
@@ -114,6 +115,13 @@ class EditorController extends Controller {
     private $shareManager;
 
     /**
+     * Session
+     *
+     * @var ISession
+     */
+    private $session;
+
+    /**
      * Mobile regex from https://github.com/ONLYOFFICE/CommunityServer/blob/v9.1.1/web/studio/ASC.Web.Studio/web.appsettings.config#L35
      */
     const USER_AGENT_MOBILE = "/android|avantgo|playbook|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od|ad)|iris|kindle|lge |maemo|midp|mmp|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\\/|plucker|pocket|psp|symbian|treo|up\\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i";
@@ -129,6 +137,7 @@ class EditorController extends Controller {
      * @param OCA\Onlyoffice\AppConfig $config - application configuration
      * @param OCA\Onlyoffice\Crypt $crypt - hash generator
      * @param IManager $shareManager - Share manager
+     * @param IManager $ISession - Session
      */
     public function __construct($AppName,
                                     IRequest $request,
@@ -139,7 +148,8 @@ class EditorController extends Controller {
                                     ILogger $logger,
                                     AppConfig $config,
                                     Crypt $crypt,
-                                    IManager $shareManager
+                                    IManager $shareManager,
+                                    ISession $session
                                     ) {
         parent::__construct($AppName, $request);
 
@@ -151,6 +161,7 @@ class EditorController extends Controller {
         $this->config = $config;
         $this->crypt = $crypt;
         $this->shareManager = $shareManager;
+        $this->session = $session;
     }
 
     /**
@@ -365,6 +376,11 @@ class EditorController extends Controller {
 
         list ($file, $error) = $this->getFileByToken($token);
 
+        if (isset($error)) {
+            $this->logger->error("PublicPage: " . $fileId . " " . $error, array("app" => $this->appName));
+            return ["error" => $error];
+        }
+
         return $this->index($file->getId(), $token);
     }
 
@@ -534,6 +550,12 @@ class EditorController extends Controller {
 
         $share = $this->shareManager->getShareByToken($token);
         if ($share === NULL || $share === false) {
+            return [NULL, $this->trans->t("You do not have enough permissions to view the file")];
+        }
+
+        if ($share->getPassword() 
+            && (!$this->session->exists("public_link_authenticated")
+                || $this->session->get("public_link_authenticated") !== (string) $share->getId())) {
             return [NULL, $this->trans->t("You do not have enough permissions to view the file")];
         }
 

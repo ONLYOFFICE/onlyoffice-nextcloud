@@ -129,7 +129,8 @@ class Application extends App {
                 $c->query("Logger"),
                 $this->appConfig,
                 $this->crypt,
-                $c->query("IManager")
+                $c->query("IManager"),
+                $c->query("Session")
             );
         });
 
