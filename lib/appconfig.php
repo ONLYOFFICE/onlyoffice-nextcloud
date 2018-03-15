@@ -139,6 +139,21 @@ class AppConfig {
     }
 
     /**
+     * Get value from the system configuration
+     * 
+     * @param string $key - key configuration
+     *
+     * @return string
+     */
+    public function GetSystemValue($key) {
+        if (!empty($this->config->getSystemValue($this->appName))
+            && array_key_exists($key, $this->config->getSystemValue($this->appName))) {
+            return $this->config->getSystemValue($this->appName)[$key];
+        }
+        return NULL;
+    }
+
+    /**
      * Save the document service address to the application configuration
      *
      * @param string $documentServer - document service address
@@ -164,10 +179,8 @@ class AppConfig {
      */
     public function GetDocumentServerUrl() {
         $url = $this->config->getAppValue($this->appName, $this->_documentserver, "");
-        if (empty($url)
-            && !empty($this->config->getSystemValue($this->appName))
-            && array_key_exists($this->_documentserver, $this->config->getSystemValue($this->appName))) {
-            $url = $this->config->getSystemValue($this->appName)[$this->_documentserver];
+        if (empty($url)) {
+            $url = $this->getSystemValue($this->_documentserver);
         }
         if ($url !== "/") {
             $url = rtrim($url, "/");
@@ -204,10 +217,8 @@ class AppConfig {
      */
     public function GetDocumentServerInternalUrl($origin) {
         $url = $this->config->getAppValue($this->appName, $this->_documentserverInternal, "");
-        if (empty($url)
-            && !empty($this->config->getSystemValue($this->appName))
-            && array_key_exists($this->_documentserverInternal, $this->config->getSystemValue($this->appName))) {
-            $url = $this->config->getSystemValue($this->appName)[$this->_documentserverInternal];
+        if (empty($url)) {
+            $url = $this->getSystemValue($this->_documentserverInternal);
         }
         if (!$origin && empty($url)) {
             $url = $this->GetDocumentServerUrl();
@@ -241,10 +252,8 @@ class AppConfig {
      */
     public function GetStorageUrl() {
         $url = $this->config->getAppValue($this->appName, $this->_storageUrl, "");
-        if (empty($url)
-            && !empty($this->config->getSystemValue($this->appName))
-            && array_key_exists($this->_storageUrl, $this->config->getSystemValue($this->appName))) {
-            $url = $this->config->getSystemValue($this->appName)[$this->_storageUrl];
+        if (empty($url)) {
+            $url = $this->getSystemValue($this->_storageUrl);
         }
         return $url;
     }
@@ -271,10 +280,8 @@ class AppConfig {
      */
     public function GetDocumentServerSecret() {
         $secret = $this->config->getAppValue($this->appName, $this->_jwtSecret, "");
-        if (empty($secret)
-            && !empty($this->config->getSystemValue($this->appName))
-            && array_key_exists($this->_jwtSecret, $this->config->getSystemValue($this->appName))) {
-            $secret = $this->config->getSystemValue($this->appName)[$this->_jwtSecret];
+        if (empty($secret)) {
+            $secret = $this->getSystemValue($this->_jwtSecret);
         }
         return $secret;
     }
@@ -351,11 +358,7 @@ class AppConfig {
      * @return boolean
      */
     public function TurnOffVerification() {
-        $turnOff = FALSE;
-        if (!empty($this->config->getSystemValue($this->appName))
-            && array_key_exists($this->_verification, $this->config->getSystemValue($this->appName))) {
-            $turnOff = $this->config->getSystemValue($this->appName)[$this->_verification];
-        }
+        $turnOff = $this->getSystemValue($this->_verification);
         return $turnOff === TRUE;
     }
 
@@ -365,10 +368,9 @@ class AppConfig {
      * @return boolean
      */
     public function JwtHeader() {
-        $header = "Authorization";
-        if (!empty($this->config->getSystemValue($this->appName))
-            && array_key_exists($this->_jwtHeader, $this->config->getSystemValue($this->appName))) {
-            $header = $this->config->getSystemValue($this->appName)[$this->_jwtHeader];
+        $header = $this->getSystemValue($this->_jwtHeader);
+        if (empty($header)) {
+            $header = "Authorization";
         }
         return $header;
     }
