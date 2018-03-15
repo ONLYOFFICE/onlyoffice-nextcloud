@@ -565,7 +565,7 @@ class EditorController extends Controller {
     /**
      * Generate unique document identifier
      *
-     * @param File - file
+     * @param File $file - file
      *
      * @return string
      */
