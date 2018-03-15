@@ -411,6 +411,8 @@ class EditorController extends Controller {
             "type" => $type
         ];
 
+        $params = $this->setCustomization($params);
+
         if (!empty($this->config->GetDocumentServerSecret())) {
             $token = \Firebase\JWT\JWT::encode($params, $this->config->GetDocumentServerSecret());
             $params["token"] = $token;
@@ -500,5 +502,31 @@ class EditorController extends Controller {
         }
 
         return $fileUrl;
+    }
+
+    /**
+     * Set customization parameters
+     *
+     * @param array params - file parameters
+     *
+     * @return array
+     */
+    private function setCustomization($params) {
+        $customer = $this->config->getSystemValue($this->config->_customization_customer);
+        if (isset($customer)) {
+            $params["editorConfig"]["customization"]["customer"] = $customer;
+        }
+
+        $feedback = $this->config->getSystemValue($this->config->_customization_feedback);
+        if (isset($feedback)) {
+            $params["editorConfig"]["customization"]["feedback"] = $feedback;
+        }
+
+        $logo = $this->config->getSystemValue($this->config->_customization_logo);
+        if (isset($logo)) {
+            $params["editorConfig"]["customization"]["logo"] = $logo;
+        }
+
+        return $params;
     }
 }

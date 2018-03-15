@@ -128,6 +128,27 @@ class AppConfig {
     private $_settingsError = "settings_error";
 
     /**
+     * The config key for the customer
+     *
+     * @var string
+     */
+    public $_customization_customer = "customization_customer";
+
+    /**
+     * The config key for the feedback
+     *
+     * @var string
+     */
+    public $_customization_feedback = "customization_feedback";
+
+    /**
+     * The config key for the logo
+     *
+     * @var string
+     */
+    public $_customization_logo = "customization_logo";
+
+    /**
      * @param string $AppName - application name
      */
     public function __construct($AppName) {
