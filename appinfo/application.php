@@ -35,6 +35,7 @@ use OCA\Onlyoffice\Controller\CallbackController;
 use OCA\Onlyoffice\Controller\EditorController;
 use OCA\Onlyoffice\Controller\SettingsController;
 use OCA\Onlyoffice\Crypt;
+use OCA\Onlyoffice\Hookhandler;
 
 class Application extends App {
 
@@ -70,12 +71,7 @@ class Application extends App {
                 }
             });
 
-        $eventDispatcher->addListener("OCA\Files_Sharing::loadAdditionalScripts",
-            function() {
-                if (!empty($this->appConfig->GetDocumentServerUrl()) && $this->appConfig->SettingsAreSuccessful()) {
-                    Util::addScript("onlyoffice", "public");
-                }
-            });
+        Util::connectHook("OCP\Share", "share_link_access", Hookhandler::class, "PublicPage");
 
         require_once __DIR__ . "/../3rdparty/jwt/BeforeValidException.php";
         require_once __DIR__ . "/../3rdparty/jwt/ExpiredException.php";
