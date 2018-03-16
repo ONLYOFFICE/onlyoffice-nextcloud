@@ -26,7 +26,6 @@
 
 namespace OCA\Onlyoffice\Controller;
 
-use OCP\App;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Http\ContentSecurityPolicy;
 use OCP\AppFramework\Controller;
@@ -40,11 +39,8 @@ use OCP\IURLGenerator;
 use OCP\IUserSession;
 
 use OC\Files\Filesystem;
-use OC\Files\View;
-use OC\User\NoUserException;
 
 use OCA\Files\Helper;
-use OCA\Files_Versions\Storage;
 
 use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\Crypt;
@@ -456,25 +452,6 @@ class EditorController extends Controller {
         $fileId = $file->getId();
 
         $key = $fileId . "_" . $file->getMtime();
-
-        $ownerId = $file->getOwner()->getUID();
-        try {
-            $this->root->getUserFolder($ownerId);
-        } catch (NoUserException $e) {
-            $ownerId = $this->userSession->getUser()->getUID();
-        }
-
-        $ownerView = new View("/" . $ownerId . "/files");
-        $filePath = $ownerView->getPath($fileId);
-        $versions = [];
-        if (App::isEnabled("files_versions")) {
-            $versions = Storage::getVersions($ownerId, $filePath);
-        }
-
-        $countVersions = count($versions);
-        if ($countVersions > 0) {
-            $key = $key . "_" . $countVersions;
-        }
 
         return $key;
     }
