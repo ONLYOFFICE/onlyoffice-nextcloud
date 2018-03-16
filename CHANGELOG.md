@@ -1,5 +1,16 @@
 # Change Log
 
+## 1.3.0
+## Added
+- add macro-enabled and template formats
+- support shared link for document
+- customization editor
+
+## Changed
+- update template empty files
+- fix collaboration editing
+- view without converting
+
 ## 1.2.0
 ## Added
 - disabling for incorrect settings
