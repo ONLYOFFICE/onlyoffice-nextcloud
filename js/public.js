@@ -50,8 +50,7 @@
 
                 OCA.Onlyoffice.mimes = mimes;
                 var conf = OCA.Onlyoffice.mimes[extension];
-                if (conf && conf.edit) {
-
+                if (conf) {
                     var button = document.createElement("a");
                     button.href = OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/s/" + $('#sharingToken').val());
                     button.className = "button";
