@@ -36,6 +36,10 @@
 
     OCA.Onlyoffice.InitPublic = function () {
 
+        if (!!$("#dir").val().length) {
+            return;
+        }
+
         var fileName = $("#filename").val();
         var extension = fileName.substr(fileName.lastIndexOf('.') + 1);
 
