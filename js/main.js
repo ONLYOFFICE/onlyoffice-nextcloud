@@ -100,6 +100,7 @@
             t(OCA.Onlyoffice.AppName, "Convert and open document"),
             function (convert) {
                 if (!convert) {
+                    OCA.Onlyoffice.OpenEditor(fileInfoModel.id);
                     return;
                 }
 
