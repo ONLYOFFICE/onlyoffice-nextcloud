@@ -26,7 +26,6 @@
 
 namespace OCA\Onlyoffice\Controller;
 
-use OCP\App;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Http\ContentSecurityPolicy;
 use OCP\AppFramework\Controller;
@@ -43,11 +42,8 @@ use OCP\IUserSession;
 use OCP\Share\IManager;
 
 use OC\Files\Filesystem;
-use OC\Files\View;
-use OC\User\NoUserException;
 
 use OCA\Files\Helper;
-use OCA\Files_Versions\Storage;
 
 use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\Crypt;
@@ -477,6 +473,8 @@ class EditorController extends Controller {
             ];
         }
 
+        $params = $this->setCustomization($params);
+
         if (!empty($this->config->GetDocumentServerSecret())) {
             $token = \Firebase\JWT\JWT::encode($params, $this->config->GetDocumentServerSecret());
             $params["token"] = $token;
@@ -572,25 +570,6 @@ class EditorController extends Controller {
 
         $key = $fileId . "_" . $file->getMtime();
 
-        $ownerId = $file->getOwner()->getUID();
-        try {
-            $this->root->getUserFolder($ownerId);
-        } catch (NoUserException $e) {
-            $ownerId = $this->userSession->getUser()->getUID();
-        }
-
-        $ownerView = new View("/" . $ownerId . "/files");
-        $filePath = $ownerView->getPath($fileId);
-        $versions = [];
-        if (App::isEnabled("files_versions")) {
-            $versions = Storage::getVersions($ownerId, $filePath);
-        }
-
-        $countVersions = count($versions);
-        if ($countVersions > 0) {
-            $key = $key . "_" . $countVersions;
-        }
-
         return $key;
     }
 
@@ -619,5 +598,41 @@ class EditorController extends Controller {
         }
 
         return $fileUrl;
+    }
+
+    /**
+     * Set customization parameters
+     *
+     * @param array params - file parameters
+     *
+     * @return array
+     */
+    private function setCustomization($params) {
+        $customer = $this->config->getSystemValue($this->config->_customization_customer);
+        if (isset($customer)) {
+            $params["editorConfig"]["customization"]["customer"] = $customer;
+        }
+
+        $feedback = $this->config->getSystemValue($this->config->_customization_feedback);
+        if (isset($feedback)) {
+            $params["editorConfig"]["customization"]["feedback"] = $feedback;
+        }
+
+        $loaderLogo = $this->config->getSystemValue($this->config->_customization_loaderLogo);
+        if (isset($loaderLogo)) {
+            $params["editorConfig"]["customization"]["loaderLogo"] = $loaderLogo;
+        }
+
+        $loaderName = $this->config->getSystemValue($this->config->_customization_loaderName);
+        if (isset($loaderName)) {
+            $params["editorConfig"]["customization"]["loaderName"] = $loaderName;
+        }
+
+        $logo = $this->config->getSystemValue($this->config->_customization_logo);
+        if (isset($logo)) {
+            $params["editorConfig"]["customization"]["logo"] = $logo;
+        }
+
+        return $params;
     }
 }

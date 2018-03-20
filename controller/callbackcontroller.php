@@ -409,7 +409,7 @@ class CallbackController extends Controller {
                 break;
         }
 
-        return new JSONResponse(["error" => $error], ($error === 0 ? Http::STATUS_OK : Http::STATUS_BAD_REQUEST));
+        return new JSONResponse(["error" => $error], Http::STATUS_OK);
     }
 
 
