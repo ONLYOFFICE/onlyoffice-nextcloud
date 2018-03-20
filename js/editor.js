@@ -39,7 +39,7 @@
 
         var fileId = $("#iframeEditor").data("id");
         var fileToken = $("#iframeEditor").data("token");
-        if (!fileId) {
+        if (!fileId && !fileToken) {
             displayError(t(OCA.Onlyoffice.AppName, "FileId is empty"));
             return;
         }

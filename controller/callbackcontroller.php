@@ -32,6 +32,7 @@ use OCP\AppFramework\Http\DataDownloadResponse;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\Constants;
 use OCP\Files\File;
+use OCP\Files\Folder;
 use OCP\Files\IRootFolder;
 use OCP\Files\NotPermittedException;
 use OCP\IL10N;
@@ -204,7 +205,7 @@ class CallbackController extends Controller {
         $userId = $hashData->userId;
 
         $token = $hashData->token;
-        list ($file, $error) = empty($token) ? $this->getFile($userId, $fileId) : $this->getFileByToken($token);
+        list ($file, $error) = empty($token) ? $this->getFile($userId, $fileId) : $this->getFileByToken($fileId, $token);
 
         if (isset($error)) {
             return $error;
@@ -359,7 +360,7 @@ class CallbackController extends Controller {
                 }
 
                 $token = $hashData->token;
-                list ($file, $error) = empty($token) ? $this->getFile($userId, $fileId) : $this->getFileByToken($token);
+                list ($file, $error) = empty($token) ? $this->getFile($userId, $fileId) : $this->getFileByToken($fileId, $token);
 
                 if (isset($error)) {
                     return $error;
@@ -444,11 +445,12 @@ class CallbackController extends Controller {
     /**
      * Getting file by token
      *
-     * @param string $token - file token
+     * @param integer $fileId - file identifier
+     * @param string $token - access token
      *
      * @return array
      */
-    private function getFileByToken($token) {
+    private function getFileByToken($fileId, $token) {
         list ($share, $error) = $this->getShare($token);
 
         if (isset($error)) {
@@ -457,13 +459,19 @@ class CallbackController extends Controller {
 
         $node = $share->getNode();
 
-        return [$node, NULL];
+        if ($node instanceof Folder) {
+            $file = $node->getById($fileId)[0];
+        } else {
+            $file = $node;
+        }
+
+        return [$file, NULL];
     }
 
     /**
      * Getting share by token
      *
-     * @param string $token - file token
+     * @param string $token - access token
      *
      * @return array
      */

@@ -32,6 +32,7 @@ use OCP\AppFramework\Controller;
 use OCP\AutoloadNotAllowedException;
 use OCP\Constants;
 use OCP\Files\FileInfo;
+use OCP\Files\Folder;
 use OCP\Files\IRootFolder;
 use OCP\IL10N;
 use OCP\ILogger;
@@ -318,12 +319,13 @@ class EditorController extends Controller {
      * Print editor section
      *
      * @param integer $fileId - file identifier
-     * @param string $token - file token
+     * @param string $token - access token
      *
      * @return TemplateResponse
      *
      * @NoAdminRequired
      * @NoCSRFRequired
+     * @PublicPage
      */
     public function index($fileId, $token = NULL) {
         $this->logger->debug("Open: " . $fileId, array("app" => $this->appName));
@@ -360,7 +362,7 @@ class EditorController extends Controller {
     /**
      * Print public editor section
      *
-     * @param string $token - file token
+     * @param string $token - access token
      *
      * @return TemplateResponse
      *
@@ -369,22 +371,14 @@ class EditorController extends Controller {
      * @PublicPage
      */
     public function PublicPage($token) {
-
-        list ($file, $error) = $this->getFileByToken($token);
-
-        if (isset($error)) {
-            $this->logger->error("PublicPage: " . $fileId . " " . $error, array("app" => $this->appName));
-            return ["error" => $error];
-        }
-
-        return $this->index($file->getId(), $token);
+        return $this->index(0, $token);
     }
 
     /**
      * Collecting the file parameters for the document service
      *
      * @param integer $fileId - file identifier
-     * @param string $token - file token
+     * @param string $token - access token
      *
      * @return array
      *
@@ -393,7 +387,7 @@ class EditorController extends Controller {
      */
     public function config($fileId, $token = NULL) {
 
-        list ($file, $error) = empty($token) ? $this->getFile($fileId) : $this->getFileByToken($token);
+        list ($file, $error) = empty($token) ? $this->getFile($fileId) : $this->getFileByToken($fileId, $token);
 
         if (isset($error)) {
             $this->logger->error("Config: " . $fileId . " " . $error, array("app" => $this->appName));
@@ -512,11 +506,12 @@ class EditorController extends Controller {
     /**
      * Getting file by token
      *
-     * @param string $token - file token
+     * @param integer $fileId - file identifier
+     * @param string $token - access token
      *
      * @return array
      */
-    private function getFileByToken($token) {
+    private function getFileByToken($fileId, $token) {
         list ($share, $error) = $this->getShare($token);
 
         if (isset($error)) {
@@ -529,13 +524,19 @@ class EditorController extends Controller {
 
         $node = $share->getNode();
 
-        return [$node, NULL];
+        if ($node instanceof Folder) {
+            $file = $node->getById($fileId)[0];
+        } else {
+            $file = $node;
+        }
+
+        return [$file, NULL];
     }
 
     /**
      * Getting share by token
      *
-     * @param string $token - file token
+     * @param string $token - access token
      *
      * @return array
      */
@@ -577,7 +578,7 @@ class EditorController extends Controller {
      * Generate secure link to download document
      *
      * @param integer $fileId - file identifier
-     * @param string $token - file token
+     * @param string $token - access token
      *
      * @return string
      */
