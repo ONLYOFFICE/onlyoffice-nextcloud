@@ -40,7 +40,8 @@ class HookHandler {
         $appConfig = new AppConfig($appName);
 
         if (!empty($appConfig->GetDocumentServerUrl()) && $appConfig->SettingsAreSuccessful()) {
-            Util::addScript("onlyoffice", "public");
+            Util::addScript("onlyoffice", "main");
+            Util::addStyle("onlyoffice", "main");
         }
     }
 }
