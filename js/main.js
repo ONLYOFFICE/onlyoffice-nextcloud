@@ -129,38 +129,54 @@
             });
     };
 
+    OCA.Onlyoffice.GetSettings = function (callbackSettings) {
+        if (OCA.Onlyoffice.setting.formats) {
+
+            callbackSettings();
+
+        } else {
+
+            $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/settings"),
+                function onSuccess(settings) {
+                    OCA.Onlyoffice.setting = settings;
+
+                    callbackSettings();
+                }
+            );
+
+        }
+    };
+
     OCA.Onlyoffice.FileList = {
         attach: function (fileList) {
             if (fileList.id == "trashbin") {
                 return;
             }
 
-            $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/settings"),
-                function onSuccess(settings) {
-                    OCA.Onlyoffice.setting = settings;
-                    var mimes = OCA.Onlyoffice.setting.formats;
+            var register = function() {
+                var mimes = OCA.Onlyoffice.setting.formats;
 
-                    OCA.Onlyoffice.mimes = mimes;
-                    $.each(mimes, function (ext, attr) {
-                        fileList.fileActions.registerAction({
-                            name: "onlyofficeOpen",
-                            displayName: t(OCA.Onlyoffice.AppName, "Open in ONLYOFFICE"),
-                            mime: attr.mime,
-                            permissions: OC.PERMISSION_READ,
-                            icon: function () {
-                                return OC.imagePath(OCA.Onlyoffice.AppName, "app-dark");
-                            },
-                            actionHandler: function (fileName, context) {
-                                OCA.Onlyoffice.FileClick(fileName, context, attr);
-                            }
-                        });
-
-                        if (attr.def) {
-                            fileList.fileActions.setDefault(attr.mime, "onlyofficeOpen");
+                $.each(mimes, function (ext, attr) {
+                    fileList.fileActions.registerAction({
+                        name: "onlyofficeOpen",
+                        displayName: t(OCA.Onlyoffice.AppName, "Open in ONLYOFFICE"),
+                        mime: attr.mime,
+                        permissions: OC.PERMISSION_READ,
+                        icon: function () {
+                            return OC.imagePath(OCA.Onlyoffice.AppName, "app-dark");
+                        },
+                        actionHandler: function (fileName, context) {
+                            OCA.Onlyoffice.FileClick(fileName, context, attr);
                         }
                     });
-                }
-            );
+
+                    if (attr.def) {
+                        fileList.fileActions.setDefault(attr.mime, "onlyofficeOpen");
+                    }
+                });
+            }
+
+            OCA.Onlyoffice.GetSettings(register);
         }
     };
 
@@ -206,7 +222,10 @@
             });
         }
     };
+
+
+    OC.Plugins.register("OCA.Files.FileList", OCA.Onlyoffice.FileList);
+    OC.Plugins.register("OCA.Files.NewFileMenu", OCA.Onlyoffice.NewFileMenu);
+
 })(OCA);
 
-OC.Plugins.register("OCA.Files.FileList", OCA.Onlyoffice.FileList);
-OC.Plugins.register("OCA.Files.NewFileMenu", OCA.Onlyoffice.NewFileMenu);
