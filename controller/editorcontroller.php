@@ -472,10 +472,8 @@ class EditorController extends Controller {
             }
             $folderLink = $this->urlGenerator->linkToRouteAbsolute("files.view.index", $linkAttr);
 
-            $params["editorConfig"]["customization"] = [
-                "goback" => [
-                    "url"  => $folderLink
-                ]
+            $params["editorConfig"]["customization"]["goback"] = [
+                "url"  => $folderLink
             ];
         }
 
