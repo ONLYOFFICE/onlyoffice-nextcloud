@@ -65,7 +65,7 @@
 
                         if (docIsChanged !== event.data) {
                             var titleChange = function () {
-                                window.document.title = config.document.title + (event.data ? " *" : "") + ' - ' + oc_defaults.title;
+                                window.document.title = config.document.title + (event.data ? " *" : "") + " - " + oc_defaults.title;
                                 docIsChanged = event.data;
                             };
 
