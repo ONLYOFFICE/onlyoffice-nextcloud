@@ -149,6 +149,13 @@ class AppConfig {
     public $_customization_loaderLogo = "customization_loaderLogo";
 
     /**
+     * The config key for the loaderName
+     *
+     * @var string
+     */
+    public $_customization_loaderName = "customization_loaderName";
+
+    /**
      * The config key for the logo
      *
      * @var string
