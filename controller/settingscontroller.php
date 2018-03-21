@@ -184,6 +184,7 @@ class SettingsController extends Controller {
      * @return array
      *
      * @NoAdminRequired
+     * @NoCSRFRequired
      * @PublicPage
      */
     public function GetSettings() {
