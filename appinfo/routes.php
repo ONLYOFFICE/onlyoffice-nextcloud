@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System Limited 2010-2017
+ * (c) Copyright Ascensio System Limited 2010-2018
  *
  * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU
  * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html).
@@ -30,6 +30,7 @@ return [
        ["name" => "callback#emptyfile", "url" => "/empty", "verb" => "GET"],
        ["name" => "callback#track", "url" => "/track", "verb" => "POST"],
        ["name" => "editor#index", "url" => "/{fileId}", "verb" => "GET"],
+       ["name" => "editor#public_page", "url" => "/s/{token}", "verb" => "GET"],
        ["name" => "editor#config", "url" => "/ajax/config/{fileId}", "verb" => "GET"],
        ["name" => "editor#create", "url" => "/ajax/new", "verb" => "POST"],
        ["name" => "editor#convert", "url" => "/ajax/convert", "verb" => "POST"],

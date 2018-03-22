@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System Limited 2010-2017
+ * (c) Copyright Ascensio System Limited 2010-2018
  *
  * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU
  * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html).
@@ -30,13 +30,17 @@ use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataDownloadResponse;
 use OCP\AppFramework\Http\JSONResponse;
+use OCP\Constants;
 use OCP\Files\File;
+use OCP\Files\Folder;
 use OCP\Files\IRootFolder;
+use OCP\Files\NotPermittedException;
 use OCP\IL10N;
 use OCP\ILogger;
 use OCP\IRequest;
 use OCP\IUserManager;
 use OCP\IUserSession;
+use OCP\Share\IManager;
 
 use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\Crypt;
@@ -99,6 +103,13 @@ class CallbackController extends Controller {
     private $crypt;
 
     /**
+     * Share manager
+     *
+     * @var OCP\Share\IManager
+     */
+    private $shareManager;
+
+    /**
      * Status of the document
      *
      * @var Array
@@ -121,6 +132,7 @@ class CallbackController extends Controller {
      * @param ILogger $logger - logger
      * @param OCA\Onlyoffice\AppConfig $config - application configuration
      * @param OCA\Onlyoffice\Crypt $crypt - hash generator
+     * @param IManager $shareManager - Share manager
      */
     public function __construct($AppName, 
                                     IRequest $request,
@@ -130,7 +142,8 @@ class CallbackController extends Controller {
                                     IL10N $trans,
                                     ILogger $logger,
                                     AppConfig $config,
-                                    Crypt $crypt
+                                    Crypt $crypt,
+                                    IManager $shareManager
                                     ) {
         parent::__construct($AppName, $request);
 
@@ -141,6 +154,7 @@ class CallbackController extends Controller {
         $this->logger = $logger;
         $this->config = $config;
         $this->crypt = $crypt;
+        $this->shareManager = $shareManager;
     }
 
 
@@ -190,21 +204,16 @@ class CallbackController extends Controller {
 
         $userId = $hashData->userId;
 
-        $files = $this->root->getUserFolder($userId)->getById($fileId);
-        if (empty($files)) {
-            $this->logger->info("Files for download not found: " . $fileId, array("app" => $this->appName));
-            return new JSONResponse(["message" => $this->trans->t("Files not found")], Http::STATUS_NOT_FOUND);
-        }
-        $file = $files[0];
+        $token = $hashData->token;
+        list ($file, $error) = empty($token) ? $this->getFile($userId, $fileId) : $this->getFileByToken($fileId, $token);
 
-        if (! $file instanceof File) {
-            $this->logger->info("File for download not found: " . $fileId, array("app" => $this->appName));
-            return new JSONResponse(["message" => $this->trans->t("File not found")], Http::STATUS_NOT_FOUND);
+        if (isset($error)) {
+            return $error;
         }
 
         try {
             return new DataDownloadResponse($file->getContent(), $file->getName(), $file->getMimeType());
-        } catch (\OCP\Files\NotPermittedException  $e) {
+        } catch (NotPermittedException  $e) {
             $this->logger->info("Download Not permitted: " . $fileId . " " . $e->getMessage(), array("app" => $this->appName));
             return new JSONResponse(["message" => $this->trans->t("Not permitted")], Http::STATUS_FORBIDDEN);
         }
@@ -263,7 +272,7 @@ class CallbackController extends Controller {
 
         try {
             return new DataDownloadResponse($template, "new.docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
-        } catch (\OCP\Files\NotPermittedException  $e) {
+        } catch (NotPermittedException  $e) {
             $this->logger->info("Download Not permitted: " . $fileId . " " . $e->getMessage(), array("app" => $this->appName));
             return new JSONResponse(["message" => $this->trans->t("Not permitted")], Http::STATUS_FORBIDDEN);
         }
@@ -335,21 +344,26 @@ class CallbackController extends Controller {
                     return new JSONResponse(["message" => $this->trans->t("Url not found")], Http::STATUS_BAD_REQUEST);
                 }
 
-                $userId = $hashData->userId;
+                $userId = $users[0];
+                $user = $this->userManager->get($userId);
+                if (!empty($user)) {
+                    $this->logger->info("setupFS " . $userId, array("app" => $this->appName));
+                    \OC_Util::tearDownFS();
+                    \OC_Util::setupFS($userId);
 
-                \OC_Util::tearDownFS();
-                \OC_Util::setupFS($userId);
+                    $this->userSession->setUser($user);
+                } else {
+                    $ownerId = $hashData->ownerId;
 
-                $files = $this->root->getUserFolder($userId)->getById($fileId);
-                if (empty($files)) {
-                    $this->logger->info("Files for track not found: " . $fileId, array("app" => $this->appName));
-                    return new JSONResponse(["message" => $this->trans->t("Files not found")], Http::STATUS_NOT_FOUND);
+                    \OC_Util::tearDownFS();
+                    \OC_Util::setupFS($ownerId);
                 }
-                $file = $files[0];
 
-                if (! $file instanceof File) {
-                    $this->logger->info("File for track not found: " . $fileId, array("app" => $this->appName));
-                    return new JSONResponse(["message" => $this->trans->t("File not found")], Http::STATUS_NOT_FOUND);
+                $token = $hashData->token;
+                list ($file, $error) = empty($token) ? $this->getFile($userId, $fileId) : $this->getFileByToken($fileId, $token);
+
+                if (isset($error)) {
+                    return $error;
                 }
 
                 $fileName = $file->getName();
@@ -374,7 +388,7 @@ class CallbackController extends Controller {
 
                     if (!preg_match("/^https?:\/\//i", $from)) {
                         $parsedUrl = parse_url($url);
-                        $from = $parsedUrl["scheme"] . "://" . $parsedUrl["host"] . (array_key_exists("port", $parsedUrl) ? (":" . $parsedUrl["port"]) : "") . "/";
+                        $from = $parsedUrl["scheme"] . "://" . $parsedUrl["host"] . (array_key_exists("port", $parsedUrl) ? (":" . $parsedUrl["port"]) : "") . $from;
                     }
 
                     if ($from !== $documentServerUrl)
@@ -382,13 +396,6 @@ class CallbackController extends Controller {
                         $this->logger->debug("Replace in track from " . $from . " to " . $documentServerUrl, array("app" => $this->appName));
                         $url = str_replace($from, $documentServerUrl, $url);
                     }
-                }
-
-                $this->userSession->setUser($this->userManager->get($users[0]));
-
-                if (!$file->isUpdateable()) {
-                    $this->logger->error("Save error. File is not updateable: " . $fileId, array("app" => $this->appName));
-                    return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
                 }
 
                 if (($newData = $documentService->Request($url))) {
@@ -403,6 +410,81 @@ class CallbackController extends Controller {
                 break;
         }
 
-        return new JSONResponse(["error" => $error], ($error === 0 ? Http::STATUS_OK : Http::STATUS_BAD_REQUEST));
+        return new JSONResponse(["error" => $error], Http::STATUS_OK);
+    }
+
+
+    /**
+     * Getting file by identifier
+     *
+     * @param integer $userId - user identifier
+     * @param integer $fileId - file identifier
+     *
+     * @return array
+     */
+    private function getFile($userId, $fileId) {
+        if (empty($fileId)) {
+            return [NULL, $this->trans->t("FileId is empty")];
+        }
+
+        $files = $this->root->getUserFolder($userId)->getById($fileId);
+        if (empty($files)) {
+            $this->logger->info("Files not found: " . $fileId, array("app" => $this->appName));
+            return new JSONResponse(["message" => $this->trans->t("Files not found")], Http::STATUS_NOT_FOUND);
+        }
+        $file = $files[0];
+
+        if (! $file instanceof File) {
+            $this->logger->info("File not found: " . $fileId, array("app" => $this->appName));
+            return new JSONResponse(["message" => $this->trans->t("File not found")], Http::STATUS_NOT_FOUND);
+        }
+
+        return [$file, NULL];
+    }
+
+    /**
+     * Getting file by token
+     *
+     * @param integer $fileId - file identifier
+     * @param string $token - access token
+     *
+     * @return array
+     */
+    private function getFileByToken($fileId, $token) {
+        list ($share, $error) = $this->getShare($token);
+
+        if (isset($error)) {
+            return [NULL, $error];
+        }
+
+        $node = $share->getNode();
+
+        if ($node instanceof Folder) {
+            $file = $node->getById($fileId)[0];
+        } else {
+            $file = $node;
+        }
+
+        return [$file, NULL];
+    }
+
+    /**
+     * Getting share by token
+     *
+     * @param string $token - access token
+     *
+     * @return array
+     */
+    private function getShare($token) {
+        if (empty($token)) {
+            return [NULL, $this->trans->t("FileId is empty")];
+        }
+
+        $share = $this->shareManager->getShareByToken($token);
+        if ($share === NULL || $share === false) {
+            return [NULL, $this->trans->t("You do not have enough permissions to view the file")];
+        }
+
+        return [$share, NULL];
     }
 }

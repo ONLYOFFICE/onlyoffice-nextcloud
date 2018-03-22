@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System Limited 2010-2017
+ * (c) Copyright Ascensio System Limited 2010-2018
  *
  * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU
  * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html).
@@ -30,14 +30,11 @@
 
 <div id="app">
 
-    <div id="iframeEditor" data-id="<?php p($_["fileId"]) ?>"></div>
+    <div id="iframeEditor" data-id="<?php p($_["fileId"]) ?>" data-token="<?php p($_["token"]) ?>"></div>
 
-    <?php if (!empty($_["documentServerUrl"])) {
-        print_unescaped("<script nonce=\"") .
-        p(base64_encode($_["requesttoken"])) .
-        print_unescaped("\" src=\"") .
-        p($_["documentServerUrl"]) .
-        print_unescaped("web-apps/apps/api/documents/api.js\" type=\"text/javascript\"></script>");
-    } ?>
+    <?php if (!empty($_["documentServerUrl"])) { ?>
+        <script nonce="<?php p(base64_encode($_["requesttoken"])) ?>"
+            src="<?php p($_["documentServerUrl"]) ?>web-apps/apps/api/documents/api.js" type="text/javascript"></script>
+    <?php } ?>
 
 </div>

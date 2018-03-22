@@ -1,6 +1,6 @@
 /**
  *
- * (c) Copyright Ascensio System Limited 2010-2017
+ * (c) Copyright Ascensio System Limited 2010-2018
  *
  * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU
  * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html).
@@ -38,7 +38,8 @@
         };
 
         var fileId = $("#iframeEditor").data("id");
-        if (!fileId) {
+        var fileToken = $("#iframeEditor").data("token");
+        if (!fileId && !fileToken) {
             displayError(t(OCA.Onlyoffice.AppName, "FileId is empty"));
             return;
         }
@@ -49,7 +50,7 @@
         }
 
         $.ajax({
-            url: OC.generateUrl("apps/onlyoffice/ajax/config/" + fileId),
+            url: OC.generateUrl("apps/onlyoffice/ajax/config/" + fileId + (fileToken ? "?token=" + encodeURIComponent(fileToken) : "")),
             success: function onSuccess(config) {
                 if (config) {
                     if (config.error != null) {
@@ -65,7 +66,7 @@
 
                         if (docIsChanged !== event.data) {
                             var titleChange = function () {
-                                window.document.title = config.document.title + (event.data ? " *" : "") + ' - ' + oc_defaults.title;
+                                window.document.title = config.document.title + (event.data ? " *" : "") + " - " + oc_defaults.title;
                                 docIsChanged = event.data;
                             };
 

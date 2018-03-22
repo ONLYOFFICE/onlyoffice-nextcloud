@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System Limited 2010-2017
+ * (c) Copyright Ascensio System Limited 2010-2018
  *
  * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU
  * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html).
@@ -128,6 +128,41 @@ class AppConfig {
     private $_settingsError = "settings_error";
 
     /**
+     * The config key for the customer
+     *
+     * @var string
+     */
+    public $_customization_customer = "customization_customer";
+
+    /**
+     * The config key for the feedback
+     *
+     * @var string
+     */
+    public $_customization_feedback = "customization_feedback";
+
+    /**
+     * The config key for the loaderLogo
+     *
+     * @var string
+     */
+    public $_customization_loaderLogo = "customization_loaderLogo";
+
+    /**
+     * The config key for the loaderName
+     *
+     * @var string
+     */
+    public $_customization_loaderName = "customization_loaderName";
+
+    /**
+     * The config key for the logo
+     *
+     * @var string
+     */
+    public $_customization_logo = "customization_logo";
+
+    /**
      * @param string $AppName - application name
      */
     public function __construct($AppName) {
@@ -136,6 +171,21 @@ class AppConfig {
 
         $this->config = \OC::$server->getConfig();
         $this->logger = \OC::$server->getLogger();
+    }
+
+    /**
+     * Get value from the system configuration
+     * 
+     * @param string $key - key configuration
+     *
+     * @return string
+     */
+    public function GetSystemValue($key) {
+        if (!empty($this->config->getSystemValue($this->appName))
+            && array_key_exists($key, $this->config->getSystemValue($this->appName))) {
+            return $this->config->getSystemValue($this->appName)[$key];
+        }
+        return NULL;
     }
 
     /**
@@ -164,10 +214,8 @@ class AppConfig {
      */
     public function GetDocumentServerUrl() {
         $url = $this->config->getAppValue($this->appName, $this->_documentserver, "");
-        if (empty($url)
-            && !empty($this->config->getSystemValue($this->appName))
-            && array_key_exists($this->_documentserver, $this->config->getSystemValue($this->appName))) {
-            $url = $this->config->getSystemValue($this->appName)[$this->_documentserver];
+        if (empty($url)) {
+            $url = $this->getSystemValue($this->_documentserver);
         }
         if ($url !== "/") {
             $url = rtrim($url, "/");
@@ -204,10 +252,8 @@ class AppConfig {
      */
     public function GetDocumentServerInternalUrl($origin) {
         $url = $this->config->getAppValue($this->appName, $this->_documentserverInternal, "");
-        if (empty($url)
-            && !empty($this->config->getSystemValue($this->appName))
-            && array_key_exists($this->_documentserverInternal, $this->config->getSystemValue($this->appName))) {
-            $url = $this->config->getSystemValue($this->appName)[$this->_documentserverInternal];
+        if (empty($url)) {
+            $url = $this->getSystemValue($this->_documentserverInternal);
         }
         if (!$origin && empty($url)) {
             $url = $this->GetDocumentServerUrl();
@@ -241,10 +287,8 @@ class AppConfig {
      */
     public function GetStorageUrl() {
         $url = $this->config->getAppValue($this->appName, $this->_storageUrl, "");
-        if (empty($url)
-            && !empty($this->config->getSystemValue($this->appName))
-            && array_key_exists($this->_storageUrl, $this->config->getSystemValue($this->appName))) {
-            $url = $this->config->getSystemValue($this->appName)[$this->_storageUrl];
+        if (empty($url)) {
+            $url = $this->getSystemValue($this->_storageUrl);
         }
         return $url;
     }
@@ -271,10 +315,8 @@ class AppConfig {
      */
     public function GetDocumentServerSecret() {
         $secret = $this->config->getAppValue($this->appName, $this->_jwtSecret, "");
-        if (empty($secret)
-            && !empty($this->config->getSystemValue($this->appName))
-            && array_key_exists($this->_jwtSecret, $this->config->getSystemValue($this->appName))) {
-            $secret = $this->config->getSystemValue($this->appName)[$this->_jwtSecret];
+        if (empty($secret)) {
+            $secret = $this->getSystemValue($this->_jwtSecret);
         }
         return $secret;
     }
@@ -351,11 +393,7 @@ class AppConfig {
      * @return boolean
      */
     public function TurnOffVerification() {
-        $turnOff = FALSE;
-        if (!empty($this->config->getSystemValue($this->appName))
-            && array_key_exists($this->_verification, $this->config->getSystemValue($this->appName))) {
-            $turnOff = $this->config->getSystemValue($this->appName)[$this->_verification];
-        }
+        $turnOff = $this->getSystemValue($this->_verification);
         return $turnOff === TRUE;
     }
 
@@ -365,10 +403,9 @@ class AppConfig {
      * @return boolean
      */
     public function JwtHeader() {
-        $header = "Authorization";
-        if (!empty($this->config->getSystemValue($this->appName))
-            && array_key_exists($this->_jwtHeader, $this->config->getSystemValue($this->appName))) {
-            $header = $this->config->getSystemValue($this->appName)[$this->_jwtHeader];
+        $header = $this->getSystemValue($this->_jwtHeader);
+        if (empty($header)) {
+            $header = "Authorization";
         }
         return $header;
     }
@@ -404,13 +441,20 @@ class AppConfig {
             "ppsx" => [ "mime" => "application/vnd.openxmlformats-officedocument.presentationml.slideshow", "type" => "presentation", "edit" => true, "def" => true ],
             "txt" => [ "mime" => "text/plain", "type" => "text", "edit" => true ],
             "csv" => [ "mime" => "text/csv", "type" => "spreadsheet", "edit" => true ],
+            "docm" => [ "mime" => "application/vnd.ms-word.document.macroEnabled.12", "type" => "text", "conv" => true ],
+            "xlsm" => [ "mime" => "application/vnd.ms-excel.sheet.macroEnabled.12", "type" => "spreadsheet", "conv" => true ],
+            "xltx" => [ "mime" => "application/vnd.openxmlformats-officedocument.spreadsheetml.template", "type" => "spreadsheet", "conv" => true ],
+            "xltm" => [ "mime" => "application/vnd.ms-excel.template.macroEnabled.12", "type" => "spreadsheet", "conv" => true ],
+            "pptm" => [ "mime" => "application/vnd.ms-powerpoint.presentation.macroEnabled.12", "type" => "presentation", "conv" => true ],
+            "ppsm" => [ "mime" => "application/vnd.ms-powerpoint.slideshow.macroEnabled.12", "type" => "presentation", "conv" => true ],
+            "potx" => [ "mime" => "application/vnd.openxmlformats-officedocument.presentationml.template", "type" => "presentation", "conv" => true ],
+            "potm" => [ "mime" => "application/vnd.ms-powerpoint.template.macroEnabled.12", "type" => "presentation", "conv" => true ],
             "odt" => [ "mime" => "application/vnd.oasis.opendocument.text", "type" => "text", "conv" => true ],
             "ods" => [ "mime" => "application/vnd.oasis.opendocument.spreadsheet", "type" => "spreadsheet", "conv" => true ],
             "odp" => [ "mime" => "application/vnd.oasis.opendocument.presentation", "type" => "presentation", "conv" => true ],
             "doc" => [ "mime" => "application/msword", "type" => "text", "conv" => true ],
             "xls" => [ "mime" => "application/vnd.ms-excel", "type" => "spreadsheet", "conv" => true ],
             "ppt" => [ "mime" => "application/vnd.ms-powerpoint", "type" => "presentation", "conv" => true ],
-            "pps" => [ "mime" => "application/vnd.ms-powerpoint", "type" => "presentation", "conv" => true ],
             "epub" => [ "mime" => "application/epub+zip", "type" => "text", "conv" => true ],
             "rtf" => [ "mime" => "text/rtf", "type" => "text", "type" => "text", "conv" => true ],
             "mht" => [ "mime" => "message/rfc822", "conv" => true ],

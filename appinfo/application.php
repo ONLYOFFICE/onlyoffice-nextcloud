@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System Limited 2010-2017
+ * (c) Copyright Ascensio System Limited 2010-2018
  *
  * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU
  * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html).
@@ -27,6 +27,7 @@
 namespace OCA\Onlyoffice\AppInfo;
 
 use OCP\AppFramework\App;
+use OCP\Share\IManager;
 use OCP\Util;
 
 use OCA\Onlyoffice\AppConfig;
@@ -34,6 +35,7 @@ use OCA\Onlyoffice\Controller\CallbackController;
 use OCA\Onlyoffice\Controller\EditorController;
 use OCA\Onlyoffice\Controller\SettingsController;
 use OCA\Onlyoffice\Crypt;
+use OCA\Onlyoffice\Hookhandler;
 
 class Application extends App {
 
@@ -68,6 +70,8 @@ class Application extends App {
                     Util::addStyle("onlyoffice", "main");
                 }
             });
+
+        Util::connectHook("OCP\Share", "share_link_access", Hookhandler::class, "PublicPage");
 
         require_once __DIR__ . "/../3rdparty/jwt/BeforeValidException.php";
         require_once __DIR__ . "/../3rdparty/jwt/ExpiredException.php";
@@ -120,7 +124,9 @@ class Application extends App {
                 $c->query("L10N"),
                 $c->query("Logger"),
                 $this->appConfig,
-                $this->crypt
+                $this->crypt,
+                $c->query("IManager"),
+                $c->query("Session")
             );
         });
 
@@ -134,7 +140,8 @@ class Application extends App {
                 $c->query("L10N"),
                 $c->query("Logger"),
                 $this->appConfig,
-                $this->crypt
+                $this->crypt,
+                $c->query("IManager")
             );
         });
     }
