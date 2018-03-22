@@ -38,7 +38,8 @@
         };
 
         var fileId = $("#iframeEditor").data("id");
-        if (!fileId) {
+        var fileToken = $("#iframeEditor").data("token");
+        if (!fileId && !fileToken) {
             displayError(t(OCA.Onlyoffice.AppName, "FileId is empty"));
             return;
         }
@@ -49,7 +50,7 @@
         }
 
         $.ajax({
-            url: OC.generateUrl("apps/onlyoffice/ajax/config/" + fileId),
+            url: OC.generateUrl("apps/onlyoffice/ajax/config/" + fileId + (fileToken ? "?token=" + encodeURIComponent(fileToken) : "")),
             success: function onSuccess(config) {
                 if (config) {
                     if (config.error != null) {

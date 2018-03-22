@@ -30,7 +30,7 @@
 
 <div id="app">
 
-    <div id="iframeEditor" data-id="<?php p($_["fileId"]) ?>"></div>
+    <div id="iframeEditor" data-id="<?php p($_["fileId"]) ?>" data-token="<?php p($_["token"]) ?>"></div>
 
     <?php if (!empty($_["documentServerUrl"])) { ?>
         <script nonce="<?php p(base64_encode($_["requesttoken"])) ?>"

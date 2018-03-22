@@ -24,6 +24,7 @@
  */
 
 #app > iframe {
+    position: absolute;
     vertical-align: top;
 }
 

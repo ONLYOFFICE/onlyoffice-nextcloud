@@ -79,6 +79,10 @@
                 fileId: fileId
             });
 
+        if ($("#isPublic").val()) {
+            url += "?token=" + encodeURIComponent($("#sharingToken").val());
+        }
+
         if (winEditor && winEditor.location) {
             winEditor.location.href = url;
         } else if (!OCA.Onlyoffice.setting.sameTab) {
@@ -91,7 +95,7 @@
     OCA.Onlyoffice.FileClick = function (fileName, context, attr) {
         var fileInfoModel = context.fileInfoModel || context.fileList.getModelForFile(fileName);
         var fileList = context.fileList;
-        if (!attr.conv || (fileList.dirInfo.permissions & OC.PERMISSION_CREATE) !== OC.PERMISSION_CREATE) {
+        if (!attr.conv || (fileList.dirInfo.permissions & OC.PERMISSION_CREATE) !== OC.PERMISSION_CREATE || $("#isPublic").val()) {
             OCA.Onlyoffice.OpenEditor(fileInfoModel.id);
             return;
         }
@@ -223,9 +227,37 @@
         }
     };
 
+    var initPage = function(){
+        if ($("#isPublic").val() && !$("#dir").val().length) {
+            var fileName = $("#filename").val();
+            var extension = fileName.substr(fileName.lastIndexOf(".") + 1);
 
-    OC.Plugins.register("OCA.Files.FileList", OCA.Onlyoffice.FileList);
-    OC.Plugins.register("OCA.Files.NewFileMenu", OCA.Onlyoffice.NewFileMenu);
+            var initSharedButton = function() {
+                var mimes = OCA.Onlyoffice.setting.formats;
+
+                var conf = mimes[extension];
+                if (conf) {
+                    var button = document.createElement("a");
+                    button.href = OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/s/" + encodeURIComponent($("#sharingToken").val()));
+                    button.className = "button";
+                    button.innerText = t(OCA.Onlyoffice.AppName, "Open in ONLYOFFICE")
+
+                    if (!OCA.Onlyoffice.setting.sameTab) {
+                        button.target = "_blank";
+                    }
+
+                    $("#preview").append(button);
+                }
+            };
+
+            OCA.Onlyoffice.GetSettings(initSharedButton);
+        } else {
+            OC.Plugins.register("OCA.Files.FileList", OCA.Onlyoffice.FileList);
+            OC.Plugins.register("OCA.Files.NewFileMenu", OCA.Onlyoffice.NewFileMenu);
+        }
+    };
+
+    $(document).ready(initPage)
 
 })(OCA);
 
