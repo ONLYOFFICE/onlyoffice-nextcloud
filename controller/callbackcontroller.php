@@ -365,6 +365,22 @@ class CallbackController extends Controller {
                     return $error;
                 }
 
+                $documentServerUrl = $this->config->GetDocumentServerInternalUrl(true);
+                if (!empty($documentServerUrl)) {
+                    $from = $this->config->GetDocumentServerUrl();
+
+                    if (!preg_match("/^https?:\/\//i", $from)) {
+                        $parsedUrl = parse_url($url);
+                        $from = $parsedUrl["scheme"] . "://" . $parsedUrl["host"] . (array_key_exists("port", $parsedUrl) ? (":" . $parsedUrl["port"]) : "") . $from;
+                    }
+
+                    if ($from !== $documentServerUrl)
+                    {
+                        $this->logger->debug("Replace in track from " . $from . " to " . $documentServerUrl, array("app" => $this->appName));
+                        $url = str_replace($from, $documentServerUrl, $url);
+                    }
+                }
+
                 $fileName = $file->getName();
                 $curExt = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
                 $downloadExt = strtolower(pathinfo($url, PATHINFO_EXTENSION));
@@ -379,22 +395,6 @@ class CallbackController extends Controller {
                     } catch (\Exception $e) {
                         $this->logger->error("GetConvertedUri on save error: " . $e->getMessage(), array("app" => $this->appName));
                         return new JSONResponse(["message" => $e->getMessage()], Http::STATUS_INTERNAL_SERVER_ERROR);
-                    }
-                }
-
-                $documentServerUrl = $this->config->GetDocumentServerInternalUrl(true);
-                if (!empty($documentServerUrl)) {
-                    $from = $this->config->GetDocumentServerUrl();
-
-                    if (!preg_match("/^https?:\/\//i", $from)) {
-                        $parsedUrl = parse_url($url);
-                        $from = $parsedUrl["scheme"] . "://" . $parsedUrl["host"] . (array_key_exists("port", $parsedUrl) ? (":" . $parsedUrl["port"]) : "") . $from;
-                    }
-
-                    if ($from !== $documentServerUrl)
-                    {
-                        $this->logger->debug("Replace in track from " . $from . " to " . $documentServerUrl, array("app" => $this->appName));
-                        $url = str_replace($from, $documentServerUrl, $url);
                     }
                 }
 
