@@ -230,7 +230,7 @@
     var initPage = function(){
         if ($("#isPublic").val() && !$("#dir").val().length) {
             var fileName = $("#filename").val();
-            var extension = fileName.substr(fileName.lastIndexOf(".") + 1);
+            var extension = fileName.substr(fileName.lastIndexOf(".") + 1).toLowerCase();
 
             var initSharedButton = function() {
                 var mimes = OCA.Onlyoffice.setting.formats;
