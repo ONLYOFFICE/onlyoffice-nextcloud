@@ -347,7 +347,6 @@ class CallbackController extends Controller {
                 $userId = $users[0];
                 $user = $this->userManager->get($userId);
                 if (!empty($user)) {
-                    $this->logger->info("setupFS " . $userId, array("app" => $this->appName));
                     \OC_Util::tearDownFS();
                     \OC_Util::setupFS($userId);
 
@@ -375,6 +374,7 @@ class CallbackController extends Controller {
                     $key =  DocumentService::GenerateRevisionId($fileId . $url);
 
                     try {
+                        $this->logger->debug("GetConvertedUri from " . $downloadExt . " to " . $curExt . " " .  $url, array("app" => $this->appName));
                         $url = $documentService->GetConvertedUri($url, $downloadExt, $curExt, $key);
                     } catch (\Exception $e) {
                         $this->logger->error("GetConvertedUri on save error: " . $e->getMessage(), array("app" => $this->appName));
