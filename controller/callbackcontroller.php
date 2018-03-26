@@ -204,7 +204,7 @@ class CallbackController extends Controller {
 
         $userId = $hashData->userId;
 
-        $token = $hashData->token;
+        $token = isset($hashData->token) ? $hashData->token : NULL;
         list ($file, $error) = empty($token) ? $this->getFile($userId, $fileId) : $this->getFileByToken($fileId, $token);
 
         if (isset($error)) {
@@ -358,7 +358,7 @@ class CallbackController extends Controller {
                     \OC_Util::setupFS($ownerId);
                 }
 
-                $token = $hashData->token;
+                $token = isset($hashData->token) ? $hashData->token : NULL;
                 list ($file, $error) = empty($token) ? $this->getFile($userId, $fileId) : $this->getFileByToken($fileId, $token);
 
                 if (isset($error)) {
