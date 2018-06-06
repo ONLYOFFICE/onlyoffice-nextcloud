@@ -47,7 +47,7 @@
             return;
         }
 
-        if (typeof DocsAPI === "undefined" && !error.length) {
+        if (typeof DocsAPI === "undefined") {
             displayError(t(OCA.Onlyoffice.AppName, "ONLYOFFICE cannot be reached. Please contact admin"));
             return;
         }
