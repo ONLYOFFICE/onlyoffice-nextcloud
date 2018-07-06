@@ -182,11 +182,11 @@ class EditorController extends Controller {
         $folder = $userFolder->get($dir);
 
         if ($folder === NULL) {
-            $this->logger->info("Folder for file creation was not found: " . $dir, array("app" => $this->appName));
+            $this->logger->error("Folder for file creation was not found: " . $dir, array("app" => $this->appName));
             return ["error" => $this->trans->t("The required folder was not found")];
         }
         if (!$folder->isCreatable()) {
-            $this->logger->info("Folder for file creation without permission: " . $dir, array("app" => $this->appName));
+            $this->logger->error("Folder for file creation without permission: " . $dir, array("app" => $this->appName));
             return ["error" => $this->trans->t("You don't have enough permission to create")];
         }
 
@@ -204,7 +204,7 @@ class EditorController extends Controller {
 
         $template = file_get_contents($templatePath);
         if (!$template) {
-            $this->logger->info("Template for file creation not found: " . $templatePath, array("app" => $this->appName));
+            $this->logger->error("Template for file creation not found: " . $templatePath, array("app" => $this->appName));
             return ["error" => $this->trans->t("Template not found")];
         }
 
@@ -217,7 +217,7 @@ class EditorController extends Controller {
         $fileInfo = $view->getFileInfo($filePath);
 
         if ($fileInfo === false) {
-            $this->logger->info("File not found: " . $filePath, array("app" => $this->appName));
+            $this->logger->error("File not found: " . $filePath, array("app" => $this->appName));
             return ["error" => $this->trans->t("File not found")];
         }
 
@@ -257,7 +257,7 @@ class EditorController extends Controller {
         }
 
         if (!isset($format["conv"]) || $format["conv"] !== TRUE) {
-            $this->logger->debug("Conversion is not required: " . $fileName, array("app" => $this->appName));
+            $this->logger->info("Conversion is not required: " . $fileName, array("app" => $this->appName));
             return ["error" => $this->trans->t("Conversion is not required")];
         }
 
