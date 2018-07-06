@@ -347,63 +347,67 @@ class CallbackController extends Controller {
                     return new JSONResponse(["message" => $this->trans->t("Url not found")], Http::STATUS_BAD_REQUEST);
                 }
 
-                $userId = $users[0];
-                $user = $this->userManager->get($userId);
-                if (!empty($user)) {
-                    \OC_Util::tearDownFS();
-                    \OC_Util::setupFS($userId);
+                try {
+                    $userId = $users[0];
+                    $user = $this->userManager->get($userId);
+                    if (!empty($user)) {
+                        \OC_Util::tearDownFS();
+                        \OC_Util::setupFS($userId);
 
-                    $this->userSession->setUser($user);
-                } else {
-                    $ownerId = $hashData->ownerId;
+                        $this->userSession->setUser($user);
+                    } else {
+                        $ownerId = $hashData->ownerId;
 
-                    \OC_Util::tearDownFS();
-                    \OC_Util::setupFS($ownerId);
-                }
-
-                $token = isset($hashData->token) ? $hashData->token : NULL;
-                list ($file, $error) = empty($token) ? $this->getFile($userId, $fileId) : $this->getFileByToken($fileId, $token);
-
-                if (isset($error)) {
-                    return $error;
-                }
-
-                $documentServerUrl = $this->config->GetDocumentServerInternalUrl(true);
-                if (!empty($documentServerUrl)) {
-                    $from = $this->config->GetDocumentServerUrl();
-
-                    if (!preg_match("/^https?:\/\//i", $from)) {
-                        $parsedUrl = parse_url($url);
-                        $from = $parsedUrl["scheme"] . "://" . $parsedUrl["host"] . (array_key_exists("port", $parsedUrl) ? (":" . $parsedUrl["port"]) : "") . $from;
+                        \OC_Util::tearDownFS();
+                        \OC_Util::setupFS($ownerId);
                     }
 
-                    if ($from !== $documentServerUrl)
-                    {
-                        $this->logger->debug("Replace in track from " . $from . " to " . $documentServerUrl, array("app" => $this->appName));
-                        $url = str_replace($from, $documentServerUrl, $url);
+                    $token = isset($hashData->token) ? $hashData->token : NULL;
+                    list ($file, $error) = empty($token) ? $this->getFile($userId, $fileId) : $this->getFileByToken($fileId, $token);
+
+                    if (isset($error)) {
+                        return $error;
                     }
-                }
 
-                $fileName = $file->getName();
-                $curExt = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-                $downloadExt = strtolower(pathinfo($url, PATHINFO_EXTENSION));
+                    $documentServerUrl = $this->config->GetDocumentServerInternalUrl(true);
+                    if (!empty($documentServerUrl)) {
+                        $from = $this->config->GetDocumentServerUrl();
 
-                $documentService = new DocumentService($this->trans, $this->config);
-                if ($downloadExt !== $curExt) {
-                    $key =  DocumentService::GenerateRevisionId($fileId . $url);
+                        if (!preg_match("/^https?:\/\//i", $from)) {
+                            $parsedUrl = parse_url($url);
+                            $from = $parsedUrl["scheme"] . "://" . $parsedUrl["host"] . (array_key_exists("port", $parsedUrl) ? (":" . $parsedUrl["port"]) : "") . $from;
+                        }
 
-                    try {
-                        $this->logger->debug("GetConvertedUri from " . $downloadExt . " to " . $curExt . " " .  $url, array("app" => $this->appName));
-                        $url = $documentService->GetConvertedUri($url, $downloadExt, $curExt, $key);
-                    } catch (\Exception $e) {
-                        $this->logger->error("GetConvertedUri on save error: " . $e->getMessage(), array("app" => $this->appName));
-                        return new JSONResponse(["message" => $e->getMessage()], Http::STATUS_INTERNAL_SERVER_ERROR);
+                        if ($from !== $documentServerUrl)
+                        {
+                            $this->logger->debug("Replace in track from " . $from . " to " . $documentServerUrl, array("app" => $this->appName));
+                            $url = str_replace($from, $documentServerUrl, $url);
+                        }
                     }
-                }
 
-                if (($newData = $documentService->Request($url))) {
-                    $file->putContent($newData);
-                    $error = 0;
+                    $fileName = $file->getName();
+                    $curExt = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+                    $downloadExt = strtolower(pathinfo($url, PATHINFO_EXTENSION));
+
+                    $documentService = new DocumentService($this->trans, $this->config);
+                    if ($downloadExt !== $curExt) {
+                        $key =  DocumentService::GenerateRevisionId($fileId . $url);
+
+                        try {
+                            $this->logger->debug("GetConvertedUri from " . $downloadExt . " to " . $curExt . " " .  $url, array("app" => $this->appName));
+                            $url = $documentService->GetConvertedUri($url, $downloadExt, $curExt, $key);
+                        } catch (\Exception $e) {
+                            $this->logger->error("GetConvertedUri on save error: " . $e->getMessage(), array("app" => $this->appName));
+                            return new JSONResponse(["message" => $e->getMessage()], Http::STATUS_INTERNAL_SERVER_ERROR);
+                        }
+                    }
+
+                    if (($newData = $documentService->Request($url))) {
+                        $file->putContent($newData);
+                        $error = 0;
+                    }
+                } catch (\Exception $e) {
+                    $this->logger->error("Track " . $trackerStatus . " error: " . $e->getMessage(), array("app" => $this->appName));
                 }
                 break;
 
