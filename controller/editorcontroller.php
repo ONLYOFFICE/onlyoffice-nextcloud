@@ -468,6 +468,9 @@ class EditorController extends Controller {
             $params["editorConfig"]["customization"]["goback"] = [
                 "url"  => $folderLink
             ];
+            if ($this->config->GetSameTab()) {
+                $params["editorConfig"]["customization"]["goback"]["blank"] = false;
+            }
         }
 
         $params = $this->setCustomization($params);
