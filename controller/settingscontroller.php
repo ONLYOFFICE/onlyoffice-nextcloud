@@ -264,6 +264,7 @@ class SettingsController extends Controller {
             return $e->getMessage();
         }
 
+        $convertedFileUri;
         try {
 
             $hashUrl = $this->crypt->GetHash(["action" => "empty"]);
@@ -272,10 +273,19 @@ class SettingsController extends Controller {
                 $fileUrl = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->config->GetStorageUrl(), $fileUrl);
             }
 
-            $documentService->GetConvertedUri($fileUrl, "docx", "docx", "check_" . rand());
+            $convertedFileUri = $documentService->GetConvertedUri($fileUrl, "docx", "docx", "check_" . rand());
 
         } catch (\Exception $e) {
             $this->logger->error("GetConvertedUri on check error: " . $e->getMessage(), array("app" => $this->appName));
+            return $e->getMessage();
+        }
+
+        try {
+            if ($documentService->Request($convertedFileUri) === FALSE) {
+                throw new \Exception($this->trans->t("Error occurred in the document service"));
+            }
+        } catch (\Exception $e) {
+            $this->logger->error("Request converted file on check error: " . $convertedFileUri . " " . $e->getMessage(), array("app" => $this->appName));
             return $e->getMessage();
         }
 
