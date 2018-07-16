@@ -359,7 +359,9 @@ class CallbackController extends Controller {
                         $ownerId = $hashData->ownerId;
 
                         \OC_Util::tearDownFS();
-                        \OC_Util::setupFS($ownerId);
+                        if (!empty($ownerId)) {
+                            \OC_Util::setupFS($ownerId);
+                        }
                     }
 
                     $token = isset($hashData->token) ? $hashData->token : NULL;
