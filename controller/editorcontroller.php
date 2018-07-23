@@ -29,9 +29,10 @@
 
 namespace OCA\Onlyoffice\Controller;
 
-use OCP\AppFramework\Http\TemplateResponse;
-use OCP\AppFramework\Http\ContentSecurityPolicy;
 use OCP\AppFramework\Controller;
+use OCP\AppFramework\Http\ContentSecurityPolicy;
+use OCP\AppFramework\Http\RedirectResponse;
+use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AutoloadNotAllowedException;
 use OCP\Constants;
 use OCP\Files\FileInfo;
@@ -324,14 +325,20 @@ class EditorController extends Controller {
      * @param integer $fileId - file identifier
      * @param string $token - access token
      *
-     * @return TemplateResponse
+     * @return TemplateResponse|RedirectResponse
      *
      * @NoAdminRequired
      * @NoCSRFRequired
-     * @PublicPage
      */
     public function index($fileId, $token = NULL) {
         $this->logger->debug("Open: " . $fileId, array("app" => $this->appName));
+
+        if (empty($token) && !$this->userSession->isLoggedIn()) {
+            $redirectUrl = $this->urlGenerator->linkToRoute("core.login.showLoginForm", [
+                "redirect_url" => $this->request->getRequestUri()
+            ]);
+            return new RedirectResponse($redirectUrl);
+        }
 
         $documentServerUrl = $this->config->GetDocumentServerUrl();
 
