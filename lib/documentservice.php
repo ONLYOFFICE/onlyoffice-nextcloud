@@ -249,6 +249,33 @@ class DocumentService {
     }
 
     /**
+     * Request health status
+     *
+     * @return boolean
+     */
+    function HealthcheckRequest() {
+
+        $documentServerUrl = $this->config->GetDocumentServerInternalUrl(false);
+
+        if (empty($documentServerUrl)) {
+            throw new \Exception($this->trans->t("ONLYOFFICE app is not configured. Please contact admin"));
+        }
+
+        $urlHealthcheck = $documentServerUrl . "healthcheck";
+
+        $opts = array("http" => array(
+                    "timeout" => "60"
+                )
+            );
+
+        if (($response = $this->Request($urlHealthcheck, $opts)) === FALSE) {
+            throw new \Exception ($this->trans->t("Bad Request or timeout error"));
+        }
+
+        return $response === "true";
+    }
+
+    /**
      * Send command
      *
      * @param string $method - type of command

@@ -245,6 +245,20 @@ class SettingsController extends Controller {
 
             $documentService = new DocumentService($this->trans, $this->config);
 
+            $healthcheckResponse = $documentService->HealthcheckRequest();
+            if (!$healthcheckResponse) {
+                throw new \Exception($this->trans->t("Bad healthcheck status"));
+            }
+
+        } catch (\Exception $e) {
+            $this->logger->error("HealthcheckRequest on check error: " . $e->getMessage(), array("app" => $this->appName));
+            return $e->getMessage();
+        }
+
+        try {
+
+            $documentService = new DocumentService($this->trans, $this->config);
+
             $commandResponse = $documentService->CommandRequest("version");
 
             $this->logger->debug("CommandRequest on check: " . json_encode($commandResponse), array("app" => $this->appName));
