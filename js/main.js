@@ -95,13 +95,14 @@
         }
     };
 
-    OCA.Onlyoffice.FileClick = function (fileName, context, attr) {
+    OCA.Onlyoffice.FileClick = function (fileName, context) {
+        var fileInfoModel = context.fileInfoModel || context.fileList.getModelForFile(fileName);
+        OCA.Onlyoffice.OpenEditor(fileInfoModel.id);
+    };
+
+    OCA.Onlyoffice.FileConvertClick = function (fileName, context) {
         var fileInfoModel = context.fileInfoModel || context.fileList.getModelForFile(fileName);
         var fileList = context.fileList;
-        if (!attr.conv || (fileList.dirInfo.permissions & OC.PERMISSION_CREATE) !== OC.PERMISSION_CREATE || $("#isPublic").val()) {
-            OCA.Onlyoffice.OpenEditor(fileInfoModel.id);
-            return;
-        }
 
         OC.dialogs.confirm(t(OCA.Onlyoffice.AppName, "The document file you open will be converted to the Office Open XML format for faster viewing and editing."),
             t(OCA.Onlyoffice.AppName, "Convert and open document"),
@@ -172,13 +173,24 @@
                         icon: function () {
                             return OC.imagePath(OCA.Onlyoffice.AppName, "app-dark");
                         },
-                        actionHandler: function (fileName, context) {
-                            OCA.Onlyoffice.FileClick(fileName, context, attr);
-                        }
+                        actionHandler: OCA.Onlyoffice.FileClick
                     });
 
                     if (attr.def) {
                         fileList.fileActions.setDefault(attr.mime, "onlyofficeOpen");
+                    }
+
+                    if (attr.conv) {
+                        fileList.fileActions.registerAction({
+                            name: "onlyofficeConvert",
+                            displayName: t(OCA.Onlyoffice.AppName, "Convert with ONLYOFFICE"),
+                            mime: attr.mime,
+                            permissions: OC.PERMISSION_READ,
+                            icon: function () {
+                                return OC.imagePath(OCA.Onlyoffice.AppName, "app-dark");
+                            },
+                            actionHandler: OCA.Onlyoffice.FileConvertClick
+                        });
                     }
                 });
             }

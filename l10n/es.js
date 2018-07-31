@@ -25,6 +25,7 @@ OC.L10N.register(
     "The document file you open will be converted to the Office Open XML format for faster viewing and editing." : "El archivo de documento que Usted abre será convertido en el formato Office Open XML para visualización y edición más rápida.",
     "Convert and open document" : "Convertir y abrir documento",
     "Open in ONLYOFFICE" : "Abrir en ONLYOFFICE",
+    "Convert with ONLYOFFICE" : "Convertir con ONLYOFFICE",
     "Document" : "Documento",
     "Spreadsheet" : "Hoja de cálculo",
     "Presentation" : "Presentación",
