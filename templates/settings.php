@@ -67,15 +67,17 @@
     <br />
 
     <h3 class="onlyoffice-header"><?php p($l->t("The default application for opening the format")) ?></h3>
-    <?php foreach ($_["formats"] as $format => $setting) { ?>
-    <p>
-        <input type="checkbox" class="checkbox"
-            id="onlyofficeDefFormat<?php p($format) ?>"
-            name="<?php p($format) ?>"
-            <?php if ($setting["def"]) { ?>checked="checked"<?php } ?> />
-        <label for="onlyofficeDefFormat<?php p($format) ?>"><?php p($format) ?></label>
-    </p>
-    <?php } ?>
+    <div class="onlyoffice-exts">
+        <?php foreach ($_["formats"] as $format => $setting) { ?>
+            <div>
+                <input type="checkbox" class="checkbox"
+                    id="onlyofficeDefFormat<?php p($format) ?>"
+                    name="<?php p($format) ?>"
+                    <?php if ($setting["def"]) { ?>checked="checked"<?php } ?> />
+                <label for="onlyofficeDefFormat<?php p($format) ?>"><?php p($format) ?></label>
+            </div>
+        <?php } ?>
+    </div>
 
     <a id="onlyofficeSave" class="button onlyoffice-header"><?php p($l->t("Save")) ?></a>
 </div>
