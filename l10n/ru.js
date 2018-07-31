@@ -22,8 +22,6 @@ OC.L10N.register(
     "ONLYOFFICE cannot be reached. Please contact admin" : "Приложение ONLYOFFICE недоступно. Пожалуйста, свяжитесь с администратором",
     "Loading, please wait." : "Загрузка. Пожалуйста, подождите.",
     "File created" : "Файл создан",
-    "The document file you open will be converted to the Office Open XML format for faster viewing and editing." : "Открываемый файл документа будет преобразован в формат Office Open XML для быстрого просмотра и редактирования.",
-    "Convert and open document" : "Преобразовать и открыть документ",
     "Open in ONLYOFFICE" : "Открыть в ONLYOFFICE",
     "Convert with ONLYOFFICE" : "Конвертировать в ONLYOFFICE",
     "Document" : "Документ",

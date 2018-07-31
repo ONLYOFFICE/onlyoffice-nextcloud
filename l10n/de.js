@@ -22,8 +22,6 @@
     "ONLYOFFICE not reached. Please contact admin" : "ONLYOFFICE ist zurzeit nicht erreichbar.  Bitte wende Dich an Deinen Administrator",
     "Loading, please wait." : "Laden... Bitte warten.",
     "File created" : "Erstellte Datei",
-    "The document file you open will be converted to the Office Open XML format for faster viewing and editing." : "Das aktuell geöffnete Dokument wird in ein Office Open XML Dateiformat für schnellere Ansicht und Bearbeitung konvertiert.",
-    "Convert and open document" : "Dokument konvertieren und öffnen",
     "Open in ONLYOFFICE" : "In ONLYOFFICE öffnen",
     "Convert with ONLYOFFICE" : "Mit ONLYOFFICE umwandeln",
     "Document" : "Dokument",

@@ -104,36 +104,27 @@
         var fileInfoModel = context.fileInfoModel || context.fileList.getModelForFile(fileName);
         var fileList = context.fileList;
 
-        OC.dialogs.confirm(t(OCA.Onlyoffice.AppName, "The document file you open will be converted to the Office Open XML format for faster viewing and editing."),
-            t(OCA.Onlyoffice.AppName, "Convert and open document"),
-            function (convert) {
-                if (!convert) {
-                    OCA.Onlyoffice.OpenEditor(fileInfoModel.id);
+        $.post(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/convert"),
+            {
+                fileId: fileInfoModel.id
+            },
+            function onSuccess(response) {
+                if (response.error) {
+                    var row = OC.Notification.show(response.error);
+                    setTimeout(function () {
+                        OC.Notification.hide(row);
+                    }, 3000);
                     return;
                 }
 
-                $.post(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/convert"),
-                    {
-                        fileId: fileInfoModel.id
-                    },
-                    function onSuccess(response) {
-                        if (response.error) {
-                            var row = OC.Notification.show(response.error);
-                            setTimeout(function () {
-                                OC.Notification.hide(row);
-                            }, 3000);
-                            return;
-                        }
+                if (response.parentId == fileList.dirInfo.id) {
+                    fileList.add(response, { animate: true });
+                }
 
-                        if (response.parentId == fileList.dirInfo.id) {
-                            fileList.add(response, { animate: true });
-                        }
-
-                        var row = OC.Notification.show(t(OCA.Onlyoffice.AppName, "File created"));
-                        setTimeout(function () {
-                            OC.Notification.hide(row);
-                        }, 3000);
-                    });
+                var row = OC.Notification.show(t(OCA.Onlyoffice.AppName, "File created"));
+                setTimeout(function () {
+                    OC.Notification.hide(row);
+                }, 3000);
             });
     };
 
