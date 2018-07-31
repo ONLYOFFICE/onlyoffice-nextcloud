@@ -113,21 +113,13 @@ class SettingsController extends Controller {
      * @return TemplateResponse
      */
     public function index() {
-        $formats = $this->formats();
-        $defFormats = array();
-        foreach ($formats as $format => $setting) {
-            if (!array_key_exists("conv", $setting) || !$setting["conv"]) {
-                $defFormats[$format] = array_key_exists("def", $setting) && $setting["def"];
-            }
-        }
-
         $data = [
             "documentserver" => $this->config->GetDocumentServerUrl(),
             "documentserverInternal" => $this->config->GetDocumentServerInternalUrl(true),
             "storageUrl" => $this->config->GetStorageUrl(),
             "secret" => $this->config->GetDocumentServerSecret(),
             "currentServer" => $this->urlGenerator->getAbsoluteURL("/"),
-            "defFormats" => $defFormats,
+            "formats" => $this->formats(),
             "sameTab" => $this->config->GetSameTab(),
             "encryption" => $this->checkEncryptionModule()
         ];
