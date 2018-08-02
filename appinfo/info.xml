@@ -9,6 +9,9 @@
     <author>Ascensio System SIA</author>
     <version>1.3.0</version>
     <namespace>Onlyoffice</namespace>
+    <types>
+        <filesystem/>
+    </types>
     <documentation>
         <admin>https://api.onlyoffice.com/editors/owncloud</admin>
         <developer>https://api.onlyoffice.com/editors/owncloud</developer>
