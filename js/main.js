@@ -171,7 +171,7 @@
                         fileList.fileActions.setDefault(attr.mime, "onlyofficeOpen");
                     }
 
-                    if (attr.conv) {
+                    if (!$("#isPublic").val() && attr.conv) {
                         fileList.fileActions.registerAction({
                             name: "onlyofficeConvert",
                             displayName: t(OCA.Onlyoffice.AppName, "Convert with ONLYOFFICE"),
