@@ -83,7 +83,7 @@
             });
 
         if ($("#isPublic").val()) {
-            url += "?token=" + encodeURIComponent($("#sharingToken").val());
+            url = OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/s/" + encodeURIComponent($("#sharingToken").val())) + "?fileId=" + fileId;
         }
 
         if (winEditor && winEditor.location) {

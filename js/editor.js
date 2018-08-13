@@ -53,7 +53,7 @@
         }
 
         $.ajax({
-            url: OC.generateUrl("apps/onlyoffice/ajax/config/" + fileId + (fileToken ? "?token=" + encodeURIComponent(fileToken) : "")),
+            url: OC.generateUrl("apps/onlyoffice/ajax/config/" + (fileId || 0) + (fileToken ? "?token=" + encodeURIComponent(fileToken) : "")),
             success: function onSuccess(config) {
                 if (config) {
                     if (config.error != null) {

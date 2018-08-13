@@ -380,8 +380,8 @@ class EditorController extends Controller {
      * @NoCSRFRequired
      * @PublicPage
      */
-    public function PublicPage($token) {
-        return $this->index(0, $token);
+    public function PublicPage($fileId, $token) {
+        return $this->index($fileId, $token);
     }
 
     /**
