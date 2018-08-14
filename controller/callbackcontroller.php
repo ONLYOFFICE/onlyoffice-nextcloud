@@ -43,6 +43,7 @@ use OCP\ILogger;
 use OCP\IRequest;
 use OCP\IUserManager;
 use OCP\IUserSession;
+use OCP\Share\Exceptions\ShareNotFound;
 use OCP\Share\IManager;
 
 use OCA\Onlyoffice\AppConfig;
@@ -489,7 +490,14 @@ class CallbackController extends Controller {
             return [NULL, $this->trans->t("FileId is empty")];
         }
 
-        $share = $this->shareManager->getShareByToken($token);
+        $share;
+        try {
+            $share = $this->shareManager->getShareByToken($token);
+        } catch (ShareNotFound $e) {
+            $this->logger->error("getShare error: " . $e->getMessage(), array("app" => $this->appName));
+            $share = NULL;
+        }
+
         if ($share === NULL || $share === false) {
             return [NULL, $this->trans->t("You do not have enough permissions to view the file")];
         }
