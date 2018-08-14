@@ -37,6 +37,7 @@ use OCP\Constants;
 use OCP\Files\File;
 use OCP\Files\Folder;
 use OCP\Files\IRootFolder;
+use OCP\Files\NotFoundException;
 use OCP\Files\NotPermittedException;
 use OCP\IL10N;
 use OCP\ILogger;
@@ -467,7 +468,12 @@ class CallbackController extends Controller {
             return [NULL, $error];
         }
 
-        $node = $share->getNode();
+        try {
+            $node = $share->getNode();
+        } catch (NotFoundException $e) {
+            $this->logger->error("getFileByToken error: " . $e->getMessage(), array("app" => $this->appName));
+            return [NULL, $this->trans->t("File not found")];
+        }
 
         if ($node instanceof Folder) {
             $file = $node->getById($fileId)[0];

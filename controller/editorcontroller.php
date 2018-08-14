@@ -38,6 +38,7 @@ use OCP\Constants;
 use OCP\Files\FileInfo;
 use OCP\Files\Folder;
 use OCP\Files\IRootFolder;
+use OCP\Files\NotFoundException;
 use OCP\IL10N;
 use OCP\ILogger;
 use OCP\IRequest;
@@ -542,7 +543,12 @@ class EditorController extends Controller {
             return [NULL, $this->trans->t("You do not have enough permissions to view the file")];
         }
 
-        $node = $share->getNode();
+        try {
+            $node = $share->getNode();
+        } catch (NotFoundException $e) {
+            $this->logger->error("getFileByToken error: " . $e->getMessage(), array("app" => $this->appName));
+            return [NULL, $this->trans->t("File not found")];
+        }
 
         if ($node instanceof Folder) {
             $file = $node->getById($fileId)[0];
