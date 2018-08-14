@@ -3,24 +3,27 @@
  *
  * (c) Copyright Ascensio System Limited 2010-2018
  *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html).
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that
- * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
+ * This program is a free software product.
+ * You can redistribute it and/or modify it under the terms of the GNU Affero General Public License
+ * (AGPL) version 3 as published by the Free Software Foundation.
+ * In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended to the effect
+ * that Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
  *
- * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
- * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
+ * This program is distributed WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * For details, see the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
  *
- * You can contact Ascensio System SIA by email at sales@onlyoffice.com
+ * You can contact Ascensio System SIA at 17-2 Elijas street, Riga, Latvia, EU, LV-1021.
  *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display
- * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
+ * The interactive user interfaces in modified source and object code versions of the Program
+ * must display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
  *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains
- * relevant author attributions when distributing the software. If the display of the logo in its graphic
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE"
- * in every copy of the program you distribute.
- * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
+ * Pursuant to Section 7(b) of the License you must retain the original Product logo when distributing the program.
+ * Pursuant to Section 7(e) we decline to grant you any rights under trademark law for use of our trademarks.
+ *
+ * All the Product's GUI elements, including illustrations and icon sets, as well as technical
+ * writing content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0 International.
+ * See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
  *
  */
 
@@ -435,33 +438,45 @@ class AppConfig {
      * @var array
      */
     public $formats = [
-            "docx" => [ "mime" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "type" => "text", "edit" => true, "def" => true ],
-            "xlsx" => [ "mime" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "type" => "spreadsheet", "edit" => true, "def" => true ],
-            "pptx" => [ "mime" => "application/vnd.openxmlformats-officedocument.presentationml.presentation", "type" => "presentation", "edit" => true, "def" => true ],
-            "ppsx" => [ "mime" => "application/vnd.openxmlformats-officedocument.presentationml.slideshow", "type" => "presentation", "edit" => true, "def" => true ],
-            "txt" => [ "mime" => "text/plain", "type" => "text", "edit" => true ],
             "csv" => [ "mime" => "text/csv", "type" => "spreadsheet", "edit" => true ],
-            "docm" => [ "mime" => "application/vnd.ms-word.document.macroEnabled.12", "type" => "text", "conv" => true ],
-            "xlsm" => [ "mime" => "application/vnd.ms-excel.sheet.macroEnabled.12", "type" => "spreadsheet", "conv" => true ],
-            "xltx" => [ "mime" => "application/vnd.openxmlformats-officedocument.spreadsheetml.template", "type" => "spreadsheet", "conv" => true ],
-            "xltm" => [ "mime" => "application/vnd.ms-excel.template.macroEnabled.12", "type" => "spreadsheet", "conv" => true ],
-            "pptm" => [ "mime" => "application/vnd.ms-powerpoint.presentation.macroEnabled.12", "type" => "presentation", "conv" => true ],
-            "ppsm" => [ "mime" => "application/vnd.ms-powerpoint.slideshow.macroEnabled.12", "type" => "presentation", "conv" => true ],
-            "potx" => [ "mime" => "application/vnd.openxmlformats-officedocument.presentationml.template", "type" => "presentation", "conv" => true ],
-            "potm" => [ "mime" => "application/vnd.ms-powerpoint.template.macroEnabled.12", "type" => "presentation", "conv" => true ],
-            "odt" => [ "mime" => "application/vnd.oasis.opendocument.text", "type" => "text", "conv" => true ],
-            "ods" => [ "mime" => "application/vnd.oasis.opendocument.spreadsheet", "type" => "spreadsheet", "conv" => true ],
-            "odp" => [ "mime" => "application/vnd.oasis.opendocument.presentation", "type" => "presentation", "conv" => true ],
+            "djvu" => [ "mime" => "image/vnd.djvu", "type" => "text" ],
             "doc" => [ "mime" => "application/msword", "type" => "text", "conv" => true ],
-            "xls" => [ "mime" => "application/vnd.ms-excel", "type" => "spreadsheet", "conv" => true ],
-            "ppt" => [ "mime" => "application/vnd.ms-powerpoint", "type" => "presentation", "conv" => true ],
+            "docm" => [ "mime" => "application/vnd.ms-word.document.macroEnabled.12", "type" => "text", "conv" => true ],
+            "docx" => [ "mime" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "type" => "text", "edit" => true, "def" => true ],
+            "dot" => [ "mime" => "application/msword", "type" => "text", "conv" => true ],
+            "dotm" => [ "mime" => "application/vnd.ms-word.template.macroEnabled.12", "type" => "text", "conv" => true ],
+            "dotx" => [ "mime" => "application/vnd.openxmlformats-officedocument.wordprocessingml.template", "type" => "text", "conv" => true ],
             "epub" => [ "mime" => "application/epub+zip", "type" => "text", "conv" => true ],
-            "rtf" => [ "mime" => "text/rtf", "type" => "text", "type" => "text", "conv" => true ],
-            "mht" => [ "mime" => "message/rfc822", "conv" => true ],
-            "html" => [ "mime" => "text/html", "type" => "text", "conv" => true ],
+            "fodp" => [ "mime" => "application/vnd.oasis.opendocument.presentation", "type" => "presentation", "conv" => true ],
+            "fods" => [ "mime" => "application/vnd.oasis.opendocument.spreadsheet", "type" => "spreadsheet", "conv" => true ],
+            "fodt" => [ "mime" => "application/vnd.oasis.opendocument.text", "type" => "text", "conv" => true ],
             "htm" => [ "mime" => "text/html", "type" => "text", "conv" => true ],
-            "xps" => [ "mime" => "application/vnd.ms-xpsdocument", "type" => "text" ],
+            "html" => [ "mime" => "text/html", "type" => "text", "conv" => true ],
+            "mht" => [ "mime" => "message/rfc822", "conv" => true ],
+            "odp" => [ "mime" => "application/vnd.oasis.opendocument.presentation", "type" => "presentation", "conv" => true ],
+            "ods" => [ "mime" => "application/vnd.oasis.opendocument.spreadsheet", "type" => "spreadsheet", "conv" => true ],
+            "odt" => [ "mime" => "application/vnd.oasis.opendocument.text", "type" => "text", "conv" => true ],
+            "otp" => [ "mime" => "application/vnd.oasis.opendocument.presentation-template", "type" => "presentation", "conv" => true ],
+            "ots" => [ "mime" => "application/vnd.oasis.opendocument.spreadsheet-template", "type" => "spreadsheet", "conv" => true ],
+            "ott" => [ "mime" => "application/vnd.oasis.opendocument.text-template", "type" => "text", "conv" => true ],
             "pdf" => [ "mime" => "application/pdf", "type" => "text" ],
-            "djvu" => [ "mime" => "image/vnd.djvu", "type" => "text" ]
+            "pot" => [ "mime" => "application/mspowerpoint", "type" => "presentation", "conv" => true ],
+            "potm" => [ "mime" => "application/vnd.ms-powerpoint.template.macroEnabled.12", "type" => "presentation", "conv" => true ],
+            "potx" => [ "mime" => "application/vnd.openxmlformats-officedocument.presentationml.template", "type" => "presentation", "conv" => true ],
+            "pps" => [ "mime" => "application/vnd.ms-powerpoint", "type" => "presentation", "conv" => true ],
+            "ppsm" => [ "mime" => "application/vnd.ms-powerpoint.slideshow.macroEnabled.12", "type" => "presentation", "conv" => true ],
+            "ppsx" => [ "mime" => "application/vnd.openxmlformats-officedocument.presentationml.slideshow", "type" => "presentation", "edit" => true, "def" => true ],
+            "ppt" => [ "mime" => "application/vnd.ms-powerpoint", "type" => "presentation", "conv" => true ],
+            "pptm" => [ "mime" => "application/vnd.ms-powerpoint.presentation.macroEnabled.12", "type" => "presentation", "conv" => true ],
+            "pptx" => [ "mime" => "application/vnd.openxmlformats-officedocument.presentationml.presentation", "type" => "presentation", "edit" => true, "def" => true ],
+            "rtf" => [ "mime" => "text/rtf", "type" => "text", "conv" => true ],
+            "txt" => [ "mime" => "text/plain", "type" => "text", "edit" => true ],
+            "xls" => [ "mime" => "application/vnd.ms-excel", "type" => "spreadsheet", "conv" => true ],
+            "xlsm" => [ "mime" => "application/vnd.ms-excel.sheet.macroEnabled.12", "type" => "spreadsheet", "conv" => true ],
+            "xlsx" => [ "mime" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "type" => "spreadsheet", "edit" => true, "def" => true ],
+            "xlt" => [ "mime" => "application/excel", "type" => "spreadsheet", "conv" => true ],
+            "xltm" => [ "mime" => "application/vnd.ms-excel.template.macroEnabled.12", "type" => "spreadsheet", "conv" => true ],
+            "xltx" => [ "mime" => "application/vnd.openxmlformats-officedocument.spreadsheetml.template", "type" => "spreadsheet", "conv" => true ],
+            "xps" => [ "mime" => "application/vnd.ms-xpsdocument", "type" => "text" ]
         ];
 }

@@ -6,6 +6,8 @@ The app will create an item in the `new` (+) menu to create **Document**, **Spre
 
 You can also use our **[Docker installation](https://github.com/ONLYOFFICE/docker-onlyoffice-owncloud)** to get installed and configured Document Server and ownCloud installation with a couple of commands.
 
+
+
 ## Installing ONLYOFFICE Document Server
 
 You will need an instance of ONLYOFFICE Document Server that is resolvable and connectable both from ownCloud/Nextcloud and any end clients (version 4.2.7 and later are supported for use with the app). If that is not the case, use the official ONLYOFFICE Document Server documentation page: [Document Server for Linux](http://helpcenter.onlyoffice.com/server/linux/document/linux-installation.aspx). ONLYOFFICE Document Server must also be able to POST to ownCloud/Nextcloud directly.
@@ -69,7 +71,7 @@ The **Open in ONLYOFFICE** action will be added to the file context menu. You ca
 
 The ONLYOFFICE integration follows the API documented here https://api.onlyoffice.com/editors/basic:
 
-* When creating a new file, the user navigates to a document folder within ownCloud/Nextcloud and clicks the **Document**, **Spreadsheet** or **Presentation* item in the _new_ (+) menu.
+* When creating a new file, the user navigates to a document folder within ownCloud/Nextcloud and clicks the **Document**, **Spreadsheet** or **Presentation** item in the _new_ (+) menu.
 
 * The browser invokes the `create` method in the `/lib/Controller/EditorController.php` controller. This method adds the copy of the file from the assets folder to the folder the user is currently in.
 
@@ -100,3 +102,13 @@ The ONLYOFFICE integration follows the API documented here https://api.onlyoffic
 * After 10 seconds of inactivity, ONLYOFFICE Document Server sends a POST to the _callback_ URL letting ownCloud/Nextcloud know that the clients have finished editing the document and closed it.
 
 * ownCloud/Nextcloud downloads the new version of the document, replacing the old one.
+
+
+
+## Known issues
+
+* If the document is shared using the **Federated Cloud Sharing** app, the co-editing among the servers will not be avaialble. The users from one and the same server can edit the document in the co-editing mode, but the users from two (or more) different servers will not be able to collaborate on the same document in real time.
+
+* Adding the storage using the **External storages** app has issues with the co-editing in some cases. If the connection is made using the same authorization keys (the _Username and password_ or _Global credentials_ authentication type is selected), then the co-editing is available for the users. If different authorization keys are used (_Log-in credentials, save in database_ or _User entered, store in database_ authentication options), the co-editing is not available. When the _Log-in credentials, save in session_ authentication type is used, the files cannot be opened in the editor.
+
+* ownCloud/Nextcloud provides an option to encrypt the file storage. But if the encryption with the _per-user encryption keys_ (used by default in ownCloud/Nextcloud **Default encryption module** app) is enabled, ONLYOFFICE Document Server cannot open the encrypted files for editing and save them after the editing. The ONLYOFFICE section of the administrative settings page will display a notification about it. However if you set the encryption with the _master key_, ONLYOFFICE application will work as intended. The instruction on enabling _master key_ based encryption is available in the official documentation on [ownCloud](https://doc.owncloud.org/server/latest/admin_manual/configuration_files/encryption_configuration.html#enabling-master-key-based-encryption)/[Nextcloud](https://docs.nextcloud.com/server/12/admin_manual/configuration_files/encryption_configuration.html#occ-encryption-commands) websites.

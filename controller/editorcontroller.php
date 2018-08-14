@@ -3,43 +3,49 @@
  *
  * (c) Copyright Ascensio System Limited 2010-2018
  *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html).
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that
- * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
+ * This program is a free software product.
+ * You can redistribute it and/or modify it under the terms of the GNU Affero General Public License
+ * (AGPL) version 3 as published by the Free Software Foundation.
+ * In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended to the effect
+ * that Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
  *
- * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
- * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
+ * This program is distributed WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * For details, see the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
  *
- * You can contact Ascensio System SIA by email at sales@onlyoffice.com
+ * You can contact Ascensio System SIA at 17-2 Elijas street, Riga, Latvia, EU, LV-1021.
  *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display
- * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
+ * The interactive user interfaces in modified source and object code versions of the Program
+ * must display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
  *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains
- * relevant author attributions when distributing the software. If the display of the logo in its graphic
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE"
- * in every copy of the program you distribute.
- * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
+ * Pursuant to Section 7(b) of the License you must retain the original Product logo when distributing the program.
+ * Pursuant to Section 7(e) we decline to grant you any rights under trademark law for use of our trademarks.
+ *
+ * All the Product's GUI elements, including illustrations and icon sets, as well as technical
+ * writing content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0 International.
+ * See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
  *
  */
 
 namespace OCA\Onlyoffice\Controller;
 
-use OCP\AppFramework\Http\TemplateResponse;
-use OCP\AppFramework\Http\ContentSecurityPolicy;
 use OCP\AppFramework\Controller;
+use OCP\AppFramework\Http\ContentSecurityPolicy;
+use OCP\AppFramework\Http\RedirectResponse;
+use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AutoloadNotAllowedException;
 use OCP\Constants;
 use OCP\Files\FileInfo;
 use OCP\Files\Folder;
 use OCP\Files\IRootFolder;
+use OCP\Files\NotFoundException;
 use OCP\IL10N;
 use OCP\ILogger;
 use OCP\IRequest;
 use OCP\ISession;
 use OCP\IURLGenerator;
 use OCP\IUserSession;
+use OCP\Share\Exceptions\ShareNotFound;
 use OCP\Share\IManager;
 
 use OC\Files\Filesystem;
@@ -179,11 +185,11 @@ class EditorController extends Controller {
         $folder = $userFolder->get($dir);
 
         if ($folder === NULL) {
-            $this->logger->info("Folder for file creation was not found: " . $dir, array("app" => $this->appName));
+            $this->logger->error("Folder for file creation was not found: " . $dir, array("app" => $this->appName));
             return ["error" => $this->trans->t("The required folder was not found")];
         }
         if (!$folder->isCreatable()) {
-            $this->logger->info("Folder for file creation without permission: " . $dir, array("app" => $this->appName));
+            $this->logger->error("Folder for file creation without permission: " . $dir, array("app" => $this->appName));
             return ["error" => $this->trans->t("You don't have enough permission to create")];
         }
 
@@ -201,7 +207,7 @@ class EditorController extends Controller {
 
         $template = file_get_contents($templatePath);
         if (!$template) {
-            $this->logger->info("Template for file creation not found: " . $templatePath, array("app" => $this->appName));
+            $this->logger->error("Template for file creation not found: " . $templatePath, array("app" => $this->appName));
             return ["error" => $this->trans->t("Template not found")];
         }
 
@@ -214,7 +220,7 @@ class EditorController extends Controller {
         $fileInfo = $view->getFileInfo($filePath);
 
         if ($fileInfo === false) {
-            $this->logger->info("File not found: " . $filePath, array("app" => $this->appName));
+            $this->logger->error("File not found: " . $filePath, array("app" => $this->appName));
             return ["error" => $this->trans->t("File not found")];
         }
 
@@ -254,7 +260,7 @@ class EditorController extends Controller {
         }
 
         if (!isset($format["conv"]) || $format["conv"] !== TRUE) {
-            $this->logger->debug("Conversion is not required: " . $fileName, array("app" => $this->appName));
+            $this->logger->info("Conversion is not required: " . $fileName, array("app" => $this->appName));
             return ["error" => $this->trans->t("Conversion is not required")];
         }
 
@@ -321,14 +327,20 @@ class EditorController extends Controller {
      * @param integer $fileId - file identifier
      * @param string $token - access token
      *
-     * @return TemplateResponse
+     * @return TemplateResponse|RedirectResponse
      *
      * @NoAdminRequired
      * @NoCSRFRequired
-     * @PublicPage
      */
     public function index($fileId, $token = NULL) {
         $this->logger->debug("Open: " . $fileId, array("app" => $this->appName));
+
+        if (empty($token) && !$this->userSession->isLoggedIn()) {
+            $redirectUrl = $this->urlGenerator->linkToRoute("core.login.showLoginForm", [
+                "redirect_url" => $this->request->getRequestUri()
+            ]);
+            return new RedirectResponse($redirectUrl);
+        }
 
         $documentServerUrl = $this->config->GetDocumentServerUrl();
 
@@ -370,8 +382,8 @@ class EditorController extends Controller {
      * @NoCSRFRequired
      * @PublicPage
      */
-    public function PublicPage($token) {
-        return $this->index(0, $token);
+    public function PublicPage($fileId, $token) {
+        return $this->index($fileId, $token);
     }
 
     /**
@@ -427,7 +439,13 @@ class EditorController extends Controller {
         $editable = $file->isUpdateable()
                     && (empty($token) || ($this->getShare($token)[0]->getPermissions() & Constants::PERMISSION_UPDATE) === Constants::PERMISSION_UPDATE);
         if ($editable && $canEdit) {
-            $hashCallback = $this->crypt->GetHash(["fileId" => $fileId, "ownerId" => $file->getOwner()->getUID(), "token" => $token, "action" => "track"]);
+            $ownerId = NULL;
+            $owner = $file->getOwner();
+            if (!empty($owner)) {
+                $ownerId = $owner->getUID();
+            }
+
+            $hashCallback = $this->crypt->GetHash(["fileId" => $fileId, "ownerId" => $ownerId, "token" => $token, "action" => "track"]);
             $callback = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.track", ["doc" => $hashCallback]);
 
             if (!empty($this->config->GetStorageUrl())) {
@@ -465,6 +483,9 @@ class EditorController extends Controller {
             $params["editorConfig"]["customization"]["goback"] = [
                 "url"  => $folderLink
             ];
+            if ($this->config->GetSameTab()) {
+                $params["editorConfig"]["customization"]["goback"]["blank"] = false;
+            }
         }
 
         $params = $this->setCustomization($params);
@@ -522,7 +543,12 @@ class EditorController extends Controller {
             return [NULL, $this->trans->t("You do not have enough permissions to view the file")];
         }
 
-        $node = $share->getNode();
+        try {
+            $node = $share->getNode();
+        } catch (NotFoundException $e) {
+            $this->logger->error("getFileByToken error: " . $e->getMessage(), array("app" => $this->appName));
+            return [NULL, $this->trans->t("File not found")];
+        }
 
         if ($node instanceof Folder) {
             $file = $node->getById($fileId)[0];
@@ -545,7 +571,14 @@ class EditorController extends Controller {
             return [NULL, $this->trans->t("FileId is empty")];
         }
 
-        $share = $this->shareManager->getShareByToken($token);
+        $share;
+        try {
+            $share = $this->shareManager->getShareByToken($token);
+        } catch (ShareNotFound $e) {
+            $this->logger->error("getShare error: " . $e->getMessage(), array("app" => $this->appName));
+            $share = NULL;
+        }
+
         if ($share === NULL || $share === false) {
             return [NULL, $this->trans->t("You do not have enough permissions to view the file")];
         }
