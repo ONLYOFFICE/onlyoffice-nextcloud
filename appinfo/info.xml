@@ -28,7 +28,6 @@
     <screenshot small-thumbnail="https://raw.githubusercontent.com/ONLYOFFICE/onlyoffice-owncloud/master/screenshots/main_small.png">https://raw.githubusercontent.com/ONLYOFFICE/onlyoffice-owncloud/master/screenshots/main.png</screenshot>
     <screenshot>https://raw.githubusercontent.com/ONLYOFFICE/onlyoffice-owncloud/master/screenshots/settings.png</screenshot>
     <dependencies>
-        <owncloud min-version="9.0" max-version="10.0" />
         <nextcloud min-version="12" max-version="13"/>
     </dependencies>
     <settings>
