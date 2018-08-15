@@ -29,11 +29,4 @@
 
 namespace OCA\Onlyoffice\AppInfo;
 
-use OCP\App;
-
-/**
- * Administration settings
- */
-App::registerAdmin("onlyoffice", "settings");
-
 $app = new Application();
