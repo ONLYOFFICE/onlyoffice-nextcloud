@@ -9,7 +9,7 @@ The app will create an item in the `new` (+) menu to create **Document**, **Spre
 It will also create a new **Open in ONLYOFFICE** menu option within the document library for Office documents.
 This allows multiple users to collaborate in real time and to save back those changes to Nextcloud.
 
-You can also use our **[Docker installation](https://github.com/ONLYOFFICE/docker-onlyoffice-owncloud)** to get installed and configured Document Server and Nextcloud installation with a couple of commands.
+You can also use our **[Docker installation](https://github.com/ONLYOFFICE/docker-onlyoffice-nextcloud)** to get installed and configured Document Server and Nextcloud installation with a couple of commands.
 
 
 
