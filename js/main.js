@@ -161,9 +161,7 @@
                         displayName: t(OCA.Onlyoffice.AppName, "Open in ONLYOFFICE"),
                         mime: attr.mime,
                         permissions: OC.PERMISSION_READ,
-                        icon: function () {
-                            return OC.imagePath(OCA.Onlyoffice.AppName, "app-dark");
-                        },
+                        iconClass: "icon-onlyoffice-open",
                         actionHandler: OCA.Onlyoffice.FileClick
                     });
 
@@ -177,9 +175,7 @@
                             displayName: t(OCA.Onlyoffice.AppName, "Convert with ONLYOFFICE"),
                             mime: attr.mime,
                             permissions: OC.PERMISSION_READ,
-                            icon: function () {
-                                return OC.imagePath(OCA.Onlyoffice.AppName, "app-dark");
-                            },
+                            iconClass: "icon-onlyoffice-convert",
                             actionHandler: OCA.Onlyoffice.FileConvertClick
                         });
                     }
