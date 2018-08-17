@@ -130,8 +130,8 @@ class SettingsController extends Controller {
      * Save app settings
      *
      * @param string $documentserver - document service address
-     * @param string $documentserverInternal - document service address available from ownCloud
-     * @param string $storageUrl - ownCloud address available from document server
+     * @param string $documentserverInternal - document service address available from Nextcloud
+     * @param string $storageUrl - Nextcloud address available from document server
      * @param string $secret - secret key for signature
      * @param string $defFormats - formats array with default action
      *

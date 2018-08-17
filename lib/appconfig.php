@@ -68,14 +68,14 @@ class AppConfig {
     private $_documentserver = "DocumentServerUrl";
 
     /**
-     * The config key for the document server address available from ownCloud
+     * The config key for the document server address available from Nextcloud
      *
      * @var string
      */
     private $_documentserverInternal = "DocumentServerInternalUrl";
 
     /**
-     * The config key for the ownCloud address available from document server
+     * The config key for the Nextcloud address available from document server
      *
      * @var string
      */
@@ -230,7 +230,7 @@ class AppConfig {
     }
 
     /**
-     * Save the document service address available from ownCloud to the application configuration
+     * Save the document service address available from Nextcloud to the application configuration
      *
      * @param string $documentServer - document service address
      */
@@ -249,7 +249,7 @@ class AppConfig {
     }
 
     /**
-     * Get the document service address available from ownCloud from the application configuration
+     * Get the document service address available from Nextcloud from the application configuration
      *
      * @return string
      */
@@ -265,7 +265,7 @@ class AppConfig {
     }
 
     /**
-     * Save the ownCloud address available from document server to the application configuration
+     * Save the Nextcloud address available from document server to the application configuration
      *
      * @param string $documentServer - document service address
      */
@@ -284,7 +284,7 @@ class AppConfig {
     }
 
     /**
-     * Get the ownCloud address available from document server from the application configuration
+     * Get the Nextcloud address available from document server from the application configuration
      *
      * @return string
      */
