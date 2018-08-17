@@ -68,7 +68,8 @@
 
     <h3 class="onlyoffice-header"><?php p($l->t("The default application for opening the format")) ?></h3>
     <div class="onlyoffice-exts">
-        <?php foreach ($_["formats"] as $format => $setting) { ?>
+        <?php foreach ($_["formats"] as $format => $setting) { 
+            if (array_key_exists("mime", $setting)) { ?>
             <div>
                 <input type="checkbox" class="checkbox"
                     id="onlyofficeDefFormat<?php p($format) ?>"
@@ -76,7 +77,8 @@
                     <?php if ($setting["def"]) { ?>checked="checked"<?php } ?> />
                 <label for="onlyofficeDefFormat<?php p($format) ?>"><?php p($format) ?></label>
             </div>
-        <?php } ?>
+        <?php }
+            } ?>
     </div>
 
     <a id="onlyofficeSave" class="button onlyoffice-header"><?php p($l->t("Save")) ?></a>

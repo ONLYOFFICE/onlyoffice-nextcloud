@@ -3,7 +3,7 @@
 This app enables users to edit office documents from [Nextcloud](https://nextcloud.com) using ONLYOFFICE Document Server.
 Currently the following document formats can be edited with this app: csv, docx, pptx, txt, xlsx.
 The above mentioned formats are also available for viewing together with pdf.
-The edited files of the corresponding type can be converted into the Office Open XML formats: doc, dot, dotx, epub, htm, html, odp, odt, pot, potm, potx, pps, ppsm, ppsx, ppt, pptm, rtf, xls, xlsm, xlsx, xlt, xltm, xltx.
+The edited files of the corresponding type can be converted into the Office Open XML formats: doc, docm, dot, dotx, epub, htm, html, odp, odt, pot, potm, potx, pps, ppsm, ppsx, ppt, pptm, rtf, xls, xlsm, xlsx, xlt, xltm, xltx.
 
 The app will create an item in the `new` (+) menu to create **Document**, **Spreadsheet**, **Presentation**.
 It will also create a new **Open in ONLYOFFICE** menu option within the document library for Office documents.
