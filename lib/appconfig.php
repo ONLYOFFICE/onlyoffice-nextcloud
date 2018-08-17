@@ -439,28 +439,19 @@ class AppConfig {
      */
     public $formats = [
             "csv" => [ "mime" => "text/csv", "type" => "spreadsheet", "edit" => true ],
-            "djvu" => [ "mime" => "image/vnd.djvu", "type" => "text" ],
             "doc" => [ "mime" => "application/msword", "type" => "text", "conv" => true ],
             "docm" => [ "mime" => "application/vnd.ms-word.document.macroEnabled.12", "type" => "text", "conv" => true ],
             "docx" => [ "mime" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "type" => "text", "edit" => true, "def" => true ],
             "dot" => [ "mime" => "application/msword", "type" => "text", "conv" => true ],
-            "dotm" => [ "mime" => "application/vnd.ms-word.template.macroEnabled.12", "type" => "text", "conv" => true ],
             "dotx" => [ "mime" => "application/vnd.openxmlformats-officedocument.wordprocessingml.template", "type" => "text", "conv" => true ],
             "epub" => [ "mime" => "application/epub+zip", "type" => "text", "conv" => true ],
-            "fodp" => [ "mime" => "application/vnd.oasis.opendocument.presentation", "type" => "presentation", "conv" => true ],
-            "fods" => [ "mime" => "application/vnd.oasis.opendocument.spreadsheet", "type" => "spreadsheet", "conv" => true ],
-            "fodt" => [ "mime" => "application/vnd.oasis.opendocument.text", "type" => "text", "conv" => true ],
             "htm" => [ "mime" => "text/html", "type" => "text", "conv" => true ],
             "html" => [ "mime" => "text/html", "type" => "text", "conv" => true ],
-            "mht" => [ "mime" => "message/rfc822", "conv" => true ],
             "odp" => [ "mime" => "application/vnd.oasis.opendocument.presentation", "type" => "presentation", "conv" => true ],
             "ods" => [ "mime" => "application/vnd.oasis.opendocument.spreadsheet", "type" => "spreadsheet", "conv" => true ],
             "odt" => [ "mime" => "application/vnd.oasis.opendocument.text", "type" => "text", "conv" => true ],
-            "otp" => [ "mime" => "application/vnd.oasis.opendocument.presentation-template", "type" => "presentation", "conv" => true ],
-            "ots" => [ "mime" => "application/vnd.oasis.opendocument.spreadsheet-template", "type" => "spreadsheet", "conv" => true ],
-            "ott" => [ "mime" => "application/vnd.oasis.opendocument.text-template", "type" => "text", "conv" => true ],
             "pdf" => [ "mime" => "application/pdf", "type" => "text" ],
-            "pot" => [ "mime" => "application/mspowerpoint", "type" => "presentation", "conv" => true ],
+            "pot" => [ "mime" => "application/vnd.ms-powerpoint", "type" => "presentation", "conv" => true ],
             "potm" => [ "mime" => "application/vnd.ms-powerpoint.template.macroEnabled.12", "type" => "presentation", "conv" => true ],
             "potx" => [ "mime" => "application/vnd.openxmlformats-officedocument.presentationml.template", "type" => "presentation", "conv" => true ],
             "pps" => [ "mime" => "application/vnd.ms-powerpoint", "type" => "presentation", "conv" => true ],
@@ -474,9 +465,8 @@ class AppConfig {
             "xls" => [ "mime" => "application/vnd.ms-excel", "type" => "spreadsheet", "conv" => true ],
             "xlsm" => [ "mime" => "application/vnd.ms-excel.sheet.macroEnabled.12", "type" => "spreadsheet", "conv" => true ],
             "xlsx" => [ "mime" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "type" => "spreadsheet", "edit" => true, "def" => true ],
-            "xlt" => [ "mime" => "application/excel", "type" => "spreadsheet", "conv" => true ],
+            "xlt" => [ "mime" => "application/vnd.ms-excel", "type" => "spreadsheet", "conv" => true ],
             "xltm" => [ "mime" => "application/vnd.ms-excel.template.macroEnabled.12", "type" => "spreadsheet", "conv" => true ],
-            "xltx" => [ "mime" => "application/vnd.openxmlformats-officedocument.spreadsheetml.template", "type" => "spreadsheet", "conv" => true ],
-            "xps" => [ "mime" => "application/vnd.ms-xpsdocument", "type" => "text" ]
+            "xltx" => [ "mime" => "application/vnd.openxmlformats-officedocument.spreadsheetml.template", "type" => "spreadsheet", "conv" => true ]
         ];
 }
