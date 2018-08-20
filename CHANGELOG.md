@@ -1,5 +1,9 @@
 # Change Log
 
+## 2.0.2
+## Changed
+- deleted unsupported methods
+
 ## 1.4.0
 ## Added
 - transition from the editor to the list of files in the same tab

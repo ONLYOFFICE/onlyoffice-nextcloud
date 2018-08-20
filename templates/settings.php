@@ -32,14 +32,14 @@
 ?>
 <div class="section section-onlyoffice">
     <h2>ONLYOFFICE</h2>
-    <a target="_blank" class="icon-info svg" title="" href="https://api.onlyoffice.com/editors/owncloud" data-original-title="<?php p($l->t("Documentation")) ?>"></a>
+    <a target="_blank" class="icon-info svg" title="" href="https://api.onlyoffice.com/editors/nextcloud" data-original-title="<?php p($l->t("Documentation")) ?>"></a>
 
     <p><?php p($l->t("ONLYOFFICE Document Service Location specifies the address of the server with the document services installed. Please change the '<documentserver>' for the server address in the below line.")) ?></p>
 
     <?php if ($_["encryption"]) { ?>
     <p class="onlyoffice-error">
         <?php p($l->t("Encryption App is enabled, the application cannot work. You can continue working with the application if you enable master key.")) ?>
-        <a target="_blank" class="icon-info svg" title="" href="https://api.onlyoffice.com/editors/owncloud#masterKey" data-original-title="encryption:enable-master-key"></a>
+        <a target="_blank" class="icon-info svg" title="" href="https://api.onlyoffice.com/editors/nextcloud#masterKey" data-original-title="encryption:enable-master-key"></a>
     </p>
     <?php } ?>
 
@@ -68,7 +68,8 @@
 
     <h3 class="onlyoffice-header"><?php p($l->t("The default application for opening the format")) ?></h3>
     <div class="onlyoffice-exts">
-        <?php foreach ($_["formats"] as $format => $setting) { ?>
+        <?php foreach ($_["formats"] as $format => $setting) { 
+            if (array_key_exists("mime", $setting)) { ?>
             <div>
                 <input type="checkbox" class="checkbox"
                     id="onlyofficeDefFormat<?php p($format) ?>"
@@ -76,7 +77,8 @@
                     <?php if ($setting["def"]) { ?>checked="checked"<?php } ?> />
                 <label for="onlyofficeDefFormat<?php p($format) ?>"><?php p($format) ?></label>
             </div>
-        <?php } ?>
+        <?php }
+            } ?>
     </div>
 
     <a id="onlyofficeSave" class="button onlyoffice-header"><?php p($l->t("Save")) ?></a>

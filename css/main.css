@@ -35,3 +35,7 @@
 .icon-onlyoffice-new-pptx {
     background-image: url("../img/new-pptx.svg");
 }
+.icon-onlyoffice-open,
+.icon-onlyoffice-convert {
+    background-image: url("../img/app-dark.svg");
+}

@@ -43,25 +43,7 @@ class AdminSettings implements ISettings {
     }
 
     /**
-     * Print config section (ownCloud 10)
-     *
-     * @return TemplateResponse
-     */
-    public function getPanel() {
-        return $this->getForm();
-    }
-
-    /**
-     * Get section ID (ownCloud 10)
-     *
-     * @return string
-     */
-    public function getSectionID() {
-        return "general";
-    }
-
-    /**
-     * Print config section (Nextcloud)
+     * Print config section
      *
      * @return TemplateResponse
      */
@@ -73,7 +55,7 @@ class AdminSettings implements ISettings {
     }
 
     /**
-     * Get section ID (Nextcloud)
+     * Get section ID
      *
      * @return string
      */

@@ -153,17 +153,18 @@
             }
 
             var register = function() {
-                var mimes = OCA.Onlyoffice.setting.formats;
+                var formats = OCA.Onlyoffice.setting.formats;
 
-                $.each(mimes, function (ext, attr) {
+                $.each(formats, function (ext, attr) {
+                    if (!attr.mime) {
+                        return true;
+                    }
                     fileList.fileActions.registerAction({
                         name: "onlyofficeOpen",
                         displayName: t(OCA.Onlyoffice.AppName, "Open in ONLYOFFICE"),
                         mime: attr.mime,
                         permissions: OC.PERMISSION_READ,
-                        icon: function () {
-                            return OC.imagePath(OCA.Onlyoffice.AppName, "app-dark");
-                        },
+                        iconClass: "icon-onlyoffice-open",
                         actionHandler: OCA.Onlyoffice.FileClick
                     });
 
@@ -177,9 +178,7 @@
                             displayName: t(OCA.Onlyoffice.AppName, "Convert with ONLYOFFICE"),
                             mime: attr.mime,
                             permissions: OC.PERMISSION_READ,
-                            icon: function () {
-                                return OC.imagePath(OCA.Onlyoffice.AppName, "app-dark");
-                            },
+                            iconClass: "icon-onlyoffice-convert",
                             actionHandler: OCA.Onlyoffice.FileConvertClick
                         });
                     }
@@ -239,9 +238,9 @@
             var extension = fileName.substr(fileName.lastIndexOf(".") + 1).toLowerCase();
 
             var initSharedButton = function() {
-                var mimes = OCA.Onlyoffice.setting.formats;
+                var formats = OCA.Onlyoffice.setting.formats;
 
-                var conf = mimes[extension];
+                var conf = formats[extension];
                 if (conf) {
                     var button = document.createElement("a");
                     button.href = OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/s/" + encodeURIComponent($("#sharingToken").val()));
