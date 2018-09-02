@@ -1,4 +1,4 @@
-﻿OC.L10N.register(
+OC.L10N.register(
     "onlyoffice",
     {
     "Access deny" : "Zugriff verweigern",
