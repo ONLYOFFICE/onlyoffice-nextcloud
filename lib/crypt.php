@@ -32,7 +32,7 @@ namespace OCA\Onlyoffice;
 use OCA\Onlyoffice\AppConfig;
 
 /**
- * Hash generator
+ * Token generator
  *
  * @package OCA\Onlyoffice
  */
@@ -53,63 +53,34 @@ class Crypt {
     }
 
     /**
-     * Generate base64 hash for the object
+     * Generate token for the object
      *
-     * @param array $object - object to signature hash
+     * @param array $object - object to signature
      *
      * @return string
      */
     public function GetHash($object) {
-        $primaryKey = json_encode($object);
-        $hash = $this->SignatureCreate($primaryKey);
-        return $hash;
+        return \Firebase\JWT\JWT::encode($object, $this->skey);
     }
 
     /**
-     * Create an object from the base64 hash
+     * Create an object from the token
      *
-     * @param string $hash - base64 hash
+     * @param string $token - token
      *
      * @return array
      */
-    public function ReadHash($hash) {
+    public function ReadHash($token) {
         $result = NULL;
         $error = NULL;
-        if ($hash === NULL) {
-            return [$result, "hash is empty"];
+        if ($token === NULL) {
+            return [$result, "token is empty"];
         }
         try {
-            $payload = base64_decode($hash);
-            $payloadParts = explode("?", $payload, 2);
-
-            if (count($payloadParts) === 2) {
-                $encode = base64_encode( hash( "sha256", ($payloadParts[1] . $this->skey), true ) );
-
-                if ($payloadParts[0] === $encode) {
-                    $result = json_decode($payloadParts[1]);
-                } else {
-                    $error = "hash not equal";
-                }
-            } else {
-                $error = "incorrect hash";
-            }
-        } catch (\Exception $e) {
+            $result = \Firebase\JWT\JWT::decode($token, $this->skey, array("HS256"));
+        } catch (\UnexpectedValueException $e) {
             $error = $e->getMessage();
         }
         return [$result, $error];
-    }
-
-    /**
-     * Generate base64 hash for the object
-     *
-     * @param string $primary_key - string to the signature hash
-     *
-     * @return string
-     */
-    private function SignatureCreate($primary_key) {
-        $payload = base64_encode( hash( "sha256", ($primary_key . $this->skey), true ) ) . "?" . $primary_key;
-        $base64Str = base64_encode($payload);
-
-        return $base64Str;
     }
 }
