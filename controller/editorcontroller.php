@@ -244,7 +244,8 @@ class EditorController extends Controller {
     public function convert($fileId) {
         $this->logger->debug("Convert: " . $fileId, array("app" => $this->appName));
 
-        list ($file, $error) = $this->getFile($fileId);
+        $userId = $this->userSession->getUser()->getUID();
+        list ($file, $error) = $this->getFile($userId, $fileId);
 
         if (isset($error)) {
             $this->logger->error("Convertion: " . $fileId . " " . $error, array("app" => $this->appName));
@@ -286,7 +287,6 @@ class EditorController extends Controller {
             return ["error" => $e->getMessage()];
         }
 
-        $userId = $this->userSession->getUser()->getUID();
         $folder = $file->getParent();
         if (!$folder->isCreatable()) {
             $folder = $this->root->getUserFolder($userId);
@@ -399,7 +399,13 @@ class EditorController extends Controller {
      */
     public function config($fileId, $token = NULL) {
 
-        list ($file, $error) = empty($token) ? $this->getFile($fileId) : $this->getFileByToken($fileId, $token);
+        $user = $this->userSession->getUser();
+        $userId = NULL;
+        if (!empty($user)) {
+            $userId = $user->getUID();
+        }
+
+        list ($file, $error) = empty($token) ? $this->getFile($userId, $fileId) : $this->getFileByToken($fileId, $token);
 
         if (isset($error)) {
             $this->logger->error("Config: " . $fileId . " " . $error, array("app" => $this->appName));
@@ -457,12 +463,6 @@ class EditorController extends Controller {
             $params["editorConfig"]["mode"] = "view";
         }
 
-        $user = $this->userSession->getUser();
-        $userId = NULL;
-        if (!empty($user)) {
-            $userId = $user->getUID();
-        }
-
         if (!empty($userId)) {
             $params["editorConfig"]["user"] = [
                 "id" => $userId,
@@ -503,16 +503,23 @@ class EditorController extends Controller {
     /**
      * Getting file by identifier
      *
+     * @param integer $userId - user identifier
      * @param integer $fileId - file identifier
      *
      * @return array
      */
-    private function getFile($fileId) {
+    private function getFile($userId, $fileId) {
         if (empty($fileId)) {
             return [NULL, $this->trans->t("FileId is empty")];
         }
 
-        $files = $this->root->getById($fileId);
+        if ($userId !== NULL) {
+            $files = $this->root->getUserFolder($userId)->getById($fileId);
+        } else {
+            $this->logger->debug("getFile by unknown user: " . $fileId, array("app" => $this->appName));
+            $files = $this->root->getById($fileId);
+        }
+
         if (empty($files)) {
             return [NULL, $this->trans->t("File not found")];
         }
