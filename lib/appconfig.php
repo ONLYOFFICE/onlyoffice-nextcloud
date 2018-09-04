@@ -178,12 +178,16 @@ class AppConfig {
 
     /**
      * Get value from the system configuration
-     * 
+     *
      * @param string $key - key configuration
+     * @param string $system - get from root or from app section
      *
      * @return string
      */
-    public function GetSystemValue($key) {
+    public function GetSystemValue($key, $system = false) {
+        if ($system) {
+            return $this->config->getSystemValue($key);
+        }
         if (!empty($this->config->getSystemValue($this->appName))
             && array_key_exists($key, $this->config->getSystemValue($this->appName))) {
             return $this->config->getSystemValue($this->appName)[$key];

@@ -600,9 +600,11 @@ class EditorController extends Controller {
      * @return string
      */
     private function getKey($file) {
+        $instanceId = $this->config->getSystemValue("instanceid", true);
+
         $fileId = $file->getId();
 
-        $key = $fileId . "_" . $file->getMtime();
+        $key = $instanceId . "_" . $fileId . "_" . $file->getMtime();
 
         return $key;
     }
