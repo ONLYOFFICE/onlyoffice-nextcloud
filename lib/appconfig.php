@@ -397,7 +397,7 @@ class AppConfig {
      */
     public function TurnOffVerification() {
         $turnOff = $this->getSystemValue($this->_verification);
-        return $turnOff === TRUE;
+        return $turnOff === true;
     }
 
     /**

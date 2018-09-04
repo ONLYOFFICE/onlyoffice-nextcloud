@@ -285,7 +285,7 @@ class SettingsController extends Controller {
         }
 
         try {
-            if ($documentService->Request($convertedFileUri) === FALSE) {
+            if ($documentService->Request($convertedFileUri) === false) {
                 throw new \Exception($this->trans->t("Error occurred in the document service"));
             }
         } catch (\Exception $e) {

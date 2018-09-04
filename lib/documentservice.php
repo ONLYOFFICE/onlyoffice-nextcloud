@@ -90,7 +90,7 @@ class DocumentService {
      * @return string
      */
     function GetConvertedUri($document_uri, $from_extension, $to_extension, $document_revision_id) {
-        $responceFromConvertService = $this->SendRequestToConvertService($document_uri, $from_extension, $to_extension, $document_revision_id, FALSE);
+        $responceFromConvertService = $this->SendRequestToConvertService($document_uri, $from_extension, $to_extension, $document_revision_id, false);
 
         $errorElement = $responceFromConvertService->Error;
         if ($errorElement->count() > 0) {
@@ -268,7 +268,7 @@ class DocumentService {
                 )
             );
 
-        if (($response = $this->Request($urlHealthcheck, $opts)) === FALSE) {
+        if (($response = $this->Request($urlHealthcheck, $opts)) === false) {
             throw new \Exception ($this->trans->t("Bad Request or timeout error"));
         }
 
@@ -314,7 +314,7 @@ class DocumentService {
             $opts["http"]["header"] = $opts["http"]["header"] . $this->config->JwtHeader() . ": Bearer " . $token . "\r\n";
         }
 
-        if (($response = $this->Request($urlCommand, $opts)) === FALSE) {
+        if (($response = $this->Request($urlCommand, $opts)) === false) {
             throw new \Exception ($this->trans->t("Bad Request or timeout error"));
         }
 
@@ -371,13 +371,13 @@ class DocumentService {
 
         if (substr($url, 0, strlen("https")) === "https" && $this->config->TurnOffVerification()) {
             $opts["ssl"] = array(
-                "verify_peer" => FALSE,
-                "verify_peer_name" => FALSE
+                "verify_peer" => false,
+                "verify_peer_name" => false
             );
         }
 
         $context  = stream_context_create($opts);
 
-        return file_get_contents($url, FALSE, $context);
+        return file_get_contents($url, false, $context);
     }
 }

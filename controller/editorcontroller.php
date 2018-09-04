@@ -259,7 +259,7 @@ class EditorController extends Controller {
             return ["error" => $this->trans->t("Format is not supported")];
         }
 
-        if (!isset($format["conv"]) || $format["conv"] !== TRUE) {
+        if (!isset($format["conv"]) || $format["conv"] !== true) {
             $this->logger->info("Conversion is not required: " . $fileName, array("app" => $this->appName));
             return ["error" => $this->trans->t("Conversion is not required")];
         }
@@ -299,7 +299,7 @@ class EditorController extends Controller {
 
         $newFilePath = $newFolderPath . DIRECTORY_SEPARATOR . $newFileName;
 
-        if (($newData = $documentService->Request($newFileUri)) === FALSE) {
+        if (($newData = $documentService->Request($newFileUri)) === false) {
             $this->logger->error("Failed to download converted file: " . $newFileUri, array("app" => $this->appName));
             return ["error" => $this->trans->t("Failed to download converted file")];
         }
