@@ -119,7 +119,7 @@ class SettingsController extends Controller {
             "storageUrl" => $this->config->GetStorageUrl(),
             "secret" => $this->config->GetDocumentServerSecret(),
             "currentServer" => $this->urlGenerator->getAbsoluteURL("/"),
-            "formats" => $this->formats(),
+            "formats" => $this->config->FormatsSetting(),
             "sameTab" => $this->config->GetSameTab(),
             "encryption" => $this->checkEncryptionModule()
         ];
@@ -183,29 +183,9 @@ class SettingsController extends Controller {
      */
     public function GetSettings() {
         $result = [
-            "formats" => $this->formats(),
+            "formats" => $this->config->FormatsSetting(),
             "sameTab" => $this->config->GetSameTab()
         ];
-        return $result;
-    }
-
-    /**
-     * Get supported formats
-     *
-     * @return array
-     *
-     * @NoAdminRequired
-     */
-    private function formats() {
-        $result = $this->config->formats;
-
-        $defFormats = $this->config->GetDefaultFormats();
-        foreach ($defFormats as $format => $setting) {
-            if (array_key_exists($format, $result)) {
-                $result[$format]["def"] = ($setting === true || $setting === "true");
-            }
-        }
-
         return $result;
     }
 

@@ -350,7 +350,7 @@ class AppConfig {
     }
 
     /**
-     * Save the formats array with default action
+     * Save an array of formats with default action
      *
      * @param array $formats - formats with status
      */
@@ -362,11 +362,11 @@ class AppConfig {
     }
 
     /**
-     * Get the formats array with default action
+     * Get an array of formats with default action
      *
      * @return array
      */
-    public function GetDefaultFormats() {
+    private function GetDefaultFormats() {
         $value = $this->config->getAppValue($this->appName, $this->_defFormats, "");
         if (empty($value)) {
             return array();
@@ -435,13 +435,33 @@ class AppConfig {
         return empty($this->config->getAppValue($this->appName, $this->_settingsError, ""));
     }
 
+    /**
+     * Get supported formats
+     *
+     * @return array
+     *
+     * @NoAdminRequired
+     */
+    public function FormatsSetting() {
+        $result = $this->formats;
+
+        $defFormats = $this->GetDefaultFormats();
+        foreach ($defFormats as $format => $setting) {
+            if (array_key_exists($format, $result)) {
+                $result[$format]["def"] = ($setting === true || $setting === "true");
+            }
+        }
+
+        return $result;
+    }
+
 
     /**
      * Additional data about formats
      *
      * @var array
      */
-    public $formats = [
+    private $formats = [
             "csv" => [ "mime" => "text/csv", "type" => "spreadsheet", "edit" => true ],
             "doc" => [ "mime" => "application/msword", "type" => "text", "conv" => true ],
             "docm" => [ "mime" => "application/vnd.ms-word.document.macroEnabled.12", "type" => "text", "conv" => true ],

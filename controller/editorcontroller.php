@@ -254,7 +254,7 @@ class EditorController extends Controller {
 
         $fileName = $file->getName();
         $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-        $format = $this->config->formats[$ext];
+        $format = $this->config->FormatsSetting()[$ext];
         if (!isset($format)) {
             $this->logger->info("Format for convertion not supported: " . $fileName, array("app" => $this->appName));
             return ["error" => $this->trans->t("Format is not supported")];
@@ -414,7 +414,7 @@ class EditorController extends Controller {
 
         $fileName = $file->getName();
         $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-        $format = $this->config->formats[$ext];
+        $format = $this->config->FormatsSetting()[$ext];
         if (!isset($format)) {
             $this->logger->info("Format is not supported for editing: " . $fileName, array("app" => $this->appName));
             return ["error" => $this->trans->t("Format is not supported")];
