@@ -142,6 +142,7 @@ class SettingsController extends Controller {
                                     $storageUrl,
                                     $secret,
                                     $defFormats,
+                                    $editFormats,
                                     $sameTab
                                     ) {
         $this->config->SetDocumentServerUrl($documentserver);
@@ -158,6 +159,7 @@ class SettingsController extends Controller {
         $this->config->DropSKey();
 
         $this->config->SetDefaultFormats($defFormats);
+        $this->config->SetEditableFormats($editFormats);
         $this->config->SetSameTab($sameTab);
 
         if ($this->checkEncryptionModule()) {

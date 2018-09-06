@@ -68,8 +68,8 @@
 
     <h3 class="onlyoffice-header"><?php p($l->t("The default application for opening the format")) ?></h3>
     <div class="onlyoffice-exts">
-        <?php foreach ($_["formats"] as $format => $setting) { 
-            if (array_key_exists("mime", $setting)) { ?>
+        <?php foreach ($_["formats"] as $format => $setting) { ?>
+            <?php if (array_key_exists("mime", $setting)) { ?>
             <div>
                 <input type="checkbox" class="checkbox"
                     id="onlyofficeDefFormat<?php p($format) ?>"
@@ -77,8 +77,24 @@
                     <?php if ($setting["def"]) { ?>checked="checked"<?php } ?> />
                 <label for="onlyofficeDefFormat<?php p($format) ?>"><?php p($format) ?></label>
             </div>
-        <?php }
-            } ?>
+            <?php } ?>
+        <?php } ?>
+    </div>
+
+    <h3 class="onlyoffice-header"><?php p($l->t("Open the file for editing (due to format restrictions, the data might be lost when saving to the formats from the list below)")) ?></h3>
+    <a target="_blank" class="icon-info svg" title="" href="https://api.onlyoffice.com/editors/owncloud#editable" data-original-title="<?php p($l->t("View details")) ?>"></a>
+    <div class="onlyoffice-exts">
+        <?php foreach ($_["formats"] as $format => $setting) { ?>
+            <?php if (array_key_exists("editable", $setting)) { ?>
+            <div>
+                <input type="checkbox" class="checkbox"
+                    id="onlyofficeEditFormat<?php p($format) ?>"
+                    name="<?php p($format) ?>"
+                    <?php if ($setting["edit"]) { ?>checked="checked"<?php } ?> />
+                <label for="onlyofficeEditFormat<?php p($format) ?>"><?php p($format) ?></label>
+            </div>
+            <?php } ?>
+        <?php } ?>
     </div>
 
     <a id="onlyofficeSave" class="button onlyoffice-header"><?php p($l->t("Save")) ?></a>

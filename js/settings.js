@@ -67,6 +67,11 @@
                 defFormats[this.name] = this.checked;
             });
 
+            var editFormats = {};
+            $("input[id^=\"onlyofficeEditFormat\"]").each(function() {
+                editFormats[this.name] = this.checked;
+            });
+
             var sameTab = $("#onlyofficeSameTab").is(":checked");
 
             $.ajax({
@@ -78,6 +83,7 @@
                     storageUrl: onlyofficeStorageUrl,
                     secret: onlyofficeSecret,
                     defFormats: defFormats,
+                    editFormats: editFormats,
                     sameTab: sameTab
                 },
                 success: function onSuccess(response) {

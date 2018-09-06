@@ -42,6 +42,8 @@ OC.L10N.register(
     "Secret key (leave blank to disable)" : "Секретный ключ (оставьте пустым для отключения)",
     "Open file in the same tab" : "Открыть файл в той же вкладке",
     "The default application for opening the format" : "Приложение по умолчанию для открытия формата",
+    "Open the file for editing (due to format restrictions, the data might be lost when saving to the formats from the list below)" : "Открыть файл на редактирование (из-за ограничений формата данные могут быть утеряны при сохранении в форматы из списка ниже)",
+    "View details" : "Подробнее",
     "Save" : "Сохранить",
     "Mixed Active Content is not allowed. HTTPS address for Document Server is required." : "Смешанное активное содержимое запрещено. Для Сервера документов необходимо использовать HTTPS-адрес."
 },
