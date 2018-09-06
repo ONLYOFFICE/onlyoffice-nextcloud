@@ -398,10 +398,10 @@ class CallbackController extends Controller {
                         $key =  DocumentService::GenerateRevisionId($fileId . $url);
 
                         try {
-                            $this->logger->debug("GetConvertedUri from " . $downloadExt . " to " . $curExt . " " .  $url, array("app" => $this->appName));
+                            $this->logger->debug("Converted from " . $downloadExt . " to " . $curExt, array("app" => $this->appName));
                             $url = $documentService->GetConvertedUri($url, $downloadExt, $curExt, $key);
                         } catch (\Exception $e) {
-                            $this->logger->error("GetConvertedUri on save error: " . $e->getMessage(), array("app" => $this->appName));
+                            $this->logger->error("Converted on save error: " . $e->getMessage(), array("app" => $this->appName));
                             return new JSONResponse(["message" => $e->getMessage()], Http::STATUS_INTERNAL_SERVER_ERROR);
                         }
                     }
