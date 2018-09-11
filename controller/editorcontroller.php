@@ -244,7 +244,8 @@ class EditorController extends Controller {
     public function convert($fileId) {
         $this->logger->debug("Convert: " . $fileId, array("app" => $this->appName));
 
-        list ($file, $error) = $this->getFile($fileId);
+        $userId = $this->userSession->getUser()->getUID();
+        list ($file, $error) = $this->getFile($userId, $fileId);
 
         if (isset($error)) {
             $this->logger->error("Convertion: " . $fileId . " " . $error, array("app" => $this->appName));
@@ -253,13 +254,13 @@ class EditorController extends Controller {
 
         $fileName = $file->getName();
         $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-        $format = $this->config->formats[$ext];
+        $format = $this->config->FormatsSetting()[$ext];
         if (!isset($format)) {
             $this->logger->info("Format for convertion not supported: " . $fileName, array("app" => $this->appName));
             return ["error" => $this->trans->t("Format is not supported")];
         }
 
-        if (!isset($format["conv"]) || $format["conv"] !== TRUE) {
+        if (!isset($format["conv"]) || $format["conv"] !== true) {
             $this->logger->info("Conversion is not required: " . $fileName, array("app" => $this->appName));
             return ["error" => $this->trans->t("Conversion is not required")];
         }
@@ -286,7 +287,6 @@ class EditorController extends Controller {
             return ["error" => $e->getMessage()];
         }
 
-        $userId = $this->userSession->getUser()->getUID();
         $folder = $file->getParent();
         if (!$folder->isCreatable()) {
             $folder = $this->root->getUserFolder($userId);
@@ -299,7 +299,7 @@ class EditorController extends Controller {
 
         $newFilePath = $newFolderPath . DIRECTORY_SEPARATOR . $newFileName;
 
-        if (($newData = $documentService->Request($newFileUri)) === FALSE) {
+        if (($newData = $documentService->Request($newFileUri)) === false) {
             $this->logger->error("Failed to download converted file: " . $newFileUri, array("app" => $this->appName));
             return ["error" => $this->trans->t("Failed to download converted file")];
         }
@@ -399,7 +399,13 @@ class EditorController extends Controller {
      */
     public function config($fileId, $token = NULL) {
 
-        list ($file, $error) = empty($token) ? $this->getFile($fileId) : $this->getFileByToken($fileId, $token);
+        $user = $this->userSession->getUser();
+        $userId = NULL;
+        if (!empty($user)) {
+            $userId = $user->getUID();
+        }
+
+        list ($file, $error) = empty($token) ? $this->getFile($userId, $fileId) : $this->getFileByToken($fileId, $token);
 
         if (isset($error)) {
             $this->logger->error("Config: " . $fileId . " " . $error, array("app" => $this->appName));
@@ -408,7 +414,7 @@ class EditorController extends Controller {
 
         $fileName = $file->getName();
         $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-        $format = $this->config->formats[$ext];
+        $format = $this->config->FormatsSetting()[$ext];
         if (!isset($format)) {
             $this->logger->info("Format is not supported for editing: " . $fileName, array("app" => $this->appName));
             return ["error" => $this->trans->t("Format is not supported")];
@@ -457,12 +463,6 @@ class EditorController extends Controller {
             $params["editorConfig"]["mode"] = "view";
         }
 
-        $user = $this->userSession->getUser();
-        $userId = NULL;
-        if (!empty($user)) {
-            $userId = $user->getUID();
-        }
-
         if (!empty($userId)) {
             $params["editorConfig"]["user"] = [
                 "id" => $userId,
@@ -503,16 +503,23 @@ class EditorController extends Controller {
     /**
      * Getting file by identifier
      *
+     * @param integer $userId - user identifier
      * @param integer $fileId - file identifier
      *
      * @return array
      */
-    private function getFile($fileId) {
+    private function getFile($userId, $fileId) {
         if (empty($fileId)) {
             return [NULL, $this->trans->t("FileId is empty")];
         }
 
-        $files = $this->root->getById($fileId);
+        if ($userId !== NULL) {
+            $files = $this->root->getUserFolder($userId)->getById($fileId);
+        } else {
+            $this->logger->debug("getFile by unknown user: " . $fileId, array("app" => $this->appName));
+            $files = $this->root->getById($fileId);
+        }
+
         if (empty($files)) {
             return [NULL, $this->trans->t("File not found")];
         }
@@ -600,9 +607,11 @@ class EditorController extends Controller {
      * @return string
      */
     private function getKey($file) {
+        $instanceId = $this->config->getSystemValue("instanceid", true);
+
         $fileId = $file->getId();
 
-        $key = $fileId . "_" . $file->getMtime();
+        $key = $instanceId . "_" . $fileId . "_" . $file->getMtime();
 
         return $key;
     }

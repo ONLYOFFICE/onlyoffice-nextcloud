@@ -1,5 +1,13 @@
 # Change Log
 
+## 2.0.4
+## Added
+- opening for editing not OOXML
+
+## Changed
+- different keys for a file from different instances
+- replace hash generator to JWT
+
 ## 2.0.2
 ## Changed
 - deleted unsupported methods

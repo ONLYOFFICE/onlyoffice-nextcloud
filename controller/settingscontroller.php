@@ -119,7 +119,7 @@ class SettingsController extends Controller {
             "storageUrl" => $this->config->GetStorageUrl(),
             "secret" => $this->config->GetDocumentServerSecret(),
             "currentServer" => $this->urlGenerator->getAbsoluteURL("/"),
-            "formats" => $this->formats(),
+            "formats" => $this->config->FormatsSetting(),
             "sameTab" => $this->config->GetSameTab(),
             "encryption" => $this->checkEncryptionModule()
         ];
@@ -142,6 +142,7 @@ class SettingsController extends Controller {
                                     $storageUrl,
                                     $secret,
                                     $defFormats,
+                                    $editFormats,
                                     $sameTab
                                     ) {
         $this->config->SetDocumentServerUrl($documentserver);
@@ -158,6 +159,7 @@ class SettingsController extends Controller {
         $this->config->DropSKey();
 
         $this->config->SetDefaultFormats($defFormats);
+        $this->config->SetEditableFormats($editFormats);
         $this->config->SetSameTab($sameTab);
 
         if ($this->checkEncryptionModule()) {
@@ -183,29 +185,9 @@ class SettingsController extends Controller {
      */
     public function GetSettings() {
         $result = [
-            "formats" => $this->formats(),
+            "formats" => $this->config->FormatsSetting(),
             "sameTab" => $this->config->GetSameTab()
         ];
-        return $result;
-    }
-
-    /**
-     * Get supported formats
-     *
-     * @return array
-     *
-     * @NoAdminRequired
-     */
-    private function formats() {
-        $result = $this->config->formats;
-
-        $defFormats = $this->config->GetDefaultFormats();
-        foreach ($defFormats as $format => $setting) {
-            if (array_key_exists($format, $result)) {
-                $result[$format]["def"] = ($setting === true || $setting === "true");
-            }
-        }
-
         return $result;
     }
 
@@ -285,7 +267,7 @@ class SettingsController extends Controller {
         }
 
         try {
-            if ($documentService->Request($convertedFileUri) === FALSE) {
+            if ($documentService->Request($convertedFileUri) === false) {
                 throw new \Exception($this->trans->t("Error occurred in the document service"));
             }
         } catch (\Exception $e) {

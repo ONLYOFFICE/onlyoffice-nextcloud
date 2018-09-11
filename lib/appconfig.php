@@ -96,6 +96,13 @@ class AppConfig {
     private $_defFormats = "defFormats";
 
     /**
+     * The config key for the editable formats
+     *
+     * @var string
+     */
+    private $_editFormats = "editFormats";
+
+    /**
      * The config key for the setting same tab
      *
      * @var string
@@ -178,12 +185,16 @@ class AppConfig {
 
     /**
      * Get value from the system configuration
-     * 
+     *
      * @param string $key - key configuration
+     * @param string $system - get from root or from app section
      *
      * @return string
      */
-    public function GetSystemValue($key) {
+    public function GetSystemValue($key, $system = false) {
+        if ($system) {
+            return $this->config->getSystemValue($key);
+        }
         if (!empty($this->config->getSystemValue($this->appName))
             && array_key_exists($key, $this->config->getSystemValue($this->appName))) {
             return $this->config->getSystemValue($this->appName)[$key];
@@ -346,7 +357,7 @@ class AppConfig {
     }
 
     /**
-     * Save the formats array with default action
+     * Save an array of formats with default action
      *
      * @param array $formats - formats with status
      */
@@ -358,12 +369,37 @@ class AppConfig {
     }
 
     /**
-     * Get the formats array with default action
+     * Get an array of formats with default action
      *
      * @return array
      */
-    public function GetDefaultFormats() {
+    private function GetDefaultFormats() {
         $value = $this->config->getAppValue($this->appName, $this->_defFormats, "");
+        if (empty($value)) {
+            return array();
+        }
+        return json_decode($value, true);
+    }
+
+    /**
+     * Save an array of formats that is opened for editing
+     *
+     * @param array $formats - formats with status
+     */
+    public function SetEditableFormats($formats) {
+        $value = json_encode($formats);
+        $this->logger->info("Set editing formats: " . $value, array("app" => $this->appName));
+
+        $this->config->setAppValue($this->appName, $this->_editFormats, $value);
+    }
+
+    /**
+     * Get an array of formats opening for editing
+     *
+     * @return array
+     */
+    private function GetEditableFormats() {
+        $value = $this->config->getAppValue($this->appName, $this->_editFormats, "");
         if (empty($value)) {
             return array();
         }
@@ -397,7 +433,7 @@ class AppConfig {
      */
     public function TurnOffVerification() {
         $turnOff = $this->getSystemValue($this->_verification);
-        return $turnOff === TRUE;
+        return $turnOff === true;
     }
 
     /**
@@ -431,14 +467,41 @@ class AppConfig {
         return empty($this->config->getAppValue($this->appName, $this->_settingsError, ""));
     }
 
+    /**
+     * Get supported formats
+     *
+     * @return array
+     *
+     * @NoAdminRequired
+     */
+    public function FormatsSetting() {
+        $result = $this->formats;
+
+        $defFormats = $this->GetDefaultFormats();
+        foreach ($defFormats as $format => $setting) {
+            if (array_key_exists($format, $result)) {
+                $result[$format]["def"] = ($setting === true || $setting === "true");
+            }
+        }
+
+        $editFormats = $this->GetEditableFormats();
+        foreach ($editFormats as $format => $setting) {
+            if (array_key_exists($format, $result)) {
+                $result[$format]["edit"] = ($setting === true || $setting === "true");
+            }
+        }
+
+        return $result;
+    }
+
 
     /**
      * Additional data about formats
      *
      * @var array
      */
-    public $formats = [
-            "csv" => [ "mime" => "text/csv", "type" => "spreadsheet", "edit" => true ],
+    private $formats = [
+        "csv" => [ "mime" => "text/csv", "type" => "spreadsheet", "edit" => true, "editable" => true ],
             "doc" => [ "mime" => "application/msword", "type" => "text", "conv" => true ],
             "docm" => [ "mime" => "application/vnd.ms-word.document.macroEnabled.12", "type" => "text", "conv" => true ],
             "docx" => [ "mime" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "type" => "text", "edit" => true, "def" => true ],
@@ -447,9 +510,9 @@ class AppConfig {
             "epub" => [ "mime" => "application/epub+zip", "type" => "text", "conv" => true ],
             "htm" => [ "type" => "text", "conv" => true ],
             "html" => [ "mime" => "text/html", "type" => "text", "conv" => true ],
-            "odp" => [ "mime" => "application/vnd.oasis.opendocument.presentation", "type" => "presentation", "conv" => true ],
-            "ods" => [ "mime" => "application/vnd.oasis.opendocument.spreadsheet", "type" => "spreadsheet", "conv" => true ],
-            "odt" => [ "mime" => "application/vnd.oasis.opendocument.text", "type" => "text", "conv" => true ],
+        "odp" => [ "mime" => "application/vnd.oasis.opendocument.presentation", "type" => "presentation", "conv" => true, "editable" => true ],
+        "ods" => [ "mime" => "application/vnd.oasis.opendocument.spreadsheet", "type" => "spreadsheet", "conv" => true, "editable" => true ],
+        "odt" => [ "mime" => "application/vnd.oasis.opendocument.text", "type" => "text", "conv" => true, "editable" => true ],
             "pdf" => [ "mime" => "application/pdf", "type" => "text" ],
             "pot" => [ "type" => "presentation", "conv" => true ],
             "potm" => [ "mime" => "application/vnd.ms-powerpoint.template.macroEnabled.12", "type" => "presentation", "conv" => true ],
@@ -460,8 +523,8 @@ class AppConfig {
             "ppt" => [ "mime" => "application/vnd.ms-powerpoint", "type" => "presentation", "conv" => true ],
             "pptm" => [ "mime" => "application/vnd.ms-powerpoint.presentation.macroEnabled.12", "type" => "presentation", "conv" => true ],
             "pptx" => [ "mime" => "application/vnd.openxmlformats-officedocument.presentationml.presentation", "type" => "presentation", "edit" => true, "def" => true ],
-            "rtf" => [ "mime" => "text/rtf", "type" => "text", "conv" => true ],
-            "txt" => [ "mime" => "text/plain", "type" => "text", "edit" => true ],
+        "rtf" => [ "mime" => "text/rtf", "type" => "text", "conv" => true, "editable" => true ],
+        "txt" => [ "mime" => "text/plain", "type" => "text", "edit" => true, "editable" => true ],
             "xls" => [ "mime" => "application/vnd.ms-excel", "type" => "spreadsheet", "conv" => true ],
             "xlsm" => [ "mime" => "application/vnd.ms-excel.sheet.macroEnabled.12", "type" => "spreadsheet", "conv" => true ],
             "xlsx" => [ "mime" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "type" => "spreadsheet", "edit" => true, "def" => true ],
