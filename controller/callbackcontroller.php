@@ -299,7 +299,7 @@ class CallbackController extends Controller {
      * @PublicPage
      * @CORS
      */
-    public function track($doc, $users, $key, $status, $url) {
+    public function track($doc, $users, $key, $status, $url, $token) {
 
         list ($hashData, $error) = $this->crypt->ReadHash($doc);
         if ($hashData === NULL) {
@@ -315,27 +315,37 @@ class CallbackController extends Controller {
         $this->logger->debug("Track: " . $fileId . " status " . $status, array("app" => $this->appName));
 
         if (!empty($this->config->GetDocumentServerSecret())) {
-            $header = \OC::$server->getRequest()->getHeader($this->config->JwtHeader());
-            if (empty($header)) {
-                $this->logger->error("Track without jwt", array("app" => $this->appName));
-                return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
+            if (!empty($token)) {
+                try {
+                    $payload = \Firebase\JWT\JWT::decode($token, $this->config->GetDocumentServerSecret(), array("HS256"));
+                } catch (\UnexpectedValueException $e) {
+                    $this->logger->error("Track with invalid jwt in body: " . $e->getMessage(), array("app" => $this->appName));
+                    return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
+                }
+            } else {
+                $header = \OC::$server->getRequest()->getHeader($this->config->JwtHeader());
+                if (empty($header)) {
+                    $this->logger->error("Track without jwt", array("app" => $this->appName));
+                    return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
+                }
+
+                $header = substr($header, strlen("Bearer "));
+
+                try {
+                    $decodedHeader = \Firebase\JWT\JWT::decode($header, $this->config->GetDocumentServerSecret(), array("HS256"));
+                    $this->logger->debug("Track HEADER : " . json_encode($decodedHeader), array("app" => $this->appName));
+
+                    $payload = $decodedHeader->payload;
+                } catch (\UnexpectedValueException $e) {
+                    $this->logger->error("Track with invalid jwt: " . $e->getMessage(), array("app" => $this->appName));
+                    return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
+                }
             }
 
-            $header = substr($header, strlen("Bearer "));
-
-            try {
-                $decodedHeader = \Firebase\JWT\JWT::decode($header, $this->config->GetDocumentServerSecret(), array("HS256"));
-                $this->logger->debug("Track HEADER : " . json_encode($decodedHeader), array("app" => $this->appName));
-
-                $payload = $decodedHeader->payload;
-                $users = isset($payload->users) ? $payload->users : NULL;
-                $key = $payload->key;
-                $status = $payload->status;
-                $url = isset($payload->url) ? $payload->url : NULL;
-            } catch (\UnexpectedValueException $e) {
-                $this->logger->error("Track with invalid jwt: " . $e->getMessage(), array("app" => $this->appName));
-                return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
-            }
+            $users = isset($payload->users) ? $payload->users : NULL;
+            $key = $payload->key;
+            $status = $payload->status;
+            $url = isset($payload->url) ? $payload->url : NULL;
         }
 
         $trackerStatus = $this->_trackerStatus[$status];
