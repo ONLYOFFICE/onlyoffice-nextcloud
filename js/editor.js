@@ -35,6 +35,11 @@
         };
     }
 
+    if (window["AscDesktopEditor"]) {
+        OCA.Onlyoffice.Desktop = true;
+        $("html").addClass("AscDesktopEditor");
+    }
+
     OCA.Onlyoffice.InitEditor = function () {
         var displayError = function (error) {
             $("#iframeEditor").text(error).addClass("error");
@@ -52,8 +57,21 @@
             return;
         }
 
+        var configUrl = OC.generateUrl("apps/onlyoffice/ajax/config/" + (fileId || 0));
+
+        var params = [];
+        if (fileToken) {
+            params.push("token=" + encodeURIComponent(fileToken));
+        }
+        if (OCA.Onlyoffice.Desktop) {
+            params.push("desktop=true");
+        }
+        if (params.length) {
+            configUrl += "?" + params.join("&");
+        }
+
         $.ajax({
-            url: OC.generateUrl("apps/onlyoffice/ajax/config/" + (fileId || 0) + (fileToken ? "?token=" + encodeURIComponent(fileToken) : "")),
+            url: configUrl,
             success: function onSuccess(config) {
                 if (config) {
                     if (config.error != null) {

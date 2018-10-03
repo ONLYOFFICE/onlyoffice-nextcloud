@@ -397,7 +397,7 @@ class EditorController extends Controller {
      * @NoAdminRequired
      * @PublicPage
      */
-    public function config($fileId, $token = NULL) {
+    public function config($fileId, $token = NULL, $desktop = false) {
 
         $user = $this->userSession->getUser();
         $userId = NULL;
@@ -469,22 +469,24 @@ class EditorController extends Controller {
                 "name" => $user->getDisplayName()
             ];
 
-            $userFolder = $this->root->getUserFolder($userId);
-            $folderPath = $userFolder->getRelativePath($file->getParent()->getPath());
-            $linkAttr = NULL;
-            if (!empty($folderPath)) {
-                $linkAttr = [
-                    "dir" => $folderPath,
-                    "scrollto" => $file->getName()
-                ];
-            }
-            $folderLink = $this->urlGenerator->linkToRouteAbsolute("files.view.index", $linkAttr);
+            if (!$desktop) {
+                $userFolder = $this->root->getUserFolder($userId);
+                $folderPath = $userFolder->getRelativePath($file->getParent()->getPath());
+                $linkAttr = NULL;
+                if (!empty($folderPath)) {
+                    $linkAttr = [
+                        "dir" => $folderPath,
+                        "scrollto" => $file->getName()
+                    ];
+                }
+                $folderLink = $this->urlGenerator->linkToRouteAbsolute("files.view.index", $linkAttr);
 
-            $params["editorConfig"]["customization"]["goback"] = [
-                "url"  => $folderLink
-            ];
-            if ($this->config->GetSameTab()) {
-                $params["editorConfig"]["customization"]["goback"]["blank"] = false;
+                $params["editorConfig"]["customization"]["goback"] = [
+                    "url"  => $folderLink
+                ];
+                if ($this->config->GetSameTab()) {
+                    $params["editorConfig"]["customization"]["goback"]["blank"] = false;
+                }
             }
         }
 

@@ -29,12 +29,17 @@
 #content.app-onlyoffice {
     min-height: calc(100% - 50px);
 }
-
- #app > iframe {
+#app > iframe {
     position: absolute;
     vertical-align: top;
 }
-
 #iframeEditor.error {
     color: red;
+}
+
+.AscDesktopEditor #body-user #header {
+    display: none;
+}
+.AscDesktopEditor #body-user #content-wrapper {
+    padding-top: 0;
 }
