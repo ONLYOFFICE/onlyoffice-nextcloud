@@ -477,12 +477,13 @@ class EditorController extends Controller {
                     "dir" => $folderPath,
                     "scrollto" => $file->getName()
                 ];
-            }
-            $folderLink = $this->urlGenerator->linkToRouteAbsolute("files.view.index", $linkAttr);
+                $folderLink = $this->urlGenerator->linkToRouteAbsolute("files.view.index", $linkAttr);
 
-            $params["editorConfig"]["customization"]["goback"] = [
-                "url"  => $folderLink
-            ];
+                $params["editorConfig"]["customization"]["goback"] = [
+                    "url"  => $folderLink
+                ];
+            }
+
             if ($this->config->GetSameTab()) {
                 $params["editorConfig"]["customization"]["goback"]["blank"] = false;
             }
