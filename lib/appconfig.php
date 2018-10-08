@@ -459,6 +459,41 @@ class AppConfig {
     }
 
     /**
+     * Check access for group
+     *
+     * @return boolean
+     */
+    public function isUserAllowedToUse() {
+        // no user -> no
+        $userSession = \OC::$server->getUserSession();
+        if ($userSession === null || !$userSession->isLoggedIn()) {
+            return false;
+        }
+
+        $groups = $this->GetLimitGroups();
+        // no group set -> all users are allowed
+        if (count($groups) === 0) {
+            return true;
+        }
+
+        $user = $userSession->getUser();
+
+        foreach ($groups as $groupName) {
+            // group unknown -> error and allow nobody
+            $group = \OC::$server->getGroupManager()->get($groupName);
+            if ($group === null) {
+                \OC::$server->getLogger()->error("Group is unknown " . $groupName, ["app" => $this->appName]);
+            } else {
+                if ($group->inGroup($user)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Get the turn off verification setting
      *
      * @return boolean
