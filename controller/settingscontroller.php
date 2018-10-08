@@ -134,6 +134,7 @@ class SettingsController extends Controller {
      * @param string $storageUrl - Nextcloud address available from document server
      * @param string $secret - secret key for signature
      * @param string $defFormats - formats array with default action
+     * @param boolean $sameTab - open in same tab
      *
      * @return array
      */
