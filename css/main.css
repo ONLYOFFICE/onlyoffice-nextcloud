@@ -39,3 +39,13 @@
 .icon-onlyoffice-convert {
     background-image: url("../img/app-dark.svg");
 }
+
+.AscDesktopEditor #body-user #header {
+    display: none;
+}
+.AscDesktopEditor #body-user #content-wrapper {
+    padding-top: 0;
+}
+.AscDesktopEditor #body-user #app-sidebar {
+    top: 0;
+}
