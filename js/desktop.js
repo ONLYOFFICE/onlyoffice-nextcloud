@@ -1,4 +1,3 @@
-<?php
 /**
  *
  * (c) Copyright Ascensio System Limited 2010-2018
@@ -27,18 +26,25 @@
  *
  */
 
-    style("onlyoffice", "editor");
-    script("onlyoffice", "desktop");
-    script("onlyoffice", "editor");
-?>
+(function (OCA) {
 
-<div id="app">
+    OCA.Onlyoffice = _.extend({}, OCA.Onlyoffice);
 
-    <div id="iframeEditor" data-id="<?php p($_["fileId"]) ?>" data-token="<?php p($_["token"]) ?>"></div>
+    if (!window["AscDesktopEditor"]) {
+        return;
+    }
 
-    <?php if (!empty($_["documentServerUrl"])) { ?>
-        <script nonce="<?php p(base64_encode($_["requesttoken"])) ?>"
-            src="<?php p($_["documentServerUrl"]) ?>web-apps/apps/api/documents/api.js" type="text/javascript"></script>
-    <?php } ?>
+    OCA.Onlyoffice.Desktop = true;
+    $("html").addClass("AscDesktopEditor");
 
-</div>
+    var domain = location.href.split(OC.generateUrl(""))[0];
+
+    var data = {
+        displayName: oc_current_user,
+        domain: domain,
+        provider: "Nextcloud",
+    };
+
+    window.AscDesktopEditor.execCommand("portal:login", JSON.stringify(data));
+
+})(OCA);
