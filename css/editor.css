@@ -40,6 +40,10 @@
 .AscDesktopEditor #body-user #header {
     display: none;
 }
-.AscDesktopEditor #body-user #content-wrapper {
+.AscDesktopEditor #body-user #content-wrapper /*13*/{
+    padding-top: 0;
+}
+.AscDesktopEditor #body-user #content /*14*/{
+    min-height: 100%;
     padding-top: 0;
 }
