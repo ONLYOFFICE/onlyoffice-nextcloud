@@ -469,21 +469,22 @@ class EditorController extends Controller {
                 "name" => $user->getDisplayName()
             ];
 
-            if (!$desktop) {
-                $userFolder = $this->root->getUserFolder($userId);
-                $folderPath = $userFolder->getRelativePath($file->getParent()->getPath());
-                $linkAttr = NULL;
-                if (!empty($folderPath)) {
-                    $linkAttr = [
-                        "dir" => $folderPath,
-                        "scrollto" => $file->getName()
-                    ];
-                }
-                $folderLink = $this->urlGenerator->linkToRouteAbsolute("files.view.index", $linkAttr);
-
-                $params["editorConfig"]["customization"]["goback"] = [
-                    "url"  => $folderLink
+            $userFolder = $this->root->getUserFolder($userId);
+            $folderPath = $userFolder->getRelativePath($file->getParent()->getPath());
+            $linkAttr = NULL;
+            if (!empty($folderPath)) {
+                $linkAttr = [
+                    "dir" => $folderPath,
+                    "scrollto" => $file->getName()
                 ];
+            }
+            $folderLink = $this->urlGenerator->linkToRouteAbsolute("files.view.index", $linkAttr);
+
+            $params["editorConfig"]["customization"]["goback"] = [
+                "url"  => $folderLink
+            ];
+
+            if (!$desktop) {
                 if ($this->config->GetSameTab()) {
                     $params["editorConfig"]["customization"]["goback"]["blank"] = false;
                 }
