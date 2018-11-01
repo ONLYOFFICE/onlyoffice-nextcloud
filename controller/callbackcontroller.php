@@ -445,19 +445,19 @@ class CallbackController extends Controller {
      */
     private function getFile($userId, $fileId) {
         if (empty($fileId)) {
-            return [NULL, $this->trans->t("FileId is empty")];
+            return [NULL, new JSONResponse(["message" => $this->trans->t("FileId is empty")], Http::STATUS_BAD_REQUEST)];
         }
 
         $files = $this->root->getUserFolder($userId)->getById($fileId);
         if (empty($files)) {
             $this->logger->error("Files not found: " . $fileId, array("app" => $this->appName));
-            return new JSONResponse(["message" => $this->trans->t("Files not found")], Http::STATUS_NOT_FOUND);
+            return [NULL, new JSONResponse(["message" => $this->trans->t("Files not found")], Http::STATUS_NOT_FOUND)];
         }
         $file = $files[0];
 
-        if (! $file instanceof File) {
+        if (!($file instanceof File)) {
             $this->logger->error("File not found: " . $fileId, array("app" => $this->appName));
-            return new JSONResponse(["message" => $this->trans->t("File not found")], Http::STATUS_NOT_FOUND);
+            return [NULL, new JSONResponse(["message" => $this->trans->t("File not found")], Http::STATUS_NOT_FOUND)];
         }
 
         return [$file, NULL];
@@ -482,7 +482,7 @@ class CallbackController extends Controller {
             $node = $share->getNode();
         } catch (NotFoundException $e) {
             $this->logger->error("getFileByToken error: " . $e->getMessage(), array("app" => $this->appName));
-            return [NULL, $this->trans->t("File not found")];
+            return [NULL, new JSONResponse(["message" => $this->trans->t("File not found")], Http::STATUS_NOT_FOUND)];
         }
 
         if ($node instanceof Folder) {
@@ -503,7 +503,7 @@ class CallbackController extends Controller {
      */
     private function getShare($token) {
         if (empty($token)) {
-            return [NULL, $this->trans->t("FileId is empty")];
+            return [NULL, new JSONResponse(["message" => $this->trans->t("FileId is empty")], Http::STATUS_BAD_REQUEST)];
         }
 
         $share;
@@ -515,7 +515,7 @@ class CallbackController extends Controller {
         }
 
         if ($share === NULL || $share === false) {
-            return [NULL, $this->trans->t("You do not have enough permissions to view the file")];
+            return [NULL, new JSONResponse(["message" => $this->trans->t("You do not have enough permissions to view the file")], Http::STATUS_FORBIDDEN)];
         }
 
         return [$share, NULL];
