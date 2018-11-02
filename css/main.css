@@ -49,3 +49,9 @@
 .AscDesktopEditor #body-user #app-sidebar {
     top: 0;
 }
+.AscDesktopEditor #body-user table.multiselect thead {
+    top: 44px;
+}
+.AscDesktopEditor #body-user #gallery-button {
+    display: none;
+}
