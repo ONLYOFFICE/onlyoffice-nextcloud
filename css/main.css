@@ -43,9 +43,24 @@
 .AscDesktopEditor #body-user #header {
     display: none;
 }
-.AscDesktopEditor #body-user #content-wrapper {
+.AscDesktopEditor #body-user #content-wrapper, /*13*/
+.AscDesktopEditor #body-user #content /*14*/{
     padding-top: 0;
 }
+.AscDesktopEditor #body-user #app-navigation, /*14*/
+.AscDesktopEditor #body-user #controls, /*14*/
 .AscDesktopEditor #body-user #app-sidebar {
     top: 0;
+}
+.AscDesktopEditor #body-user #app-navigation /*14*/{
+    height: 100%; /*14*/
+}
+.AscDesktopEditor #body-user #app-sidebar /*14*/{
+    height: 100vh;
+}
+.AscDesktopEditor #body-user table.multiselect thead {
+    top: 44px;
+}
+.AscDesktopEditor #body-user #gallery-button {
+    display: none;
 }

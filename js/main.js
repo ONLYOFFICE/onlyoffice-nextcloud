@@ -28,27 +28,9 @@
 
 (function (OCA) {
 
-    OCA.Onlyoffice = _.extend({}, OCA.Onlyoffice);
-    if (!OCA.Onlyoffice.AppName) {
-        OCA.Onlyoffice = {
+    OCA.Onlyoffice = _.extend({
             AppName: "onlyoffice"
-        };
-    }
-
-    if (window["AscDesktopEditor"]) {
-        OCA.Onlyoffice.Desktop = true;
-        $("html").addClass("AscDesktopEditor");
-
-        var domain = location.href.split(OC.generateUrl(""))[0];
-
-        var data = {
-            displayName: oc_current_user,
-            domain: domain,
-            provider: "Nextcloud",
-        };
-
-        window.AscDesktopEditor.execCommand("portal:login", JSON.stringify(data));
-    }
+        }, OCA.Onlyoffice);
 
     OCA.Onlyoffice.setting = {};
 
@@ -280,4 +262,3 @@
     $(document).ready(initPage)
 
 })(OCA);
-

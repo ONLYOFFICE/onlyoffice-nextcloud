@@ -26,24 +26,25 @@
  *
  */
 
-#content.app-onlyoffice {
-    min-height: calc(100% - 50px);
-}
-#app > iframe {
-    position: absolute;
-    vertical-align: top;
-}
-#iframeEditor.error {
-    color: red;
-}
+(function (OCA) {
 
-.AscDesktopEditor #body-user #header {
-    display: none;
-}
-.AscDesktopEditor #body-user #content-wrapper /*13*/{
-    padding-top: 0;
-}
-.AscDesktopEditor #body-user #content /*14*/{
-    min-height: 100%;
-    padding-top: 0;
-}
+    OCA.Onlyoffice = _.extend({}, OCA.Onlyoffice);
+
+    if (!window["AscDesktopEditor"]) {
+        return;
+    }
+
+    OCA.Onlyoffice.Desktop = true;
+    $("html").addClass("AscDesktopEditor");
+
+    var domain = location.href.split(OC.generateUrl(""))[0];
+
+    var data = {
+        displayName: oc_current_user,
+        domain: domain,
+        provider: "Nextcloud",
+    };
+
+    window.AscDesktopEditor.execCommand("portal:login", JSON.stringify(data));
+
+})(OCA);

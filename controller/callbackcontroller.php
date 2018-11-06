@@ -190,30 +190,41 @@ class CallbackController extends Controller {
         $fileId = $hashData->fileId;
         $this->logger->debug("Download: " . $fileId, array("app" => $this->appName));
 
-        if (!empty($this->config->GetDocumentServerSecret())) {
-            $header = \OC::$server->getRequest()->getHeader($this->config->JwtHeader());
-            if (empty($header)) {
-                $this->logger->error("Download without jwt", array("app" => $this->appName));
-                return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
-            }
+        if (!$this->userSession->isLoggedIn()) {
+            if (!empty($this->config->GetDocumentServerSecret())) {
+                $header = \OC::$server->getRequest()->getHeader($this->config->JwtHeader());
+                if (empty($header)) {
+                    $this->logger->error("Download without jwt", array("app" => $this->appName));
+                    return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
+                }
 
-            $header = substr($header, strlen("Bearer "));
+                $header = substr($header, strlen("Bearer "));
 
-            try {
-                $decodedHeader = \Firebase\JWT\JWT::decode($header, $this->config->GetDocumentServerSecret(), array("HS256"));
-            } catch (\UnexpectedValueException $e) {
-                $this->logger->error("Download with invalid jwt: " . $e->getMessage(), array("app" => $this->appName));
-                return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
+                try {
+                    $decodedHeader = \Firebase\JWT\JWT::decode($header, $this->config->GetDocumentServerSecret(), array("HS256"));
+                } catch (\UnexpectedValueException $e) {
+                    $this->logger->error("Download with invalid jwt: " . $e->getMessage(), array("app" => $this->appName));
+                    return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
+                }
             }
         }
 
-        $userId = $hashData->userId;
+        if ($this->userSession->isLoggedIn()) {
+            $userId = $this->userSession->getUser()->getUID();
+        } else {
+            $userId = $hashData->userId;
+        }
 
         $token = isset($hashData->token) ? $hashData->token : NULL;
         list ($file, $error) = empty($token) ? $this->getFile($userId, $fileId) : $this->getFileByToken($fileId, $token);
 
         if (isset($error)) {
             return $error;
+        }
+
+        if ($this->userSession->isLoggedIn() && !$file->isReadable()) {
+            $this->logger->error("Download without access right", array("app" => $this->appName));
+            return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
         }
 
         try {

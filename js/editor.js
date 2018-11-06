@@ -28,17 +28,9 @@
 
 (function ($, OCA) {
 
-    OCA.Onlyoffice = _.extend({}, OCA.Onlyoffice);
-    if (!OCA.Onlyoffice.AppName) {
-        OCA.Onlyoffice = {
+    OCA.Onlyoffice = _.extend({
             AppName: "onlyoffice"
-        };
-    }
-
-    if (window["AscDesktopEditor"]) {
-        OCA.Onlyoffice.Desktop = true;
-        $("html").addClass("AscDesktopEditor");
-    }
+        }, OCA.Onlyoffice);
 
     OCA.Onlyoffice.InitEditor = function () {
         var displayError = function (error) {
