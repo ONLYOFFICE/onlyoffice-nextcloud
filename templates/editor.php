@@ -28,6 +28,7 @@
  */
 
     style("onlyoffice", "editor");
+    script("onlyoffice", "desktop");
     script("onlyoffice", "editor");
 ?>
 

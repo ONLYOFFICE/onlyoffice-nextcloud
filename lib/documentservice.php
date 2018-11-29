@@ -142,16 +142,14 @@ class DocumentService {
 
         $urlToConverter = $documentServerUrl . "ConvertService.ashx";
 
-        $data = json_encode(
-            array(
-                "async" => $is_async,
-                "url" => $document_uri,
-                "outputtype" => trim($to_extension, "."),
-                "filetype" => trim($from_extension, "."),
-                "title" => $title,
-                "key" => $document_revision_id
-            )
-        );
+        $data = [
+            "async" => $is_async,
+            "url" => $document_uri,
+            "outputtype" => trim($to_extension, "."),
+            "filetype" => trim($from_extension, "."),
+            "title" => $title,
+            "key" => $document_revision_id
+        ];
 
         $response_xml_data;
         $countTry = 0;
@@ -160,7 +158,7 @@ class DocumentService {
                     "method"  => "POST",
                     "timeout" => "120",
                     "header"=> "Content-type: application/json\r\n",
-                    "content" => $data
+                    "content" => json_encode($data)
                 )
             );
 
@@ -170,6 +168,10 @@ class DocumentService {
             ];
             $token = \Firebase\JWT\JWT::encode($params, $this->config->GetDocumentServerSecret());
             $opts["http"]["header"] = $opts["http"]["header"] . $this->config->JwtHeader() . ": Bearer " . $token . "\r\n";
+
+            $token = \Firebase\JWT\JWT::encode($data, $this->config->GetDocumentServerSecret());
+            $data["token"] = $token;
+            $opts["http"]["content"] = json_encode($data);
         }
 
         $ServiceConverterMaxTry = 3;
@@ -292,17 +294,15 @@ class DocumentService {
 
         $urlCommand = $documentServerUrl . "coauthoring/CommandService.ashx";
 
-        $data = json_encode(
-            array(
-                "c" => $method
-            )
-        );
+        $data = [
+            "c" => $method
+        ];
 
         $opts = array("http" => array(
                     "method"  => "POST",
                     "timeout" => "60",
                     "header"=> "Content-type: application/json\r\n",
-                    "content" => $data
+                    "content" => json_encode($data)
                 )
             );
 
@@ -312,6 +312,10 @@ class DocumentService {
             ];
             $token = \Firebase\JWT\JWT::encode($params, $this->config->GetDocumentServerSecret());
             $opts["http"]["header"] = $opts["http"]["header"] . $this->config->JwtHeader() . ": Bearer " . $token . "\r\n";
+
+            $token = \Firebase\JWT\JWT::encode($data, $this->config->GetDocumentServerSecret());
+            $data["token"] = $token;
+            $opts["http"]["content"] = json_encode($data);
         }
 
         if (($response = $this->Request($urlCommand, $opts)) === false) {

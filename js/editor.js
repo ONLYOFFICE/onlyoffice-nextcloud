@@ -28,12 +28,9 @@
 
 (function ($, OCA) {
 
-    OCA.Onlyoffice = _.extend({}, OCA.Onlyoffice);
-    if (!OCA.Onlyoffice.AppName) {
-        OCA.Onlyoffice = {
+    OCA.Onlyoffice = _.extend({
             AppName: "onlyoffice"
-        };
-    }
+        }, OCA.Onlyoffice);
 
     OCA.Onlyoffice.InitEditor = function () {
         var displayError = function (error) {
@@ -52,8 +49,21 @@
             return;
         }
 
+        var configUrl = OC.generateUrl("apps/onlyoffice/ajax/config/" + (fileId || 0));
+
+        var params = [];
+        if (fileToken) {
+            params.push("token=" + encodeURIComponent(fileToken));
+        }
+        if (OCA.Onlyoffice.Desktop) {
+            params.push("desktop=true");
+        }
+        if (params.length) {
+            configUrl += "?" + params.join("&");
+        }
+
         $.ajax({
-            url: OC.generateUrl("apps/onlyoffice/ajax/config/" + (fileId || 0) + (fileToken ? "?token=" + encodeURIComponent(fileToken) : "")),
+            url: configUrl,
             success: function onSuccess(config) {
                 if (config) {
                     if (config.error != null) {

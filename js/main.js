@@ -28,19 +28,16 @@
 
 (function (OCA) {
 
-    OCA.Onlyoffice = _.extend({}, OCA.Onlyoffice);
-    if (!OCA.Onlyoffice.AppName) {
-        OCA.Onlyoffice = {
+    OCA.Onlyoffice = _.extend({
             AppName: "onlyoffice"
-        };
-    }
+        }, OCA.Onlyoffice);
 
     OCA.Onlyoffice.setting = {};
 
     OCA.Onlyoffice.CreateFile = function (name, fileList) {
         var dir = fileList.getCurrentDirectory();
 
-        if (!OCA.Onlyoffice.setting.sameTab) {
+        if (!OCA.Onlyoffice.setting.sameTab || OCA.Onlyoffice.Desktop) {
             var winEditor = window.open("");
             if (winEditor) {
                 winEditor.document.write(t(OCA.Onlyoffice.AppName, "Loading, please wait."));
@@ -88,7 +85,7 @@
 
         if (winEditor && winEditor.location) {
             winEditor.location.href = url;
-        } else if (!OCA.Onlyoffice.setting.sameTab) {
+        } else if (!OCA.Onlyoffice.setting.sameTab || OCA.Onlyoffice.Desktop) {
             winEditor = window.open(url, "_blank");
         } else {
             location.href = url;
@@ -265,4 +262,3 @@
     $(document).ready(initPage)
 
 })(OCA);
-

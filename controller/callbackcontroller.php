@@ -190,30 +190,41 @@ class CallbackController extends Controller {
         $fileId = $hashData->fileId;
         $this->logger->debug("Download: " . $fileId, array("app" => $this->appName));
 
-        if (!empty($this->config->GetDocumentServerSecret())) {
-            $header = \OC::$server->getRequest()->getHeader($this->config->JwtHeader());
-            if (empty($header)) {
-                $this->logger->error("Download without jwt", array("app" => $this->appName));
-                return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
-            }
+        if (!$this->userSession->isLoggedIn()) {
+            if (!empty($this->config->GetDocumentServerSecret())) {
+                $header = \OC::$server->getRequest()->getHeader($this->config->JwtHeader());
+                if (empty($header)) {
+                    $this->logger->error("Download without jwt", array("app" => $this->appName));
+                    return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
+                }
 
-            $header = substr($header, strlen("Bearer "));
+                $header = substr($header, strlen("Bearer "));
 
-            try {
-                $decodedHeader = \Firebase\JWT\JWT::decode($header, $this->config->GetDocumentServerSecret(), array("HS256"));
-            } catch (\UnexpectedValueException $e) {
-                $this->logger->error("Download with invalid jwt: " . $e->getMessage(), array("app" => $this->appName));
-                return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
+                try {
+                    $decodedHeader = \Firebase\JWT\JWT::decode($header, $this->config->GetDocumentServerSecret(), array("HS256"));
+                } catch (\UnexpectedValueException $e) {
+                    $this->logger->error("Download with invalid jwt: " . $e->getMessage(), array("app" => $this->appName));
+                    return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
+                }
             }
         }
 
-        $userId = $hashData->userId;
+        if ($this->userSession->isLoggedIn()) {
+            $userId = $this->userSession->getUser()->getUID();
+        } else {
+            $userId = $hashData->userId;
+        }
 
         $token = isset($hashData->token) ? $hashData->token : NULL;
         list ($file, $error) = empty($token) ? $this->getFile($userId, $fileId) : $this->getFileByToken($fileId, $token);
 
         if (isset($error)) {
             return $error;
+        }
+
+        if ($this->userSession->isLoggedIn() && !$file->isReadable()) {
+            $this->logger->error("Download without access right", array("app" => $this->appName));
+            return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
         }
 
         try {
@@ -299,7 +310,7 @@ class CallbackController extends Controller {
      * @PublicPage
      * @CORS
      */
-    public function track($doc, $users, $key, $status, $url) {
+    public function track($doc, $users, $key, $status, $url, $token) {
 
         list ($hashData, $error) = $this->crypt->ReadHash($doc);
         if ($hashData === NULL) {
@@ -315,27 +326,37 @@ class CallbackController extends Controller {
         $this->logger->debug("Track: " . $fileId . " status " . $status, array("app" => $this->appName));
 
         if (!empty($this->config->GetDocumentServerSecret())) {
-            $header = \OC::$server->getRequest()->getHeader($this->config->JwtHeader());
-            if (empty($header)) {
-                $this->logger->error("Track without jwt", array("app" => $this->appName));
-                return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
+            if (!empty($token)) {
+                try {
+                    $payload = \Firebase\JWT\JWT::decode($token, $this->config->GetDocumentServerSecret(), array("HS256"));
+                } catch (\UnexpectedValueException $e) {
+                    $this->logger->error("Track with invalid jwt in body: " . $e->getMessage(), array("app" => $this->appName));
+                    return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
+                }
+            } else {
+                $header = \OC::$server->getRequest()->getHeader($this->config->JwtHeader());
+                if (empty($header)) {
+                    $this->logger->error("Track without jwt", array("app" => $this->appName));
+                    return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
+                }
+
+                $header = substr($header, strlen("Bearer "));
+
+                try {
+                    $decodedHeader = \Firebase\JWT\JWT::decode($header, $this->config->GetDocumentServerSecret(), array("HS256"));
+                    $this->logger->debug("Track HEADER : " . json_encode($decodedHeader), array("app" => $this->appName));
+
+                    $payload = $decodedHeader->payload;
+                } catch (\UnexpectedValueException $e) {
+                    $this->logger->error("Track with invalid jwt: " . $e->getMessage(), array("app" => $this->appName));
+                    return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
+                }
             }
 
-            $header = substr($header, strlen("Bearer "));
-
-            try {
-                $decodedHeader = \Firebase\JWT\JWT::decode($header, $this->config->GetDocumentServerSecret(), array("HS256"));
-                $this->logger->debug("Track HEADER : " . json_encode($decodedHeader), array("app" => $this->appName));
-
-                $payload = $decodedHeader->payload;
-                $users = isset($payload->users) ? $payload->users : NULL;
-                $key = $payload->key;
-                $status = $payload->status;
-                $url = isset($payload->url) ? $payload->url : NULL;
-            } catch (\UnexpectedValueException $e) {
-                $this->logger->error("Track with invalid jwt: " . $e->getMessage(), array("app" => $this->appName));
-                return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
-            }
+            $users = isset($payload->users) ? $payload->users : NULL;
+            $key = $payload->key;
+            $status = $payload->status;
+            $url = isset($payload->url) ? $payload->url : NULL;
         }
 
         $trackerStatus = $this->_trackerStatus[$status];
@@ -435,19 +456,19 @@ class CallbackController extends Controller {
      */
     private function getFile($userId, $fileId) {
         if (empty($fileId)) {
-            return [NULL, $this->trans->t("FileId is empty")];
+            return [NULL, new JSONResponse(["message" => $this->trans->t("FileId is empty")], Http::STATUS_BAD_REQUEST)];
         }
 
         $files = $this->root->getUserFolder($userId)->getById($fileId);
         if (empty($files)) {
             $this->logger->error("Files not found: " . $fileId, array("app" => $this->appName));
-            return new JSONResponse(["message" => $this->trans->t("Files not found")], Http::STATUS_NOT_FOUND);
+            return [NULL, new JSONResponse(["message" => $this->trans->t("Files not found")], Http::STATUS_NOT_FOUND)];
         }
         $file = $files[0];
 
-        if (! $file instanceof File) {
+        if (!($file instanceof File)) {
             $this->logger->error("File not found: " . $fileId, array("app" => $this->appName));
-            return new JSONResponse(["message" => $this->trans->t("File not found")], Http::STATUS_NOT_FOUND);
+            return [NULL, new JSONResponse(["message" => $this->trans->t("File not found")], Http::STATUS_NOT_FOUND)];
         }
 
         return [$file, NULL];
@@ -472,7 +493,7 @@ class CallbackController extends Controller {
             $node = $share->getNode();
         } catch (NotFoundException $e) {
             $this->logger->error("getFileByToken error: " . $e->getMessage(), array("app" => $this->appName));
-            return [NULL, $this->trans->t("File not found")];
+            return [NULL, new JSONResponse(["message" => $this->trans->t("File not found")], Http::STATUS_NOT_FOUND)];
         }
 
         if ($node instanceof Folder) {
@@ -493,7 +514,7 @@ class CallbackController extends Controller {
      */
     private function getShare($token) {
         if (empty($token)) {
-            return [NULL, $this->trans->t("FileId is empty")];
+            return [NULL, new JSONResponse(["message" => $this->trans->t("FileId is empty")], Http::STATUS_BAD_REQUEST)];
         }
 
         $share;
@@ -505,7 +526,7 @@ class CallbackController extends Controller {
         }
 
         if ($share === NULL || $share === false) {
-            return [NULL, $this->trans->t("You do not have enough permissions to view the file")];
+            return [NULL, new JSONResponse(["message" => $this->trans->t("You do not have enough permissions to view the file")], Http::STATUS_FORBIDDEN)];
         }
 
         return [$share, NULL];

@@ -1,5 +1,15 @@
 # Change Log
 
+## 2.1.0
+## Added
+- Swedish translation
+- support token in the body
+- desktop mode
+
+## Changed
+- fix opening shared file by registered user
+- fix translations
+
 ## 2.0.4
 ## Added
 - opening for editing not OOXML
