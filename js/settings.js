@@ -50,6 +50,20 @@
             advToogle();
         });
 
+        $("#onlyofficeGroups").prop("checked", $("#onlyofficeLimitGroups").val() != "");
+
+        var groupListToggle = function() {
+            if ($("#onlyofficeGroups").prop("checked")) {
+                OC.Settings.setupGroupsSelect($("#onlyofficeLimitGroups"));
+            } else {
+                $("#onlyofficeLimitGroups").select2("destroy");
+            }
+        };
+
+        $("#onlyofficeGroups").click(groupListToggle);
+        groupListToggle();
+
+
         $("#onlyofficeSave").click(function () {
             $(".section-onlyoffice").addClass("icon-loading");
             var onlyofficeUrl = $("#onlyofficeUrl").val().trim();
@@ -74,6 +88,8 @@
 
             var sameTab = $("#onlyofficeSameTab").is(":checked");
 
+            var limitGroups = $("#onlyofficeGroups").prop("checked") ? $("#onlyofficeLimitGroups").val().split("|") : "";
+
             $.ajax({
                 method: "PUT",
                 url: OC.generateUrl("apps/onlyoffice/ajax/settings"),
@@ -84,7 +100,8 @@
                     secret: onlyofficeSecret,
                     defFormats: defFormats,
                     editFormats: editFormats,
-                    sameTab: sameTab
+                    sameTab: sameTab,
+                    limitGroups: limitGroups
                 },
                 success: function onSuccess(response) {
                     $(".section-onlyoffice").removeClass("icon-loading");

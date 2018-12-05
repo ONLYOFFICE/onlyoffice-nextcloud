@@ -110,6 +110,13 @@ class AppConfig {
     private $_sameTab = "sameTab";
 
     /**
+     * The config key for the setting limit groups
+     *
+     * @var string
+     */
+    private $_groups = "groups";
+
+    /**
      * The config key for the verification
      *
      * @var string
@@ -424,6 +431,31 @@ class AppConfig {
      */
     public function GetSameTab() {
         return $this->config->getAppValue($this->appName, $this->_sameTab, "false") === "true";
+    }
+
+    /**
+     * Save the list of groups
+     *
+     * @param array $value - same tab
+     */
+    public function SetLimitGroups($groups) {
+        $value = json_encode($groups);
+        $this->logger->info("Set groups: " . $value, array("app" => $this->appName));
+
+        $this->config->setAppValue($this->appName, $this->_groups, $value);
+    }
+
+    /**
+     * Get the list of groups
+     *
+     * @return array
+     */
+    public function GetLimitGroups() {
+        $value = $this->config->getAppValue($this->appName, $this->_groups, "");
+        if (empty($value)) {
+            return array();
+        }
+        return json_decode($value, true);
     }
 
     /**
