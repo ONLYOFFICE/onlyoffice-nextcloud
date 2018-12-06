@@ -208,7 +208,7 @@ class AppConfig {
      * @param string $documentServer - document service address
      */
     public function SetDocumentServerUrl($documentServer) {
-        $documentServer = strtolower(trim($documentServer));
+        $documentServer = trim($documentServer);
         if (strlen($documentServer) > 0) {
             $documentServer = rtrim($documentServer, "/") . "/";
             if (!preg_match("/(^https?:\/\/)|^\//i", $documentServer)) {
@@ -246,7 +246,7 @@ class AppConfig {
      * @param string $documentServer - document service address
      */
     public function SetDocumentServerInternalUrl($documentServerInternal) {
-        $documentServerInternal = strtolower(rtrim(trim($documentServerInternal), "/"));
+        $documentServerInternal = rtrim(trim($documentServerInternal), "/");
         if (strlen($documentServerInternal) > 0) {
             $documentServerInternal = $documentServerInternal . "/";
             if (!preg_match("/^https?:\/\//i", $documentServerInternal)) {
@@ -281,7 +281,7 @@ class AppConfig {
      * @param string $documentServer - document service address
      */
     public function SetStorageUrl($storageUrl) {
-        $storageUrl = strtolower(rtrim(trim($storageUrl), "/"));
+        $storageUrl = rtrim(trim($storageUrl), "/");
         if (strlen($storageUrl) > 0) {
             $storageUrl = $storageUrl . "/";
             if (!preg_match("/^https?:\/\//i", $storageUrl)) {
