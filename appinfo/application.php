@@ -67,7 +67,9 @@ class Application extends App {
         $eventDispatcher = \OC::$server->getEventDispatcher();
         $eventDispatcher->addListener("OCA\Files::loadAdditionalScripts",
             function() {
-                if (!empty($this->appConfig->GetDocumentServerUrl()) && $this->appConfig->SettingsAreSuccessful()) {
+                if (!empty($this->appConfig->GetDocumentServerUrl())
+                    && $this->appConfig->SettingsAreSuccessful()
+                    && $this->appConfig->isUserAllowedToUse()) {
                     Util::addScript("onlyoffice", "desktop");
                     Util::addScript("onlyoffice", "main");
                     Util::addStyle("onlyoffice", "main");

@@ -43,6 +43,7 @@
     "Open the file for editing (due to format restrictions, the data might be lost when saving to the formats from the list below)" : "Habilitar edição (devido à restrição dos formatos, dados podem ser perdidos ao salvar nos formatos abaixo)",
     "View details" : "Ver detalhes",
     "Save" : "Salvar",
-    "Mixed Active Content is not allowed. HTTPS address for Document Server is required." : "Conteúdo Misto não é permitido. É necessário um endereço HTTPS para o Servidor de Documentos."
+    "Mixed Active Content is not allowed. HTTPS address for Document Server is required." : "Conteúdo Misto não é permitido. É necessário um endereço HTTPS para o Servidor de Documentos.",
+    "Restrict access to editors to following groups" : "Acesso apenas para os seguintes grupos"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

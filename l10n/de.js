@@ -45,6 +45,7 @@ OC.L10N.register(
     "Open the file for editing (due to format restrictions, the data might be lost when saving to the formats from the list below)" : "Öffne die Datei zum Bearbeiten (aufgrund von Formateinschränkungen können die Daten beim Speichern in den Formaten aus der folgenden Liste verloren gehen)",
     "View details" : "Details anzeigen",
     "Save" : "Speichern",
-    "Mixed Active Content is not allowed. HTTPS address for Document Server is required." : "Mixed Active Content ist nicht möglich. HTTPS-Adresse für Document Server ist erforderlich."
+    "Mixed Active Content is not allowed. HTTPS address for Document Server is required." : "Mixed Active Content ist nicht möglich. HTTPS-Adresse für Document Server ist erforderlich.",
+    "Restrict access to editors to following groups" : "Den Zugriff auf Editoren auf folgende Gruppen gewähren"
 },
 "nplurals=2; plural=(n != 1);");

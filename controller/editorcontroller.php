@@ -180,6 +180,10 @@ class EditorController extends Controller {
     public function create($name, $dir) {
         $this->logger->debug("Create: " . $name, array("app" => $this->appName));
 
+        if (!$this->config->isUserAllowedToUse()) {
+            return ["error" => $this->trans->t("Not permitted")];
+        }
+
         $userId = $this->userSession->getUser()->getUID();
         $userFolder = $this->root->getUserFolder($userId);
         $folder = $userFolder->get($dir);
@@ -243,6 +247,10 @@ class EditorController extends Controller {
      */
     public function convert($fileId) {
         $this->logger->debug("Convert: " . $fileId, array("app" => $this->appName));
+
+        if (!$this->config->isUserAllowedToUse()) {
+            return ["error" => $this->trans->t("Not permitted")];
+        }
 
         $userId = $this->userSession->getUser()->getUID();
         list ($file, $error) = $this->getFile($userId, $fileId);
@@ -342,6 +350,10 @@ class EditorController extends Controller {
             return new RedirectResponse($redirectUrl);
         }
 
+        if (empty($token) && !$this->config->isUserAllowedToUse()) {
+            return ["error" => $this->trans->t("Not permitted")];
+        }
+
         $documentServerUrl = $this->config->GetDocumentServerUrl();
 
         if (empty($documentServerUrl)) {
@@ -398,6 +410,10 @@ class EditorController extends Controller {
      * @PublicPage
      */
     public function config($fileId, $token = NULL, $desktop = false) {
+
+        if (empty($token) && !$this->config->isUserAllowedToUse()) {
+            return ["error" => $this->trans->t("Not permitted")];
+        }
 
         $user = $this->userSession->getUser();
         $userId = NULL;
@@ -471,7 +487,6 @@ class EditorController extends Controller {
 
             $userFolder = $this->root->getUserFolder($userId);
             $folderPath = $userFolder->getRelativePath($file->getParent()->getPath());
-            $linkAttr = NULL;
             if (!empty($folderPath)) {
                 $linkAttr = [
                     "dir" => $folderPath,

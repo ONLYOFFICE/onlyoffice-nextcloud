@@ -121,7 +121,8 @@ class SettingsController extends Controller {
             "currentServer" => $this->urlGenerator->getAbsoluteURL("/"),
             "formats" => $this->config->FormatsSetting(),
             "sameTab" => $this->config->GetSameTab(),
-            "encryption" => $this->checkEncryptionModule()
+            "encryption" => $this->checkEncryptionModule(),
+            "limitGroups" => $this->config->GetLimitGroups()
         ];
         return new TemplateResponse($this->appName, "settings", $data, "blank");
     }
@@ -134,6 +135,8 @@ class SettingsController extends Controller {
      * @param string $storageUrl - Nextcloud address available from document server
      * @param string $secret - secret key for signature
      * @param string $defFormats - formats array with default action
+     * @param boolean $sameTab - open in same tab
+     * @param array $limitGroups - list of groups
      *
      * @return array
      */
@@ -143,7 +146,8 @@ class SettingsController extends Controller {
                                     $secret,
                                     $defFormats,
                                     $editFormats,
-                                    $sameTab
+                                    $sameTab,
+                                    $limitGroups
                                     ) {
         $this->config->SetDocumentServerUrl($documentserver);
         $this->config->SetDocumentServerInternalUrl($documentserverInternal);
@@ -161,6 +165,7 @@ class SettingsController extends Controller {
         $this->config->SetDefaultFormats($defFormats);
         $this->config->SetEditableFormats($editFormats);
         $this->config->SetSameTab($sameTab);
+        $this->config->SetLimitGroups($limitGroups);
 
         if ($this->checkEncryptionModule()) {
             $this->logger->info("SaveSettings when encryption is enabled", array("app" => $this->appName));
