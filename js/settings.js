@@ -98,10 +98,10 @@
                             response.error
                                 ? (t(OCA.Onlyoffice.AppName, "Error when trying to connect") + " (" + response.error + ")")
                                 : t(OCA.Onlyoffice.AppName, "Settings have been successfully updated");
-                        var row = OC.Notification.show(message);
-                        setTimeout(function () {
-                            OC.Notification.hide(row);
-                        }, 3000);
+                        OC.Notification.show(message, {
+                            type: "error",
+                            timeout: 3
+                        });
                     }
                 }
             });
