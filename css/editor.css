@@ -33,9 +33,6 @@
     position: absolute;
     vertical-align: top;
 }
-#iframeEditor.error {
-    color: red;
-}
 
 .AscDesktopEditor #body-user #header {
     display: none;

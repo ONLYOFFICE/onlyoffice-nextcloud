@@ -34,7 +34,10 @@
 
     OCA.Onlyoffice.InitEditor = function () {
         var displayError = function (error) {
-            $("#iframeEditor").text(error).addClass("error");
+            OC.Notification.show(error, {
+                type: "error",
+                timeout: 3
+            });
         };
 
         var fileId = $("#iframeEditor").data("id");
