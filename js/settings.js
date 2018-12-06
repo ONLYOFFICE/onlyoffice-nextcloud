@@ -88,7 +88,8 @@
 
             var sameTab = $("#onlyofficeSameTab").is(":checked");
 
-            var limitGroups = $("#onlyofficeGroups").prop("checked") ? $("#onlyofficeLimitGroups").val().split("|") : "";
+            var limitGroupsString = $("#onlyofficeGroups").prop("checked") ? $("#onlyofficeLimitGroups").val() : "";
+            var limitGroups = limitGroupsString ? limitGroupsString.split("|") : [];
 
             $.ajax({
                 method: "PUT",
