@@ -507,11 +507,11 @@ class EditorController extends Controller {
                 $params["editorConfig"]["customization"]["goback"] = [
                     "url"  => $folderLink
                 ];
-            }
 
-            if (!$desktop) {
-                if ($this->config->GetSameTab()) {
-                    $params["editorConfig"]["customization"]["goback"]["blank"] = false;
+                if (!$desktop) {
+                    if ($this->config->GetSameTab()) {
+                        $params["editorConfig"]["customization"]["goback"]["blank"] = false;
+                    }
                 }
             }
         }
