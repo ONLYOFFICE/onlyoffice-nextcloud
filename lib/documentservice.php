@@ -253,7 +253,7 @@ class DocumentService {
     /**
      * Request health status
      *
-     * @return boolean
+     * @return bool
      */
     function HealthcheckRequest() {
 

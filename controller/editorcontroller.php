@@ -232,6 +232,14 @@ class EditorController extends Controller {
         return $result;
     }
 
+    /**
+     * Get template path
+     *
+     * @param string $lang - language
+     * @param string $ext - file extension
+     *
+     * @return string
+     */
     private function getTemplatePath($lang, $ext) {
         return dirname(__DIR__) . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . $lang . DIRECTORY_SEPARATOR . "new" . $ext;
     }
@@ -386,6 +394,7 @@ class EditorController extends Controller {
     /**
      * Print public editor section
      *
+     * @param integer $fileId - file identifier
      * @param string $token - access token
      *
      * @return TemplateResponse
@@ -403,6 +412,7 @@ class EditorController extends Controller {
      *
      * @param integer $fileId - file identifier
      * @param string $token - access token
+     * @param bool $desktop - desktop label
      *
      * @return array
      *
@@ -521,7 +531,7 @@ class EditorController extends Controller {
     /**
      * Getting file by identifier
      *
-     * @param integer $userId - user identifier
+     * @param string $userId - user identifier
      * @param integer $fileId - file identifier
      *
      * @return array

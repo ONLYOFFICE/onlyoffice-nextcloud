@@ -301,7 +301,9 @@ class CallbackController extends Controller {
      * @param string $doc - verification token with the file identifier
      * @param array $users - the list of the identifiers of the users
      * @param string $key - the edited document identifier
+     * @param integer $status - the edited status
      * @param string $url - the link to the edited document to be saved
+     * @param string $token - access token
      *
      * @return array
      *
@@ -449,7 +451,7 @@ class CallbackController extends Controller {
     /**
      * Getting file by identifier
      *
-     * @param integer $userId - user identifier
+     * @param string $userId - user identifier
      * @param integer $fileId - file identifier
      *
      * @return array

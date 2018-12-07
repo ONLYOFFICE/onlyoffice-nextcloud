@@ -194,7 +194,7 @@ class AppConfig {
      * Get value from the system configuration
      *
      * @param string $key - key configuration
-     * @param string $system - get from root or from app section
+     * @param bool $system - get from root or from app section
      *
      * @return string
      */
@@ -268,6 +268,8 @@ class AppConfig {
 
     /**
      * Get the document service address available from Nextcloud from the application configuration
+     *
+     * @param bool $origin - take origin
      *
      * @return string
      */
@@ -416,18 +418,18 @@ class AppConfig {
     /**
      * Save the opening setting in a same tab
      *
-     * @param boolean $value - same tab
+     * @param bool $value - same tab
      */
     public function SetSameTab($value) {
-        $this->logger->info("Set opening in a same tab: " . $value, array("app" => $this->appName));
+        $this->logger->info("Set opening in a same tab: " . json_encode($value), array("app" => $this->appName));
 
-        $this->config->setAppValue($this->appName, $this->_sameTab, $value);
+        $this->config->setAppValue($this->appName, $this->_sameTab, json_encode($value));
     }
 
     /**
      * Get the opening setting in a same tab
      *
-     * @return boolean
+     * @return bool
      */
     public function GetSameTab() {
         return $this->config->getAppValue($this->appName, $this->_sameTab, "false") === "true";
@@ -461,7 +463,7 @@ class AppConfig {
     /**
      * Check access for group
      *
-     * @return boolean
+     * @return bool
      */
     public function isUserAllowedToUse() {
         // no user -> no
@@ -496,7 +498,7 @@ class AppConfig {
     /**
      * Get the turn off verification setting
      *
-     * @return boolean
+     * @return bool
      */
     public function TurnOffVerification() {
         $turnOff = $this->getSystemValue($this->_verification);
@@ -506,7 +508,7 @@ class AppConfig {
     /**
      * Get the jwt header setting
      *
-     * @return boolean
+     * @return string
      */
     public function JwtHeader() {
         $header = $this->getSystemValue($this->_jwtHeader);
@@ -519,7 +521,7 @@ class AppConfig {
     /**
      * Save the status settings
      *
-     * @param boolean $value - error
+     * @param string $value - error
      */
     public function SetSettingsError($value) {
         $this->config->setAppValue($this->appName, $this->_settingsError, $value);
@@ -528,7 +530,7 @@ class AppConfig {
     /**
      * Get the status settings
      *
-     * @return boolean
+     * @return bool
      */
     public function SettingsAreSuccessful() {
         return empty($this->config->getAppValue($this->appName, $this->_settingsError, ""));

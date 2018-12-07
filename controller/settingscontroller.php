@@ -134,8 +134,9 @@ class SettingsController extends Controller {
      * @param string $documentserverInternal - document service address available from Nextcloud
      * @param string $storageUrl - Nextcloud address available from document server
      * @param string $secret - secret key for signature
-     * @param string $defFormats - formats array with default action
-     * @param boolean $sameTab - open in same tab
+     * @param array $defFormats - formats array with default action
+     * @param array $editFormats - editable formats array
+     * @param bool $sameTab - open in same tab
      * @param array $limitGroups - list of groups
      *
      * @return array
@@ -199,8 +200,6 @@ class SettingsController extends Controller {
 
     /**
      * Checking document service location
-     *
-     * @param string $documentServer - document service address
      *
      * @return string
      */
@@ -285,6 +284,8 @@ class SettingsController extends Controller {
 
     /**
      * Checking encryption enabled
+     *
+     * @return bool
     */
     private function checkEncryptionModule() {
         if (!App::isEnabled("encryption")) {
