@@ -359,14 +359,14 @@ class EditorController extends Controller {
         }
 
         if (empty($token) && !$this->config->isUserAllowedToUse()) {
-            return ["error" => $this->trans->t("Not permitted")];
+            return $this->renderError($this->trans->t("Not permitted"));
         }
 
         $documentServerUrl = $this->config->GetDocumentServerUrl();
 
         if (empty($documentServerUrl)) {
             $this->logger->error("documentServerUrl is empty", array("app" => $this->appName));
-            return ["error" => $this->trans->t("ONLYOFFICE app is not configured. Please contact admin")];
+            return $this->renderError($this->trans->t("ONLYOFFICE app is not configured. Please contact admin"));
         }
 
         $params = [
@@ -725,5 +725,22 @@ class EditorController extends Controller {
         }
 
         return $params;
+    }
+
+    /**
+     * Print error page
+     *
+     * @param string $error - error message
+     * @param string $hint - error hint
+     *
+     * @return TemplateResponse
+     */
+    private function renderError($error, $hint = "") {
+        return new TemplateResponse("", "error", array(
+                "errors" => array(array(
+                "error" => $error,
+                "hint" => $hint
+            ))
+        ), "error");
     }
 }
