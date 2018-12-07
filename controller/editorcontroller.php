@@ -431,7 +431,7 @@ class EditorController extends Controller {
             $userId = $user->getUID();
         }
 
-        list ($file, $error) = empty($token) ? $this->getFile($userId, $fileId) : $this->getFileByToken($fileId, $token);
+        list ($file, $error, $share) = empty($token) ? $this->getFile($userId, $fileId) : $this->getFileByToken($fileId, $token);
 
         if (isset($error)) {
             $this->logger->error("Config: " . $fileId . " " . $error, array("app" => $this->appName));
@@ -469,7 +469,7 @@ class EditorController extends Controller {
 
         $canEdit = isset($format["edit"]) && $format["edit"];
         $editable = $file->isUpdateable()
-                    && (empty($token) || ($this->getShare($token)[0]->getPermissions() & Constants::PERMISSION_UPDATE) === Constants::PERMISSION_UPDATE);
+                    && (empty($token) || ($share->getPermissions() & Constants::PERMISSION_UPDATE) === Constants::PERMISSION_UPDATE);
         if ($editable && $canEdit) {
             $ownerId = NULL;
             $owner = $file->getOwner();
@@ -494,7 +494,25 @@ class EditorController extends Controller {
                 "id" => $userId,
                 "name" => $user->getDisplayName()
             ];
+        }
 
+        $folderLink = NULL;
+
+        if (!empty($token)) {
+            $node = $share->getNode();
+            if ($node instanceof Folder) {
+                $sharedFolder = $node;
+                $folderPath = $sharedFolder->getRelativePath($file->getParent()->getPath());
+                if (!empty($folderPath)) {
+                    $linkAttr = [
+                        "path" => $folderPath,
+                        "scrollto" => $file->getName(),
+                        "token" => $token
+                    ];
+                    $folderLink = $this->urlGenerator->linkToRouteAbsolute("files_sharing.sharecontroller.showShare", $linkAttr);
+                }
+            }
+        } else if (!empty($userId)) {
             $userFolder = $this->root->getUserFolder($userId);
             $folderPath = $userFolder->getRelativePath($file->getParent()->getPath());
             if (!empty($folderPath)) {
@@ -503,15 +521,17 @@ class EditorController extends Controller {
                     "scrollto" => $file->getName()
                 ];
                 $folderLink = $this->urlGenerator->linkToRouteAbsolute("files.view.index", $linkAttr);
+            }
+        }
 
-                $params["editorConfig"]["customization"]["goback"] = [
-                    "url"  => $folderLink
-                ];
+        if ($folderLink !== NULL) {
+            $params["editorConfig"]["customization"]["goback"] = [
+                "url"  => $folderLink
+            ];
 
-                if (!$desktop) {
-                    if ($this->config->GetSameTab()) {
-                        $params["editorConfig"]["customization"]["goback"]["blank"] = false;
-                    }
+            if (!$desktop) {
+                if ($this->config->GetSameTab()) {
+                    $params["editorConfig"]["customization"]["goback"]["blank"] = false;
                 }
             }
         }
@@ -591,7 +611,7 @@ class EditorController extends Controller {
             $file = $node;
         }
 
-        return [$file, NULL];
+        return [$file, NULL, $share];
     }
 
     /**
