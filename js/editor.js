@@ -35,8 +35,7 @@
     OCA.Onlyoffice.InitEditor = function () {
         var displayError = function (error) {
             OC.Notification.show(error, {
-                type: "error",
-                timeout: 3
+                type: "error"
             });
         };
 
