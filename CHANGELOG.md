@@ -1,5 +1,14 @@
 # Change Log
 
+## 2.1.2
+## Added
+- restricting access for groups
+- goback from editor to shared folder by link
+
+## Changed
+- using notification methods
+- compatible with Nextcloud 15
+
 ## 2.1.0
 ## Added
 - Swedish translation
