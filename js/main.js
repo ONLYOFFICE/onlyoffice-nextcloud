@@ -55,20 +55,19 @@
                     if (winEditor) {
                         winEditor.close();
                     }
-                    var row = OC.Notification.show(response.error);
-                    setTimeout(function () {
-                        OC.Notification.hide(row);
-                    }, 3000);
+                    OC.Notification.show(response.error, {
+                        type: "error",
+                        timeout: 3
+                    });
                     return;
                 }
 
                 fileList.add(response, { animate: true });
                 OCA.Onlyoffice.OpenEditor(response.id, winEditor);
 
-                var row = OC.Notification.show(t(OCA.Onlyoffice.AppName, "File created"));
-                setTimeout(function () {
-                    OC.Notification.hide(row);
-                }, 3000);
+                OC.Notification.show(t(OCA.Onlyoffice.AppName, "File created"), {
+                    timeout: 3
+                });
             }
         );
     };
@@ -107,10 +106,10 @@
             },
             function onSuccess(response) {
                 if (response.error) {
-                    var row = OC.Notification.show(response.error);
-                    setTimeout(function () {
-                        OC.Notification.hide(row);
-                    }, 3000);
+                    OC.Notification.show(response.error, {
+                        type: "error",
+                        timeout: 3
+                    });
                     return;
                 }
 
@@ -118,10 +117,9 @@
                     fileList.add(response, { animate: true });
                 }
 
-                var row = OC.Notification.show(t(OCA.Onlyoffice.AppName, "File created"));
-                setTimeout(function () {
-                    OC.Notification.hide(row);
-                }, 3000);
+                OC.Notification.show(t(OCA.Onlyoffice.AppName, "File created"), {
+                    timeout: 3
+                });
             });
     };
 

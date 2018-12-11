@@ -50,6 +50,20 @@
             advToogle();
         });
 
+        $("#onlyofficeGroups").prop("checked", $("#onlyofficeLimitGroups").val() != "");
+
+        var groupListToggle = function() {
+            if ($("#onlyofficeGroups").prop("checked")) {
+                OC.Settings.setupGroupsSelect($("#onlyofficeLimitGroups"));
+            } else {
+                $("#onlyofficeLimitGroups").select2("destroy");
+            }
+        };
+
+        $("#onlyofficeGroups").click(groupListToggle);
+        groupListToggle();
+
+
         $("#onlyofficeSave").click(function () {
             $(".section-onlyoffice").addClass("icon-loading");
             var onlyofficeUrl = $("#onlyofficeUrl").val().trim();
@@ -74,6 +88,9 @@
 
             var sameTab = $("#onlyofficeSameTab").is(":checked");
 
+            var limitGroupsString = $("#onlyofficeGroups").prop("checked") ? $("#onlyofficeLimitGroups").val() : "";
+            var limitGroups = limitGroupsString ? limitGroupsString.split("|") : [];
+
             $.ajax({
                 method: "PUT",
                 url: OC.generateUrl("apps/onlyoffice/ajax/settings"),
@@ -84,7 +101,8 @@
                     secret: onlyofficeSecret,
                     defFormats: defFormats,
                     editFormats: editFormats,
-                    sameTab: sameTab
+                    sameTab: sameTab,
+                    limitGroups: limitGroups
                 },
                 success: function onSuccess(response) {
                     $(".section-onlyoffice").removeClass("icon-loading");
@@ -98,10 +116,10 @@
                             response.error
                                 ? (t(OCA.Onlyoffice.AppName, "Error when trying to connect") + " (" + response.error + ")")
                                 : t(OCA.Onlyoffice.AppName, "Settings have been successfully updated");
-                        var row = OC.Notification.show(message);
-                        setTimeout(function () {
-                            OC.Notification.hide(row);
-                        }, 3000);
+                        OC.Notification.show(message, {
+                            type: "error",
+                            timeout: 3
+                        });
                     }
                 }
             });

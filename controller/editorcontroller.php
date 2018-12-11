@@ -180,6 +180,10 @@ class EditorController extends Controller {
     public function create($name, $dir) {
         $this->logger->debug("Create: " . $name, array("app" => $this->appName));
 
+        if (!$this->config->isUserAllowedToUse()) {
+            return ["error" => $this->trans->t("Not permitted")];
+        }
+
         $userId = $this->userSession->getUser()->getUID();
         $userFolder = $this->root->getUserFolder($userId);
         $folder = $userFolder->get($dir);
@@ -228,6 +232,14 @@ class EditorController extends Controller {
         return $result;
     }
 
+    /**
+     * Get template path
+     *
+     * @param string $lang - language
+     * @param string $ext - file extension
+     *
+     * @return string
+     */
     private function getTemplatePath($lang, $ext) {
         return dirname(__DIR__) . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . $lang . DIRECTORY_SEPARATOR . "new" . $ext;
     }
@@ -243,6 +255,10 @@ class EditorController extends Controller {
      */
     public function convert($fileId) {
         $this->logger->debug("Convert: " . $fileId, array("app" => $this->appName));
+
+        if (!$this->config->isUserAllowedToUse()) {
+            return ["error" => $this->trans->t("Not permitted")];
+        }
 
         $userId = $this->userSession->getUser()->getUID();
         list ($file, $error) = $this->getFile($userId, $fileId);
@@ -342,11 +358,15 @@ class EditorController extends Controller {
             return new RedirectResponse($redirectUrl);
         }
 
+        if (empty($token) && !$this->config->isUserAllowedToUse()) {
+            return $this->renderError($this->trans->t("Not permitted"));
+        }
+
         $documentServerUrl = $this->config->GetDocumentServerUrl();
 
         if (empty($documentServerUrl)) {
             $this->logger->error("documentServerUrl is empty", array("app" => $this->appName));
-            return ["error" => $this->trans->t("ONLYOFFICE app is not configured. Please contact admin")];
+            return $this->renderError($this->trans->t("ONLYOFFICE app is not configured. Please contact admin"));
         }
 
         $params = [
@@ -374,6 +394,7 @@ class EditorController extends Controller {
     /**
      * Print public editor section
      *
+     * @param integer $fileId - file identifier
      * @param string $token - access token
      *
      * @return TemplateResponse
@@ -391,6 +412,7 @@ class EditorController extends Controller {
      *
      * @param integer $fileId - file identifier
      * @param string $token - access token
+     * @param bool $desktop - desktop label
      *
      * @return array
      *
@@ -399,13 +421,17 @@ class EditorController extends Controller {
      */
     public function config($fileId, $token = NULL, $desktop = false) {
 
+        if (empty($token) && !$this->config->isUserAllowedToUse()) {
+            return ["error" => $this->trans->t("Not permitted")];
+        }
+
         $user = $this->userSession->getUser();
         $userId = NULL;
         if (!empty($user)) {
             $userId = $user->getUID();
         }
 
-        list ($file, $error) = empty($token) ? $this->getFile($userId, $fileId) : $this->getFileByToken($fileId, $token);
+        list ($file, $error, $share) = empty($token) ? $this->getFile($userId, $fileId) : $this->getFileByToken($fileId, $token);
 
         if (isset($error)) {
             $this->logger->error("Config: " . $fileId . " " . $error, array("app" => $this->appName));
@@ -443,7 +469,7 @@ class EditorController extends Controller {
 
         $canEdit = isset($format["edit"]) && $format["edit"];
         $editable = $file->isUpdateable()
-                    && (empty($token) || ($this->getShare($token)[0]->getPermissions() & Constants::PERMISSION_UPDATE) === Constants::PERMISSION_UPDATE);
+                    && (empty($token) || ($share->getPermissions() & Constants::PERMISSION_UPDATE) === Constants::PERMISSION_UPDATE);
         if ($editable && $canEdit) {
             $ownerId = NULL;
             $owner = $file->getOwner();
@@ -468,21 +494,40 @@ class EditorController extends Controller {
                 "id" => $userId,
                 "name" => $user->getDisplayName()
             ];
+        }
 
+        $folderLink = NULL;
+
+        if (!empty($token)) {
+            $node = $share->getNode();
+            if ($node instanceof Folder) {
+                $sharedFolder = $node;
+                $folderPath = $sharedFolder->getRelativePath($file->getParent()->getPath());
+                if (!empty($folderPath)) {
+                    $linkAttr = [
+                        "path" => $folderPath,
+                        "scrollto" => $file->getName(),
+                        "token" => $token
+                    ];
+                    $folderLink = $this->urlGenerator->linkToRouteAbsolute("files_sharing.sharecontroller.showShare", $linkAttr);
+                }
+            }
+        } else if (!empty($userId)) {
             $userFolder = $this->root->getUserFolder($userId);
             $folderPath = $userFolder->getRelativePath($file->getParent()->getPath());
-            $linkAttr = NULL;
             if (!empty($folderPath)) {
                 $linkAttr = [
                     "dir" => $folderPath,
                     "scrollto" => $file->getName()
                 ];
                 $folderLink = $this->urlGenerator->linkToRouteAbsolute("files.view.index", $linkAttr);
-
-                $params["editorConfig"]["customization"]["goback"] = [
-                    "url"  => $folderLink
-                ];
             }
+        }
+
+        if ($folderLink !== NULL) {
+            $params["editorConfig"]["customization"]["goback"] = [
+                "url"  => $folderLink
+            ];
 
             if (!$desktop) {
                 if ($this->config->GetSameTab()) {
@@ -506,7 +551,7 @@ class EditorController extends Controller {
     /**
      * Getting file by identifier
      *
-     * @param integer $userId - user identifier
+     * @param string $userId - user identifier
      * @param integer $fileId - file identifier
      *
      * @return array
@@ -566,7 +611,7 @@ class EditorController extends Controller {
             $file = $node;
         }
 
-        return [$file, NULL];
+        return [$file, NULL, $share];
     }
 
     /**
@@ -680,5 +725,22 @@ class EditorController extends Controller {
         }
 
         return $params;
+    }
+
+    /**
+     * Print error page
+     *
+     * @param string $error - error message
+     * @param string $hint - error hint
+     *
+     * @return TemplateResponse
+     */
+    private function renderError($error, $hint = "") {
+        return new TemplateResponse("", "error", array(
+                "errors" => array(array(
+                "error" => $error,
+                "hint" => $hint
+            ))
+        ), "error");
     }
 }
