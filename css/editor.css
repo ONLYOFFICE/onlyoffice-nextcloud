@@ -37,10 +37,7 @@
 .AscDesktopEditor #body-user #header {
     display: none;
 }
-.AscDesktopEditor #body-user #content-wrapper /*13*/{
-    padding-top: 0;
-}
-.AscDesktopEditor #body-user #content /*14*/{
+.AscDesktopEditor #body-user #content {
     min-height: 100%;
     padding-top: 0;
 }
