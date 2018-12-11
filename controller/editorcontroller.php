@@ -576,6 +576,7 @@ class EditorController extends Controller {
         if (!$file->isReadable()) {
             return [NULL, $this->trans->t("You do not have enough permissions to view the file")];
         }
+
         return [$file, NULL];
     }
 
@@ -606,7 +607,12 @@ class EditorController extends Controller {
         }
 
         if ($node instanceof Folder) {
-            $file = $node->getById($fileId)[0];
+            $files = $node->getById($fileId);
+
+            if (empty($files)) {
+                return [NULL, $this->trans->t("File not found")];
+            }
+            $file = $files[0];
         } else {
             $file = $node;
         }
