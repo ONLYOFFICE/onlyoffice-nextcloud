@@ -499,6 +499,13 @@ class EditorController extends Controller {
         $folderLink = NULL;
 
         if (!empty($token)) {
+            if (method_exists($share, getHideDownload) && $share->getHideDownload()) {
+                $params["document"]["permissions"] = [
+                    "download" => false,
+                    "print" => false
+                ];
+            }
+
             $node = $share->getNode();
             if ($node instanceof Folder) {
                 $sharedFolder = $node;
