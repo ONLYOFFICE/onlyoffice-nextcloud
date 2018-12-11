@@ -638,7 +638,7 @@ class EditorController extends Controller {
             return [NULL, $this->trans->t("You do not have enough permissions to view the file")];
         }
 
-        if ($share->getPassword() 
+        if ($share->getPassword()
             && (!$this->session->exists("public_link_authenticated")
                 || $this->session->get("public_link_authenticated") !== (string) $share->getId())) {
             return [NULL, $this->trans->t("You do not have enough permissions to view the file")];

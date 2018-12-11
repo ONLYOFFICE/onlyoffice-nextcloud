@@ -35,7 +35,7 @@ After that find **ONLYOFFICE** in the list of available applications and install
 If the server with the Nextcloud installed does not have an Internet access, or if you need it for some other reason, the administrator can install the application manually.
 To start using ONLYOFFICE Document Server with Nextcloud, the following steps must be performed:
 
-1. Go to the Nextcloud server _apps/_ directory (or some other directory [used](https://docs.nextcloud.com/server/13/admin_manual/installation/apps_management_installation.html#using-custom-app-directories)):
+1. Go to the Nextcloud server _apps/_ directory (or some other directory [used](https://docs.nextcloud.com/server/latest/admin_manual/apps_management.html#using-custom-app-directories)):
     ```
     cd apps/
     ```
@@ -142,4 +142,4 @@ When the _Log-in credentials, save in session_ authentication type is used, the 
 But if the encryption with the _per-user encryption keys_ (used by default in Nextcloud **Default encryption module** app) is enabled, ONLYOFFICE Document Server cannot open the encrypted files for editing and save them after the editing.
 The ONLYOFFICE section of the administrative settings page will display a notification about it.
 However if you set the encryption with the _master key_, ONLYOFFICE application will work as intended.
-The instruction on enabling _master key_ based encryption is available in the official documentation on [Nextcloud](https://docs.nextcloud.com/server/13/admin_manual/configuration_files/encryption_configuration.html#occ-encryption-commands) websites.
+The instruction on enabling _master key_ based encryption is available in the official documentation on [Nextcloud](https://docs.nextcloud.com/server/latest/admin_manual/configuration_files/encryption_configuration.html#occ-encryption-commands) websites.
