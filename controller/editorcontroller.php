@@ -565,7 +565,7 @@ class EditorController extends Controller {
      */
     private function getFile($userId, $fileId) {
         if (empty($fileId)) {
-            return [NULL, $this->trans->t("FileId is empty")];
+            return [NULL, $this->trans->t("FileId is empty"), NULL];
         }
 
         if ($userId !== NULL) {
@@ -576,15 +576,15 @@ class EditorController extends Controller {
         }
 
         if (empty($files)) {
-            return [NULL, $this->trans->t("File not found")];
+            return [NULL, $this->trans->t("File not found"), NULL];
         }
         $file = $files[0];
 
         if (!$file->isReadable()) {
-            return [NULL, $this->trans->t("You do not have enough permissions to view the file")];
+            return [NULL, $this->trans->t("You do not have enough permissions to view the file"), NULL];
         }
 
-        return [$file, NULL];
+        return [$file, NULL, NULL];
     }
 
     /**
@@ -599,25 +599,25 @@ class EditorController extends Controller {
         list ($share, $error) = $this->getShare($token);
 
         if (isset($error)) {
-            return [NULL, $error];
+            return [NULL, $error, NULL];
         }
 
         if (($share->getPermissions() & Constants::PERMISSION_READ) === 0) {
-            return [NULL, $this->trans->t("You do not have enough permissions to view the file")];
+            return [NULL, $this->trans->t("You do not have enough permissions to view the file"), NULL];
         }
 
         try {
             $node = $share->getNode();
         } catch (NotFoundException $e) {
             $this->logger->error("getFileByToken error: " . $e->getMessage(), array("app" => $this->appName));
-            return [NULL, $this->trans->t("File not found")];
+            return [NULL, $this->trans->t("File not found"), NULL];
         }
 
         if ($node instanceof Folder) {
             $files = $node->getById($fileId);
 
             if (empty($files)) {
-                return [NULL, $this->trans->t("File not found")];
+                return [NULL, $this->trans->t("File not found"), NULL];
             }
             $file = $files[0];
         } else {
