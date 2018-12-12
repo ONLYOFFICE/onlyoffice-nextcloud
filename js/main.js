@@ -228,7 +228,7 @@
     };
 
     var initPage = function(){
-        if ($("#isPublic").val() && !$("#dir").val().length) {
+        if ($("#isPublic").val() === "1" && !$("#filestable").length) {
             var fileName = $("#filename").val();
             var extension = fileName.substr(fileName.lastIndexOf(".") + 1).toLowerCase();
 
