@@ -441,6 +441,9 @@ class AppConfig {
      * @param array $value - same tab
      */
     public function SetLimitGroups($groups) {
+        if (!is_array($limitGroups)) {
+            $limitGroups = array();
+        }
         $value = json_encode($groups);
         $this->logger->info("Set groups: " . $value, array("app" => $this->appName));
 
