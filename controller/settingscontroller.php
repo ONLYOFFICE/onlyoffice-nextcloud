@@ -207,10 +207,8 @@ class SettingsController extends Controller {
     private function checkDocServiceUrl() {
 
         try {
-            $documentServerUrl = $this->config->GetDocumentServerUrl();
-            if (substr($this->urlGenerator->getAbsoluteURL("/"), 0, strlen("https")) === "https"
-                && preg_match("/^https?:\/\//i", $documentServerUrl)
-                && substr($documentServerUrl, 0, strlen("https")) !== "https") {
+            if (preg_match("/^https:\/\//i", $this->urlGenerator->getAbsoluteURL("/"))
+                && preg_match("/^http:\/\//i", $this->config->GetDocumentServerUrl())) {
                 throw new \Exception($this->trans->t("Mixed Active Content is not allowed. HTTPS address for Document Server is required."));
             }
 
