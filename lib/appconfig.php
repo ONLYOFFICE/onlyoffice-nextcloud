@@ -438,11 +438,11 @@ class AppConfig {
     /**
      * Save the list of groups
      *
-     * @param array $value - same tab
+     * @param array $groups - the list of groups
      */
     public function SetLimitGroups($groups) {
-        if (!is_array($limitGroups)) {
-            $limitGroups = array();
+        if (!is_array($groups)) {
+            $groups = array();
         }
         $value = json_encode($groups);
         $this->logger->info("Set groups: " . $value, array("app" => $this->appName));
@@ -460,7 +460,11 @@ class AppConfig {
         if (empty($value)) {
             return array();
         }
-        return json_decode($value, true);
+        $groups = json_decode($value, true);
+        if (!is_array($groups)) {
+            $groups = array();
+        }
+        return $groups;
     }
 
     /**
