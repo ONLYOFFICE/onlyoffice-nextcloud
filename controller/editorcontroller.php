@@ -545,6 +545,14 @@ class EditorController extends Controller {
 
         $params = $this->setCustomization($params);
 
+        $permissions_modifyFilter = $this->config->getSystemValue($this->config->_permissions_modifyFilter);
+        if (isset($permissions_modifyFilter)) {
+            if (!array_key_exists("permissions", $params["document"])) {
+                $params["document"]["permissions"] = [];
+            }
+            $params["document"]["permissions"]["modifyFilter"] = $permissions_modifyFilter;
+        }
+
         if (!empty($this->config->GetDocumentServerSecret())) {
             $token = \Firebase\JWT\JWT::encode($params, $this->config->GetDocumentServerSecret());
             $params["token"] = $token;
