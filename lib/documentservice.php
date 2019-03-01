@@ -154,30 +154,30 @@ class DocumentService {
         $response_xml_data;
         $countTry = 0;
 
-        $opts = array("http" => array(
-                    "method"  => "POST",
-                    "timeout" => "120",
-                    "header"=> "Content-type: application/json\r\n",
-                    "content" => json_encode($data)
-                )
-            );
+        $opts = array(
+            "timeout" => "120",
+            "headers" => [
+                "Content-type" => "application/json"
+            ],
+            "body" => json_encode($data)
+        );
 
         if (!empty($this->config->GetDocumentServerSecret())) {
             $params = [
                 "payload" => $data
             ];
             $token = \Firebase\JWT\JWT::encode($params, $this->config->GetDocumentServerSecret());
-            $opts["http"]["header"] = $opts["http"]["header"] . $this->config->JwtHeader() . ": Bearer " . $token . "\r\n";
+            $opts["headers"][$this->config->JwtHeader()] = "Bearer " . $token;
 
             $token = \Firebase\JWT\JWT::encode($data, $this->config->GetDocumentServerSecret());
             $data["token"] = $token;
-            $opts["http"]["content"] = json_encode($data);
+            $opts["body"] = json_encode($data);
         }
 
         $ServiceConverterMaxTry = 3;
         while ($countTry < $ServiceConverterMaxTry) {
             $countTry = $countTry + 1;
-            $response_xml_data = $this->Request($urlToConverter, $opts);
+            $response_xml_data = $this->Request($urlToConverter, "post", $opts);
             if ($response_xml_data !== false) { break; }
         }
 
@@ -265,12 +265,7 @@ class DocumentService {
 
         $urlHealthcheck = $documentServerUrl . "healthcheck";
 
-        $opts = array("http" => array(
-                    "timeout" => "60"
-                )
-            );
-
-        if (($response = $this->Request($urlHealthcheck, $opts)) === false) {
+        if (($response = $this->Request($urlHealthcheck)) === false) {
             throw new \Exception ($this->trans->t("Bad Request or timeout error"));
         }
 
@@ -298,27 +293,26 @@ class DocumentService {
             "c" => $method
         ];
 
-        $opts = array("http" => array(
-                    "method"  => "POST",
-                    "timeout" => "60",
-                    "header"=> "Content-type: application/json\r\n",
-                    "content" => json_encode($data)
-                )
-            );
+        $opts = array(
+            "headers" => [
+                "Content-type" => "application/json"
+            ],
+            "body" => json_encode($data)
+        );
 
         if (!empty($this->config->GetDocumentServerSecret())) {
             $params = [
                 "payload" => $data
             ];
             $token = \Firebase\JWT\JWT::encode($params, $this->config->GetDocumentServerSecret());
-            $opts["http"]["header"] = $opts["http"]["header"] . $this->config->JwtHeader() . ": Bearer " . $token . "\r\n";
+            $opts["headers"][$this->config->JwtHeader()] = "Bearer " . $token;
 
             $token = \Firebase\JWT\JWT::encode($data, $this->config->GetDocumentServerSecret());
             $data["token"] = $token;
-            $opts["http"]["content"] = json_encode($data);
+            $opts["body"] = json_encode($data);
         }
 
-        if (($response = $this->Request($urlCommand, $opts)) === false) {
+        if (($response = $this->Request($urlCommand, "post", $opts)) === false) {
             throw new \Exception ($this->trans->t("Bad Request or timeout error"));
         }
 
@@ -364,24 +358,32 @@ class DocumentService {
      * Request to Document Server with turn off verification
      *
      * @param string $url - request address
-     * @param array $opts - stream context options
+     * @param array $method - request method
+     * @param array $opts - request options
      *
      * @return string
      */
-    public function Request($url, $opts = NULL) {
+
+    public function Request($url, $method = "get", $opts = NULL) {
+        $httpClientService = \OC::$server->getHTTPClientService();
+        $client = $httpClientService->newClient();
+
         if (NULL === $opts) {
             $opts = array();
         }
-
         if (substr($url, 0, strlen("https")) === "https" && $this->config->TurnOffVerification()) {
-            $opts["ssl"] = array(
-                "verify_peer" => false,
-                "verify_peer_name" => false
-            );
+            $opts["verify"] = false;
+        }
+        if (!array_key_exists("timeout", $opts)) {
+            $opts["timeout"] = 60;
         }
 
-        $context  = stream_context_create($opts);
+        if ($method === "post") {
+            $response = $client->post($url, $opts);
+        } else {
+            $response = $client->get($url, $opts);
+        }
 
-        return file_get_contents($url, false, $context);
+        return $response->getBody();
     }
 }
