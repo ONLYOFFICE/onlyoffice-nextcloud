@@ -86,7 +86,7 @@ class AppConfig {
      *
      * @var string
      */
-    private $_cryptSecret = "skey";
+    private $_cryptSecret = "secret";
 
     /**
      * The config key for the default formats
@@ -357,19 +357,7 @@ class AppConfig {
      * @return string
      */
     public function GetSKey() {
-        $skey = $this->config->getAppValue($this->appName, $this->_cryptSecret, "");
-        if (empty($skey)) {
-            $skey = number_format(round(microtime(true) * 1000), 0, ".", "");
-            $this->config->setAppValue($this->appName, $this->_cryptSecret, $skey);
-        }
-        return $skey;
-    }
-
-    /**
-     * Regenerate the secret key
-     */
-    public function DropSKey() {
-        $this->config->setAppValue($this->appName, $this->_cryptSecret, "");
+        return $this->config->getSystemValue($this->_cryptSecret, true);
     }
 
     /**

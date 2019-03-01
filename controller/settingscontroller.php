@@ -162,8 +162,6 @@ class SettingsController extends Controller {
             $this->config->SetSettingsError($error);
         }
 
-        $this->config->DropSKey();
-
         $this->config->SetDefaultFormats($defFormats);
         $this->config->SetEditableFormats($editFormats);
         $this->config->SetSameTab($sameTab);
