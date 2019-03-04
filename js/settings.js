@@ -93,7 +93,7 @@
 
             $.ajax({
                 method: "PUT",
-                url: OC.generateUrl("apps/onlyoffice/ajax/settings"),
+                url: OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/settings"),
                 data: {
                     documentserver: onlyofficeUrl,
                     documentserverInternal: onlyofficeInternalUrl,

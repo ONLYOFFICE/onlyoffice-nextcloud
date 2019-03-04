@@ -51,7 +51,10 @@
             return;
         }
 
-        var configUrl = OC.generateUrl("apps/onlyoffice/ajax/config/" + (fileId || 0));
+        var configUrl = OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/config/{fileId}",
+            {
+                fileId: fileId || 0
+            });
 
         var params = [];
         if (fileToken) {
