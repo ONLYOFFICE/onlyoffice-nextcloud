@@ -502,7 +502,7 @@ class CallbackController extends Controller {
         }
 
         if ($node instanceof Folder) {
-            $file = $node->getById($fileId);
+            $files = $node->getById($fileId);
 
             if (empty($files)) {
                 return [NULL, new JSONResponse(["message" => $this->trans->t("File not found")], Http::STATUS_NOT_FOUND)];
