@@ -576,14 +576,10 @@ class EditorController extends Controller {
             return [NULL, $this->trans->t("FileId is empty"), NULL];
         }
 
-        if ($userId !== NULL) {
-            $files = $this->root->getUserFolder($userId)->getById($fileId);
-        } else {
-            $this->logger->debug("getFile by unknown user: " . $fileId, array("app" => $this->appName));
-            $files = $this->root->getById($fileId);
-        }
+        $files = $this->root->getUserFolder($userId)->getById($fileId);
 
         if (empty($files)) {
+            $this->logger->info("Files not found: " . $fileId, array("app" => $this->appName));
             return [NULL, $this->trans->t("File not found"), NULL];
         }
         $file = $files[0];
@@ -625,6 +621,7 @@ class EditorController extends Controller {
             $files = $node->getById($fileId);
 
             if (empty($files)) {
+                $this->logger->info("Files not found: " . $fileId, array("app" => $this->appName));
                 return [NULL, $this->trans->t("File not found"), NULL];
             }
             $file = $files[0];
