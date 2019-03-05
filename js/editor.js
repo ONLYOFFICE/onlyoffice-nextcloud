@@ -40,6 +40,7 @@
         };
 
         var fileId = $("#iframeEditor").data("id");
+        var filePath = $("#iframeEditor").data("path");
         var fileToken = $("#iframeEditor").data("token");
         if (!fileId && !fileToken) {
             displayError(t(OCA.Onlyoffice.AppName, "FileId is empty"));
@@ -57,6 +58,9 @@
             });
 
         var params = [];
+        if (filePath) {
+            params.push("filePath=" + encodeURIComponent(filePath));
+        }
         if (fileToken) {
             params.push("token=" + encodeURIComponent(fileToken));
         }

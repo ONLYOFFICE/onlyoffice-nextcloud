@@ -342,14 +342,15 @@ class EditorController extends Controller {
      *
      * @param integer $fileId - file identifier
      * @param string $token - access token
+     * @param string $filePath - file path
      *
      * @return TemplateResponse|RedirectResponse
      *
      * @NoAdminRequired
      * @NoCSRFRequired
      */
-    public function index($fileId, $token = NULL) {
-        $this->logger->debug("Open: " . $fileId, array("app" => $this->appName));
+    public function index($fileId, $token = NULL, $filePath = NULL) {
+        $this->logger->debug("Open: " . $fileId . " " . $filePath, array("app" => $this->appName));
 
         if (empty($token) && !$this->userSession->isLoggedIn()) {
             $redirectUrl = $this->urlGenerator->linkToRoute("core.login.showLoginForm", [
@@ -372,6 +373,7 @@ class EditorController extends Controller {
         $params = [
             "documentServerUrl" => $documentServerUrl,
             "fileId" => $fileId,
+            "filePath" => $filePath,
             "token" => $token
         ];
 
@@ -411,6 +413,7 @@ class EditorController extends Controller {
      * Collecting the file parameters for the document service
      *
      * @param integer $fileId - file identifier
+     * @param string $filePath - file path
      * @param string $token - access token
      * @param bool $desktop - desktop label
      *
@@ -419,7 +422,7 @@ class EditorController extends Controller {
      * @NoAdminRequired
      * @PublicPage
      */
-    public function config($fileId, $token = NULL, $desktop = false) {
+    public function config($fileId, $filePath = NULL, $token = NULL, $desktop = false) {
 
         if (empty($token) && !$this->config->isUserAllowedToUse()) {
             return ["error" => $this->trans->t("Not permitted")];
@@ -431,7 +434,7 @@ class EditorController extends Controller {
             $userId = $user->getUID();
         }
 
-        list ($file, $error, $share) = empty($token) ? $this->getFile($userId, $fileId) : $this->getFileByToken($fileId, $token);
+        list ($file, $error, $share) = empty($token) ? $this->getFile($userId, $fileId, $filePath) : $this->getFileByToken($fileId, $token);
 
         if (isset($error)) {
             $this->logger->error("Config: " . $fileId . " " . $error, array("app" => $this->appName));
@@ -568,10 +571,11 @@ class EditorController extends Controller {
      *
      * @param string $userId - user identifier
      * @param integer $fileId - file identifier
+     * @param string $filePath - file path
      *
      * @return array
      */
-    private function getFile($userId, $fileId) {
+    private function getFile($userId, $fileId, $filePath = NULL) {
         if (empty($fileId)) {
             return [NULL, $this->trans->t("FileId is empty"), NULL];
         }
@@ -582,7 +586,17 @@ class EditorController extends Controller {
             $this->logger->info("Files not found: " . $fileId, array("app" => $this->appName));
             return [NULL, $this->trans->t("File not found"), NULL];
         }
+
         $file = $files[0];
+
+        if (count($files) > 1 && !empty($filePath)) {
+            $filePath = "/" . $userId . "/files" . $filePath;
+            foreach ($files as $curFile) {
+                if ($curFile->getPath() === $filePath) {
+                    $file = $curFile;
+                }
+            }
+        }
 
         if (!$file->isReadable()) {
             return [NULL, $this->trans->t("You do not have enough permissions to view the file"), NULL];

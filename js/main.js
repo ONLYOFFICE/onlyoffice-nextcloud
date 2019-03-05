@@ -63,7 +63,7 @@
                 }
 
                 fileList.add(response, { animate: true });
-                OCA.Onlyoffice.OpenEditor(response.id, winEditor);
+                OCA.Onlyoffice.OpenEditor(response.id, dir, response.name, winEditor);
 
                 OC.Notification.show(t(OCA.Onlyoffice.AppName, "File created"), {
                     timeout: 3
@@ -72,10 +72,12 @@
         );
     };
 
-    OCA.Onlyoffice.OpenEditor = function (fileId, winEditor) {
-        var url = OC.generateUrl("/apps/" + OCA.Onlyoffice.AppName + "/{fileId}",
+    OCA.Onlyoffice.OpenEditor = function (fileId, fileDir, fileName, winEditor) {
+        var filePath = fileDir.replace(new RegExp("\/$"), "") + "/" + fileName;
+        var url = OC.generateUrl("/apps/" + OCA.Onlyoffice.AppName + "/{fileId}?filePath={filePath}",
             {
-                fileId: fileId
+                fileId: fileId,
+                filePath: filePath
             });
 
         if ($("#isPublic").val()) {
@@ -96,7 +98,7 @@
 
     OCA.Onlyoffice.FileClick = function (fileName, context) {
         var fileInfoModel = context.fileInfoModel || context.fileList.getModelForFile(fileName);
-        OCA.Onlyoffice.OpenEditor(fileInfoModel.id);
+        OCA.Onlyoffice.OpenEditor(fileInfoModel.id, context.dir, fileName);
     };
 
     OCA.Onlyoffice.FileConvertClick = function (fileName, context) {
