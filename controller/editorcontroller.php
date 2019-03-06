@@ -197,9 +197,7 @@ class EditorController extends Controller {
             return ["error" => $this->trans->t("You don't have enough permission to create")];
         }
 
-        $name = $folder->getNonExistingName($name);
-        $filePath = $dir . DIRECTORY_SEPARATOR . $name;
-        $ext = strtolower("." . pathinfo($filePath, PATHINFO_EXTENSION));
+        $ext = strtolower("." . pathinfo($name, PATHINFO_EXTENSION));
 
         $lang = \OC::$server->getL10NFactory("")->get("")->getLanguageCode();
 
@@ -215,18 +213,18 @@ class EditorController extends Controller {
             return ["error" => $this->trans->t("Template not found")];
         }
 
-        $view = Filesystem::getView();
-        if (!$view->file_put_contents($filePath, $template)) {
-            $this->logger->error("Can't create file: " . $filePath, array("app" => $this->appName));
+        $name = $folder->getNonExistingName($name);
+
+        try {
+            $file = $folder->newFile($name);
+
+            $file->putContent($template);
+        } catch (NotPermittedException $e) {
+            $this->logger->error("Can't create file: " . $name, array("app" => $this->appName));
             return ["error" => $this->trans->t("Can't create file")];
         }
 
-        $fileInfo = $view->getFileInfo($filePath);
-
-        if ($fileInfo === false) {
-            $this->logger->error("File not found: " . $filePath, array("app" => $this->appName));
-            return ["error" => $this->trans->t("File not found")];
-        }
+        $fileInfo = $file->getFileInfo();
 
         $result = Helper::formatFileInfo($fileInfo);
         return $result;
@@ -307,31 +305,25 @@ class EditorController extends Controller {
         if (!$folder->isCreatable()) {
             $folder = $this->root->getUserFolder($userId);
         }
-        $pattern = "/^\\" . DIRECTORY_SEPARATOR . $userId . "\\" . DIRECTORY_SEPARATOR . "files/";
-        $newFolderPath = preg_replace($pattern, "", $folder->getPath());
-
-        $fileNameWithoutExt = substr($fileName, 0, strlen($fileName) - strlen($ext) - 1);
-        $newFileName = $folder->getNonExistingName($fileNameWithoutExt . "." . $internalExtension);
-
-        $newFilePath = $newFolderPath . DIRECTORY_SEPARATOR . $newFileName;
 
         if (($newData = $documentService->Request($newFileUri)) === false) {
             $this->logger->error("Failed to download converted file: " . $newFileUri, array("app" => $this->appName));
             return ["error" => $this->trans->t("Failed to download converted file")];
         }
 
-        $view = Filesystem::getView();
-        if (!$view->file_put_contents($newFilePath, $newData)) {
-            $this->logger->error("Can't create file after convertion: " . $newFilePath, array("app" => $this->appName));
+        $fileNameWithoutExt = substr($fileName, 0, strlen($fileName) - strlen($ext) - 1);
+        $newFileName = $folder->getNonExistingName($fileNameWithoutExt . "." . $internalExtension);
+
+        try {
+            $file = $folder->newFile($newFileName);
+
+            $file->putContent($newData);
+        } catch (NotPermittedException $e) {
+            $this->logger->error("Can't create file: " . $newFileName, array("app" => $this->appName));
             return ["error" => $this->trans->t("Can't create file")];
         }
 
-        $fileInfo = $view->getFileInfo($newFilePath);
-
-        if ($fileInfo === false) {
-            $this->logger->info("File not found: " . $newFilePath, array("app" => $this->appName));
-            return ["error" => $this->trans->t("File not found")];
-        }
+        $fileInfo = $file->getFileInfo();
 
         $result = Helper::formatFileInfo($fileInfo);
         return $result;
