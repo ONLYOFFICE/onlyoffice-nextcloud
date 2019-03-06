@@ -45,11 +45,17 @@
             }
         }
 
+        var createData = {
+            name: name,
+            dir: dir
+        };
+
+        if ($("#isPublic").val()) {
+            createData.token = encodeURIComponent($("#sharingToken").val());
+        }
+
         $.post(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/new"),
-            {
-                name: name,
-                dir: dir
-            },
+            createData,
             function onSuccess(response) {
                 if (response.error) {
                     if (winEditor) {
@@ -81,8 +87,9 @@
             });
 
         if ($("#isPublic").val()) {
-            url = OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/s/" + encodeURIComponent($("#sharingToken").val()) + "?fileId={fileId}",
+            url = OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/s/{token}?fileId={fileId}",
                 {
+                    token: encodeURIComponent($("#sharingToken").val()),
                     fileId: fileId
                 });
         }
@@ -193,7 +200,7 @@
         attach: function (menu) {
             var fileList = menu.fileList;
 
-            if (fileList.id !== "files") {
+            if (fileList.id !== "files" && fileList.id !== "files.public") {
                 return;
             }
 

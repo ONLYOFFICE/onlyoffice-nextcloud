@@ -36,6 +36,7 @@ use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AutoloadNotAllowedException;
 use OCP\Constants;
 use OCP\Files\FileInfo;
+use OCP\Files\File;
 use OCP\Files\Folder;
 use OCP\Files\IRootFolder;
 use OCP\Files\NotFoundException;
@@ -172,20 +173,41 @@ class EditorController extends Controller {
      *
      * @param string $name - file name
      * @param string $dir - folder path
+     * @param string $token - access token
      *
      * @return array
      *
      * @NoAdminRequired
+     * @PublicPage
      */
-    public function create($name, $dir) {
+    public function create($name, $dir, $token = NULL) {
         $this->logger->debug("Create: " . $name, array("app" => $this->appName));
 
-        if (!$this->config->isUserAllowedToUse()) {
+        if (empty($token) && !$this->config->isUserAllowedToUse()) {
             return ["error" => $this->trans->t("Not permitted")];
         }
 
-        $userId = $this->userSession->getUser()->getUID();
-        $userFolder = $this->root->getUserFolder($userId);
+        if (empty($token)) {
+            $userId = $this->userSession->getUser()->getUID();
+            $userFolder = $this->root->getUserFolder($userId);
+        } else {
+            list ($userFolder, $error, $share) = $this->getNodeByToken($token);
+
+            if (isset($error)) {
+                $this->logger->error("Create: " . $error, array("app" => $this->appName));
+                return ["error" => $error];
+            }
+
+            if ($userFolder instanceof File) {
+                return ["error" => $this->trans->t("You don't have enough permission to create")];
+            }
+
+            if (!empty($token) && ($share->getPermissions() & Constants::PERMISSION_CREATE) === 0) {
+                $this->logger->error("Create in public folder without access: " . $fileId, array("app" => $this->appName));
+                return ["error" => $this->trans->t("You do not have enough permissions to view the file")];
+            }
+        }
+
         $folder = $userFolder->get($dir);
 
         if ($folder === NULL) {
@@ -606,6 +628,35 @@ class EditorController extends Controller {
      * @return array
      */
     private function getFileByToken($fileId, $token) {
+        list ($node, $error, $share) = $this->getNodeByToken($token);
+
+        if (isset($error)) {
+            return [NULL, $error, NULL];
+        }
+
+        if ($node instanceof Folder) {
+            $files = $node->getById($fileId);
+
+            if (empty($files)) {
+                $this->logger->info("Files not found: " . $fileId, array("app" => $this->appName));
+                return [NULL, $this->trans->t("File not found"), NULL];
+            }
+            $file = $files[0];
+        } else {
+            $file = $node;
+        }
+
+        return [$file, NULL, $share];
+    }
+
+    /**
+     * Getting file by token
+     *
+     * @param string $token - access token
+     *
+     * @return array
+     */
+    private function getNodeByToken($token) {
         list ($share, $error) = $this->getShare($token);
 
         if (isset($error)) {
@@ -623,19 +674,7 @@ class EditorController extends Controller {
             return [NULL, $this->trans->t("File not found"), NULL];
         }
 
-        if ($node instanceof Folder) {
-            $files = $node->getById($fileId);
-
-            if (empty($files)) {
-                $this->logger->info("Files not found: " . $fileId, array("app" => $this->appName));
-                return [NULL, $this->trans->t("File not found"), NULL];
-            }
-            $file = $files[0];
-        } else {
-            $file = $node;
-        }
-
-        return [$file, NULL, $share];
+        return [$node, NULL, $share];
     }
 
     /**
