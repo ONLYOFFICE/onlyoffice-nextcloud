@@ -118,7 +118,7 @@ This method adds the copy of the file from the assets folder to the folder the u
 
 * When all users and client browsers are done with editing, they close the editing window.
 
-* After [10 seconds](https://api.onlyoffice.com/editors/save#savedelay)  of inactivity, ONLYOFFICE Document Server sends a POST to the _callback_ URL letting Nextcloud know that the clients have finished editing the document and closed it.
+* After [10 seconds](https://api.onlyoffice.com/editors/save#savedelay) of inactivity, ONLYOFFICE Document Server sends a POST to the _callback_ URL letting Nextcloud know that the clients have finished editing the document and closed it.
 
 * Nextcloud downloads the new version of the document, replacing the old one.
 
@@ -138,3 +138,11 @@ But if the encryption with the _per-user encryption keys_ (used by default in Ne
 The ONLYOFFICE section of the administrative settings page will display a notification about it.
 However if you set the encryption with the _master key_, ONLYOFFICE application will work as intended.
 The instruction on enabling _master key_ based encryption is available in the official documentation on [Nextcloud](https://docs.nextcloud.com/server/latest/admin_manual/configuration_files/encryption_configuration.html#occ-encryption-commands) websites.
+
+* If you are using a self-signed certificate for your **Document Server**, Nextcloud will not validate such a certificate and will not allow connection to/from **Document Server**. This issue can be solved the following way: locate the Nextcloud config file (_/nextcloud/config/config.php_) and open it. Insert the following section to it:
+    ```
+    'onlyoffice' => array (
+        'verify_peer_off' => true
+    )
+    ```
+    This will disable the certificate verification and allow Nextcloud to establish connection with **Document Server**, but you must remember that this is a temporary insecure solution and we strongly recommend that you replace the certificate with the one issued by some CA. Once you do that, do not forget to remove the above section from Nextcloud config file.
