@@ -429,10 +429,9 @@ class CallbackController extends Controller {
                         }
                     }
 
-                    if (($newData = $documentService->Request($url))) {
-                        $file->putContent($newData);
-                        $error = 0;
-                    }
+                    $newData = $documentService->Request($url);
+                    $file->putContent($newData);
+                    $error = 0;
                 } catch (\Exception $e) {
                     $this->logger->error("Track " . $trackerStatus . " error: " . $e->getMessage(), array("app" => $this->appName));
                 }

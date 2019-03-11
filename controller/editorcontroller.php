@@ -340,8 +340,10 @@ class EditorController extends Controller {
             $folder = $this->root->getUserFolder($userId);
         }
 
-        if (($newData = $documentService->Request($newFileUri)) === false) {
-            $this->logger->error("Failed to download converted file: " . $newFileUri, array("app" => $this->appName));
+        try {
+            $newData = $documentService->Request($newFileUri);
+        } catch (\Exception $e) {
+            $this->logger->error("Failed to download converted file: " . $newFileUri . " " . $e->getMessage(), array("app" => $this->appName));
             return ["error" => $this->trans->t("Failed to download converted file")];
         }
 

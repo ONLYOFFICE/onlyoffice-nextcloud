@@ -151,9 +151,6 @@ class DocumentService {
             "key" => $document_revision_id
         ];
 
-        $response_xml_data;
-        $countTry = 0;
-
         $opts = array(
             "timeout" => "120",
             "headers" => [
@@ -174,16 +171,7 @@ class DocumentService {
             $opts["body"] = json_encode($data);
         }
 
-        $ServiceConverterMaxTry = 3;
-        while ($countTry < $ServiceConverterMaxTry) {
-            $countTry = $countTry + 1;
-            $response_xml_data = $this->Request($urlToConverter, "post", $opts);
-            if ($response_xml_data !== false) { break; }
-        }
-
-        if ($countTry === $ServiceConverterMaxTry) {
-            throw new \Exception ($this->trans->t("Bad Request or timeout error"));
-        }
+        $response_xml_data = $this->Request($urlToConverter, "post", $opts);
 
         libxml_use_internal_errors(true);
         if (!function_exists("simplexml_load_file")) {
@@ -265,9 +253,7 @@ class DocumentService {
 
         $urlHealthcheck = $documentServerUrl . "healthcheck";
 
-        if (($response = $this->Request($urlHealthcheck)) === false) {
-            throw new \Exception ($this->trans->t("Bad Request or timeout error"));
-        }
+        $response = $this->Request($urlHealthcheck);
 
         return $response === "true";
     }
@@ -312,9 +298,7 @@ class DocumentService {
             $opts["body"] = json_encode($data);
         }
 
-        if (($response = $this->Request($urlCommand, "post", $opts)) === false) {
-            throw new \Exception ($this->trans->t("Bad Request or timeout error"));
-        }
+        $response = $this->Request($urlCommand, "post", $opts);
 
         $data = json_decode($response);
 
