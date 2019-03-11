@@ -112,10 +112,16 @@
         var fileInfoModel = context.fileInfoModel || context.fileList.getModelForFile(fileName);
         var fileList = context.fileList;
 
+        var convertData = {
+            fileId: fileInfoModel.id
+        };
+
+        if ($("#isPublic").val()) {
+            convertData.token = encodeURIComponent($("#sharingToken").val());
+        }
+
         $.post(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/convert"),
-            {
-                fileId: fileInfoModel.id
-            },
+            convertData,
             function onSuccess(response) {
                 if (response.error) {
                     OC.Notification.show(response.error, {
@@ -179,12 +185,12 @@
                         fileList.fileActions.setDefault(attr.mime, "onlyofficeOpen");
                     }
 
-                    if (!$("#isPublic").val() && attr.conv) {
+                    if (attr.conv) {
                         fileList.fileActions.registerAction({
                             name: "onlyofficeConvert",
                             displayName: t(OCA.Onlyoffice.AppName, "Convert with ONLYOFFICE"),
                             mime: attr.mime,
-                            permissions: OC.PERMISSION_READ,
+                            permissions: ($("#isPublic").val() ? OC.PERMISSION_UPDATE : OC.PERMISSION_READ),
                             iconClass: "icon-onlyoffice-convert",
                             actionHandler: OCA.Onlyoffice.FileConvertClick
                         });

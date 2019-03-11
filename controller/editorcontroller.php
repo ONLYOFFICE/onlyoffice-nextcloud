@@ -268,24 +268,36 @@ class EditorController extends Controller {
      * Conversion file to Office Open XML format
      *
      * @param integer $fileId - file identifier
+     * @param string $token - access token
      *
      * @return array
      *
      * @NoAdminRequired
+     * @PublicPage
      */
-    public function convert($fileId) {
+    public function convert($fileId, $token = NULL) {
         $this->logger->debug("Convert: " . $fileId, array("app" => $this->appName));
 
-        if (!$this->config->isUserAllowedToUse()) {
+        if (empty($token) && !$this->config->isUserAllowedToUse()) {
             return ["error" => $this->trans->t("Not permitted")];
         }
 
-        $userId = $this->userSession->getUser()->getUID();
-        list ($file, $error) = $this->getFile($userId, $fileId);
+        $user = $this->userSession->getUser();
+        $userId = NULL;
+        if (!empty($user)) {
+            $userId = $user->getUID();
+        }
+
+        list ($file, $error, $share) = empty($token) ? $this->getFile($userId, $fileId) : $this->getFileByToken($fileId, $token);
 
         if (isset($error)) {
             $this->logger->error("Convertion: " . $fileId . " " . $error, array("app" => $this->appName));
             return ["error" => $error];
+        }
+
+        if (!empty($token) && ($share->getPermissions() & Constants::PERMISSION_CREATE) === 0) {
+            $this->logger->error("Convertion in public folder without access: " . $fileId, array("app" => $this->appName));
+            return ["error" => $this->trans->t("You do not have enough permissions to view the file")];
         }
 
         $fileName = $file->getName();
@@ -315,7 +327,7 @@ class EditorController extends Controller {
         $documentService = new DocumentService($this->trans, $this->config);
         $key = $this->getKey($file);
         $fileId = $file->getId();
-        $fileUrl = $this->getUrl($fileId);
+        $fileUrl = $this->getUrl($fileId, $token);
         try {
             $newFileUri = $documentService->GetConvertedUri($fileUrl, $ext, $internalExtension, $key);
         } catch (\Exception $e) {
