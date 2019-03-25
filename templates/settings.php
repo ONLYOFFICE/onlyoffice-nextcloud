@@ -90,7 +90,7 @@
     </div>
 
     <h3 class="onlyoffice-header"><?php p($l->t("Open the file for editing (due to format restrictions, the data might be lost when saving to the formats from the list below)")) ?></h3>
-    <a target="_blank" class="icon-info svg" title="" href="https://api.onlyoffice.com/editors/owncloud#editable" data-original-title="<?php p($l->t("View details")) ?>"></a>
+    <a target="_blank" class="icon-info svg" title="" href="https://api.onlyoffice.com/editors/nextcloud#editable" data-original-title="<?php p($l->t("View details")) ?>"></a>
     <div class="onlyoffice-exts">
         <?php foreach ($_["formats"] as $format => $setting) { ?>
             <?php if (array_key_exists("editable", $setting)) { ?>
