@@ -1,5 +1,16 @@
 # Change Log
 
+## 2.1.6
+## Added
+- file creation in public folder
+- file convertion in public folder
+- Bulgarian translation
+- file templates in Dutch
+
+## Changed
+- fix editor size on mobile
+- fix php warning
+
 ## 2.1.2
 ## Added
 - restricting access for groups
