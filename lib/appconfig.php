@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System Limited 2010-2018
+ * (c) Copyright Ascensio System SIA 2019
  *
  * This program is a free software product.
  * You can redistribute it and/or modify it under the terms of the GNU Affero General Public License
@@ -86,7 +86,7 @@ class AppConfig {
      *
      * @var string
      */
-    private $_cryptSecret = "skey";
+    private $_cryptSecret = "secret";
 
     /**
      * The config key for the default formats
@@ -143,6 +143,13 @@ class AppConfig {
      * @var string
      */
     private $_settingsError = "settings_error";
+
+    /**
+     * The config key for the modifyFilter
+     *
+     * @var string
+     */
+    public $_permissions_modifyFilter = "permissions_modifyFilter";
 
     /**
      * The config key for the customer
@@ -350,19 +357,7 @@ class AppConfig {
      * @return string
      */
     public function GetSKey() {
-        $skey = $this->config->getAppValue($this->appName, $this->_cryptSecret, "");
-        if (empty($skey)) {
-            $skey = number_format(round(microtime(true) * 1000), 0, ".", "");
-            $this->config->setAppValue($this->appName, $this->_cryptSecret, $skey);
-        }
-        return $skey;
-    }
-
-    /**
-     * Regenerate the secret key
-     */
-    public function DropSKey() {
-        $this->config->setAppValue($this->appName, $this->_cryptSecret, "");
+        return $this->config->getSystemValue($this->_cryptSecret, true);
     }
 
     /**
@@ -438,9 +433,12 @@ class AppConfig {
     /**
      * Save the list of groups
      *
-     * @param array $value - same tab
+     * @param array $groups - the list of groups
      */
     public function SetLimitGroups($groups) {
+        if (!is_array($groups)) {
+            $groups = array();
+        }
         $value = json_encode($groups);
         $this->logger->info("Set groups: " . $value, array("app" => $this->appName));
 
@@ -457,7 +455,11 @@ class AppConfig {
         if (empty($value)) {
             return array();
         }
-        return json_decode($value, true);
+        $groups = json_decode($value, true);
+        if (!is_array($groups)) {
+            $groups = array();
+        }
+        return $groups;
     }
 
     /**
@@ -571,34 +573,34 @@ class AppConfig {
      */
     private $formats = [
         "csv" => [ "mime" => "text/csv", "type" => "spreadsheet", "edit" => true, "editable" => true ],
-            "doc" => [ "mime" => "application/msword", "type" => "text", "conv" => true ],
-            "docm" => [ "mime" => "application/vnd.ms-word.document.macroEnabled.12", "type" => "text", "conv" => true ],
-            "docx" => [ "mime" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "type" => "text", "edit" => true, "def" => true ],
-            "dot" => [ "type" => "text", "conv" => true ],
-            "dotx" => [ "mime" => "application/vnd.openxmlformats-officedocument.wordprocessingml.template", "type" => "text", "conv" => true ],
-            "epub" => [ "mime" => "application/epub+zip", "type" => "text", "conv" => true ],
-            "htm" => [ "type" => "text", "conv" => true ],
-            "html" => [ "mime" => "text/html", "type" => "text", "conv" => true ],
+        "doc" => [ "mime" => "application/msword", "type" => "text", "conv" => true ],
+        "docm" => [ "mime" => "application/vnd.ms-word.document.macroEnabled.12", "type" => "text", "conv" => true ],
+        "docx" => [ "mime" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "type" => "text", "edit" => true, "def" => true ],
+        "dot" => [ "type" => "text", "conv" => true ],
+        "dotx" => [ "mime" => "application/vnd.openxmlformats-officedocument.wordprocessingml.template", "type" => "text", "conv" => true ],
+        "epub" => [ "mime" => "application/epub+zip", "type" => "text", "conv" => true ],
+        "htm" => [ "type" => "text", "conv" => true ],
+        "html" => [ "mime" => "text/html", "type" => "text", "conv" => true ],
         "odp" => [ "mime" => "application/vnd.oasis.opendocument.presentation", "type" => "presentation", "conv" => true, "editable" => true ],
         "ods" => [ "mime" => "application/vnd.oasis.opendocument.spreadsheet", "type" => "spreadsheet", "conv" => true, "editable" => true ],
         "odt" => [ "mime" => "application/vnd.oasis.opendocument.text", "type" => "text", "conv" => true, "editable" => true ],
-            "pdf" => [ "mime" => "application/pdf", "type" => "text" ],
-            "pot" => [ "type" => "presentation", "conv" => true ],
-            "potm" => [ "mime" => "application/vnd.ms-powerpoint.template.macroEnabled.12", "type" => "presentation", "conv" => true ],
-            "potx" => [ "mime" => "application/vnd.openxmlformats-officedocument.presentationml.template", "type" => "presentation", "conv" => true ],
-            "pps" => [ "type" => "presentation", "conv" => true ],
-            "ppsm" => [ "mime" => "application/vnd.ms-powerpoint.slideshow.macroEnabled.12", "type" => "presentation", "conv" => true ],
-            "ppsx" => [ "mime" => "application/vnd.openxmlformats-officedocument.presentationml.slideshow", "type" => "presentation", "conv" => true ],
-            "ppt" => [ "mime" => "application/vnd.ms-powerpoint", "type" => "presentation", "conv" => true ],
-            "pptm" => [ "mime" => "application/vnd.ms-powerpoint.presentation.macroEnabled.12", "type" => "presentation", "conv" => true ],
-            "pptx" => [ "mime" => "application/vnd.openxmlformats-officedocument.presentationml.presentation", "type" => "presentation", "edit" => true, "def" => true ],
+        "pdf" => [ "mime" => "application/pdf", "type" => "text" ],
+        "pot" => [ "type" => "presentation", "conv" => true ],
+        "potm" => [ "mime" => "application/vnd.ms-powerpoint.template.macroEnabled.12", "type" => "presentation", "conv" => true ],
+        "potx" => [ "mime" => "application/vnd.openxmlformats-officedocument.presentationml.template", "type" => "presentation", "conv" => true ],
+        "pps" => [ "type" => "presentation", "conv" => true ],
+        "ppsm" => [ "mime" => "application/vnd.ms-powerpoint.slideshow.macroEnabled.12", "type" => "presentation", "conv" => true ],
+        "ppsx" => [ "mime" => "application/vnd.openxmlformats-officedocument.presentationml.slideshow", "type" => "presentation", "conv" => true ],
+        "ppt" => [ "mime" => "application/vnd.ms-powerpoint", "type" => "presentation", "conv" => true ],
+        "pptm" => [ "mime" => "application/vnd.ms-powerpoint.presentation.macroEnabled.12", "type" => "presentation", "conv" => true ],
+        "pptx" => [ "mime" => "application/vnd.openxmlformats-officedocument.presentationml.presentation", "type" => "presentation", "edit" => true, "def" => true ],
         "rtf" => [ "mime" => "text/rtf", "type" => "text", "conv" => true, "editable" => true ],
         "txt" => [ "mime" => "text/plain", "type" => "text", "edit" => true, "editable" => true ],
-            "xls" => [ "mime" => "application/vnd.ms-excel", "type" => "spreadsheet", "conv" => true ],
-            "xlsm" => [ "mime" => "application/vnd.ms-excel.sheet.macroEnabled.12", "type" => "spreadsheet", "conv" => true ],
-            "xlsx" => [ "mime" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "type" => "spreadsheet", "edit" => true, "def" => true ],
-            "xlt" => [ "type" => "spreadsheet", "conv" => true ],
-            "xltm" => [ "mime" => "application/vnd.ms-excel.template.macroEnabled.12", "type" => "spreadsheet", "conv" => true ],
-            "xltx" => [ "mime" => "application/vnd.openxmlformats-officedocument.spreadsheetml.template", "type" => "spreadsheet", "conv" => true ]
-        ];
+        "xls" => [ "mime" => "application/vnd.ms-excel", "type" => "spreadsheet", "conv" => true ],
+        "xlsm" => [ "mime" => "application/vnd.ms-excel.sheet.macroEnabled.12", "type" => "spreadsheet", "conv" => true ],
+        "xlsx" => [ "mime" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "type" => "spreadsheet", "edit" => true, "def" => true ],
+        "xlt" => [ "type" => "spreadsheet", "conv" => true ],
+        "xltm" => [ "mime" => "application/vnd.ms-excel.template.macroEnabled.12", "type" => "spreadsheet", "conv" => true ],
+        "xltx" => [ "mime" => "application/vnd.openxmlformats-officedocument.spreadsheetml.template", "type" => "spreadsheet", "conv" => true ]
+    ];
 }

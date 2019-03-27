@@ -29,7 +29,6 @@ OC.L10N.register(
     "Presentation" : "Apresentação",
     "Error when trying to connect" : "Erro ao tentar conectar",
     "Settings have been successfully updated" : "Configurações salvas com sucesso",
-    "Bad Request or timeout error" : "Pedido ruim ou erro de limite de tempo",
     "Server can't read xml" : "Servidor não pode ler xml",
     "Bad Response. Errors: " : "Resposta ruim. Erros:",
     "Documentation" : "Documentação",

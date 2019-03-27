@@ -27,7 +27,6 @@
     "Presentation" : "Presentación",
     "Error when trying to connect" : "Error al intentar establecer la conexión",
     "Settings have been successfully updated" : "Ajustes han sido actualizados con éxito",
-    "Bad Request or timeout error" : "Solicitud Mala o error de límite de tiempo",
     "Server can't read xml" : "Servidor no puede leer xml",
     "Bad Response. Errors: " : "Respuesta Mala. Errores:",
     "Documentation" : "Documentación",

@@ -1,6 +1,6 @@
 /**
  *
- * (c) Copyright Ascensio System Limited 2010-2018
+ * (c) Copyright Ascensio System SIA 2019
  *
  * This program is a free software product.
  * You can redistribute it and/or modify it under the terms of the GNU Affero General Public License
@@ -40,6 +40,7 @@
         };
 
         var fileId = $("#iframeEditor").data("id");
+        var filePath = $("#iframeEditor").data("path");
         var fileToken = $("#iframeEditor").data("token");
         if (!fileId && !fileToken) {
             displayError(t(OCA.Onlyoffice.AppName, "FileId is empty"));
@@ -51,9 +52,15 @@
             return;
         }
 
-        var configUrl = OC.generateUrl("apps/onlyoffice/ajax/config/" + (fileId || 0));
+        var configUrl = OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/config/{fileId}",
+            {
+                fileId: fileId || 0
+            });
 
         var params = [];
+        if (filePath) {
+            params.push("filePath=" + encodeURIComponent(filePath));
+        }
         if (fileToken) {
             params.push("token=" + encodeURIComponent(fileToken));
         }
@@ -99,6 +106,10 @@
                     };
 
                     var docEditor = new DocsAPI.DocEditor("iframeEditor", config);
+
+                    if (config.type === "mobile" && $("#app > iframe").css("position") === "fixed") {
+                        $("#app > iframe").css("height", "calc(100% - 50px)")
+                    }
                 }
             }
         });

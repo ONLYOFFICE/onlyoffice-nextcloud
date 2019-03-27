@@ -29,7 +29,6 @@ OC.L10N.register(
     "Presentation" : "Presentation",
     "Error when trying to connect" : "Fel vid försök att ansluta",
     "Settings have been successfully updated" : "Inställningarna har uppdaterats",
-    "Bad Request or timeout error" : "Fel vid förfrågan eller timeout-fel",
     "Server can't read xml" : "Servern kan inte läsa XML",
     "Bad Response. Errors: " : "Felaktigt svar. Fel:",
     "Documentation" : "Dokumentation",

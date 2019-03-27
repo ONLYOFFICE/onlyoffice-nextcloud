@@ -29,7 +29,6 @@ OC.L10N.register(
     "Presentation" : "Презентация",
     "Error when trying to connect" : "При попытке соединения возникла ошибка",
     "Settings have been successfully updated" : "Настройки были успешно обновлены",
-    "Bad Request or timeout error" : "Ошибка запроса или таймаут",
     "Server can't read xml" : "Невозможно прочитать xml файл на сервере",
     "Bad Response. Errors: " : "Неправильный ответ. Ошибки:",
     "Documentation" : "Документация",

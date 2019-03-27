@@ -12,7 +12,6 @@ This allows multiple users to collaborate in real time and to save back those ch
 You can also use our **[Docker installation](https://github.com/ONLYOFFICE/docker-onlyoffice-nextcloud)** to get installed and configured Document Server and Nextcloud installation with a couple of commands.
 
 
-
 ## Installing ONLYOFFICE Document Server
 
 You will need an instance of ONLYOFFICE Document Server that is resolvable and connectable both from Nextcloud and any end clients (version 4.2.7 and later are supported for use with the app).
@@ -25,7 +24,6 @@ Or you can use Document Server behind a proxy, please refer to [this article](ht
 The easiest way to start an instance of ONLYOFFICE Document Server is to use [Docker](https://github.com/ONLYOFFICE/Docker-DocumentServer).
 
 
-
 ## Installing Nextcloud ONLYOFFICE integration app
 
 The Nextcloud administrator can install the integration app from the in-built application market.
@@ -35,7 +33,7 @@ After that find **ONLYOFFICE** in the list of available applications and install
 If the server with the Nextcloud installed does not have an Internet access, or if you need it for some other reason, the administrator can install the application manually.
 To start using ONLYOFFICE Document Server with Nextcloud, the following steps must be performed:
 
-1. Go to the Nextcloud server _apps/_ directory (or some other directory [used](https://docs.nextcloud.com/server/13/admin_manual/installation/apps_management_installation.html#using-custom-app-directories)):
+1. Go to the Nextcloud server _apps/_ directory (or some other directory [used](https://docs.nextcloud.com/server/latest/admin_manual/apps_management.html#using-custom-app-directories)):
     ```
     cd apps/
     ```
@@ -58,7 +56,6 @@ There are several ways to do that:
     ```
 
 3. In Nextcloud open the `~/index.php/settings/apps?category=disabled` page with _Not enabled_ apps by administrator and click _Enable_ for the **ONLYOFFICE** application.
-
 
 
 ## Configuring Nextcloud ONLYOFFICE integration app
@@ -86,7 +83,6 @@ Enable or disable the _Open file in the same tab_ setting.
 
 The **Open in ONLYOFFICE** action will be added to the file context menu.
 You can specify this action as default and it will be used when the file name is clicked for the selected file types.
-
 
 
 ## How it works
@@ -122,10 +118,9 @@ This method adds the copy of the file from the assets folder to the folder the u
 
 * When all users and client browsers are done with editing, they close the editing window.
 
-* After [10 seconds](https://api.onlyoffice.com/editors/save#savedelay)  of inactivity, ONLYOFFICE Document Server sends a POST to the _callback_ URL letting Nextcloud know that the clients have finished editing the document and closed it.
+* After [10 seconds](https://api.onlyoffice.com/editors/save#savedelay) of inactivity, ONLYOFFICE Document Server sends a POST to the _callback_ URL letting Nextcloud know that the clients have finished editing the document and closed it.
 
 * Nextcloud downloads the new version of the document, replacing the old one.
-
 
 
 ## Known issues
@@ -142,4 +137,12 @@ When the _Log-in credentials, save in session_ authentication type is used, the 
 But if the encryption with the _per-user encryption keys_ (used by default in Nextcloud **Default encryption module** app) is enabled, ONLYOFFICE Document Server cannot open the encrypted files for editing and save them after the editing.
 The ONLYOFFICE section of the administrative settings page will display a notification about it.
 However if you set the encryption with the _master key_, ONLYOFFICE application will work as intended.
-The instruction on enabling _master key_ based encryption is available in the official documentation on [Nextcloud](https://docs.nextcloud.com/server/13/admin_manual/configuration_files/encryption_configuration.html#occ-encryption-commands) websites.
+The instruction on enabling _master key_ based encryption is available in the official documentation on [Nextcloud](https://docs.nextcloud.com/server/latest/admin_manual/configuration_files/encryption_configuration.html#occ-encryption-commands) websites.
+
+* If you are using a self-signed certificate for your **Document Server**, Nextcloud will not validate such a certificate and will not allow connection to/from **Document Server**. This issue can be solved the following way: locate the Nextcloud config file (_/nextcloud/config/config.php_) and open it. Insert the following section to it:
+    ```
+    'onlyoffice' => array (
+        'verify_peer_off' => true
+    )
+    ```
+    This will disable the certificate verification and allow Nextcloud to establish connection with **Document Server**, but you must remember that this is a temporary insecure solution and we strongly recommend that you replace the certificate with the one issued by some CA. Once you do that, do not forget to remove the above section from Nextcloud config file.

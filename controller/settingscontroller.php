@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System Limited 2010-2018
+ * (c) Copyright Ascensio System SIA 2019
  *
  * This program is a free software product.
  * You can redistribute it and/or modify it under the terms of the GNU Affero General Public License
@@ -156,12 +156,11 @@ class SettingsController extends Controller {
         $this->config->SetDocumentServerSecret($secret);
 
         $documentserver = $this->config->GetDocumentServerUrl();
+        $error = NULL;
         if (!empty($documentserver)) {
             $error = $this->checkDocServiceUrl();
             $this->config->SetSettingsError($error);
         }
-
-        $this->config->DropSKey();
 
         $this->config->SetDefaultFormats($defFormats);
         $this->config->SetEditableFormats($editFormats);
@@ -206,10 +205,8 @@ class SettingsController extends Controller {
     private function checkDocServiceUrl() {
 
         try {
-            $documentServerUrl = $this->config->GetDocumentServerUrl();
-            if (substr($this->urlGenerator->getAbsoluteURL("/"), 0, strlen("https")) === "https"
-                && preg_match("/^https?:\/\//i", $documentServerUrl)
-                && substr($documentServerUrl, 0, strlen("https")) !== "https") {
+            if (preg_match("/^https:\/\//i", $this->urlGenerator->getAbsoluteURL("/"))
+                && preg_match("/^http:\/\//i", $this->config->GetDocumentServerUrl())) {
                 throw new \Exception($this->trans->t("Mixed Active Content is not allowed. HTTPS address for Document Server is required."));
             }
 
@@ -271,9 +268,7 @@ class SettingsController extends Controller {
         }
 
         try {
-            if ($documentService->Request($convertedFileUri) === false) {
-                throw new \Exception($this->trans->t("Error occurred in the document service"));
-            }
+            $documentService->Request($convertedFileUri);
         } catch (\Exception $e) {
             $this->logger->error("Request converted file on check error: " . $convertedFileUri . " " . $e->getMessage(), array("app" => $this->appName));
             return $e->getMessage();
