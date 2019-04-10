@@ -485,6 +485,7 @@ class EditorController extends Controller {
             "document" => [
                 "fileType" => $ext,
                 "key" => DocumentService::GenerateRevisionId($key),
+                "permissions" => [],
                 "title" => $fileName,
                 "url" => $fileUrl,
             ],
@@ -494,8 +495,9 @@ class EditorController extends Controller {
             ]
         ];
 
-        if (\OC::$server->getRequest()->isUserAgent([$this::USER_AGENT_MOBILE])) {
-            $params["type"] = "mobile";
+        $permissions_modifyFilter = $this->config->getSystemValue($this->config->_permissions_modifyFilter);
+        if (isset($permissions_modifyFilter)) {
+            $params["document"]["permissions"]["modifyFilter"] = $permissions_modifyFilter;
         }
 
         $canEdit = isset($format["edit"]) && $format["edit"];
@@ -518,6 +520,10 @@ class EditorController extends Controller {
             $params["editorConfig"]["callbackUrl"] = $callback;
         } else {
             $params["editorConfig"]["mode"] = "view";
+        }
+
+        if (\OC::$server->getRequest()->isUserAgent([$this::USER_AGENT_MOBILE])) {
+            $params["type"] = "mobile";
         }
 
         if (!empty($userId)) {
@@ -575,14 +581,6 @@ class EditorController extends Controller {
         }
 
         $params = $this->setCustomization($params);
-
-        $permissions_modifyFilter = $this->config->getSystemValue($this->config->_permissions_modifyFilter);
-        if (isset($permissions_modifyFilter)) {
-            if (!array_key_exists("permissions", $params["document"])) {
-                $params["document"]["permissions"] = [];
-            }
-            $params["document"]["permissions"]["modifyFilter"] = $permissions_modifyFilter;
-        }
 
         if (!empty($this->config->GetDocumentServerSecret())) {
             $token = \Firebase\JWT\JWT::encode($params, $this->config->GetDocumentServerSecret());
