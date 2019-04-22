@@ -64,7 +64,7 @@
         groupListToggle();
 
 
-        $("#onlyofficeSave").click(function () {
+        $("#onlyofficeAddrSave").click(function () {
             $(".section-onlyoffice").addClass("icon-loading");
             var onlyofficeUrl = $("#onlyofficeUrl").val().trim();
 
@@ -76,33 +76,14 @@
             var onlyofficeStorageUrl = ($("#onlyofficeStorageUrl:visible").val() || "").trim();
             var onlyofficeSecret = $("#onlyofficeSecret:visible").val() || "";
 
-            var defFormats = {};
-            $("input[id^=\"onlyofficeDefFormat\"]").each(function() {
-                defFormats[this.name] = this.checked;
-            });
-
-            var editFormats = {};
-            $("input[id^=\"onlyofficeEditFormat\"]").each(function() {
-                editFormats[this.name] = this.checked;
-            });
-
-            var sameTab = $("#onlyofficeSameTab").is(":checked");
-
-            var limitGroupsString = $("#onlyofficeGroups").prop("checked") ? $("#onlyofficeLimitGroups").val() : "";
-            var limitGroups = limitGroupsString ? limitGroupsString.split("|") : [];
-
             $.ajax({
                 method: "PUT",
-                url: OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/settings"),
+                url: OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/settings/address"),
                 data: {
                     documentserver: onlyofficeUrl,
                     documentserverInternal: onlyofficeInternalUrl,
                     storageUrl: onlyofficeStorageUrl,
-                    secret: onlyofficeSecret,
-                    defFormats: defFormats,
-                    editFormats: editFormats,
-                    sameTab: sameTab,
-                    limitGroups: limitGroups
+                    secret: onlyofficeSecret
                 },
                 success: function onSuccess(response) {
                     $(".section-onlyoffice").removeClass("icon-loading");
@@ -125,10 +106,54 @@
             });
         });
 
+        $("#onlyofficeSave").click(function () {
+            $(".section-onlyoffice").addClass("icon-loading");
+
+            var defFormats = {};
+            $("input[id^=\"onlyofficeDefFormat\"]").each(function() {
+                defFormats[this.name] = this.checked;
+            });
+
+            var editFormats = {};
+            $("input[id^=\"onlyofficeEditFormat\"]").each(function() {
+                editFormats[this.name] = this.checked;
+            });
+
+            var sameTab = $("#onlyofficeSameTab").is(":checked");
+
+            var limitGroupsString = $("#onlyofficeGroups").prop("checked") ? $("#onlyofficeLimitGroups").val() : "";
+            var limitGroups = limitGroupsString ? limitGroupsString.split("|") : [];
+
+            $.ajax({
+                method: "PUT",
+                url: OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/settings/common"),
+                data: {
+                    defFormats: defFormats,
+                    editFormats: editFormats,
+                    sameTab: sameTab,
+                    limitGroups: limitGroups
+                },
+                success: function onSuccess(response) {
+                    $(".section-onlyoffice").removeClass("icon-loading");
+                    if (response) {
+                        $("#onlyofficeUrl").val(response.documentserver);
+                        $("#onlyofficeInternalUrl").val(response.documentserverInternal);
+                        $("#onlyofficeStorageUrl").val(response.storageUrl);
+                        $("#onlyofficeSecret").val(response.secret);
+
+                        var message = t(OCA.Onlyoffice.AppName, "Settings have been successfully updated");
+                        OC.Notification.show(message, {
+                            timeout: 3
+                        });
+                    }
+                }
+            });
+        });
+
         $(".section-onlyoffice input").keypress(function (e) {
             var code = e.keyCode || e.which;
             if (code === 13) {
-                $("#onlyofficeSave").click();
+                $("#onlyofficeAddrSave").click();
             }
         });
     });

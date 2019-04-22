@@ -128,27 +128,19 @@ class SettingsController extends Controller {
     }
 
     /**
-     * Save app settings
+     * Save address settings
      *
      * @param string $documentserver - document service address
      * @param string $documentserverInternal - document service address available from Nextcloud
      * @param string $storageUrl - Nextcloud address available from document server
      * @param string $secret - secret key for signature
-     * @param array $defFormats - formats array with default action
-     * @param array $editFormats - editable formats array
-     * @param bool $sameTab - open in same tab
-     * @param array $limitGroups - list of groups
      *
      * @return array
      */
-    public function SaveSettings($documentserver,
+    public function SaveAddress($documentserver,
                                     $documentserverInternal,
                                     $storageUrl,
-                                    $secret,
-                                    $defFormats,
-                                    $editFormats,
-                                    $sameTab,
-                                    $limitGroups
+                                    $secret
                                     ) {
         $this->config->SetDocumentServerUrl($documentserver);
         $this->config->SetDocumentServerInternalUrl($documentserverInternal);
@@ -162,11 +154,6 @@ class SettingsController extends Controller {
             $this->config->SetSettingsError($error);
         }
 
-        $this->config->SetDefaultFormats($defFormats);
-        $this->config->SetEditableFormats($editFormats);
-        $this->config->SetSameTab($sameTab);
-        $this->config->SetLimitGroups($limitGroups);
-
         if ($this->checkEncryptionModule()) {
             $this->logger->info("SaveSettings when encryption is enabled", array("app" => $this->appName));
         }
@@ -177,6 +164,31 @@ class SettingsController extends Controller {
             "storageUrl" => $this->config->GetStorageUrl(),
             "secret" => $this->config->GetDocumentServerSecret(),
             "error" => $error
+            ];
+    }
+
+    /**
+     * Save common settings
+     *
+     * @param array $defFormats - formats array with default action
+     * @param array $editFormats - editable formats array
+     * @param bool $sameTab - open in same tab
+     * @param array $limitGroups - list of groups
+     *
+     * @return array
+     */
+    public function SaveCommon($defFormats,
+                                    $editFormats,
+                                    $sameTab,
+                                    $limitGroups
+                                    ) {
+
+        $this->config->SetDefaultFormats($defFormats);
+        $this->config->SetEditableFormats($editFormats);
+        $this->config->SetSameTab($sameTab);
+        $this->config->SetLimitGroups($limitGroups);
+
+        return [
             ];
     }
 
