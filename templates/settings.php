@@ -34,47 +34,55 @@
     <h2>ONLYOFFICE</h2>
     <a target="_blank" class="icon-info svg" title="" href="https://api.onlyoffice.com/editors/nextcloud" data-original-title="<?php p($l->t("Documentation")) ?>"></a>
 
-    <p><?php p($l->t("ONLYOFFICE Document Service Location specifies the address of the server with the document services installed. Please change the '<documentserver>' for the server address in the below line.")) ?></p>
+    <h3><?php p($l->t("Server settings")) ?></h3>
 
     <?php if ($_["encryption"]) { ?>
     <p class="onlyoffice-error">
         <?php p($l->t("Encryption App is enabled, the application cannot work. You can continue working with the application if you enable master key.")) ?>
         <a target="_blank" class="icon-info svg" title="" href="https://api.onlyoffice.com/editors/nextcloud#masterKey" data-original-title="encryption:enable-master-key"></a>
     </p>
+    <br />
     <?php } ?>
 
-    <p class="onlyoffice-header"><?php p($l->t("Document Editing Service address")) ?></p>
-    <input id="onlyofficeUrl" value="<?php p($_["documentserver"]) ?>" placeholder="https://<documentserver>/" type="text">
+    <p class="settings-hint"><?php p($l->t("ONLYOFFICE Document Service Location specifies the address of the server with the document services installed. Please change the '<documentserver>' for the server address in the below line.")) ?></p>
 
-    <a id="onlyofficeAdv" class="onlyoffice-link-action onlyoffice-header"><?php p($l->t("Advanced server settings")) ?></a>
+    <p><?php p($l->t("Document Editing Service address")) ?></p>
+    <p><input id="onlyofficeUrl" value="<?php p($_["documentserver"]) ?>" placeholder="https://<documentserver>/" type="text"></p>
+
+    <p class="onlyoffice-header"><?php p($l->t("Secret key (leave blank to disable)")) ?></p>
+    <p><input id="onlyofficeSecret" value="<?php p($_["secret"]) ?>" placeholder="secret" type="text"></p>
+
+    <p>
+        <a id="onlyofficeAdv" class="onlyoffice-header">
+            <?php p($l->t("Advanced server settings")) ?>
+            <span class="icon icon-triangle-s"></span>
+        </a>
+    </p>
     <div id="onlyofficeSecretPanel" class="onlyoffice-hide">
         <p class="onlyoffice-header"><?php p($l->t("Document Editing Service address for internal requests from the server")) ?></p>
-        <input id="onlyofficeInternalUrl" value="<?php p($_["documentserverInternal"]) ?>" placeholder="https://<documentserver>/" type="text">
+        <p><input id="onlyofficeInternalUrl" value="<?php p($_["documentserverInternal"]) ?>" placeholder="https://<documentserver>/" type="text"></p>
 
         <p class="onlyoffice-header"><?php p($l->t("Server address for internal requests from the Document Editing Service")) ?></p>
-        <input id="onlyofficeStorageUrl" value="<?php p($_["storageUrl"]) ?>" placeholder="<?php p($_["currentServer"]) ?>" type="text">
-
-        <p class="onlyoffice-header"><?php p($l->t("Secret key (leave blank to disable)")) ?></p>
-        <input id="onlyofficeSecret" value="<?php p($_["secret"]) ?>" placeholder="secret" type="text">
+        <p><input id="onlyofficeStorageUrl" value="<?php p($_["storageUrl"]) ?>" placeholder="<?php p($_["currentServer"]) ?>" type="text"></p>
     </div>
-    <br id="onlyofficeSaveBreak" />
+    <br />
 
-    <p class="onlyoffice-header">
+    <h3><?php p($l->t("Common settings")) ?></h3>
+
+    <p>
         <input type="checkbox" class="checkbox" id="onlyofficeGroups"
             <?php if (count($_["limitGroups"]) > 0) { ?>checked="checked"<?php } ?> />
         <label for="onlyofficeGroups"><?php p($l->t("Restrict access to editors to following groups")) ?></label>
         <input type="hidden" id="onlyofficeLimitGroups" value="<?php p(implode("|", $_["limitGroups"])) ?>" style="display: block; margin-top: 6px; width: 250px;" />
     </p>
-    <br />
 
-    <p class="onlyoffice-header">
+    <p>
         <input type="checkbox" class="checkbox" id="onlyofficeSameTab"
             <?php if ($_["sameTab"]) { ?>checked="checked"<?php } ?> />
         <label for="onlyofficeSameTab"><?php p($l->t("Open file in the same tab")) ?></label>
     </p>
-    <br />
 
-    <h3 class="onlyoffice-header"><?php p($l->t("The default application for opening the format")) ?></h3>
+    <p class="onlyoffice-header"><?php p($l->t("The default application for opening the format")) ?></p>
     <div class="onlyoffice-exts">
         <?php foreach ($_["formats"] as $format => $setting) { ?>
             <?php if (array_key_exists("mime", $setting)) { ?>
@@ -89,8 +97,10 @@
         <?php } ?>
     </div>
 
-    <h3 class="onlyoffice-header"><?php p($l->t("Open the file for editing (due to format restrictions, the data might be lost when saving to the formats from the list below)")) ?></h3>
-    <a target="_blank" class="icon-info svg" title="" href="https://api.onlyoffice.com/editors/nextcloud#editable" data-original-title="<?php p($l->t("View details")) ?>"></a>
+    <p class="onlyoffice-header">
+        <?php p($l->t("Open the file for editing (due to format restrictions, the data might be lost when saving to the formats from the list below)")) ?>
+        <a target="_blank" class="icon-info svg" title="" href="https://api.onlyoffice.com/editors/nextcloud#editable" data-original-title="<?php p($l->t("View details")) ?>"></a>
+    </p>
     <div class="onlyoffice-exts">
         <?php foreach ($_["formats"] as $format => $setting) { ?>
             <?php if (array_key_exists("editable", $setting)) { ?>
@@ -104,6 +114,7 @@
             <?php } ?>
         <?php } ?>
     </div>
+    <br />
 
-    <a id="onlyofficeSave" class="button onlyoffice-header"><?php p($l->t("Save")) ?></a>
+    <p><button id="onlyofficeSave" class="button"><?php p($l->t("Save")) ?></button></p>
 </div>

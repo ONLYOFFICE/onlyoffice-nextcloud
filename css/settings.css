@@ -29,25 +29,30 @@
 .section-onlyoffice h2 {
     display: inline;
 }
+.onlyoffice-error {
+    color: red;
+}
 .onlyoffice-header {
     display: inline-block;
     margin-top: 16px;
 }
 .section-onlyoffice input {
     display: block;
-    margin: 6px 0 4px;
     width: 250px;
 }
 .onlyoffice-hide {
     display: none;
 }
-.onlyoffice-link-action {
-    border-bottom: 1px dotted;
+#onlyofficeAdv {
     cursor: pointer;
     text-decoration: none;
 }
-.onlyoffice-error {
-    color: red;
+#onlyofficeAdv .icon {
+    display: inline-block;
+    margin-bottom: -3px;
+}
+#s2id_onlyofficeLimitGroups {
+    margin-bottom: 16px;
 }
 .onlyoffice-exts {
     column-width: 100px;

@@ -37,11 +37,11 @@
         }
 
         var advToogle = function () {
-            $("#onlyofficeSecretPanel, #onlyofficeSaveBreak").toggleClass("onlyoffice-hide");
+            $("#onlyofficeSecretPanel").toggleClass("onlyoffice-hide");
+            $("#onlyofficeAdv .icon").toggleClass("icon-triangle-s icon-triangle-n");
         };
 
         if ($("#onlyofficeInternalUrl").val().length
-            || $("#onlyofficeSecret").val().length
             || $("#onlyofficeStorageUrl").val().length) {
             advToogle();
         }
