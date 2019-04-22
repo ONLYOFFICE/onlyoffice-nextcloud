@@ -117,7 +117,7 @@
                                 ? (t(OCA.Onlyoffice.AppName, "Error when trying to connect") + " (" + response.error + ")")
                                 : t(OCA.Onlyoffice.AppName, "Settings have been successfully updated");
                         OC.Notification.show(message, {
-                            type: "error",
+                            type: response.error ? "error" : null,
                             timeout: 3
                         });
                     }
