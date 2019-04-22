@@ -393,7 +393,7 @@ class CallbackController extends Controller {
                         \OC_Util::setupFS($ownerId);
                     }
 
-                    list ($file, $error) = empty($token) ? $this->getFile($ownerId, $fileId) : $this->getFileByToken($fileId, $token);
+                    list ($file, $error) = !empty($ownerId) ? $this->getFile($ownerId, $fileId) : $this->getFileByToken($fileId, $token);
 
                     if (isset($error)) {
                         $this->logger->error("track error" . $fileId ." " . $error,  array("app" => $this->appName));
