@@ -68,9 +68,10 @@
     <br />
 
     <p><button id="onlyofficeAddrSave" class="button"><?php p($l->t("Save")) ?></button></p>
-    <br />
-    <br />
 
+</div>
+
+<div class="section section-onlyoffice">
     <h3><?php p($l->t("Common settings")) ?></h3>
 
     <p>
