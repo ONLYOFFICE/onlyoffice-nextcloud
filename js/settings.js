@@ -93,6 +93,8 @@
                         $("#onlyofficeStorageUrl").val(response.storageUrl);
                         $("#onlyofficeSecret").val(response.secret);
 
+                        $(".section-onlyoffice-2").toggleClass("onlyoffice-hide", !response.documentserver.length || !!response.error.length);
+
                         var message =
                             response.error
                                 ? (t(OCA.Onlyoffice.AppName, "Error when trying to connect") + " (" + response.error + ")")

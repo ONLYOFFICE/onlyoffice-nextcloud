@@ -71,7 +71,7 @@
 
 </div>
 
-<div class="section section-onlyoffice">
+<div class="section section-onlyoffice section-onlyoffice-2 <?php if (empty($_["documentserver"]) || !$_["successful"]) { ?>onlyoffice-hide<?php } ?>">
     <h3><?php p($l->t("Common settings")) ?></h3>
 
     <p>

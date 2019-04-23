@@ -122,7 +122,8 @@ class SettingsController extends Controller {
             "formats" => $this->config->FormatsSetting(),
             "sameTab" => $this->config->GetSameTab(),
             "encryption" => $this->checkEncryptionModule(),
-            "limitGroups" => $this->config->GetLimitGroups()
+            "limitGroups" => $this->config->GetLimitGroups(),
+            "successful" => $this->config->SettingsAreSuccessful()
         ];
         return new TemplateResponse($this->appName, "settings", $data, "blank");
     }
