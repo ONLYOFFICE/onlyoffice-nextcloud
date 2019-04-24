@@ -31,8 +31,10 @@
     script("onlyoffice", "settings");
 ?>
 <div class="section section-onlyoffice">
-    <h2>ONLYOFFICE</h2>
-    <a target="_blank" class="icon-info svg" title="" href="https://api.onlyoffice.com/editors/nextcloud" data-original-title="<?php p($l->t("Documentation")) ?>"></a>
+    <h2>
+        ONLYOFFICE
+        <a target="_blank" class="icon-info svg" title="" href="https://api.onlyoffice.com/editors/nextcloud" data-original-title="<?php p($l->t("Documentation")) ?>"></a>
+    </h2>
 
     <h3><?php p($l->t("Server settings")) ?></h3>
 

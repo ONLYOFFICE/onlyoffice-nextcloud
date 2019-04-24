@@ -26,8 +26,9 @@
  *
  */
 
-.section-onlyoffice h2 {
-    display: inline;
+ #content .section-onlyoffice .icon-info {
+    box-sizing: content-box;
+    padding-top: 6px;
 }
 .onlyoffice-error {
     color: red;
