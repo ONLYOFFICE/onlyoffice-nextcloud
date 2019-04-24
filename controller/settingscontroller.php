@@ -123,6 +123,9 @@ class SettingsController extends Controller {
             "sameTab" => $this->config->GetSameTab(),
             "encryption" => $this->checkEncryptionModule(),
             "limitGroups" => $this->config->GetLimitGroups(),
+            "chat" => $this->config->GetCustomizationChat(),
+            "feedback" => $this->config->GetCustomizationFeedback(),
+            "help" => $this->config->GetCustomizationHelp(),
             "successful" => $this->config->SettingsAreSuccessful()
         ];
         return new TemplateResponse($this->appName, "settings", $data, "blank");
@@ -173,21 +176,30 @@ class SettingsController extends Controller {
      *
      * @param array $defFormats - formats array with default action
      * @param array $editFormats - editable formats array
-     * @param bool $sameTab - open in same tab
+     * @param bool $sameTab - open in the same tab
      * @param array $limitGroups - list of groups
+     * @param bool $chat - display chat
+     * @param bool $feedback - display feedback
+     * @param bool $help - display help
      *
      * @return array
      */
     public function SaveCommon($defFormats,
                                     $editFormats,
                                     $sameTab,
-                                    $limitGroups
+                                    $limitGroups,
+                                    $chat,
+                                    $feedback,
+                                    $help
                                     ) {
 
         $this->config->SetDefaultFormats($defFormats);
         $this->config->SetEditableFormats($editFormats);
         $this->config->SetSameTab($sameTab);
         $this->config->SetLimitGroups($limitGroups);
+        $this->config->SetCustomizationChat($chat);
+        $this->config->SetCustomizationFeedback($feedback);
+        $this->config->SetCustomizationHelp($help);
 
         return [
             ];

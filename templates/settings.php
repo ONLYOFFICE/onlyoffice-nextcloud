@@ -123,5 +123,31 @@
     </div>
     <br />
 
+    <h3>
+        <?php p($l->t("Editor customization settings")) ?>
+        <a target="_blank" class="icon-info svg" title="" href="https://api.onlyoffice.com/editors/config/editor/customization" data-original-title="<?php p($l->t("View details")) ?>"></a>
+    </h3>
+
+    <p><?php p($l->t("The customization section allows to customize the editor interface")) ?></p>
+
+    <p>
+        <input type="checkbox" class="checkbox" id="onlyofficeChat"
+            <?php if ($_["chat"]) { ?>checked="checked"<?php } ?> />
+        <label for="onlyofficeChat"><?php p($l->t("Display Chat menu button")) ?></label>
+    </p>
+
+    <p>
+        <input type="checkbox" class="checkbox" id="onlyofficeFeedback"
+            <?php if ($_["feedback"]) { ?>checked="checked"<?php } ?> />
+        <label for="onlyofficeFeedback"><?php p($l->t("Display Feedback & Support menu button")) ?></label>
+    </p>
+
+    <p>
+        <input type="checkbox" class="checkbox" id="onlyofficeHelp"
+            <?php if ($_["help"]) { ?>checked="checked"<?php } ?> />
+        <label for="onlyofficeHelp"><?php p($l->t("Display Help menu button")) ?></label>
+    </p>
+    <br />
+
     <p><button id="onlyofficeSave" class="button"><?php p($l->t("Save")) ?></button></p>
 </div>

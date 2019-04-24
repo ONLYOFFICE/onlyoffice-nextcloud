@@ -126,6 +126,10 @@
             var limitGroupsString = $("#onlyofficeGroups").prop("checked") ? $("#onlyofficeLimitGroups").val() : "";
             var limitGroups = limitGroupsString ? limitGroupsString.split("|") : [];
 
+            var chat = $("#onlyofficeChat").is(":checked");
+            var feedback = $("#onlyofficeFeedback").is(":checked");
+            var help = $("#onlyofficeHelp").is(":checked");
+
             $.ajax({
                 method: "PUT",
                 url: OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/settings/common"),
@@ -133,7 +137,10 @@
                     defFormats: defFormats,
                     editFormats: editFormats,
                     sameTab: sameTab,
-                    limitGroups: limitGroups
+                    limitGroups: limitGroups,
+                    chat: chat,
+                    feedback: feedback,
+                    help: help
                 },
                 success: function onSuccess(response) {
                     $(".section-onlyoffice").removeClass("icon-loading");
