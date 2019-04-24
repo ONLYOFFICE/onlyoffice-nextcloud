@@ -137,6 +137,12 @@
     </p>
 
     <p>
+        <input type="checkbox" class="checkbox" id="onlyofficeCompactHeader"
+            <?php if ($_["compactHeader"]) { ?>checked="checked"<?php } ?> />
+        <label for="onlyofficeCompactHeader"><?php p($l->t("Display the header more compact")) ?></label>
+    </p>
+
+    <p>
         <input type="checkbox" class="checkbox" id="onlyofficeFeedback"
             <?php if ($_["feedback"]) { ?>checked="checked"<?php } ?> />
         <label for="onlyofficeFeedback"><?php p($l->t("Display Feedback & Support menu button")) ?></label>
@@ -146,6 +152,12 @@
         <input type="checkbox" class="checkbox" id="onlyofficeHelp"
             <?php if ($_["help"]) { ?>checked="checked"<?php } ?> />
         <label for="onlyofficeHelp"><?php p($l->t("Display Help menu button")) ?></label>
+    </p>
+
+    <p>
+        <input type="checkbox" class="checkbox" id="onlyofficeToolbarNoTabs"
+            <?php if (!$_["toolbarNoTabs"]) { ?>checked="checked"<?php } ?> />
+        <label for="onlyofficeToolbarNoTabs"><?php p($l->t("Display toolbar tabs")) ?></label>
     </p>
     <br />
 

@@ -127,8 +127,10 @@
             var limitGroups = limitGroupsString ? limitGroupsString.split("|") : [];
 
             var chat = $("#onlyofficeChat").is(":checked");
+            var compactHeader = $("#onlyofficeCompactHeader").is(":checked");
             var feedback = $("#onlyofficeFeedback").is(":checked");
             var help = $("#onlyofficeHelp").is(":checked");
+            var toolbarNoTabs = !$("#onlyofficeToolbarNoTabs").is(":checked");
 
             $.ajax({
                 method: "PUT",
@@ -139,8 +141,10 @@
                     sameTab: sameTab,
                     limitGroups: limitGroups,
                     chat: chat,
+                    compactHeader: compactHeader,
                     feedback: feedback,
-                    help: help
+                    help: help,
+                    toolbarNoTabs: toolbarNoTabs
                 },
                 success: function onSuccess(response) {
                     $(".section-onlyoffice").removeClass("icon-loading");

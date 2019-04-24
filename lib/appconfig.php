@@ -117,6 +117,13 @@ class AppConfig {
     private $_customizationChat = "customizationChat";
 
     /**
+     * The config key for display the header more compact setting
+     *
+     * @var string
+     */
+    private $_customizationCompactHeader = "customizationCompactHeader";
+
+    /**
      * The config key for the feedback display setting
      *
      * @var string
@@ -129,6 +136,13 @@ class AppConfig {
      * @var string
      */
     private $_customizationHelp = "customizationHelp";
+
+    /**
+     * The config key for the no tabs setting
+     *
+     * @var string
+     */
+    private $_customizationToolbarNoTabs = "customizationToolbarNoTabs";
 
     /**
      * The config key for the setting limit groups
@@ -472,6 +486,26 @@ class AppConfig {
     }
 
     /**
+     * Save compact header setting
+     *
+     * @param bool $value - display compact header
+     */
+    public function SetCustomizationCompactHeader($value) {
+        $this->logger->info("Set compact header display: " . json_encode($value), array("app" => $this->appName));
+
+        $this->config->setAppValue($this->appName, $this->_customizationCompactHeader, json_encode($value));
+    }
+
+    /**
+     * Get compact header setting
+     *
+     * @return bool
+     */
+    public function GetCustomizationCompactHeader() {
+        return $this->config->getAppValue($this->appName, $this->_customizationCompactHeader, "true") === "true";
+    }
+
+    /**
      * Save feedback display setting
      *
      * @param bool $value - display feedback
@@ -509,6 +543,26 @@ class AppConfig {
      */
     public function GetCustomizationHelp() {
         return $this->config->getAppValue($this->appName, $this->_customizationHelp, "true") === "true";
+    }
+
+    /**
+     * Save without tabs setting
+     *
+     * @param bool $value - without tabs
+     */
+    public function SetCustomizationToolbarNoTabs($value) {
+        $this->logger->info("Set without tabs: " . json_encode($value), array("app" => $this->appName));
+
+        $this->config->setAppValue($this->appName, $this->_customizationToolbarNoTabs, json_encode($value));
+    }
+
+    /**
+     * Get without tabs setting
+     *
+     * @return bool
+     */
+    public function GetCustomizationToolbarNoTabs() {
+        return $this->config->getAppValue($this->appName, $this->_customizationToolbarNoTabs, "true") === "true";
     }
 
     /**

@@ -780,6 +780,11 @@ class EditorController extends Controller {
         }
 
         //default is false
+        if ($this->config->GetCustomizationCompactHeader() === true) {
+            $params["editorConfig"]["customization"]["compactHeader"] = true;
+        }
+
+        //default is false
         if ($this->config->GetCustomizationFeedback() === true) {
             $params["editorConfig"]["customization"]["feedback"] = true;
         }
@@ -787,6 +792,11 @@ class EditorController extends Controller {
         //default is true
         if ($this->config->GetCustomizationHelp() === false) {
             $params["editorConfig"]["customization"]["help"] = false;
+        }
+
+        //default is false
+        if ($this->config->GetCustomizationToolbarNoTabs() === true) {
+            $params["editorConfig"]["customization"]["toolbarNoTabs"] = true;
         }
 
 
