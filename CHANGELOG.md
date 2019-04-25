@@ -1,5 +1,9 @@
 # Change Log
 
+## 2.1.10
+## Changed
+- compatible with Nextcloud 16
+
 ## 2.1.6
 ## Added
 - file creation in public folder
