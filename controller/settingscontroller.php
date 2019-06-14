@@ -29,7 +29,6 @@
 
 namespace OCA\Onlyoffice\Controller;
 
-use OCP\App;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IL10N;
@@ -121,7 +120,7 @@ class SettingsController extends Controller {
             "currentServer" => $this->urlGenerator->getAbsoluteURL("/"),
             "formats" => $this->config->FormatsSetting(),
             "sameTab" => $this->config->GetSameTab(),
-            "encryption" => $this->checkEncryptionModule(),
+            "encryption" => ($this->config->checkEncryptionModule() === true),
             "limitGroups" => $this->config->GetLimitGroups()
         ];
         return new TemplateResponse($this->appName, "settings", $data, "blank");
@@ -167,7 +166,7 @@ class SettingsController extends Controller {
         $this->config->SetSameTab($sameTab);
         $this->config->SetLimitGroups($limitGroups);
 
-        if ($this->checkEncryptionModule()) {
+        if ($this->config->checkEncryptionModule() === true) {
             $this->logger->info("SaveSettings when encryption is enabled", array("app" => $this->appName));
         }
 
@@ -275,27 +274,5 @@ class SettingsController extends Controller {
         }
 
         return "";
-    }
-
-    /**
-     * Checking encryption enabled
-     *
-     * @return bool
-    */
-    private function checkEncryptionModule() {
-        if (!App::isEnabled("encryption")) {
-            return false;
-        }
-        if (!\OC::$server->getEncryptionManager()->isEnabled()) {
-            return false;
-        }
-
-        $crypt = new \OCA\Encryption\Crypto\Crypt(\OC::$server->getLogger(), \OC::$server->getUserSession(), \OC::$server->getConfig(), \OC::$server->getL10N("encryption"));
-        $util = new \OCA\Encryption\Util(new \OC\Files\View(), $crypt, \OC::$server->getLogger(), \OC::$server->getUserSession(), \OC::$server->getConfig(), \OC::$server->getUserManager());
-        if ($util->isMasterKeyEnabled()) {
-            return false;
-        }
-
-        return true;
     }
 }

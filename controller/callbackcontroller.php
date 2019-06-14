@@ -388,6 +388,10 @@ class CallbackController extends Controller {
                         $this->logger->debug("Track by anonymous " . $userId, array("app" => $this->appName));
                     }
 
+                    if ($this->config->checkEncryptionModule() === "master") {
+                        \OC_User::setIncognitoMode(true);
+                    }
+
                     \OC_Util::tearDownFS();
                     if (!empty($ownerId)) {
                         \OC_Util::setupFS($ownerId);

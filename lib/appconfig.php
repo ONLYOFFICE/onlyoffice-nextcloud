@@ -29,6 +29,7 @@
 
 namespace OCA\Onlyoffice;
 
+use OCP\App;
 use OCP\IConfig;
 use OCP\ILogger;
 
@@ -536,6 +537,28 @@ class AppConfig {
      */
     public function SettingsAreSuccessful() {
         return empty($this->config->getAppValue($this->appName, $this->_settingsError, ""));
+    }
+
+    /**
+     * Checking encryption enabled
+     *
+     * @return string|bool
+    */
+    public function checkEncryptionModule() {
+        if (!App::isEnabled("encryption")) {
+            return false;
+        }
+        if (!\OC::$server->getEncryptionManager()->isEnabled()) {
+            return false;
+        }
+
+        $crypt = new \OCA\Encryption\Crypto\Crypt(\OC::$server->getLogger(), \OC::$server->getUserSession(), \OC::$server->getConfig(), \OC::$server->getL10N("encryption"));
+        $util = new \OCA\Encryption\Util(new \OC\Files\View(), $crypt, \OC::$server->getLogger(), \OC::$server->getUserSession(), \OC::$server->getConfig(), \OC::$server->getUserManager());
+        if ($util->isMasterKeyEnabled()) {
+            return "master";
+        }
+
+        return true;
     }
 
     /**
