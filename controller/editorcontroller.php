@@ -774,6 +774,34 @@ class EditorController extends Controller {
      * @return array
      */
     private function setCustomization($params) {
+        //default is true
+        if ($this->config->GetCustomizationChat() === false) {
+            $params["editorConfig"]["customization"]["chat"] = false;
+        }
+
+        //default is false
+        if ($this->config->GetCustomizationCompactHeader() === true) {
+            $params["editorConfig"]["customization"]["compactHeader"] = true;
+        }
+
+        //default is false
+        if ($this->config->GetCustomizationFeedback() === true) {
+            $params["editorConfig"]["customization"]["feedback"] = true;
+        }
+
+        //default is true
+        if ($this->config->GetCustomizationHelp() === false) {
+            $params["editorConfig"]["customization"]["help"] = false;
+        }
+
+        //default is false
+        if ($this->config->GetCustomizationToolbarNoTabs() === true) {
+            $params["editorConfig"]["customization"]["toolbarNoTabs"] = true;
+        }
+
+
+        /* from system config */
+
         $customer = $this->config->getSystemValue($this->config->_customization_customer);
         if (isset($customer)) {
             $params["editorConfig"]["customization"]["customer"] = $customer;
