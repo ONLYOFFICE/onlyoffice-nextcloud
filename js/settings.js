@@ -149,11 +149,6 @@
                 success: function onSuccess(response) {
                     $(".section-onlyoffice").removeClass("icon-loading");
                     if (response) {
-                        $("#onlyofficeUrl").val(response.documentserver);
-                        $("#onlyofficeInternalUrl").val(response.documentserverInternal);
-                        $("#onlyofficeStorageUrl").val(response.storageUrl);
-                        $("#onlyofficeSecret").val(response.secret);
-
                         var message = t(OCA.Onlyoffice.AppName, "Settings have been successfully updated");
                         OC.Notification.show(message, {
                             timeout: 3
