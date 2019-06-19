@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0"?>
 <info>
     <id>onlyoffice</id>
-    <ocsid>174798</ocsid>
     <name>ONLYOFFICE</name>
     <summary>ONLYOFFICE connector</summary>
     <description>ONLYOFFICE connector enables you to edit Office documents within ONLYOFFICE from the familiar web interface. This will create a new Open in ONLYOFFICE action within the document library for Office documents. This allows multiple users to collaborate in real time and to save back those changes to your file storage.</description>
