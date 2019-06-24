@@ -43,6 +43,15 @@
     "View details" : "Ver detalles",
     "Save" : "Guardar",
     "Mixed Active Content is not allowed. HTTPS address for Document Server is required." : "Contenido Mixto Activo no está permitido. Se requiere la dirección HTTPS para Servidor de Documentos.",
-    "Restrict access to editors to following groups" : "Restringir el acceso a editores a siguientes grupos"
+    "Restrict access to editors to following groups" : "Restringir el acceso a editores a siguientes grupos",
+    "Server settings" : "Ajustes de servidor",
+    "Common settings" : "Ajustes comunes",
+    "Editor customization settings" : "Ajustes del editor",
+    "The customization section allows to customize the editor interface" : "La sección de personalización permite customizar la interfaz del editor",
+    "Display Chat menu button" : "Mostrar el botón de Chat",
+    "Display the header more compact" : "Mostrar el encabezado más compacto",
+    "Display Feedback & Support menu button" : "Mostrar el botón de Feedback y Soporte",
+    "Display Help menu button" : "Mostrar el botón de Ayuda",
+    "Display toolbar tabs" : "Mostrar pestañas de barra de herramientas"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }
