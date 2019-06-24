@@ -29,7 +29,6 @@
 
 namespace OCA\Onlyoffice\Controller;
 
-use OCP\App;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IL10N;
@@ -121,34 +120,32 @@ class SettingsController extends Controller {
             "currentServer" => $this->urlGenerator->getAbsoluteURL("/"),
             "formats" => $this->config->FormatsSetting(),
             "sameTab" => $this->config->GetSameTab(),
-            "encryption" => $this->checkEncryptionModule(),
-            "limitGroups" => $this->config->GetLimitGroups()
+            "encryption" => ($this->config->checkEncryptionModule() === true),
+            "limitGroups" => $this->config->GetLimitGroups(),
+            "chat" => $this->config->GetCustomizationChat(),
+            "compactHeader" => $this->config->GetCustomizationCompactHeader(),
+            "feedback" => $this->config->GetCustomizationFeedback(),
+            "help" => $this->config->GetCustomizationHelp(),
+            "toolbarNoTabs" => $this->config->GetCustomizationToolbarNoTabs(),
+            "successful" => $this->config->SettingsAreSuccessful()
         ];
         return new TemplateResponse($this->appName, "settings", $data, "blank");
     }
 
     /**
-     * Save app settings
+     * Save address settings
      *
      * @param string $documentserver - document service address
      * @param string $documentserverInternal - document service address available from Nextcloud
      * @param string $storageUrl - Nextcloud address available from document server
      * @param string $secret - secret key for signature
-     * @param array $defFormats - formats array with default action
-     * @param array $editFormats - editable formats array
-     * @param bool $sameTab - open in same tab
-     * @param array $limitGroups - list of groups
      *
      * @return array
      */
-    public function SaveSettings($documentserver,
+    public function SaveAddress($documentserver,
                                     $documentserverInternal,
                                     $storageUrl,
-                                    $secret,
-                                    $defFormats,
-                                    $editFormats,
-                                    $sameTab,
-                                    $limitGroups
+                                    $secret
                                     ) {
         $this->config->SetDocumentServerUrl($documentserver);
         $this->config->SetDocumentServerInternalUrl($documentserverInternal);
@@ -162,12 +159,7 @@ class SettingsController extends Controller {
             $this->config->SetSettingsError($error);
         }
 
-        $this->config->SetDefaultFormats($defFormats);
-        $this->config->SetEditableFormats($editFormats);
-        $this->config->SetSameTab($sameTab);
-        $this->config->SetLimitGroups($limitGroups);
-
-        if ($this->checkEncryptionModule()) {
+        if ($this->config->checkEncryptionModule() === true) {
             $this->logger->info("SaveSettings when encryption is enabled", array("app" => $this->appName));
         }
 
@@ -177,6 +169,46 @@ class SettingsController extends Controller {
             "storageUrl" => $this->config->GetStorageUrl(),
             "secret" => $this->config->GetDocumentServerSecret(),
             "error" => $error
+            ];
+    }
+
+    /**
+     * Save common settings
+     *
+     * @param array $defFormats - formats array with default action
+     * @param array $editFormats - editable formats array
+     * @param bool $sameTab - open in the same tab
+     * @param array $limitGroups - list of groups
+     * @param bool $chat - display chat
+     * @param bool $compactHeader - display compact header
+     * @param bool $feedback - display feedback
+     * @param bool $help - display help
+     * @param bool $toolbarNoTabs - display toolbar tab
+     *
+     * @return array
+     */
+    public function SaveCommon($defFormats,
+                                    $editFormats,
+                                    $sameTab,
+                                    $limitGroups,
+                                    $chat,
+                                    $compactHeader,
+                                    $feedback,
+                                    $help,
+                                    $toolbarNoTabs
+                                    ) {
+
+        $this->config->SetDefaultFormats($defFormats);
+        $this->config->SetEditableFormats($editFormats);
+        $this->config->SetSameTab($sameTab);
+        $this->config->SetLimitGroups($limitGroups);
+        $this->config->SetCustomizationChat($chat);
+        $this->config->SetCustomizationCompactHeader($compactHeader);
+        $this->config->SetCustomizationFeedback($feedback);
+        $this->config->SetCustomizationHelp($help);
+        $this->config->SetCustomizationToolbarNoTabs($toolbarNoTabs);
+
+        return [
             ];
     }
 
@@ -275,27 +307,5 @@ class SettingsController extends Controller {
         }
 
         return "";
-    }
-
-    /**
-     * Checking encryption enabled
-     *
-     * @return bool
-    */
-    private function checkEncryptionModule() {
-        if (!App::isEnabled("encryption")) {
-            return false;
-        }
-        if (!\OC::$server->getEncryptionManager()->isEnabled()) {
-            return false;
-        }
-
-        $crypt = new \OCA\Encryption\Crypto\Crypt(\OC::$server->getLogger(), \OC::$server->getUserSession(), \OC::$server->getConfig(), \OC::$server->getL10N("encryption"));
-        $util = new \OCA\Encryption\Util(new \OC\Files\View(), $crypt, \OC::$server->getLogger(), \OC::$server->getUserSession(), \OC::$server->getConfig(), \OC::$server->getUserManager());
-        if ($util->isMasterKeyEnabled()) {
-            return false;
-        }
-
-        return true;
     }
 }

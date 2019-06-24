@@ -37,11 +37,11 @@
         }
 
         var advToogle = function () {
-            $("#onlyofficeSecretPanel, #onlyofficeSaveBreak").toggleClass("onlyoffice-hide");
+            $("#onlyofficeSecretPanel").toggleClass("onlyoffice-hide");
+            $("#onlyofficeAdv .icon").toggleClass("icon-triangle-s icon-triangle-n");
         };
 
         if ($("#onlyofficeInternalUrl").val().length
-            || $("#onlyofficeSecret").val().length
             || $("#onlyofficeStorageUrl").val().length) {
             advToogle();
         }
@@ -64,7 +64,7 @@
         groupListToggle();
 
 
-        $("#onlyofficeSave").click(function () {
+        $("#onlyofficeAddrSave").click(function () {
             $(".section-onlyoffice").addClass("icon-loading");
             var onlyofficeUrl = $("#onlyofficeUrl").val().trim();
 
@@ -75,6 +75,41 @@
             var onlyofficeInternalUrl = ($("#onlyofficeInternalUrl:visible").val() || "").trim();
             var onlyofficeStorageUrl = ($("#onlyofficeStorageUrl:visible").val() || "").trim();
             var onlyofficeSecret = $("#onlyofficeSecret:visible").val() || "";
+
+            $.ajax({
+                method: "PUT",
+                url: OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/settings/address"),
+                data: {
+                    documentserver: onlyofficeUrl,
+                    documentserverInternal: onlyofficeInternalUrl,
+                    storageUrl: onlyofficeStorageUrl,
+                    secret: onlyofficeSecret
+                },
+                success: function onSuccess(response) {
+                    $(".section-onlyoffice").removeClass("icon-loading");
+                    if (response && response.documentserver != null) {
+                        $("#onlyofficeUrl").val(response.documentserver);
+                        $("#onlyofficeInternalUrl").val(response.documentserverInternal);
+                        $("#onlyofficeStorageUrl").val(response.storageUrl);
+                        $("#onlyofficeSecret").val(response.secret);
+
+                        $(".section-onlyoffice-2").toggleClass("onlyoffice-hide", !response.documentserver.length || !!response.error.length);
+
+                        var message =
+                            response.error
+                                ? (t(OCA.Onlyoffice.AppName, "Error when trying to connect") + " (" + response.error + ")")
+                                : t(OCA.Onlyoffice.AppName, "Settings have been successfully updated");
+                        OC.Notification.show(message, {
+                            type: response.error ? "error" : null,
+                            timeout: 3
+                        });
+                    }
+                }
+            });
+        });
+
+        $("#onlyofficeSave").click(function () {
+            $(".section-onlyoffice").addClass("icon-loading");
 
             var defFormats = {};
             $("input[id^=\"onlyofficeDefFormat\"]").each(function() {
@@ -91,33 +126,31 @@
             var limitGroupsString = $("#onlyofficeGroups").prop("checked") ? $("#onlyofficeLimitGroups").val() : "";
             var limitGroups = limitGroupsString ? limitGroupsString.split("|") : [];
 
+            var chat = $("#onlyofficeChat").is(":checked");
+            var compactHeader = $("#onlyofficeCompactHeader").is(":checked");
+            var feedback = $("#onlyofficeFeedback").is(":checked");
+            var help = $("#onlyofficeHelp").is(":checked");
+            var toolbarNoTabs = !$("#onlyofficeToolbarNoTabs").is(":checked");
+
             $.ajax({
                 method: "PUT",
-                url: OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/settings"),
+                url: OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/settings/common"),
                 data: {
-                    documentserver: onlyofficeUrl,
-                    documentserverInternal: onlyofficeInternalUrl,
-                    storageUrl: onlyofficeStorageUrl,
-                    secret: onlyofficeSecret,
                     defFormats: defFormats,
                     editFormats: editFormats,
                     sameTab: sameTab,
-                    limitGroups: limitGroups
+                    limitGroups: limitGroups,
+                    chat: chat,
+                    compactHeader: compactHeader,
+                    feedback: feedback,
+                    help: help,
+                    toolbarNoTabs: toolbarNoTabs
                 },
                 success: function onSuccess(response) {
                     $(".section-onlyoffice").removeClass("icon-loading");
-                    if (response && response.documentserver != null) {
-                        $("#onlyofficeUrl").val(response.documentserver);
-                        $("#onlyofficeInternalUrl").val(response.documentserverInternal);
-                        $("#onlyofficeStorageUrl").val(response.storageUrl);
-                        $("#onlyofficeSecret").val(response.secret);
-
-                        var message =
-                            response.error
-                                ? (t(OCA.Onlyoffice.AppName, "Error when trying to connect") + " (" + response.error + ")")
-                                : t(OCA.Onlyoffice.AppName, "Settings have been successfully updated");
+                    if (response) {
+                        var message = t(OCA.Onlyoffice.AppName, "Settings have been successfully updated");
                         OC.Notification.show(message, {
-                            type: "error",
                             timeout: 3
                         });
                     }
@@ -128,7 +161,7 @@
         $(".section-onlyoffice input").keypress(function (e) {
             var code = e.keyCode || e.which;
             if (code === 13) {
-                $("#onlyofficeSave").click();
+                $("#onlyofficeAddrSave").click();
             }
         });
     });

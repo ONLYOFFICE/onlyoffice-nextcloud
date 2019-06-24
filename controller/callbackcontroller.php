@@ -363,7 +363,7 @@ class CallbackController extends Controller {
 
         $trackerStatus = $this->_trackerStatus[$status];
 
-        $error = 1;
+        $result = 1;
         switch ($trackerStatus) {
             case "MustSave":
             case "Corrupted":
@@ -373,26 +373,34 @@ class CallbackController extends Controller {
                 }
 
                 try {
+                    $ownerId = $hashData->ownerId;
+                    $token = isset($hashData->token) ? $hashData->token : NULL;
+                    if (empty($ownerId) && empty($token)) {
+                        $this->logger->error("Track without owner: " . $fileId . " status " . $trackerStatus, array("app" => $this->appName));
+                        return new JSONResponse(["message" => $this->trans->t("File owner is empty")], Http::STATUS_BAD_REQUEST);
+                    }
+
                     $userId = $users[0];
                     $user = $this->userManager->get($userId);
                     if (!empty($user)) {
-                        \OC_Util::tearDownFS();
-                        \OC_Util::setupFS($userId);
-
                         $this->userSession->setUser($user);
                     } else {
-                        $ownerId = $hashData->ownerId;
-
-                        \OC_Util::tearDownFS();
-                        if (!empty($ownerId)) {
-                            \OC_Util::setupFS($ownerId);
-                        }
+                        $this->logger->debug("Track by anonymous " . $userId, array("app" => $this->appName));
                     }
 
-                    $token = isset($hashData->token) ? $hashData->token : NULL;
-                    list ($file, $error) = empty($token) ? $this->getFile($userId, $fileId) : $this->getFileByToken($fileId, $token);
+                    if ($this->config->checkEncryptionModule() === "master") {
+                        \OC_User::setIncognitoMode(true);
+                    }
+
+                    \OC_Util::tearDownFS();
+                    if (!empty($ownerId)) {
+                        \OC_Util::setupFS($ownerId);
+                    }
+
+                    list ($file, $error) = !empty($ownerId) ? $this->getFile($ownerId, $fileId) : $this->getFileByToken($fileId, $token);
 
                     if (isset($error)) {
+                        $this->logger->error("track error" . $fileId ." " . $error,  array("app" => $this->appName));
                         return $error;
                     }
 
@@ -430,8 +438,10 @@ class CallbackController extends Controller {
                     }
 
                     $newData = $documentService->Request($url);
+
+                    $this->logger->debug("Track put content " . $file->getPath(), array("app" => $this->appName));
                     $file->putContent($newData);
-                    $error = 0;
+                    $result = 0;
                 } catch (\Exception $e) {
                     $this->logger->error("Track " . $trackerStatus . " error: " . $e->getMessage(), array("app" => $this->appName));
                 }
@@ -439,13 +449,13 @@ class CallbackController extends Controller {
 
             case "Editing":
             case "Closed":
-                $error = 0;
+                $result = 0;
                 break;
         }
 
         $this->logger->debug("Track: " . $fileId . " status " . $status . " result " . $error, array("app" => $this->appName));
 
-        return new JSONResponse(["error" => $error], Http::STATUS_OK);
+        return new JSONResponse(["error" => $result], Http::STATUS_OK);
     }
 
 

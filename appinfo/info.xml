@@ -1,13 +1,12 @@
 ﻿<?xml version="1.0"?>
 <info>
     <id>onlyoffice</id>
-    <ocsid>174798</ocsid>
     <name>ONLYOFFICE</name>
     <summary>ONLYOFFICE connector</summary>
     <description>ONLYOFFICE connector enables you to edit Office documents within ONLYOFFICE from the familiar web interface. This will create a new Open in ONLYOFFICE action within the document library for Office documents. This allows multiple users to collaborate in real time and to save back those changes to your file storage.</description>
     <licence>agpl</licence>
     <author mail="dev@onlyoffice.com" homepage="https://www.onlyoffice.com/">Ascensio System SIA</author>
-    <version>2.1.10</version>
+    <version>2.3.0</version>
     <namespace>Onlyoffice</namespace>
     <types>
         <filesystem/>
@@ -22,6 +21,7 @@
     <category>office</category>
     <category>tools</category>
     <website>https://www.onlyoffice.com</website>
+    <discussion>https://dev.onlyoffice.org/</discussion>
     <bugs>https://github.com/ONLYOFFICE/onlyoffice-nextcloud/issues</bugs>
     <repository type="git">https://github.com/ONLYOFFICE/onlyoffice-nextcloud.git</repository>
     <screenshot small-thumbnail="https://raw.githubusercontent.com/ONLYOFFICE/onlyoffice-nextcloud/master/screenshots/main_small.png">https://raw.githubusercontent.com/ONLYOFFICE/onlyoffice-nextcloud/master/screenshots/main.png</screenshot>

@@ -118,22 +118,6 @@ class DocumentService {
      * @return array
      */
     function SendRequestToConvertService($document_uri, $from_extension, $to_extension, $document_revision_id, $is_async) {
-        if (empty($from_extension)) {
-            $path_parts = pathinfo($document_uri);
-            $from_extension = $path_parts["extension"];
-        }
-
-        $title = basename($document_uri);
-        if (empty($title)) {
-            $title = $document_revision_id . $from_extension;
-        }
-
-        if (empty($document_revision_id)) {
-            $document_revision_id = $document_uri;
-        }
-
-        $document_revision_id = self::GenerateRevisionId($document_revision_id);
-
         $documentServerUrl = $this->config->GetDocumentServerInternalUrl(false);
 
         if (empty($documentServerUrl)) {
@@ -142,12 +126,24 @@ class DocumentService {
 
         $urlToConverter = $documentServerUrl . "ConvertService.ashx";
 
+        if (empty($document_revision_id)) {
+            $document_revision_id = $document_uri;
+        }
+
+        $document_revision_id = self::GenerateRevisionId($document_revision_id);
+
+        if (empty($from_extension)) {
+            $from_extension = pathinfo($document_uri)["extension"];
+        } else {
+            $from_extension = trim($from_extension, ".");
+        }
+
         $data = [
             "async" => $is_async,
             "url" => $document_uri,
             "outputtype" => trim($to_extension, "."),
-            "filetype" => trim($from_extension, "."),
-            "title" => $title,
+            "filetype" => $from_extension,
+            "title" => $document_revision_id . "." . $from_extension,
             "key" => $document_revision_id
         ];
 
@@ -347,7 +343,6 @@ class DocumentService {
      *
      * @return string
      */
-
     public function Request($url, $method = "get", $opts = NULL) {
         $httpClientService = \OC::$server->getHTTPClientService();
         $client = $httpClientService->newClient();

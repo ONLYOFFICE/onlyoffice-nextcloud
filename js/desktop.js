@@ -37,7 +37,8 @@
     OCA.Onlyoffice.Desktop = true;
     $("html").addClass("AscDesktopEditor");
 
-    var domain = location.href.split(OC.generateUrl(""))[0];
+    var domain = new RegExp("^http(s)?:\/\/[^\/]+").exec(location)[0];
+    domain += + OC.getRootPath();
 
     var data = {
         displayName: oc_current_user,

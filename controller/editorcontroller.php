@@ -485,6 +485,7 @@ class EditorController extends Controller {
             "document" => [
                 "fileType" => $ext,
                 "key" => DocumentService::GenerateRevisionId($key),
+                "permissions" => [],
                 "title" => $fileName,
                 "url" => $fileUrl,
             ],
@@ -494,8 +495,9 @@ class EditorController extends Controller {
             ]
         ];
 
-        if (\OC::$server->getRequest()->isUserAgent([$this::USER_AGENT_MOBILE])) {
-            $params["type"] = "mobile";
+        $permissions_modifyFilter = $this->config->getSystemValue($this->config->_permissions_modifyFilter);
+        if (isset($permissions_modifyFilter)) {
+            $params["document"]["permissions"]["modifyFilter"] = $permissions_modifyFilter;
         }
 
         $canEdit = isset($format["edit"]) && $format["edit"];
@@ -520,6 +522,10 @@ class EditorController extends Controller {
             $params["editorConfig"]["mode"] = "view";
         }
 
+        if (\OC::$server->getRequest()->isUserAgent([$this::USER_AGENT_MOBILE])) {
+            $params["type"] = "mobile";
+        }
+
         if (!empty($userId)) {
             $params["editorConfig"]["user"] = [
                 "id" => $userId,
@@ -530,7 +536,7 @@ class EditorController extends Controller {
         $folderLink = NULL;
 
         if (!empty($token)) {
-            if (method_exists($share, getHideDownload) && $share->getHideDownload()) {
+            if (method_exists($share, "getHideDownload") && $share->getHideDownload()) {
                 $params["document"]["permissions"] = [
                     "download" => false,
                     "print" => false
@@ -575,14 +581,6 @@ class EditorController extends Controller {
         }
 
         $params = $this->setCustomization($params);
-
-        $permissions_modifyFilter = $this->config->getSystemValue($this->config->_permissions_modifyFilter);
-        if (isset($permissions_modifyFilter)) {
-            if (!array_key_exists("permissions", $params["document"])) {
-                $params["document"]["permissions"] = [];
-            }
-            $params["document"]["permissions"]["modifyFilter"] = $permissions_modifyFilter;
-        }
 
         if (!empty($this->config->GetDocumentServerSecret())) {
             $token = \Firebase\JWT\JWT::encode($params, $this->config->GetDocumentServerSecret());
@@ -776,6 +774,34 @@ class EditorController extends Controller {
      * @return array
      */
     private function setCustomization($params) {
+        //default is true
+        if ($this->config->GetCustomizationChat() === false) {
+            $params["editorConfig"]["customization"]["chat"] = false;
+        }
+
+        //default is false
+        if ($this->config->GetCustomizationCompactHeader() === true) {
+            $params["editorConfig"]["customization"]["compactHeader"] = true;
+        }
+
+        //default is false
+        if ($this->config->GetCustomizationFeedback() === true) {
+            $params["editorConfig"]["customization"]["feedback"] = true;
+        }
+
+        //default is true
+        if ($this->config->GetCustomizationHelp() === false) {
+            $params["editorConfig"]["customization"]["help"] = false;
+        }
+
+        //default is false
+        if ($this->config->GetCustomizationToolbarNoTabs() === true) {
+            $params["editorConfig"]["customization"]["toolbarNoTabs"] = true;
+        }
+
+
+        /* from system config */
+
         $customer = $this->config->getSystemValue($this->config->_customization_customer);
         if (isset($customer)) {
             $params["editorConfig"]["customization"]["customer"] = $customer;
