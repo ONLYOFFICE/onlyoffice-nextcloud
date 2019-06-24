@@ -1,5 +1,15 @@
 # Change Log
 
+## 2.3.0
+## Added
+- editor customization
+
+## Changed
+- the settings page is splitted into two sections
+- support master key encryption
+- fix getting domain for desktop
+- title in the convertation request
+
 ## 2.1.10
 ## Changed
 - compatible with Nextcloud 16

@@ -343,7 +343,6 @@ class DocumentService {
      *
      * @return string
      */
-
     public function Request($url, $method = "get", $opts = NULL) {
         $httpClientService = \OC::$server->getHTTPClientService();
         $client = $httpClientService->newClient();
