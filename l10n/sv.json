@@ -43,6 +43,15 @@
     "View details" : "Visa detaljer",
     "Save" : "Spara",
     "Mixed Active Content is not allowed. HTTPS address for Document Server is required." : "Blandat aktivt innehåll är inte tillåtet. HTTPS-adress till dokumentserver krävs.",
-    "Restrict access to editors to following groups" : "Begränsa åtkomst till följande grupper"
+    "Restrict access to editors to following groups" : "Begränsa åtkomst till följande grupper",
+    "Server settings" : "Serverinställningar",
+    "Common settings" : "Allmänna inställningar",
+    "Editor customization settings" : "Anpassningar ONLYOFFICE ",
+    "The customization section allows to customize the editor interface" : "Denna del tillåter anpassningar av redigeringsgränssnittet",
+    "Display Chat menu button" : "Visa chatt",
+    "Display the header more compact" : "Visa kompakt sidhuvud",
+    "Display Feedback & Support menu button" : "Visa Feedback & Support i menyn",
+    "Display Help menu button" : "Visa hjälp i menyn",
+    "Display toolbar tabs" : "Visa flikar i verktygsfältet"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }
