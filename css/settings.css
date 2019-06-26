@@ -30,9 +30,6 @@
     box-sizing: content-box;
     padding-top: 6px;
 }
-.onlyoffice-error {
-    color: red;
-}
 .onlyoffice-header {
     display: inline-block;
     margin-top: 16px;
