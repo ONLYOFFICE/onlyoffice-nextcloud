@@ -400,7 +400,7 @@ class CallbackController extends Controller {
                     list ($file, $error) = !empty($ownerId) ? $this->getFile($ownerId, $fileId) : $this->getFileByToken($fileId, $token);
 
                     if (isset($error)) {
-                        $this->logger->error("track error" . $fileId ." " . $error,  array("app" => $this->appName));
+                        $this->logger->error("track error" . $fileId ." " . json_encode($error->getData()),  array("app" => $this->appName));
                         return $error;
                     }
 
@@ -453,7 +453,7 @@ class CallbackController extends Controller {
                 break;
         }
 
-        $this->logger->debug("Track: " . $fileId . " status " . $status . " result " . $error, array("app" => $this->appName));
+        $this->logger->debug("Track: " . $fileId . " status " . $status . " result " . $result, array("app" => $this->appName));
 
         return new JSONResponse(["error" => $result], Http::STATUS_OK);
     }
