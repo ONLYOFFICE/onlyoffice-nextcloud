@@ -45,6 +45,15 @@ OC.L10N.register(
     "View details" : "Ver detalhes",
     "Save" : "Salvar",
     "Mixed Active Content is not allowed. HTTPS address for Document Server is required." : "Conteúdo Misto não é permitido. É necessário um endereço HTTPS para o Servidor de Documentos.",
-    "Restrict access to editors to following groups" : "Acesso apenas para os seguintes grupos"
+    "Restrict access to editors to following groups" : "Acesso apenas para os seguintes grupos",
+    "Server settings" : "Configurações do servidor",
+    "Common settings" : "Configurações comuns",
+    "Editor customization settings" : "Configurações de personalização do editor",
+    "The customization section allows to customize the editor interface" : "Seção de customização permite personalizar a interface do editor",
+    "Display Chat menu button" : "Exibir o botão do menu do bate-papo",
+    "Display the header more compact" : "Exibir o cabeçalho mais compacto",
+    "Display Feedback & Support menu button" : "Exibir o botão do menu de feedback e suporte",
+    "Display Help menu button" : "Exibir o botão do menu Ajuda",
+    "Display toolbar tabs" : "Exibir guias da barra de ferramentas"
 },
 "nplurals=2; plural=(n != 1);");
