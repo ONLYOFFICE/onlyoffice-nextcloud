@@ -31,7 +31,6 @@
     "Bad Response. Errors: " : "Неправильный ответ. Ошибки:",
     "Documentation" : "Документация",
     "ONLYOFFICE Document Service Location specifies the address of the server with the document services installed. Please change the '<documentserver>' for the server address in the below line." : "Расположение службы документов ONLYOFFICE определяет адрес сервера с установлеными службами документов. Пожалуйста, замените '<documentserver>' в поле ниже на адрес сервера.",
-    "Encryption App is enabled, the application cannot work. You can continue working with the application if you enable master key." : "Включено шифрование, приложение не может продолжить работу. Вы сможете работать с приложением, если будете использовать мастер ключ.",
     "Document Editing Service address" : "Адрес службы редактирования документов",
     "Advanced server settings" : "Дополнительные настройки сервера",
     "Document Editing Service address for internal requests from the server" : "Адрес службы редактирования документов для внутренних запросов сервера",

@@ -120,7 +120,6 @@ class SettingsController extends Controller {
             "currentServer" => $this->urlGenerator->getAbsoluteURL("/"),
             "formats" => $this->config->FormatsSetting(),
             "sameTab" => $this->config->GetSameTab(),
-            "encryption" => ($this->config->checkEncryptionModule() === true),
             "limitGroups" => $this->config->GetLimitGroups(),
             "chat" => $this->config->GetCustomizationChat(),
             "compactHeader" => $this->config->GetCustomizationCompactHeader(),
@@ -157,10 +156,6 @@ class SettingsController extends Controller {
         if (!empty($documentserver)) {
             $error = $this->checkDocServiceUrl();
             $this->config->SetSettingsError($error);
-        }
-
-        if ($this->config->checkEncryptionModule() === true) {
-            $this->logger->info("SaveSettings when encryption is enabled", array("app" => $this->appName));
         }
 
         return [

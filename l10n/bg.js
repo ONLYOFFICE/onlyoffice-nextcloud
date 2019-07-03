@@ -33,7 +33,6 @@ OC.L10N.register(
     "Bad Response. Errors: " : "Неправилен отговор. Грешки:",
     "Documentation" : "Документация",
     "ONLYOFFICE Document Service Location specifies the address of the server with the document services installed. Please change the '<documentserver>' for the server address in the below line." : "Адреса на ONLYOFFICE Document услугата определя адреса на сървъра с инсталирани услуги за документи. Моля, променете '<documentserver>' адреса на сървъра в долния ред.",
-    "Encryption App is enabled, the application cannot work. You can continue working with the application if you enable master key." : "Активирано е криптиране, приложението не може да продължи работа. Ще може да продължите работа с приложението, ако използвате Основен ключ.",
     "Document Editing Service address" : "Адрес на услугата за редактиране на документи",
     "Advanced server settings" : "Допълнителни настройки на сървъра",
     "Document Editing Service address for internal requests from the server" : "Адрес на услугата за редактиране на документи за вътрешни заявки към сървъра",
