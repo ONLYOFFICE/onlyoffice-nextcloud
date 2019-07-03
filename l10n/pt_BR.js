@@ -33,7 +33,6 @@ OC.L10N.register(
     "Bad Response. Errors: " : "Resposta ruim. Erros:",
     "Documentation" : "Documentação",
     "ONLYOFFICE Document Service Location specifies the address of the server with the document services installed. Please change the '<documentserver>' for the server address in the below line." : "O Endereço do Serviço de Edição de Documentos especifica o servidor onde o serviço de documentos está instalado.\nPor favor mude '<documentserver>' para o endereço do servidor na linha abaixo.",
-    "Encryption App is enabled, the application cannot work. You can continue working with the application if you enable master key." : "A criptografia de arquivos está ativada, este aplicativo não pode operar. Ative a chave mestre se quiser continuar trabalhando.",
     "Document Editing Service address" : "Endereço do Serviço de Edição de Documentos",
     "Advanced server settings" : "Configurações avançadas do servidor",
     "Document Editing Service address for internal requests from the server" : "Endereço do Serviço de Edição de Documentos para pedidos internos do servidor",
@@ -45,6 +44,15 @@ OC.L10N.register(
     "View details" : "Ver detalhes",
     "Save" : "Salvar",
     "Mixed Active Content is not allowed. HTTPS address for Document Server is required." : "Conteúdo Misto não é permitido. É necessário um endereço HTTPS para o Servidor de Documentos.",
-    "Restrict access to editors to following groups" : "Acesso apenas para os seguintes grupos"
+    "Restrict access to editors to following groups" : "Acesso apenas para os seguintes grupos",
+    "Server settings" : "Configurações do servidor",
+    "Common settings" : "Configurações comuns",
+    "Editor customization settings" : "Configurações de personalização do editor",
+    "The customization section allows personalizing the editor interface" : "Seção de customização permite personalizar a interface do editor",
+    "Display Chat menu button" : "Exibir o botão do menu do bate-papo",
+    "Display the header more compact" : "Exibir o cabeçalho mais compacto",
+    "Display Feedback & Support menu button" : "Exibir o botão do menu de feedback e suporte",
+    "Display Help menu button" : "Exibir o botão do menu Ajuda",
+    "Display toolbar tabs" : "Exibir guias da barra de ferramentas"
 },
 "nplurals=2; plural=(n != 1);");

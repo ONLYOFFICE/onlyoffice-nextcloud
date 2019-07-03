@@ -33,7 +33,6 @@ OC.L10N.register(
     "Bad Response. Errors: " : "Felaktigt svar. Fel:",
     "Documentation" : "Dokumentation",
     "ONLYOFFICE Document Service Location specifies the address of the server with the document services installed. Please change the '<documentserver>' for the server address in the below line." : "Dokumenttjänstens plats specificerar adressen till servern där ONLYOFFICE är installerad. Ändra '<dokumentserver>' till serverns adress i nedanstående rad.",
-    "Encryption App is enabled, the application cannot work. You can continue working with the application if you enable master key." : "Krypteringsapp är aktiverad, programmet kan inte fungera. Du kan fortsätta arbeta med programmet om du aktiverar huvudnyckeln.",
     "Document Editing Service address" : "Adress till dokumentredigeringstjänsten",
     "Advanced server settings" : "Avancerade serverinställningar",
     "Document Editing Service address for internal requests from the server" : "Adress till dokumentredigeringstjänsten för interna förfragningar från servern",
@@ -45,6 +44,15 @@ OC.L10N.register(
     "View details" : "Visa detaljer",
     "Save" : "Spara",
     "Mixed Active Content is not allowed. HTTPS address for Document Server is required." : "Blandat aktivt innehåll är inte tillåtet. HTTPS-adress till dokumentserver krävs.",
-    "Restrict access to editors to following groups" : "Begränsa åtkomst till följande grupper"
+    "Restrict access to editors to following groups" : "Begränsa åtkomst till följande grupper",
+    "Server settings" : "Serverinställningar",
+    "Common settings" : "Allmänna inställningar",
+    "Editor customization settings" : "Anpassningar ONLYOFFICE ",
+    "The customization section allows personalizing the editor interface" : "Denna del tillåter anpassningar av redigeringsgränssnittet",
+    "Display Chat menu button" : "Visa chatt",
+    "Display the header more compact" : "Visa kompakt sidhuvud",
+    "Display Feedback & Support menu button" : "Visa Feedback & Support i menyn",
+    "Display Help menu button" : "Visa hjälp i menyn",
+    "Display toolbar tabs" : "Visa flikar i verktygsfältet"
 },
 "nplurals=2; plural=(n != 1);");

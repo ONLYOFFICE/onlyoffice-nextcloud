@@ -38,7 +38,7 @@
     $("html").addClass("AscDesktopEditor");
 
     var domain = new RegExp("^http(s)?:\/\/[^\/]+").exec(location)[0];
-    domain += + OC.getRootPath();
+    domain += OC.getRootPath();
 
     var data = {
         displayName: oc_current_user,

@@ -1,5 +1,9 @@
 # Change Log
 
+## 2.4.0
+## Added
+- compatibility with encryption
+
 ## 2.3.0
 ## Added
 - editor customization

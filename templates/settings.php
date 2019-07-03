@@ -38,14 +38,6 @@
 
     <h3><?php p($l->t("Server settings")) ?></h3>
 
-    <?php if ($_["encryption"]) { ?>
-    <p class="onlyoffice-error">
-        <?php p($l->t("Encryption App is enabled, the application cannot work. You can continue working with the application if you enable master key.")) ?>
-        <a target="_blank" class="icon-info svg" title="" href="https://api.onlyoffice.com/editors/nextcloud#masterKey" data-original-title="encryption:enable-master-key"></a>
-    </p>
-    <br />
-    <?php } ?>
-
     <p class="settings-hint"><?php p($l->t("ONLYOFFICE Document Service Location specifies the address of the server with the document services installed. Please change the '<documentserver>' for the server address in the below line.")) ?></p>
 
     <p><?php p($l->t("Document Editing Service address")) ?></p>
@@ -128,7 +120,7 @@
         <a target="_blank" class="icon-info svg" title="" href="https://api.onlyoffice.com/editors/config/editor/customization" data-original-title="<?php p($l->t("View details")) ?>"></a>
     </h3>
 
-    <p><?php p($l->t("The customization section allows to customize the editor interface")) ?></p>
+    <p><?php p($l->t("The customization section allows personalizing the editor interface")) ?></p>
 
     <p>
         <input type="checkbox" class="checkbox" id="onlyofficeChat"
