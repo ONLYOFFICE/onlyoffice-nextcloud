@@ -49,7 +49,7 @@ OC.L10N.register(
     "Server settings" : "Ajustes de servidor",
     "Common settings" : "Ajustes comunes",
     "Editor customization settings" : "Ajustes del editor",
-    "The customization section allows to customize the editor interface" : "La sección de personalización permite customizar la interfaz del editor",
+    "The customization section allows personalizing the editor interface" : "La sección de personalización permite customizar la interfaz del editor",
     "Display Chat menu button" : "Mostrar el botón de Chat",
     "Display the header more compact" : "Mostrar el encabezado más compacto",
     "Display Feedback & Support menu button" : "Mostrar el botón de Feedback y Soporte",

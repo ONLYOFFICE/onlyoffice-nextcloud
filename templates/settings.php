@@ -128,7 +128,7 @@
         <a target="_blank" class="icon-info svg" title="" href="https://api.onlyoffice.com/editors/config/editor/customization" data-original-title="<?php p($l->t("View details")) ?>"></a>
     </h3>
 
-    <p><?php p($l->t("The customization section allows to customize the editor interface")) ?></p>
+    <p><?php p($l->t("The customization section allows personalizing the editor interface")) ?></p>
 
     <p>
         <input type="checkbox" class="checkbox" id="onlyofficeChat"

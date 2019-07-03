@@ -49,7 +49,7 @@ OC.L10N.register(
     "Server settings" : "Настройки сервера",
     "Common settings" : "Общие настройки",
     "Editor customization settings" : "Настройка редактора",
-    "The customization section allows to customize the editor interface" : "Раздел настройки позволяет изменить интерфейс редактора",
+    "The customization section allows personalizing the editor interface" : "Раздел настройки позволяет изменить интерфейс редактора",
     "Display Chat menu button" : "Отображать кнопку чата",
     "Display the header more compact" : "Отображать заголовок компактным",
     "Display Feedback & Support menu button" : "Отображать кнопку Обратной связи и поддержки",

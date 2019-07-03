@@ -49,7 +49,7 @@ OC.L10N.register(
     "Server settings" : "Serverinställningar",
     "Common settings" : "Allmänna inställningar",
     "Editor customization settings" : "Anpassningar ONLYOFFICE ",
-    "The customization section allows to customize the editor interface" : "Denna del tillåter anpassningar av redigeringsgränssnittet",
+    "The customization section allows personalizing the editor interface" : "Denna del tillåter anpassningar av redigeringsgränssnittet",
     "Display Chat menu button" : "Visa chatt",
     "Display the header more compact" : "Visa kompakt sidhuvud",
     "Display Feedback & Support menu button" : "Visa Feedback & Support i menyn",
