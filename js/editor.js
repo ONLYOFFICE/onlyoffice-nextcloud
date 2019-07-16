@@ -92,7 +92,7 @@
                                 docIsChanged = event.data;
                             };
 
-                            if (event.data) {
+                            if (event === false || event.data) {
                                 titleChange();
                             } else {
                                 docIsChangedTimeout = setTimeout(titleChange, 500);
