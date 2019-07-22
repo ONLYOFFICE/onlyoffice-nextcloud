@@ -57,6 +57,9 @@ use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\Crypt;
 use OCA\Onlyoffice\DocumentService;
 
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\GenericEvent;
+
 /**
  * Controller with the main functions
  */
@@ -125,6 +128,13 @@ class EditorController extends Controller {
      */
     private $session;
 
+	/**
+	 * EventDispatcherInterface
+	 *
+	 *@var EventDispatcherInterface
+	 */
+	private $dispatcher;
+
     /**
      * Mobile regex from https://github.com/ONLYOFFICE/CommunityServer/blob/v9.1.1/web/studio/ASC.Web.Studio/web.appsettings.config#L35
      */
@@ -153,7 +163,8 @@ class EditorController extends Controller {
                                     AppConfig $config,
                                     Crypt $crypt,
                                     IManager $shareManager,
-                                    ISession $session
+                                    ISession $session,
+									EventDispatcherInterface $dispatcher
                                     ) {
         parent::__construct($AppName, $request);
 
@@ -166,6 +177,7 @@ class EditorController extends Controller {
         $this->crypt = $crypt;
         $this->shareManager = $shareManager;
         $this->session = $session;
+		$this->dispatcher = $dispatcher;
     }
 
     /**
@@ -503,6 +515,13 @@ class EditorController extends Controller {
         $canEdit = isset($format["edit"]) && $format["edit"];
         $editable = $file->isUpdateable()
                     && (empty($token) || ($share->getPermissions() & Constants::PERMISSION_UPDATE) === Constants::PERMISSION_UPDATE);
+
+		$event = new GenericEvent($fileId, []);
+		$this->dispatcher->dispatch(self::class . '::getEditable', $event);
+		if ($event->hasArgument('editable')) {
+			$editable = $event->getArgument('editable');
+		}
+
         if ($editable && $canEdit) {
             $ownerId = NULL;
             $owner = $file->getOwner();
@@ -531,6 +550,16 @@ class EditorController extends Controller {
                 "id" => $userId,
                 "name" => $user->getDisplayName()
             ];
+        }
+        else {
+			$event = new GenericEvent($fileId, []);
+			$this->dispatcher->dispatch(self::class . '::getName', $event);
+			if ($event->hasArgument('name')) {
+				$name = $event->getArgument('name');
+            	$params["editorConfig"]["user"] = [
+		            "name" => $name
+		        ];
+			}
         }
 
         $folderLink = NULL;
