@@ -566,6 +566,52 @@ class AppConfig {
     }
 
     /**
+     * Get watermark settings
+     *
+     * @return bool|array
+     */
+    public function GetWatermarkSettings() {
+        $watermarkAppNamespace = "files";
+        if ($this->config->getAppValue($watermarkAppNamespace, "watermark_enabled", "no") === "no") {
+            return false;
+        }
+
+        $result = [
+            "text" => $this->config->getAppValue($watermarkAppNamespace, "watermark_text", "{userId}"),
+        ];
+
+        $watermarkLabels = [
+            "allGroups",
+            "allTags",
+            "linkAll",
+            "linkRead",
+            "linkSecure",
+            "linkTags",
+            "shareAll",
+            "shareRead",
+        ];
+
+        $trueResult = array("on", "yes", "true");
+        foreach ($watermarkLabels as $key) {
+            $value = $this->config->getAppValue($watermarkAppNamespace, "watermark_" . $key, "no");
+            $result[$key] = in_array($value, $trueResult);
+        }
+
+        $watermarkLists = [
+            "allGroupsList",
+            "allTagsList",
+            "linkTagsList",
+        ];
+
+        foreach ($watermarkLists as $key) {
+            $value = $this->config->getAppValue($watermarkAppNamespace, "watermark_" . $key, []);
+            $result[$key] = $value !== "" ? explode(",", $value) : [];
+        }
+
+        return $result;
+    }
+
+    /**
      * Save the list of groups
      *
      * @param array $groups - the list of groups
