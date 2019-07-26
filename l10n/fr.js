@@ -55,6 +55,7 @@ OC.L10N.register(
     "Display Help menu button" : "Afficher le bouton du menu 'Aide'",
     "Display toolbar tabs" : "Afficher les onglets de la barre d'outils",
     "Save as" : "Enregistrer sous",
-    "File saved" : "Le fichier a été enregistré"
+    "File saved" : "Le fichier a été enregistré",
+    "Insert image" : "Insérer une image"
 },
 "nplurals=2; plural=(n != 1);");

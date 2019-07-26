@@ -55,6 +55,7 @@ OC.L10N.register(
     "Display Help menu button" : "Hilfetaste anzeigen",
     "Display toolbar tabs" : "Symbolleiste-Registerkarten anzeigen",
     "Save as" : "Speichern als",
-    "File saved" : "Datei wurde gespeichert"
+    "File saved" : "Datei wurde gespeichert",
+    "Insert image" : "Bild einfügen"
 },
 "nplurals=2; plural=(n != 1);");

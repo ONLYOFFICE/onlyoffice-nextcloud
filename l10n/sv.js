@@ -55,6 +55,7 @@ OC.L10N.register(
     "Display Help menu button" : "Visa hjälp i menyn",
     "Display toolbar tabs" : "Visa flikar i verktygsfältet",
     "Save as" : "Spara som",
-    "File saved" : "Filen har sparats"
+    "File saved" : "Filen har sparats",
+    "Insert image" : "Infoga bild"
 },
 "nplurals=2; plural=(n != 1);");

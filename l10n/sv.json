@@ -53,6 +53,7 @@
     "Display Help menu button" : "Visa hjälp i menyn",
     "Display toolbar tabs" : "Visa flikar i verktygsfältet",
     "Save as" : "Spara som",
-    "File saved" : "Filen har sparats"
+    "File saved" : "Filen har sparats",
+    "Insert image" : "Infoga bild"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

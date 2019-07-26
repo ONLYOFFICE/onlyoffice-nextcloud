@@ -55,6 +55,7 @@ OC.L10N.register(
     "Display Help menu button" : "Отображать кнопку справки",
     "Display toolbar tabs" : "Отображать вкладки панели инструментов",
     "Save as" : "Сохранить как",
-    "File saved" : "Файл сохранён"
+    "File saved" : "Файл сохранён",
+    "Insert image" : "Вставить изображение"
 },
 "nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);");

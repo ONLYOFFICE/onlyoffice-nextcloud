@@ -423,6 +423,54 @@ class EditorController extends Controller {
     }
 
     /**
+     * Get presigned url to file
+     *
+     * @param string $filePath - file path
+     *
+     * @return array
+     *
+     * @NoAdminRequired
+     */
+    public function url($filePath) {
+        $this->logger->debug("Save: " . $name, array("app" => $this->appName));
+
+        if (!$this->config->isUserAllowedToUse()) {
+            return ["error" => $this->trans->t("Not permitted")];
+        }
+
+        $userId = $this->userSession->getUser()->getUID();
+        $userFolder = $this->root->getUserFolder($userId);
+
+        $file = $userFolder->get($filePath);
+
+        if ($file === NULL) {
+            $this->logger->error("File for generate presigned url was not found: " . $dir, array("app" => $this->appName));
+            return ["error" => $this->trans->t("File not found")];
+        }
+        if (!$file->isReadable()) {
+            $this->logger->error("Folder for saving file without permission: " . $dir, array("app" => $this->appName));
+            return ["error" => $this->trans->t("You do not have enough permissions to view the file")];
+        }
+
+        $fileName = $file->getName();
+        $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+        $fileId = $file->getId();
+        $fileUrl = $this->getUrl($fileId);
+
+        $result = [
+            "fileType" => $ext,
+            "url" => $fileUrl
+        ];
+
+        if (!empty($this->config->GetDocumentServerSecret())) {
+            $token = \Firebase\JWT\JWT::encode($result, $this->config->GetDocumentServerSecret());
+            $result["token"] = $token;
+        }
+
+        return $result;
+    }
+
+    /**
      * Print editor section
      *
      * @param integer $fileId - file identifier

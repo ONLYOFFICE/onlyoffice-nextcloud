@@ -107,9 +107,10 @@
 
                     if (OC.currentUser) {
                         config.events.onRequestSaveAs = OCA.Onlyoffice.onRequestSaveAs;
+                        config.events.onRequestInsertImage = OCA.Onlyoffice.onRequestInsertImage;
                     }
 
-                    var docEditor = new DocsAPI.DocEditor("iframeEditor", config);
+                    OCA.Onlyoffice.docEditor = new DocsAPI.DocEditor("iframeEditor", config);
 
                     if (config.type === "mobile" && $("#app > iframe").css("position") === "fixed") {
                         $("#app > iframe").css("height", "calc(100% - 50px)");
@@ -148,6 +149,36 @@
         };
 
         OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Save as"), saveAs, false, "httpd/unix-directory");
+    };
+
+    OCA.Onlyoffice.onRequestInsertImage = function() {
+
+        var insertImage = function(filePath) {
+            $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/url?filePath={filePath}",
+                {
+                    filePath: filePath
+                }),
+                function onSuccess(response) {
+                    if (response.error) {
+                        OC.Notification.show(response.error, {
+                            type: "error",
+                            timeout: 3
+                        });
+                        return;
+                    }
+
+                    OCA.Onlyoffice.docEditor.insertImage(response);
+                });
+        };
+
+        var imageMimes = [
+            "image/bmp", "image/x-bmp", "image/x-bitmap", "application/bmp",
+            "image/gif",
+            "image/jpeg", "image/jpg", "application/jpg", "application/x-jpg",
+            "image/png", "image/x-png", "application/png", "application/x-png"
+        ];
+
+        OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Insert image"), insertImage, false, imageMimes);
     };
 
     $(document).ready(OCA.Onlyoffice.InitEditor);
