@@ -327,6 +327,33 @@ class AppConfig {
     }
 
     /**
+     * Replace domain in document server url with internal address from configuration
+     * 
+     * @param string $url - document server url
+     * 
+     * @return string
+     */
+    public function ReplaceDocumentServerUrlToInternal($url) {
+        $documentServerUrl = $this->GetDocumentServerInternalUrl(true);
+        if (!empty($documentServerUrl)) {
+            $from = $this->GetDocumentServerUrl();
+
+            if (!preg_match("/^https?:\/\//i", $from)) {
+                $parsedUrl = parse_url($url);
+                $from = $parsedUrl["scheme"] . "://" . $parsedUrl["host"] . (array_key_exists("port", $parsedUrl) ? (":" . $parsedUrl["port"]) : "") . $from;
+            }
+
+            if ($from !== $documentServerUrl)
+            {
+                $this->logger->debug("Replace in track from " . $from . " to " . $documentServerUrl, array("app" => $this->appName));
+                $url = str_replace($from, $documentServerUrl, $url);
+            }
+        }
+
+        return $url;
+    }
+
+    /**
      * Save the Nextcloud address available from document server to the application configuration
      *
      * @param string $documentServer - document service address

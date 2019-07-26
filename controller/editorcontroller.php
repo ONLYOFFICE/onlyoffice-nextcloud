@@ -397,7 +397,8 @@ class EditorController extends Controller {
             return ["error" => $this->trans->t("You don't have enough permission to create")];
         }
 
-        //todo: replace url to internal
+        $url = $this->config->ReplaceDocumentServerUrlToInternal($url);
+
         try {
             $documentService = new DocumentService($this->trans, $this->config);
             $newData = $documentService->Request($url);
