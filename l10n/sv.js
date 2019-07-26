@@ -53,6 +53,8 @@ OC.L10N.register(
     "Display the header more compact" : "Visa kompakt sidhuvud",
     "Display Feedback & Support menu button" : "Visa Feedback & Support i menyn",
     "Display Help menu button" : "Visa hjälp i menyn",
-    "Display toolbar tabs" : "Visa flikar i verktygsfältet"
+    "Display toolbar tabs" : "Visa flikar i verktygsfältet",
+    "Save as" : "Spara som",
+    "File saved" : "Filen har sparats"
 },
 "nplurals=2; plural=(n != 1);");

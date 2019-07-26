@@ -366,6 +366,62 @@ class EditorController extends Controller {
     }
 
     /**
+     * Save file to folder
+     *
+     * @param string $name - file name
+     * @param string $dir - folder path
+     * @param string $url - file url
+     *
+     * @return array
+     *
+     * @NoAdminRequired
+     */
+    public function save($name, $dir, $url) {
+        $this->logger->debug("Save: " . $name, array("app" => $this->appName));
+
+        if (!$this->config->isUserAllowedToUse()) {
+            return ["error" => $this->trans->t("Not permitted")];
+        }
+
+        $userId = $this->userSession->getUser()->getUID();
+        $userFolder = $this->root->getUserFolder($userId);
+
+        $folder = $userFolder->get($dir);
+
+        if ($folder === NULL) {
+            $this->logger->error("Folder for saving file was not found: " . $dir, array("app" => $this->appName));
+            return ["error" => $this->trans->t("The required folder was not found")];
+        }
+        if (!$folder->isCreatable()) {
+            $this->logger->error("Folder for saving file without permission: " . $dir, array("app" => $this->appName));
+            return ["error" => $this->trans->t("You don't have enough permission to create")];
+        }
+
+        //todo: replace url to internal
+        try {
+            $documentService = new DocumentService($this->trans, $this->config);
+            $newData = $documentService->Request($url);
+        } catch (\Exception $e) {
+            $this->logger->error("Failed to download file for saving: " . $url . " " . $e->getMessage(), array("app" => $this->appName));
+            return ["error" => $this->trans->t("Download failed")];
+        }
+
+        try {
+            $file = $folder->newFile($name);
+
+            $file->putContent($newData);
+        } catch (NotPermittedException $e) {
+            $this->logger->error("Can't save file: " . $name, array("app" => $this->appName));
+            return ["error" => $this->trans->t("Can't create file")];
+        }
+
+        $fileInfo = $file->getFileInfo();
+
+        $result = Helper::formatFileInfo($fileInfo);
+        return $result;
+    }
+
+    /**
      * Print editor section
      *
      * @param integer $fileId - file identifier

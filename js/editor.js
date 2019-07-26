@@ -105,14 +105,49 @@
                         "onDocumentStateChange": setPageTitle,
                     };
 
+                    if (OC.currentUser) {
+                        config.events.onRequestSaveAs = OCA.Onlyoffice.onRequestSaveAs;
+                    }
+
                     var docEditor = new DocsAPI.DocEditor("iframeEditor", config);
 
                     if (config.type === "mobile" && $("#app > iframe").css("position") === "fixed") {
-                        $("#app > iframe").css("height", "calc(100% - 50px)")
+                        $("#app > iframe").css("height", "calc(100% - 50px)");
                     }
                 }
             }
         });
+    };
+
+    OCA.Onlyoffice.onRequestSaveAs = function(event) {
+        var title = event.data.title;
+        var url = event.data.url;
+
+        var saveAs = function(fileDir) {
+            var saveData = {
+                name: title,
+                dir: fileDir,
+                url: url
+            };
+
+            $.post(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/save"),
+                saveData,
+                function onSuccess(response) {
+                    if (response.error) {
+                        OC.Notification.show(response.error, {
+                            type: "error",
+                            timeout: 3
+                        });
+                        return;
+                    }
+
+                    OC.Notification.show(t(OCA.Onlyoffice.AppName, "File saved"), {
+                        timeout: 3
+                    });
+                });
+        };
+
+        OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Save as"), saveAs, false, "httpd/unix-directory");
     };
 
     $(document).ready(OCA.Onlyoffice.InitEditor);

@@ -53,6 +53,8 @@ OC.L10N.register(
     "Display the header more compact" : "Отображать заголовок компактным",
     "Display Feedback & Support menu button" : "Отображать кнопку Обратной связи и поддержки",
     "Display Help menu button" : "Отображать кнопку справки",
-    "Display toolbar tabs" : "Отображать вкладки панели инструментов"
+    "Display toolbar tabs" : "Отображать вкладки панели инструментов",
+    "Save as" : "Сохранить как",
+    "File saved" : "Файл сохранён"
 },
 "nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);");
