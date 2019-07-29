@@ -143,7 +143,7 @@
                         return;
                     }
 
-                    OC.Notification.show(t(OCA.Onlyoffice.AppName, "File saved"), {
+                    OC.Notification.show(t(OCA.Onlyoffice.AppName, "File saved") + " (" + response.name + ")", {
                         timeout: 3
                     });
                 });
