@@ -56,6 +56,7 @@ OC.L10N.register(
     "Display toolbar tabs" : "Afficher les onglets de la barre d'outils",
     "Save as" : "Enregistrer sous",
     "File saved" : "Le fichier a été enregistré",
-    "Insert image" : "Insérer une image"
+    "Insert image" : "Insérer une image",
+    "Select recipients" : "Sélectionner les destinataires"
 },
 "nplurals=2; plural=(n != 1);");

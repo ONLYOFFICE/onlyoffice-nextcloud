@@ -56,6 +56,7 @@ OC.L10N.register(
     "Display toolbar tabs" : "Symbolleiste-Registerkarten anzeigen",
     "Save as" : "Speichern als",
     "File saved" : "Datei wurde gespeichert",
-    "Insert image" : "Bild einfügen"
+    "Insert image" : "Bild einfügen",
+    "Select recipients" : "Empfänger auswählen"
 },
 "nplurals=2; plural=(n != 1);");
