@@ -503,6 +503,7 @@ class EditorController extends Controller {
         $canEdit = isset($format["edit"]) && $format["edit"];
         $editable = $file->isUpdateable()
                     && (empty($token) || ($share->getPermissions() & Constants::PERMISSION_UPDATE) === Constants::PERMISSION_UPDATE);
+        $params["document"]["permissions"]["edit"] = $editable;
         if ($editable && $canEdit) {
             $ownerId = NULL;
             $owner = $file->getOwner();
@@ -537,10 +538,8 @@ class EditorController extends Controller {
 
         if (!empty($token)) {
             if (method_exists($share, "getHideDownload") && $share->getHideDownload()) {
-                $params["document"]["permissions"] = [
-                    "download" => false,
-                    "print" => false
-                ];
+                $params["document"]["permissions"]["download"] = false;
+                $params["document"]["permissions"]["print"] = false;
             }
 
             $node = $share->getNode();
