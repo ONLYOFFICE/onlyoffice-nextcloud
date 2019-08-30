@@ -495,7 +495,7 @@ class EditorController extends Controller {
             ]
         ];
 
-        $permissions_modifyFilter = $this->config->getSystemValue($this->config->_permissions_modifyFilter);
+        $permissions_modifyFilter = $this->config->GetSystemValue($this->config->_permissions_modifyFilter);
         if (isset($permissions_modifyFilter)) {
             $params["document"]["permissions"]["modifyFilter"] = $permissions_modifyFilter;
         }
@@ -729,7 +729,7 @@ class EditorController extends Controller {
      * @return string
      */
     private function getKey($file) {
-        $instanceId = $this->config->getSystemValue("instanceid", true);
+        $instanceId = $this->config->GetSystemValue("instanceid", true);
 
         $fileId = $file->getId();
 
@@ -801,27 +801,27 @@ class EditorController extends Controller {
 
         /* from system config */
 
-        $customer = $this->config->getSystemValue($this->config->_customization_customer);
+        $customer = $this->config->GetSystemValue($this->config->_customization_customer);
         if (isset($customer)) {
             $params["editorConfig"]["customization"]["customer"] = $customer;
         }
 
-        $feedback = $this->config->getSystemValue($this->config->_customization_feedback);
+        $feedback = $this->config->GetSystemValue($this->config->_customization_feedback);
         if (isset($feedback)) {
             $params["editorConfig"]["customization"]["feedback"] = $feedback;
         }
 
-        $loaderLogo = $this->config->getSystemValue($this->config->_customization_loaderLogo);
+        $loaderLogo = $this->config->GetSystemValue($this->config->_customization_loaderLogo);
         if (isset($loaderLogo)) {
             $params["editorConfig"]["customization"]["loaderLogo"] = $loaderLogo;
         }
 
-        $loaderName = $this->config->getSystemValue($this->config->_customization_loaderName);
+        $loaderName = $this->config->GetSystemValue($this->config->_customization_loaderName);
         if (isset($loaderName)) {
             $params["editorConfig"]["customization"]["loaderName"] = $loaderName;
         }
 
-        $logo = $this->config->getSystemValue($this->config->_customization_logo);
+        $logo = $this->config->GetSystemValue($this->config->_customization_logo);
         if (isset($logo)) {
             $params["editorConfig"]["customization"]["logo"] = $logo;
         }
