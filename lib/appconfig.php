@@ -392,7 +392,11 @@ class AppConfig {
      * @return string
      */
     public function GetSKey() {
-        return $this->GetSystemValue($this->_cryptSecret, true);
+        $secret = $this->GetDocumentServerSecret();
+        if (empty($secret)) {
+            $secret = $this->GetSystemValue($this->_cryptSecret, true);
+        }
+        return $secret;
     }
 
     /**
