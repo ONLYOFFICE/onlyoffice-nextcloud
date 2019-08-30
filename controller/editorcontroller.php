@@ -326,12 +326,11 @@ class EditorController extends Controller {
         $newFileUri;
         $documentService = new DocumentService($this->trans, $this->config);
         $key = $this->getKey($file);
-        $fileId = $file->getId();
-        $fileUrl = $this->getUrl($fileId, $token);
+        $fileUrl = $this->getUrl($file, $token);
         try {
             $newFileUri = $documentService->GetConvertedUri($fileUrl, $ext, $internalExtension, $key);
         } catch (\Exception $e) {
-            $this->logger->error("GetConvertedUri: " . $fileId . " " . $e->getMessage(), array("app" => $this->appName));
+            $this->logger->error("GetConvertedUri: " . $file->getId() . " " . $e->getMessage(), array("app" => $this->appName));
             return ["error" => $e->getMessage()];
         }
 
@@ -456,8 +455,7 @@ class EditorController extends Controller {
 
         $fileName = $file->getName();
         $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-        $fileId = $file->getId();
-        $fileUrl = $this->getUrl($fileId);
+        $fileUrl = $this->getUrl($file);
 
         $result = [
             "fileType" => $ext,
@@ -584,8 +582,7 @@ class EditorController extends Controller {
             return ["error" => $this->trans->t("Format is not supported")];
         }
 
-        $fileId = $file->getId();
-        $fileUrl = $this->getUrl($fileId, $token);
+        $fileUrl = $this->getUrl($file, $token);
         $key = $this->getKey($file);
 
         $params = [
@@ -619,7 +616,7 @@ class EditorController extends Controller {
                 $ownerId = $owner->getUID();
             }
 
-            $hashCallback = $this->crypt->GetHash(["fileId" => $fileId, "ownerId" => $ownerId, "token" => $token, "action" => "track"]);
+            $hashCallback = $this->crypt->GetHash(["fileId" => $file->getId(), "ownerId" => $ownerId, "token" => $token, "action" => "track"]);
             $callback = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.track", ["doc" => $hashCallback]);
 
             if (!empty($this->config->GetStorageUrl())) {
@@ -855,12 +852,12 @@ class EditorController extends Controller {
     /**
      * Generate secure link to download document
      *
-     * @param integer $fileId - file identifier
+     * @param integer $file - file
      * @param string $token - access token
      *
      * @return string
      */
-    private function getUrl($fileId, $token = NULL) {
+    private function getUrl($file, $token = NULL) {
 
         $user = $this->userSession->getUser();
         $userId = NULL;
@@ -868,7 +865,7 @@ class EditorController extends Controller {
             $userId = $user->getUID();
         }
 
-        $hashUrl = $this->crypt->GetHash(["fileId" => $fileId, "userId" => $userId, "token" => $token, "action" => "download"]);
+        $hashUrl = $this->crypt->GetHash(["fileId" => $file->getId(), "userId" => $userId, "token" => $token, "action" => "download"]);
 
         $fileUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.download", ["doc" => $hashUrl]);
 
