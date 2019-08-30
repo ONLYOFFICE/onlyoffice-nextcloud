@@ -212,7 +212,16 @@ class CallbackController extends Controller {
         if ($this->userSession->isLoggedIn()) {
             $userId = $this->userSession->getUser()->getUID();
         } else {
-            $userId = $hashData->userId;
+            $userId = $hashData->ownerId;
+
+            if (empty($this->userManager->get($userId))) {
+                $userId = $hashData->userId;
+            }
+
+            \OC_Util::tearDownFS();
+            if (!empty($userId)) {
+                \OC_Util::setupFS($userId);
+            }
         }
 
         $token = isset($hashData->token) ? $hashData->token : NULL;
