@@ -346,7 +346,6 @@ class CallbackController extends Controller {
 
                 try {
                     $decodedHeader = \Firebase\JWT\JWT::decode($header, $this->config->GetDocumentServerSecret(), array("HS256"));
-                    $this->logger->debug("Track HEADER : " . json_encode($decodedHeader), array("app" => $this->appName));
 
                     $payload = $decodedHeader->payload;
                 } catch (\UnexpectedValueException $e) {
