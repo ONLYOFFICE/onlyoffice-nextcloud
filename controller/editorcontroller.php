@@ -866,9 +866,11 @@ class EditorController extends Controller {
         }
 
         $ownerId = NULL;
-        $owner = $file->getOwner();
-        if (!empty($owner)) {
-            $ownerId = $owner->getUID();
+        if (empty($token)) {
+            $owner = $file->getOwner();
+            if (!empty($owner)) {
+                $ownerId = $owner->getUID();
+            }
         }
 
         $hashUrl = $this->crypt->GetHash(["fileId" => $file->getId(), "userId" => $userId, "ownerId" => $ownerId, "token" => $token, "action" => "download"]);
