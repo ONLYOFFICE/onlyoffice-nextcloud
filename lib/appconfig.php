@@ -392,7 +392,7 @@ class AppConfig {
      * @return string
      */
     public function GetSKey() {
-        return $this->config->getSystemValue($this->_cryptSecret, true);
+        return $this->GetSystemValue($this->_cryptSecret, true);
     }
 
     /**
