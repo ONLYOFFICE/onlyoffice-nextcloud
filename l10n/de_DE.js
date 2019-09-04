@@ -53,6 +53,10 @@ OC.L10N.register(
     "Display the header more compact" : "Kompakten Header anzeigen",
     "Display Feedback & Support menu button" : "Feedback-& Support-Taste anzeigen",
     "Display Help menu button" : "Hilfetaste anzeigen",
-    "Display toolbar tabs" : "Symbolleiste-Registerkarten anzeigen"
+    "Display toolbar tabs" : "Symbolleiste-Registerkarten anzeigen",
+    "Save as" : "Speichern als",
+    "File saved" : "Datei wurde gespeichert",
+    "Insert image" : "Bild einfügen",
+    "Select recipients" : "Empfänger auswählen"
 },
 "nplurals=2; plural=(n != 1);");

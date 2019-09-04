@@ -366,6 +366,113 @@ class EditorController extends Controller {
     }
 
     /**
+     * Save file to folder
+     *
+     * @param string $name - file name
+     * @param string $dir - folder path
+     * @param string $url - file url
+     *
+     * @return array
+     *
+     * @NoAdminRequired
+     */
+    public function save($name, $dir, $url) {
+        $this->logger->debug("Save: " . $name, array("app" => $this->appName));
+
+        if (!$this->config->isUserAllowedToUse()) {
+            return ["error" => $this->trans->t("Not permitted")];
+        }
+
+        $userId = $this->userSession->getUser()->getUID();
+        $userFolder = $this->root->getUserFolder($userId);
+
+        $folder = $userFolder->get($dir);
+
+        if ($folder === NULL) {
+            $this->logger->error("Folder for saving file was not found: " . $dir, array("app" => $this->appName));
+            return ["error" => $this->trans->t("The required folder was not found")];
+        }
+        if (!$folder->isCreatable()) {
+            $this->logger->error("Folder for saving file without permission: " . $dir, array("app" => $this->appName));
+            return ["error" => $this->trans->t("You don't have enough permission to create")];
+        }
+
+        $url = $this->config->ReplaceDocumentServerUrlToInternal($url);
+
+        try {
+            $documentService = new DocumentService($this->trans, $this->config);
+            $newData = $documentService->Request($url);
+        } catch (\Exception $e) {
+            $this->logger->error("Failed to download file for saving: " . $url . " " . $e->getMessage(), array("app" => $this->appName));
+            return ["error" => $this->trans->t("Download failed")];
+        }
+
+        $name = $folder->getNonExistingName($name);
+
+        try {
+            $file = $folder->newFile($name);
+
+            $file->putContent($newData);
+        } catch (NotPermittedException $e) {
+            $this->logger->error("Can't save file: " . $name, array("app" => $this->appName));
+            return ["error" => $this->trans->t("Can't create file")];
+        }
+
+        $fileInfo = $file->getFileInfo();
+
+        $result = Helper::formatFileInfo($fileInfo);
+        return $result;
+    }
+
+    /**
+     * Get presigned url to file
+     *
+     * @param string $filePath - file path
+     *
+     * @return array
+     *
+     * @NoAdminRequired
+     */
+    public function url($filePath) {
+        $this->logger->debug("Save: " . $name, array("app" => $this->appName));
+
+        if (!$this->config->isUserAllowedToUse()) {
+            return ["error" => $this->trans->t("Not permitted")];
+        }
+
+        $userId = $this->userSession->getUser()->getUID();
+        $userFolder = $this->root->getUserFolder($userId);
+
+        $file = $userFolder->get($filePath);
+
+        if ($file === NULL) {
+            $this->logger->error("File for generate presigned url was not found: " . $dir, array("app" => $this->appName));
+            return ["error" => $this->trans->t("File not found")];
+        }
+        if (!$file->isReadable()) {
+            $this->logger->error("Folder for saving file without permission: " . $dir, array("app" => $this->appName));
+            return ["error" => $this->trans->t("You do not have enough permissions to view the file")];
+        }
+
+        $fileName = $file->getName();
+        $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+        $fileId = $file->getId();
+        $fileUrl = $this->getUrl($fileId);
+
+        $result = [
+            "fileType" => $ext,
+            "url" => $fileUrl
+        ];
+
+        if (!empty($this->config->GetDocumentServerSecret())) {
+            $token = \Firebase\JWT\JWT::encode($result, $this->config->GetDocumentServerSecret());
+            $result["token"] = $token;
+        }
+
+        return $result;
+    }
+
+    /**
      * Print editor section
      *
      * @param integer $fileId - file identifier
