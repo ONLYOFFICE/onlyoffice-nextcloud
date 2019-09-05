@@ -180,6 +180,13 @@ class AppConfig {
     private $_settingsError = "settings_error";
 
     /**
+     * Application name for watermark settings
+     *
+     * @var string
+     */
+    const WATERMARK_APP_NAMESPACE = "files";
+
+    /**
      * The config key for the modifyFilter
      *
      * @var string
@@ -566,18 +573,28 @@ class AppConfig {
     }
 
     /**
+     * Save watermark settings
+     *
+     * @param array $settings - watermark settings
+     */
+    public function SetWatermarkSettings($settings) {
+        if ($settings["enabled"] !== "true") {
+            $this->config->setAppValue(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_enabled", "no");
+            return;
+        }
+
+        $this->config->setAppValue(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_enabled", "yes");
+        $this->config->setAppValue(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_text", trim($settings["text"]));
+    }
+
+    /**
      * Get watermark settings
      *
      * @return bool|array
      */
     public function GetWatermarkSettings() {
-        $watermarkAppNamespace = "files";
-        if ($this->config->getAppValue($watermarkAppNamespace, "watermark_enabled", "no") === "no") {
-            return false;
-        }
-
         $result = [
-            "text" => $this->config->getAppValue($watermarkAppNamespace, "watermark_text", "{userId}"),
+            "text" => $this->config->getAppValue(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_text", "{userId}"),
         ];
 
         $watermarkLabels = [
@@ -587,13 +604,14 @@ class AppConfig {
             "linkRead",
             "linkSecure",
             "linkTags",
+            "enabled",
             "shareAll",
             "shareRead",
         ];
 
         $trueResult = array("on", "yes", "true");
         foreach ($watermarkLabels as $key) {
-            $value = $this->config->getAppValue($watermarkAppNamespace, "watermark_" . $key, "no");
+            $value = $this->config->getAppValue(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_" . $key, "no");
             $result[$key] = in_array($value, $trueResult);
         }
 
@@ -604,7 +622,7 @@ class AppConfig {
         ];
 
         foreach ($watermarkLists as $key) {
-            $value = $this->config->getAppValue($watermarkAppNamespace, "watermark_" . $key, []);
+            $value = $this->config->getAppValue(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_" . $key, []);
             $result[$key] = $value !== "" ? explode(",", $value) : [];
         }
 

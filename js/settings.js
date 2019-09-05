@@ -63,6 +63,12 @@
         $("#onlyofficeGroups").click(groupListToggle);
         groupListToggle();
 
+        var watermarkToggle = function () {
+            $("#onlyofficeWatermarkSettings").toggleClass("onlyoffice-hide", !$("#onlyofficeWatermark_enabled").prop("checked"));
+        };
+
+        $("#onlyofficeWatermark_enabled").click(watermarkToggle)
+
 
         $("#onlyofficeAddrSave").click(function () {
             $(".section-onlyoffice").addClass("icon-loading");
@@ -93,7 +99,7 @@
                         $("#onlyofficeStorageUrl").val(response.storageUrl);
                         $("#onlyofficeSecret").val(response.secret);
 
-                        $(".section-onlyoffice-2").toggleClass("onlyoffice-hide", !response.documentserver.length || !!response.error.length);
+                        $(".section-onlyoffice-common, .section-onlyoffice-watermark").toggleClass("onlyoffice-hide", !response.documentserver.length || !!response.error.length);
 
                         var message =
                             response.error
@@ -158,7 +164,35 @@
             });
         });
 
-        $(".section-onlyoffice input").keypress(function (e) {
+        $("#onlyofficeWatermarkSave").click(function () {
+            $(".section-onlyoffice").addClass("icon-loading");
+
+            var watermarkSettings = {
+                enabled: $("#onlyofficeWatermark_enabled").is(":checked")
+            };
+            if (watermarkSettings.enabled) {
+                watermarkSettings.text = ($("#onlyofficeWatermark_text").val() || "").trim();
+            }
+
+            $.ajax({
+                method: "PUT",
+                url: OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/settings/watermark"),
+                data: {
+                    settings: watermarkSettings
+                },
+                success: function onSuccess(response) {
+                    $(".section-onlyoffice").removeClass("icon-loading");
+                    if (response) {
+                        var message = t(OCA.Onlyoffice.AppName, "Settings have been successfully updated");
+                        OC.Notification.show(message, {
+                            timeout: 3
+                        });
+                    }
+                }
+            });
+        });
+
+        $(".section-onlyoffice-addr input").keypress(function (e) {
             var code = e.keyCode || e.which;
             if (code === 13) {
                 $("#onlyofficeAddrSave").click();

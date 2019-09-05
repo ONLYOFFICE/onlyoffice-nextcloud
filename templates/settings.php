@@ -30,7 +30,7 @@
     style("onlyoffice", "settings");
     script("onlyoffice", "settings");
 ?>
-<div class="section section-onlyoffice">
+<div class="section section-onlyoffice section-onlyoffice-addr">
     <h2>
         ONLYOFFICE
         <a target="_blank" class="icon-info svg" title="" href="https://api.onlyoffice.com/editors/nextcloud" data-original-title="<?php p($l->t("Documentation")) ?>"></a>
@@ -59,13 +59,13 @@
         <p class="onlyoffice-header"><?php p($l->t("Server address for internal requests from the Document Editing Service")) ?></p>
         <p><input id="onlyofficeStorageUrl" value="<?php p($_["storageUrl"]) ?>" placeholder="<?php p($_["currentServer"]) ?>" type="text"></p>
     </div>
-    <br />
 
+    <br />
     <p><button id="onlyofficeAddrSave" class="button"><?php p($l->t("Save")) ?></button></p>
 
 </div>
 
-<div class="section section-onlyoffice section-onlyoffice-2 <?php if (empty($_["documentserver"]) || !$_["successful"]) { ?>onlyoffice-hide<?php } ?>">
+<div class="section section-onlyoffice section-onlyoffice-common <?php if (empty($_["documentserver"]) || !$_["successful"]) { ?>onlyoffice-hide<?php } ?>">
     <h3><?php p($l->t("Common settings")) ?></h3>
 
     <p>
@@ -151,7 +151,31 @@
             <?php if (!$_["toolbarNoTabs"]) { ?>checked="checked"<?php } ?> />
         <label for="onlyofficeToolbarNoTabs"><?php p($l->t("Display toolbar tabs")) ?></label>
     </p>
-    <br />
 
+    <br />
     <p><button id="onlyofficeSave" class="button"><?php p($l->t("Save")) ?></button></p>
+</div>
+
+<div class="section section-onlyoffice section-onlyoffice-watermark <?php if (empty($_["documentserver"]) || !$_["successful"]) { ?>onlyoffice-hide<?php } ?>">
+    <h3><?php p($l->t("Securre view settings")) ?></h3>
+
+    <p class="settings-hint"><?php p($l->t("Secure view enables you to secure documents by embedding a watermark.")) ?></p>
+
+    <p>
+        <input type="checkbox" class="checkbox" id="onlyofficeWatermark_enabled"
+            <?php if ($_["watermark"]["enabled"]) { ?>checked="checked"<?php } ?> />
+        <label for="onlyofficeWatermark_enabled"><?php p($l->t("Enable watermarking")) ?></label>
+    </p>
+
+    <div id="onlyofficeWatermarkSettings" <?php if (!$_["watermark"]["enabled"]) { ?>class="onlyoffice-hide"<?php } ?> >
+        <br />
+        <p><?php p($l->t("Watermark text")) ?></p>
+        <br />
+        <p class="settings-hint"><?php p($l->t("Supported placeholders: {userId}, {date}")) ?></p>
+        <p><input id="onlyofficeWatermark_text" value="<?php p($_["watermark"]["text"]) ?>" placeholder="<?php p($l->t("DO NOT SHARE THIS {userId} {date}")) ?>" type="text"></p>
+    </div>
+
+    <br />
+    <p><button id="onlyofficeWatermarkSave" class="button"><?php p($l->t("Save")) ?></button></p>
+
 </div>

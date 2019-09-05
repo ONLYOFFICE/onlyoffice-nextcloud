@@ -126,7 +126,8 @@ class SettingsController extends Controller {
             "feedback" => $this->config->GetCustomizationFeedback(),
             "help" => $this->config->GetCustomizationHelp(),
             "toolbarNoTabs" => $this->config->GetCustomizationToolbarNoTabs(),
-            "successful" => $this->config->SettingsAreSuccessful()
+            "successful" => $this->config->SettingsAreSuccessful(),
+            "watermark" => $this->config->GetWatermarkSettings()
         ];
         return new TemplateResponse($this->appName, "settings", $data, "blank");
     }
@@ -202,6 +203,21 @@ class SettingsController extends Controller {
         $this->config->SetCustomizationFeedback($feedback);
         $this->config->SetCustomizationHelp($help);
         $this->config->SetCustomizationToolbarNoTabs($toolbarNoTabs);
+
+        return [
+            ];
+    }
+
+    /**
+     * Save watermark settings
+     *
+     * @param array $settings - watermark settings
+     *
+     * @return array
+     */
+    public function SaveWatermark($settings) {
+
+        $this->config->SetWatermarkSettings($settings);
 
         return [
             ];

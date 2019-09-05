@@ -53,6 +53,13 @@ OC.L10N.register(
     "Display the header more compact" : "Отображать заголовок компактным",
     "Display Feedback & Support menu button" : "Отображать кнопку Обратной связи и поддержки",
     "Display Help menu button" : "Отображать кнопку справки",
-    "Display toolbar tabs" : "Отображать вкладки панели инструментов"
+    "Display toolbar tabs" : "Отображать вкладки панели инструментов",
+    "Securre view settings" : "Securre view settings",
+    "Secure view enables you to secure documents by embedding a watermark." : "Secure view enables you to secure documents by embedding a watermark.",
+    "Enable watermarking" : "Enable watermarking",
+    "Watermark text" : "Watermark text",
+    "DO NOT SHARE THIS {userId} {date}" : "DO NOT SHARE THIS {userId} {date}",
+    "Supported placeholders: {userId}, {date}" : "Supported placeholders: {userId}, {date}",
+    "Show watermark for all shares" : "Show watermark for all shares"
 },
 "nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);");

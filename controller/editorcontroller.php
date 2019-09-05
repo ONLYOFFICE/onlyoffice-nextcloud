@@ -885,7 +885,7 @@ class EditorController extends Controller {
      */
     private function getWatermarkText($isPublic, $userId, $fileId, $canEdit, $canDownload) {
         $watermarkSettings = $this->config->GetWatermarkSettings();
-        if ($watermarkSettings === false) {
+        if (!$watermarkSettings["enabled"]) {
             return false;
         }
 
