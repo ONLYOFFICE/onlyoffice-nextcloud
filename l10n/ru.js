@@ -60,6 +60,11 @@ OC.L10N.register(
     "Watermark text" : "Watermark text",
     "DO NOT SHARE THIS {userId} {date}" : "DO NOT SHARE THIS {userId} {date}",
     "Supported placeholders: {userId}, {date}" : "Supported placeholders: {userId}, {date}",
-    "Show watermark for all shares" : "Show watermark for all shares"
+    "Show watermark for all shares" : "Show watermark for all shares",
+    "Show watermark for read only shares" : "Show watermark for read only shares",
+    "Link shares" : "Link shares",
+    "Show watermark for all link shares" : "Show watermark for all link shares",
+    "Show watermark for download hidden shares" : "Show watermark for download hidden shares",
+    "Show watermark for read only link shares" : "Show watermark for read only link shares"
 },
 "nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);");

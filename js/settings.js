@@ -172,6 +172,17 @@
             };
             if (watermarkSettings.enabled) {
                 watermarkSettings.text = ($("#onlyofficeWatermark_text").val() || "").trim();
+
+                var watermarkLabels = [
+                    "linkAll",
+                    "linkRead",
+                    "linkSecure",
+                    "shareAll",
+                    "shareRead"
+                ];
+                $.each(watermarkLabels, function (i, watermarkLabel) {
+                    watermarkSettings[watermarkLabel] = $("#onlyofficeWatermark_" + watermarkLabel).is(":checked");
+                });
             }
 
             $.ajax({

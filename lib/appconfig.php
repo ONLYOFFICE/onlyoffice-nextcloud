@@ -583,8 +583,22 @@ class AppConfig {
             return;
         }
 
-        $this->config->setAppValue(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_enabled", "yes");
         $this->config->setAppValue(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_text", trim($settings["text"]));
+
+        $watermarkLabels = [
+            "allGroups",
+            "allTags",
+            "linkAll",
+            "linkRead",
+            "linkSecure",
+            "linkTags",
+            "enabled",
+            "shareAll",
+            "shareRead",
+        ];
+        foreach ($watermarkLabels as $key) {
+            $this->config->setAppValue(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_" . $key, $settings[$key] === "true" ? "yes" : "no");
+        }
     }
 
     /**

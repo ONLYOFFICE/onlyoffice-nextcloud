@@ -173,6 +173,39 @@
         <br />
         <p class="settings-hint"><?php p($l->t("Supported placeholders: {userId}, {date}")) ?></p>
         <p><input id="onlyofficeWatermark_text" value="<?php p($_["watermark"]["text"]) ?>" placeholder="<?php p($l->t("DO NOT SHARE THIS {userId} {date}")) ?>" type="text"></p>
+
+        <br />
+        <p>
+            <input type="checkbox" class="checkbox" id="onlyofficeWatermark_shareAll"
+                <?php if ($_["watermark"]["shareAll"]) { ?>checked="checked"<?php } ?> />
+            <label for="onlyofficeWatermark_shareAll"><?php p($l->t("Show watermark for all shares")) ?></label>
+        </p>
+
+        <p>
+            <input type="checkbox" class="checkbox" id="onlyofficeWatermark_shareRead"
+                <?php if ($_["watermark"]["shareRead"]) { ?>checked="checked"<?php } ?> />
+            <label for="onlyofficeWatermark_shareRead"><?php p($l->t("Show watermark for read only shares")) ?></label>
+        </p>
+
+        <br />
+        <p><?php p($l->t("Link shares")) ?></p>
+        <p>
+            <input type="checkbox" class="checkbox" id="onlyofficeWatermark_linkAll"
+                <?php if ($_["watermark"]["linkAll"]) { ?>checked="checked"<?php } ?> />
+            <label for="onlyofficeWatermark_linkAll"><?php p($l->t("Show watermark for all link shares")) ?></label>
+        </p>
+
+        <p>
+            <input type="checkbox" class="checkbox" id="onlyofficeWatermark_linkSecure"
+                <?php if ($_["watermark"]["linkSecure"]) { ?>checked="checked"<?php } ?> />
+            <label for="onlyofficeWatermark_linkSecure"><?php p($l->t("Show watermark for download hidden shares")) ?></label>
+        </p>
+
+        <p>
+            <input type="checkbox" class="checkbox" id="onlyofficeWatermark_linkRead"
+                <?php if ($_["watermark"]["linkRead"]) { ?>checked="checked"<?php } ?> />
+            <label for="onlyofficeWatermark_linkRead"><?php p($l->t("Show watermark for read only link shares")) ?></label>
+        </p>
     </div>
 
     <br />
