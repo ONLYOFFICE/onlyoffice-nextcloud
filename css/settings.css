@@ -49,8 +49,11 @@
     display: inline-block;
     margin-bottom: -3px;
 }
-#s2id_onlyofficeLimitGroups {
+#s2id_onlyofficeLimitGroups,
+#s2id_onlyofficeWatermark_allGroupsList {
     margin-bottom: 16px;
+    margin-top: 6px;
+    width: 250px;
 }
 .onlyoffice-exts {
     column-width: 100px;

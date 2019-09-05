@@ -46,9 +46,7 @@
             advToogle();
         }
 
-        $("#onlyofficeAdv").click(function () {
-            advToogle();
-        });
+        $("#onlyofficeAdv").click(advToogle);
 
         $("#onlyofficeGroups").prop("checked", $("#onlyofficeLimitGroups").val() != "");
 
@@ -68,6 +66,24 @@
         };
 
         $("#onlyofficeWatermark_enabled").click(watermarkToggle)
+
+        var watermarkLists = [
+            "allGroups",
+            "allTags",
+            "linkTags",
+        ];
+        $.each(watermarkLists, function(i, watermarkList) {
+            var watermarkListToggle = function() {
+                if ($("#onlyofficeWatermark_" + watermarkList).prop("checked")) {
+                    OC.Settings.setupGroupsSelect($("#onlyofficeWatermark_" + watermarkList + "List"));
+                } else {
+                    $("#onlyofficeWatermark_" + watermarkList + "List").select2("destroy");
+                }
+            };
+
+            $("#onlyofficeWatermark_" + watermarkList).click(watermarkListToggle);
+            watermarkListToggle();
+        });
 
 
         $("#onlyofficeAddrSave").click(function () {
@@ -174,15 +190,24 @@
                 watermarkSettings.text = ($("#onlyofficeWatermark_text").val() || "").trim();
 
                 var watermarkLabels = [
+                    "allGroups",
+                    "allTags",
                     "linkAll",
                     "linkRead",
                     "linkSecure",
+                    "linkTags",
                     "shareAll",
                     "shareRead"
                 ];
                 $.each(watermarkLabels, function (i, watermarkLabel) {
                     watermarkSettings[watermarkLabel] = $("#onlyofficeWatermark_" + watermarkLabel).is(":checked");
                 });
+
+                $.each(watermarkLists, function (i, watermarkList) {
+                    var list = $("#onlyofficeWatermark_" + watermarkList).is(":checked") ? $("#onlyofficeWatermark_" + watermarkList + "List").val() : "";
+                    watermarkSettings[watermarkList + "List"] = list ? list.split("|") : [];
+                });
+
             }
 
             $.ajax({

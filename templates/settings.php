@@ -72,7 +72,7 @@
         <input type="checkbox" class="checkbox" id="onlyofficeGroups"
             <?php if (count($_["limitGroups"]) > 0) { ?>checked="checked"<?php } ?> />
         <label for="onlyofficeGroups"><?php p($l->t("Restrict access to editors to following groups")) ?></label>
-        <input type="hidden" id="onlyofficeLimitGroups" value="<?php p(implode("|", $_["limitGroups"])) ?>" style="display: block; margin-top: 6px; width: 250px;" />
+        <input type="hidden" id="onlyofficeLimitGroups" value="<?php p(implode("|", $_["limitGroups"])) ?>" style="display: block" />
     </p>
 
     <p>
@@ -175,6 +175,13 @@
         <p><input id="onlyofficeWatermark_text" value="<?php p($_["watermark"]["text"]) ?>" placeholder="<?php p($l->t("DO NOT SHARE THIS {userId} {date}")) ?>" type="text"></p>
 
         <br />
+        <p>
+            <input type="checkbox" class="checkbox" id="onlyofficeWatermark_allGroups"
+                <?php if ($_["watermark"]["allGroups"]) { ?>checked="checked"<?php } ?> />
+            <label for="onlyofficeWatermark_allGroups"><?php p($l->t("Show watermark for users of groups")) ?></label>
+            <input type="hidden" id="onlyofficeWatermark_allGroupsList" value="<?php p(implode("|", $_["watermark"]["allGroupsList"])) ?>" style="display: block" />
+        </p>
+
         <p>
             <input type="checkbox" class="checkbox" id="onlyofficeWatermark_shareAll"
                 <?php if ($_["watermark"]["shareAll"]) { ?>checked="checked"<?php } ?> />
