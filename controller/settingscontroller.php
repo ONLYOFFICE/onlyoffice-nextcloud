@@ -217,6 +217,13 @@ class SettingsController extends Controller {
      */
     public function SaveWatermark($settings) {
 
+        if ($settings["enabled"] === "true") {
+            $settings["text"] = ($settings["text"]).trim();
+            if (empty($settings["text"])) {
+                $settings["text"] = $this->trans->t("DO NOT SHARE THIS {userId} {date}");
+            }
+        }
+
         $this->config->SetWatermarkSettings($settings);
 
         return [
