@@ -118,7 +118,7 @@ class DocumentService {
      * @return array
      */
     function SendRequestToConvertService($document_uri, $from_extension, $to_extension, $document_revision_id, $is_async) {
-        $documentServerUrl = $this->config->GetDocumentServerInternalUrl(false);
+        $documentServerUrl = $this->config->GetDocumentServerInternalUrl();
 
         if (empty($documentServerUrl)) {
             throw new \Exception($this->trans->t("ONLYOFFICE app is not configured. Please contact admin"));
@@ -241,7 +241,7 @@ class DocumentService {
      */
     function HealthcheckRequest() {
 
-        $documentServerUrl = $this->config->GetDocumentServerInternalUrl(false);
+        $documentServerUrl = $this->config->GetDocumentServerInternalUrl();
 
         if (empty($documentServerUrl)) {
             throw new \Exception($this->trans->t("ONLYOFFICE app is not configured. Please contact admin"));
@@ -263,7 +263,7 @@ class DocumentService {
      */
     function CommandRequest($method) {
 
-        $documentServerUrl = $this->config->GetDocumentServerInternalUrl(false);
+        $documentServerUrl = $this->config->GetDocumentServerInternalUrl();
 
         if (empty($documentServerUrl)) {
             throw new \Exception($this->trans->t("ONLYOFFICE app is not configured. Please contact admin"));

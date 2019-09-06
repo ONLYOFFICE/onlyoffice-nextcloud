@@ -63,6 +63,13 @@
         $("#onlyofficeGroups").click(groupListToggle);
         groupListToggle();
 
+        var demoToggle = function() {
+            $("#onlyofficeAddrSettings input:not(#onlyofficeStorageUrl)").prop("disabled", $("#onlyofficeDemo").prop("checked"));
+        };
+
+        $("#onlyofficeDemo").click(demoToggle);
+        demoToggle();
+
 
         $("#onlyofficeAddrSave").click(function () {
             $(".section-onlyoffice").addClass("icon-loading");
@@ -75,6 +82,7 @@
             var onlyofficeInternalUrl = ($("#onlyofficeInternalUrl:visible").val() || "").trim();
             var onlyofficeStorageUrl = ($("#onlyofficeStorageUrl:visible").val() || "").trim();
             var onlyofficeSecret = $("#onlyofficeSecret:visible").val() || "";
+            var demo = $("#onlyofficeDemo").prop("checked");
 
             $.ajax({
                 method: "PUT",
@@ -83,7 +91,8 @@
                     documentserver: onlyofficeUrl,
                     documentserverInternal: onlyofficeInternalUrl,
                     storageUrl: onlyofficeStorageUrl,
-                    secret: onlyofficeSecret
+                    secret: onlyofficeSecret,
+                    demo: demo
                 },
                 success: function onSuccess(response) {
                     $(".section-onlyoffice").removeClass("icon-loading");

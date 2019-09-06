@@ -61,6 +61,13 @@ class AppConfig {
     private $logger;
 
     /**
+     * The config key for the demo server
+     *
+     * @var string
+     */
+    private $_demo = "demo";
+
+    /**
      * The config key for the document server address
      *
      * @var string
@@ -252,6 +259,26 @@ class AppConfig {
     }
 
     /**
+     * Switch on demo server
+     *
+     * @param bool $value - select demo
+     */
+    public function SelectDemo($value) {
+        $this->logger->info("Select demo: " . json_encode($value), array("app" => $this->appName));
+
+        $this->config->setAppValue($this->appName, $this->_demo, json_encode($value));
+    }
+
+    /**
+     * Get status of demo server
+     *
+     * @return bool
+     */
+    public function UseDemo() {
+        return $this->config->getAppValue($this->appName, $this->_demo, "false") === "true";
+    }
+
+    /**
      * Save the document service address to the application configuration
      *
      * @param string $documentServer - document service address
@@ -273,9 +300,15 @@ class AppConfig {
     /**
      * Get the document service address from the application configuration
      *
+     * @param bool $origin - take origin
+     *
      * @return string
      */
-    public function GetDocumentServerUrl() {
+    public function GetDocumentServerUrl($origin = false) {
+        if (!$origin && $this->UseDemo()) {
+            return $this->DEMO_PARAM["ADDR"];
+        }
+
         $url = $this->config->getAppValue($this->appName, $this->_documentserver, "");
         if (empty($url)) {
             $url = $this->GetSystemValue($this->_documentserver);
@@ -292,7 +325,7 @@ class AppConfig {
     /**
      * Save the document service address available from Nextcloud to the application configuration
      *
-     * @param string $documentServer - document service address
+     * @param string $documentServerInternal - document service address
      */
     public function SetDocumentServerInternalUrl($documentServerInternal) {
         $documentServerInternal = rtrim(trim($documentServerInternal), "/");
@@ -315,7 +348,11 @@ class AppConfig {
      *
      * @return string
      */
-    public function GetDocumentServerInternalUrl($origin) {
+    public function GetDocumentServerInternalUrl($origin = false) {
+        if (!$origin && $this->UseDemo()) {
+            return $this->GetDocumentServerUrl();
+        }
+
         $url = $this->config->getAppValue($this->appName, $this->_documentserverInternal, "");
         if (empty($url)) {
             $url = $this->GetSystemValue($this->_documentserverInternal);
@@ -403,9 +440,15 @@ class AppConfig {
     /**
      * Get the document service secret key from the application configuration
      *
+     * @param bool $origin - take origin
+     *
      * @return string
      */
-    public function GetDocumentServerSecret() {
+    public function GetDocumentServerSecret($origin = false) {
+        if (!$origin && $this->UseDemo()) {
+            return $this->DEMO_PARAM["SECRET"];
+        }
+
         $secret = $this->config->getAppValue($this->appName, $this->_jwtSecret, "");
         if (empty($secret)) {
             $secret = $this->GetSystemValue($this->_jwtSecret);
@@ -679,6 +722,10 @@ class AppConfig {
      * @return string
      */
     public function JwtHeader() {
+        if ($this->UseDemo()) {
+            return $this->DEMO_PARAM["HEADER"];
+        }
+
         $header = $this->GetSystemValue($this->_jwtHeader);
         if (empty($header)) {
             $header = "Authorization";
@@ -768,5 +815,14 @@ class AppConfig {
         "xlt" => [ "type" => "spreadsheet", "conv" => true ],
         "xltm" => [ "mime" => "application/vnd.ms-excel.template.macroEnabled.12", "type" => "spreadsheet", "conv" => true ],
         "xltx" => [ "mime" => "application/vnd.openxmlformats-officedocument.spreadsheetml.template", "type" => "spreadsheet", "conv" => true ]
+    ];
+
+    /**
+     * DEMO DATA
+     */
+    private $DEMO_PARAM = [
+        "ADDR" => "https://onlinedocs.onlyoffice.com/",
+        "HEADER" => "AuthorizationJWT",
+        "SECRET" => "sn2puSUF7muF5Jas"
     ];
 }
