@@ -29,6 +29,14 @@
 
     style("onlyoffice", "settings");
     script("onlyoffice", "settings");
+
+    script("core", [
+        "systemtags/systemtags",
+        "systemtags/systemtagmodel",
+        "systemtags/systemtagsmappingcollection",
+        "systemtags/systemtagscollection",
+        "systemtags/systemtagsinputfield",
+    ]);
 ?>
 <div class="section section-onlyoffice section-onlyoffice-addr">
     <h2>
@@ -176,6 +184,13 @@
 
         <br />
         <p>
+            <input type="checkbox" class="checkbox" id="onlyofficeWatermark_allTags"
+                <?php if ($_["watermark"]["allTags"]) { ?>checked="checked"<?php } ?> />
+            <label for="onlyofficeWatermark_allTags"><?php p($l->t("Show watermark on tagged files")) ?></label>
+            <input type="hidden" id="onlyofficeWatermark_allTagsList" value="<?php p(implode("|", $_["watermark"]["allTagsList"])) ?>" style="display: block" />
+        </p>
+
+        <p>
             <input type="checkbox" class="checkbox" id="onlyofficeWatermark_allGroups"
                 <?php if ($_["watermark"]["allGroups"]) { ?>checked="checked"<?php } ?> />
             <label for="onlyofficeWatermark_allGroups"><?php p($l->t("Show watermark for users of groups")) ?></label>
@@ -212,6 +227,13 @@
             <input type="checkbox" class="checkbox" id="onlyofficeWatermark_linkRead"
                 <?php if ($_["watermark"]["linkRead"]) { ?>checked="checked"<?php } ?> />
             <label for="onlyofficeWatermark_linkRead"><?php p($l->t("Show watermark for read only link shares")) ?></label>
+        </p>
+
+        <p>
+            <input type="checkbox" class="checkbox" id="onlyofficeWatermark_linkTags"
+                <?php if ($_["watermark"]["linkTags"]) { ?>checked="checked"<?php } ?> />
+            <label for="onlyofficeWatermark_linkTags"><?php p($l->t("Show watermark on link shares with specific system tags")) ?></label>
+            <input type="hidden" id="onlyofficeWatermark_linkTagsList" value="<?php p(implode("|", $_["watermark"]["linkTagsList"])) ?>" style="display: block" />
         </p>
     </div>
 

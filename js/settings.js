@@ -75,7 +75,44 @@
         $.each(watermarkLists, function(i, watermarkList) {
             var watermarkListToggle = function() {
                 if ($("#onlyofficeWatermark_" + watermarkList).prop("checked")) {
-                    OC.Settings.setupGroupsSelect($("#onlyofficeWatermark_" + watermarkList + "List"));
+                    if (watermarkList.indexOf("Group") >= 0) {
+                        OC.Settings.setupGroupsSelect($("#onlyofficeWatermark_" + watermarkList + "List"));
+                    } else {
+                        OC.SystemTags.collection.fetch({
+                            success: function() {
+                                $("#onlyofficeWatermark_" + watermarkList + "List").select2({
+                                    allowClear: true,
+                                    closeOnSelect: false,
+                                    multiple: true,
+                                    toggleSelect: true,
+                                    placeholder: t("systemtags_manager", "Select tag…"),
+                                    query: _.debounce(function(query) {
+                                        query.callback({
+                                            results: OC.SystemTags.collection.filterByName(query.term)
+                                        });
+                                    }, 100, true),
+                                    initSelection: function(element, callback) {
+                                        var selection = ($(element).val() || []).split("|").map(function(tagId){
+                                            return OC.SystemTags.collection.get(tagId);
+                                        });
+                                        callback(selection);
+                                    },
+                                    formatResult: function (tag) {
+                                        return OC.SystemTags.getDescriptiveTag(tag);
+                                    },
+                                    formatSelection: function (tag) {
+                                        return tag.get("name");
+                                    },
+                                    sortResults: function(results) {
+                                        results.sort(function(a, b) {
+                                            return OC.Util.naturalSortCompare(a.get("name"), b.get("name"));
+                                        });
+                                        return results;
+                                    }
+                                });
+                            }
+                        });
+                    }
                 } else {
                     $("#onlyofficeWatermark_" + watermarkList + "List").select2("destroy");
                 }
