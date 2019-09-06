@@ -167,9 +167,9 @@
 </div>
 
 <div class="section section-onlyoffice section-onlyoffice-watermark <?php if (empty($_["documentserver"]) || !$_["successful"]) { ?>onlyoffice-hide<?php } ?>">
-    <h3><?php p($l->t("Securre view settings")) ?></h3>
+    <h3><?php p($l->t("Secure view settings")) ?></h3>
 
-    <p class="settings-hint"><?php p($l->t("Secure view enables you to secure documents by embedding a watermark.")) ?></p>
+    <p class="settings-hint"><?php p($l->t("Secure view enables you to secure documents by embedding a watermark")) ?></p>
 
     <p>
         <input type="checkbox" class="checkbox" id="onlyofficeWatermark_enabled"
@@ -181,8 +181,8 @@
         <br />
         <p><?php p($l->t("Watermark text")) ?></p>
         <br />
-        <p class="settings-hint"><?php p($l->t("Supported placeholders: {userId}, {date}")) ?></p>
-        <p><input id="onlyofficeWatermark_text" value="<?php p($_["watermark"]["text"]) ?>" placeholder="<?php p($l->t("DO NOT SHARE THIS {userId} {date}")) ?>" type="text"></p>
+        <p class="settings-hint"><?php p($l->t("Supported placeholders")) ?>: {userId}, {date}</p>
+        <p><input id="onlyofficeWatermark_text" value="<?php p($_["watermark"]["text"]) ?>" placeholder="<?php p($l->t("DO NOT SHARE THIS")) ?> {userId} {date}" type="text"></p>
 
         <br />
         <?php if ($_["tagsEnabled"]) { ?>

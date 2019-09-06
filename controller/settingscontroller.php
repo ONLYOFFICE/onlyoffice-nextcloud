@@ -222,7 +222,7 @@ class SettingsController extends Controller {
         if ($settings["enabled"] === "true") {
             $settings["text"] = ($settings["text"]).trim();
             if (empty($settings["text"])) {
-                $settings["text"] = $this->trans->t("DO NOT SHARE THIS {userId} {date}");
+                $settings["text"] = $this->trans->t("DO NOT SHARE THIS") . " {userId} {date}";
             }
         }
 
