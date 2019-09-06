@@ -598,7 +598,8 @@ class EditorController extends Controller {
             ],
             "documentType" => $format["type"],
             "editorConfig" => [
-                "lang" => str_replace("_", "-", $this->trans->getLanguageCode())
+                "lang" => str_replace("_", "-", $this->trans->getLanguageCode()),
+                "region" => str_replace("_", "-", \OC::$server->getL10NFactory("")->findLocale())
             ]
         ];
 
