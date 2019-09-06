@@ -13,7 +13,7 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * For details, see the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
  *
- * You can contact Ascensio System SIA atÂ 17-2 Elijas street,Â Riga, Latvia, EU,Â LV-1021.
+ * You can contact Ascensio System SIA at 17-2 Elijas street, Riga, Latvia, EU, LV-1021.
  *
  * The interactive user interfaces in modified source and object code versions of the Program
  * must display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
@@ -598,7 +598,8 @@ class EditorController extends Controller {
             ],
             "documentType" => $format["type"],
             "editorConfig" => [
-                "lang" => str_replace("_", "-", \OC::$server->getL10NFactory("")->get("")->getLanguageCode())
+                "lang" => str_replace("_", "-", \OC::$server->getL10NFactory("")->get("")->getLanguageCode()),
+                "region" => str_replace("_", "-", \OC::$server->getL10NFactory("")->findLocale())
             ]
         ];
 
