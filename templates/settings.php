@@ -30,13 +30,15 @@
     style("onlyoffice", "settings");
     script("onlyoffice", "settings");
 
-    script("core", [
-        "systemtags/systemtags",
-        "systemtags/systemtagmodel",
-        "systemtags/systemtagsmappingcollection",
-        "systemtags/systemtagscollection",
-        "systemtags/systemtagsinputfield",
-    ]);
+    if ($_["tagsEnabled"]) {
+        script("core", [
+            "systemtags/systemtags",
+            "systemtags/systemtagmodel",
+            "systemtags/systemtagsmappingcollection",
+            "systemtags/systemtagscollection",
+            "systemtags/systemtagsinputfield",
+        ]);
+    }
 ?>
 <div class="section section-onlyoffice section-onlyoffice-addr">
     <h2>
@@ -183,12 +185,14 @@
         <p><input id="onlyofficeWatermark_text" value="<?php p($_["watermark"]["text"]) ?>" placeholder="<?php p($l->t("DO NOT SHARE THIS {userId} {date}")) ?>" type="text"></p>
 
         <br />
+        <?php if ($_["tagsEnabled"]) { ?>
         <p>
             <input type="checkbox" class="checkbox" id="onlyofficeWatermark_allTags"
                 <?php if ($_["watermark"]["allTags"]) { ?>checked="checked"<?php } ?> />
             <label for="onlyofficeWatermark_allTags"><?php p($l->t("Show watermark on tagged files")) ?></label>
             <input type="hidden" id="onlyofficeWatermark_allTagsList" value="<?php p(implode("|", $_["watermark"]["allTagsList"])) ?>" style="display: block" />
         </p>
+        <?php } ?>
 
         <p>
             <input type="checkbox" class="checkbox" id="onlyofficeWatermark_allGroups"
@@ -229,12 +233,14 @@
             <label for="onlyofficeWatermark_linkRead"><?php p($l->t("Show watermark for read only link shares")) ?></label>
         </p>
 
+        <?php if ($_["tagsEnabled"]) { ?>
         <p>
             <input type="checkbox" class="checkbox" id="onlyofficeWatermark_linkTags"
                 <?php if ($_["watermark"]["linkTags"]) { ?>checked="checked"<?php } ?> />
             <label for="onlyofficeWatermark_linkTags"><?php p($l->t("Show watermark on link shares with specific system tags")) ?></label>
             <input type="hidden" id="onlyofficeWatermark_linkTagsList" value="<?php p(implode("|", $_["watermark"]["linkTagsList"])) ?>" style="display: block" />
         </p>
+        <?php } ?>
     </div>
 
     <br />

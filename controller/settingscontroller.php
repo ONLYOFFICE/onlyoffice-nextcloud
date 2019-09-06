@@ -29,6 +29,7 @@
 
 namespace OCA\Onlyoffice\Controller;
 
+use OCP\App;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IL10N;
@@ -127,7 +128,8 @@ class SettingsController extends Controller {
             "help" => $this->config->GetCustomizationHelp(),
             "toolbarNoTabs" => $this->config->GetCustomizationToolbarNoTabs(),
             "successful" => $this->config->SettingsAreSuccessful(),
-            "watermark" => $this->config->GetWatermarkSettings()
+            "watermark" => $this->config->GetWatermarkSettings(),
+            "tagsEnabled" => App::isEnabled("systemtags")
         ];
         return new TemplateResponse($this->appName, "settings", $data, "blank");
     }
