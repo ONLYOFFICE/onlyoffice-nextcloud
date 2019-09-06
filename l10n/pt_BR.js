@@ -53,6 +53,8 @@ OC.L10N.register(
     "Display the header more compact" : "Exibir o cabeçalho mais compacto",
     "Display Feedback & Support menu button" : "Exibir o botão do menu de feedback e suporte",
     "Display Help menu button" : "Exibir o botão do menu Ajuda",
-    "Display toolbar tabs" : "Exibir guias da barra de ferramentas"
+    "Display toolbar tabs" : "Exibir guias da barra de ferramentas",
+    "Secure view enables you to secure documents by embedding a watermark" : "A visualização segura permite proteger documentos incorporando uma marca d'água",
+    "Supported placeholders" : "Espaços reservados suportados"
 },
 "nplurals=2; plural=(n != 1);");

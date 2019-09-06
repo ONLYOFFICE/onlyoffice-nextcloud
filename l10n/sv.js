@@ -53,6 +53,8 @@ OC.L10N.register(
     "Display the header more compact" : "Visa kompakt sidhuvud",
     "Display Feedback & Support menu button" : "Visa Feedback & Support i menyn",
     "Display Help menu button" : "Visa hjälp i menyn",
-    "Display toolbar tabs" : "Visa flikar i verktygsfältet"
+    "Display toolbar tabs" : "Visa flikar i verktygsfältet",
+    "Secure view enables you to secure documents by embedding a watermark" : "Med säker vy kan du säkra dokument genom att bädda in ett vattenstämpel",
+    "Supported placeholders" : "Platshållare som stöds"
 },
 "nplurals=2; plural=(n != 1);");
