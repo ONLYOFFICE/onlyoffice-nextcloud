@@ -207,7 +207,7 @@
             <label for="onlyofficeWatermark_shareAll"><?php p($l->t("Show watermark for all shares")) ?></label>
         </p>
 
-        <p>
+        <p <?php if ($_["watermark"]["shareAll"]) { ?>class="onlyoffice-hide"<?php } ?> >
             <input type="checkbox" class="checkbox" id="onlyofficeWatermark_shareRead"
                 <?php if ($_["watermark"]["shareRead"]) { ?>checked="checked"<?php } ?> />
             <label for="onlyofficeWatermark_shareRead"><?php p($l->t("Show watermark for read only shares")) ?></label>
@@ -221,26 +221,28 @@
             <label for="onlyofficeWatermark_linkAll"><?php p($l->t("Show watermark for all link shares")) ?></label>
         </p>
 
-        <p>
-            <input type="checkbox" class="checkbox" id="onlyofficeWatermark_linkSecure"
-                <?php if ($_["watermark"]["linkSecure"]) { ?>checked="checked"<?php } ?> />
-            <label for="onlyofficeWatermark_linkSecure"><?php p($l->t("Show watermark for download hidden shares")) ?></label>
-        </p>
+        <div id="onlyofficeWatermark_link_sensitive" <?php if ($_["watermark"]["linkAll"]) { ?>class="onlyoffice-hide"<?php } ?> >
+            <p>
+                <input type="checkbox" class="checkbox" id="onlyofficeWatermark_linkSecure"
+                    <?php if ($_["watermark"]["linkSecure"]) { ?>checked="checked"<?php } ?> />
+                <label for="onlyofficeWatermark_linkSecure"><?php p($l->t("Show watermark for download hidden shares")) ?></label>
+            </p>
 
-        <p>
-            <input type="checkbox" class="checkbox" id="onlyofficeWatermark_linkRead"
-                <?php if ($_["watermark"]["linkRead"]) { ?>checked="checked"<?php } ?> />
-            <label for="onlyofficeWatermark_linkRead"><?php p($l->t("Show watermark for read only link shares")) ?></label>
-        </p>
+            <p>
+                <input type="checkbox" class="checkbox" id="onlyofficeWatermark_linkRead"
+                    <?php if ($_["watermark"]["linkRead"]) { ?>checked="checked"<?php } ?> />
+                <label for="onlyofficeWatermark_linkRead"><?php p($l->t("Show watermark for read only link shares")) ?></label>
+            </p>
 
-        <?php if ($_["tagsEnabled"]) { ?>
-        <p>
-            <input type="checkbox" class="checkbox" id="onlyofficeWatermark_linkTags"
-                <?php if ($_["watermark"]["linkTags"]) { ?>checked="checked"<?php } ?> />
-            <label for="onlyofficeWatermark_linkTags"><?php p($l->t("Show watermark on link shares with specific system tags")) ?></label>
-            <input type="hidden" id="onlyofficeWatermark_linkTagsList" value="<?php p(implode("|", $_["watermark"]["linkTagsList"])) ?>" style="display: block" />
-        </p>
-        <?php } ?>
+            <?php if ($_["tagsEnabled"]) { ?>
+            <p>
+                <input type="checkbox" class="checkbox" id="onlyofficeWatermark_linkTags"
+                    <?php if ($_["watermark"]["linkTags"]) { ?>checked="checked"<?php } ?> />
+                <label for="onlyofficeWatermark_linkTags"><?php p($l->t("Show watermark on link shares with specific system tags")) ?></label>
+                <input type="hidden" id="onlyofficeWatermark_linkTagsList" value="<?php p(implode("|", $_["watermark"]["linkTagsList"])) ?>" style="display: block" />
+            </p>
+            <?php } ?>
+        </div>
     </div>
 
     <br />

@@ -50,7 +50,7 @@
 
         $("#onlyofficeGroups").prop("checked", $("#onlyofficeLimitGroups").val() != "");
 
-        var groupListToggle = function() {
+        var groupListToggle = function () {
             if ($("#onlyofficeGroups").prop("checked")) {
                 OC.Settings.setupGroupsSelect($("#onlyofficeLimitGroups"));
             } else {
@@ -66,6 +66,14 @@
         };
 
         $("#onlyofficeWatermark_enabled").click(watermarkToggle)
+
+        $("#onlyofficeWatermark_shareAll").click(function () {
+            $("#onlyofficeWatermark_shareRead").parent().toggleClass("onlyoffice-hide");
+        });
+
+        $("#onlyofficeWatermark_linkAll").click(function () {
+            $("#onlyofficeWatermark_link_sensitive").toggleClass("onlyoffice-hide");
+        });
 
         var watermarkLists = [
             "allGroups",
