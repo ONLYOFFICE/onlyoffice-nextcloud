@@ -328,13 +328,13 @@ class AppConfig {
 
     /**
      * Replace domain in document server url with internal address from configuration
-     * 
+     *
      * @param string $url - document server url
-     * 
+     *
      * @return string
      */
     public function ReplaceDocumentServerUrlToInternal($url) {
-        $documentServerUrl = $this->GetDocumentServerInternalUrl(true);
+        $documentServerUrl = $this->GetDocumentServerInternalUrl();
         if (!empty($documentServerUrl)) {
             $from = $this->GetDocumentServerUrl();
 
@@ -345,7 +345,7 @@ class AppConfig {
 
             if ($from !== $documentServerUrl)
             {
-                $this->logger->debug("Replace in track from " . $from . " to " . $documentServerUrl, array("app" => $this->appName));
+                $this->logger->debug("Replace url from " . $from . " to " . $documentServerUrl, array("app" => $this->appName));
                 $url = str_replace($from, $documentServerUrl, $url);
             }
         }
