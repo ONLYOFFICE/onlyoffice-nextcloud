@@ -39,17 +39,17 @@ use OCA\Onlyoffice\AppConfig;
 class Crypt {
 
     /**
-     * The secret key from the application configuration
+     * Application configuration
      *
-     * @var string
+     * @var OCA\Onlyoffice\AppConfig
      */
-    private $skey;
+    private $config;
 
     /**
      * @param OCA\Onlyoffice\AppConfig $config - application configutarion
      */
     public function __construct(AppConfig $appConfig) {
-        $this->skey = $appConfig->GetSKey();
+        $this->config = $appConfig;
     }
 
     /**
@@ -60,7 +60,7 @@ class Crypt {
      * @return string
      */
     public function GetHash($object) {
-        return \Firebase\JWT\JWT::encode($object, $this->skey);
+        return \Firebase\JWT\JWT::encode($object, $this->config->GetSKey());
     }
 
     /**
@@ -77,7 +77,7 @@ class Crypt {
             return [$result, "token is empty"];
         }
         try {
-            $result = \Firebase\JWT\JWT::decode($token, $this->skey, array("HS256"));
+            $result = \Firebase\JWT\JWT::decode($token, $this->config->GetSKey(), array("HS256"));
         } catch (\UnexpectedValueException $e) {
             $error = $e->getMessage();
         }
