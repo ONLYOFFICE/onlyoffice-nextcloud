@@ -689,6 +689,10 @@ class EditorController extends Controller {
 
         $params = $this->setCustomization($params);
 
+        if ($this->config->UseDemo()) {
+            $params["editorConfig"]["tenant"] = $this->config->GetSystemValue("instanceid", true);
+        }
+
         if (!empty($this->config->GetDocumentServerSecret())) {
             $token = \Firebase\JWT\JWT::encode($params, $this->config->GetDocumentServerSecret());
             $params["token"] = $token;

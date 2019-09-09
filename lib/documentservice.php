@@ -147,6 +147,10 @@ class DocumentService {
             "key" => $document_revision_id
         ];
 
+        if ($this->config->UseDemo()) {
+            $data["tenant"] = $this->config->GetSystemValue("instanceid", true);
+        }
+
         $opts = array(
             "timeout" => "120",
             "headers" => [
