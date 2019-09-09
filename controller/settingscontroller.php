@@ -117,7 +117,7 @@ class SettingsController extends Controller {
             "documentserverInternal" => $this->config->GetDocumentServerInternalUrl(true),
             "storageUrl" => $this->config->GetStorageUrl(),
             "secret" => $this->config->GetDocumentServerSecret(true),
-            "demo" => $this->config->UseDemo(),
+            "demo" => $this->config->GetDemoData(),
             "currentServer" => $this->urlGenerator->getAbsoluteURL("/"),
             "formats" => $this->config->FormatsSetting(),
             "sameTab" => $this->config->GetSameTab(),
@@ -149,7 +149,7 @@ class SettingsController extends Controller {
                                     $secret,
                                     $demo
                                     ) {
-        $this->config->SelectDemo($demo === true);
+        $error = $this->config->SelectDemo($demo === true);
         if ($demo !== true) {
             $this->config->SetDocumentServerUrl($documentserver);
             $this->config->SetDocumentServerInternalUrl($documentserverInternal);
@@ -158,7 +158,6 @@ class SettingsController extends Controller {
         $this->config->SetStorageUrl($storageUrl);
 
         $documentserver = $this->config->GetDocumentServerUrl();
-        $error = NULL;
         if (!empty($documentserver)) {
             $error = $this->checkDocServiceUrl();
             $this->config->SetSettingsError($error);

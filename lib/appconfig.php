@@ -29,6 +29,9 @@
 
 namespace OCA\Onlyoffice;
 
+use \DateInterval;
+use \DateTime;
+
 use OCP\IConfig;
 use OCP\ILogger;
 
@@ -262,11 +265,50 @@ class AppConfig {
      * Switch on demo server
      *
      * @param bool $value - select demo
+     *
+     * @return string
      */
     public function SelectDemo($value) {
         $this->logger->info("Select demo: " . json_encode($value), array("app" => $this->appName));
 
-        $this->config->setAppValue($this->appName, $this->_demo, json_encode($value));
+        $data = $this->GetDemoData();
+
+        $data["enabled"] = $value;
+        if (!isset($data["start"])) {
+            $data["start"] = new DateTime();
+        }
+
+        $this->config->setAppValue($this->appName, $this->_demo, json_encode($data));
+        return NULL;
+    }
+
+    /**
+     * Get demo data
+     *
+     * @return array
+     */
+    public function GetDemoData() {
+        $data = $this->config->getAppValue($this->appName, $this->_demo, "");
+
+        if (empty($data)) {
+            return [
+                "available" => true,
+                "enabled" => false
+            ];
+        }
+        $data = json_decode($data, true);
+
+        $overdue = new DateTime(isset($data["start"]) ? $data["start"]["date"] : NULL);
+        $overdue->add(new DateInterval("P" . $this->DEMO_PARAM["TRIAL"] . "D"));
+        if ($overdue > new DateTime()) {
+            $data["available"] = true;
+            $data["enabled"] = $data["enabled"] === true;
+        } else {
+            $data["available"] = false;
+            $data["enabled"] = false;
+        }
+
+        return $data;
     }
 
     /**
@@ -275,7 +317,7 @@ class AppConfig {
      * @return bool
      */
     public function UseDemo() {
-        return $this->config->getAppValue($this->appName, $this->_demo, "false") === "true";
+        return $this->GetDemoData()["enabled"] === true;
     }
 
     /**
@@ -823,6 +865,7 @@ class AppConfig {
     private $DEMO_PARAM = [
         "ADDR" => "https://onlinedocs.onlyoffice.com/",
         "HEADER" => "AuthorizationJWT",
-        "SECRET" => "sn2puSUF7muF5Jas"
+        "SECRET" => "sn2puSUF7muF5Jas",
+        "TRIAL" => 30
     ];
 }

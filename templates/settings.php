@@ -67,7 +67,8 @@
         <button id="onlyofficeAddrSave" class="button"><?php p($l->t("Save")) ?></button>
 
         <input type="checkbox" class="checkbox" id="onlyofficeDemo"
-            <?php if ($_["demo"]) { ?>checked="checked"<?php } ?> />
+            <?php if ($_["demo"]["enabled"]) { ?>checked="checked"<?php } ?>
+            <?php if (!$_["demo"]["available"]) { ?>disabled="disabled"<?php } ?> />
         <label for="onlyofficeDemo"><?php p($l->t("Connect to demo ONLYOFFICE Document Server")) ?></label>
     </p>
 
