@@ -266,20 +266,25 @@ class AppConfig {
      *
      * @param bool $value - select demo
      *
-     * @return string
+     * @return bool
      */
     public function SelectDemo($value) {
         $this->logger->info("Select demo: " . json_encode($value), array("app" => $this->appName));
 
         $data = $this->GetDemoData();
 
-        $data["enabled"] = $value;
+        if ($value === true && !$data["available"]) {
+            $this->logger->info("Trial demo is overdue: " . json_encode($data), array("app" => $this->appName));
+            return false;
+        }
+
+        $data["enabled"] = $value === true;
         if (!isset($data["start"])) {
             $data["start"] = new DateTime();
         }
 
         $this->config->setAppValue($this->appName, $this->_demo, json_encode($data));
-        return NULL;
+        return true;
     }
 
     /**
