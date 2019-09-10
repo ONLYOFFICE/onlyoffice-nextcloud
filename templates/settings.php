@@ -63,14 +63,23 @@
         <br />
     </div>
 
-    <p>
+    <div>
         <button id="onlyofficeAddrSave" class="button"><?php p($l->t("Save")) ?></button>
 
-        <input type="checkbox" class="checkbox" id="onlyofficeDemo"
-            <?php if ($_["demo"]["enabled"]) { ?>checked="checked"<?php } ?>
-            <?php if (!$_["demo"]["available"]) { ?>disabled="disabled"<?php } ?> />
-        <label for="onlyofficeDemo"><?php p($l->t("Connect to demo ONLYOFFICE Document Server")) ?></label>
-    </p>
+        <div class="onlyoffice-demo">
+            <input type="checkbox" class="checkbox" id="onlyofficeDemo"
+                <?php if ($_["demo"]["enabled"]) { ?>checked="checked"<?php } ?>
+                <?php if (!$_["demo"]["available"]) { ?>disabled="disabled"<?php } ?> />
+            <label for="onlyofficeDemo"><?php p($l->t("Connect to demo ONLYOFFICE Document Server")) ?></label>
+
+            <br />
+            <?php if ($_["demo"]["available"]) { ?>
+            <em><?php p($l->t("This is a public test server, please do not use it for private sensitive data. The server will be available during a 30-day period.")) ?></em>
+            <?php } else { ?>
+            <em><?php p($l->t("The 30-day test period is over, you can no longer connect to demo ONLYOFFICE Document Server.")) ?></em>
+            <?php } ?>
+        </div>
+    </div>
 
 </div>
 

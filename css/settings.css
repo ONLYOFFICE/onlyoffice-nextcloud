@@ -49,6 +49,12 @@
     display: inline-block;
     margin-bottom: -3px;
 }
+#onlyofficeAddrSave {
+    float: left;
+}
+.onlyoffice-demo {
+    margin-left: 90px;
+}
 #s2id_onlyofficeLimitGroups {
     margin-bottom: 16px;
 }
