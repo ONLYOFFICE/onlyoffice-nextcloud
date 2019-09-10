@@ -92,6 +92,7 @@
                                     allowClear: true,
                                     closeOnSelect: false,
                                     multiple: true,
+                                    separator: "|",
                                     toggleSelect: true,
                                     placeholder: t("systemtags_manager", "Select tag…"),
                                     query: _.debounce(function(query) {

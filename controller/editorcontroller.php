@@ -928,9 +928,9 @@ class EditorController extends Controller {
         }
         if ($watermarkSettings["allTags"]) {
             $tags = $watermarkSettings["allTagsList"];
-            $fileTags = \OC::$server->getSystemTagObjectMapper()->getTagIdsForObjects([$fileId], "files");
+            $fileTags = \OC::$server->getSystemTagObjectMapper()->getTagIdsForObjects([$fileId], "files")[$fileId];
             foreach ($fileTags as $tagId) {
-                if (in_array($tagId, $tags)) {
+                if (in_array($tagId, $tags, true)) {
                     return $watermarkText;
                 }
             }
