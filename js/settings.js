@@ -96,13 +96,13 @@
                 },
                 success: function onSuccess(response) {
                     $(".section-onlyoffice").removeClass("icon-loading");
-                    if (response && response.documentserver != null) {
+                    if (response && (response.documentserver != null || demo)) {
                         $("#onlyofficeUrl").val(response.documentserver);
                         $("#onlyofficeInternalUrl").val(response.documentserverInternal);
                         $("#onlyofficeStorageUrl").val(response.storageUrl);
                         $("#onlyofficeSecret").val(response.secret);
 
-                        $(".section-onlyoffice-2").toggleClass("onlyoffice-hide", !response.documentserver.length || !!response.error.length);
+                        $(".section-onlyoffice-2").toggleClass("onlyoffice-hide", (!response.documentserver.length && !demo) || !!response.error.length);
 
                         var message =
                             response.error
