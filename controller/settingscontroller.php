@@ -113,10 +113,11 @@ class SettingsController extends Controller {
      */
     public function index() {
         $data = [
-            "documentserver" => $this->config->GetDocumentServerUrl(),
+            "documentserver" => $this->config->GetDocumentServerUrl(true),
             "documentserverInternal" => $this->config->GetDocumentServerInternalUrl(true),
             "storageUrl" => $this->config->GetStorageUrl(),
-            "secret" => $this->config->GetDocumentServerSecret(),
+            "secret" => $this->config->GetDocumentServerSecret(true),
+            "demo" => $this->config->GetDemoData(),
             "currentServer" => $this->urlGenerator->getAbsoluteURL("/"),
             "formats" => $this->config->FormatsSetting(),
             "sameTab" => $this->config->GetSameTab(),
@@ -138,31 +139,39 @@ class SettingsController extends Controller {
      * @param string $documentserverInternal - document service address available from Nextcloud
      * @param string $storageUrl - Nextcloud address available from document server
      * @param string $secret - secret key for signature
+     * @param bool $demo - use demo server
      *
      * @return array
      */
     public function SaveAddress($documentserver,
                                     $documentserverInternal,
                                     $storageUrl,
-                                    $secret
+                                    $secret,
+                                    $demo
                                     ) {
-        $this->config->SetDocumentServerUrl($documentserver);
-        $this->config->SetDocumentServerInternalUrl($documentserverInternal);
+        if (!$this->config->SelectDemo($demo === true)) {
+            $error = $this->trans->t("The 30-day test period is over, you can no longer connect to demo ONLYOFFICE Document Server.");
+        }
+        if ($demo !== true) {
+            $this->config->SetDocumentServerUrl($documentserver);
+            $this->config->SetDocumentServerInternalUrl($documentserverInternal);
+            $this->config->SetDocumentServerSecret($secret);
+        }
         $this->config->SetStorageUrl($storageUrl);
-        $this->config->SetDocumentServerSecret($secret);
 
-        $documentserver = $this->config->GetDocumentServerUrl();
-        $error = NULL;
-        if (!empty($documentserver)) {
-            $error = $this->checkDocServiceUrl();
-            $this->config->SetSettingsError($error);
+        if (empty($error)) {
+            $documentserver = $this->config->GetDocumentServerUrl();
+            if (!empty($documentserver)) {
+                $error = $this->checkDocServiceUrl();
+                $this->config->SetSettingsError($error);
+            }
         }
 
         return [
-            "documentserver" => $this->config->GetDocumentServerUrl(),
+            "documentserver" => $this->config->GetDocumentServerUrl(true),
             "documentserverInternal" => $this->config->GetDocumentServerInternalUrl(true),
             "storageUrl" => $this->config->GetStorageUrl(),
-            "secret" => $this->config->GetDocumentServerSecret(),
+            "secret" => $this->config->GetDocumentServerSecret(true),
             "error" => $error
             ];
     }

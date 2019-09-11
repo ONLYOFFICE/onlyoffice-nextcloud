@@ -55,6 +55,10 @@
     "Save as" : "Сохранить как",
     "File saved" : "Файл сохранён",
     "Insert image" : "Вставить изображение",
-    "Select recipients" : "Выберите получателей"
+    "Select recipients" : "Выберите получателей",
+    "Connect to demo ONLYOFFICE Document Server" : "Подключиться к демонстрационному Серверу Документов ONLYOFFICE",
+    "This is a public test server, please do not use it for private sensitive data. The server will be available during a 30-day period." : "Это публичный тестовый сервер, пожалуйста, не используйте его для личных конфиденциальных данных. Сервер будет доступен в течение 30 дней.",
+    "The 30-day test period is over, you can no longer connect to demo ONLYOFFICE Document Server." : "30-дневный тестовый период закончен, вы больше не можете подключаться к демонстрационному Серверу Документов ONLYOFFICE",
+    "You are using public demo ONLYOFFICE Document Server. Please do not store private sensitive data." : "Вы используете публичный демонстрационный сервер документов ONLYOFFICE. Пожалуйста, не храните конфиденциальные данные."
 },"pluralForm" :"nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);"
 }

@@ -80,6 +80,10 @@
                         return;
                     }
 
+                    if (config.editorConfig.tenant) {
+                        displayError(t(OCA.Onlyoffice.AppName, "You are using public demo ONLYOFFICE Document Server. Please do not store private sensitive data."));
+                    }
+
                     var docIsChanged = null;
                     var docIsChangedTimeout = null;
 

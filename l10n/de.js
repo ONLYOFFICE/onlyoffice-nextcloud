@@ -57,6 +57,10 @@ OC.L10N.register(
     "Save as" : "Speichern als",
     "File saved" : "Datei wurde gespeichert",
     "Insert image" : "Bild einfügen",
-    "Select recipients" : "Empfänger auswählen"
+    "Select recipients" : "Empfänger auswählen",
+    "Connect to demo ONLYOFFICE Document Server" : "Verbindung zu Demo ONLYOFFICE Document Server herstellen",
+    "This is a public test server, please do not use it for private sensitive data. The server will be available during a 30-day period." : "Dies ist ein öffentlicher Testserver. Bitte verwende beim Testen keine privaten sensiblen Daten. Der Server ist 30 Tage lang verfügbar.",
+    "The 30-day test period is over, you can no longer connect to demo ONLYOFFICE Document Server." : "Der 30-tägige Testzeitraum ist abgelaufen. Du kannst keine Verbindung mehr zu Demo ONLYOFFICE Document Server herstellen.",
+    "You are using public demo ONLYOFFICE Document Server. Please do not store private sensitive data." : "Du verwendest den öffentlichen Demo ONLYOFFICE Document Server. Bitte benutze ihn nicht zum Speichern von Deinen privaten sensiblen Daten."
 },
 "nplurals=2; plural=(n != 1);");
