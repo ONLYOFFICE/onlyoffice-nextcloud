@@ -1,5 +1,16 @@
 # Change Log
 
+## 3.0.0
+## Added
+- "save as" to the folder
+- inserting images from the folder
+- Mail Merge
+- connection to the demo server
+- embedding a watermark 
+
+## Changed
+- updated files for compatibility with MS Office v2016
+
 ## 2.4.0
 ## Added
 - compatibility with encryption
