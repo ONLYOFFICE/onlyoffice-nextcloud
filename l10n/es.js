@@ -53,6 +53,12 @@ OC.L10N.register(
     "Display the header more compact" : "Mostrar el encabezado más compacto",
     "Display Feedback & Support menu button" : "Mostrar el botón de Feedback y Soporte",
     "Display Help menu button" : "Mostrar el botón de Ayuda",
-    "Display toolbar tabs" : "Mostrar pestañas de barra de herramientas"
+    "Display toolbar tabs" : "Mostrar pestañas de barra de herramientas",
+    "Save as" : "Guardar como",
+    "File saved" : "El archivo ha sido guardado",
+    "Insert image" : "Insertar imagen",
+    "Select recipients" : "Seleccionar destinatarios",
+    "Secure view enables you to secure documents by embedding a watermark" : "La vista segura permite asegurar documentos mediante la inserción de una marca de agua en ellos",
+    "Supported placeholders" : "Marcadores soportados"
 },
 "nplurals=2; plural=(n != 1);");

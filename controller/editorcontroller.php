@@ -13,7 +13,7 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * For details, see the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
  *
- * You can contact Ascensio System SIA at 17-2 Elijas street, Riga, Latvia, EU, LV-1021.
+ * You can contact Ascensio System SIA at 20A-12 Ernesta Birznieka-Upisha street, Riga, Latvia, EU, LV-1050.
  *
  * The interactive user interfaces in modified source and object code versions of the Program
  * must display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
@@ -221,7 +221,7 @@ class EditorController extends Controller {
 
         $ext = strtolower("." . pathinfo($name, PATHINFO_EXTENSION));
 
-        $lang = \OC::$server->getL10NFactory("")->get("")->getLanguageCode();
+        $lang = $this->trans->getLanguageCode();
 
         $templatePath = $this->getTemplatePath($lang, $ext);
         if (!file_exists($templatePath)) {
@@ -366,6 +366,113 @@ class EditorController extends Controller {
     }
 
     /**
+     * Save file to folder
+     *
+     * @param string $name - file name
+     * @param string $dir - folder path
+     * @param string $url - file url
+     *
+     * @return array
+     *
+     * @NoAdminRequired
+     */
+    public function save($name, $dir, $url) {
+        $this->logger->debug("Save: " . $name, array("app" => $this->appName));
+
+        if (!$this->config->isUserAllowedToUse()) {
+            return ["error" => $this->trans->t("Not permitted")];
+        }
+
+        $userId = $this->userSession->getUser()->getUID();
+        $userFolder = $this->root->getUserFolder($userId);
+
+        $folder = $userFolder->get($dir);
+
+        if ($folder === NULL) {
+            $this->logger->error("Folder for saving file was not found: " . $dir, array("app" => $this->appName));
+            return ["error" => $this->trans->t("The required folder was not found")];
+        }
+        if (!$folder->isCreatable()) {
+            $this->logger->error("Folder for saving file without permission: " . $dir, array("app" => $this->appName));
+            return ["error" => $this->trans->t("You don't have enough permission to create")];
+        }
+
+        $url = $this->config->ReplaceDocumentServerUrlToInternal($url);
+
+        try {
+            $documentService = new DocumentService($this->trans, $this->config);
+            $newData = $documentService->Request($url);
+        } catch (\Exception $e) {
+            $this->logger->error("Failed to download file for saving: " . $url . " " . $e->getMessage(), array("app" => $this->appName));
+            return ["error" => $this->trans->t("Download failed")];
+        }
+
+        $name = $folder->getNonExistingName($name);
+
+        try {
+            $file = $folder->newFile($name);
+
+            $file->putContent($newData);
+        } catch (NotPermittedException $e) {
+            $this->logger->error("Can't save file: " . $name, array("app" => $this->appName));
+            return ["error" => $this->trans->t("Can't create file")];
+        }
+
+        $fileInfo = $file->getFileInfo();
+
+        $result = Helper::formatFileInfo($fileInfo);
+        return $result;
+    }
+
+    /**
+     * Get presigned url to file
+     *
+     * @param string $filePath - file path
+     *
+     * @return array
+     *
+     * @NoAdminRequired
+     */
+    public function url($filePath) {
+        $this->logger->debug("Save: " . $name, array("app" => $this->appName));
+
+        if (!$this->config->isUserAllowedToUse()) {
+            return ["error" => $this->trans->t("Not permitted")];
+        }
+
+        $userId = $this->userSession->getUser()->getUID();
+        $userFolder = $this->root->getUserFolder($userId);
+
+        $file = $userFolder->get($filePath);
+
+        if ($file === NULL) {
+            $this->logger->error("File for generate presigned url was not found: " . $dir, array("app" => $this->appName));
+            return ["error" => $this->trans->t("File not found")];
+        }
+        if (!$file->isReadable()) {
+            $this->logger->error("Folder for saving file without permission: " . $dir, array("app" => $this->appName));
+            return ["error" => $this->trans->t("You do not have enough permissions to view the file")];
+        }
+
+        $fileName = $file->getName();
+        $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+        $fileId = $file->getId();
+        $fileUrl = $this->getUrl($fileId);
+
+        $result = [
+            "fileType" => $ext,
+            "url" => $fileUrl
+        ];
+
+        if (!empty($this->config->GetDocumentServerSecret())) {
+            $token = \Firebase\JWT\JWT::encode($result, $this->config->GetDocumentServerSecret());
+            $result["token"] = $token;
+        }
+
+        return $result;
+    }
+
+    /**
      * Print editor section
      *
      * @param integer $fileId - file identifier
@@ -491,11 +598,12 @@ class EditorController extends Controller {
             ],
             "documentType" => $format["type"],
             "editorConfig" => [
-                "lang" => str_replace("_", "-", \OC::$server->getL10NFactory("")->get("")->getLanguageCode())
+                "lang" => str_replace("_", "-", $this->trans->getLanguageCode()),
+                "region" => str_replace("_", "-", \OC::$server->getL10NFactory("")->findLocale())
             ]
         ];
 
-        $permissions_modifyFilter = $this->config->getSystemValue($this->config->_permissions_modifyFilter);
+        $permissions_modifyFilter = $this->config->GetSystemValue($this->config->_permissions_modifyFilter);
         if (isset($permissions_modifyFilter)) {
             $params["document"]["permissions"]["modifyFilter"] = $permissions_modifyFilter;
         }
@@ -503,6 +611,7 @@ class EditorController extends Controller {
         $canEdit = isset($format["edit"]) && $format["edit"];
         $editable = $file->isUpdateable()
                     && (empty($token) || ($share->getPermissions() & Constants::PERMISSION_UPDATE) === Constants::PERMISSION_UPDATE);
+        $params["document"]["permissions"]["edit"] = $editable;
         if ($editable && $canEdit) {
             $ownerId = NULL;
             $owner = $file->getOwner();
@@ -537,10 +646,8 @@ class EditorController extends Controller {
 
         if (!empty($token)) {
             if (method_exists($share, "getHideDownload") && $share->getHideDownload()) {
-                $params["document"]["permissions"] = [
-                    "download" => false,
-                    "print" => false
-                ];
+                $params["document"]["permissions"]["download"] = false;
+                $params["document"]["permissions"]["print"] = false;
             }
 
             $node = $share->getNode();
@@ -581,6 +688,12 @@ class EditorController extends Controller {
         }
 
         $params = $this->setCustomization($params);
+
+        $params = $this->setWatermark($params, !empty($token), $userId, $fileId);
+
+        if ($this->config->UseDemo()) {
+            $params["editorConfig"]["tenant"] = $this->config->GetSystemValue("instanceid", true);
+        }
 
         if (!empty($this->config->GetDocumentServerSecret())) {
             $token = \Firebase\JWT\JWT::encode($params, $this->config->GetDocumentServerSecret());
@@ -730,7 +843,7 @@ class EditorController extends Controller {
      * @return string
      */
     private function getKey($file) {
-        $instanceId = $this->config->getSystemValue("instanceid", true);
+        $instanceId = $this->config->GetSystemValue("instanceid", true);
 
         $fileId = $file->getId();
 
@@ -802,32 +915,140 @@ class EditorController extends Controller {
 
         /* from system config */
 
-        $customer = $this->config->getSystemValue($this->config->_customization_customer);
+        $customer = $this->config->GetSystemValue($this->config->_customization_customer);
         if (isset($customer)) {
             $params["editorConfig"]["customization"]["customer"] = $customer;
         }
 
-        $feedback = $this->config->getSystemValue($this->config->_customization_feedback);
+        $feedback = $this->config->GetSystemValue($this->config->_customization_feedback);
         if (isset($feedback)) {
             $params["editorConfig"]["customization"]["feedback"] = $feedback;
         }
 
-        $loaderLogo = $this->config->getSystemValue($this->config->_customization_loaderLogo);
+        $loaderLogo = $this->config->GetSystemValue($this->config->_customization_loaderLogo);
         if (isset($loaderLogo)) {
             $params["editorConfig"]["customization"]["loaderLogo"] = $loaderLogo;
         }
 
-        $loaderName = $this->config->getSystemValue($this->config->_customization_loaderName);
+        $loaderName = $this->config->GetSystemValue($this->config->_customization_loaderName);
         if (isset($loaderName)) {
             $params["editorConfig"]["customization"]["loaderName"] = $loaderName;
         }
 
-        $logo = $this->config->getSystemValue($this->config->_customization_logo);
+        $logo = $this->config->GetSystemValue($this->config->_customization_logo);
         if (isset($logo)) {
             $params["editorConfig"]["customization"]["logo"] = $logo;
         }
 
         return $params;
+    }
+
+    /**
+     * Set watermark parameters
+     *
+     * @param array params - file parameters
+     * @param bool isPublic - with access token
+     * @param string userId - user identifier
+     * @param string fileId - file identifier
+     *
+     * @return array
+     */
+    private function setWatermark($params, $isPublic, $userId, $fileId) {
+        $watermarkTemplate = $this->getWatermarkText($isPublic, $userId, $fileId,
+            $params["document"]["permissions"]["edit"] !== false,
+            $params["document"]["permissions"]["download"] !== false);
+
+        if ($watermarkTemplate !== false) {
+            $replacements = [
+                "userId" => $userId,
+                "date" => (new \DateTime())->format("Y-m-d H:i:s"),
+                "themingName" => \OC::$server->getThemingDefaults()->getName()
+            ];
+            $watermarkTemplate = preg_replace_callback("/{(.+?)}/", function($matches) use ($replacements)
+                {
+                    return $replacements[$matches[1]];
+                }, $watermarkTemplate);
+
+            $params["document"]["options"] = [
+                "watermark_on_draw" => [
+                    "align" => 1,
+                    "height" => 100,
+                    "paragraphs" => array([
+                        "align" => 2,
+                        "runs" => array([
+                            "fill" => [182, 182, 182],
+                            "font-size" => 70,
+                            "text" => $watermarkTemplate,
+                        ])
+                    ]),
+                    "rotate" => -45,
+                    "width" => 250,
+                ]
+            ];
+        }
+
+        return $params;
+    }
+
+    /**
+     * Should watermark
+     *
+     * @return bool|string
+     */
+    private function getWatermarkText($isPublic, $userId, $fileId, $canEdit, $canDownload) {
+        $watermarkSettings = $this->config->GetWatermarkSettings();
+        if (!$watermarkSettings["enabled"]) {
+            return false;
+        }
+
+        $watermarkText = $watermarkSettings["text"];
+
+        if ($isPublic) {
+            if ($watermarkSettings["linkAll"]) {
+                return $watermarkText;
+            }
+            if ($watermarkSettings["linkRead"] && !$canEdit) {
+                return $watermarkText;
+            }
+            if ($watermarkSettings["linkSecure"] && !$canDownload) {
+                return $watermarkText;
+            }
+            if ($watermarkSettings["linkTags"]) {
+                $tags = $watermarkSettings["linkTagsList"];
+                $fileTags = \OC::$server->getSystemTagObjectMapper()->getTagIdsForObjects([$fileId], "files")[$fileId];
+                foreach ($fileTags as $tagId) {
+                    if (in_array($tagId, $tags, true)) {
+                        return $watermarkText;
+                    }
+                }
+            }
+        } else {
+            if ($watermarkSettings["shareAll"]) {
+                return $watermarkText;
+            }
+            if ($watermarkSettings["shareRead"] && !$canEdit) {
+                return $watermarkText;
+            }
+        }
+        if ($watermarkSettings["allGroups"]) {
+            $groups = $watermarkSettings["allGroupsList"];
+            foreach ($groups as $group) {
+                if (\OC::$server->getGroupManager()->isInGroup($userId, $group)) {
+                    return $watermarkText;
+                }
+            }
+        }
+        if ($watermarkSettings["allTags"]) {
+            $tags = $watermarkSettings["allTagsList"];
+            $fileTags = \OC::$server->getSystemTagObjectMapper()->getTagIdsForObjects([$fileId], "files")[$fileId];
+            foreach ($fileTags as $tagId) {
+                if (in_array($tagId, $tags, true)) {
+                    return $watermarkText;
+                }
+            }
+        }
+
+        return false;
     }
 
     /**

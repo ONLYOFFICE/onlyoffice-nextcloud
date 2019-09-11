@@ -13,7 +13,7 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * For details, see the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
  *
- * You can contact Ascensio System SIA at 17-2 Elijas street, Riga, Latvia, EU, LV-1021.
+ * You can contact Ascensio System SIA at 20A-12 Ernesta Birznieka-Upisha street, Riga, Latvia, EU, LV-1050.
  *
  * The interactive user interfaces in modified source and object code versions of the Program
  * must display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
@@ -29,8 +29,19 @@
 
     style("onlyoffice", "settings");
     script("onlyoffice", "settings");
+
+    if ($_["tagsEnabled"]) {
+        script("core", [
+            "oc-backbone-webdav",
+            "systemtags/systemtags",
+            "systemtags/systemtagmodel",
+            "systemtags/systemtagsmappingcollection",
+            "systemtags/systemtagscollection",
+            "systemtags/systemtagsinputfield",
+        ]);
+    }
 ?>
-<div class="section section-onlyoffice">
+<div class="section section-onlyoffice section-onlyoffice-addr">
     <h2>
         ONLYOFFICE
         <a target="_blank" class="icon-info svg" title="" href="https://api.onlyoffice.com/editors/nextcloud" data-original-title="<?php p($l->t("Documentation")) ?>"></a>
@@ -38,41 +49,59 @@
 
     <h3><?php p($l->t("Server settings")) ?></h3>
 
-    <p class="settings-hint"><?php p($l->t("ONLYOFFICE Document Service Location specifies the address of the server with the document services installed. Please change the '<documentserver>' for the server address in the below line.")) ?></p>
+    <div id="onlyofficeAddrSettings">
+        <p class="settings-hint"><?php p($l->t("ONLYOFFICE Document Service Location specifies the address of the server with the document services installed. Please change the '<documentserver>' for the server address in the below line.")) ?></p>
 
-    <p><?php p($l->t("Document Editing Service address")) ?></p>
-    <p><input id="onlyofficeUrl" value="<?php p($_["documentserver"]) ?>" placeholder="https://<documentserver>/" type="text"></p>
+        <p><?php p($l->t("Document Editing Service address")) ?></p>
+        <p><input id="onlyofficeUrl" value="<?php p($_["documentserver"]) ?>" placeholder="https://<documentserver>/" type="text"></p>
 
-    <p class="onlyoffice-header"><?php p($l->t("Secret key (leave blank to disable)")) ?></p>
-    <p><input id="onlyofficeSecret" value="<?php p($_["secret"]) ?>" placeholder="secret" type="text"></p>
+        <p class="onlyoffice-header"><?php p($l->t("Secret key (leave blank to disable)")) ?></p>
+        <p><input id="onlyofficeSecret" value="<?php p($_["secret"]) ?>" placeholder="secret" type="text"></p>
 
-    <p>
-        <a id="onlyofficeAdv" class="onlyoffice-header">
-            <?php p($l->t("Advanced server settings")) ?>
-            <span class="icon icon-triangle-s"></span>
-        </a>
-    </p>
-    <div id="onlyofficeSecretPanel" class="onlyoffice-hide">
-        <p class="onlyoffice-header"><?php p($l->t("Document Editing Service address for internal requests from the server")) ?></p>
-        <p><input id="onlyofficeInternalUrl" value="<?php p($_["documentserverInternal"]) ?>" placeholder="https://<documentserver>/" type="text"></p>
+        <p>
+            <a id="onlyofficeAdv" class="onlyoffice-header">
+                <?php p($l->t("Advanced server settings")) ?>
+                <span class="icon icon-triangle-s"></span>
+            </a>
+        </p>
+        <div id="onlyofficeSecretPanel" class="onlyoffice-hide">
+            <p class="onlyoffice-header"><?php p($l->t("Document Editing Service address for internal requests from the server")) ?></p>
+            <p><input id="onlyofficeInternalUrl" value="<?php p($_["documentserverInternal"]) ?>" placeholder="https://<documentserver>/" type="text"></p>
 
-        <p class="onlyoffice-header"><?php p($l->t("Server address for internal requests from the Document Editing Service")) ?></p>
-        <p><input id="onlyofficeStorageUrl" value="<?php p($_["storageUrl"]) ?>" placeholder="<?php p($_["currentServer"]) ?>" type="text"></p>
+            <p class="onlyoffice-header"><?php p($l->t("Server address for internal requests from the Document Editing Service")) ?></p>
+            <p><input id="onlyofficeStorageUrl" value="<?php p($_["storageUrl"]) ?>" placeholder="<?php p($_["currentServer"]) ?>" type="text"></p>
+        </div>
     </div>
-    <br />
 
-    <p><button id="onlyofficeAddrSave" class="button"><?php p($l->t("Save")) ?></button></p>
+    <br />
+    <div>
+        <button id="onlyofficeAddrSave" class="button"><?php p($l->t("Save")) ?></button>
+
+        <div class="onlyoffice-demo">
+            <input type="checkbox" class="checkbox" id="onlyofficeDemo"
+                <?php if ($_["demo"]["enabled"]) { ?>checked="checked"<?php } ?>
+                <?php if (!$_["demo"]["available"]) { ?>disabled="disabled"<?php } ?> />
+            <label for="onlyofficeDemo"><?php p($l->t("Connect to demo ONLYOFFICE Document Server")) ?></label>
+
+            <br />
+            <?php if ($_["demo"]["available"]) { ?>
+            <em><?php p($l->t("This is a public test server, please do not use it for private sensitive data. The server will be available during a 30-day period.")) ?></em>
+            <?php } else { ?>
+            <em><?php p($l->t("The 30-day test period is over, you can no longer connect to demo ONLYOFFICE Document Server.")) ?></em>
+            <?php } ?>
+        </div>
+    </div>
 
 </div>
 
-<div class="section section-onlyoffice section-onlyoffice-2 <?php if (empty($_["documentserver"]) || !$_["successful"]) { ?>onlyoffice-hide<?php } ?>">
+<div class="section section-onlyoffice section-onlyoffice-common <?php if (empty($_["documentserver"]) && !$_["demo"]["enabled"] || !$_["successful"]) { ?>onlyoffice-hide<?php } ?>">
     <h3><?php p($l->t("Common settings")) ?></h3>
 
     <p>
         <input type="checkbox" class="checkbox" id="onlyofficeGroups"
             <?php if (count($_["limitGroups"]) > 0) { ?>checked="checked"<?php } ?> />
         <label for="onlyofficeGroups"><?php p($l->t("Restrict access to editors to following groups")) ?></label>
-        <input type="hidden" id="onlyofficeLimitGroups" value="<?php p(implode("|", $_["limitGroups"])) ?>" style="display: block; margin-top: 6px; width: 250px;" />
+        <input type="hidden" id="onlyofficeLimitGroups" value="<?php p(implode("|", $_["limitGroups"])) ?>" style="display: block" />
     </p>
 
     <p>
@@ -151,7 +180,91 @@
             <?php if (!$_["toolbarNoTabs"]) { ?>checked="checked"<?php } ?> />
         <label for="onlyofficeToolbarNoTabs"><?php p($l->t("Display toolbar tabs")) ?></label>
     </p>
-    <br />
 
+    <br />
     <p><button id="onlyofficeSave" class="button"><?php p($l->t("Save")) ?></button></p>
+</div>
+
+<div class="section section-onlyoffice section-onlyoffice-watermark <?php if (empty($_["documentserver"]) && !$_["demo"]["enabled"] || !$_["successful"]) { ?>onlyoffice-hide<?php } ?>">
+    <h3><?php p($l->t("Secure view settings")) ?></h3>
+
+    <p class="settings-hint"><?php p($l->t("Secure view enables you to secure documents by embedding a watermark")) ?></p>
+
+    <p>
+        <input type="checkbox" class="checkbox" id="onlyofficeWatermark_enabled"
+            <?php if ($_["watermark"]["enabled"]) { ?>checked="checked"<?php } ?> />
+        <label for="onlyofficeWatermark_enabled"><?php p($l->t("Enable watermarking")) ?></label>
+    </p>
+
+    <div id="onlyofficeWatermarkSettings" <?php if (!$_["watermark"]["enabled"]) { ?>class="onlyoffice-hide"<?php } ?> >
+        <br />
+        <p><?php p($l->t("Watermark text")) ?></p>
+        <br />
+        <p class="settings-hint"><?php p($l->t("Supported placeholders")) ?>: {userId}, {date}</p>
+        <p><input id="onlyofficeWatermark_text" value="<?php p($_["watermark"]["text"]) ?>" placeholder="<?php p($l->t("DO NOT SHARE THIS")) ?> {userId} {date}" type="text"></p>
+
+        <br />
+        <?php if ($_["tagsEnabled"]) { ?>
+        <p>
+            <input type="checkbox" class="checkbox" id="onlyofficeWatermark_allTags"
+                <?php if ($_["watermark"]["allTags"]) { ?>checked="checked"<?php } ?> />
+            <label for="onlyofficeWatermark_allTags"><?php p($l->t("Show watermark on tagged files")) ?></label>
+            <input type="hidden" id="onlyofficeWatermark_allTagsList" value="<?php p(implode("|", $_["watermark"]["allTagsList"])) ?>" style="display: block" />
+        </p>
+        <?php } ?>
+
+        <p>
+            <input type="checkbox" class="checkbox" id="onlyofficeWatermark_allGroups"
+                <?php if ($_["watermark"]["allGroups"]) { ?>checked="checked"<?php } ?> />
+            <label for="onlyofficeWatermark_allGroups"><?php p($l->t("Show watermark for users of groups")) ?></label>
+            <input type="hidden" id="onlyofficeWatermark_allGroupsList" value="<?php p(implode("|", $_["watermark"]["allGroupsList"])) ?>" style="display: block" />
+        </p>
+
+        <p>
+            <input type="checkbox" class="checkbox" id="onlyofficeWatermark_shareAll"
+                <?php if ($_["watermark"]["shareAll"]) { ?>checked="checked"<?php } ?> />
+            <label for="onlyofficeWatermark_shareAll"><?php p($l->t("Show watermark for all shares")) ?></label>
+        </p>
+
+        <p <?php if ($_["watermark"]["shareAll"]) { ?>class="onlyoffice-hide"<?php } ?> >
+            <input type="checkbox" class="checkbox" id="onlyofficeWatermark_shareRead"
+                <?php if ($_["watermark"]["shareRead"]) { ?>checked="checked"<?php } ?> />
+            <label for="onlyofficeWatermark_shareRead"><?php p($l->t("Show watermark for read only shares")) ?></label>
+        </p>
+
+        <br />
+        <p><?php p($l->t("Link shares")) ?></p>
+        <p>
+            <input type="checkbox" class="checkbox" id="onlyofficeWatermark_linkAll"
+                <?php if ($_["watermark"]["linkAll"]) { ?>checked="checked"<?php } ?> />
+            <label for="onlyofficeWatermark_linkAll"><?php p($l->t("Show watermark for all link shares")) ?></label>
+        </p>
+
+        <div id="onlyofficeWatermark_link_sensitive" <?php if ($_["watermark"]["linkAll"]) { ?>class="onlyoffice-hide"<?php } ?> >
+            <p>
+                <input type="checkbox" class="checkbox" id="onlyofficeWatermark_linkSecure"
+                    <?php if ($_["watermark"]["linkSecure"]) { ?>checked="checked"<?php } ?> />
+                <label for="onlyofficeWatermark_linkSecure"><?php p($l->t("Show watermark for download hidden shares")) ?></label>
+            </p>
+
+            <p>
+                <input type="checkbox" class="checkbox" id="onlyofficeWatermark_linkRead"
+                    <?php if ($_["watermark"]["linkRead"]) { ?>checked="checked"<?php } ?> />
+                <label for="onlyofficeWatermark_linkRead"><?php p($l->t("Show watermark for read only link shares")) ?></label>
+            </p>
+
+            <?php if ($_["tagsEnabled"]) { ?>
+            <p>
+                <input type="checkbox" class="checkbox" id="onlyofficeWatermark_linkTags"
+                    <?php if ($_["watermark"]["linkTags"]) { ?>checked="checked"<?php } ?> />
+                <label for="onlyofficeWatermark_linkTags"><?php p($l->t("Show watermark on link shares with specific system tags")) ?></label>
+                <input type="hidden" id="onlyofficeWatermark_linkTagsList" value="<?php p(implode("|", $_["watermark"]["linkTagsList"])) ?>" style="display: block" />
+            </p>
+            <?php } ?>
+        </div>
+    </div>
+
+    <br />
+    <p><button id="onlyofficeWatermarkSave" class="button"><?php p($l->t("Save")) ?></button></p>
+
 </div>

@@ -13,7 +13,7 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * For details, see the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
  *
- * You can contact Ascensio System SIA at 17-2 Elijas street, Riga, Latvia, EU, LV-1021.
+ * You can contact Ascensio System SIA at 20A-12 Ernesta Birznieka-Upisha street, Riga, Latvia, EU, LV-1050.
  *
  * The interactive user interfaces in modified source and object code versions of the Program
  * must display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
@@ -346,7 +346,6 @@ class CallbackController extends Controller {
 
                 try {
                     $decodedHeader = \Firebase\JWT\JWT::decode($header, $this->config->GetDocumentServerSecret(), array("HS256"));
-                    $this->logger->debug("Track HEADER : " . json_encode($decodedHeader), array("app" => $this->appName));
 
                     $payload = $decodedHeader->payload;
                 } catch (\UnexpectedValueException $e) {
@@ -400,21 +399,7 @@ class CallbackController extends Controller {
                         return $error;
                     }
 
-                    $documentServerUrl = $this->config->GetDocumentServerInternalUrl(true);
-                    if (!empty($documentServerUrl)) {
-                        $from = $this->config->GetDocumentServerUrl();
-
-                        if (!preg_match("/^https?:\/\//i", $from)) {
-                            $parsedUrl = parse_url($url);
-                            $from = $parsedUrl["scheme"] . "://" . $parsedUrl["host"] . (array_key_exists("port", $parsedUrl) ? (":" . $parsedUrl["port"]) : "") . $from;
-                        }
-
-                        if ($from !== $documentServerUrl)
-                        {
-                            $this->logger->debug("Replace in track from " . $from . " to " . $documentServerUrl, array("app" => $this->appName));
-                            $url = str_replace($from, $documentServerUrl, $url);
-                        }
-                    }
+                    $url = $this->config->ReplaceDocumentServerUrlToInternal($url);
 
                     $fileName = $file->getName();
                     $curExt = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));

@@ -13,7 +13,7 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * For details, see the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
  *
- * You can contact Ascensio System SIA at 17-2 Elijas street, Riga, Latvia, EU, LV-1021.
+ * You can contact Ascensio System SIA at 20A-12 Ernesta Birznieka-Upisha street, Riga, Latvia, EU, LV-1050.
  *
  * The interactive user interfaces in modified source and object code versions of the Program
  * must display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
@@ -28,6 +28,9 @@
  */
 
 namespace OCA\Onlyoffice;
+
+use \DateInterval;
+use \DateTime;
 
 use OCP\IConfig;
 use OCP\ILogger;
@@ -59,6 +62,13 @@ class AppConfig {
      * @var OCP\ILogger
      */
     private $logger;
+
+    /**
+     * The config key for the demo server
+     *
+     * @var string
+     */
+    private $_demo = "demo";
 
     /**
      * The config key for the document server address
@@ -180,6 +190,13 @@ class AppConfig {
     private $_settingsError = "settings_error";
 
     /**
+     * Application name for watermark settings
+     *
+     * @var string
+     */
+    const WATERMARK_APP_NAMESPACE = "files";
+
+    /**
      * The config key for the modifyFilter
      *
      * @var string
@@ -252,6 +269,70 @@ class AppConfig {
     }
 
     /**
+     * Switch on demo server
+     *
+     * @param bool $value - select demo
+     *
+     * @return bool
+     */
+    public function SelectDemo($value) {
+        $this->logger->info("Select demo: " . json_encode($value), array("app" => $this->appName));
+
+        $data = $this->GetDemoData();
+
+        if ($value === true && !$data["available"]) {
+            $this->logger->info("Trial demo is overdue: " . json_encode($data), array("app" => $this->appName));
+            return false;
+        }
+
+        $data["enabled"] = $value === true;
+        if (!isset($data["start"])) {
+            $data["start"] = new DateTime();
+        }
+
+        $this->config->setAppValue($this->appName, $this->_demo, json_encode($data));
+        return true;
+    }
+
+    /**
+     * Get demo data
+     *
+     * @return array
+     */
+    public function GetDemoData() {
+        $data = $this->config->getAppValue($this->appName, $this->_demo, "");
+
+        if (empty($data)) {
+            return [
+                "available" => true,
+                "enabled" => false
+            ];
+        }
+        $data = json_decode($data, true);
+
+        $overdue = new DateTime(isset($data["start"]) ? $data["start"]["date"] : NULL);
+        $overdue->add(new DateInterval("P" . $this->DEMO_PARAM["TRIAL"] . "D"));
+        if ($overdue > new DateTime()) {
+            $data["available"] = true;
+            $data["enabled"] = $data["enabled"] === true;
+        } else {
+            $data["available"] = false;
+            $data["enabled"] = false;
+        }
+
+        return $data;
+    }
+
+    /**
+     * Get status of demo server
+     *
+     * @return bool
+     */
+    public function UseDemo() {
+        return $this->GetDemoData()["enabled"] === true;
+    }
+
+    /**
      * Save the document service address to the application configuration
      *
      * @param string $documentServer - document service address
@@ -273,12 +354,18 @@ class AppConfig {
     /**
      * Get the document service address from the application configuration
      *
+     * @param bool $origin - take origin
+     *
      * @return string
      */
-    public function GetDocumentServerUrl() {
+    public function GetDocumentServerUrl($origin = false) {
+        if (!$origin && $this->UseDemo()) {
+            return $this->DEMO_PARAM["ADDR"];
+        }
+
         $url = $this->config->getAppValue($this->appName, $this->_documentserver, "");
         if (empty($url)) {
-            $url = $this->getSystemValue($this->_documentserver);
+            $url = $this->GetSystemValue($this->_documentserver);
         }
         if ($url !== "/") {
             $url = rtrim($url, "/");
@@ -292,7 +379,7 @@ class AppConfig {
     /**
      * Save the document service address available from Nextcloud to the application configuration
      *
-     * @param string $documentServer - document service address
+     * @param string $documentServerInternal - document service address
      */
     public function SetDocumentServerInternalUrl($documentServerInternal) {
         $documentServerInternal = rtrim(trim($documentServerInternal), "/");
@@ -315,14 +402,45 @@ class AppConfig {
      *
      * @return string
      */
-    public function GetDocumentServerInternalUrl($origin) {
+    public function GetDocumentServerInternalUrl($origin = false) {
+        if (!$origin && $this->UseDemo()) {
+            return $this->GetDocumentServerUrl();
+        }
+
         $url = $this->config->getAppValue($this->appName, $this->_documentserverInternal, "");
         if (empty($url)) {
-            $url = $this->getSystemValue($this->_documentserverInternal);
+            $url = $this->GetSystemValue($this->_documentserverInternal);
         }
         if (!$origin && empty($url)) {
             $url = $this->GetDocumentServerUrl();
         }
+        return $url;
+    }
+
+    /**
+     * Replace domain in document server url with internal address from configuration
+     *
+     * @param string $url - document server url
+     *
+     * @return string
+     */
+    public function ReplaceDocumentServerUrlToInternal($url) {
+        $documentServerUrl = $this->GetDocumentServerInternalUrl();
+        if (!empty($documentServerUrl)) {
+            $from = $this->GetDocumentServerUrl();
+
+            if (!preg_match("/^https?:\/\//i", $from)) {
+                $parsedUrl = parse_url($url);
+                $from = $parsedUrl["scheme"] . "://" . $parsedUrl["host"] . (array_key_exists("port", $parsedUrl) ? (":" . $parsedUrl["port"]) : "") . $from;
+            }
+
+            if ($from !== $documentServerUrl)
+            {
+                $this->logger->debug("Replace url from " . $from . " to " . $documentServerUrl, array("app" => $this->appName));
+                $url = str_replace($from, $documentServerUrl, $url);
+            }
+        }
+
         return $url;
     }
 
@@ -353,7 +471,7 @@ class AppConfig {
     public function GetStorageUrl() {
         $url = $this->config->getAppValue($this->appName, $this->_storageUrl, "");
         if (empty($url)) {
-            $url = $this->getSystemValue($this->_storageUrl);
+            $url = $this->GetSystemValue($this->_storageUrl);
         }
         return $url;
     }
@@ -376,12 +494,18 @@ class AppConfig {
     /**
      * Get the document service secret key from the application configuration
      *
+     * @param bool $origin - take origin
+     *
      * @return string
      */
-    public function GetDocumentServerSecret() {
+    public function GetDocumentServerSecret($origin = false) {
+        if (!$origin && $this->UseDemo()) {
+            return $this->DEMO_PARAM["SECRET"];
+        }
+
         $secret = $this->config->getAppValue($this->appName, $this->_jwtSecret, "");
         if (empty($secret)) {
-            $secret = $this->getSystemValue($this->_jwtSecret);
+            $secret = $this->GetSystemValue($this->_jwtSecret);
         }
         return $secret;
     }
@@ -392,7 +516,11 @@ class AppConfig {
      * @return string
      */
     public function GetSKey() {
-        return $this->config->getSystemValue($this->_cryptSecret, true);
+        $secret = $this->GetDocumentServerSecret();
+        if (empty($secret)) {
+            $secret = $this->GetSystemValue($this->_cryptSecret, true);
+        }
+        return $secret;
     }
 
     /**
@@ -566,6 +694,92 @@ class AppConfig {
     }
 
     /**
+     * Save watermark settings
+     *
+     * @param array $settings - watermark settings
+     */
+    public function SetWatermarkSettings($settings) {
+        if ($settings["enabled"] !== "true") {
+            $this->config->setAppValue(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_enabled", "no");
+            return;
+        }
+
+        $this->config->setAppValue(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_text", trim($settings["text"]));
+
+        $watermarkLabels = [
+            "allGroups",
+            "allTags",
+            "linkAll",
+            "linkRead",
+            "linkSecure",
+            "linkTags",
+            "enabled",
+            "shareAll",
+            "shareRead",
+        ];
+        foreach ($watermarkLabels as $key) {
+            if ($settings[$key] !== null) {
+                $value = $settings[$key] === "true" ? "yes" : "no";
+                $this->config->setAppValue(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_" . $key, $value);
+            }
+        }
+
+        $watermarkLists = [
+            "allGroupsList",
+            "allTagsList",
+            "linkTagsList",
+        ];
+        foreach ($watermarkLists as $key) {
+            if ($settings[$key] !== null) {
+                $value = implode(",", $settings[$key]);
+                $this->config->setAppValue(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_" . $key, $value);
+            }
+        }
+    }
+
+    /**
+     * Get watermark settings
+     *
+     * @return bool|array
+     */
+    public function GetWatermarkSettings() {
+        $result = [
+            "text" => $this->config->getAppValue(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_text", "{userId}"),
+        ];
+
+        $watermarkLabels = [
+            "allGroups",
+            "allTags",
+            "linkAll",
+            "linkRead",
+            "linkSecure",
+            "linkTags",
+            "enabled",
+            "shareAll",
+            "shareRead",
+        ];
+
+        $trueResult = array("on", "yes", "true");
+        foreach ($watermarkLabels as $key) {
+            $value = $this->config->getAppValue(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_" . $key, "no");
+            $result[$key] = in_array($value, $trueResult);
+        }
+
+        $watermarkLists = [
+            "allGroupsList",
+            "allTagsList",
+            "linkTagsList",
+        ];
+
+        foreach ($watermarkLists as $key) {
+            $value = $this->config->getAppValue(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_" . $key, []);
+            $result[$key] = $value !== "" ? explode(",", $value) : [];
+        }
+
+        return $result;
+    }
+
+    /**
      * Save the list of groups
      *
      * @param array $groups - the list of groups
@@ -638,7 +852,7 @@ class AppConfig {
      * @return bool
      */
     public function TurnOffVerification() {
-        $turnOff = $this->getSystemValue($this->_verification);
+        $turnOff = $this->GetSystemValue($this->_verification);
         return $turnOff === true;
     }
 
@@ -648,7 +862,11 @@ class AppConfig {
      * @return string
      */
     public function JwtHeader() {
-        $header = $this->getSystemValue($this->_jwtHeader);
+        if ($this->UseDemo()) {
+            return $this->DEMO_PARAM["HEADER"];
+        }
+
+        $header = $this->GetSystemValue($this->_jwtHeader);
         if (empty($header)) {
             $header = "Authorization";
         }
@@ -737,5 +955,15 @@ class AppConfig {
         "xlt" => [ "type" => "spreadsheet", "conv" => true ],
         "xltm" => [ "mime" => "application/vnd.ms-excel.template.macroEnabled.12", "type" => "spreadsheet", "conv" => true ],
         "xltx" => [ "mime" => "application/vnd.openxmlformats-officedocument.spreadsheetml.template", "type" => "spreadsheet", "conv" => true ]
+    ];
+
+    /**
+     * DEMO DATA
+     */
+    private $DEMO_PARAM = [
+        "ADDR" => "https://onlinedocs.onlyoffice.com/",
+        "HEADER" => "AuthorizationJWT",
+        "SECRET" => "sn2puSUF7muF5Jas",
+        "TRIAL" => 30
     ];
 }
