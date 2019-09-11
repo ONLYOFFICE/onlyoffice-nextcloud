@@ -32,6 +32,7 @@
 
     if ($_["tagsEnabled"]) {
         script("core", [
+            "oc-backbone-webdav",
             "systemtags/systemtags",
             "systemtags/systemtagmodel",
             "systemtags/systemtagsmappingcollection",
