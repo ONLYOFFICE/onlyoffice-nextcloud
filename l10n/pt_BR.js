@@ -54,6 +54,10 @@ OC.L10N.register(
     "Display Feedback & Support menu button" : "Exibir o botão do menu de feedback e suporte",
     "Display Help menu button" : "Exibir o botão do menu Ajuda",
     "Display toolbar tabs" : "Exibir guias da barra de ferramentas",
+    "Save as" : "Salvar como",
+    "File saved" : "O arquivo foi salvo",
+    "Insert image" : "Inserir imagem",
+    "Select recipients" : "Selecione os destinatários",
     "Secure view enables you to secure documents by embedding a watermark" : "A visualização segura permite proteger documentos incorporando uma marca d'água",
     "Supported placeholders" : "Espaços reservados suportados"
 },

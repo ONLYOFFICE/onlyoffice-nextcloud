@@ -12,7 +12,7 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * For details, see the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
  *
- * You can contact Ascensio System SIA at 17-2 Elijas street, Riga, Latvia, EU, LV-1021.
+ * You can contact Ascensio System SIA at 20A-12 Ernesta Birznieka-Upisha street, Riga, Latvia, EU, LV-1050.
  *
  * The interactive user interfaces in modified source and object code versions of the Program
  * must display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
@@ -61,6 +61,13 @@
         $("#onlyofficeGroups").click(groupListToggle);
         groupListToggle();
 
+        var demoToggle = function() {
+            $("#onlyofficeAddrSettings input:not(#onlyofficeStorageUrl)").prop("disabled", $("#onlyofficeDemo").prop("checked"));
+        };
+
+        $("#onlyofficeDemo").click(demoToggle);
+        demoToggle();
+
         var watermarkToggle = function () {
             $("#onlyofficeWatermarkSettings").toggleClass("onlyoffice-hide", !$("#onlyofficeWatermark_enabled").prop("checked"));
         };
@@ -94,7 +101,7 @@
                                     multiple: true,
                                     separator: "|",
                                     toggleSelect: true,
-                                    placeholder: t("systemtags_manager", "Select tag…"),
+                                    placeholder: t("systemtags_manager", "Select tag�"),
                                     query: _.debounce(function(query) {
                                         query.callback({
                                             results: OC.SystemTags.collection.filterByName(query.term)
@@ -143,6 +150,7 @@
             var onlyofficeInternalUrl = ($("#onlyofficeInternalUrl:visible").val() || "").trim();
             var onlyofficeStorageUrl = ($("#onlyofficeStorageUrl:visible").val() || "").trim();
             var onlyofficeSecret = $("#onlyofficeSecret:visible").val() || "";
+            var demo = $("#onlyofficeDemo").prop("checked");
 
             $.ajax({
                 method: "PUT",
@@ -151,17 +159,18 @@
                     documentserver: onlyofficeUrl,
                     documentserverInternal: onlyofficeInternalUrl,
                     storageUrl: onlyofficeStorageUrl,
-                    secret: onlyofficeSecret
+                    secret: onlyofficeSecret,
+                    demo: demo
                 },
                 success: function onSuccess(response) {
                     $(".section-onlyoffice").removeClass("icon-loading");
-                    if (response && response.documentserver != null) {
+                    if (response && (response.documentserver != null || demo)) {
                         $("#onlyofficeUrl").val(response.documentserver);
                         $("#onlyofficeInternalUrl").val(response.documentserverInternal);
                         $("#onlyofficeStorageUrl").val(response.storageUrl);
                         $("#onlyofficeSecret").val(response.secret);
 
-                        $(".section-onlyoffice-common, .section-onlyoffice-watermark").toggleClass("onlyoffice-hide", !response.documentserver.length || !!response.error.length);
+                        $(".section-onlyoffice-common, .section-onlyoffice-watermark").toggleClass("onlyoffice-hide", (!response.documentserver.length && !demo) || !!response.error.length);
 
                         var message =
                             response.error
