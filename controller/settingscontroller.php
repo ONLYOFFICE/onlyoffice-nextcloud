@@ -29,6 +29,7 @@
 
 namespace OCA\Onlyoffice\Controller;
 
+use OCP\App;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IL10N;
@@ -127,7 +128,9 @@ class SettingsController extends Controller {
             "feedback" => $this->config->GetCustomizationFeedback(),
             "help" => $this->config->GetCustomizationHelp(),
             "toolbarNoTabs" => $this->config->GetCustomizationToolbarNoTabs(),
-            "successful" => $this->config->SettingsAreSuccessful()
+            "successful" => $this->config->SettingsAreSuccessful(),
+            "watermark" => $this->config->GetWatermarkSettings(),
+            "tagsEnabled" => App::isEnabled("systemtags")
         ];
         return new TemplateResponse($this->appName, "settings", $data, "blank");
     }
@@ -211,6 +214,28 @@ class SettingsController extends Controller {
         $this->config->SetCustomizationFeedback($feedback);
         $this->config->SetCustomizationHelp($help);
         $this->config->SetCustomizationToolbarNoTabs($toolbarNoTabs);
+
+        return [
+            ];
+    }
+
+    /**
+     * Save watermark settings
+     *
+     * @param array $settings - watermark settings
+     *
+     * @return array
+     */
+    public function SaveWatermark($settings) {
+
+        if ($settings["enabled"] === "true") {
+            $settings["text"] = ($settings["text"]).trim();
+            if (empty($settings["text"])) {
+                $settings["text"] = $this->trans->t("DO NOT SHARE THIS") . " {userId} {date}";
+            }
+        }
+
+        $this->config->SetWatermarkSettings($settings);
 
         return [
             ];

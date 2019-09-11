@@ -689,6 +689,8 @@ class EditorController extends Controller {
 
         $params = $this->setCustomization($params);
 
+        $params = $this->setWatermark($params, !empty($token), $userId, $fileId);
+
         if ($this->config->UseDemo()) {
             $params["editorConfig"]["tenant"] = $this->config->GetSystemValue("instanceid", true);
         }
@@ -939,6 +941,114 @@ class EditorController extends Controller {
         }
 
         return $params;
+    }
+
+    /**
+     * Set watermark parameters
+     *
+     * @param array params - file parameters
+     * @param bool isPublic - with access token
+     * @param string userId - user identifier
+     * @param string fileId - file identifier
+     *
+     * @return array
+     */
+    private function setWatermark($params, $isPublic, $userId, $fileId) {
+        $watermarkTemplate = $this->getWatermarkText($isPublic, $userId, $fileId,
+            $params["document"]["permissions"]["edit"] !== false,
+            $params["document"]["permissions"]["download"] !== false);
+
+        if ($watermarkTemplate !== false) {
+            $replacements = [
+                "userId" => $userId,
+                "date" => (new \DateTime())->format("Y-m-d H:i:s"),
+                "themingName" => \OC::$server->getThemingDefaults()->getName()
+            ];
+            $watermarkTemplate = preg_replace_callback("/{(.+?)}/", function($matches) use ($replacements)
+                {
+                    return $replacements[$matches[1]];
+                }, $watermarkTemplate);
+
+            $params["document"]["options"] = [
+                "watermark_on_draw" => [
+                    "align" => 1,
+                    "height" => 100,
+                    "paragraphs" => array([
+                        "align" => 2,
+                        "runs" => array([
+                            "fill" => [182, 182, 182],
+                            "font-size" => 70,
+                            "text" => $watermarkTemplate,
+                        ])
+                    ]),
+                    "rotate" => -45,
+                    "width" => 250,
+                ]
+            ];
+        }
+
+        return $params;
+    }
+
+    /**
+     * Should watermark
+     *
+     * @return bool|string
+     */
+    private function getWatermarkText($isPublic, $userId, $fileId, $canEdit, $canDownload) {
+        $watermarkSettings = $this->config->GetWatermarkSettings();
+        if (!$watermarkSettings["enabled"]) {
+            return false;
+        }
+
+        $watermarkText = $watermarkSettings["text"];
+
+        if ($isPublic) {
+            if ($watermarkSettings["linkAll"]) {
+                return $watermarkText;
+            }
+            if ($watermarkSettings["linkRead"] && !$canEdit) {
+                return $watermarkText;
+            }
+            if ($watermarkSettings["linkSecure"] && !$canDownload) {
+                return $watermarkText;
+            }
+            if ($watermarkSettings["linkTags"]) {
+                $tags = $watermarkSettings["linkTagsList"];
+                $fileTags = \OC::$server->getSystemTagObjectMapper()->getTagIdsForObjects([$fileId], "files")[$fileId];
+                foreach ($fileTags as $tagId) {
+                    if (in_array($tagId, $tags, true)) {
+                        return $watermarkText;
+                    }
+                }
+            }
+        } else {
+            if ($watermarkSettings["shareAll"]) {
+                return $watermarkText;
+            }
+            if ($watermarkSettings["shareRead"] && !$canEdit) {
+                return $watermarkText;
+            }
+        }
+        if ($watermarkSettings["allGroups"]) {
+            $groups = $watermarkSettings["allGroupsList"];
+            foreach ($groups as $group) {
+                if (\OC::$server->getGroupManager()->isInGroup($userId, $group)) {
+                    return $watermarkText;
+                }
+            }
+        }
+        if ($watermarkSettings["allTags"]) {
+            $tags = $watermarkSettings["allTagsList"];
+            $fileTags = \OC::$server->getSystemTagObjectMapper()->getTagIdsForObjects([$fileId], "files")[$fileId];
+            foreach ($fileTags as $tagId) {
+                if (in_array($tagId, $tags, true)) {
+                    return $watermarkText;
+                }
+            }
+        }
+
+        return false;
     }
 
     /**

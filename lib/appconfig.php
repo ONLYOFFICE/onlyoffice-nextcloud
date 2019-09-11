@@ -190,6 +190,13 @@ class AppConfig {
     private $_settingsError = "settings_error";
 
     /**
+     * Application name for watermark settings
+     *
+     * @var string
+     */
+    const WATERMARK_APP_NAMESPACE = "files";
+
+    /**
      * The config key for the modifyFilter
      *
      * @var string
@@ -684,6 +691,92 @@ class AppConfig {
      */
     public function GetCustomizationToolbarNoTabs() {
         return $this->config->getAppValue($this->appName, $this->_customizationToolbarNoTabs, "true") === "true";
+    }
+
+    /**
+     * Save watermark settings
+     *
+     * @param array $settings - watermark settings
+     */
+    public function SetWatermarkSettings($settings) {
+        if ($settings["enabled"] !== "true") {
+            $this->config->setAppValue(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_enabled", "no");
+            return;
+        }
+
+        $this->config->setAppValue(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_text", trim($settings["text"]));
+
+        $watermarkLabels = [
+            "allGroups",
+            "allTags",
+            "linkAll",
+            "linkRead",
+            "linkSecure",
+            "linkTags",
+            "enabled",
+            "shareAll",
+            "shareRead",
+        ];
+        foreach ($watermarkLabels as $key) {
+            if ($settings[$key] !== null) {
+                $value = $settings[$key] === "true" ? "yes" : "no";
+                $this->config->setAppValue(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_" . $key, $value);
+            }
+        }
+
+        $watermarkLists = [
+            "allGroupsList",
+            "allTagsList",
+            "linkTagsList",
+        ];
+        foreach ($watermarkLists as $key) {
+            if ($settings[$key] !== null) {
+                $value = implode(",", $settings[$key]);
+                $this->config->setAppValue(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_" . $key, $value);
+            }
+        }
+    }
+
+    /**
+     * Get watermark settings
+     *
+     * @return bool|array
+     */
+    public function GetWatermarkSettings() {
+        $result = [
+            "text" => $this->config->getAppValue(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_text", "{userId}"),
+        ];
+
+        $watermarkLabels = [
+            "allGroups",
+            "allTags",
+            "linkAll",
+            "linkRead",
+            "linkSecure",
+            "linkTags",
+            "enabled",
+            "shareAll",
+            "shareRead",
+        ];
+
+        $trueResult = array("on", "yes", "true");
+        foreach ($watermarkLabels as $key) {
+            $value = $this->config->getAppValue(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_" . $key, "no");
+            $result[$key] = in_array($value, $trueResult);
+        }
+
+        $watermarkLists = [
+            "allGroupsList",
+            "allTagsList",
+            "linkTagsList",
+        ];
+
+        foreach ($watermarkLists as $key) {
+            $value = $this->config->getAppValue(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_" . $key, []);
+            $result[$key] = $value !== "" ? explode(",", $value) : [];
+        }
+
+        return $result;
     }
 
     /**

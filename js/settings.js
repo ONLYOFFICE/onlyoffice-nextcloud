@@ -46,13 +46,11 @@
             advToogle();
         }
 
-        $("#onlyofficeAdv").click(function () {
-            advToogle();
-        });
+        $("#onlyofficeAdv").click(advToogle);
 
         $("#onlyofficeGroups").prop("checked", $("#onlyofficeLimitGroups").val() != "");
 
-        var groupListToggle = function() {
+        var groupListToggle = function () {
             if ($("#onlyofficeGroups").prop("checked")) {
                 OC.Settings.setupGroupsSelect($("#onlyofficeLimitGroups"));
             } else {
@@ -69,6 +67,76 @@
 
         $("#onlyofficeDemo").click(demoToggle);
         demoToggle();
+
+        var watermarkToggle = function () {
+            $("#onlyofficeWatermarkSettings").toggleClass("onlyoffice-hide", !$("#onlyofficeWatermark_enabled").prop("checked"));
+        };
+
+        $("#onlyofficeWatermark_enabled").click(watermarkToggle)
+
+        $("#onlyofficeWatermark_shareAll").click(function () {
+            $("#onlyofficeWatermark_shareRead").parent().toggleClass("onlyoffice-hide");
+        });
+
+        $("#onlyofficeWatermark_linkAll").click(function () {
+            $("#onlyofficeWatermark_link_sensitive").toggleClass("onlyoffice-hide");
+        });
+
+        var watermarkLists = [
+            "allGroups",
+            "allTags",
+            "linkTags",
+        ];
+        $.each(watermarkLists, function(i, watermarkList) {
+            var watermarkListToggle = function() {
+                if ($("#onlyofficeWatermark_" + watermarkList).prop("checked")) {
+                    if (watermarkList.indexOf("Group") >= 0) {
+                        OC.Settings.setupGroupsSelect($("#onlyofficeWatermark_" + watermarkList + "List"));
+                    } else {
+                        OC.SystemTags.collection.fetch({
+                            success: function() {
+                                $("#onlyofficeWatermark_" + watermarkList + "List").select2({
+                                    allowClear: true,
+                                    closeOnSelect: false,
+                                    multiple: true,
+                                    separator: "|",
+                                    toggleSelect: true,
+                                    placeholder: t("systemtags_manager", "Select tag…"),
+                                    query: _.debounce(function(query) {
+                                        query.callback({
+                                            results: OC.SystemTags.collection.filterByName(query.term)
+                                        });
+                                    }, 100, true),
+                                    initSelection: function(element, callback) {
+                                        var selection = ($(element).val() || []).split("|").map(function(tagId){
+                                            return OC.SystemTags.collection.get(tagId);
+                                        });
+                                        callback(selection);
+                                    },
+                                    formatResult: function (tag) {
+                                        return OC.SystemTags.getDescriptiveTag(tag);
+                                    },
+                                    formatSelection: function (tag) {
+                                        return tag.get("name");
+                                    },
+                                    sortResults: function(results) {
+                                        results.sort(function(a, b) {
+                                            return OC.Util.naturalSortCompare(a.get("name"), b.get("name"));
+                                        });
+                                        return results;
+                                    }
+                                });
+                            }
+                        });
+                    }
+                } else {
+                    $("#onlyofficeWatermark_" + watermarkList + "List").select2("destroy");
+                }
+            };
+
+            $("#onlyofficeWatermark_" + watermarkList).click(watermarkListToggle);
+            watermarkListToggle();
+        });
 
 
         $("#onlyofficeAddrSave").click(function () {
@@ -102,7 +170,7 @@
                         $("#onlyofficeStorageUrl").val(response.storageUrl);
                         $("#onlyofficeSecret").val(response.secret);
 
-                        $(".section-onlyoffice-2").toggleClass("onlyoffice-hide", (!response.documentserver.length && !demo) || !!response.error.length);
+                        $(".section-onlyoffice-common, .section-onlyoffice-watermark").toggleClass("onlyoffice-hide", (!response.documentserver.length && !demo) || !!response.error.length);
 
                         var message =
                             response.error
@@ -167,7 +235,55 @@
             });
         });
 
-        $(".section-onlyoffice input").keypress(function (e) {
+        $("#onlyofficeWatermarkSave").click(function () {
+            $(".section-onlyoffice").addClass("icon-loading");
+
+            var watermarkSettings = {
+                enabled: $("#onlyofficeWatermark_enabled").is(":checked")
+            };
+            if (watermarkSettings.enabled) {
+                watermarkSettings.text = ($("#onlyofficeWatermark_text").val() || "").trim();
+
+                var watermarkLabels = [
+                    "allGroups",
+                    "allTags",
+                    "linkAll",
+                    "linkRead",
+                    "linkSecure",
+                    "linkTags",
+                    "shareAll",
+                    "shareRead"
+                ];
+                $.each(watermarkLabels, function (i, watermarkLabel) {
+                    watermarkSettings[watermarkLabel] = $("#onlyofficeWatermark_" + watermarkLabel).is(":checked");
+                });
+
+                $.each(watermarkLists, function (i, watermarkList) {
+                    var list = $("#onlyofficeWatermark_" + watermarkList).is(":checked") ? $("#onlyofficeWatermark_" + watermarkList + "List").val() : "";
+                    watermarkSettings[watermarkList + "List"] = list ? list.split("|") : [];
+                });
+
+            }
+
+            $.ajax({
+                method: "PUT",
+                url: OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/settings/watermark"),
+                data: {
+                    settings: watermarkSettings
+                },
+                success: function onSuccess(response) {
+                    $(".section-onlyoffice").removeClass("icon-loading");
+                    if (response) {
+                        var message = t(OCA.Onlyoffice.AppName, "Settings have been successfully updated");
+                        OC.Notification.show(message, {
+                            timeout: 3
+                        });
+                    }
+                }
+            });
+        });
+
+        $(".section-onlyoffice-addr input").keypress(function (e) {
             var code = e.keyCode || e.which;
             if (code === 13) {
                 $("#onlyofficeAddrSave").click();

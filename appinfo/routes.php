@@ -41,6 +41,7 @@ return [
        ["name" => "editor#url", "url" => "/ajax/url", "verb" => "GET"],
        ["name" => "settings#save_address", "url" => "/ajax/settings/address", "verb" => "PUT"],
        ["name" => "settings#save_common", "url" => "/ajax/settings/common", "verb" => "PUT"],
+       ["name" => "settings#save_watermark", "url" => "/ajax/settings/watermark", "verb" => "PUT"],
        ["name" => "settings#get_settings", "url" => "/ajax/settings", "verb" => "GET"],
     ]
 ];

@@ -57,6 +57,8 @@ OC.L10N.register(
     "Save as" : "Spara som",
     "File saved" : "Filen har sparats",
     "Insert image" : "Infoga bild",
-    "Select recipients" : "Välj mottagare"
+    "Select recipients" : "Välj mottagare",
+    "Secure view enables you to secure documents by embedding a watermark" : "Med säker vy kan du säkra dokument genom att bädda in ett vattenstämpel",
+    "Supported placeholders" : "Platshållare som stöds"
 },
 "nplurals=2; plural=(n != 1);");

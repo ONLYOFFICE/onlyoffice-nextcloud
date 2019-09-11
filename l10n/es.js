@@ -57,6 +57,8 @@ OC.L10N.register(
     "Save as" : "Guardar como",
     "File saved" : "El archivo ha sido guardado",
     "Insert image" : "Insertar imagen",
-    "Select recipients" : "Seleccionar destinatarios"
+    "Select recipients" : "Seleccionar destinatarios",
+    "Secure view enables you to secure documents by embedding a watermark" : "La vista segura permite asegurar documentos mediante la inserción de una marca de agua en ellos",
+    "Supported placeholders" : "Marcadores soportados"
 },
 "nplurals=2; plural=(n != 1);");
