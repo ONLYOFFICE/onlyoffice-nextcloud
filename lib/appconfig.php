@@ -773,7 +773,11 @@ class AppConfig {
 
         foreach ($watermarkLists as $key) {
             $value = $this->config->getAppValue(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_" . $key, []);
-            $result[$key] = $value !== "" ? explode(",", $value) : [];
+            if ( is_array($value))
+			{$result[$key] = $value;
+			}else {
+				$result[$key] = $value !== "" ? explode(",", $value) : [];
+			}		
         }
 
         return $result;
