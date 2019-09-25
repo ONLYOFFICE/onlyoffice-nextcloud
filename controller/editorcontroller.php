@@ -689,7 +689,7 @@ class EditorController extends Controller {
 
         $params = $this->setCustomization($params);
 
-        $params = $this->setWatermark($params, !empty($token), $userId, $fileId);
+        $params = $this->setWatermark($params, !empty($token), $userId, $file);
 
         if ($this->config->UseDemo()) {
             $params["editorConfig"]["tenant"] = $this->config->GetSystemValue("instanceid", true);
@@ -949,12 +949,12 @@ class EditorController extends Controller {
      * @param array params - file parameters
      * @param bool isPublic - with access token
      * @param string userId - user identifier
-     * @param string fileId - file identifier
+     * @param string file - file
      *
      * @return array
      */
-    private function setWatermark($params, $isPublic, $userId, $fileId) {
-        $watermarkTemplate = $this->getWatermarkText($isPublic, $userId, $fileId,
+    private function setWatermark($params, $isPublic, $userId, $file) {
+        $watermarkTemplate = $this->getWatermarkText($isPublic, $userId, $file,
             $params["document"]["permissions"]["edit"] !== false,
             $params["document"]["permissions"]["download"] !== false);
 
@@ -993,15 +993,22 @@ class EditorController extends Controller {
     /**
      * Should watermark
      *
+     * @param bool isPublic - with access token
+     * @param string userId - user identifier
+     * @param string file - file
+     * @param bool canEdit - edit permission
+     * @param bool canDownload - download permission
+     *
      * @return bool|string
      */
-    private function getWatermarkText($isPublic, $userId, $fileId, $canEdit, $canDownload) {
+    private function getWatermarkText($isPublic, $userId, $file, $canEdit, $canDownload) {
         $watermarkSettings = $this->config->GetWatermarkSettings();
         if (!$watermarkSettings["enabled"]) {
             return false;
         }
 
         $watermarkText = $watermarkSettings["text"];
+        $fileId = $file->getId();
 
         if ($isPublic) {
             if ($watermarkSettings["linkAll"]) {
@@ -1023,7 +1030,7 @@ class EditorController extends Controller {
                 }
             }
         } else {
-            if ($watermarkSettings["shareAll"]) {
+            if ($watermarkSettings["shareAll"] && $file->getOwner()->getUID() !== $userId) {
                 return $watermarkText;
             }
             if ($watermarkSettings["shareRead"] && !$canEdit) {
