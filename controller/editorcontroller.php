@@ -173,25 +173,25 @@ class EditorController extends Controller {
      *
      * @param string $name - file name
      * @param string $dir - folder path
-     * @param string $token - access token
+     * @param string $shareToken - access token
      *
      * @return array
      *
      * @NoAdminRequired
      * @PublicPage
      */
-    public function create($name, $dir, $token = NULL) {
+    public function create($name, $dir, $shareToken = NULL) {
         $this->logger->debug("Create: " . $name, array("app" => $this->appName));
 
-        if (empty($token) && !$this->config->isUserAllowedToUse()) {
+        if (empty($shareToken) && !$this->config->isUserAllowedToUse()) {
             return ["error" => $this->trans->t("Not permitted")];
         }
 
-        if (empty($token)) {
+        if (empty($shareToken)) {
             $userId = $this->userSession->getUser()->getUID();
             $userFolder = $this->root->getUserFolder($userId);
         } else {
-            list ($userFolder, $error, $share) = $this->getNodeByToken($token);
+            list ($userFolder, $error, $share) = $this->getNodeByToken($shareToken);
 
             if (isset($error)) {
                 $this->logger->error("Create: " . $error, array("app" => $this->appName));
@@ -202,7 +202,7 @@ class EditorController extends Controller {
                 return ["error" => $this->trans->t("You don't have enough permission to create")];
             }
 
-            if (!empty($token) && ($share->getPermissions() & Constants::PERMISSION_CREATE) === 0) {
+            if (!empty($shareToken) && ($share->getPermissions() & Constants::PERMISSION_CREATE) === 0) {
                 $this->logger->error("Create in public folder without access: " . $fileId, array("app" => $this->appName));
                 return ["error" => $this->trans->t("You do not have enough permissions to view the file")];
             }
@@ -268,17 +268,17 @@ class EditorController extends Controller {
      * Conversion file to Office Open XML format
      *
      * @param integer $fileId - file identifier
-     * @param string $token - access token
+     * @param string $shareToken - access token
      *
      * @return array
      *
      * @NoAdminRequired
      * @PublicPage
      */
-    public function convert($fileId, $token = NULL) {
+    public function convert($fileId, $shareToken = NULL) {
         $this->logger->debug("Convert: " . $fileId, array("app" => $this->appName));
 
-        if (empty($token) && !$this->config->isUserAllowedToUse()) {
+        if (empty($shareToken) && !$this->config->isUserAllowedToUse()) {
             return ["error" => $this->trans->t("Not permitted")];
         }
 
@@ -288,14 +288,14 @@ class EditorController extends Controller {
             $userId = $user->getUID();
         }
 
-        list ($file, $error, $share) = empty($token) ? $this->getFile($userId, $fileId) : $this->getFileByToken($fileId, $token);
+        list ($file, $error, $share) = empty($shareToken) ? $this->getFile($userId, $fileId) : $this->getFileByToken($fileId, $shareToken);
 
         if (isset($error)) {
             $this->logger->error("Convertion: " . $fileId . " " . $error, array("app" => $this->appName));
             return ["error" => $error];
         }
 
-        if (!empty($token) && ($share->getPermissions() & Constants::PERMISSION_CREATE) === 0) {
+        if (!empty($shareToken) && ($share->getPermissions() & Constants::PERMISSION_CREATE) === 0) {
             $this->logger->error("Convertion in public folder without access: " . $fileId, array("app" => $this->appName));
             return ["error" => $this->trans->t("You do not have enough permissions to view the file")];
         }
@@ -326,7 +326,7 @@ class EditorController extends Controller {
         $newFileUri;
         $documentService = new DocumentService($this->trans, $this->config);
         $key = $this->getKey($file);
-        $fileUrl = $this->getUrl($file, $token);
+        $fileUrl = $this->getUrl($file, $shareToken);
         try {
             $newFileUri = $documentService->GetConvertedUri($fileUrl, $ext, $internalExtension, $key);
         } catch (\Exception $e) {
@@ -474,7 +474,7 @@ class EditorController extends Controller {
      * Print editor section
      *
      * @param integer $fileId - file identifier
-     * @param string $token - access token
+     * @param string $shareToken - access token
      * @param string $filePath - file path
      *
      * @return TemplateResponse|RedirectResponse
@@ -482,17 +482,17 @@ class EditorController extends Controller {
      * @NoAdminRequired
      * @NoCSRFRequired
      */
-    public function index($fileId, $token = NULL, $filePath = NULL) {
+    public function index($fileId, $shareToken = NULL, $filePath = NULL) {
         $this->logger->debug("Open: " . $fileId . " " . $filePath, array("app" => $this->appName));
 
-        if (empty($token) && !$this->userSession->isLoggedIn()) {
+        if (empty($shareToken) && !$this->userSession->isLoggedIn()) {
             $redirectUrl = $this->urlGenerator->linkToRoute("core.login.showLoginForm", [
                 "redirect_url" => $this->request->getRequestUri()
             ]);
             return new RedirectResponse($redirectUrl);
         }
 
-        if (empty($token) && !$this->config->isUserAllowedToUse()) {
+        if (empty($shareToken) && !$this->config->isUserAllowedToUse()) {
             return $this->renderError($this->trans->t("Not permitted"));
         }
 
@@ -507,7 +507,7 @@ class EditorController extends Controller {
             "documentServerUrl" => $documentServerUrl,
             "fileId" => $fileId,
             "filePath" => $filePath,
-            "token" => $token
+            "shareToken" => $shareToken
         ];
 
         $response = new TemplateResponse($this->appName, "editor", $params);
@@ -530,7 +530,7 @@ class EditorController extends Controller {
      * Print public editor section
      *
      * @param integer $fileId - file identifier
-     * @param string $token - access token
+     * @param string $shareToken - access token
      *
      * @return TemplateResponse
      *
@@ -538,8 +538,8 @@ class EditorController extends Controller {
      * @NoCSRFRequired
      * @PublicPage
      */
-    public function PublicPage($fileId, $token) {
-        return $this->index($fileId, $token);
+    public function PublicPage($fileId, $shareToken) {
+        return $this->index($fileId, $shareToken);
     }
 
     /**
@@ -547,7 +547,7 @@ class EditorController extends Controller {
      *
      * @param integer $fileId - file identifier
      * @param string $filePath - file path
-     * @param string $token - access token
+     * @param string $shareToken - access token
      * @param bool $desktop - desktop label
      *
      * @return array
@@ -555,9 +555,9 @@ class EditorController extends Controller {
      * @NoAdminRequired
      * @PublicPage
      */
-    public function config($fileId, $filePath = NULL, $token = NULL, $desktop = false) {
+    public function config($fileId, $filePath = NULL, $shareToken = NULL, $desktop = false) {
 
-        if (empty($token) && !$this->config->isUserAllowedToUse()) {
+        if (empty($shareToken) && !$this->config->isUserAllowedToUse()) {
             return ["error" => $this->trans->t("Not permitted")];
         }
 
@@ -567,7 +567,7 @@ class EditorController extends Controller {
             $userId = $user->getUID();
         }
 
-        list ($file, $error, $share) = empty($token) ? $this->getFile($userId, $fileId, $filePath) : $this->getFileByToken($fileId, $token);
+        list ($file, $error, $share) = empty($shareToken) ? $this->getFile($userId, $fileId, $filePath) : $this->getFileByToken($fileId, $shareToken);
 
         if (isset($error)) {
             $this->logger->error("Config: " . $fileId . " " . $error, array("app" => $this->appName));
@@ -582,7 +582,7 @@ class EditorController extends Controller {
             return ["error" => $this->trans->t("Format is not supported")];
         }
 
-        $fileUrl = $this->getUrl($file, $token);
+        $fileUrl = $this->getUrl($file, $shareToken);
         $key = $this->getKey($file);
 
         $params = [
@@ -607,7 +607,7 @@ class EditorController extends Controller {
 
         $canEdit = isset($format["edit"]) && $format["edit"];
         $editable = $file->isUpdateable()
-                    && (empty($token) || ($share->getPermissions() & Constants::PERMISSION_UPDATE) === Constants::PERMISSION_UPDATE);
+                    && (empty($shareToken) || ($share->getPermissions() & Constants::PERMISSION_UPDATE) === Constants::PERMISSION_UPDATE);
         $params["document"]["permissions"]["edit"] = $editable;
         if ($editable && $canEdit) {
             $ownerId = NULL;
@@ -616,7 +616,7 @@ class EditorController extends Controller {
                 $ownerId = $owner->getUID();
             }
 
-            $hashCallback = $this->crypt->GetHash(["fileId" => $file->getId(), "ownerId" => $ownerId, "token" => $token, "action" => "track"]);
+            $hashCallback = $this->crypt->GetHash(["fileId" => $file->getId(), "ownerId" => $ownerId, "shareToken" => $shareToken, "action" => "track"]);
             $callback = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.track", ["doc" => $hashCallback]);
 
             if (!empty($this->config->GetStorageUrl())) {
@@ -641,7 +641,7 @@ class EditorController extends Controller {
 
         $folderLink = NULL;
 
-        if (!empty($token)) {
+        if (!empty($shareToken)) {
             if (method_exists($share, "getHideDownload") && $share->getHideDownload()) {
                 $params["document"]["permissions"]["download"] = false;
                 $params["document"]["permissions"]["print"] = false;
@@ -655,7 +655,7 @@ class EditorController extends Controller {
                     $linkAttr = [
                         "path" => $folderPath,
                         "scrollto" => $file->getName(),
-                        "token" => $token
+                        "token" => $shareToken
                     ];
                     $folderLink = $this->urlGenerator->linkToRouteAbsolute("files_sharing.sharecontroller.showShare", $linkAttr);
                 }
@@ -686,7 +686,7 @@ class EditorController extends Controller {
 
         $params = $this->setCustomization($params);
 
-        $params = $this->setWatermark($params, !empty($token), $userId, $file);
+        $params = $this->setWatermark($params, !empty($shareToken), $userId, $file);
 
         if ($this->config->UseDemo()) {
             $params["editorConfig"]["tenant"] = $this->config->GetSystemValue("instanceid", true);
@@ -750,12 +750,12 @@ class EditorController extends Controller {
      * Getting file by token
      *
      * @param integer $fileId - file identifier
-     * @param string $token - access token
+     * @param string $shareToken - access token
      *
      * @return array
      */
-    private function getFileByToken($fileId, $token) {
-        list ($node, $error, $share) = $this->getNodeByToken($token);
+    private function getFileByToken($fileId, $shareToken) {
+        list ($node, $error, $share) = $this->getNodeByToken($shareToken);
 
         if (isset($error)) {
             return [NULL, $error, NULL];
@@ -784,12 +784,12 @@ class EditorController extends Controller {
     /**
      * Getting file by token
      *
-     * @param string $token - access token
+     * @param string $shareToken - access token
      *
      * @return array
      */
-    private function getNodeByToken($token) {
-        list ($share, $error) = $this->getShare($token);
+    private function getNodeByToken($shareToken) {
+        list ($share, $error) = $this->getShare($shareToken);
 
         if (isset($error)) {
             return [NULL, $error, NULL];
@@ -812,18 +812,18 @@ class EditorController extends Controller {
     /**
      * Getting share by token
      *
-     * @param string $token - access token
+     * @param string $shareToken - access token
      *
      * @return array
      */
-    private function getShare($token) {
-        if (empty($token)) {
+    private function getShare($shareToken) {
+        if (empty($shareToken)) {
             return [NULL, $this->trans->t("FileId is empty")];
         }
 
         $share;
         try {
-            $share = $this->shareManager->getShareByToken($token);
+            $share = $this->shareManager->getShareByToken($shareToken);
         } catch (ShareNotFound $e) {
             $this->logger->error("getShare error: " . $e->getMessage(), array("app" => $this->appName));
             $share = NULL;
@@ -863,11 +863,11 @@ class EditorController extends Controller {
      * Generate secure link to download document
      *
      * @param integer $file - file
-     * @param string $token - access token
+     * @param string $shareToken - access token
      *
      * @return string
      */
-    private function getUrl($file, $token = NULL) {
+    private function getUrl($file, $shareToken = NULL) {
 
         $user = $this->userSession->getUser();
         $userId = NULL;
@@ -876,14 +876,14 @@ class EditorController extends Controller {
         }
 
         $ownerId = NULL;
-        if (empty($token)) {
+        if (empty($shareToken)) {
             $owner = $file->getOwner();
             if (!empty($owner)) {
                 $ownerId = $owner->getUID();
             }
         }
 
-        $hashUrl = $this->crypt->GetHash(["fileId" => $file->getId(), "userId" => $userId, "ownerId" => $ownerId, "token" => $token, "action" => "download"]);
+        $hashUrl = $this->crypt->GetHash(["fileId" => $file->getId(), "userId" => $userId, "ownerId" => $ownerId, "shareToken" => $shareToken, "action" => "download"]);
 
         $fileUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.download", ["doc" => $hashUrl]);
 

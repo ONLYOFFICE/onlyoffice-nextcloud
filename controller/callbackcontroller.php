@@ -224,8 +224,8 @@ class CallbackController extends Controller {
             }
         }
 
-        $token = isset($hashData->token) ? $hashData->token : NULL;
-        list ($file, $error) = empty($token) ? $this->getFile($userId, $fileId) : $this->getFileByToken($fileId, $token);
+        $shareToken = isset($hashData->shareToken) ? $hashData->shareToken : NULL;
+        list ($file, $error) = empty($shareToken) ? $this->getFile($userId, $fileId) : $this->getFileByToken($fileId, $shareToken);
 
         if (isset($error)) {
             return $error;
@@ -312,7 +312,7 @@ class CallbackController extends Controller {
      * @param string $key - the edited document identifier
      * @param integer $status - the edited status
      * @param string $url - the link to the edited document to be saved
-     * @param string $token - access token
+     * @param string $token - request signature
      *
      * @return array
      *
@@ -381,14 +381,14 @@ class CallbackController extends Controller {
                 }
 
                 try {
-                    $token = isset($hashData->token) ? $hashData->token : NULL;
+                    $shareToken = isset($hashData->shareToken) ? $hashData->shareToken : NULL;
 
                     $userId = $users[0];
                     $user = $this->userManager->get($userId);
                     if (!empty($user)) {
                         $this->userSession->setUser($user);
                     } else {
-                        if (empty($token)) {
+                        if (empty($shareToken)) {
                             $this->logger->error("Track without access: " . $fileId . " status " . $trackerStatus, array("app" => $this->appName));
                             return new JSONResponse(["message" => "User and token is empty"], Http::STATUS_BAD_REQUEST);
                         }
@@ -406,7 +406,7 @@ class CallbackController extends Controller {
                         \OC_Util::setupFS($userId);
                     }
 
-                    list ($file, $error) = empty($token) ? $this->getFile($userId, $fileId) : $this->getFileByToken($fileId, $token);
+                    list ($file, $error) = empty($shareToken) ? $this->getFile($userId, $fileId) : $this->getFileByToken($fileId, $shareToken);
 
                     if (isset($error)) {
                         $this->logger->error("track error" . $fileId ." " . json_encode($error->getData()),  array("app" => $this->appName));
@@ -492,12 +492,12 @@ class CallbackController extends Controller {
      * Getting file by token
      *
      * @param integer $fileId - file identifier
-     * @param string $token - access token
+     * @param string $shareToken - access token
      *
      * @return array
      */
-    private function getFileByToken($fileId, $token) {
-        list ($share, $error) = $this->getShare($token);
+    private function getFileByToken($fileId, $shareToken) {
+        list ($share, $error) = $this->getShare($shareToken);
 
         if (isset($error)) {
             return [NULL, $error];
@@ -532,18 +532,18 @@ class CallbackController extends Controller {
     /**
      * Getting share by token
      *
-     * @param string $token - access token
+     * @param string $shareToken - access token
      *
      * @return array
      */
-    private function getShare($token) {
-        if (empty($token)) {
+    private function getShare($shareToken) {
+        if (empty($shareToken)) {
             return [NULL, new JSONResponse(["message" => $this->trans->t("FileId is empty")], Http::STATUS_BAD_REQUEST)];
         }
 
         $share;
         try {
-            $share = $this->shareManager->getShareByToken($token);
+            $share = $this->shareManager->getShareByToken($shareToken);
         } catch (ShareNotFound $e) {
             $this->logger->error("getShare error: " . $e->getMessage(), array("app" => $this->appName));
             $share = NULL;
