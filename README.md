@@ -51,15 +51,15 @@ The table below will help you to make the right choice.
 | Simultaneous connections | up to 20 maximum  | As in chosen pricing plan |
 | Number of users | up to 20 recommended | As in chosen pricing plan |
 | License | GNU AGPL v.3 | Proprietary |
-| **Support** | **Community Edition** | **Integration Edition** | 
+| **Support** | **Community Edition** | **Integration Edition** |
 | Documentation | [Help Center](https://helpcenter.onlyoffice.com/server/docker/opensource/index.aspx) | [Help Center](https://helpcenter.onlyoffice.com/server/integration-edition/index.aspx) |
 | Standard support | [GitHub](https://github.com/ONLYOFFICE/DocumentServer/issues) or paid | One year support included |
 | Premium support | [Buy Now](https://www.onlyoffice.com/support.aspx?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud) | [Buy Now](https://www.onlyoffice.com/support.aspx?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud) |
-| **Services** | **Community Edition** | **Integration Edition** | 
-| Conversion Service                | + | + | 
-| Document Builder Service          | - | + | 
+| **Services** | **Community Edition** | **Integration Edition** |
+| Conversion Service                | + | + |
+| Document Builder Service          | + | + |
 | **Interface** | **Community Edition** | **Integration Edition** |
-| Tabbed interface                       | - | + |
+| Tabbed interface                       | + | + |
 | White Label                            | - | - |
 | Integrated test example (node.js)*     | - | + |
 | **Plugins & Macros** | **Community Edition** | **Integration Edition** |
@@ -70,27 +70,27 @@ The table below will help you to make the right choice.
 | Comments                          | + | + |
 | Built-in chat                     | + | + |
 | Review and tracking changes       | + | + |
-| Display modes of tracking changes | - | + |
+| Display modes of tracking changes | + | + |
 | Version history                   | + | + |
 | **Document Editor features** | **Community Edition** | **Integration Edition** |
 | Font and paragraph formatting   | + | + |
 | Object insertion                | + | + |
-| Content control                 | - | + |
+| Content control                 | + | + |
 | Layout tools                    | + | + |
 | Table of contents               | + | + |
-| Navigation panel                | - | + |
+| Navigation panel                | + | + |
 | Mail Merge                      | + | + |
 | **Spreadsheet Editor features** | **Community Edition** | **Integration Edition** |
 | Font and paragraph formatting   | + | + |
 | Object insertion                | + | + |
 | Functions, formulas, equations  | + | + |
 | Table templates                 | + | + |
-| Pivot tables                    | - | +** |
+| Pivot tables                    | +** | +** |
 | **Presentation Editor features** | **Community Edition** | **Integration Edition** |
 | Font and paragraph formatting   | + | + |
 | Object insertion                | + | + |
 | Animations                      | + | + |
-| Presenter mode                  | - | + |
+| Presenter mode                  | + | + |
 | Notes                           | + | + |
 | | [Get it now](https://www.onlyoffice.com/download.aspx?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud)  | [Start Free Trial](https://www.onlyoffice.com/connectors-request.aspx?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud)  |
 
