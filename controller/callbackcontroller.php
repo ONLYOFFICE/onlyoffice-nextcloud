@@ -377,31 +377,36 @@ class CallbackController extends Controller {
             case "Corrupted":
                 if (empty($url)) {
                     $this->logger->error("Track without url: " . $fileId . " status " . $trackerStatus, array("app" => $this->appName));
-                    return new JSONResponse(["message" => $this->trans->t("Url not found")], Http::STATUS_BAD_REQUEST);
+                    return new JSONResponse(["message" => "Url not found"], Http::STATUS_BAD_REQUEST);
                 }
 
                 try {
-                    $ownerId = $hashData->ownerId;
                     $token = isset($hashData->token) ? $hashData->token : NULL;
-                    if (empty($ownerId) && empty($token)) {
-                        $this->logger->error("Track without owner: " . $fileId . " status " . $trackerStatus, array("app" => $this->appName));
-                        return new JSONResponse(["message" => $this->trans->t("File owner is empty")], Http::STATUS_BAD_REQUEST);
-                    }
 
                     $userId = $users[0];
                     $user = $this->userManager->get($userId);
                     if (!empty($user)) {
                         $this->userSession->setUser($user);
                     } else {
+                        if (empty($token)) {
+                            $this->logger->error("Track without access: " . $fileId . " status " . $trackerStatus, array("app" => $this->appName));
+                            return new JSONResponse(["message" => "User and token is empty"], Http::STATUS_BAD_REQUEST);
+                        }
+
                         $this->logger->debug("Track by anonymous " . $userId, array("app" => $this->appName));
                     }
 
-                    \OC_Util::tearDownFS();
-                    if (!empty($ownerId)) {
-                        \OC_Util::setupFS($ownerId);
+                    $ownerId = $hashData->ownerId;
+                    if (!empty($this->userManager->get($ownerId))) {
+                        $userId = $ownerId;
                     }
 
-                    list ($file, $error) = empty($token) ? $this->getFile($ownerId, $fileId) : $this->getFileByToken($fileId, $token);
+                    \OC_Util::tearDownFS();
+                    if (!empty($userId)) {
+                        \OC_Util::setupFS($userId);
+                    }
+
+                    list ($file, $error) = empty($token) ? $this->getFile($userId, $fileId) : $this->getFileByToken($fileId, $token);
 
                     if (isset($error)) {
                         $this->logger->error("track error" . $fileId ." " . json_encode($error->getData()),  array("app" => $this->appName));
