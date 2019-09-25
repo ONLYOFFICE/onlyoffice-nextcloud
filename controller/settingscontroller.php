@@ -331,7 +331,7 @@ class SettingsController extends Controller {
         try {
             $documentService->Request($convertedFileUri);
         } catch (\Exception $e) {
-            $this->logger->error("Request converted file on check error: " . $convertedFileUri . " " . $e->getMessage(), array("app" => $this->appName));
+            $this->logger->error("Request converted file on check error: " . $e->getMessage(), array("app" => $this->appName));
             return $e->getMessage();
         }
 
