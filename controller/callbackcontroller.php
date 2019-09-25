@@ -467,7 +467,12 @@ class CallbackController extends Controller {
             return [NULL, new JSONResponse(["message" => $this->trans->t("FileId is empty")], Http::STATUS_BAD_REQUEST)];
         }
 
-        $files = $this->root->getUserFolder($userId)->getById($fileId);
+        try {
+            $files = $this->root->getUserFolder($userId)->getById($fileId);
+        } catch (\Exception $e) {
+            $this->logger->error("getFile: " . $fileId . " " . $e->getMessage(), array("app" => $this->appName));
+            return [NULL, new JSONResponse(["message" => $this->trans->t("Invalid request")], Http::STATUS_BAD_REQUEST)];
+        }
 
         if (empty($files)) {
             $this->logger->error("Files not found: " . $fileId, array("app" => $this->appName));
@@ -506,7 +511,12 @@ class CallbackController extends Controller {
         }
 
         if ($node instanceof Folder) {
-            $files = $node->getById($fileId);
+            try {
+                $files = $node->getById($fileId);
+            } catch (\Exception $e) {
+                $this->logger->error("getFileByToken: " . $fileId . " " . $e->getMessage(), array("app" => $this->appName));
+                return [NULL, new JSONResponse(["message" => $this->trans->t("Invalid request")], Http::STATUS_NOT_FOUND)];
+            }
 
             if (empty($files)) {
                 return [NULL, new JSONResponse(["message" => $this->trans->t("File not found")], Http::STATUS_NOT_FOUND)];

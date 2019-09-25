@@ -716,7 +716,12 @@ class EditorController extends Controller {
             return [NULL, $this->trans->t("FileId is empty"), NULL];
         }
 
-        $files = $this->root->getUserFolder($userId)->getById($fileId);
+        try {
+            $files = $this->root->getUserFolder($userId)->getById($fileId);
+        } catch (\Exception $e) {
+            $this->logger->error("getFile: " . $fileId . " " . $e->getMessage(), array("app" => $this->appName));
+            return [NULL, $this->trans->t("Invalid request"), NULL];
+        }
 
         if (empty($files)) {
             $this->logger->info("Files not found: " . $fileId, array("app" => $this->appName));
@@ -757,7 +762,12 @@ class EditorController extends Controller {
         }
 
         if ($node instanceof Folder) {
-            $files = $node->getById($fileId);
+            try {
+                $files = $node->getById($fileId);
+            } catch (\Exception $e) {
+                $this->logger->error("getFileByToken: " . $fileId . " " . $e->getMessage(), array("app" => $this->appName));
+                return [NULL, $this->trans->t("Invalid request"), NULL];
+            }
 
             if (empty($files)) {
                 $this->logger->info("Files not found: " . $fileId, array("app" => $this->appName));
