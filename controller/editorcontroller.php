@@ -221,7 +221,7 @@ class EditorController extends Controller {
 
         $ext = strtolower("." . pathinfo($name, PATHINFO_EXTENSION));
 
-        $lang = $this->trans->getLanguageCode();
+        $lang = \OC::$server->getL10NFactory("")->get("")->getLanguageCode();
 
         $templatePath = $this->getTemplatePath($lang, $ext);
         if (!file_exists($templatePath)) {
@@ -595,7 +595,7 @@ class EditorController extends Controller {
             ],
             "documentType" => $format["type"],
             "editorConfig" => [
-                "lang" => str_replace("_", "-", $this->trans->getLanguageCode()),
+                "lang" => str_replace("_", "-", \OC::$server->getL10NFactory("")->get("")->getLanguageCode()),
                 "region" => str_replace("_", "-", \OC::$server->getL10NFactory("")->findLocale())
             ]
         ];
