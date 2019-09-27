@@ -971,7 +971,7 @@ class EditorController extends Controller {
     private function setWatermark($params, $isPublic, $userId, $file) {
         $watermarkTemplate = $this->getWatermarkText($isPublic, $userId, $file,
             $params["document"]["permissions"]["edit"] !== false,
-            $params["document"]["permissions"]["download"] !== false);
+            !array_key_exists("download", $params["document"]["permissions"]) || $params["document"]["permissions"]["download"] !== false);
 
         if ($watermarkTemplate !== false) {
             $replacements = [
