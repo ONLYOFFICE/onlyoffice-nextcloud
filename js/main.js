@@ -51,7 +51,7 @@
         };
 
         if ($("#isPublic").val()) {
-            createData.token = encodeURIComponent($("#sharingToken").val());
+            createData.shareToken = encodeURIComponent($("#sharingToken").val());
         }
 
         $.post(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/new"),
@@ -87,9 +87,9 @@
             });
 
         if ($("#isPublic").val()) {
-            url = OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/s/{token}?fileId={fileId}",
+            url = OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/s/{shareToken}?fileId={fileId}",
                 {
-                    token: encodeURIComponent($("#sharingToken").val()),
+                    shareToken: encodeURIComponent($("#sharingToken").val()),
                     fileId: fileId
                 });
         }
@@ -117,7 +117,7 @@
         };
 
         if ($("#isPublic").val()) {
-            convertData.token = encodeURIComponent($("#sharingToken").val());
+            convertData.shareToken = encodeURIComponent($("#sharingToken").val());
         }
 
         $.post(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/convert"),

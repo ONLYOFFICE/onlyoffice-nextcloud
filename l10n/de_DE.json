@@ -41,7 +41,7 @@
     "Open the file for editing (due to format restrictions, the data might be lost when saving to the formats from the list below)" : "Öffnen Sie die Datei zum Bearbeiten (aufgrund von Formateinschränkungen können die Daten beim Speichern in den Formaten aus der folgenden Liste verloren gehen)",
     "View details" : "Details anzeigen",
     "Save" : "Speichern",
-    "Mixed Active Content is not allowed. HTTPS address for Document Server is required." : "Mixed Active Content ist nicht möglich. HTTPS-Adresse für Document Server ist erforderlich.",
+    "Mixed Active Content is not allowed. HTTPS address for Document Server is required." : "Mixed Active Content ist nicht möglich. HTTPS-Adresse für Document Server ist erforderlich.",
     "Restrict access to editors to following groups" : "Den Zugriff auf Editoren auf folgende Gruppen gewähren",
     "Server settings" : "Servereinstellungen",
     "Common settings" : "Allgemeine Einstellungen",
@@ -49,7 +49,7 @@
     "The customization section allows personalizing the editor interface" : "Die Anpassungssektion ermöglicht die Anpassung der Editoroberfläche",
     "Display Chat menu button" : "Chat-Taste anzeigen",
     "Display the header more compact" : "Kompakten Header anzeigen",
-    "Display Feedback & Support menu button" : "Feedback-& Support-Taste anzeigen",
+    "Display Feedback & Support menu button" : "Feedback-& Support-Taste anzeigen",
     "Display Help menu button" : "Hilfetaste anzeigen",
     "Display toolbar tabs" : "Symbolleiste-Registerkarten anzeigen",
     "Save as" : "Speichern als",
@@ -74,6 +74,7 @@
     "Show watermark for all link shares" : "Wasserzeichen auf allen Link-Freigaben anzeigen",
     "Show watermark for download hidden shares" : "Wasserzeichen auf ‘Download verbergen’ Freigaben anzeigen",
     "Show watermark for read only link shares" : "Wasserzeichen auf schreibgeschützten Link-Freigaben anzeigen",
-    "Show watermark on link shares with specific system tags" : "Wasserzeichen auf Link-Freigaben mit bestimmten System-Tags anzeigen"
+    "Show watermark on link shares with specific system tags" : "Wasserzeichen auf Link-Freigaben mit bestimmten System-Tags anzeigen",
+    "Select tag" : "Wählen Sie ein Tag"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

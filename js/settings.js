@@ -101,7 +101,7 @@
                                     multiple: true,
                                     separator: "|",
                                     toggleSelect: true,
-                                    placeholder: t("systemtags_manager", "Select tag…"),
+                                    placeholder: t(OCA.Onlyoffice.AppName, "Select tag"),
                                     query: _.debounce(function(query) {
                                         query.callback({
                                             results: OC.SystemTags.collection.filterByName(query.term)

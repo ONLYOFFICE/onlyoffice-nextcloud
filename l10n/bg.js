@@ -23,7 +23,7 @@ OC.L10N.register(
     "Loading, please wait." : "Зареждане. Моля, изчакайте.",
     "File created" : "Файлът е създаден",
     "Open in ONLYOFFICE" : "Отвори в ONLYOFFICE",
-    "Convert with ONLYOFFICE" : "Конвертирай с ONLYOFFICE",
+    "Convert with ONLYOFFICE" : "Конвертирай с ONLYOFFICE",
     "Document" : "Документ",
     "Spreadsheet" : "Електронна таблица",
     "Presentation" : "Презентация",
@@ -40,7 +40,7 @@ OC.L10N.register(
     "Secret key (leave blank to disable)" : "Секретен ключ (оставете празно за забрана)",
     "Open file in the same tab" : "Отваряне на файла в същия прозорец",
     "The default application for opening the format" : "Приложение по подразбиране за отваряне на следните формати",
-    "Open the file for editing (due to format restrictions, the data might be lost when saving to the formats from the list below)" : "Отваряне на файла за редактиране (според ограниченята на формата данните могат да бъдат загубени при запис във формати от списъка по-долу)",
+    "Open the file for editing (due to format restrictions, the data might be lost when saving to the formats from the list below)" : "Отваряне на файла за редактиране (според ограниченята на формата данните могат да бъдат загубени при запис във формати от списъка по-долу)",
     "View details" : "Виж детайли",
     "Save" : "Запази",
     "Mixed Active Content is not allowed. HTTPS address for Document Server is required." : "Смесеното активно съдържание е недопустимо. За услугата за редактиране на документи е необходимо използването на HTTPS-адрес.",
@@ -48,6 +48,7 @@ OC.L10N.register(
     "Save as" : "Запази като",
     "File saved" : "Файлът е запазен",
     "Insert image" : "Вмъкване на изображение",
-    "Select recipients" : "Изберете получатели"
+    "Select recipients" : "Изберете получатели",
+    "Select tag" : "Изберете етикет"
 },
 "nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);");

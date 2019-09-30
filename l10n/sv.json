@@ -56,7 +56,25 @@
     "File saved" : "Filen har sparats",
     "Insert image" : "Infoga bild",
     "Select recipients" : "Välj mottagare",
-    "Secure view enables you to secure documents by embedding a watermark" : "Med säker vy kan du säkra dokument genom att bädda in ett vattenstämpel",
-    "Supported placeholders" : "Platshållare som stöds"
+    "Connect to demo ONLYOFFICE Document Server" : "Anslut till demo ONLYOFFICE Dokumentserver",
+    "This is a public test server, please do not use it for private sensitive data. The server will be available during a 30-day period." : "Detta är en offentlig testserver, använd den inte för privat känslig information. Servern kommer att finnas tillgänglig under en 30-dagarsperiod.",
+    "The 30-day test period is over, you can no longer connect to demo ONLYOFFICE Document Server." : "När 30-dagars testperioden är över, kan du inte längre ansluta till demo ONLYOFFICE Dokumentserver.",
+    "You are using public demo ONLYOFFICE Document Server. Please do not store private sensitive data." : "Du använder en offentlig demo ONLYOFFICE Dokumentserver. Lagra inte privat känslig information.",
+    "Secure view settings" : "Säkra vyinställningar",
+    "Secure view enables you to secure documents by embedding a watermark" : "Med säker vy kan du säkra dokument genom att bädda in en vattenstämpel",
+    "Enable watermarking" : "Aktivera vattenstämpel",
+    "Watermark text" : "Text för vattenmärke",
+    "DO NOT SHARE THIS" : "DELA INTE DETTA",
+    "Show watermark on tagged files" : "Visa vattenstämpel på taggade filer",
+    "Show watermark for users of groups" : "Visa vattenstämpel för användare i grupper",
+    "Supported placeholders" : "Platshållare som stöds",
+    "Show watermark for all shares" : "Visa vattenstämpel för alla delningar",
+    "Show watermark for read only shares" : "Visa vattenmärke för skrivskyddade delningar",
+    "Link shares" : "Länkdelningar",
+    "Show watermark for all link shares" : "Visa vattenstämpel för alla länkdelningar",
+    "Show watermark for download hidden shares" : "Visa vattenstämpel för delningar med gömd nedladdning",
+    "Show watermark for read only link shares" : "Visa vattenmärke för skrivskyddade länkdelningar",
+    "Show watermark on link shares with specific system tags" : "Visa vattenmärke för länkdelningar med specifika systemtaggar",
+    "Select tag" : "Välj tagg"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

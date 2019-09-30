@@ -33,7 +33,7 @@ return [
        ["name" => "callback#emptyfile", "url" => "/empty", "verb" => "GET"],
        ["name" => "callback#track", "url" => "/track", "verb" => "POST"],
        ["name" => "editor#index", "url" => "/{fileId}", "verb" => "GET"],
-       ["name" => "editor#public_page", "url" => "/s/{token}", "verb" => "GET"],
+       ["name" => "editor#public_page", "url" => "/s/{shareToken}", "verb" => "GET"],
        ["name" => "editor#config", "url" => "/ajax/config/{fileId}", "verb" => "GET"],
        ["name" => "editor#create", "url" => "/ajax/new", "verb" => "POST"],
        ["name" => "editor#convert", "url" => "/ajax/convert", "verb" => "POST"],

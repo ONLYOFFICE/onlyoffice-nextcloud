@@ -34,7 +34,7 @@
 
 <div id="app">
 
-    <div id="iframeEditor" data-id="<?php p($_["fileId"]) ?>" data-path="<?php p($_["filePath"]) ?>" data-token="<?php p($_["token"]) ?>"></div>
+    <div id="iframeEditor" data-id="<?php p($_["fileId"]) ?>" data-path="<?php p($_["filePath"]) ?>" data-sharetoken="<?php p($_["shareToken"]) ?>"></div>
 
     <?php if (!empty($_["documentServerUrl"])) { ?>
         <script nonce="<?php p(base64_encode($_["requesttoken"])) ?>"

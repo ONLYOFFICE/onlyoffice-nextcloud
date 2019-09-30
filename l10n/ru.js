@@ -23,7 +23,7 @@ OC.L10N.register(
     "Loading, please wait." : "Загрузка. Пожалуйста, подождите.",
     "File created" : "Файл создан",
     "Open in ONLYOFFICE" : "Открыть в ONLYOFFICE",
-    "Convert with ONLYOFFICE" : "Конвертировать в ONLYOFFICE",
+    "Convert with ONLYOFFICE" : "Конвертировать в ONLYOFFICE",
     "Document" : "Документ",
     "Spreadsheet" : "Электронная таблица",
     "Presentation" : "Презентация",
@@ -40,7 +40,7 @@ OC.L10N.register(
     "Secret key (leave blank to disable)" : "Секретный ключ (оставьте пустым для отключения)",
     "Open file in the same tab" : "Открыть файл в той же вкладке",
     "The default application for opening the format" : "Приложение по умолчанию для открытия формата",
-    "Open the file for editing (due to format restrictions, the data might be lost when saving to the formats from the list below)" : "Открыть файл на редактирование (из-за ограничений формата данные могут быть утеряны при сохранении в форматы из списка ниже)",
+    "Open the file for editing (due to format restrictions, the data might be lost when saving to the formats from the list below)" : "Открыть файл на редактирование (из-за ограничений формата данные могут быть утеряны при сохранении в форматы из списка ниже)",
     "View details" : "Подробнее",
     "Save" : "Сохранить",
     "Mixed Active Content is not allowed. HTTPS address for Document Server is required." : "Смешанное активное содержимое запрещено. Для Сервера документов необходимо использовать HTTPS-адрес.",
@@ -76,6 +76,7 @@ OC.L10N.register(
     "Show watermark for all link shares" : "Отображать водяной знак при доступе по ссылке",
     "Show watermark for download hidden shares" : "Отображать водяной знак при доступе без скачивания",
     "Show watermark for read only link shares" : "Отображать водяной знак при доступе только на чтение по ссылке",
-    "Show watermark on link shares with specific system tags" : "Отображать водяной знак при доступе по ссылке с определенными системными метками"
+    "Show watermark on link shares with specific system tags" : "Отображать водяной знак при доступе по ссылке с определенными системными метками",
+    "Select tag" : "Выберите метку"
 },
 "nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);");
