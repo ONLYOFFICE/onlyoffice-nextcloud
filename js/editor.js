@@ -41,7 +41,7 @@
 
         var fileId = $("#iframeEditor").data("id");
         var filePath = $("#iframeEditor").data("path");
-        var shareToken = $("#iframeEditor").data("shareToken");
+        var shareToken = $("#iframeEditor").data("sharetoken");
         if (!fileId && !shareToken) {
             displayError(t(OCA.Onlyoffice.AppName, "FileId is empty"));
             return;
