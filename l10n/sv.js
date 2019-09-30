@@ -76,6 +76,7 @@ OC.L10N.register(
     "Show watermark for all link shares" : "Visa vattenstämpel för alla länkdelningar",
     "Show watermark for download hidden shares" : "Visa vattenstämpel för delningar med gömd nedladdning",
     "Show watermark for read only link shares" : "Visa vattenmärke för skrivskyddade länkdelningar",
-    "Show watermark on link shares with specific system tags" : "Visa vattenmärke för länkdelningar med specifika systemtaggar"
+    "Show watermark on link shares with specific system tags" : "Visa vattenmärke för länkdelningar med specifika systemtaggar",
+    "Select tag" : "Välj tagg"
 },
 "nplurals=2; plural=(n != 1);");

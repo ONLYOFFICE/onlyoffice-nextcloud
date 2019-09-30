@@ -76,6 +76,7 @@ OC.L10N.register(
     "Show watermark for all link shares" : "Отображать водяной знак при доступе по ссылке",
     "Show watermark for download hidden shares" : "Отображать водяной знак при доступе без скачивания",
     "Show watermark for read only link shares" : "Отображать водяной знак при доступе только на чтение по ссылке",
-    "Show watermark on link shares with specific system tags" : "Отображать водяной знак при доступе по ссылке с определенными системными метками"
+    "Show watermark on link shares with specific system tags" : "Отображать водяной знак при доступе по ссылке с определенными системными метками",
+    "Select tag" : "Выберите метку"
 },
 "nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);");
