@@ -13,7 +13,7 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * For details, see the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
  *
- * You can contact Ascensio System SIA at 17-2 Elijas street, Riga, Latvia, EU, LV-1021.
+ * You can contact Ascensio System SIA at 20A-12 Ernesta Birznieka-Upisha street, Riga, Latvia, EU, LV-1050.
  *
  * The interactive user interfaces in modified source and object code versions of the Program
  * must display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
@@ -118,7 +118,7 @@ class DocumentService {
      * @return array
      */
     function SendRequestToConvertService($document_uri, $from_extension, $to_extension, $document_revision_id, $is_async) {
-        $documentServerUrl = $this->config->GetDocumentServerInternalUrl(false);
+        $documentServerUrl = $this->config->GetDocumentServerInternalUrl();
 
         if (empty($documentServerUrl)) {
             throw new \Exception($this->trans->t("ONLYOFFICE app is not configured. Please contact admin"));
@@ -146,6 +146,10 @@ class DocumentService {
             "title" => $document_revision_id . "." . $from_extension,
             "key" => $document_revision_id
         ];
+
+        if ($this->config->UseDemo()) {
+            $data["tenant"] = $this->config->GetSystemValue("instanceid", true);
+        }
 
         $opts = array(
             "timeout" => "120",
@@ -241,7 +245,7 @@ class DocumentService {
      */
     function HealthcheckRequest() {
 
-        $documentServerUrl = $this->config->GetDocumentServerInternalUrl(false);
+        $documentServerUrl = $this->config->GetDocumentServerInternalUrl();
 
         if (empty($documentServerUrl)) {
             throw new \Exception($this->trans->t("ONLYOFFICE app is not configured. Please contact admin"));
@@ -263,7 +267,7 @@ class DocumentService {
      */
     function CommandRequest($method) {
 
-        $documentServerUrl = $this->config->GetDocumentServerInternalUrl(false);
+        $documentServerUrl = $this->config->GetDocumentServerInternalUrl();
 
         if (empty($documentServerUrl)) {
             throw new \Exception($this->trans->t("ONLYOFFICE app is not configured. Please contact admin"));
