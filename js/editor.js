@@ -115,6 +115,10 @@
 
                     config.events = {
                         "onDocumentStateChange": setPageTitle,
+                        /* FIXME: this doesn't work as expected */
+                        "onRequestClose": function () {
+                            console.log('onRequestClose')
+                        }
                     };
 
                     if (OC.currentUser) {
