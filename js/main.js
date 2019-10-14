@@ -29,7 +29,9 @@
 (function (OCA) {
 
     OCA.Onlyoffice = _.extend({
-            AppName: "onlyoffice"
+            AppName: "onlyoffice",
+            isOpen: false,
+            context: null
         }, OCA.Onlyoffice);
 
     OCA.Onlyoffice.setting = {};
@@ -71,6 +73,10 @@
                 fileList.add(response, { animate: true });
                 OCA.Onlyoffice.OpenEditor(response.id, dir, response.name, winEditor);
 
+                OCA.Onlyoffice.context = { fileList: fileList };
+                OCA.Onlyoffice.context.fileName = fileName;
+
+
                 OC.Notification.show(t(OCA.Onlyoffice.AppName, "File created"), {
                     timeout: 3
                 });
@@ -99,13 +105,39 @@
         } else if (!OCA.Onlyoffice.setting.sameTab || OCA.Onlyoffice.Desktop) {
             winEditor = window.open(url, "_blank");
         } else {
-            location.href = url;
+            var $iframe = $('<iframe id="onlyoffice_viewer" nonce="' + btoa(OC.requestToken) + '" scrolling="no" allowfullscreen src="' + url + '" />');
+            $('#app-content').append($iframe);
+            $('#app-navigation').addClass('hidden');
+            $('body').css('overflow', 'hidden');
+            window.scrollTo({top: 0})
+            OCA.Onlyoffice.isOpen = true;
+        }
+    };
+
+    OCA.Onlyoffice.CloseEditor = function () {
+        $('#onlyoffice_viewer').remove();
+        $('#app-navigation').removeClass('hidden');
+        $('body').css('overflow', 'scroll');
+
+        OCA.Onlyoffice.context = null
+        OCA.Onlyoffice.isOpen = false;
+    };
+
+    OCA.Onlyoffice.ToggleFilesSidebar = function () {
+        if (OCA.Onlyoffice.context) {
+            if (OCA.Onlyoffice.context.fileList._detailsView) {
+                OCA.Onlyoffice.context.fileList.showDetailsView(OCA.Onlyoffice.context.fileName)
+            } else {
+                OC.Apps.hideAppSidebar(OCA.Onlyoffice.context.fileList._detailsView.$el);
+            }
         }
     };
 
     OCA.Onlyoffice.FileClick = function (fileName, context) {
         var fileInfoModel = context.fileInfoModel || context.fileList.getModelForFile(fileName);
         OCA.Onlyoffice.OpenEditor(fileInfoModel.id, context.dir, fileName);
+        OCA.Onlyoffice.context = context;
+        OCA.Onlyoffice.context.fileName = fileName;
     };
 
     OCA.Onlyoffice.FileConvertClick = function (fileName, context) {
@@ -281,6 +313,21 @@
             OC.Plugins.register("OCA.Files.NewFileMenu", OCA.Onlyoffice.NewFileMenu);
         }
     };
+
+    window.addEventListener('message', function(event) {
+        if (document.getElementById('onlyoffice_viewer').contentWindow !== event.source) {
+            return;
+        }
+        switch (event.data) {
+            case 'close':
+                OCA.Onlyoffice.CloseEditor()
+                break;
+            case 'toggleFilesSidebar':
+                OCA.Onlyoffice.ToggleFilesSidebar()
+                break;
+        }
+    }, false);
+
 
     $(document).ready(initPage)
 

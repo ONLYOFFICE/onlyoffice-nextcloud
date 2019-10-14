@@ -252,7 +252,8 @@ class SettingsController extends Controller {
     public function GetSettings() {
         $result = [
             "formats" => $this->config->FormatsSetting(),
-            "sameTab" => $this->config->GetSameTab()
+            "sameTab" => $this->config->GetSameTab(),
+            "documentserver" => $this->config->GetDocumentServerUrl(),
         ];
         return $result;
     }

@@ -590,7 +590,7 @@ class AppConfig {
      * @return bool
      */
     public function GetSameTab() {
-        return $this->config->getAppValue($this->appName, $this->_sameTab, "false") === "true";
+        return $this->config->getAppValue($this->appName, $this->_sameTab, "true") === "true";
     }
 
     /**

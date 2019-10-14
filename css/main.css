@@ -40,6 +40,16 @@
     background-image: url("../img/app-dark.svg");
 }
 
+#onlyoffice_viewer {
+    background-color: #fff;
+    width: 100%;
+    height: calc(100vh - 50px);
+    display: block;
+    position: absolute;
+    top: 0;
+    z-index: 110;
+}
+
 .AscDesktopEditor #body-user #header {
     display: none;
 }
