@@ -29,6 +29,32 @@
 #content.app-onlyoffice {
     min-height: calc(100% - 50px);
 }
+
+#body-public #content {
+    height: 100%;
+}
+
+#close {
+    position: absolute;
+    z-index: 100;
+    right: 80px;
+    height: 32px;
+    width: 40px;
+}
+
+#details {
+    position: absolute;
+    z-index: 100;
+    right: 120px;
+    height: 32px;
+    width: 40px;
+}
+
+#close:hover,
+#details:hover {
+    background-color: #d8dadc;
+}
+
 #app > iframe {
     position: absolute;
     vertical-align: top;

@@ -34,6 +34,9 @@
 
 <div id="app">
 
+	<div id="close" class="icon-close"></div>
+	<div id="details" class="icon-share"></div>
+
     <div id="iframeEditor" data-id="<?php p($_["fileId"]) ?>" data-path="<?php p($_["filePath"]) ?>" data-sharetoken="<?php p($_["shareToken"]) ?>"></div>
 
     <?php if (!empty($_["documentServerUrl"])) { ?>

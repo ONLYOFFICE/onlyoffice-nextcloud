@@ -28,6 +28,14 @@
 
 (function ($, OCA) {
 
+    document.getElementById('close').addEventListener('click', function () {
+        parent.postMessage('close');
+    });
+
+    document.getElementById('details').addEventListener('click', function () {
+        parent.postMessage('toggleFilesSidebar');
+    })
+
     OCA.Onlyoffice = _.extend({
             AppName: "onlyoffice"
         }, OCA.Onlyoffice);
