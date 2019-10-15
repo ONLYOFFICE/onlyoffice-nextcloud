@@ -60,6 +60,7 @@ OC.L10N.register(
     "Select recipients" : "Seleccionar destinatarios",
     "Secure view enables you to secure documents by embedding a watermark" : "La vista segura permite asegurar documentos mediante la inserción de una marca de agua en ellos",
     "Supported placeholders" : "Marcadores soportados",
-    "Select tag" : "Seleccionar etiqueta"
+    "Select tag" : "Seleccionar etiqueta",
+    "Select file to compare" : "Seleccione un archivo para comparar"
 },
 "nplurals=2; plural=(n != 1);");

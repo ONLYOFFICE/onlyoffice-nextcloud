@@ -113,6 +113,7 @@
                         config.events.onRequestSaveAs = OCA.Onlyoffice.onRequestSaveAs;
                         config.events.onRequestInsertImage = OCA.Onlyoffice.onRequestInsertImage;
                         config.events.onRequestMailMergeRecipients = OCA.Onlyoffice.onRequestMailMergeRecipients;
+                        config.events.onRequestCompareFile = OCA.Onlyoffice.onRequestCompareFile;
                     }
 
                     OCA.Onlyoffice.docEditor = new DocsAPI.DocEditor("iframeEditor", config);
@@ -211,6 +212,33 @@
         ];
 
         OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Select recipients"), setRecipient, false, recipientMimes);
+    };
+
+    OCA.Onlyoffice.onRequestCompareFile = function() {
+
+        var setRevised = function(filePath) {
+            $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/url?filePath={filePath}",
+                {
+                    filePath: filePath
+                }),
+                function onSuccess(response) {
+                    if (response.error) {
+                        OC.Notification.show(response.error, {
+                            type: "error",
+                            timeout: 3
+                        });
+                        return;
+                    }
+
+                    OCA.Onlyoffice.docEditor.setRevisedFile(response);
+                });
+        };
+
+        var revisedMimes = [
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        ];
+
+        OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Select file to compare"), setRevised, false, revisedMimes);
     };
 
     $(document).ready(OCA.Onlyoffice.InitEditor);
