@@ -213,9 +213,15 @@ class CallbackController extends Controller {
             $userId = $this->userSession->getUser()->getUID();
         } else {
             $userId = $hashData->ownerId;
+            $user = $this->userManager->get($userId);
 
-            if (empty($this->userManager->get($userId))) {
+            if (empty($user)) {
                 $userId = $hashData->userId;
+                $user = $this->userManager->get($userId);
+            }
+
+            if (!empty($user)) {
+                $this->userSession->setUser($user);
             }
 
             \OC_Util::tearDownFS();
