@@ -387,24 +387,27 @@ class CallbackController extends Controller {
 
                     if (!empty($user)) {
                         $this->userSession->setUser($user);
+
+                        \OC_Util::tearDownFS();
+                        \OC_Util::setupFS($userId);
                     } else {
                         if (empty($shareToken)) {
                             $this->logger->debug("Track without token: $fileId status $trackerStatus", array("app" => $this->appName));
+
+                            $callbackUserId = $hashData->userId;
+                            $callbackUser = $this->userManager->get($callbackUserId);
+
+                            if (!empty($callbackUser)) {
+                                $userId = $callbackUserId;
+                            }
+
+                            \OC_Util::tearDownFS();
+                            if (!empty($userId)) {
+                                \OC_Util::setupFS($userId);
+                            }
                         } else {
                             $this->logger->debug("Track $fileId by token for $userId", array("app" => $this->appName));
                         }
-                    }
-
-                    $callbackUserId = $hashData->userId;
-                    $callbackUser = $this->userManager->get($callbackUserId);
-
-                    if (!empty($callbackUser)) {
-                        $userId = $callbackUserId;
-                    }
-
-                    \OC_Util::tearDownFS();
-                    if (!empty($userId)) {
-                        \OC_Util::setupFS($userId);
                     }
 
                     list ($file, $error) = empty($shareToken) ? $this->getFile($userId, $fileId) : $this->getFileByToken($fileId, $shareToken);
