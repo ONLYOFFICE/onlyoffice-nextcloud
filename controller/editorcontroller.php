@@ -868,20 +868,14 @@ class EditorController extends Controller {
      * @return string
      */
     private function getUrl($file, $shareToken = NULL) {
-
         $user = $this->userSession->getUser();
         $userId = NULL;
+
         if (!empty($user)) {
             $userId = $user->getUID();
         }
 
-        $ownerId = NULL;
-        $owner = $file->getOwner();
-        if (!empty($owner)) {
-            $ownerId = $owner->getUID();
-        }
-
-        $hashUrl = $this->crypt->GetHash(["fileId" => $file->getId(), "userId" => $userId, "ownerId" => $ownerId, "shareToken" => $shareToken, "action" => "download"]);
+        $hashUrl = $this->crypt->GetHash(["fileId" => $file->getId(), "userId" => $userId, "shareToken" => $shareToken, "action" => "download"]);
 
         $fileUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.download", ["doc" => $hashUrl]);
 
