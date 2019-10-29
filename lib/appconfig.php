@@ -482,6 +482,7 @@ class AppConfig {
      * @param string $secret - secret key
      */
     public function SetDocumentServerSecret($secret) {
+        $secret = trim($secret);
         if (empty($secret)) {
             $this->logger->info("Clear secret key", array("app" => $this->appName));
         } else {
