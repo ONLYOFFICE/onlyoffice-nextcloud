@@ -433,7 +433,7 @@ class EditorController extends Controller {
      * @NoAdminRequired
      */
     public function url($filePath) {
-        $this->logger->debug("Save: $name", array("app" => $this->appName));
+        $this->logger->debug("Request url for: $filePath", array("app" => $this->appName));
 
         if (!$this->config->isUserAllowedToUse()) {
             return ["error" => $this->trans->t("Not permitted")];
