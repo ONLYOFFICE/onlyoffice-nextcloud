@@ -719,10 +719,11 @@ class AppConfig {
             "shareRead",
         ];
         foreach ($watermarkLabels as $key) {
-            if ($settings[$key] !== null) {
-                $value = $settings[$key] === "true" ? "yes" : "no";
-                $this->config->setAppValue(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_" . $key, $value);
+            if (empty($settings[$key])) {
+                $settings[$key] = array();
             }
+            $value = $settings[$key] === "true" ? "yes" : "no";
+            $this->config->setAppValue(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_" . $key, $value);
         }
 
         $watermarkLists = [
@@ -731,10 +732,11 @@ class AppConfig {
             "linkTagsList",
         ];
         foreach ($watermarkLists as $key) {
-            if ($settings[$key] !== null) {
-                $value = implode(",", $settings[$key]);
-                $this->config->setAppValue(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_" . $key, $value);
+            if (empty($settings[$key])) {
+                $settings[$key] = array();
             }
+            $value = implode(",", $settings[$key]);
+            $this->config->setAppValue(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_" . $key, $value);
         }
     }
 
