@@ -63,10 +63,7 @@
                     if (winEditor) {
                         winEditor.close();
                     }
-                    OC.Notification.show(response.error, {
-                        type: "error",
-                        timeout: 3
-                    });
+                    OCP.Toast.error(response.error);
                     return;
                 }
 
@@ -76,9 +73,7 @@
                 OCA.Onlyoffice.context = { fileList: fileList };
                 OCA.Onlyoffice.context.fileName = response.name;
 
-                OC.Notification.show(t(OCA.Onlyoffice.AppName, "File created"), {
-                    timeout: 3
-                });
+                OCP.Toast.success(t(OCA.Onlyoffice.AppName, "File created"));
             }
         );
     };
@@ -192,10 +187,7 @@
             convertData,
             function onSuccess(response) {
                 if (response.error) {
-                    OC.Notification.show(response.error, {
-                        type: "error",
-                        timeout: 3
-                    });
+                    OCP.Toast.error(response.error);
                     return;
                 }
 
@@ -203,9 +195,7 @@
                     fileList.add(response, { animate: true });
                 }
 
-                OC.Notification.show(t(OCA.Onlyoffice.AppName, "File created"), {
-                    timeout: 3
-                });
+                OCP.Toast.success(t(OCA.Onlyoffice.AppName, "File created"));
             });
     };
 
