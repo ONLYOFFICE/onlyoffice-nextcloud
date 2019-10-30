@@ -249,9 +249,7 @@ class FileUtility {
 
         $instanceId = $this->config->GetSystemValue("instanceid", true);
 
-        $fileId = $file->getId();
-
-        $key = $instanceId . "_" . $fileId . "_" . $file->getMtime();
+        $key = $instanceId . "_" . $file->getEtag();
 
         return $key;
     }
