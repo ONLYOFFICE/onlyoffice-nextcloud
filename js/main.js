@@ -98,8 +98,19 @@
             winEditor.location.href = url;
         } else if (!OCA.Onlyoffice.setting.sameTab || OCA.Onlyoffice.Desktop) {
             winEditor = window.open(url, "_blank");
-        } else {
+        } else if ($("#isPublic").val()) {
             location.href = url;
+        } else {
+            var $iframe = $("<iframe id=\"onlyofficeFrame\" nonce=\"" + btoa(OC.requestToken) + "\" scrolling=\"no\" allowfullscreen src=\"" + url + "\" />");
+            $("#app-content").append($iframe);
+
+            //todo: restore on close
+            $("#app-navigation").addClass("hidden");
+            $("body").css("overscroll-behavior-y", "none")
+            $("body").css("overflow", "hidden");
+            $(".searchbox").hide();
+            $("#app-content #controls").addClass("hidden");
+            $("html, body").scrollTop(0);
         }
     };
 
