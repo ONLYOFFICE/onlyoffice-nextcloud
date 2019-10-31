@@ -336,7 +336,7 @@ class EditorController extends Controller {
         try {
             $newData = $documentService->Request($newFileUri);
         } catch (\Exception $e) {
-            $this->logger->error("Failed to download converted file: $newFileUri" . " " . $e->getMessage(), array("app" => $this->appName));
+            $this->logger->error("Failed to download converted file: $newFileUri " . $e->getMessage(), array("app" => $this->appName));
             return ["error" => $this->trans->t("Failed to download converted file")];
         }
 
@@ -577,12 +577,13 @@ class EditorController extends Controller {
         }
 
         $fileUrl = $this->getUrl($file, $shareToken);
-        $key = $this->fileUtility->getKey($file);
+        $key = $this->fileUtility->getKey($file, true);
+        $key = DocumentService::GenerateRevisionId($key);
 
         $params = [
             "document" => [
                 "fileType" => $ext,
-                "key" => DocumentService::GenerateRevisionId($key),
+                "key" => $key,
                 "permissions" => [],
                 "title" => $fileName,
                 "url" => $fileUrl,
