@@ -110,9 +110,13 @@
                     };
 
                     if (OC.currentUser) {
+                        //todo: in frame use postMessage
                         config.events.onRequestSaveAs = OCA.Onlyoffice.onRequestSaveAs;
                         config.events.onRequestInsertImage = OCA.Onlyoffice.onRequestInsertImage;
                         config.events.onRequestMailMergeRecipients = OCA.Onlyoffice.onRequestMailMergeRecipients;
+                    }
+                    if (window.self !== window.parent) {
+                        config.events.onRequestClose = OCA.Onlyoffice.onRequestClose;
                     }
 
                     OCA.Onlyoffice.docEditor = new DocsAPI.DocEditor("iframeEditor", config);
@@ -211,6 +215,10 @@
         ];
 
         OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Select recipients"), setRecipient, false, recipientMimes);
+    };
+
+    OCA.Onlyoffice.onRequestClose = function() {
+        window.parent.postMessage("editorRequestClose");
     };
 
     $(document).ready(OCA.Onlyoffice.InitEditor);

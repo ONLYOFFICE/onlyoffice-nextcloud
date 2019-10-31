@@ -104,14 +104,16 @@
             var $iframe = $("<iframe id=\"onlyofficeFrame\" nonce=\"" + btoa(OC.requestToken) + "\" scrolling=\"no\" allowfullscreen src=\"" + url + "\" />");
             $("#app-content").append($iframe);
 
-            //todo: restore on close
-            $("#app-navigation").addClass("hidden");
-            $("body").css("overscroll-behavior-y", "none")
-            $("body").css("overflow", "hidden");
-            $(".searchbox").hide();
-            $("#app-content #controls").addClass("hidden");
+            $("body").addClass("onlyoffice-inline");
+
             $("html, body").scrollTop(0);
         }
+    };
+
+    OCA.Onlyoffice.CloseEditor = function () {
+        $("body").removeClass("onlyoffice-inline");
+
+        $("#onlyofficeFrame").remove();
     };
 
     OCA.Onlyoffice.FileClick = function (fileName, context) {
@@ -292,6 +294,17 @@
             OC.Plugins.register("OCA.Files.NewFileMenu", OCA.Onlyoffice.NewFileMenu);
         }
     };
+
+    window.addEventListener("message", function(event) {
+        if ($("#onlyofficeFrame")[0].contentWindow !== event.source) {
+            return;
+        }
+        switch (event.data) {
+            case "editorRequestClose":
+                OCA.Onlyoffice.CloseEditor();
+                break;
+        }
+    }, false);
 
     $(document).ready(initPage)
 

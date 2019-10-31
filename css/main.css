@@ -40,6 +40,19 @@
     background-image: url("../img/app-dark.svg");
 }
 
+/* onlyoffice-inline */
+body.onlyoffice-inline {
+    overscroll-behavior-y: none;
+    overflow: hidden;
+}
+body.onlyoffice-inline #app-navigation,
+body.onlyoffice-inline .searchbox,
+body.onlyoffice-inline #app-content #controls {
+    display: none;
+}
+body.onlyoffice-inline #content #app-content {
+    margin-left: 0;
+}
 #onlyofficeFrame {
     background-color: #fff;
     width: 100%;
@@ -50,6 +63,7 @@
     z-index: 110;
 }
 
+/* AscDesktopEditor */
 .AscDesktopEditor #body-user #header {
     display: none;
 }
