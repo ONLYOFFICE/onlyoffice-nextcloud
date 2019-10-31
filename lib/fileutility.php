@@ -37,6 +37,8 @@ use OCP\ILogger;
 use OCP\ISession;
 use OCP\Share\IManager;
 
+use OCA\Onlyoffice\AppConfig;
+
 /**
  * File utility
  *
@@ -80,20 +82,30 @@ class FileUtility {
     private $session;
 
     /**
+     * Application configuration
+     *
+     * @var OCA\Onlyoffice\AppConfig
+     */
+    private $config;
+
+    /**
      * @param string $AppName - application name
      * @param IL10N $trans - l10n service
      * @param ILogger $logger - logger
+     * @param OCA\Onlyoffice\AppConfig $config - application configuration
      * @param IManager $shareManager - Share manager
      * @param IManager $ISession - Session
      */
     public function __construct($AppName,
                                 IL10N $trans,
                                 ILogger $logger,
+                                AppConfig $config,
                                 IManager $shareManager,
                                 ISession $session) {
         $this->appName = $AppName;
         $this->trans = $trans;
         $this->logger = $logger;
+        $this->config = $config;
         $this->shareManager = $shareManager;
         $this->session = $session;
     }
@@ -192,5 +204,22 @@ class FileUtility {
         }
 
         return [$share, NULL];
+    }
+
+    /**
+     * Generate unique document identifier
+     *
+     * @param File $file - file
+     *
+     * @return string
+     */
+    public function getKey($file) {
+        $instanceId = $this->config->GetSystemValue("instanceid", true);
+
+        $fileId = $file->getId();
+
+        $key = $instanceId . "_" . $fileId . "_" . $file->getMtime();
+
+        return $key;
     }
 }
