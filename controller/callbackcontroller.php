@@ -385,7 +385,7 @@ class CallbackController extends Controller {
                     \OC_Util::tearDownFS();
 
                     // author of the latest changes
-                    $userId = $users[0];
+                    $userId = $this->parseUserId($users[0]);
                     \OC_User::setUserId($userId);
 
                     $user = $this->userManager->get($userId);
@@ -570,5 +570,18 @@ class CallbackController extends Controller {
         }
 
         return [$share, NULL];
+    }
+
+    /**
+     * Parse user identifier for current instance
+     *
+     * @param string $userId - unique user identifier
+     *
+     * @return string
+     */
+    private function parseUserId($uniqueUserId) {
+        $instanceId = $this->config->GetSystemValue("instanceid", true);
+        $userId = ltrim($uniqueUserId, $instanceId . "_");
+        return $userId;
     }
 }
