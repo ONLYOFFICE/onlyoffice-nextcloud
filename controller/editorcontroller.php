@@ -610,13 +610,7 @@ class EditorController extends Controller {
                     && (empty($shareToken) || ($share->getPermissions() & Constants::PERMISSION_UPDATE) === Constants::PERMISSION_UPDATE);
         $params["document"]["permissions"]["edit"] = $editable;
         if ($editable && $canEdit) {
-            $ownerId = NULL;
-            $owner = $file->getOwner();
-            if (!empty($owner)) {
-                $ownerId = $owner->getUID();
-            }
-
-            $hashCallback = $this->crypt->GetHash(["fileId" => $file->getId(), "ownerId" => $ownerId, "shareToken" => $shareToken, "action" => "track"]);
+            $hashCallback = $this->crypt->GetHash(["fileId" => $file->getId(), "userId" => $userId, "shareToken" => $shareToken, "action" => "track"]);
             $callback = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.track", ["doc" => $hashCallback]);
 
             if (!empty($this->config->GetStorageUrl())) {

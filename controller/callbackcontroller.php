@@ -395,11 +395,11 @@ class CallbackController extends Controller {
                         }
                     }
 
-                    $ownerId = $hashData->ownerId;
-                    $owner = $this->userManager->get($ownerId);
+                    $callbackUserId = $hashData->userId;
+                    $callbackUser = $this->userManager->get($callbackUserId);
 
-                    if (!empty($owner)) {
-                        $userId = $ownerId;
+                    if (!empty($callbackUser)) {
+                        $userId = $callbackUserId;
                     }
 
                     \OC_Util::tearDownFS();
