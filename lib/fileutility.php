@@ -117,10 +117,11 @@ class FileUtility {
      *
      * @param integer $fileId - file identifier
      * @param string $shareToken - access token
+     * @param string $path - file path
      *
      * @return array
      */
-    public function getFileByToken($fileId, $shareToken) {
+    public function getFileByToken($fileId, $shareToken, $path = null) {
         list ($node, $error, $share) = $this->getNodeByToken($shareToken);
 
         if (isset($error)) {
@@ -128,18 +129,27 @@ class FileUtility {
         }
 
         if ($node instanceof Folder) {
-            try {
-                $files = $node->getById($fileId);
-            } catch (\Exception $e) {
-                $this->logger->error("getFileByToken: $fileId " . $e->getMessage(), array("app" => $this->appName));
-                return [NULL, $this->trans->t("Invalid request"), NULL];
-            }
+            if ($fileId !== null) {
+                try {
+                    $files = $node->getById($fileId);
+                } catch (\Exception $e) {
+                    $this->logger->error("getFileByToken: $fileId " . $e->getMessage(), array("app" => $this->appName));
+                    return [NULL, $this->trans->t("Invalid request"), NULL];
+                }
 
-            if (empty($files)) {
-                $this->logger->info("Files not found: $fileId", array("app" => $this->appName));
-                return [NULL, $this->trans->t("File not found"), NULL];
+                if (empty($files)) {
+                    $this->logger->info("Files not found: $fileId", array("app" => $this->appName));
+                    return [NULL, $this->trans->t("File not found"), NULL];
+                }
+                $file = $files[0];
+            } else {
+                try {
+                    $file = $node->get($path);
+                } catch (\Exception $e) {
+                    $this->logger->error("getFileByToken for path: $path " . $e->getMessage(), array("app" => $this->appName));
+                    return [NULL, $this->trans->t("Invalid request"), NULL];
+                }
             }
-            $file = $files[0];
         } else {
             $file = $node;
         }
@@ -221,6 +231,7 @@ class FileUtility {
             && $file->getStorage()->instanceOfStorage(SharingExternalStorage::class)) {
             $remote = $file->getStorage()->getRemote();
             $shareToken = $file->getStorage()->getToken();
+            $internalPath = $file->getInternalPath();
 
             try {
                 $httpClientService = \OC::$server->getHTTPClientService();
@@ -228,7 +239,8 @@ class FileUtility {
                 $response = $client->post($remote . "ocs/v2.php/apps/" . $this->appName . "/api/v1/key?format=json", [
                     "timeout" => 5,
                     "body" => [
-                        "shareToken" => $shareToken
+                        "shareToken" => $shareToken,
+                        "path" => $internalPath
                     ]
                 ]);
                 $body = \json_decode($response->getBody(), true);
