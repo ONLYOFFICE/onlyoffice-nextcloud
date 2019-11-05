@@ -336,7 +336,7 @@ class EditorController extends Controller {
         try {
             $newData = $documentService->Request($newFileUri);
         } catch (\Exception $e) {
-            $this->logger->error("Failed to download converted file: $newFileUri " . $e->getMessage(), array("app" => $this->appName));
+            $this->logger->error("Failed to download converted file: " . $e->getMessage(), array("app" => $this->appName));
             return ["error" => $this->trans->t("Failed to download converted file")];
         }
 

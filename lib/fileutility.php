@@ -178,7 +178,7 @@ class FileUtility {
         try {
             $node = $share->getNode();
         } catch (NotFoundException $e) {
-            $this->logger->error("getFileByToken error: " . $e->getMessage(), array("app" => $this->appName));
+            $this->logger->error("getNodeByToken error: " . $e->getMessage(), array("app" => $this->appName));
             return [NULL, $this->trans->t("File not found"), NULL];
         }
 
@@ -229,29 +229,11 @@ class FileUtility {
     public function getKey($file, $origin = false) {
         if ($origin
             && $file->getStorage()->instanceOfStorage(SharingExternalStorage::class)) {
-            $remote = $file->getStorage()->getRemote();
-            $shareToken = $file->getStorage()->getToken();
-            $internalPath = $file->getInternalPath();
 
             try {
-                $httpClientService = \OC::$server->getHTTPClientService();
-                $client = $httpClientService->newClient();
-                $response = $client->post($remote . "ocs/v2.php/apps/" . $this->appName . "/api/v1/key?format=json", [
-                    "timeout" => 5,
-                    "body" => [
-                        "shareToken" => $shareToken,
-                        "path" => $internalPath
-                    ]
-                ]);
-                $body = \json_decode($response->getBody(), true);
+                $key = $this->getFederatedKey($file);
 
-                $data = $body["ocs"]["data"];
-                if (!empty($data["error"])) {
-                    $this->logger->error("Error federated key " . $data["error"], array("app" => $this->appName));
-                } else {
-                    $key = $data["key"];
-                    $this->logger->debug("Federated key: $key", array("app" => $this->appName));
-
+                if (!empty($key)) {
                     return $key;
                 }
             } catch (\Exception $e) {
@@ -262,6 +244,41 @@ class FileUtility {
         $instanceId = $this->config->GetSystemValue("instanceid", true);
 
         $key = $instanceId . "_" . $file->getEtag();
+
+        return $key;
+    }
+
+    /**
+     * Generate unique document identifier in federated share
+     *
+     * @param File $file - file
+     *
+     * @return string
+     */
+    private function getFederatedKey($file) {
+        $remote = $file->getStorage()->getRemote();
+        $shareToken = $file->getStorage()->getToken();
+        $internalPath = $file->getInternalPath();
+
+        $httpClientService = \OC::$server->getHTTPClientService();
+        $client = $httpClientService->newClient();
+        $response = $client->post($remote . "ocs/v2.php/apps/" . $this->appName . "/api/v1/key?format=json", [
+            "timeout" => 5,
+            "body" => [
+                "shareToken" => $shareToken,
+                "path" => $internalPath
+            ]
+        ]);
+        $body = \json_decode($response->getBody(), true);
+
+        $data = $body["ocs"]["data"];
+        if (!empty($data["error"])) {
+            $this->logger->error("Error federated key " . $data["error"], array("app" => $this->appName));
+            return null;
+        }
+
+        $key = $data["key"];
+        $this->logger->debug("Federated key: $key", array("app" => $this->appName));
 
         return $key;
     }
