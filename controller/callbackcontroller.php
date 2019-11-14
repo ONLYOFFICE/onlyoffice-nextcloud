@@ -403,6 +403,9 @@ class CallbackController extends Controller {
 
                     \OC_Util::tearDownFS();
                     if (!empty($userId)) {
+                        // Set the current user as it is used by the files_version storage to obtain the user
+                        // if no owner has been found e.g. for global external storages
+                        \OC_User::setUserId($ownerId);
                         \OC_Util::setupFS($userId);
                     }
 
