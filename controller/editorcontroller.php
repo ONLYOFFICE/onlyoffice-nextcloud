@@ -32,6 +32,7 @@ namespace OCA\Onlyoffice\Controller;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\ContentSecurityPolicy;
 use OCP\AppFramework\Http\RedirectResponse;
+use OCP\AppFramework\Http\Template\PublicTemplateResponse;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AutoloadNotAllowedException;
 use OCP\Constants;
@@ -510,8 +511,15 @@ class EditorController extends Controller {
             "shareToken" => $shareToken
         ];
 
-        $response = new TemplateResponse($this->appName, "editor", $params);
-
+        $response = null;
+        if ($this->userSession->isLoggedIn()) {
+            $response = new TemplateResponse($this->appName, 'editor', $params);
+        } else {
+            list ($file, $error, $share) = $this->getFileByToken($fileId, $shareToken);
+            $response = new PublicTemplateResponse($this->appName, 'editor', $params);
+            $response->setHeaderTitle($file->getName());
+            $response->setHeaderDetails($this->trans->t('shared by %s', [\OC::$server->getUserManager()->get($share->getShareOwner())->getDisplayName()]));
+        }
         $csp = new ContentSecurityPolicy();
         $csp->allowInlineScript(true);
 
