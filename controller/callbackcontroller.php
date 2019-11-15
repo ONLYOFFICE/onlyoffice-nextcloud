@@ -36,6 +36,7 @@ use OCP\AppFramework\Http\JSONResponse;
 use OCP\Constants;
 use OCP\Files\File;
 use OCP\Files\Folder;
+use OCP\Files\GenericFileException;
 use OCP\Files\IRootFolder;
 use OCP\Files\NotFoundException;
 use OCP\Files\NotPermittedException;
@@ -44,6 +45,7 @@ use OCP\ILogger;
 use OCP\IRequest;
 use OCP\IUserManager;
 use OCP\IUserSession;
+use OCP\Lock\LockedException;
 use OCP\Share\Exceptions\ShareNotFound;
 use OCP\Share\IManager;
 
@@ -435,7 +437,9 @@ class CallbackController extends Controller {
                     $newData = $documentService->Request($url);
 
                     $this->logger->debug("Track put content " . $file->getPath(), array("app" => $this->appName));
-                    $file->putContent($newData);
+                    $this->retryOperation(function () use ($file, $newData){
+                        return $file->putContent($newData);
+                    });
                     $result = 0;
                 } catch (\Exception $e) {
                     $this->logger->error("Track $trackerStatus error: " . $e->getMessage(), array("app" => $this->appName));
@@ -554,5 +558,28 @@ class CallbackController extends Controller {
         }
 
         return [$share, NULL];
+    }
+
+    /**
+     * Retry operation if a LockedException occurred
+     * Other exceptions will still be thrown
+     * @param callable $operation
+     * @throws LockedException
+     * @throws GenericFileException
+     */
+    private function retryOperation(callable $operation) {
+        for ($i = 0; $i < 5; $i++) {
+            try {
+                if ($operation() !== false) {
+                    return;
+                }
+            } catch (LockedException $e) {
+                if ($i === 4) {
+                    throw $e;
+                }
+                usleep(500000);
+            }
+        }
+        throw new GenericFileException('Operation failed after multiple retries');
     }
 }
