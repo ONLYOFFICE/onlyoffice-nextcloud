@@ -30,6 +30,7 @@
 
     OCA.Onlyoffice = _.extend({
             AppName: "onlyoffice",
+            context: null,
             folderUrl: null
         }, OCA.Onlyoffice);
 
@@ -71,6 +72,9 @@
 
                 fileList.add(response, { animate: true });
                 OCA.Onlyoffice.OpenEditor(response.id, dir, response.name, winEditor);
+
+                OCA.Onlyoffice.context = { fileList: fileList };
+                OCA.Onlyoffice.context.fileName = response.name;
 
                 OC.Notification.show(t(OCA.Onlyoffice.AppName, "File created"), {
                     timeout: 3
@@ -120,6 +124,8 @@
 
         $("#onlyofficeFrame").remove();
 
+        OCA.Onlyoffice.context = null;
+
         var url = OCA.Onlyoffice.folderUrl;
         if (!!url) {
             window.history.pushState(null, null, url);
@@ -127,9 +133,23 @@
         }
     };
 
+    OCA.Onlyoffice.OpenShareDialog = function () {
+        if (OCA.Onlyoffice.context) {
+            if (!$("#app-sidebar").is(":visible")) {
+                OCA.Onlyoffice.context.fileList.showDetailsView(OCA.Onlyoffice.context.fileName, "shareTabView");
+                OC.Apps.showAppSidebar();
+            } else {
+                OC.Apps.hideAppSidebar();
+            }
+        }
+    };
+
     OCA.Onlyoffice.FileClick = function (fileName, context) {
         var fileInfoModel = context.fileInfoModel || context.fileList.getModelForFile(fileName);
         OCA.Onlyoffice.OpenEditor(fileInfoModel.id, context.dir, fileName);
+
+        OCA.Onlyoffice.context = context;
+        OCA.Onlyoffice.context.fileName = fileName;
     };
 
     OCA.Onlyoffice.FileConvertClick = function (fileName, context) {
@@ -338,6 +358,9 @@
         switch (event.data.method) {
             case "editorRequestClose":
                 OCA.Onlyoffice.CloseEditor();
+                break;
+            case "editorRequestSharingSettings":
+                OCA.Onlyoffice.OpenShareDialog();
                 break;
             case "editorRequestSaveAs":
                 OCA.Onlyoffice.onRequestSaveAs(event.data.param);
