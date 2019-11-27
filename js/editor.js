@@ -42,6 +42,7 @@
         var fileId = $("#iframeEditor").data("id");
         var filePath = $("#iframeEditor").data("path");
         var shareToken = $("#iframeEditor").data("sharetoken");
+        var inframe = $("#iframeEditor").data("inframe");
         if (!fileId && !shareToken) {
             displayError(t(OCA.Onlyoffice.AppName, "FileId is empty"));
             return;
@@ -63,6 +64,9 @@
         }
         if (shareToken) {
             params.push("shareToken=" + encodeURIComponent(shareToken));
+        }
+        if (!!inframe) {
+            params.push("inframe=true");
         }
         if (OCA.Onlyoffice.Desktop) {
             params.push("desktop=true");
@@ -115,7 +119,7 @@
                         config.events.onRequestInsertImage = OCA.Onlyoffice.onRequestInsertImage;
                         config.events.onRequestMailMergeRecipients = OCA.Onlyoffice.onRequestMailMergeRecipients;
                     }
-                    if (window.self !== window.parent) {
+                    if (!!inframe) {
                         config.events.onRequestClose = OCA.Onlyoffice.onRequestClose;
                     }
 

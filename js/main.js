@@ -102,7 +102,7 @@
         } else if ($("#isPublic").val()) {
             location.href = url;
         } else {
-            var $iframe = $("<iframe id=\"onlyofficeFrame\" nonce=\"" + btoa(OC.requestToken) + "\" scrolling=\"no\" allowfullscreen src=\"" + url + "\" />");
+            var $iframe = $("<iframe id=\"onlyofficeFrame\" nonce=\"" + btoa(OC.requestToken) + "\" scrolling=\"no\" allowfullscreen src=\"" + url + "&inframe=true\" />");
             $("#app-content").append($iframe);
 
             $("body").addClass("onlyoffice-inline");
