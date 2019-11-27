@@ -106,6 +106,7 @@
             $("#app-content").append($iframe);
 
             $("body").addClass("onlyoffice-inline");
+            OC.Apps.hideAppSidebar();
 
             $("html, body").scrollTop(0);
 
