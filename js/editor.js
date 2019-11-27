@@ -29,7 +29,8 @@
 (function ($, OCA) {
 
     OCA.Onlyoffice = _.extend({
-            AppName: "onlyoffice"
+            AppName: "onlyoffice",
+            inframe: false
         }, OCA.Onlyoffice);
 
     OCA.Onlyoffice.InitEditor = function () {
@@ -42,7 +43,7 @@
         var fileId = $("#iframeEditor").data("id");
         var filePath = $("#iframeEditor").data("path");
         var shareToken = $("#iframeEditor").data("sharetoken");
-        var inframe = $("#iframeEditor").data("inframe");
+        OCA.Onlyoffice.inframe = !!$("#iframeEditor").data("inframe");
         if (!fileId && !shareToken) {
             displayError(t(OCA.Onlyoffice.AppName, "FileId is empty"));
             return;
@@ -65,7 +66,7 @@
         if (shareToken) {
             params.push("shareToken=" + encodeURIComponent(shareToken));
         }
-        if (!!inframe) {
+        if (OCA.Onlyoffice.inframe) {
             params.push("inframe=true");
         }
         if (OCA.Onlyoffice.Desktop) {
@@ -113,13 +114,12 @@
                         "onDocumentStateChange": setPageTitle,
                     };
 
-                    if (OC.currentUser) {
-                        //todo: in frame use postMessage
+                    if (OCA.Onlyoffice.inframe || OC.currentUser) {
                         config.events.onRequestSaveAs = OCA.Onlyoffice.onRequestSaveAs;
                         config.events.onRequestInsertImage = OCA.Onlyoffice.onRequestInsertImage;
                         config.events.onRequestMailMergeRecipients = OCA.Onlyoffice.onRequestMailMergeRecipients;
                     }
-                    if (!!inframe) {
+                    if (OCA.Onlyoffice.inframe) {
                         config.events.onRequestClose = OCA.Onlyoffice.onRequestClose;
                     }
 
@@ -139,13 +139,20 @@
             url: event.data.url
         };
 
-        OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Save as"),
-            function (fileDir) {
-                saveData.dir = fileDir;
-                OCA.Onlyoffice.editorSaveAs(saveData);
-            },
-            false,
-            "httpd/unix-directory");
+        if (OCA.Onlyoffice.inframe) {
+            window.parent.postMessage({
+                method: "editorRequestSaveAs",
+                param: saveData
+            });
+        } else {
+            OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Save as"),
+                function (fileDir) {
+                    saveData.dir = fileDir;
+                    OCA.Onlyoffice.editorSaveAs(saveData);
+                },
+                false,
+                "httpd/unix-directory");
+        }
     };
 
     OCA.Onlyoffice.editorSaveAs = function (saveData) {
@@ -174,7 +181,14 @@
             "image/png", "image/x-png", "application/png", "application/x-png"
         ];
 
-        OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Insert image"), OCA.Onlyoffice.editorInsertImage, false, imageMimes);
+        if (OCA.Onlyoffice.inframe) {
+            window.parent.postMessage({
+                method: "editorRequestInsertImage",
+                param: imageMimes
+            });
+        } else {
+            OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Insert image"), OCA.Onlyoffice.editorInsertImage, false, imageMimes);
+        }
     };
 
     OCA.Onlyoffice.editorInsertImage = function (filePath) {
@@ -200,7 +214,14 @@
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         ];
 
-        OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Select recipients"), OCA.Onlyoffice.editorSetRecipient, false, recipientMimes);
+        if (OCA.Onlyoffice.inframe) {
+            window.parent.postMessage({
+                method: "editorRequestMailMergeRecipients",
+                param: recipientMimes
+            });
+        } else {
+            OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Select recipients"), OCA.Onlyoffice.editorSetRecipient, false, recipientMimes);
+        }
     };
 
     OCA.Onlyoffice.editorSetRecipient = function (filePath) {
@@ -222,7 +243,9 @@
     };
 
     OCA.Onlyoffice.onRequestClose = function () {
-        window.parent.postMessage("editorRequestClose");
+        window.parent.postMessage({
+            method: "editorRequestClose"
+        });
     };
 
     $(document).ready(OCA.Onlyoffice.InitEditor);
