@@ -29,7 +29,8 @@
 (function (OCA) {
 
     OCA.Onlyoffice = _.extend({
-            AppName: "onlyoffice"
+            AppName: "onlyoffice",
+            folderUrl: null
         }, OCA.Onlyoffice);
 
     OCA.Onlyoffice.setting = {};
@@ -107,6 +108,9 @@
             $("body").addClass("onlyoffice-inline");
 
             $("html, body").scrollTop(0);
+
+            OCA.Onlyoffice.folderUrl = location.href;
+            window.history.pushState(null, null, url);
         }
     };
 
@@ -114,6 +118,12 @@
         $("body").removeClass("onlyoffice-inline");
 
         $("#onlyofficeFrame").remove();
+
+        var url = OCA.Onlyoffice.folderUrl;
+        if (!!url) {
+            window.history.pushState(null, null, url);
+            OCA.Onlyoffice.folderUrl = null;
+        }
     };
 
     OCA.Onlyoffice.FileClick = function (fileName, context) {
