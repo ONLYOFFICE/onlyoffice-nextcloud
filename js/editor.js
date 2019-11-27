@@ -259,30 +259,36 @@
     };
 
     OCA.Onlyoffice.onRequestCompareFile = function() {
-
-        var setRevised = function(filePath) {
-            $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/url?filePath={filePath}",
-                {
-                    filePath: filePath
-                }),
-                function onSuccess(response) {
-                    if (response.error) {
-                        OC.Notification.show(response.error, {
-                            type: "error",
-                            timeout: 3
-                        });
-                        return;
-                    }
-
-                    OCA.Onlyoffice.docEditor.setRevisedFile(response);
-                });
-        };
-
         var revisedMimes = [
             "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         ];
 
-        OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Select file to compare"), setRevised, false, revisedMimes);
+        if (OCA.Onlyoffice.inframe) {
+            window.parent.postMessage({
+                method: "editorRequestCompareFile",
+                param: revisedMimes
+            });
+        } else {
+            OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Select file to compare"), OCA.Onlyoffice.editorSetRevised, false, revisedMimes);
+        }
+    };
+
+    OCA.Onlyoffice.editorSetRevised = function(filePath) {
+        $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/url?filePath={filePath}",
+            {
+                filePath: filePath
+            }),
+            function onSuccess(response) {
+                if (response.error) {
+                    OC.Notification.show(response.error, {
+                        type: "error",
+                        timeout: 3
+                    });
+                    return;
+                }
+
+                OCA.Onlyoffice.docEditor.setRevisedFile(response);
+            });
     };
 
     $(document).ready(OCA.Onlyoffice.InitEditor);
