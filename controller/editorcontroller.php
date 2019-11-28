@@ -694,6 +694,10 @@ class EditorController extends Controller {
             }
         }
 
+        if ($inframe === true) {
+            $params["_files_sharing"] = \OC::$server->getAppManager()->isInstalled("files_sharing");
+        }
+
         $params = $this->setCustomization($params);
 
         $params = $this->setWatermark($params, !empty($shareToken), $userId, $file);

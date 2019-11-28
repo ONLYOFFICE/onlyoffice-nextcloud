@@ -121,7 +121,9 @@
                     }
                     if (OCA.Onlyoffice.inframe) {
                         config.events.onRequestClose = OCA.Onlyoffice.onRequestClose;
-                        config.events.onRequestSharingSettings = OCA.Onlyoffice.onRequestSharingSettings;
+                        if (config._files_sharing) {
+                            config.events.onRequestSharingSettings = OCA.Onlyoffice.onRequestSharingSettings;
+                        }
                     }
 
                     OCA.Onlyoffice.docEditor = new DocsAPI.DocEditor("iframeEditor", config);
