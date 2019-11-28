@@ -13,7 +13,7 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * For details, see the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
  *
- * You can contact Ascensio System SIA at 17-2 Elijas street, Riga, Latvia, EU, LV-1021.
+ * You can contact Ascensio System SIA at 20A-12 Ernesta Birznieka-Upisha street, Riga, Latvia, EU, LV-1050.
  *
  * The interactive user interfaces in modified source and object code versions of the Program
  * must display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
@@ -34,7 +34,7 @@
 
 <div id="app">
 
-    <div id="iframeEditor" data-id="<?php p($_["fileId"]) ?>" data-path="<?php p($_["filePath"]) ?>" data-token="<?php p($_["token"]) ?>"></div>
+    <div id="iframeEditor" data-id="<?php p($_["fileId"]) ?>" data-path="<?php p($_["filePath"]) ?>" data-sharetoken="<?php p($_["shareToken"]) ?>"></div>
 
     <?php if (!empty($_["documentServerUrl"])) { ?>
         <script nonce="<?php p(base64_encode($_["requesttoken"])) ?>"

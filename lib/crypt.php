@@ -13,7 +13,7 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * For details, see the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
  *
- * You can contact Ascensio System SIA at 17-2 Elijas street, Riga, Latvia, EU, LV-1021.
+ * You can contact Ascensio System SIA at 20A-12 Ernesta Birznieka-Upisha street, Riga, Latvia, EU, LV-1050.
  *
  * The interactive user interfaces in modified source and object code versions of the Program
  * must display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
@@ -39,17 +39,17 @@ use OCA\Onlyoffice\AppConfig;
 class Crypt {
 
     /**
-     * The secret key from the application configuration
+     * Application configuration
      *
-     * @var string
+     * @var OCA\Onlyoffice\AppConfig
      */
-    private $skey;
+    private $config;
 
     /**
      * @param OCA\Onlyoffice\AppConfig $config - application configutarion
      */
     public function __construct(AppConfig $appConfig) {
-        $this->skey = $appConfig->GetSKey();
+        $this->config = $appConfig;
     }
 
     /**
@@ -60,7 +60,7 @@ class Crypt {
      * @return string
      */
     public function GetHash($object) {
-        return \Firebase\JWT\JWT::encode($object, $this->skey);
+        return \Firebase\JWT\JWT::encode($object, $this->config->GetSKey());
     }
 
     /**
@@ -77,7 +77,7 @@ class Crypt {
             return [$result, "token is empty"];
         }
         try {
-            $result = \Firebase\JWT\JWT::decode($token, $this->skey, array("HS256"));
+            $result = \Firebase\JWT\JWT::decode($token, $this->config->GetSKey(), array("HS256"));
         } catch (\UnexpectedValueException $e) {
             $error = $e->getMessage();
         }
