@@ -516,7 +516,7 @@ class EditorController extends Controller {
         $editable = $file->isUpdateable()
                     && (empty($token) || ($share->getPermissions() & Constants::PERMISSION_UPDATE) === Constants::PERMISSION_UPDATE);
 
-		$event = new GenericEvent($fileId, []);
+		$event = new GenericEvent($fileId, ['token' => $token]);
 		$this->dispatcher->dispatch(self::class . '::getEditable', $event);
 		if ($event->hasArgument('editable')) {
 			$editable = $event->getArgument('editable');
@@ -552,7 +552,7 @@ class EditorController extends Controller {
             ];
         }
         else {
-			$event = new GenericEvent($fileId, []);
+			$event = new GenericEvent($fileId, ['token' => $token]);
 			$this->dispatcher->dispatch(self::class . '::getName', $event);
 			if ($event->hasArgument('name')) {
 				$name = $event->getArgument('name');
