@@ -212,13 +212,13 @@ class CallbackController extends Controller {
         if ($this->userSession->isLoggedIn()) {
             $userId = $this->userSession->getUser()->getUID();
         } else {
+            \OC_Util::tearDownFS();
+
             $userId = $hashData->userId;
+            \OC_User::setUserId($userId);
+
             $user = $this->userManager->get($userId);
-
             if (!empty($user)) {
-                $this->userSession->setUser($user);
-
-                \OC_Util::tearDownFS();
                 \OC_Util::setupFS($userId);
             }
         }
@@ -382,27 +382,24 @@ class CallbackController extends Controller {
                 try {
                     $shareToken = isset($hashData->shareToken) ? $hashData->shareToken : NULL;
 
+                    \OC_Util::tearDownFS();
+
+                    // author of the latest changes
                     $userId = $users[0];
+                    \OC_User::setUserId($userId);
+
                     $user = $this->userManager->get($userId);
-
                     if (!empty($user)) {
-                        $this->userSession->setUser($user);
-
-                        \OC_Util::tearDownFS();
                         \OC_Util::setupFS($userId);
                     } else {
                         if (empty($shareToken)) {
-                            $this->logger->debug("Track without token: $fileId status $trackerStatus", array("app" => $this->appName));
+                            // author of the callback link
+                            $userId = $hashData->userId;
+                            \OC_User::setUserId($userId);
+                            $this->logger->debug("Track for $userId: $fileId status $trackerStatus", array("app" => $this->appName));
 
-                            $callbackUserId = $hashData->userId;
-                            $callbackUser = $this->userManager->get($callbackUserId);
-
-                            if (!empty($callbackUser)) {
-                                $userId = $callbackUserId;
-                            }
-
-                            \OC_Util::tearDownFS();
-                            if (!empty($userId)) {
+                            $user = $this->userManager->get($userId);
+                            if (!empty($user)) {
                                 \OC_Util::setupFS($userId);
                             }
                         } else {
