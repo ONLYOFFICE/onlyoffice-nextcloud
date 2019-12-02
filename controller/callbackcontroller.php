@@ -401,13 +401,16 @@ class CallbackController extends Controller {
                             $user = $this->userManager->get($userId);
                             if (!empty($user)) {
                                 \OC_Util::setupFS($userId);
+
+                                // path for author of the callback link
+                                $filePath = $hashData->filePath;
                             }
                         } else {
                             $this->logger->debug("Track $fileId by token for $userId", array("app" => $this->appName));
                         }
                     }
 
-                    list ($file, $error) = empty($shareToken) ? $this->getFile($userId, $fileId) : $this->getFileByToken($fileId, $shareToken);
+                    list ($file, $error) = empty($shareToken) ? $this->getFile($userId, $fileId, $filePath) : $this->getFileByToken($fileId, $shareToken);
 
                     if (isset($error)) {
                         $this->logger->error("track error $fileId" . " " . json_encode($error->getData()),  array("app" => $this->appName));
@@ -460,10 +463,11 @@ class CallbackController extends Controller {
      *
      * @param string $userId - user identifier
      * @param integer $fileId - file identifier
+     * @param string $filePath - file path
      *
      * @return array
      */
-    private function getFile($userId, $fileId) {
+    private function getFile($userId, $fileId, $filePath = NULL) {
         if (empty($fileId)) {
             return [NULL, new JSONResponse(["message" => $this->trans->t("FileId is empty")], Http::STATUS_BAD_REQUEST)];
         }
@@ -479,7 +483,18 @@ class CallbackController extends Controller {
             $this->logger->error("Files not found: $fileId", array("app" => $this->appName));
             return [NULL, new JSONResponse(["message" => $this->trans->t("Files not found")], Http::STATUS_NOT_FOUND)];
         }
+
         $file = $files[0];
+
+        if (count($files) > 1 && !empty($filePath)) {
+            $filePath = "/" . $userId . "/files" . $filePath;
+            foreach ($files as $curFile) {
+                if ($curFile->getPath() === $filePath) {
+                    $file = $curFile;
+                    break;
+                }
+            }
+        }
 
         if (!($file instanceof File)) {
             $this->logger->error("File not found: $fileId", array("app" => $this->appName));
