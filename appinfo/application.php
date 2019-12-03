@@ -105,6 +105,10 @@ class Application extends App {
             return $c->query("ServerContainer")->getUserSession();
         });
 
+        $container->registerService("UserManager", function($c) {
+            return $c->query("ServerContainer")->getUserManager();
+        });
+
         $container->registerService("Logger", function($c) {
             return $c->query("ServerContainer")->getLogger();
         });
@@ -119,7 +123,8 @@ class Application extends App {
                 $c->query("URLGenerator"),
                 $c->query("L10N"),
                 $c->query("Logger"),
-                $this->appConfig
+                $this->appConfig,
+                $this->crypt
             );
         });
 
@@ -152,6 +157,7 @@ class Application extends App {
                 $c->query("Request"),
                 $c->query("RootStorage"),
                 $c->query("UserSession"),
+                $c->query("UserManager"),
                 $c->query("URLGenerator"),
                 $c->query("L10N"),
                 $c->query("Logger"),
@@ -169,7 +175,7 @@ class Application extends App {
                 $c->query("Request"),
                 $c->query("RootStorage"),
                 $c->query("UserSession"),
-                $c->query("ServerContainer")->getUserManager(),
+                $c->query("UserManager"),
                 $c->query("L10N"),
                 $c->query("Logger"),
                 $this->appConfig,

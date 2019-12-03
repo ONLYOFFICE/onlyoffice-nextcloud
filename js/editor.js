@@ -40,9 +40,9 @@
         };
 
         var fileId = $("#iframeEditor").data("id");
-        var filePath = $("#iframeEditor").data("path");
         var shareToken = $("#iframeEditor").data("sharetoken");
-        if (!fileId && !shareToken) {
+        var directToken = $("#iframeEditor").data("directtoken");
+        if (!fileId && !shareToken && !directToken) {
             displayError(t(OCA.Onlyoffice.AppName, "FileId is empty"));
             return;
         }
@@ -58,11 +58,15 @@
             });
 
         var params = [];
+        var filePath = $("#iframeEditor").data("path");
         if (filePath) {
             params.push("filePath=" + encodeURIComponent(filePath));
         }
         if (shareToken) {
             params.push("shareToken=" + encodeURIComponent(shareToken));
+        }
+        if (directToken) {
+            params.push("directToken=" + encodeURIComponent(directToken));
         }
         if (OCA.Onlyoffice.Desktop) {
             params.push("desktop=true");

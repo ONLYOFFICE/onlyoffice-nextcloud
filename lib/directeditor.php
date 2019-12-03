@@ -40,6 +40,7 @@ use OCP\ILogger;
 use OCP\IURLGenerator;
 
 use OCA\Onlyoffice\AppConfig;
+use OCA\Onlyoffice\Crypt;
 
 /**
  * Direct Editor
@@ -84,22 +85,32 @@ class DirectEditor implements IEditor {
     private $config;
 
     /**
+     * Hash generator
+     *
+     * @var OCA\Onlyoffice\Crypt
+     */
+    private $crypt;
+
+    /**
      * @param string $AppName - application name
      * @param IURLGenerator $urlGenerator - url generator service
      * @param IL10N $trans - l10n service
      * @param ILogger $logger - logger
      * @param OCA\Onlyoffice\AppConfig $config - application configuration
+     * @param OCA\Onlyoffice\Crypt $crypt - hash generator
      */
     public function __construct($AppName,
                                 IURLGenerator $urlGenerator,
                                 IL10N $trans,
                                 ILogger $logger,
-                                AppConfig $config) {
+                                AppConfig $config,
+                                Crypt $crypt) {
         $this->appName = $AppName;
         $this->urlGenerator = $urlGenerator;
         $this->trans = $trans;
         $this->logger = $logger;
         $this->config = $config;
+        $this->crypt = $crypt;
     }
 
     /**
@@ -186,6 +197,7 @@ class DirectEditor implements IEditor {
         try {
             $token->useTokenScope();
             $fileId = $token->getFile()->getId();
+            $userId = $token->getUser();
             $this->logger->debug("DirectEditor open: $fileId", array("app" => $this->appName));
 
             $documentServerUrl = $this->config->GetDocumentServerUrl();
@@ -195,9 +207,11 @@ class DirectEditor implements IEditor {
                 return $this->renderError($this->trans->t("ONLYOFFICE app is not configured. Please contact admin"));
             }
 
+            $directToken = $this->crypt->GetHash(["userId" => $userId, "fileId" => $fileId, "action" => "direct"]);
+
             $params = [
                 "documentServerUrl" => $documentServerUrl,
-                "fileId" => $fileId
+                "directToken" => $directToken
             ];
 
             $response = new TemplateResponse($this->appName, "editor", $params);
