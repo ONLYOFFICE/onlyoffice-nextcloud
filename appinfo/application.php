@@ -30,6 +30,7 @@
 namespace OCA\Onlyoffice\AppInfo;
 
 use OCP\AppFramework\App;
+use OCP\DirectEditing\RegisterDirectEditorEvent;
 use OCP\Share\IManager;
 use OCP\Util;
 
@@ -38,6 +39,7 @@ use OCA\Onlyoffice\Controller\CallbackController;
 use OCA\Onlyoffice\Controller\EditorController;
 use OCA\Onlyoffice\Controller\SettingsController;
 use OCA\Onlyoffice\Crypt;
+use OCA\Onlyoffice\DirectEditor;
 
 class Application extends App {
 
@@ -110,6 +112,24 @@ class Application extends App {
         $container->registerService("URLGenerator", function($c) {
             return $c->query("ServerContainer")->getURLGenerator();
         });
+
+        $container->registerService("DirectEditor", function($c) {
+            return new DirectEditor(
+                $c->query("AppName"),
+                $c->query("L10N"),
+                $c->query("Logger"),
+                $this->appConfig
+            );
+        });
+
+
+        $eventDispatcher->addListener(RegisterDirectEditorEvent::class,
+            function (RegisterDirectEditorEvent $event) use ($container) {
+                if (!empty($this->appConfig->GetDocumentServerUrl()) && $this->appConfig->SettingsAreSuccessful()) {
+                    $editor = $container->query("DirectEditor");
+                    $event->register($editor);
+                }
+            });
 
 
         // Controllers
