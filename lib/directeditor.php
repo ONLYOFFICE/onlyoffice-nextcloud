@@ -29,6 +29,7 @@
 
 namespace OCA\Onlyoffice;
 
+use OCP\AppFramework\Http\ContentSecurityPolicy;
 use OCP\AppFramework\Http\NotFoundResponse;
 use OCP\AppFramework\Http\Response;
 use OCP\AppFramework\Http\TemplateResponse;
@@ -36,6 +37,7 @@ use OCP\DirectEditing\IEditor;
 use OCP\DirectEditing\IToken;
 use OCP\IL10N;
 use OCP\ILogger;
+use OCP\IURLGenerator;
 
 use OCA\Onlyoffice\AppConfig;
 
@@ -52,6 +54,13 @@ class DirectEditor implements IEditor {
      * @var string
      */
     private $appName;
+
+    /**
+     * Url generator service
+     *
+     * @var IURLGenerator
+     */
+    private $urlGenerator;
 
     /**
      * l10n service
@@ -76,15 +85,18 @@ class DirectEditor implements IEditor {
 
     /**
      * @param string $AppName - application name
+     * @param IURLGenerator $urlGenerator - url generator service
      * @param IL10N $trans - l10n service
      * @param ILogger $logger - logger
      * @param OCA\Onlyoffice\AppConfig $config - application configuration
      */
     public function __construct($AppName,
+                                IURLGenerator $urlGenerator,
                                 IL10N $trans,
                                 ILogger $logger,
                                 AppConfig $config) {
         $this->appName = $AppName;
+        $this->urlGenerator = $urlGenerator;
         $this->trans = $trans;
         $this->logger = $logger;
         $this->config = $config;
@@ -188,7 +200,20 @@ class DirectEditor implements IEditor {
                 "fileId" => $fileId
             ];
 
-            return new TemplateResponse($this->appName, "editor", $params);
+            $response = new TemplateResponse($this->appName, "editor", $params);
+
+            $csp = new ContentSecurityPolicy();
+            $csp->allowInlineScript(true);
+
+            if (preg_match("/^https?:\/\//i", $documentServerUrl)) {
+                $csp->addAllowedScriptDomain($documentServerUrl);
+                $csp->addAllowedFrameDomain($documentServerUrl);
+            } else {
+                $csp->addAllowedFrameDomain($this->urlGenerator->getAbsoluteURL("/"));
+            }
+            $response->setContentSecurityPolicy($csp);
+
+            return $response;
         } catch (\Exception $e) {
             $this->logger->error("DirectEditor open: " . $e->getMessage(), array("app" => $this->appName));
             return $this->renderError($e->getMessage());

@@ -116,6 +116,7 @@ class Application extends App {
         $container->registerService("DirectEditor", function($c) {
             return new DirectEditor(
                 $c->query("AppName"),
+                $c->query("URLGenerator"),
                 $c->query("L10N"),
                 $c->query("Logger"),
                 $this->appConfig
