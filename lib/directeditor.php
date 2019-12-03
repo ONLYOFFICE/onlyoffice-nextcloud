@@ -207,7 +207,13 @@ class DirectEditor implements IEditor {
                 return $this->renderError($this->trans->t("ONLYOFFICE app is not configured. Please contact admin"));
             }
 
-            $directToken = $this->crypt->GetHash(["userId" => $userId, "fileId" => $fileId, "action" => "direct"]);
+            $directToken = $this->crypt->GetHash([
+                "userId" => $userId,
+                "fileId" => $fileId,
+                "action" => "direct",
+                "iat" => time(),
+                "exp" => time() + 30
+            ]);
 
             $params = [
                 "documentServerUrl" => $documentServerUrl,
