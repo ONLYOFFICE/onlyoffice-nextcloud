@@ -196,8 +196,8 @@ class DirectEditor implements IEditor {
     public function open(IToken $token): Response {
         try {
             $token->useTokenScope();
-            $fileId = $token->getFile()->getId();
-            $userId = $token->getUser();
+            $file = $token->getFile();
+            $fileId = $file->getId();
             $this->logger->debug("DirectEditor open: $fileId", array("app" => $this->appName));
 
             $documentServerUrl = $this->config->GetDocumentServerUrl();
@@ -207,6 +207,7 @@ class DirectEditor implements IEditor {
                 return $this->renderError($this->trans->t("ONLYOFFICE app is not configured. Please contact admin"));
             }
 
+            $userId = $token->getUser();
             $directToken = $this->crypt->GetHash([
                 "userId" => $userId,
                 "fileId" => $fileId,
@@ -215,8 +216,11 @@ class DirectEditor implements IEditor {
                 "exp" => time() + 30
             ]);
 
+            $filePath = $file->getPath();
+            $filePath = preg_replace("/^" . $userId . "/", "", $filePath);
             $params = [
                 "documentServerUrl" => $documentServerUrl,
+                "filePath" => $filePath,
                 "directToken" => $directToken
             ];
 
