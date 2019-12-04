@@ -381,6 +381,7 @@ class CallbackController extends Controller {
 
                 try {
                     $shareToken = isset($hashData->shareToken) ? $hashData->shareToken : NULL;
+                    $filePath = null;
 
                     \OC_Util::tearDownFS();
 
