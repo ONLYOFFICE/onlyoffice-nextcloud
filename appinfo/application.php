@@ -117,25 +117,26 @@ class Application extends App {
             return $c->query("ServerContainer")->getURLGenerator();
         });
 
-        $container->registerService("DirectEditor", function($c) {
-            return new DirectEditor(
-                $c->query("AppName"),
-                $c->query("URLGenerator"),
-                $c->query("L10N"),
-                $c->query("Logger"),
-                $this->appConfig,
-                $this->crypt
-            );
-        });
-
-
-        $eventDispatcher->addListener(RegisterDirectEditorEvent::class,
-            function (RegisterDirectEditorEvent $event) use ($container) {
-                if (!empty($this->appConfig->GetDocumentServerUrl()) && $this->appConfig->SettingsAreSuccessful()) {
-                    $editor = $container->query("DirectEditor");
-                    $event->register($editor);
-                }
+        if (class_exists("OCP\DirectEditing\RegisterDirectEditorEvent")) {
+            $container->registerService("DirectEditor", function($c) {
+                return new DirectEditor(
+                    $c->query("AppName"),
+                    $c->query("URLGenerator"),
+                    $c->query("L10N"),
+                    $c->query("Logger"),
+                    $this->appConfig,
+                    $this->crypt
+                );
             });
+
+            $eventDispatcher->addListener(RegisterDirectEditorEvent::class,
+                function (RegisterDirectEditorEvent $event) use ($container) {
+                    if (!empty($this->appConfig->GetDocumentServerUrl()) && $this->appConfig->SettingsAreSuccessful()) {
+                        $editor = $container->query("DirectEditor");
+                        $event->register($editor);
+                    }
+                });
+        }
 
 
         // Controllers
