@@ -140,7 +140,8 @@ class DirectEditor implements IEditor {
         $mimes = array();
         $formats = $this->config->FormatsSetting();
         foreach ($formats as $format => $setting) {
-            if (array_key_exists("def", $setting) && $setting["def"]) {
+            if (array_key_exists("edit", $setting) && $setting["edit"]
+                && array_key_exists("def", $setting) && $setting["def"]) {
                 array_push($mimes, $setting["mime"]);
             }
         }
@@ -157,7 +158,8 @@ class DirectEditor implements IEditor {
         $mimes = array();
         $formats = $this->config->FormatsSetting();
         foreach ($formats as $format => $setting) {
-            if (!array_key_exists("def", $setting) || !$setting["def"]) {
+            if (array_key_exists("edit", $setting) && $setting["edit"]
+                && (!array_key_exists("def", $setting) || !$setting["def"])) {
                 array_push($mimes, $setting["mime"]);
             }
         }
