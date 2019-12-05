@@ -41,6 +41,7 @@ use OCP\IURLGenerator;
 
 use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\Crypt;
+use OCA\Onlyoffice\FileCreator;
 
 /**
  * Direct Editor
@@ -173,7 +174,9 @@ class DirectEditor implements IEditor {
      * @return array of ACreateFromTemplate|ACreateEmpty
      */
     public function getCreators(): array {
-        return [];
+        return [
+            new FileCreator($this->appName, $this->trans, $this->logger)
+        ];
     }
 
     /**
@@ -192,7 +195,8 @@ class DirectEditor implements IEditor {
      * For handling editing and later requests, editors need to impelement their own token handling
      * and take care of invalidation
      *
-     * @param IToken $token
+     * @param IToken $token - one time token
+     *
      * @return Response
      */
     public function open(IToken $token): Response {
