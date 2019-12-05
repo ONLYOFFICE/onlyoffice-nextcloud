@@ -513,7 +513,8 @@ class EditorController extends Controller {
             "documentServerUrl" => $documentServerUrl,
             "fileId" => $fileId,
             "filePath" => $filePath,
-            "shareToken" => $shareToken
+            "shareToken" => $shareToken,
+            "directToken" => null
         ];
 
         $response = new TemplateResponse($this->appName, "editor", $params);
