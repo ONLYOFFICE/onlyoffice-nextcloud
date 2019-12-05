@@ -320,7 +320,7 @@ class EditorController extends Controller {
         $newFileUri;
         $documentService = new DocumentService($this->trans, $this->config);
         $key = $this->fileUtility->getKey($file);
-        $fileUrl = $this->getUrl($file, $shareToken);
+        $fileUrl = $this->getUrl($file, $user, $shareToken);
         try {
             $newFileUri = $documentService->GetConvertedUri($fileUrl, $ext, $internalExtension, $key);
         } catch (\Exception $e) {
@@ -433,7 +433,8 @@ class EditorController extends Controller {
             return ["error" => $this->trans->t("Not permitted")];
         }
 
-        $userId = $this->userSession->getUser()->getUID();
+        $user = $this->userSession->getUser();
+        $userId = $user->getUID();
         $userFolder = $this->root->getUserFolder($userId);
 
         $file = $userFolder->get($filePath);
@@ -449,7 +450,7 @@ class EditorController extends Controller {
 
         $fileName = $file->getName();
         $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-        $fileUrl = $this->getUrl($file);
+        $fileUrl = $this->getUrl($file, $user);
 
         $result = [
             "fileType" => $ext,
@@ -576,7 +577,7 @@ class EditorController extends Controller {
             return ["error" => $this->trans->t("Format is not supported")];
         }
 
-        $fileUrl = $this->getUrl($file, $shareToken);
+        $fileUrl = $this->getUrl($file, $user, $shareToken);
         $key = $this->fileUtility->getKey($file, true);
         $key = DocumentService::GenerateRevisionId($key);
 
@@ -740,14 +741,13 @@ class EditorController extends Controller {
      * Generate secure link to download document
      *
      * @param integer $file - file
+     * @param IUser $user - user with access
      * @param string $shareToken - access token
      *
      * @return string
      */
-    private function getUrl($file, $shareToken = NULL) {
-        $user = $this->userSession->getUser();
+    private function getUrl($file, $user = NULL, $shareToken = NULL) {
         $userId = NULL;
-
         if (!empty($user)) {
             $userId = $user->getUID();
         }
