@@ -66,6 +66,7 @@
             params.push("shareToken=" + encodeURIComponent(shareToken));
         }
         if (directToken) {
+            $("html").addClass("onlyoffice-full-page");
             params.push("directToken=" + encodeURIComponent(directToken));
         }
         if (OCA.Onlyoffice.Desktop) {

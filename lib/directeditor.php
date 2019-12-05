@@ -226,7 +226,7 @@ class DirectEditor implements IEditor {
                 "directToken" => $directToken
             ];
 
-            $response = new TemplateResponse($this->appName, "editor", $params);
+            $response = new TemplateResponse($this->appName, "editor", $params, "base");
 
             $csp = new ContentSecurityPolicy();
             $csp->allowInlineScript(true);
