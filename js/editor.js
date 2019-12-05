@@ -120,6 +120,10 @@
                         config.events.onRequestMailMergeRecipients = OCA.Onlyoffice.onRequestMailMergeRecipients;
                     }
 
+                    if (OCA.Onlyoffice.directEditor) {
+                        config.events.onAppReady = OCA.Onlyoffice.directEditor.loaded;
+                    }
+
                     OCA.Onlyoffice.docEditor = new DocsAPI.DocEditor("iframeEditor", config);
 
                     if (config.type === "mobile" && $("#app > iframe").css("position") === "fixed") {
