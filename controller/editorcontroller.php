@@ -57,6 +57,7 @@ use OCA\Files\Helper;
 use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\Crypt;
 use OCA\Onlyoffice\DocumentService;
+use OCA\Onlyoffice\FileCreator;
 use OCA\Onlyoffice\FileUtility;
 
 /**
@@ -224,17 +225,7 @@ class EditorController extends Controller {
             return ["error" => $this->trans->t("You don't have enough permission to create")];
         }
 
-        $ext = strtolower("." . pathinfo($name, PATHINFO_EXTENSION));
-
-        $lang = \OC::$server->getL10NFactory("")->get("")->getLanguageCode();
-
-        $templatePath = $this->getTemplatePath($lang, $ext);
-        if (!file_exists($templatePath)) {
-            $lang = "en";
-            $templatePath = $this->getTemplatePath($lang, $ext);
-        }
-
-        $template = file_get_contents($templatePath);
+        $template = FileCreator::GetTemplate($name);
         if (!$template) {
             $this->logger->error("Template for file creation not found: $templatePath", array("app" => $this->appName));
             return ["error" => $this->trans->t("Template not found")];
@@ -255,18 +246,6 @@ class EditorController extends Controller {
 
         $result = Helper::formatFileInfo($fileInfo);
         return $result;
-    }
-
-    /**
-     * Get template path
-     *
-     * @param string $lang - language
-     * @param string $ext - file extension
-     *
-     * @return string
-     */
-    private function getTemplatePath($lang, $ext) {
-        return dirname(__DIR__) . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . $lang . DIRECTORY_SEPARATOR . "new" . $ext;
     }
 
     /**
