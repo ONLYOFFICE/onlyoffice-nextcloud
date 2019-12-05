@@ -129,7 +129,7 @@ class DirectEditor implements IEditor {
      * @return string
      */
     public function getName(): string {
-        return $this->appName;
+        return "ONLYOFFICE";
     }
 
     /**
