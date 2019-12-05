@@ -63,16 +63,26 @@ class FileCreator extends ACreateEmpty {
     private $logger;
 
     /**
+     * Format for creation
+     *
+     * @var string
+     */
+    private $format;
+
+    /**
      * @param string $AppName - application name
      * @param IL10N $trans - l10n service
      * @param ILogger $logger - logger
+     * @param string $format - format for creation 
      */
     public function __construct($AppName,
                                 IL10N $trans,
-                                ILogger $logger) {
+                                ILogger $logger,
+                                $format) {
         $this->appName = $AppName;
         $this->trans = $trans;
         $this->logger = $logger;
+        $this->format = $format;
     }
 
     /**
@@ -81,7 +91,7 @@ class FileCreator extends ACreateEmpty {
      * @return string
      */
     public function getId(): string {
-        return $this->appName;
+        return $this->appName . "_" . $this->format;
     }
 
     /**
@@ -90,6 +100,12 @@ class FileCreator extends ACreateEmpty {
      * @return string
      */
     public function getName(): string {
+        switch ($this->format) {
+            case "xlsx":
+                return $this->trans->t("Spreadsheet");
+            case "pptx":
+                return $this->trans->t("Presentation");
+        }
         return $this->trans->t("Document");
     }
 
@@ -99,7 +115,7 @@ class FileCreator extends ACreateEmpty {
      * @return string
      */
     public function getExtension(): string {
-        return "docx";
+        return $this->format;
     }
 
     /**
@@ -108,6 +124,12 @@ class FileCreator extends ACreateEmpty {
      * @return array
      */
     public function getMimetype(): string {
+        switch ($this->format) {
+            case "xlsx":
+                return "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            case "pptx":
+                return "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+        }
         return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
     }
 

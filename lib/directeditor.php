@@ -175,7 +175,9 @@ class DirectEditor implements IEditor {
      */
     public function getCreators(): array {
         return [
-            new FileCreator($this->appName, $this->trans, $this->logger)
+            new FileCreator($this->appName, $this->trans, $this->logger, "docx"),
+            new FileCreator($this->appName, $this->trans, $this->logger, "xlsx"),
+            new FileCreator($this->appName, $this->trans, $this->logger, "pptx")
         ];
     }
 
