@@ -48,7 +48,7 @@ class AdminSettings implements ISettings {
      * @return TemplateResponse
      */
     public function getForm() {
-        $app = new Application();
+        $app = \OC::$server->query(Application::class);
         $container = $app->getContainer();
         $response = $container->query(SettingsController::class)->index();
         return $response;

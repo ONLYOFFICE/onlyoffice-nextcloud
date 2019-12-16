@@ -29,4 +29,4 @@
 
 namespace OCA\Onlyoffice\AppInfo;
 
-$app = new Application();
+$app = \OC::$server->query(Application::class);
