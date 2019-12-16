@@ -1,5 +1,14 @@
 # Change Log
 
+## 4.0.0
+## Added
+- Polish translation
+- British (en_GB) file templates
+
+## Changed
+- co-editing for federated share
+- Nextcloud v14 is no longer supported
+
 ## 3.0.2
 ## Changed
 - federated share saving fixed
