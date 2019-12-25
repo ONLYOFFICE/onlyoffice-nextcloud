@@ -246,6 +246,13 @@ class AppConfig {
     public $_customization_zoom = "customization_zoom";
 
     /**
+     * The config key for the autosave
+     *
+     * @var string
+     */
+    public $_customization_autosave = "customization_autosave";
+
+    /**
      * @param string $AppName - application name
      */
     public function __construct($AppName) {
