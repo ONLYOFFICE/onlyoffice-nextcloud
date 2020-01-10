@@ -66,9 +66,17 @@
         if (shareToken) {
             params.push("shareToken=" + encodeURIComponent(shareToken));
         }
+
         if (OCA.Onlyoffice.inframe) {
-            params.push("inframe=true");
+            var dsVersion = DocsAPI.DocEditor.version();
+            var versionArray = dsVersion.split(".");
+            if (versionArray[0] < 5 || versionArray[1] < 5) {
+                params.push("inframe=2");
+            } else {
+                params.push("inframe=1");
+            }
         }
+
         if (OCA.Onlyoffice.Desktop) {
             params.push("desktop=true");
         }
@@ -119,6 +127,7 @@
                         config.events.onRequestInsertImage = OCA.Onlyoffice.onRequestInsertImage;
                         config.events.onRequestMailMergeRecipients = OCA.Onlyoffice.onRequestMailMergeRecipients;
                     }
+
                     if (OCA.Onlyoffice.inframe) {
                         config.events.onRequestClose = OCA.Onlyoffice.onRequestClose;
                         if (config._files_sharing) {
