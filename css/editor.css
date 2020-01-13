@@ -29,6 +29,11 @@
 #content.app-onlyoffice {
     min-height: calc(100% - 50px);
 }
+
+#body-public #content {
+    height: 100%;
+}
+
 #app > iframe {
     position: absolute;
     vertical-align: top;
