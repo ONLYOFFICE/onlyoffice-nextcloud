@@ -72,14 +72,12 @@
             params.push("directToken=" + encodeURIComponent(directToken));
         }
 
-        if (OCA.Onlyoffice.inframe) {
-            var dsVersion = DocsAPI.DocEditor.version();
-            var versionArray = dsVersion.split(".");
-            if (versionArray[0] < 5 || versionArray[1] < 5) {
-                params.push("inframe=2");
-            } else {
-                params.push("inframe=1");
-            }
+        var dsVersion = DocsAPI.DocEditor.version();
+        var versionArray = dsVersion.split(".");
+        if (versionArray[0] < 5 || versionArray[1] < 5) {
+            params.push("inframe=2");
+        } else if (OCA.Onlyoffice.inframe) {
+            params.push("inframe=1");
         }
 
         if (OCA.Onlyoffice.Desktop) {
@@ -138,11 +136,12 @@
                         config.events.onAppReady = OCA.Onlyoffice.directEditor.loaded;
                     }
 
-                    if (OCA.Onlyoffice.inframe) {
+                    if (OCA.Onlyoffice.directEditor || OCA.Onlyoffice.inframe) {
                         config.events.onRequestClose = OCA.Onlyoffice.onRequestClose;
-                        if (config._files_sharing) {
-                            config.events.onRequestSharingSettings = OCA.Onlyoffice.onRequestSharingSettings;
-                        }
+                    }
+
+                    if (OCA.Onlyoffice.inframe && config._files_sharing) {
+                        config.events.onRequestSharingSettings = OCA.Onlyoffice.onRequestSharingSettings;
                     }
 
                     OCA.Onlyoffice.docEditor = new DocsAPI.DocEditor("iframeEditor", config);
@@ -266,6 +265,11 @@
     };
 
     OCA.Onlyoffice.onRequestClose = function () {
+        if (OCA.Onlyoffice.directEditor) {
+            OCA.Onlyoffice.directEditor.close();
+            return;
+        }
+
         window.parent.postMessage({
             method: "editorRequestClose"
         });

@@ -677,10 +677,7 @@ class EditorController extends Controller {
             }
         }
 
-        if ($folderLink !== NULL
-            && $inframe !== 2
-            && empty($directToken) //todo: fix in ds 5.5
-            ) {
+        if ($folderLink !== NULL && $inframe !== 2) {
             $params["editorConfig"]["customization"]["goback"] = [
                 "url"  => $folderLink
             ];
@@ -688,7 +685,7 @@ class EditorController extends Controller {
             if (!$desktop) {
                 if ($this->config->GetSameTab()) {
                     $params["editorConfig"]["customization"]["goback"]["blank"] = false;
-                    if ($inframe === 1) {
+                    if ($inframe === 1 || !empty($directToken)) {
                         $params["editorConfig"]["customization"]["goback"]["requestClose"] = true;
                     }
                 }
