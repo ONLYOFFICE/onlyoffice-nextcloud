@@ -670,13 +670,18 @@ class EditorController extends Controller {
         }
 
         if ($folderLink !== NULL && $inframe !== 2) {
-            $params["editorConfig"]["customization"]["goback"] = [
-                "url"  => $folderLink
-            ];
+            list($majorVersion) = \OC_Util::getVersion();
+            if ($majorVersion < 18) {
+                $params["editorConfig"]["customization"]["goback"] = [
+                    "url"  => $folderLink
+                ];
+            }
 
             if (!$desktop) {
                 if ($this->config->GetSameTab()) {
-                    $params["editorConfig"]["customization"]["goback"]["blank"] = false;
+                    if ($majorVersion < 18) {
+                        $params["editorConfig"]["customization"]["goback"]["blank"] = false;
+                    }
                     if ($inframe === 1) {
                         $params["editorConfig"]["customization"]["goback"]["requestClose"] = true;
                     }

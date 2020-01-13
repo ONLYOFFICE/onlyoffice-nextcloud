@@ -115,7 +115,26 @@
             $("html, body").scrollTop(0);
 
             OCA.Onlyoffice.folderUrl = location.href;
-            window.history.pushState(null, null, url);
+
+
+            var wrapper = $('<div class="onlyoffice-header" />')
+            var btnClose = $('<a class="icon icon-close-white"></a>');
+            btnClose.on('click', function() {
+                OCA.Onlyoffice.CloseEditor();
+            });
+            if (OCA.Files.Sidebar) {
+                var btnShare = $('<a class="icon icon-menu-sidebar"></a>');
+                btnShare.on('click', function () {
+                    OCA.Files.Sidebar.file === "" ? OCA.Files.Sidebar.open(fileDir + '/' + fileName) : OCA.Files.Sidebar.close()
+                })
+                wrapper.prepend(btnShare)
+            }
+            wrapper.prepend(btnClose)
+            $('.header-right').append(wrapper)
+
+            if (typeof OCA.Files.Sidebar === 'undefined') {
+                window.history.pushState(null, null, url);
+            }
         }
     };
 
@@ -123,6 +142,7 @@
         $("body").removeClass("onlyoffice-inline");
 
         $("#onlyofficeFrame").remove();
+        $(".onlyoffice-header").remove();
 
         OCA.Onlyoffice.context = null;
 
