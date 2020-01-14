@@ -115,6 +115,23 @@
             $("html, body").scrollTop(0);
 
             OCA.Onlyoffice.folderUrl = location.href;
+
+            var wrapper = $("<div id='onlyofficeHeader' />")
+
+            var btnClose = $("<a class='icon icon-close-white'></a>");
+            btnClose.on("click", function() {
+                OCA.Onlyoffice.CloseEditor();
+            });
+            wrapper.prepend(btnClose);
+
+            var btnShare = $("<a class='icon icon-shared icon-white'></a>");
+            btnShare.on("click", function () {
+                OCA.Onlyoffice.OpenShareDialog();
+            })
+            wrapper.prepend(btnShare);
+
+            wrapper.prependTo(".header-right");
+
             window.history.pushState(null, null, url);
         }
     };
@@ -123,6 +140,7 @@
         $("body").removeClass("onlyoffice-inline");
 
         $("#onlyofficeFrame").remove();
+        $("#onlyofficeHeader").remove();
 
         OCA.Onlyoffice.context = null;
 
