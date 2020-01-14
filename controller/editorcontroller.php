@@ -533,6 +533,7 @@ class EditorController extends Controller {
      *
      * @param integer $fileId - file identifier
      * @param string $shareToken - access token
+     * @param bool $inframe - open in frame
      *
      * @return TemplateResponse
      *
@@ -540,8 +541,8 @@ class EditorController extends Controller {
      * @NoCSRFRequired
      * @PublicPage
      */
-    public function PublicPage($fileId, $shareToken) {
-        return $this->index($fileId, null, $shareToken);
+    public function PublicPage($fileId, $shareToken, $inframe = false) {
+        return $this->index($fileId, null, $shareToken, $inframe);
     }
 
     /**

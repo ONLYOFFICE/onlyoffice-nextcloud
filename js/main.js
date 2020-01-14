@@ -103,7 +103,7 @@
             winEditor.location.href = url;
         } else if (!OCA.Onlyoffice.setting.sameTab || OCA.Onlyoffice.Desktop) {
             winEditor = window.open(url, "_blank");
-        } else if ($("#isPublic").val()) {
+        } else if ($("#isPublic").val() === "1" && !$("#filestable").length) {
             location.href = url;
         } else {
             var $iframe = $("<iframe id=\"onlyofficeFrame\" nonce=\"" + btoa(OC.requestToken) + "\" scrolling=\"no\" allowfullscreen src=\"" + url + "&inframe=true\" />");
