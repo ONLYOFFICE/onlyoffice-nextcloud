@@ -132,10 +132,6 @@
                         config.events.onRequestCompareFile = OCA.Onlyoffice.onRequestCompareFile;
                     }
 
-                    if (OCA.Onlyoffice.directEditor) {
-                        config.events.onAppReady = OCA.Onlyoffice.directEditor.loaded;
-                    }
-
                     if (OCA.Onlyoffice.directEditor || OCA.Onlyoffice.inframe) {
                         config.events.onRequestClose = OCA.Onlyoffice.onRequestClose;
                     }
@@ -145,6 +141,10 @@
                     }
 
                     OCA.Onlyoffice.docEditor = new DocsAPI.DocEditor("iframeEditor", config);
+
+                    if (OCA.Onlyoffice.directEditor) {
+                        OCA.Onlyoffice.directEditor.loaded();
+                    }
 
                     if (!OCA.Onlyoffice.directEditor
                         && config.type === "mobile" && $("#app > iframe").css("position") === "fixed") {
