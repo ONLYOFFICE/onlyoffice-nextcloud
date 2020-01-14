@@ -503,7 +503,8 @@ class EditorController extends Controller {
             "documentServerUrl" => $documentServerUrl,
             "fileId" => $fileId,
             "filePath" => $filePath,
-            "shareToken" => $shareToken
+            "shareToken" => $shareToken,
+            "inframe" => false
         ];
 
         if ($inframe === true) {
