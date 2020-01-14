@@ -115,25 +115,26 @@
             $("html, body").scrollTop(0);
 
             OCA.Onlyoffice.folderUrl = location.href;
-
-            var wrapper = $("<div id='onlyofficeHeader' />")
-
-            var btnClose = $("<a class='icon icon-close-white'></a>");
-            btnClose.on("click", function() {
-                OCA.Onlyoffice.CloseEditor();
-            });
-            wrapper.prepend(btnClose);
-
-            var btnShare = $("<a class='icon icon-shared icon-white'></a>");
-            btnShare.on("click", function () {
-                OCA.Onlyoffice.OpenShareDialog();
-            })
-            wrapper.prepend(btnShare);
-
-            wrapper.prependTo(".header-right");
-
             window.history.pushState(null, null, url);
         }
+    };
+
+    OCA.Onlyoffice.ShowHeaderButton = function () {
+        var wrapper = $("<div id='onlyofficeHeader' />")
+
+        var btnClose = $("<a class='icon icon-close-white'></a>");
+        btnClose.on("click", function() {
+            OCA.Onlyoffice.CloseEditor();
+        });
+        wrapper.prepend(btnClose);
+
+        var btnShare = $("<a class='icon icon-shared icon-white'></a>");
+        btnShare.on("click", function () {
+            OCA.Onlyoffice.OpenShareDialog();
+        })
+        wrapper.prepend(btnShare);
+
+        wrapper.prependTo(".header-right");
     };
 
     OCA.Onlyoffice.CloseEditor = function () {
@@ -398,6 +399,9 @@
                 break;
             case "editorRequestCompareFile":
                 OCA.Onlyoffice.onRequestCompareFile(event.data.param);
+                break;
+            case "editorShowHeaderButton":
+                OCA.Onlyoffice.ShowHeaderButton();
                 break;
         }
     }, false);
