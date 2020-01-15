@@ -75,6 +75,11 @@
         var dsVersion = DocsAPI.DocEditor.version();
         var versionArray = dsVersion.split(".");
         if (versionArray[0] < 5 || versionArray[1] < 5) {
+            if (OCA.Onlyoffice.inframe) {
+                window.parent.postMessage({
+                    method: "editorShowHeaderButton"
+                });
+            }
             params.push("inframe=2");
         } else if (OCA.Onlyoffice.inframe) {
             params.push("inframe=1");
@@ -136,7 +141,7 @@
                         config.events.onRequestClose = OCA.Onlyoffice.onRequestClose;
                     }
 
-                    if (OCA.Onlyoffice.inframe && config._files_sharing) {
+                    if (OCA.Onlyoffice.inframe && config._files_sharing && !shareToken) {
                         config.events.onRequestSharingSettings = OCA.Onlyoffice.onRequestSharingSettings;
                     }
 

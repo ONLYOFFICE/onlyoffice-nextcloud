@@ -103,7 +103,7 @@
             winEditor.location.href = url;
         } else if (!OCA.Onlyoffice.setting.sameTab || OCA.Onlyoffice.Desktop) {
             winEditor = window.open(url, "_blank");
-        } else if ($("#isPublic").val()) {
+        } else if ($("#isPublic").val() === "1" && !$("#filestable").length) {
             location.href = url;
         } else {
             var $iframe = $("<iframe id=\"onlyofficeFrame\" nonce=\"" + btoa(OC.requestToken) + "\" scrolling=\"no\" allowfullscreen src=\"" + url + "&inframe=true\" />");
@@ -119,10 +119,31 @@
         }
     };
 
+    OCA.Onlyoffice.ShowHeaderButton = function () {
+        var wrapper = $("<div id='onlyofficeHeader' />")
+
+        var btnClose = $("<a class='icon icon-close-white'></a>");
+        btnClose.on("click", function() {
+            OCA.Onlyoffice.CloseEditor();
+        });
+        wrapper.prepend(btnClose);
+
+        if (!$("#isPublic").val()) {
+            var btnShare = $("<a class='icon icon-shared icon-white'></a>");
+            btnShare.on("click", function () {
+                OCA.Onlyoffice.OpenShareDialog();
+            })
+            wrapper.prepend(btnShare);
+        }
+
+        wrapper.prependTo(".header-right");
+    };
+
     OCA.Onlyoffice.CloseEditor = function () {
         $("body").removeClass("onlyoffice-inline");
 
         $("#onlyofficeFrame").remove();
+        $("#onlyofficeHeader").remove();
 
         OCA.Onlyoffice.context = null;
 
@@ -380,6 +401,9 @@
                 break;
             case "editorRequestCompareFile":
                 OCA.Onlyoffice.onRequestCompareFile(event.data.param);
+                break;
+            case "editorShowHeaderButton":
+                OCA.Onlyoffice.ShowHeaderButton();
                 break;
         }
     }, false);
