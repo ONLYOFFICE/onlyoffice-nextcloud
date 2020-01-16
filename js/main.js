@@ -136,6 +136,9 @@
             wrapper.prepend(btnShare);
         }
 
+        if (!$("#header .header-right").length) {
+            $("#header").append("<div class='header-right'></div>");
+        }
         wrapper.prependTo(".header-right");
     };
 
