@@ -41,10 +41,10 @@
         };
 
         var fileId = $("#iframeEditor").data("id");
-        var filePath = $("#iframeEditor").data("path");
         var shareToken = $("#iframeEditor").data("sharetoken");
+        var directToken = $("#iframeEditor").data("directtoken");
         OCA.Onlyoffice.inframe = !!$("#iframeEditor").data("inframe");
-        if (!fileId && !shareToken) {
+        if (!fileId && !shareToken && !directToken) {
             displayError(t(OCA.Onlyoffice.AppName, "FileId is empty"));
             return;
         }
@@ -60,24 +60,29 @@
             });
 
         var params = [];
+        var filePath = $("#iframeEditor").data("path");
         if (filePath) {
             params.push("filePath=" + encodeURIComponent(filePath));
         }
         if (shareToken) {
             params.push("shareToken=" + encodeURIComponent(shareToken));
         }
+        if (directToken) {
+            $("html").addClass("onlyoffice-full-page");
+            params.push("directToken=" + encodeURIComponent(directToken));
+        }
 
-        if (OCA.Onlyoffice.inframe) {
-            var dsVersion = DocsAPI.DocEditor.version();
-            var versionArray = dsVersion.split(".");
-            if (versionArray[0] < 5 || versionArray[1] < 5) {
+        var dsVersion = DocsAPI.DocEditor.version();
+        var versionArray = dsVersion.split(".");
+        if (versionArray[0] < 5 || versionArray[1] < 5) {
+            if (OCA.Onlyoffice.inframe) {
                 window.parent.postMessage({
                     method: "editorShowHeaderButton"
                 });
-                params.push("inframe=2");
-            } else {
-                params.push("inframe=1");
             }
+            params.push("inframe=2");
+        } else if (OCA.Onlyoffice.inframe) {
+            params.push("inframe=1");
         }
 
         if (OCA.Onlyoffice.Desktop) {
@@ -132,16 +137,22 @@
                         config.events.onRequestCompareFile = OCA.Onlyoffice.onRequestCompareFile;
                     }
 
-                    if (OCA.Onlyoffice.inframe) {
+                    if (OCA.Onlyoffice.directEditor || OCA.Onlyoffice.inframe) {
                         config.events.onRequestClose = OCA.Onlyoffice.onRequestClose;
-                        if (config._files_sharing && !shareToken) {
-                            config.events.onRequestSharingSettings = OCA.Onlyoffice.onRequestSharingSettings;
-                        }
+                    }
+
+                    if (OCA.Onlyoffice.inframe && config._files_sharing && !shareToken) {
+                        config.events.onRequestSharingSettings = OCA.Onlyoffice.onRequestSharingSettings;
                     }
 
                     OCA.Onlyoffice.docEditor = new DocsAPI.DocEditor("iframeEditor", config);
 
-                    if (config.type === "mobile" && $("#app > iframe").css("position") === "fixed") {
+                    if (OCA.Onlyoffice.directEditor) {
+                        OCA.Onlyoffice.directEditor.loaded();
+                    }
+
+                    if (!OCA.Onlyoffice.directEditor
+                        && config.type === "mobile" && $("#app > iframe").css("position") === "fixed") {
                         $("#app > iframe").css("height", "calc(100% - 50px)");
                     }
                 }
@@ -259,6 +270,11 @@
     };
 
     OCA.Onlyoffice.onRequestClose = function () {
+        if (OCA.Onlyoffice.directEditor) {
+            OCA.Onlyoffice.directEditor.close();
+            return;
+        }
+
         window.parent.postMessage({
             method: "editorRequestClose"
         });

@@ -132,7 +132,7 @@ class CallbackController extends Controller {
      * @param string $AppName - application name
      * @param IRequest $request - request object
      * @param IRootFolder $root - root folder
-     * @param IUserSession $userSession - user session
+     * @param IUserSession $userSession - current user session
      * @param IUserManager $userManager - user manager
      * @param IL10N $trans - l10n service
      * @param ILogger $logger - logger

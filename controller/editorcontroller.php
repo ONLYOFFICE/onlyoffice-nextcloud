@@ -45,6 +45,7 @@ use OCP\ILogger;
 use OCP\IRequest;
 use OCP\ISession;
 use OCP\IURLGenerator;
+use OCP\IUserManager;
 use OCP\IUserSession;
 use OCP\Share\Exceptions\ShareNotFound;
 use OCP\Share\IManager;
@@ -56,6 +57,7 @@ use OCA\Files\Helper;
 use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\Crypt;
 use OCA\Onlyoffice\DocumentService;
+use OCA\Onlyoffice\FileCreator;
 use OCA\Onlyoffice\FileUtility;
 
 /**
@@ -69,6 +71,13 @@ class EditorController extends Controller {
      * @var IUserSession
      */
     private $userSession;
+
+    /**
+     * User manager
+     *
+     * @var IUserManager
+     */
+    private $userManager;
 
     /**
      * Root folder
@@ -129,6 +138,7 @@ class EditorController extends Controller {
      * @param IRequest $request - request object
      * @param IRootFolder $root - root folder
      * @param IUserSession $userSession - current user session
+     * @param IUserManager $userManager - user manager
      * @param IURLGenerator $urlGenerator - url generator service
      * @param IL10N $trans - l10n service
      * @param ILogger $logger - logger
@@ -141,6 +151,7 @@ class EditorController extends Controller {
                                     IRequest $request,
                                     IRootFolder $root,
                                     IUserSession $userSession,
+                                    IUserManager $userManager,
                                     IURLGenerator $urlGenerator,
                                     IL10N $trans,
                                     ILogger $logger,
@@ -152,6 +163,7 @@ class EditorController extends Controller {
         parent::__construct($AppName, $request);
 
         $this->userSession = $userSession;
+        $this->userManager = $userManager;
         $this->root = $root;
         $this->urlGenerator = $urlGenerator;
         $this->trans = $trans;
@@ -213,17 +225,7 @@ class EditorController extends Controller {
             return ["error" => $this->trans->t("You don't have enough permission to create")];
         }
 
-        $ext = strtolower("." . pathinfo($name, PATHINFO_EXTENSION));
-
-        $lang = \OC::$server->getL10NFactory("")->get("")->getLanguageCode();
-
-        $templatePath = $this->getTemplatePath($lang, $ext);
-        if (!file_exists($templatePath)) {
-            $lang = "en";
-            $templatePath = $this->getTemplatePath($lang, $ext);
-        }
-
-        $template = file_get_contents($templatePath);
+        $template = FileCreator::GetTemplate($name);
         if (!$template) {
             $this->logger->error("Template for file creation not found: $templatePath", array("app" => $this->appName));
             return ["error" => $this->trans->t("Template not found")];
@@ -244,18 +246,6 @@ class EditorController extends Controller {
 
         $result = Helper::formatFileInfo($fileInfo);
         return $result;
-    }
-
-    /**
-     * Get template path
-     *
-     * @param string $lang - language
-     * @param string $ext - file extension
-     *
-     * @return string
-     */
-    private function getTemplatePath($lang, $ext) {
-        return dirname(__DIR__) . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . $lang . DIRECTORY_SEPARATOR . "new" . $ext;
     }
 
     /**
@@ -504,6 +494,7 @@ class EditorController extends Controller {
             "fileId" => $fileId,
             "filePath" => $filePath,
             "shareToken" => $shareToken,
+            "directToken" => null,
             "inframe" => false
         ];
 
@@ -551,6 +542,7 @@ class EditorController extends Controller {
      * @param integer $fileId - file identifier
      * @param string $filePath - file path
      * @param string $shareToken - access token
+     * @param string $directToken - direct token
      * @param integer $inframe - open in frame. 0 - no, 1 - yes, 2 - without goback for old editor (5.4)
      * @param bool $desktop - desktop label
      *
@@ -559,16 +551,32 @@ class EditorController extends Controller {
      * @NoAdminRequired
      * @PublicPage
      */
-    public function config($fileId, $filePath = NULL, $shareToken = NULL, $inframe = 0, $desktop = false) {
+    public function config($fileId, $filePath = NULL, $shareToken = NULL, $directToken = null, $inframe = 0, $desktop = false) {
 
         if (empty($shareToken) && !$this->config->isUserAllowedToUse()) {
-            return ["error" => $this->trans->t("Not permitted")];
-        }
+            if (empty($directToken)) {
+                return ["error" => $this->trans->t("Not permitted")];
+            } else {
+                list ($directData, $error) = $this->crypt->ReadHash($directToken);
+                if ($directData === NULL) {
+                    $this->logger->error("Config for directEditor with empty or not correct hash: $error", array("app" => $this->appName));
+                    return ["error" => $this->trans->t("Not permitted")];
+                }
+                if ($directData->action !== "direct") {
+                    $this->logger->error("Config for directEditor with other data", array("app" => $this->appName));
+                    return ["error" => $this->trans->t("Invalid request")];
+                }
 
-        $user = $this->userSession->getUser();
-        $userId = NULL;
-        if (!empty($user)) {
-            $userId = $user->getUID();
+                $fileId = $directData->fileId;
+                $userId = $directData->userId;
+                $user = $this->userManager->get($userId); 
+            }
+        } else {
+            $user = $this->userSession->getUser();
+            $userId = NULL;
+            if (!empty($user)) {
+                $userId = $user->getUID();
+            }
         }
 
         list ($file, $error, $share) = empty($shareToken) ? $this->getFile($userId, $fileId, $filePath) : $this->fileUtility->getFileByToken($fileId, $shareToken);
@@ -679,7 +687,7 @@ class EditorController extends Controller {
             if (!$desktop) {
                 if ($this->config->GetSameTab()) {
                     $params["editorConfig"]["customization"]["goback"]["blank"] = false;
-                    if ($inframe === 1) {
+                    if ($inframe === 1 || !empty($directToken)) {
                         $params["editorConfig"]["customization"]["goback"]["requestClose"] = true;
                     }
                 }
@@ -991,10 +999,12 @@ class EditorController extends Controller {
      */
     private function renderError($error, $hint = "") {
         return new TemplateResponse("", "error", array(
-                "errors" => array(array(
-                "error" => $error,
-                "hint" => $hint
-            ))
+                "errors" => array(
+                    array(
+                        "error" => $error,
+                        "hint" => $hint
+                    )
+                )
         ), "error");
     }
 }

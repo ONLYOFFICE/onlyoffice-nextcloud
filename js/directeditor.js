@@ -1,4 +1,3 @@
-<?php
 /**
  *
  * (c) Copyright Ascensio System SIA 2019
@@ -27,26 +26,51 @@
  *
  */
 
-    style("onlyoffice", "editor");
-    script("onlyoffice", "desktop");
-    script("onlyoffice", "editor");
-    if (!empty($_["directToken"])) {
-        script("onlyoffice", "directeditor");
+(function (OCA) {
+
+    OCA.Onlyoffice = _.extend({}, OCA.Onlyoffice);
+
+    var callMobileMessage = function (messageName, attributes) {
+        var message = messageName
+        if (typeof attributes !== "undefined") {
+            message = {
+                MessageName: messageName,
+                Values: attributes,
+            };
+        }
+        var attributesString = null
+        try {
+            attributesString = JSON.stringify(attributes);
+        } catch (e) {
+            attributesString = null;
+        }
+
+        // Forward to mobile handler
+        if (window.DirectEditingMobileInterface && typeof window.DirectEditingMobileInterface[messageName] === "function") {
+            if (attributesString === null || typeof attributesString === "undefined") {
+                window.DirectEditingMobileInterface[messageName]();
+            } else {
+                window.DirectEditingMobileInterface[messageName](attributesString);
+            }
+        }
+
+        // iOS webkit fallback
+        if (window.webkit
+            && window.webkit.messageHandlers
+            && window.webkit.messageHandlers.DirectEditingMobileInterface) {
+            window.webkit.messageHandlers.DirectEditingMobileInterface.postMessage(message);
+        }
+
+        window.postMessage(message);
     }
-?>
 
-<div id="app">
+    OCA.Onlyoffice.directEditor = {
+        close: function() {
+            callMobileMessage("close");
+        },
+        loaded: function() {
+            callMobileMessage("loaded");
+        }
+    };
 
-    <div id="iframeEditor"
-        data-id="<?php p($_["fileId"]) ?>"
-        data-path="<?php p($_["filePath"]) ?>"
-        data-sharetoken="<?php p($_["shareToken"]) ?>"
-        data-directtoken="<?php p($_["directToken"]) ?>"
-        data-inframe="<?php p($_["inframe"]) ?>"></div>
-
-    <?php if (!empty($_["documentServerUrl"])) { ?>
-        <script nonce="<?php p(base64_encode($_["requesttoken"])) ?>"
-            src="<?php p($_["documentServerUrl"]) ?>web-apps/apps/api/documents/api.js" type="text/javascript"></script>
-    <?php } ?>
-
-</div>
+})(OCA);
