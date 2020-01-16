@@ -59,6 +59,7 @@ use OCA\Onlyoffice\Crypt;
 use OCA\Onlyoffice\DocumentService;
 use OCA\Onlyoffice\FileCreator;
 use OCA\Onlyoffice\FileUtility;
+use OCA\Onlyoffice\TemplateManager;
 
 /**
  * Controller with the main functions
@@ -225,7 +226,7 @@ class EditorController extends Controller {
             return ["error" => $this->trans->t("You don't have enough permission to create")];
         }
 
-        $template = FileCreator::GetTemplate($name);
+        $template = TemplateManager::GetTemplate($name);
         if (!$template) {
             $this->logger->error("Template for file creation not found: $templatePath", array("app" => $this->appName));
             return ["error" => $this->trans->t("Template not found")];
