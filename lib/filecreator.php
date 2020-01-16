@@ -34,6 +34,8 @@ use OCP\Files\File;
 use OCP\IL10N;
 use OCP\ILogger;
 
+use OCA\Onlyoffice\TemplateManager;
+
 /**
  * File creator
  *
@@ -144,7 +146,7 @@ class FileCreator extends ACreateEmpty {
         $this->logger->debug("FileCreator: " . $file->getId() . " " . $file->getName() . " $creatorId $templateId", array("app" => $this->appName));
 
         $fileName = $file->getName();
-        $template = self::GetTemplate($fileName);
+        $template = TemplateManager::GetTemplate($fileName);
 
         if (!$template) {
             $this->logger->error("FileCreator: Template for file creation not found: $templatePath", array("app" => $this->appName));
@@ -156,39 +158,5 @@ class FileCreator extends ACreateEmpty {
         } catch (NotPermittedException $e) {
             $this->logger->error("FileCreator: Can't create file: $name", array("app" => $this->appName));
         }
-    }
-
-    /**
-     * Get template
-     *
-     * @param string $name - file name
-     *
-     * @return string
-     */
-    public static function GetTemplate(string $name) {
-        $ext = strtolower("." . pathinfo($name, PATHINFO_EXTENSION));
-
-        $lang = \OC::$server->getL10NFactory("")->get("")->getLanguageCode();
-
-        $templatePath = self::getTemplatePath($lang, $ext);
-        if (!file_exists($templatePath)) {
-            $lang = "en";
-            $templatePath = self::getTemplatePath($lang, $ext);
-        }
-
-        $template = file_get_contents($templatePath);
-        return $template;
-    }
-
-    /**
-     * Get template path
-     *
-     * @param string $lang - language
-     * @param string $ext - file extension
-     *
-     * @return string
-     */
-    private static function GetTemplatePath(string $lang, string $ext) {
-        return dirname(__DIR__) . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . $lang . DIRECTORY_SEPARATOR . "new" . $ext;
     }
 }

@@ -1,5 +1,9 @@
 # Change Log
 
+## 4.1.1
+## Changed
+- compatible with Nextcloud 16-17
+
 ## 4.1.0
 ## Added
 - inline editor if using the same tab, opening the sidebar, sharing from the editor
