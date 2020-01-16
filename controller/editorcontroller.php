@@ -868,7 +868,7 @@ class EditorController extends Controller {
 
         $autosave = $this->config->GetSystemValue($this->config->_customization_autosave);
         if (isset($autosave)) {
-            $params["editorConfig"]["customization"]["zoom"] = $autosave;
+            $params["editorConfig"]["customization"]["autosave"] = $autosave;
         }
 
         return $params;
