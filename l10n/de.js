@@ -77,6 +77,7 @@ OC.L10N.register(
     "Show watermark for download hidden shares" : "Wasserzeichen auf ‘Download verbergen’ Freigaben anzeigen",
     "Show watermark for read only link shares" : "Wasserzeichen auf schreibgeschützten Link-Freigaben anzeigen",
     "Show watermark on link shares with specific system tags" : "Wasserzeichen auf Link-Freigaben mit bestimmten System-Tags anzeigen",
-    "Select tag" : "Wähle einen Tag"
+    "Select tag" : "Wähle einen Tag",
+    "Select file to compare" : "Datei zum Vergleich auswählen"
 },
 "nplurals=2; plural=(n != 1);");

@@ -1,5 +1,16 @@
 # Change Log
 
+## 4.1.0
+## Added
+- inline editor if using the same tab, opening the sidebar, sharing from the editor
+- creating, editing and co-authoring files in Nextcloud Android mobile application
+- setting zoom and autosave
+- selection of a file for comparison (DocumentServer 5.5 required)
+
+## Changed
+- compatible with Nextcloud 18
+- Nextcloud v15 is no longer supported
+
 ## 4.0.0
 ## Added
 - Polish translation

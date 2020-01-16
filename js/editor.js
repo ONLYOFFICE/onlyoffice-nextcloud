@@ -29,7 +29,8 @@
 (function ($, OCA) {
 
     OCA.Onlyoffice = _.extend({
-            AppName: "onlyoffice"
+            AppName: "onlyoffice",
+            inframe: false
         }, OCA.Onlyoffice);
 
     OCA.Onlyoffice.InitEditor = function () {
@@ -40,9 +41,10 @@
         };
 
         var fileId = $("#iframeEditor").data("id");
-        var filePath = $("#iframeEditor").data("path");
         var shareToken = $("#iframeEditor").data("sharetoken");
-        if (!fileId && !shareToken) {
+        var directToken = $("#iframeEditor").data("directtoken");
+        OCA.Onlyoffice.inframe = !!$("#iframeEditor").data("inframe");
+        if (!fileId && !shareToken && !directToken) {
             displayError(t(OCA.Onlyoffice.AppName, "FileId is empty"));
             return;
         }
@@ -58,12 +60,31 @@
             });
 
         var params = [];
+        var filePath = $("#iframeEditor").data("path");
         if (filePath) {
             params.push("filePath=" + encodeURIComponent(filePath));
         }
         if (shareToken) {
             params.push("shareToken=" + encodeURIComponent(shareToken));
         }
+        if (directToken) {
+            $("html").addClass("onlyoffice-full-page");
+            params.push("directToken=" + encodeURIComponent(directToken));
+        }
+
+        var dsVersion = DocsAPI.DocEditor.version();
+        var versionArray = dsVersion.split(".");
+        if (versionArray[0] < 5 || versionArray[1] < 5) {
+            if (OCA.Onlyoffice.inframe) {
+                window.parent.postMessage({
+                    method: "editorShowHeaderButton"
+                });
+            }
+            params.push("inframe=2");
+        } else if (OCA.Onlyoffice.inframe) {
+            params.push("inframe=1");
+        }
+
         if (OCA.Onlyoffice.Desktop) {
             params.push("desktop=true");
         }
@@ -109,15 +130,29 @@
                         "onDocumentStateChange": setPageTitle,
                     };
 
-                    if (OC.currentUser) {
+                    if (OCA.Onlyoffice.inframe || OC.currentUser) {
                         config.events.onRequestSaveAs = OCA.Onlyoffice.onRequestSaveAs;
                         config.events.onRequestInsertImage = OCA.Onlyoffice.onRequestInsertImage;
                         config.events.onRequestMailMergeRecipients = OCA.Onlyoffice.onRequestMailMergeRecipients;
+                        config.events.onRequestCompareFile = OCA.Onlyoffice.onRequestCompareFile;
+                    }
+
+                    if (OCA.Onlyoffice.directEditor || OCA.Onlyoffice.inframe) {
+                        config.events.onRequestClose = OCA.Onlyoffice.onRequestClose;
+                    }
+
+                    if (OCA.Onlyoffice.inframe && config._files_sharing && !shareToken) {
+                        config.events.onRequestSharingSettings = OCA.Onlyoffice.onRequestSharingSettings;
                     }
 
                     OCA.Onlyoffice.docEditor = new DocsAPI.DocEditor("iframeEditor", config);
 
-                    if (config.type === "mobile" && $("#app > iframe").css("position") === "fixed") {
+                    if (OCA.Onlyoffice.directEditor) {
+                        OCA.Onlyoffice.directEditor.loaded();
+                    }
+
+                    if (!OCA.Onlyoffice.directEditor
+                        && config.type === "mobile" && $("#app > iframe").css("position") === "fixed") {
                         $("#app > iframe").css("height", "calc(100% - 50px)");
                     }
                 }
@@ -125,57 +160,47 @@
         });
     };
 
-    OCA.Onlyoffice.onRequestSaveAs = function(event) {
-        var title = event.data.title;
-        var url = event.data.url;
-
-        var saveAs = function(fileDir) {
-            var saveData = {
-                name: title,
-                dir: fileDir,
-                url: url
-            };
-
-            $.post(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/save"),
-                saveData,
-                function onSuccess(response) {
-                    if (response.error) {
-                        OC.Notification.show(response.error, {
-                            type: "error",
-                            timeout: 3
-                        });
-                        return;
-                    }
-
-                    OC.Notification.show(t(OCA.Onlyoffice.AppName, "File saved") + " (" + response.name + ")", {
-                        timeout: 3
-                    });
-                });
+    OCA.Onlyoffice.onRequestSaveAs = function (event) {
+        var saveData = {
+            name: event.data.title,
+            url: event.data.url
         };
 
-        OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Save as"), saveAs, false, "httpd/unix-directory");
+        if (OCA.Onlyoffice.inframe) {
+            window.parent.postMessage({
+                method: "editorRequestSaveAs",
+                param: saveData
+            });
+        } else {
+            OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Save as"),
+                function (fileDir) {
+                    saveData.dir = fileDir;
+                    OCA.Onlyoffice.editorSaveAs(saveData);
+                },
+                false,
+                "httpd/unix-directory");
+        }
     };
 
-    OCA.Onlyoffice.onRequestInsertImage = function() {
+    OCA.Onlyoffice.editorSaveAs = function (saveData) {
+        $.post(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/save"),
+            saveData,
+            function onSuccess(response) {
+                if (response.error) {
+                    OC.Notification.show(response.error, {
+                        type: "error",
+                        timeout: 3
+                    });
+                    return;
+                }
 
-        var insertImage = function(filePath) {
-            $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/url?filePath={filePath}",
-                {
-                    filePath: filePath
-                }),
-                function onSuccess(response) {
-                    if (response.error) {
-                        OC.Notification.show(response.error, {
-                            type: "error",
-                            timeout: 3
-                        });
-                        return;
-                    }
-
-                    OCA.Onlyoffice.docEditor.insertImage(response);
+                OC.Notification.show(t(OCA.Onlyoffice.AppName, "File saved") + " (" + response.name + ")", {
+                    timeout: 3
                 });
-        };
+            });
+    };
 
+    OCA.Onlyoffice.onRequestInsertImage = function () {
         var imageMimes = [
             "image/bmp", "image/x-bmp", "image/x-bitmap", "application/bmp",
             "image/gif",
@@ -183,34 +208,115 @@
             "image/png", "image/x-png", "application/png", "application/x-png"
         ];
 
-        OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Insert image"), insertImage, false, imageMimes);
+        if (OCA.Onlyoffice.inframe) {
+            window.parent.postMessage({
+                method: "editorRequestInsertImage",
+                param: imageMimes
+            });
+        } else {
+            OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Insert image"), OCA.Onlyoffice.editorInsertImage, false, imageMimes);
+        }
     };
 
-    OCA.Onlyoffice.onRequestMailMergeRecipients = function() {
+    OCA.Onlyoffice.editorInsertImage = function (filePath) {
+        $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/url?filePath={filePath}",
+            {
+                filePath: filePath
+            }),
+            function onSuccess(response) {
+                if (response.error) {
+                    OC.Notification.show(response.error, {
+                        type: "error",
+                        timeout: 3
+                    });
+                    return;
+                }
 
-        var setRecipient = function(filePath) {
-            $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/url?filePath={filePath}",
-                {
-                    filePath: filePath
-                }),
-                function onSuccess(response) {
-                    if (response.error) {
-                        OC.Notification.show(response.error, {
-                            type: "error",
-                            timeout: 3
-                        });
-                        return;
-                    }
+                OCA.Onlyoffice.docEditor.insertImage(response);
+            });
+    };
 
-                    OCA.Onlyoffice.docEditor.setMailMergeRecipients(response);
-                });
-        };
-
+    OCA.Onlyoffice.onRequestMailMergeRecipients = function () {
         var recipientMimes = [
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         ];
 
-        OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Select recipients"), setRecipient, false, recipientMimes);
+        if (OCA.Onlyoffice.inframe) {
+            window.parent.postMessage({
+                method: "editorRequestMailMergeRecipients",
+                param: recipientMimes
+            });
+        } else {
+            OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Select recipients"), OCA.Onlyoffice.editorSetRecipient, false, recipientMimes);
+        }
+    };
+
+    OCA.Onlyoffice.editorSetRecipient = function (filePath) {
+        $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/url?filePath={filePath}",
+            {
+                filePath: filePath
+            }),
+            function onSuccess(response) {
+                if (response.error) {
+                    OC.Notification.show(response.error, {
+                        type: "error",
+                        timeout: 3
+                    });
+                    return;
+                }
+
+                OCA.Onlyoffice.docEditor.setMailMergeRecipients(response);
+            });
+    };
+
+    OCA.Onlyoffice.onRequestClose = function () {
+        if (OCA.Onlyoffice.directEditor) {
+            OCA.Onlyoffice.directEditor.close();
+            return;
+        }
+
+        window.parent.postMessage({
+            method: "editorRequestClose"
+        });
+    };
+
+    OCA.Onlyoffice.onRequestSharingSettings = function() {
+        window.parent.postMessage({
+            method: "editorRequestSharingSettings"
+        });
+    };
+
+    OCA.Onlyoffice.onRequestCompareFile = function() {
+        var revisedMimes = [
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        ];
+
+        if (OCA.Onlyoffice.inframe) {
+            window.parent.postMessage({
+                method: "editorRequestCompareFile",
+                param: revisedMimes
+            });
+        } else {
+            OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Select file to compare"), OCA.Onlyoffice.editorSetRevised, false, revisedMimes);
+        }
+    };
+
+    OCA.Onlyoffice.editorSetRevised = function(filePath) {
+        $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/url?filePath={filePath}",
+            {
+                filePath: filePath
+            }),
+            function onSuccess(response) {
+                if (response.error) {
+                    OC.Notification.show(response.error, {
+                        type: "error",
+                        timeout: 3
+                    });
+                    return;
+                }
+
+                OCA.Onlyoffice.docEditor.setRevisedFile(response);
+            });
     };
 
     $(document).ready(OCA.Onlyoffice.InitEditor);

@@ -26,23 +26,51 @@
  *
  */
 
-#content.app-onlyoffice {
-    min-height: calc(100% - 50px);
-}
+(function (OCA) {
 
-#body-public #content {
-    height: 100%;
-}
+    OCA.Onlyoffice = _.extend({}, OCA.Onlyoffice);
 
-#app > iframe {
-    position: absolute;
-    vertical-align: top;
-}
+    var callMobileMessage = function (messageName, attributes) {
+        var message = messageName
+        if (typeof attributes !== "undefined") {
+            message = {
+                MessageName: messageName,
+                Values: attributes,
+            };
+        }
+        var attributesString = null
+        try {
+            attributesString = JSON.stringify(attributes);
+        } catch (e) {
+            attributesString = null;
+        }
 
-.AscDesktopEditor #body-user #header {
-    display: none;
-}
-.AscDesktopEditor #body-user #content {
-    min-height: 100%;
-    padding-top: 0;
-}
+        // Forward to mobile handler
+        if (window.DirectEditingMobileInterface && typeof window.DirectEditingMobileInterface[messageName] === "function") {
+            if (attributesString === null || typeof attributesString === "undefined") {
+                window.DirectEditingMobileInterface[messageName]();
+            } else {
+                window.DirectEditingMobileInterface[messageName](attributesString);
+            }
+        }
+
+        // iOS webkit fallback
+        if (window.webkit
+            && window.webkit.messageHandlers
+            && window.webkit.messageHandlers.DirectEditingMobileInterface) {
+            window.webkit.messageHandlers.DirectEditingMobileInterface.postMessage(message);
+        }
+
+        window.postMessage(message);
+    }
+
+    OCA.Onlyoffice.directEditor = {
+        close: function() {
+            callMobileMessage("close");
+        },
+        loaded: function() {
+            callMobileMessage("loaded");
+        }
+    };
+
+})(OCA);
