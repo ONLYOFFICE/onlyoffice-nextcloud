@@ -72,17 +72,19 @@
             params.push("directToken=" + encodeURIComponent(directToken));
         }
 
-        var dsVersion = DocsAPI.DocEditor.version();
-        var versionArray = dsVersion.split(".");
-        if (versionArray[0] < 5 || versionArray[1] < 5) {
-            if (OCA.Onlyoffice.inframe) {
-                window.parent.postMessage({
-                    method: "editorShowHeaderButton"
-                });
+        if (OCA.Onlyoffice.inframe || directToken) {
+            var dsVersion = DocsAPI.DocEditor.version();
+            var versionArray = dsVersion.split(".");
+            if (versionArray[0] < 5 || versionArray[1] < 5) {
+                if (OCA.Onlyoffice.inframe) {
+                    window.parent.postMessage({
+                        method: "editorShowHeaderButton"
+                    });
+                }
+                params.push("inframe=2");
+            } else {
+                params.push("inframe=1");
             }
-            params.push("inframe=2");
-        } else if (OCA.Onlyoffice.inframe) {
-            params.push("inframe=1");
         }
 
         if (OCA.Onlyoffice.Desktop) {
