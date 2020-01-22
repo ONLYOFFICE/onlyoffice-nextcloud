@@ -393,6 +393,10 @@ class CallbackController extends Controller {
                     $user = $this->userManager->get($userId);
                     if (!empty($user)) {
                         \OC_Util::setupFS($userId);
+
+                        if ($userId === $hashData->userId) {
+                            $filePath = $hashData->filePath;
+                        }
                     } else {
                         if (empty($shareToken)) {
                             // author of the callback link
