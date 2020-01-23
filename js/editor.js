@@ -79,7 +79,8 @@
                 if (OCA.Onlyoffice.inframe) {
                     window.parent.postMessage({
                         method: "editorShowHeaderButton"
-                    });
+                    },
+                    "*");
                 }
                 params.push("inframe=2");
             } else {
@@ -178,7 +179,8 @@
             window.parent.postMessage({
                 method: "editorRequestSaveAs",
                 param: saveData
-            });
+            },
+            "*");
         } else {
             OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Save as"),
                 function (fileDir) {
@@ -220,7 +222,8 @@
             window.parent.postMessage({
                 method: "editorRequestInsertImage",
                 param: imageMimes
-            });
+            },
+            "*");
         } else {
             OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Insert image"), OCA.Onlyoffice.editorInsertImage, false, imageMimes);
         }
@@ -253,7 +256,8 @@
             window.parent.postMessage({
                 method: "editorRequestMailMergeRecipients",
                 param: recipientMimes
-            });
+            },
+            "*");
         } else {
             OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Select recipients"), OCA.Onlyoffice.editorSetRecipient, false, recipientMimes);
         }
@@ -285,13 +289,15 @@
 
         window.parent.postMessage({
             method: "editorRequestClose"
-        });
+        },
+        "*");
     };
 
     OCA.Onlyoffice.onRequestSharingSettings = function() {
         window.parent.postMessage({
             method: "editorRequestSharingSettings"
-        });
+        },
+        "*");
     };
 
     OCA.Onlyoffice.onRequestCompareFile = function() {
@@ -303,7 +309,8 @@
             window.parent.postMessage({
                 method: "editorRequestCompareFile",
                 param: revisedMimes
-            });
+            },
+            "*");
         } else {
             OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Select file to compare"), OCA.Onlyoffice.editorSetRevised, false, revisedMimes);
         }
