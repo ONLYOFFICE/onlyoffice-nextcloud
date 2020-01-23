@@ -231,7 +231,8 @@ class DirectEditor implements IEditor {
                 "fileId" => null,
                 "filePath" => $filePath,
                 "shareToken" => null,
-                "directToken" => $directToken
+                "directToken" => $directToken,
+                "inframe" => false
             ];
 
             $response = new TemplateResponse($this->appName, "editor", $params, "base");
