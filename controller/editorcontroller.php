@@ -972,7 +972,8 @@ class EditorController extends Controller {
                 }
             }
         } else {
-            if ($watermarkSettings["shareAll"] && $file->getOwner()->getUID() !== $userId) {
+            if ($watermarkSettings["shareAll"]
+                && ($file->getOwner() === null || $file->getOwner()->getUID() !== $userId)) {
                 return $watermarkText;
             }
             if ($watermarkSettings["shareRead"] && !$canEdit) {
