@@ -567,7 +567,17 @@ class EditorController extends Controller {
 
             $fileId = $directData->fileId;
             $userId = $directData->userId;
-            $user = $this->userManager->get($userId); 
+            if ($this->userSession->isLoggedIn()
+                && $userId === $this->userSession->getUser()->getUID()) {
+                $redirectUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".editor.index",
+                    [
+                        "fileId" => $fileId,
+                        "filePath" => $filePath
+                    ]);
+                return ["redirectUrl" => $redirectUrl];
+            }
+
+            $user = $this->userManager->get($userId);
         } else {
             if (empty($shareToken) && !$this->config->isUserAllowedToUse()) {
                 return ["error" => $this->trans->t("Not permitted")];
