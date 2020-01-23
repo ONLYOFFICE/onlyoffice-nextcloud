@@ -225,7 +225,8 @@ class DirectEditor implements IEditor {
             ]);
 
             $filePath = $file->getPath();
-            $filePath = preg_replace("/^" . $userId . "/", "", $filePath);
+            $filePath = preg_replace("/^\/" . $userId . "\/files/", "", $filePath);
+
             $params = [
                 "documentServerUrl" => $documentServerUrl,
                 "fileId" => null,
