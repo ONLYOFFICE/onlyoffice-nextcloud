@@ -80,7 +80,8 @@ class Application extends App {
 
         $eventDispatcher->addListener("OCA\Files_Sharing::loadAdditionalScripts",
             function() {
-                if (!empty($this->appConfig->GetDocumentServerUrl()) && $this->appConfig->SettingsAreSuccessful()) {
+                if (!empty($this->appConfig->GetDocumentServerUrl())
+                    && $this->appConfig->SettingsAreSuccessful()) {
                     Util::addScript("onlyoffice", "main");
                     Util::addStyle("onlyoffice", "main");
                 }
@@ -131,7 +132,9 @@ class Application extends App {
 
             $eventDispatcher->addListener(RegisterDirectEditorEvent::class,
                 function (RegisterDirectEditorEvent $event) use ($container) {
-                    if (!empty($this->appConfig->GetDocumentServerUrl()) && $this->appConfig->SettingsAreSuccessful()) {
+                    if (!empty($this->appConfig->GetDocumentServerUrl())
+                        && $this->appConfig->SettingsAreSuccessful()
+                        && $this->appConfig->isUserAllowedToUse()) {
                         $editor = $container->query("DirectEditor");
                         $event->register($editor);
                     }
