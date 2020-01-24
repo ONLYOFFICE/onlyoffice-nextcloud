@@ -1,5 +1,11 @@
 # Change Log
 
+## 4.1.2
+## Changed
+- fix file opening with a sidebar
+- fix file opening in Nextcloud Android mobile application
+- fix file opening the federated file when watermark is enabled
+
 ## 4.1.1
 ## Changed
 - compatible with Nextcloud 16-17
