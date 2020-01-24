@@ -1,6 +1,6 @@
 /**
  *
- * (c) Copyright Ascensio System SIA 2019
+ * (c) Copyright Ascensio System SIA 2020
  *
  * This program is a free software product.
  * You can redistribute it and/or modify it under the terms of the GNU Affero General Public License
@@ -72,17 +72,20 @@
             params.push("directToken=" + encodeURIComponent(directToken));
         }
 
-        var dsVersion = DocsAPI.DocEditor.version();
-        var versionArray = dsVersion.split(".");
-        if (versionArray[0] < 5 || versionArray[1] < 5) {
-            if (OCA.Onlyoffice.inframe) {
-                window.parent.postMessage({
-                    method: "editorShowHeaderButton"
-                });
+        if (OCA.Onlyoffice.inframe || directToken) {
+            var dsVersion = DocsAPI.DocEditor.version();
+            var versionArray = dsVersion.split(".");
+            if (versionArray[0] < 5 || versionArray[0] == 5 && versionArray[1] < 5) {
+                if (OCA.Onlyoffice.inframe) {
+                    window.parent.postMessage({
+                        method: "editorShowHeaderButton"
+                    },
+                    "*");
+                }
+                params.push("inframe=2");
+            } else {
+                params.push("inframe=1");
             }
-            params.push("inframe=2");
-        } else if (OCA.Onlyoffice.inframe) {
-            params.push("inframe=1");
         }
 
         if (OCA.Onlyoffice.Desktop) {
@@ -98,6 +101,11 @@
                 if (config) {
                     if (config.error != null) {
                         displayError(config.error);
+                        return;
+                    }
+
+                    if (config.redirectUrl) {
+                        location.href = config.redirectUrl;
                         return;
                     }
 
@@ -130,7 +138,8 @@
                         "onDocumentStateChange": setPageTitle,
                     };
 
-                    if (OCA.Onlyoffice.inframe || OC.currentUser) {
+                    if (OCA.Onlyoffice.inframe && !shareToken
+                        || OC.currentUser) {
                         config.events.onRequestSaveAs = OCA.Onlyoffice.onRequestSaveAs;
                         config.events.onRequestInsertImage = OCA.Onlyoffice.onRequestInsertImage;
                         config.events.onRequestMailMergeRecipients = OCA.Onlyoffice.onRequestMailMergeRecipients;
@@ -170,7 +179,8 @@
             window.parent.postMessage({
                 method: "editorRequestSaveAs",
                 param: saveData
-            });
+            },
+            "*");
         } else {
             OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Save as"),
                 function (fileDir) {
@@ -212,7 +222,8 @@
             window.parent.postMessage({
                 method: "editorRequestInsertImage",
                 param: imageMimes
-            });
+            },
+            "*");
         } else {
             OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Insert image"), OCA.Onlyoffice.editorInsertImage, false, imageMimes);
         }
@@ -245,7 +256,8 @@
             window.parent.postMessage({
                 method: "editorRequestMailMergeRecipients",
                 param: recipientMimes
-            });
+            },
+            "*");
         } else {
             OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Select recipients"), OCA.Onlyoffice.editorSetRecipient, false, recipientMimes);
         }
@@ -277,13 +289,15 @@
 
         window.parent.postMessage({
             method: "editorRequestClose"
-        });
+        },
+        "*");
     };
 
     OCA.Onlyoffice.onRequestSharingSettings = function() {
         window.parent.postMessage({
             method: "editorRequestSharingSettings"
-        });
+        },
+        "*");
     };
 
     OCA.Onlyoffice.onRequestCompareFile = function() {
@@ -295,7 +309,8 @@
             window.parent.postMessage({
                 method: "editorRequestCompareFile",
                 param: revisedMimes
-            });
+            },
+            "*");
         } else {
             OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Select file to compare"), OCA.Onlyoffice.editorSetRevised, false, revisedMimes);
         }

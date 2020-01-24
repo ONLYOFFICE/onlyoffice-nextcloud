@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System SIA 2019
+ * (c) Copyright Ascensio System SIA 2020
  *
  * This program is a free software product.
  * You can redistribute it and/or modify it under the terms of the GNU Affero General Public License
@@ -554,25 +554,35 @@ class EditorController extends Controller {
      */
     public function config($fileId, $filePath = NULL, $shareToken = NULL, $directToken = null, $inframe = 0, $desktop = false) {
 
-        if (empty($shareToken) && !$this->config->isUserAllowedToUse()) {
-            if (empty($directToken)) {
+        if (!empty($directToken)) {
+            list ($directData, $error) = $this->crypt->ReadHash($directToken);
+            if ($directData === NULL) {
+                $this->logger->error("Config for directEditor with empty or not correct hash: $error", array("app" => $this->appName));
                 return ["error" => $this->trans->t("Not permitted")];
-            } else {
-                list ($directData, $error) = $this->crypt->ReadHash($directToken);
-                if ($directData === NULL) {
-                    $this->logger->error("Config for directEditor with empty or not correct hash: $error", array("app" => $this->appName));
-                    return ["error" => $this->trans->t("Not permitted")];
-                }
-                if ($directData->action !== "direct") {
-                    $this->logger->error("Config for directEditor with other data", array("app" => $this->appName));
-                    return ["error" => $this->trans->t("Invalid request")];
-                }
-
-                $fileId = $directData->fileId;
-                $userId = $directData->userId;
-                $user = $this->userManager->get($userId); 
             }
+            if ($directData->action !== "direct") {
+                $this->logger->error("Config for directEditor with other data", array("app" => $this->appName));
+                return ["error" => $this->trans->t("Invalid request")];
+            }
+
+            $fileId = $directData->fileId;
+            $userId = $directData->userId;
+            if ($this->userSession->isLoggedIn()
+                && $userId === $this->userSession->getUser()->getUID()) {
+                $redirectUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".editor.index",
+                    [
+                        "fileId" => $fileId,
+                        "filePath" => $filePath
+                    ]);
+                return ["redirectUrl" => $redirectUrl];
+            }
+
+            $user = $this->userManager->get($userId);
         } else {
+            if (empty($shareToken) && !$this->config->isUserAllowedToUse()) {
+                return ["error" => $this->trans->t("Not permitted")];
+            }
+
             $user = $this->userSession->getUser();
             $userId = NULL;
             if (!empty($user)) {
@@ -962,7 +972,8 @@ class EditorController extends Controller {
                 }
             }
         } else {
-            if ($watermarkSettings["shareAll"] && $file->getOwner()->getUID() !== $userId) {
+            if ($watermarkSettings["shareAll"]
+                && ($file->getOwner() === null || $file->getOwner()->getUID() !== $userId)) {
                 return $watermarkText;
             }
             if ($watermarkSettings["shareRead"] && !$canEdit) {

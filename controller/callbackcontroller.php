@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System SIA 2019
+ * (c) Copyright Ascensio System SIA 2020
  *
  * This program is a free software product.
  * You can redistribute it and/or modify it under the terms of the GNU Affero General Public License
@@ -393,6 +393,10 @@ class CallbackController extends Controller {
                     $user = $this->userManager->get($userId);
                     if (!empty($user)) {
                         \OC_Util::setupFS($userId);
+
+                        if ($userId === $hashData->userId) {
+                            $filePath = $hashData->filePath;
+                        }
                     } else {
                         if (empty($shareToken)) {
                             // author of the callback link

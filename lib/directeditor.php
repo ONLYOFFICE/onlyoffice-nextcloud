@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System SIA 2019
+ * (c) Copyright Ascensio System SIA 2020
  *
  * This program is a free software product.
  * You can redistribute it and/or modify it under the terms of the GNU Affero General Public License
@@ -225,13 +225,15 @@ class DirectEditor implements IEditor {
             ]);
 
             $filePath = $file->getPath();
-            $filePath = preg_replace("/^" . $userId . "/", "", $filePath);
+            $filePath = preg_replace("/^\/" . $userId . "\/files/", "", $filePath);
+
             $params = [
                 "documentServerUrl" => $documentServerUrl,
                 "fileId" => null,
                 "filePath" => $filePath,
                 "shareToken" => null,
-                "directToken" => $directToken
+                "directToken" => $directToken,
+                "inframe" => false
             ];
 
             $response = new TemplateResponse($this->appName, "editor", $params, "base");
