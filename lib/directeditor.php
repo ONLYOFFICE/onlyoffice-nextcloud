@@ -139,6 +139,10 @@ class DirectEditor implements IEditor {
      */
     public function getMimetypes(): array {
         $mimes = array();
+        if (!$this->config->isUserAllowedToUse()) {
+            return $mimes;
+        }
+
         $formats = $this->config->FormatsSetting();
         foreach ($formats as $format => $setting) {
             if (array_key_exists("edit", $setting) && $setting["edit"]
@@ -157,6 +161,10 @@ class DirectEditor implements IEditor {
      */
     public function getMimetypesOptional(): array {
         $mimes = array();
+        if (!$this->config->isUserAllowedToUse()) {
+            return $mimes;
+        }
+
         $formats = $this->config->FormatsSetting();
         foreach ($formats as $format => $setting) {
             if (array_key_exists("edit", $setting) && $setting["edit"]
@@ -174,6 +182,10 @@ class DirectEditor implements IEditor {
      * @return array of ACreateFromTemplate|ACreateEmpty
      */
     public function getCreators(): array {
+        if (!$this->config->isUserAllowedToUse()) {
+            return array();
+        }
+
         return [
             new FileCreator($this->appName, $this->trans, $this->logger, "docx"),
             new FileCreator($this->appName, $this->trans, $this->logger, "xlsx"),
@@ -194,7 +206,7 @@ class DirectEditor implements IEditor {
      * Return a template response for displaying the editor
      *
      * open can only be called once when the client requests the editor with a one-time-use token
-     * For handling editing and later requests, editors need to impelement their own token handling
+     * For handling editing and later requests, editors need to implement their own token handling
      * and take care of invalidation
      *
      * @param IToken $token - one time token
