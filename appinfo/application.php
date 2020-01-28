@@ -133,8 +133,7 @@ class Application extends App {
             $eventDispatcher->addListener(RegisterDirectEditorEvent::class,
                 function (RegisterDirectEditorEvent $event) use ($container) {
                     if (!empty($this->appConfig->GetDocumentServerUrl())
-                        && $this->appConfig->SettingsAreSuccessful()
-                        && $this->appConfig->isUserAllowedToUse()) {
+                        && $this->appConfig->SettingsAreSuccessful()) {
                         $editor = $container->query("DirectEditor");
                         $event->register($editor);
                     }
