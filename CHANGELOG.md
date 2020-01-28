@@ -1,5 +1,9 @@
 # Change Log
 
+## 4.1.4
+## Changed
+- fix file opening in Nextcloud Android mobile application
+
 ## 4.1.2
 ## Changed
 - fix file opening with a sidebar
