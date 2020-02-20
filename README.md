@@ -10,7 +10,7 @@
 
 # Overview
 
-This app enables users to edit office documents from [Nextcloud](https://nextcloud.com) using ONLYOFFICE Document Server.
+This app enables users to edit office documents from [Nextcloud](https://nextcloud.com) using the ONLYOFFICE Document Server.
 Currently the following document formats can be edited with this app: csv, docx, pptx, txt, xlsx.
 The above mentioned formats are also available for viewing together with pdf.
 The edited files of the corresponding type can be converted into the Office Open XML formats: doc, docm, dot, dotx, epub, htm, html, odp, odt, pot, potm, potx, pps, ppsm, ppsx, ppt, pptm, rtf, xls, xlsm, xlsx, xlt, xltm, xltx.
@@ -19,7 +19,9 @@ The app will create an item in the `new` (+) menu to create **Document**, **Spre
 It will also create a new **Open in ONLYOFFICE** menu option within the document library for Office documents.
 This allows multiple users to collaborate in real time and to save back those changes to Nextcloud.
 
-You can also use our **[Docker installation](https://github.com/ONLYOFFICE/docker-onlyoffice-nextcloud)** to get installed and configured Document Server and Nextcloud installation with a couple of commands.
+The easiest way to get an ONLYOFFICE Document Server on Nextcloud is to install the **[community document server app for Nextcloud](https://apps.nextcloud.com/apps/documentserver_community)**. See more details [in this blog post.](https://nextcloud.com/blog/how-to-install-onlyoffice-in-nextcloud-hub-and-new-integration-feature/)
+
+Note that this version only supports x86_64 and a limited number of connections and offers lower performance than the ONLYOFFICE Document Server installation using the community **[Docker installation](https://github.com/ONLYOFFICE/docker-onlyoffice-nextcloud)**. For commercial use that requires higher performance, reliability and scalability it is recommended to purchase the ONLYOFFICE enterprise product. See the comparison between diffent [ONLYOFFICE Document Server editions here.](#onlyoffice-document-server-editions)
 
 
 ## Installing ONLYOFFICE Document Server
