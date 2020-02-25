@@ -111,7 +111,7 @@ This method adds the copy of the file from the assets folder to the folder the u
   * **url** - the URL that ONLYOFFICE Document Server uses to download the document;
   * **callbackUrl** - the URL that ONLYOFFICE Document Server informs about status of the document editing;
   * **documentServerUrl** - the URL that the client needs to respond to ONLYOFFICE Document Server (can be set at the administrative settings page);
-  * **key** - the UUID+Modified Timestamp to instruct ONLYOFFICE Document Server whether to download the document again or not;
+  * **key** - the etag to instruct ONLYOFFICE Document Server whether to download the document again or not;
 
 * Nextcloud takes this object and constructs a page from `templates/editor.php` template, filling in all of those values so that the client browser can load up the editor.
 
