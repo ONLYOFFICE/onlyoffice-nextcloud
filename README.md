@@ -130,9 +130,6 @@ This method adds the copy of the file from the assets folder to the folder the u
 
 ## Known issues
 
-* If the document is shared using the **Federated Cloud Sharing** app, the co-editing among the servers will not be avaialble.
-The users from one and the same server can edit the document in the co-editing mode, but the users from two (or more) different servers will not be able to collaborate on the same document in real time.
-
 * Adding the storage using the **External storages** app has issues with the co-editing in some cases.
 If the connection is made using the same authorization keys (the _Username and password_ or _Global credentials_ authentication type is selected), then the co-editing is available for the users.
 If different authorization keys are used (_Log-in credentials, save in database_ or _User entered, store in database_ authentication options), the co-editing is not available.
