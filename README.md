@@ -1,6 +1,6 @@
 # ![](screenshots/icon.png) Nextcloud-ONLYOFFICE integration app
 
-This app enables users to edit office documents from [Nextcloud](https://nextcloud.com) using ONLYOFFICE Document Server - - [Community or Integration Edition](#onlyoffice-document-server-editions).
+This app enables users to edit office documents from [Nextcloud](https://nextcloud.com) using ONLYOFFICE Document Server - [Community or Integration Edition](#onlyoffice-document-server-editions).
 
 ## Features
 
