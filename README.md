@@ -65,7 +65,7 @@ There are several ways to do that:
     ```
     chown -R www-data:www-data onlyoffice
     ```
-3. In Nextcloud open the `~/index.php/settings/apps?category=disabled` page with _Not enabled_ apps by administrator and click _Enable_ for the **ONLYOFFICE** application.
+3. In Nextcloud open the `~/index.php/settings/apps/disabled` page with _Not enabled_ apps by administrator and click _Enable_ for the **ONLYOFFICE** application.
 
 ## Configuring Nextcloud ONLYOFFICE integration app
 
@@ -109,12 +109,9 @@ This method adds the copy of the file from the assets folder to the folder the u
 * The app prepares a JSON object with the following properties:
 
   * **url** - the URL that ONLYOFFICE Document Server uses to download the document;
-  * **callback** - the URL that ONLYOFFICE Document Server informs about status of the document editing;
+  * **callbackUrl** - the URL that ONLYOFFICE Document Server informs about status of the document editing;
   * **documentServerUrl** - the URL that the client needs to respond to ONLYOFFICE Document Server (can be set at the administrative settings page);
   * **key** - the UUID+Modified Timestamp to instruct ONLYOFFICE Document Server whether to download the document again or not;
-  * **fileName** - the document Title (name);
-  * **userId** - the identification of the user;
-  * **userName** - the name of the user.
 
 * Nextcloud takes this object and constructs a page from `templates/editor.php` template, filling in all of those values so that the client browser can load up the editor.
 
@@ -122,11 +119,11 @@ This method adds the copy of the file from the assets folder to the folder the u
 
 * Then ONLYOFFICE Document Server downloads the document from Nextcloud and the user begins editing.
 
-* ONLYOFFICE Document Server sends a POST request to the _callback_ URL to inform Nextcloud that a user is editing the document.
+* ONLYOFFICE Document Server sends a POST request to the _callbackUrl_ to inform Nextcloud that a user is editing the document.
 
 * When all users and client browsers are done with editing, they close the editing window.
 
-* After [10 seconds](https://api.onlyoffice.com/editors/save#savedelay) of inactivity, ONLYOFFICE Document Server sends a POST to the _callback_ URL letting Nextcloud know that the clients have finished editing the document and closed it.
+* After [10 seconds](https://api.onlyoffice.com/editors/save#savedelay) of inactivity, ONLYOFFICE Document Server sends a POST to the _callbackUrl_  letting Nextcloud know that the clients have finished editing the document and closed it.
 
 * Nextcloud downloads the new version of the document, replacing the old one.
 
