@@ -1,104 +1,45 @@
-# ![](screenshots/icon.png) Nextcloud-ONLYOFFICE integration app
+# ![](screenshots/icon.png) Nextcloud ONLYOFFICE integration app
 
-* [Overview](#overview)
-* [Installing ONLYOFFICE Document Server](#installing-onlyoffice-document-server)
-* [ONLYOFFICE Document Server editions](#onlyoffice-document-server-editions)
-* [Installing Nextcloud-ONLYOFFICE integration app](#installing-nextcloud-onlyoffice-integration-app)
-* [Configuring Nextcloud-ONLYOFFICE integration app](#configuring-nextcloud-onlyoffice-integration-app)
-* [How it works](#how-it-works)
-* [Known issues](#known-issues)
+This app enables users to edit office documents from [Nextcloud](https://nextcloud.com) using ONLYOFFICE Document Server - [Community or Integration Edition](#onlyoffice-document-server-editions).
 
-# Overview
+## Features
 
-This app enables users to edit office documents from [Nextcloud](https://nextcloud.com) using ONLYOFFICE Document Server.
-Currently the following document formats can be edited with this app: csv, docx, pptx, txt, xlsx.
-The above mentioned formats are also available for viewing together with pdf.
-The edited files of the corresponding type can be converted into the Office Open XML formats: doc, docm, dot, dotx, epub, htm, html, odp, odt, pot, potm, potx, pps, ppsm, ppsx, ppt, pptm, rtf, xls, xlsm, xlsx, xlt, xltm, xltx.
+The app allows to:
 
-The app will create an item in the `new` (+) menu to create **Document**, **Spreadsheet**, **Presentation**.
-It will also create a new **Open in ONLYOFFICE** menu option within the document library for Office documents.
-This allows multiple users to collaborate in real time and to save back those changes to Nextcloud.
+* Create and edit text documents, spreadsheets, and presentations.
+* Share files to other users.
+* Protect documents with watermarks.
+* Co-edit documents in real-time: use two co-editing modes (Fast and Strict), Track Changes, comments, and built-in chat. Co-editing is also available between several federated Nextcloud instances connected to one Document Server.
 
-You can also use our **[Docker installation](https://github.com/ONLYOFFICE/docker-onlyoffice-nextcloud)** to get installed and configured Document Server and Nextcloud installation with a couple of commands.
+Supported formats:
 
+* For viewing and editing: DOCX, XLSX, PPTX, CSV, TXT.
+* For viewing only: PDF.
+* For converting to Office Open XML formats: DOC, DOCM, DOT, DOTX, EPUB, HTM, HTML, ODP, ODT, POT, POTM, POTX, PPS, PPSM, PPSX, PPT, PPTM, RTF, XLS, XLSM, XLT, XLTM, XLTX.
 
 ## Installing ONLYOFFICE Document Server
 
-You will need an instance of ONLYOFFICE Document Server that is resolvable and connectable both from Nextcloud and any end clients (version 4.2.7 and later are supported for use with the app).
-If that is not the case, use the official ONLYOFFICE Document Server documentation page: [Document Server for Linux](https://helpcenter.onlyoffice.com/server/linux/document/linux-installation.aspx). ONLYOFFICE Document Server must also be able to POST to Nextcloud directly.
+You will need an instance of ONLYOFFICE Document Server that is resolvable and connectable both from Nextcloud and any end clients (version 4.2.7 and later are supported for use with the app).ONLYOFFICE Document Server must also be able to POST to Nextcloud directly.
 
-Starting with version 4.3.0, ONLYOFFICE Document Server and Nextcloud can be installed either on different computers, or on the same machine.
-In case you select the latter variant, you will need to set up a custom port for Document Server as by default both ONLYOFFICE Document Server and Nextcloud work on port 80.
-Or you can use Document Server behind a proxy, please refer to [this article](https://helpcenter.onlyoffice.com/server/document/document-server-proxy.aspx) to learn how you can configure it.
+Starting with version 4.3.0, ONLYOFFICE Document Server and Nextcloud can be installed either on different computers, or on the same machine. If you use one machine, set up a custom port for Document Server as by default both ONLYOFFICE Document Server and Nextcloud work on port 80.
 
-The easiest way to start an instance of ONLYOFFICE Document Server is to use [Docker](https://github.com/ONLYOFFICE/Docker-DocumentServer).
+You can install free Community version of ONLYOFFICE Document Server or scalable enterprise-level Integration Edition.
 
-## ONLYOFFICE Document Server editions
+To install free Community version, use [Docker](https://github.com/onlyoffice/Docker-DocumentServer) (recommended) or follow [these instructions](https://helpcenter.onlyoffice.com/server/linux/document/linux-installation.aspx) for Debian, Ubuntu, or derivatives.  
 
-ONLYOFFICE offers different versions of its online document editors that can be deployed on your own servers.
+To install Integration Edition, follow instructions [here](https://helpcenter.onlyoffice.com/server/integration-edition/index.aspx).
 
-ONLYOFFICE Document Server:
-* Community Edition (`onlyoffice-documentserver` package)
+Community Edition vs Integration Edition comparison can be found [here](#onlyoffice-document-server-editions).
 
-* Integration Edition (`onlyoffice-documentserver-ie` package)
+To use ONLYOFFICE behind a proxy, please refer to [this article](https://helpcenter.onlyoffice.com/server/document/document-server-proxy.aspx).
 
-The table below will help you to make the right choice.
+You can also use our **[Docker installation](https://github.com/ONLYOFFICE/docker-onlyoffice-nextcloud)** to install pre-configured Document Server (free version) and Nextcloud with a couple of commands.
 
-| Pricing and licensing | Community Edition | Integration Edition |
-| ------------- | ------------- | ------------- |
-| | [Get it now](https://www.onlyoffice.com/download.aspx?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud)  | [Start Free Trial](https://www.onlyoffice.com/connectors-request.aspx?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud)  |
-| Cost  | FREE  | [Go to the pricing page](https://www.onlyoffice.com/integration-edition-prices.aspx?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud)  |
-| Simultaneous connections | up to 20 maximum  | As in chosen pricing plan |
-| Number of users | up to 20 recommended | As in chosen pricing plan |
-| License | GNU AGPL v.3 | Proprietary |
-| **Support** | **Community Edition** | **Integration Edition** |
-| Documentation | [Help Center](https://helpcenter.onlyoffice.com/server/docker/opensource/index.aspx) | [Help Center](https://helpcenter.onlyoffice.com/server/integration-edition/index.aspx) |
-| Standard support | [GitHub](https://github.com/ONLYOFFICE/DocumentServer/issues) or paid | One year support included |
-| Premium support | [Buy Now](https://www.onlyoffice.com/support.aspx?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud) | [Buy Now](https://www.onlyoffice.com/support.aspx?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud) |
-| **Services** | **Community Edition** | **Integration Edition** |
-| Conversion Service                | + | + |
-| Document Builder Service          | + | + |
-| **Interface** | **Community Edition** | **Integration Edition** |
-| Tabbed interface                       | + | + |
-| White Label                            | - | - |
-| Integrated test example (node.js)*     | - | + |
-| **Plugins & Macros** | **Community Edition** | **Integration Edition** |
-| Plugins                           | + | + |
-| Macros                            | + | + |
-| **Collaborative capabilities** | **Community Edition** | **Integration Edition** |
-| Two co-editing modes              | + | + |
-| Comments                          | + | + |
-| Built-in chat                     | + | + |
-| Review and tracking changes       | + | + |
-| Display modes of tracking changes | + | + |
-| Version history                   | + | + |
-| **Document Editor features** | **Community Edition** | **Integration Edition** |
-| Font and paragraph formatting   | + | + |
-| Object insertion                | + | + |
-| Content control                 | + | + |
-| Layout tools                    | + | + |
-| Table of contents               | + | + |
-| Navigation panel                | + | + |
-| Mail Merge                      | + | + |
-| **Spreadsheet Editor features** | **Community Edition** | **Integration Edition** |
-| Font and paragraph formatting   | + | + |
-| Object insertion                | + | + |
-| Functions, formulas, equations  | + | + |
-| Table templates                 | + | + |
-| Pivot tables                    | +** | +** |
-| **Presentation Editor features** | **Community Edition** | **Integration Edition** |
-| Font and paragraph formatting   | + | + |
-| Object insertion                | + | + |
-| Animations                      | + | + |
-| Presenter mode                  | + | + |
-| Notes                           | + | + |
-| | [Get it now](https://www.onlyoffice.com/download.aspx?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud)  | [Start Free Trial](https://www.onlyoffice.com/connectors-request.aspx?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud)  |
-
-
-## Installing Nextcloud-ONLYOFFICE integration app
+## Installing Nextcloud ONLYOFFICE integration app
 
 The Nextcloud administrator can install the integration app from the in-built application market.
 For that go to the user name and select **Apps**.
+
 After that find **ONLYOFFICE** in the list of available applications and install it.
 
 If the server with the Nextcloud installed does not have an Internet access, or if you need it for some other reason, the administrator can install the application manually.
@@ -108,7 +49,6 @@ To start using ONLYOFFICE Document Server with Nextcloud, the following steps mu
     ```
     cd apps/
     ```
-
 2. Get the Nextcloud ONLYOFFICE integration app.
 There are several ways to do that:
 
@@ -124,12 +64,10 @@ There are several ways to do that:
 2. Change the owner to update the application right from Nextcloud web interface:
     ```
     chown -R www-data:www-data onlyoffice
-    ```
-
+   ```
 3. In Nextcloud open the `~/index.php/settings/apps?category=disabled` page with _Not enabled_ apps by administrator and click _Enable_ for the **ONLYOFFICE** application.
 
-
-## Configuring Nextcloud-ONLYOFFICE integration app
+## Configuring Nextcloud ONLYOFFICE integration app
 
 In Nextcloud open the `~/index.php/settings/admin/onlyoffice` page with administrative settings for **ONLYOFFICE** section.
 Enter the following address to connect ONLYOFFICE Document Server:
@@ -154,7 +92,6 @@ Enable or disable the _Open file in the same tab_ setting.
 
 The **Open in ONLYOFFICE** action will be added to the file context menu.
 You can specify this action as default and it will be used when the file name is clicked for the selected file types.
-
 
 ## How it works
 
@@ -217,3 +154,72 @@ The instruction on enabling _master key_ based encryption is available in the of
     )
     ```
     This will disable the certificate verification and allow Nextcloud to establish connection with **Document Server**, but you must remember that this is a temporary insecure solution and we strongly recommend that you replace the certificate with the one issued by some CA. Once you do that, do not forget to remove the above section from Nextcloud config file.
+    
+## ONLYOFFICE Document Server editions
+
+ONLYOFFICE offers different versions of its online document editors that can be deployed on your own servers.
+
+ONLYOFFICE Document Server:
+* Community Edition (`onlyoffice-documentserver` package)
+
+* Integration Edition (`onlyoffice-documentserver-ie` package)
+
+The table below will help you to make the right choice.
+
+| Pricing and licensing | Community Edition | Integration Edition |
+| ------------- | ------------- | ------------- |
+| | [Get it now](https://www.onlyoffice.com/download.aspx?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud)  | [Start Free Trial](https://www.onlyoffice.com/connectors-request.aspx?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud)  |
+| Cost  | FREE  | [Go to the pricing page](https://www.onlyoffice.com/integration-edition-prices.aspx?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud)  |
+| Simultaneous connections | up to 20 maximum  | As in chosen pricing plan |
+| Number of users | up to 20 recommended | As in chosen pricing plan |
+| License | GNU AGPL v.3 | Proprietary |
+| **Support** | **Community Edition** | **Integration Edition** |
+| Documentation | [Help Center](https://helpcenter.onlyoffice.com/server/docker/opensource/index.aspx) | [Help Center](https://helpcenter.onlyoffice.com/server/integration-edition/index.aspx) |
+| Standard support | [GitHub](https://github.com/ONLYOFFICE/DocumentServer/issues) or paid | One year support included |
+| Premium support | [Buy Now](https://www.onlyoffice.com/support.aspx?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud) | [Buy Now](https://www.onlyoffice.com/support.aspx?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud) |
+| **Services** | **Community Edition** | **Integration Edition** |
+| Conversion Service                | + | + |
+| Document Builder Service          | + | + |
+| **Interface** | **Community Edition** | **Integration Edition** |
+| Tabbed interface                       | + | + |
+| White Label                            | - | - |
+| Integrated test example (node.js)*     | - | + |
+| Mobile web editors | - | + |
+| **Plugins & Macros** | **Community Edition** | **Integration Edition** |
+| Plugins                           | + | + |
+| Macros                            | + | + |
+| **Collaborative capabilities** | **Community Edition** | **Integration Edition** |
+| Two co-editing modes              | + | + |
+| Comments                          | + | + |
+| Built-in chat                     | + | + |
+| Review and tracking changes       | + | + |
+| Display modes of tracking changes | + | + |
+| Version history                   | + | + |
+| **Document Editor features** | **Community Edition** | **Integration Edition** |
+| Font and paragraph formatting   | + | + |
+| Object insertion                | + | + |
+| Adding Content control          | - | + | 
+| Editing Content control         | + | + | 
+| Layout tools                    | + | + |
+| Table of contents               | + | + |
+| Navigation panel                | + | + |
+| Mail Merge                      | + | + |
+| Comparing Documents             | - | +* |
+| **Spreadsheet Editor features** | **Community Edition** | **Integration Edition** |
+| Font and paragraph formatting   | + | + |
+| Object insertion                | + | + |
+| Functions, formulas, equations  | + | + |
+| Table templates                 | + | + |
+| Pivot tables                    | +** | +** |
+| **Presentation Editor features** | **Community Edition** | **Integration Edition** |
+| Font and paragraph formatting   | + | + |
+| Object insertion                | + | + |
+| Animations                      | + | + |
+| Presenter mode                  | + | + |
+| Notes                           | + | + |
+| | [Get it now](https://www.onlyoffice.com/download.aspx?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud)  | [Start Free Trial](https://www.onlyoffice.com/connectors-request.aspx?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud)  |
+
+\*  It's possible to add documents for comparison from your local drive, from URL and from ownCloud storage.
+
+\** Changing style and deleting (Full support coming soon)
+
