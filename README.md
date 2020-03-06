@@ -155,7 +155,7 @@ The instruction on enabling _master key_ based encryption is available in the of
     ```
     This will disable the certificate verification and allow Nextcloud to establish connection with **Document Server**, but you must remember that this is a temporary insecure solution and we strongly recommend that you replace the certificate with the one issued by some CA. Once you do that, do not forget to remove the above section from Nextcloud config file.
     
-    ## ONLYOFFICE Document Server editions
+## ONLYOFFICE Document Server editions
 
 ONLYOFFICE offers different versions of its online document editors that can be deployed on your own servers.
 
