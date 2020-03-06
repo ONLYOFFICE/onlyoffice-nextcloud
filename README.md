@@ -33,7 +33,7 @@ Community Edition vs Integration Edition comparison can be found [here](#onlyoff
 
 To use ONLYOFFICE behind a proxy, please refer to [this article](https://helpcenter.onlyoffice.com/server/document/document-server-proxy.aspx).
 
-You can also use our **[Docker installation](https://github.com/ONLYOFFICE/docker-onlyoffice-nextcloud)** to install pre-configured Document Server (free version) and ownCloud with a couple of commands.
+You can also use our **[Docker installation](https://github.com/ONLYOFFICE/docker-onlyoffice-nextcloud)** to install pre-configured Document Server (free version) and Nextcloud with a couple of commands.
 
 ## Installing Nextcloud-ONLYOFFICE integration app
 
