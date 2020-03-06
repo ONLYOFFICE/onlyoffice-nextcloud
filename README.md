@@ -1,4 +1,4 @@
-# ![](screenshots/icon.png) Nextcloud-ONLYOFFICE integration app
+# ![](screenshots/icon.png) Nextcloud ONLYOFFICE integration app
 
 This app enables users to edit office documents from [Nextcloud](https://nextcloud.com) using ONLYOFFICE Document Server - [Community or Integration Edition](#onlyoffice-document-server-editions).
 
@@ -35,7 +35,7 @@ To use ONLYOFFICE behind a proxy, please refer to [this article](https://helpcen
 
 You can also use our **[Docker installation](https://github.com/ONLYOFFICE/docker-onlyoffice-nextcloud)** to install pre-configured Document Server (free version) and Nextcloud with a couple of commands.
 
-## Installing Nextcloud-ONLYOFFICE integration app
+## Installing Nextcloud ONLYOFFICE integration app
 
 The Nextcloud administrator can install the integration app from the in-built application market.
 For that go to the user name and select **Apps**.
@@ -67,7 +67,7 @@ There are several ways to do that:
    ```
 3. In Nextcloud open the `~/index.php/settings/apps?category=disabled` page with _Not enabled_ apps by administrator and click _Enable_ for the **ONLYOFFICE** application.
 
-## Configuring Nextcloud-ONLYOFFICE integration app
+## Configuring Nextcloud ONLYOFFICE integration app
 
 In Nextcloud open the `~/index.php/settings/admin/onlyoffice` page with administrative settings for **ONLYOFFICE** section.
 Enter the following address to connect ONLYOFFICE Document Server:
