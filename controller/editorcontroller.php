@@ -698,9 +698,10 @@ class EditorController extends Controller {
             if (!$desktop) {
                 if ($this->config->GetSameTab()) {
                     $params["editorConfig"]["customization"]["goback"]["blank"] = false;
-                    if ($inframe === 1 || !empty($directToken)) {
-                        $params["editorConfig"]["customization"]["goback"]["requestClose"] = true;
-                    }
+                }
+
+                if ($inframe === 1 || !empty($directToken)) {
+                    $params["editorConfig"]["customization"]["goback"]["requestClose"] = true;
                 }
             }
         }
