@@ -33,7 +33,6 @@ use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataDownloadResponse;
 use OCP\AppFramework\Http\JSONResponse;
-use OCP\Constants;
 use OCP\Files\File;
 use OCP\Files\Folder;
 use OCP\Files\IRootFolder;
@@ -97,21 +96,21 @@ class CallbackController extends Controller {
     /**
      * Application configuration
      *
-     * @var OCA\Onlyoffice\AppConfig
+     * @var AppConfig
      */
     private $config;
 
     /**
      * Hash generator
      *
-     * @var OCA\Onlyoffice\Crypt
+     * @var Crypt
      */
     private $crypt;
 
     /**
      * Share manager
      *
-     * @var OCP\Share\IManager
+     * @var IManager
      */
     private $shareManager;
 
@@ -136,8 +135,8 @@ class CallbackController extends Controller {
      * @param IUserManager $userManager - user manager
      * @param IL10N $trans - l10n service
      * @param ILogger $logger - logger
-     * @param OCA\Onlyoffice\AppConfig $config - application configuration
-     * @param OCA\Onlyoffice\Crypt $crypt - hash generator
+     * @param AppConfig $config - application configuration
+     * @param Crypt $crypt - hash generator
      * @param IManager $shareManager - Share manager
      */
     public function __construct($AppName,
@@ -169,7 +168,7 @@ class CallbackController extends Controller {
      *
      * @param string $doc - verification token with the file identifier
      *
-     * @return DataDownloadResponse
+     * @return DataDownloadResponse|JSONResponse
      *
      * @NoAdminRequired
      * @NoCSRFRequired
@@ -250,7 +249,7 @@ class CallbackController extends Controller {
      *
      * @param string $doc - verification token with the file identifier
      *
-     * @return OCA\Onlyoffice\DownloadResponse
+     * @return DataDownloadResponse|JSONResponse
      *
      * @NoAdminRequired
      * @NoCSRFRequired

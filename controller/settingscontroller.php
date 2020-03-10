@@ -63,7 +63,7 @@ class SettingsController extends Controller {
     /**
      * Application configuration
      *
-     * @var OCA\Onlyoffice\AppConfig
+     * @var AppConfig
      */
     private $config;
 
@@ -77,7 +77,7 @@ class SettingsController extends Controller {
     /**
      * Hash generator
      *
-     * @var OCA\Onlyoffice\Crypt
+     * @var Crypt
      */
     private $crypt;
 
@@ -87,8 +87,8 @@ class SettingsController extends Controller {
      * @param IURLGenerator $urlGenerator - url generator service
      * @param IL10N $trans - l10n service
      * @param ILogger $logger - logger
-     * @param OCA\Onlyoffice\AppConfig $config - application configuration
-     * @param OCA\Onlyoffice\Crypt $crypt - hash generator
+     * @param AppConfig $config - application configuration
+     * @param Crypt $crypt - hash generator
      */
     public function __construct($AppName,
                                     IRequest $request,

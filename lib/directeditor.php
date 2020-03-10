@@ -30,7 +30,6 @@
 namespace OCA\Onlyoffice;
 
 use OCP\AppFramework\Http\ContentSecurityPolicy;
-use OCP\AppFramework\Http\NotFoundResponse;
 use OCP\AppFramework\Http\Response;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\DirectEditing\IEditor;
@@ -81,14 +80,14 @@ class DirectEditor implements IEditor {
     /**
      * Application configuration
      *
-     * @var OCA\Onlyoffice\AppConfig
+     * @var AppConfig
      */
     private $config;
 
     /**
      * Hash generator
      *
-     * @var OCA\Onlyoffice\Crypt
+     * @var Crypt
      */
     private $crypt;
 
@@ -97,8 +96,8 @@ class DirectEditor implements IEditor {
      * @param IURLGenerator $urlGenerator - url generator service
      * @param IL10N $trans - l10n service
      * @param ILogger $logger - logger
-     * @param OCA\Onlyoffice\AppConfig $config - application configuration
-     * @param OCA\Onlyoffice\Crypt $crypt - hash generator
+     * @param AppConfig $config - application configuration
+     * @param Crypt $crypt - hash generator
      */
     public function __construct($AppName,
                                 IURLGenerator $urlGenerator,

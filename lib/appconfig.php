@@ -52,14 +52,14 @@ class AppConfig {
     /**
      * Config service
      *
-     * @var OCP\IConfig
+     * @var IConfig
      */
     private $config;
 
     /**
      * Logger
      *
-     * @var OCP\ILogger
+     * @var ILogger
      */
     private $logger;
 

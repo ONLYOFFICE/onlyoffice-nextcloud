@@ -86,7 +86,7 @@ class FileUtility {
     /**
      * Application configuration
      *
-     * @var OCA\Onlyoffice\AppConfig
+     * @var AppConfig
      */
     private $config;
 
@@ -94,7 +94,7 @@ class FileUtility {
      * @param string $AppName - application name
      * @param IL10N $trans - l10n service
      * @param ILogger $logger - logger
-     * @param OCA\Onlyoffice\AppConfig $config - application configuration
+     * @param AppConfig $config - application configuration
      * @param IManager $shareManager - Share manager
      * @param IManager $ISession - Session
      */

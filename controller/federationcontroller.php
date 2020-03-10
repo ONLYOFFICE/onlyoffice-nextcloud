@@ -62,14 +62,14 @@ class FederationController extends OCSController {
     /**
      * Application configuration
      *
-     * @var OCA\Onlyoffice\AppConfig
+     * @var AppConfig
      */
     public $config;
 
     /**
      * File utility
      *
-     * @var OCA\Onlyoffice\FileUtility
+     * @var FileUtility
      */
     private $fileUtility;
 

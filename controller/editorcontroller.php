@@ -33,13 +33,10 @@ use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\ContentSecurityPolicy;
 use OCP\AppFramework\Http\RedirectResponse;
 use OCP\AppFramework\Http\TemplateResponse;
-use OCP\AutoloadNotAllowedException;
 use OCP\Constants;
-use OCP\Files\FileInfo;
 use OCP\Files\File;
 use OCP\Files\Folder;
 use OCP\Files\IRootFolder;
-use OCP\Files\NotFoundException;
 use OCP\IL10N;
 use OCP\ILogger;
 use OCP\IRequest;
@@ -47,17 +44,13 @@ use OCP\ISession;
 use OCP\IURLGenerator;
 use OCP\IUserManager;
 use OCP\IUserSession;
-use OCP\Share\Exceptions\ShareNotFound;
 use OCP\Share\IManager;
-
-use OC\Files\Filesystem;
 
 use OCA\Files\Helper;
 
 use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\Crypt;
 use OCA\Onlyoffice\DocumentService;
-use OCA\Onlyoffice\FileCreator;
 use OCA\Onlyoffice\FileUtility;
 use OCA\Onlyoffice\TemplateManager;
 
@@ -111,21 +104,21 @@ class EditorController extends Controller {
     /**
      * Application configuration
      *
-     * @var OCA\Onlyoffice\AppConfig
+     * @var AppConfig
      */
     private $config;
 
     /**
      * Hash generator
      *
-     * @var OCA\Onlyoffice\Crypt
+     * @var Crypt
      */
     private $crypt;
 
     /**
      * File utility
      *
-     * @var OCA\Onlyoffice\FileUtility
+     * @var FileUtility
      */
     private $fileUtility;
 
@@ -143,8 +136,8 @@ class EditorController extends Controller {
      * @param IURLGenerator $urlGenerator - url generator service
      * @param IL10N $trans - l10n service
      * @param ILogger $logger - logger
-     * @param OCA\Onlyoffice\AppConfig $config - application configuration
-     * @param OCA\Onlyoffice\Crypt $crypt - hash generator
+     * @param AppConfig $config - application configuration
+     * @param Crypt $crypt - hash generator
      * @param IManager $shareManager - Share manager
      * @param IManager $ISession - Session
      */
