@@ -149,14 +149,14 @@ class FileCreator extends ACreateEmpty {
         $template = TemplateManager::GetTemplate($fileName);
 
         if (!$template) {
-            $this->logger->error("FileCreator: Template for file creation not found: $templatePath", array("app" => $this->appName));
+            $this->logger->error("FileCreator: Template for file creation not found: $templateId", array("app" => $this->appName));
             return;
         }
 
         try {
             $file->putContent($template);
         } catch (NotPermittedException $e) {
-            $this->logger->error("FileCreator: Can't create file: $name", array("app" => $this->appName));
+            $this->logger->logException($e, ["FileCreator: Can't create file: $fileName", "app" => $this->appName]);
         }
     }
 }

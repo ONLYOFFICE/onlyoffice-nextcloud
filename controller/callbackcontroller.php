@@ -204,7 +204,7 @@ class CallbackController extends Controller {
                 try {
                     $decodedHeader = \Firebase\JWT\JWT::decode($header, $this->config->GetDocumentServerSecret(), array("HS256"));
                 } catch (\UnexpectedValueException $e) {
-                    $this->logger->error("Download with invalid jwt: " . $e->getMessage(), array("app" => $this->appName));
+                    $this->logger->logException($e, ["message" => "Download with invalid jwt", "app" => $this->appName]);
                     return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
                 }
             }
@@ -239,7 +239,7 @@ class CallbackController extends Controller {
         try {
             return new DataDownloadResponse($file->getContent(), $file->getName(), $file->getMimeType());
         } catch (NotPermittedException  $e) {
-            $this->logger->error("Download Not permitted: $fileId " . $e->getMessage(), array("app" => $this->appName));
+            $this->logger->logException($e, ["message" => "Download Not permitted: $fileId", "app" => $this->appName]);
             return new JSONResponse(["message" => $this->trans->t("Not permitted")], Http::STATUS_FORBIDDEN);
         }
         return new JSONResponse(["message" => $this->trans->t("Download failed")], Http::STATUS_INTERNAL_SERVER_ERROR);
@@ -282,7 +282,7 @@ class CallbackController extends Controller {
             try {
                 $decodedHeader = \Firebase\JWT\JWT::decode($header, $this->config->GetDocumentServerSecret(), array("HS256"));
             } catch (\UnexpectedValueException $e) {
-                $this->logger->error("Download empty with invalid jwt: " . $e->getMessage(), array("app" => $this->appName));
+                $this->logger->logException($e, ["message" => "Download empty with invalid jwt", "app" => $this->appName]);
                 return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
             }
         }
@@ -298,7 +298,7 @@ class CallbackController extends Controller {
         try {
             return new DataDownloadResponse($template, "new.docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
         } catch (NotPermittedException  $e) {
-            $this->logger->error("Download Not permitted: $fileId " . $e->getMessage(), array("app" => $this->appName));
+            $this->logger->logException($e, ["message" => "Download Not permitted", "app" => $this->appName]);
             return new JSONResponse(["message" => $this->trans->t("Not permitted")], Http::STATUS_FORBIDDEN);
         }
         return new JSONResponse(["message" => $this->trans->t("Download failed")], Http::STATUS_INTERNAL_SERVER_ERROR);
@@ -341,7 +341,7 @@ class CallbackController extends Controller {
                 try {
                     $payload = \Firebase\JWT\JWT::decode($token, $this->config->GetDocumentServerSecret(), array("HS256"));
                 } catch (\UnexpectedValueException $e) {
-                    $this->logger->error("Track with invalid jwt in body: " . $e->getMessage(), array("app" => $this->appName));
+                    $this->logger->logException($e, ["message" => "Track with invalid jwt in body", "app" => $this->appName]);
                     return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
                 }
             } else {
@@ -358,7 +358,7 @@ class CallbackController extends Controller {
 
                     $payload = $decodedHeader->payload;
                 } catch (\UnexpectedValueException $e) {
-                    $this->logger->error("Track with invalid jwt: " . $e->getMessage(), array("app" => $this->appName));
+                    $this->logger->logException($e, ["message" => "Track with invalid jwt", "app" => $this->appName]);
                     return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
                 }
             }
@@ -437,7 +437,7 @@ class CallbackController extends Controller {
                             $this->logger->debug("Converted from $downloadExt to $curExt", array("app" => $this->appName));
                             $url = $documentService->GetConvertedUri($url, $downloadExt, $curExt, $key);
                         } catch (\Exception $e) {
-                            $this->logger->error("Converted on save error: " . $e->getMessage(), array("app" => $this->appName));
+                            $this->logger->logException($e, ["message" => "Converted on save error", "app" => $this->appName]);
                             return new JSONResponse(["message" => $e->getMessage()], Http::STATUS_INTERNAL_SERVER_ERROR);
                         }
                     }
@@ -451,7 +451,7 @@ class CallbackController extends Controller {
 
                     $result = 0;
                 } catch (\Exception $e) {
-                    $this->logger->error("Track $trackerStatus error: " . $e->getMessage(), array("app" => $this->appName));
+                    $this->logger->logException($e, ["message" => "Track $trackerStatus error", "app" => $this->appName]);
                 }
                 break;
 
@@ -484,7 +484,7 @@ class CallbackController extends Controller {
         try {
             $files = $this->root->getUserFolder($userId)->getById($fileId);
         } catch (\Exception $e) {
-            $this->logger->error("getFile: $fileId " . $e->getMessage(), array("app" => $this->appName));
+            $this->logger->errorlogException($e, ["message" => "getFile: $fileId", "app" => $this->appName]);
             return [NULL, new JSONResponse(["message" => $this->trans->t("Invalid request")], Http::STATUS_BAD_REQUEST)];
         }
 
@@ -531,7 +531,7 @@ class CallbackController extends Controller {
         try {
             $node = $share->getNode();
         } catch (NotFoundException $e) {
-            $this->logger->error("getFileByToken error: " . $e->getMessage(), array("app" => $this->appName));
+            $this->logger->logException($e, ["message" => "getFileByToken error", "app" => $this->appName]);
             return [NULL, new JSONResponse(["message" => $this->trans->t("File not found")], Http::STATUS_NOT_FOUND)];
         }
 
@@ -539,7 +539,7 @@ class CallbackController extends Controller {
             try {
                 $files = $node->getById($fileId);
             } catch (\Exception $e) {
-                $this->logger->error("getFileByToken: $fileId " . $e->getMessage(), array("app" => $this->appName));
+                $this->logger->logException($e, ["message" => "getFileByToken: $fileId", "app" => $this->appName]);
                 return [NULL, new JSONResponse(["message" => $this->trans->t("Invalid request")], Http::STATUS_NOT_FOUND)];
             }
 
@@ -566,11 +566,11 @@ class CallbackController extends Controller {
             return [NULL, new JSONResponse(["message" => $this->trans->t("FileId is empty")], Http::STATUS_BAD_REQUEST)];
         }
 
-        $share;
+        $share = null;
         try {
             $share = $this->shareManager->getShareByToken($shareToken);
         } catch (ShareNotFound $e) {
-            $this->logger->error("getShare error: " . $e->getMessage(), array("app" => $this->appName));
+            $this->logger->logException($e, ["message" => "getShare error", "app" => $this->appName]);
             $share = NULL;
         }
 
