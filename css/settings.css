@@ -69,3 +69,8 @@
     -moz-column-width: 100px;
     -webkit-column-width: 100px;
 }
+.onlyoffice-tables {
+    column-width: 140px;
+    -moz-column-width: 140px;
+    -webkit-column-width: 140px;
+}

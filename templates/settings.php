@@ -185,6 +185,33 @@
         <label for="onlyofficeToolbarNoTabs"><?php p($l->t("Display toolbar tabs")) ?></label>
     </p>
 
+    <p class="onlyoffice-header">
+        <?php p($l->t("Review mode for viewing")) ?>
+    </p>
+    <div class="onlyoffice-tables">
+        <div>
+            <input type="radio" class="radio"
+                id="onlyofficeReviewDisplay_markup"
+                name="reviewDisplay"
+                <?php if ($_["reviewDisplay"] === "markup") { ?>checked="checked"<?php } ?> />
+            <label for="onlyofficeReviewDisplay_markup"><?php p($l->t("Markup")) ?></label>
+        </div>
+        <div>
+            <input type="radio" class="radio"
+                id="onlyofficeReviewDisplay_final"
+                name="reviewDisplay"
+                <?php if ($_["reviewDisplay"] === "final") { ?>checked="checked"<?php } ?> />
+            <label for="onlyofficeReviewDisplay_final"><?php p($l->t("Final")) ?></label>
+        </div>
+        <div>
+            <input type="radio" class="radio"
+                id="onlyofficeReviewDisplay_original"
+                name="reviewDisplay"
+                <?php if ($_["reviewDisplay"] === "original") { ?>checked="checked"<?php } ?> />
+            <label for="onlyofficeReviewDisplay_original"><?php p($l->t("Original")) ?></label>
+        </div>
+    </div>
+
     <br />
     <p><button id="onlyofficeSave" class="button"><?php p($l->t("Save")) ?></button></p>
 </div>

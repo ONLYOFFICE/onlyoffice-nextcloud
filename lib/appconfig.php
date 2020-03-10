@@ -155,6 +155,13 @@ class AppConfig {
     private $_customizationToolbarNoTabs = "customizationToolbarNoTabs";
 
     /**
+     * The config key for the review mode setting
+     *
+     * @var string
+     */
+    private $_customizationReviewDisplay = "customizationReviewDisplay";
+
+    /**
      * The config key for the setting limit groups
      *
      * @var string
@@ -706,6 +713,33 @@ class AppConfig {
      */
     public function GetCustomizationToolbarNoTabs() {
         return $this->config->getAppValue($this->appName, $this->_customizationToolbarNoTabs, "true") === "true";
+    }
+
+    /**
+     * Save review viewing mode setting
+     *
+     * @param string $value - review mode
+     */
+    public function SetCustomizationReviewDisplay($value) {
+        $this->logger->info("Set review mode: " . $value, array("app" => $this->appName));
+
+        $this->config->setAppValue($this->appName, $this->_customizationReviewDisplay, $value);
+    }
+
+    /**
+     * Get review viewing mode setting
+     *
+     * @return string
+     */
+    public function GetCustomizationReviewDisplay() {
+        $value = $this->config->getAppValue($this->appName, $this->_customizationReviewDisplay, "original");
+        if ($value === "markup") {
+            return "markup";
+        }
+        if ($value === "final") {
+            return "final";
+        }
+        return "original";
     }
 
     /**
