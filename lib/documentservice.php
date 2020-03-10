@@ -151,13 +151,13 @@ class DocumentService {
             $data["tenant"] = $this->config->GetSystemValue("instanceid", true);
         }
 
-        $opts = array(
+        $opts = [
             "timeout" => "120",
             "headers" => [
                 "Content-type" => "application/json"
             ],
             "body" => json_encode($data)
-        );
+        ];
 
         if (!empty($this->config->GetDocumentServerSecret())) {
             $params = [
@@ -279,12 +279,12 @@ class DocumentService {
             "c" => $method
         ];
 
-        $opts = array(
+        $opts = [
             "headers" => [
                 "Content-type" => "application/json"
             ],
             "body" => json_encode($data)
-        );
+        ];
 
         if (!empty($this->config->GetDocumentServerSecret())) {
             $params = [

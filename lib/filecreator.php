@@ -143,13 +143,13 @@ class FileCreator extends ACreateEmpty {
      * @param string $templateId - teamplate id
      */
     public function create(File $file, string $creatorId = null, string $templateId = null): void {
-        $this->logger->debug("FileCreator: " . $file->getId() . " " . $file->getName() . " $creatorId $templateId", array("app" => $this->appName));
+        $this->logger->debug("FileCreator: " . $file->getId() . " " . $file->getName() . " $creatorId $templateId", ["app" => $this->appName]);
 
         $fileName = $file->getName();
         $template = TemplateManager::GetTemplate($fileName);
 
         if (!$template) {
-            $this->logger->error("FileCreator: Template for file creation not found: $templateId", array("app" => $this->appName));
+            $this->logger->error("FileCreator: Template for file creation not found: $templateId", ["app" => $this->appName]);
             return;
         }
 

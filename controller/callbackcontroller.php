@@ -120,13 +120,13 @@ class CallbackController extends Controller {
      *
      * @var Array
      */
-    private $_trackerStatus = array(
+    private $_trackerStatus = [
         0 => "NotFound",
         1 => "Editing",
         2 => "MustSave",
         3 => "Corrupted",
         4 => "Closed"
-    );
+    ];
 
     /**
      * @param string $AppName - application name
@@ -180,22 +180,22 @@ class CallbackController extends Controller {
 
         list ($hashData, $error) = $this->crypt->ReadHash($doc);
         if ($hashData === NULL) {
-            $this->logger->error("Download with empty or not correct hash: $error", array("app" => $this->appName));
+            $this->logger->error("Download with empty or not correct hash: $error", ["app" => $this->appName]);
             return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
         }
         if ($hashData->action !== "download") {
-            $this->logger->error("Download with other action", array("app" => $this->appName));
+            $this->logger->error("Download with other action", ["app" => $this->appName]);
             return new JSONResponse(["message" => $this->trans->t("Invalid request")], Http::STATUS_BAD_REQUEST);
         }
 
         $fileId = $hashData->fileId;
-        $this->logger->debug("Download: $fileId", array("app" => $this->appName));
+        $this->logger->debug("Download: $fileId", ["app" => $this->appName]);
 
         if (!$this->userSession->isLoggedIn()) {
             if (!empty($this->config->GetDocumentServerSecret())) {
                 $header = \OC::$server->getRequest()->getHeader($this->config->JwtHeader());
                 if (empty($header)) {
-                    $this->logger->error("Download without jwt", array("app" => $this->appName));
+                    $this->logger->error("Download without jwt", ["app" => $this->appName]);
                     return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
                 }
 
@@ -232,7 +232,7 @@ class CallbackController extends Controller {
         }
 
         if ($this->userSession->isLoggedIn() && !$file->isReadable()) {
-            $this->logger->error("Download without access right", array("app" => $this->appName));
+            $this->logger->error("Download without access right", ["app" => $this->appName]);
             return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
         }
 
@@ -258,22 +258,22 @@ class CallbackController extends Controller {
      * @CORS
      */
     public function emptyfile($doc) {
-        $this->logger->debug("Download empty", array("app" => $this->appName));
+        $this->logger->debug("Download empty", ["app" => $this->appName]);
 
         list ($hashData, $error) = $this->crypt->ReadHash($doc);
         if ($hashData === NULL) {
-            $this->logger->error("Download empty with empty or not correct hash: $error", array("app" => $this->appName));
+            $this->logger->error("Download empty with empty or not correct hash: $error", ["app" => $this->appName]);
             return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
         }
         if ($hashData->action !== "empty") {
-            $this->logger->error("Download empty with other action", array("app" => $this->appName));
+            $this->logger->error("Download empty with other action", ["app" => $this->appName]);
             return new JSONResponse(["message" => $this->trans->t("Invalid request")], Http::STATUS_BAD_REQUEST);
         }
 
         if (!empty($this->config->GetDocumentServerSecret())) {
             $header = \OC::$server->getRequest()->getHeader($this->config->JwtHeader());
             if (empty($header)) {
-                $this->logger->error("Download empty without jwt", array("app" => $this->appName));
+                $this->logger->error("Download empty without jwt", ["app" => $this->appName]);
                 return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
             }
 
@@ -291,7 +291,7 @@ class CallbackController extends Controller {
 
         $template = file_get_contents($templatePath);
         if (!$template) {
-            $this->logger->info("Template for download empty not found: $templatePath", array("app" => $this->appName));
+            $this->logger->info("Template for download empty not found: $templatePath", ["app" => $this->appName]);
             return new JSONResponse(["message" => $this->trans->t("File not found")], Http::STATUS_NOT_FOUND);
         }
 
@@ -325,16 +325,16 @@ class CallbackController extends Controller {
 
         list ($hashData, $error) = $this->crypt->ReadHash($doc);
         if ($hashData === NULL) {
-            $this->logger->error("Track with empty or not correct hash: $error", array("app" => $this->appName));
+            $this->logger->error("Track with empty or not correct hash: $error", ["app" => $this->appName]);
             return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
         }
         if ($hashData->action !== "track") {
-            $this->logger->error("Track with other action", array("app" => $this->appName));
+            $this->logger->error("Track with other action", ["app" => $this->appName]);
             return new JSONResponse(["message" => $this->trans->t("Invalid request")], Http::STATUS_BAD_REQUEST);
         }
 
         $fileId = $hashData->fileId;
-        $this->logger->debug("Track: $fileId status $status", array("app" => $this->appName));
+        $this->logger->debug("Track: $fileId status $status", ["app" => $this->appName]);
 
         if (!empty($this->config->GetDocumentServerSecret())) {
             if (!empty($token)) {
@@ -347,7 +347,7 @@ class CallbackController extends Controller {
             } else {
                 $header = \OC::$server->getRequest()->getHeader($this->config->JwtHeader());
                 if (empty($header)) {
-                    $this->logger->error("Track without jwt", array("app" => $this->appName));
+                    $this->logger->error("Track without jwt", ["app" => $this->appName]);
                     return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
                 }
 
@@ -376,7 +376,7 @@ class CallbackController extends Controller {
             case "MustSave":
             case "Corrupted":
                 if (empty($url)) {
-                    $this->logger->error("Track without url: $fileId status $trackerStatus", array("app" => $this->appName));
+                    $this->logger->error("Track without url: $fileId status $trackerStatus", ["app" => $this->appName]);
                     return new JSONResponse(["message" => "Url not found"], Http::STATUS_BAD_REQUEST);
                 }
 
@@ -402,7 +402,7 @@ class CallbackController extends Controller {
                             // author of the callback link
                             $userId = $hashData->userId;
                             \OC_User::setUserId($userId);
-                            $this->logger->debug("Track for $userId: $fileId status $trackerStatus", array("app" => $this->appName));
+                            $this->logger->debug("Track for $userId: $fileId status $trackerStatus", ["app" => $this->appName]);
 
                             $user = $this->userManager->get($userId);
                             if (!empty($user)) {
@@ -412,14 +412,14 @@ class CallbackController extends Controller {
                                 $filePath = $hashData->filePath;
                             }
                         } else {
-                            $this->logger->debug("Track $fileId by token for $userId", array("app" => $this->appName));
+                            $this->logger->debug("Track $fileId by token for $userId", ["app" => $this->appName]);
                         }
                     }
 
                     list ($file, $error) = empty($shareToken) ? $this->getFile($userId, $fileId, $filePath) : $this->getFileByToken($fileId, $shareToken);
 
                     if (isset($error)) {
-                        $this->logger->error("track error $fileId " . json_encode($error->getData()),  array("app" => $this->appName));
+                        $this->logger->error("track error $fileId " . json_encode($error->getData()),  ["app" => $this->appName]);
                         return $error;
                     }
 
@@ -434,7 +434,7 @@ class CallbackController extends Controller {
                         $key =  DocumentService::GenerateRevisionId($fileId . $url);
 
                         try {
-                            $this->logger->debug("Converted from $downloadExt to $curExt", array("app" => $this->appName));
+                            $this->logger->debug("Converted from $downloadExt to $curExt", ["app" => $this->appName]);
                             $url = $documentService->GetConvertedUri($url, $downloadExt, $curExt, $key);
                         } catch (\Exception $e) {
                             $this->logger->logException($e, ["message" => "Converted on save error", "app" => $this->appName]);
@@ -444,7 +444,7 @@ class CallbackController extends Controller {
 
                     $newData = $documentService->Request($url);
 
-                    $this->logger->debug("Track put content " . $file->getPath(), array("app" => $this->appName));
+                    $this->logger->debug("Track put content " . $file->getPath(), ["app" => $this->appName]);
                     $this->retryOperation(function () use ($file, $newData){
                         return $file->putContent($newData);
                     });
@@ -461,7 +461,7 @@ class CallbackController extends Controller {
                 break;
         }
 
-        $this->logger->debug("Track: $fileId status $status result $result", array("app" => $this->appName));
+        $this->logger->debug("Track: $fileId status $status result $result", ["app" => $this->appName]);
 
         return new JSONResponse(["error" => $result], Http::STATUS_OK);
     }
@@ -489,7 +489,7 @@ class CallbackController extends Controller {
         }
 
         if (empty($files)) {
-            $this->logger->error("Files not found: $fileId", array("app" => $this->appName));
+            $this->logger->error("Files not found: $fileId", ["app" => $this->appName]);
             return [NULL, new JSONResponse(["message" => $this->trans->t("Files not found")], Http::STATUS_NOT_FOUND)];
         }
 
@@ -506,7 +506,7 @@ class CallbackController extends Controller {
         }
 
         if (!($file instanceof File)) {
-            $this->logger->error("File not found: $fileId", array("app" => $this->appName));
+            $this->logger->error("File not found: $fileId", ["app" => $this->appName]);
             return [NULL, new JSONResponse(["message" => $this->trans->t("File not found")], Http::STATUS_NOT_FOUND)];
         }
 

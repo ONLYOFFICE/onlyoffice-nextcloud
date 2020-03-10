@@ -138,7 +138,7 @@ class FileUtility {
                 }
 
                 if (empty($files)) {
-                    $this->logger->info("Files not found: $fileId", array("app" => $this->appName));
+                    $this->logger->info("Files not found: $fileId", ["app" => $this->appName]);
                     return [NULL, $this->trans->t("File not found"), NULL];
                 }
                 $file = $files[0];
@@ -273,12 +273,12 @@ class FileUtility {
 
         $data = $body["ocs"]["data"];
         if (!empty($data["error"])) {
-            $this->logger->error("Error federated key " . $data["error"], array("app" => $this->appName));
+            $this->logger->error("Error federated key " . $data["error"], ["app" => $this->appName]);
             return null;
         }
 
         $key = $data["key"];
-        $this->logger->debug("Federated key: $key", array("app" => $this->appName));
+        $this->logger->debug("Federated key: $key", ["app" => $this->appName]);
 
         return $key;
     }

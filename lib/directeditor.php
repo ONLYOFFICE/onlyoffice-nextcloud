@@ -218,12 +218,12 @@ class DirectEditor implements IEditor {
             $token->useTokenScope();
             $file = $token->getFile();
             $fileId = $file->getId();
-            $this->logger->debug("DirectEditor open: $fileId", array("app" => $this->appName));
+            $this->logger->debug("DirectEditor open: $fileId", ["app" => $this->appName]);
 
             $documentServerUrl = $this->config->GetDocumentServerUrl();
 
             if (empty($documentServerUrl)) {
-                $this->logger->error("documentServerUrl is empty", array("app" => $this->appName));
+                $this->logger->error("documentServerUrl is empty", ["app" => $this->appName]);
                 return $this->renderError($this->trans->t("ONLYOFFICE app is not configured. Please contact admin"));
             }
 
@@ -277,13 +277,13 @@ class DirectEditor implements IEditor {
      * @return TemplateResponse
      */
     private function renderError($error, $hint = "") {
-        return new TemplateResponse("", "error", array(
-                "errors" => array(
-                    array(
+        return new TemplateResponse("", "error", [
+                "errors" => [
+                    [
                         "error" => $error,
                         "hint" => $hint
-                    )
-                )
-        ), "error");
+                    ]
+                ]
+            ], "error");
     }
 }
