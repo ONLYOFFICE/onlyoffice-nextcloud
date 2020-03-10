@@ -99,7 +99,7 @@ class DocumentService {
 
         $isEndConvert = $responceFromConvertService->EndConvert;
 
-        if ($isEndConvert !== NULL && strtolower($isEndConvert) === "true") {
+        if ($isEndConvert !== null && strtolower($isEndConvert) === "true") {
             return $responceFromConvertService->FileUrl;
         }
 
@@ -347,11 +347,11 @@ class DocumentService {
      *
      * @return string
      */
-    public function Request($url, $method = "get", $opts = NULL) {
+    public function Request($url, $method = "get", $opts = null) {
         $httpClientService = \OC::$server->getHTTPClientService();
         $client = $httpClientService->newClient();
 
-        if (NULL === $opts) {
+        if (null === $opts) {
             $opts = array();
         }
         if (substr($url, 0, strlen("https")) === "https" && $this->config->TurnOffVerification()) {

@@ -279,7 +279,7 @@ class AppConfig {
             && array_key_exists($key, $this->config->getSystemValue($this->appName))) {
             return $this->config->getSystemValue($this->appName)[$key];
         }
-        return NULL;
+        return null;
     }
 
     /**
@@ -324,7 +324,7 @@ class AppConfig {
         }
         $data = json_decode($data, true);
 
-        $overdue = new DateTime(isset($data["start"]) ? $data["start"]["date"] : NULL);
+        $overdue = new DateTime(isset($data["start"]) ? $data["start"]["date"] : null);
         $overdue->add(new DateInterval("P" . $this->DEMO_PARAM["TRIAL"] . "D"));
         if ($overdue > new DateTime()) {
             $data["available"] = true;

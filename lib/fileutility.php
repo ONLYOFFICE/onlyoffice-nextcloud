@@ -125,7 +125,7 @@ class FileUtility {
         list ($node, $error, $share) = $this->getNodeByToken($shareToken);
 
         if (isset($error)) {
-            return [NULL, $error, NULL];
+            return [null, $error, null];
         }
 
         if ($node instanceof Folder) {
@@ -134,12 +134,12 @@ class FileUtility {
                     $files = $node->getById($fileId);
                 } catch (\Exception $e) {
                     $this->logger->logException($e, ["getFileByToken: $fileId", "app" => $this->appName]);
-                    return [NULL, $this->trans->t("Invalid request"), NULL];
+                    return [null, $this->trans->t("Invalid request"), null];
                 }
 
                 if (empty($files)) {
                     $this->logger->info("Files not found: $fileId", ["app" => $this->appName]);
-                    return [NULL, $this->trans->t("File not found"), NULL];
+                    return [null, $this->trans->t("File not found"), null];
                 }
                 $file = $files[0];
             } else {
@@ -147,14 +147,14 @@ class FileUtility {
                     $file = $node->get($path);
                 } catch (\Exception $e) {
                     $this->logger->logException($e, ["getFileByToken for path: $path", "app" => $this->appName]);
-                    return [NULL, $this->trans->t("Invalid request"), NULL];
+                    return [null, $this->trans->t("Invalid request"), null];
                 }
             }
         } else {
             $file = $node;
         }
 
-        return [$file, NULL, $share];
+        return [$file, null, $share];
     }
 
     /**
@@ -168,21 +168,21 @@ class FileUtility {
         list ($share, $error) = $this->getShare($shareToken);
 
         if (isset($error)) {
-            return [NULL, $error, NULL];
+            return [null, $error, null];
         }
 
         if (($share->getPermissions() & Constants::PERMISSION_READ) === 0) {
-            return [NULL, $this->trans->t("You do not have enough permissions to view the file"), NULL];
+            return [null, $this->trans->t("You do not have enough permissions to view the file"), null];
         }
 
         try {
             $node = $share->getNode();
         } catch (NotFoundException $e) {
             $this->logger->logException($e, ["getNodeByToken error", "app" => $this->appName]);
-            return [NULL, $this->trans->t("File not found"), NULL];
+            return [null, $this->trans->t("File not found"), null];
         }
 
-        return [$node, NULL, $share];
+        return [$node, null, $share];
     }
 
     /**
@@ -194,7 +194,7 @@ class FileUtility {
      */
     private function getShare($shareToken) {
         if (empty($shareToken)) {
-            return [NULL, $this->trans->t("FileId is empty")];
+            return [null, $this->trans->t("FileId is empty")];
         }
 
         $share = null;
@@ -202,20 +202,20 @@ class FileUtility {
             $share = $this->shareManager->getShareByToken($shareToken);
         } catch (ShareNotFound $e) {
             $this->logger->logException($e, ["getShare error", "app" => $this->appName]);
-            $share = NULL;
+            $share = null;
         }
 
-        if ($share === NULL || $share === false) {
-            return [NULL, $this->trans->t("You do not have enough permissions to view the file")];
+        if ($share === null || $share === false) {
+            return [null, $this->trans->t("You do not have enough permissions to view the file")];
         }
 
         if ($share->getPassword()
             && (!$this->session->exists("public_link_authenticated")
                 || $this->session->get("public_link_authenticated") !== (string) $share->getId())) {
-            return [NULL, $this->trans->t("You do not have enough permissions to view the file")];
+            return [null, $this->trans->t("You do not have enough permissions to view the file")];
         }
 
-        return [$share, NULL];
+        return [$share, null];
     }
 
     /**

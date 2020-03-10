@@ -178,7 +178,7 @@ class CallbackController extends Controller {
     public function download($doc) {
 
         list ($hashData, $error) = $this->crypt->ReadHash($doc);
-        if ($hashData === NULL) {
+        if ($hashData === null) {
             $this->logger->error("Download with empty or not correct hash: $error", ["app" => $this->appName]);
             return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
         }
@@ -223,7 +223,7 @@ class CallbackController extends Controller {
             }
         }
 
-        $shareToken = isset($hashData->shareToken) ? $hashData->shareToken : NULL;
+        $shareToken = isset($hashData->shareToken) ? $hashData->shareToken : null;
         list ($file, $error) = empty($shareToken) ? $this->getFile($userId, $fileId) : $this->getFileByToken($fileId, $shareToken);
 
         if (isset($error)) {
@@ -260,7 +260,7 @@ class CallbackController extends Controller {
         $this->logger->debug("Download empty", ["app" => $this->appName]);
 
         list ($hashData, $error) = $this->crypt->ReadHash($doc);
-        if ($hashData === NULL) {
+        if ($hashData === null) {
             $this->logger->error("Download empty with empty or not correct hash: $error", ["app" => $this->appName]);
             return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
         }
@@ -323,7 +323,7 @@ class CallbackController extends Controller {
     public function track($doc, $users, $key, $status, $url, $token) {
 
         list ($hashData, $error) = $this->crypt->ReadHash($doc);
-        if ($hashData === NULL) {
+        if ($hashData === null) {
             $this->logger->error("Track with empty or not correct hash: $error", ["app" => $this->appName]);
             return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
         }
@@ -362,10 +362,10 @@ class CallbackController extends Controller {
                 }
             }
 
-            $users = isset($payload->users) ? $payload->users : NULL;
+            $users = isset($payload->users) ? $payload->users : null;
             $key = $payload->key;
             $status = $payload->status;
-            $url = isset($payload->url) ? $payload->url : NULL;
+            $url = isset($payload->url) ? $payload->url : null;
         }
 
         $trackerStatus = $this->_trackerStatus[$status];
@@ -380,7 +380,7 @@ class CallbackController extends Controller {
                 }
 
                 try {
-                    $shareToken = isset($hashData->shareToken) ? $hashData->shareToken : NULL;
+                    $shareToken = isset($hashData->shareToken) ? $hashData->shareToken : null;
                     $filePath = null;
 
                     \OC_Util::tearDownFS();
@@ -475,21 +475,21 @@ class CallbackController extends Controller {
      *
      * @return array
      */
-    private function getFile($userId, $fileId, $filePath = NULL) {
+    private function getFile($userId, $fileId, $filePath = null) {
         if (empty($fileId)) {
-            return [NULL, new JSONResponse(["message" => $this->trans->t("FileId is empty")], Http::STATUS_BAD_REQUEST)];
+            return [null, new JSONResponse(["message" => $this->trans->t("FileId is empty")], Http::STATUS_BAD_REQUEST)];
         }
 
         try {
             $files = $this->root->getUserFolder($userId)->getById($fileId);
         } catch (\Exception $e) {
             $this->logger->errorlogException($e, ["message" => "getFile: $fileId", "app" => $this->appName]);
-            return [NULL, new JSONResponse(["message" => $this->trans->t("Invalid request")], Http::STATUS_BAD_REQUEST)];
+            return [null, new JSONResponse(["message" => $this->trans->t("Invalid request")], Http::STATUS_BAD_REQUEST)];
         }
 
         if (empty($files)) {
             $this->logger->error("Files not found: $fileId", ["app" => $this->appName]);
-            return [NULL, new JSONResponse(["message" => $this->trans->t("Files not found")], Http::STATUS_NOT_FOUND)];
+            return [null, new JSONResponse(["message" => $this->trans->t("Files not found")], Http::STATUS_NOT_FOUND)];
         }
 
         $file = $files[0];
@@ -506,10 +506,10 @@ class CallbackController extends Controller {
 
         if (!($file instanceof File)) {
             $this->logger->error("File not found: $fileId", ["app" => $this->appName]);
-            return [NULL, new JSONResponse(["message" => $this->trans->t("File not found")], Http::STATUS_NOT_FOUND)];
+            return [null, new JSONResponse(["message" => $this->trans->t("File not found")], Http::STATUS_NOT_FOUND)];
         }
 
-        return [$file, NULL];
+        return [$file, null];
     }
 
     /**
@@ -524,14 +524,14 @@ class CallbackController extends Controller {
         list ($share, $error) = $this->getShare($shareToken);
 
         if (isset($error)) {
-            return [NULL, $error];
+            return [null, $error];
         }
 
         try {
             $node = $share->getNode();
         } catch (NotFoundException $e) {
             $this->logger->logException($e, ["message" => "getFileByToken error", "app" => $this->appName]);
-            return [NULL, new JSONResponse(["message" => $this->trans->t("File not found")], Http::STATUS_NOT_FOUND)];
+            return [null, new JSONResponse(["message" => $this->trans->t("File not found")], Http::STATUS_NOT_FOUND)];
         }
 
         if ($node instanceof Folder) {
@@ -539,18 +539,18 @@ class CallbackController extends Controller {
                 $files = $node->getById($fileId);
             } catch (\Exception $e) {
                 $this->logger->logException($e, ["message" => "getFileByToken: $fileId", "app" => $this->appName]);
-                return [NULL, new JSONResponse(["message" => $this->trans->t("Invalid request")], Http::STATUS_NOT_FOUND)];
+                return [null, new JSONResponse(["message" => $this->trans->t("Invalid request")], Http::STATUS_NOT_FOUND)];
             }
 
             if (empty($files)) {
-                return [NULL, new JSONResponse(["message" => $this->trans->t("File not found")], Http::STATUS_NOT_FOUND)];
+                return [null, new JSONResponse(["message" => $this->trans->t("File not found")], Http::STATUS_NOT_FOUND)];
             }
             $file = $files[0];
         } else {
             $file = $node;
         }
 
-        return [$file, NULL];
+        return [$file, null];
     }
 
     /**
@@ -562,7 +562,7 @@ class CallbackController extends Controller {
      */
     private function getShare($shareToken) {
         if (empty($shareToken)) {
-            return [NULL, new JSONResponse(["message" => $this->trans->t("FileId is empty")], Http::STATUS_BAD_REQUEST)];
+            return [null, new JSONResponse(["message" => $this->trans->t("FileId is empty")], Http::STATUS_BAD_REQUEST)];
         }
 
         $share = null;
@@ -570,14 +570,14 @@ class CallbackController extends Controller {
             $share = $this->shareManager->getShareByToken($shareToken);
         } catch (ShareNotFound $e) {
             $this->logger->logException($e, ["message" => "getShare error", "app" => $this->appName]);
-            $share = NULL;
+            $share = null;
         }
 
-        if ($share === NULL || $share === false) {
-            return [NULL, new JSONResponse(["message" => $this->trans->t("You do not have enough permissions to view the file")], Http::STATUS_FORBIDDEN)];
+        if ($share === null || $share === false) {
+            return [null, new JSONResponse(["message" => $this->trans->t("You do not have enough permissions to view the file")], Http::STATUS_FORBIDDEN)];
         }
 
-        return [$share, NULL];
+        return [$share, null];
     }
 
     /**

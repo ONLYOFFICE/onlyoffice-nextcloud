@@ -71,9 +71,9 @@ class Crypt {
      * @return array
      */
     public function ReadHash($token) {
-        $result = NULL;
-        $error = NULL;
-        if ($token === NULL) {
+        $result = null;
+        $error = null;
+        if ($token === null) {
             return [$result, "token is empty"];
         }
         try {
