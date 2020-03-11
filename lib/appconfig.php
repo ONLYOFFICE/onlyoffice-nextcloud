@@ -714,6 +714,8 @@ class AppConfig {
      * @param array $settings - watermark settings
      */
     public function SetWatermarkSettings($settings) {
+        $this->logger->info("Set watermark enabled: " . $settings["enabled"], ["app" => $this->appName]);
+
         if ($settings["enabled"] !== "true") {
             $this->config->setAppValue(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_enabled", "no");
             return;
