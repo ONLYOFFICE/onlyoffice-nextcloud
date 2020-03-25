@@ -309,39 +309,43 @@
                 return;
             }
 
-            menu.addMenuEntry({
-                id: "onlyofficeDocx",
-                displayName: t(OCA.Onlyoffice.AppName, "Document"),
-                templateName: t(OCA.Onlyoffice.AppName, "Document"),
-                iconClass: "icon-onlyoffice-new-docx",
-                fileType: "docx",
-                actionHandler: function (name) {
-                    OCA.Onlyoffice.CreateFile(name + ".docx", fileList);
-                }
-            });
+            var register = function() {
+                const odf = OCA.Onlyoffice.setting.odf;
+                menu.addMenuEntry({
+                    id: "onlyofficeDocx",
+                    displayName: t(OCA.Onlyoffice.AppName, "Document"),
+                    templateName: t(OCA.Onlyoffice.AppName, "Document"),
+                    iconClass: "icon-onlyoffice-new-docx",
+                    fileType: "docx",
+                    actionHandler: function (name) {
+                        OCA.Onlyoffice.CreateFile(name + (odf ? ".odt" : ".docx"), fileList);
+                    }
+                });
 
-            menu.addMenuEntry({
-                id: "onlyofficeXlsx",
-                displayName: t(OCA.Onlyoffice.AppName, "Spreadsheet"),
-                templateName: t(OCA.Onlyoffice.AppName, "Spreadsheet"),
-                iconClass: "icon-onlyoffice-new-xlsx",
-                fileType: "xlsx",
-                actionHandler: function (name) {
-                    OCA.Onlyoffice.CreateFile(name + ".xlsx", fileList);
-                }
-            });
+                menu.addMenuEntry({
+                    id: "onlyofficeXlsx",
+                    displayName: t(OCA.Onlyoffice.AppName, "Spreadsheet"),
+                    templateName: t(OCA.Onlyoffice.AppName, "Spreadsheet"),
+                    iconClass: "icon-onlyoffice-new-xlsx",
+                    fileType: "xlsx",
+                    actionHandler: function (name) {
+                        OCA.Onlyoffice.CreateFile(name + (odf ? ".ods" : ".xlsx"), fileList);
+                    }
+                });
 
-            menu.addMenuEntry({
-                id: "onlyofficePpts",
-                displayName: t(OCA.Onlyoffice.AppName, "Presentation"),
-                templateName: t(OCA.Onlyoffice.AppName, "Presentation"),
-                iconClass: "icon-onlyoffice-new-pptx",
-                fileType: "pptx",
-                actionHandler: function (name) {
-                    OCA.Onlyoffice.CreateFile(name + ".pptx", fileList);
-                }
-            });
-        }
+                menu.addMenuEntry({
+                    id: "onlyofficePpts",
+                    displayName: t(OCA.Onlyoffice.AppName, "Presentation"),
+                    templateName: t(OCA.Onlyoffice.AppName, "Presentation"),
+                    iconClass: "icon-onlyoffice-new-pptx",
+                    fileType: "pptx",
+                    actionHandler: function (name) {
+                        OCA.Onlyoffice.CreateFile(name + (odf ? ".odp" : ".pptx"), fileList);
+                    }
+                });
+            };
+            OCA.Onlyoffice.GetSettings(register);
+        },
     };
 
     var getFileExtension = function (fileName) {

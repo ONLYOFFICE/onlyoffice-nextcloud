@@ -75,7 +75,7 @@ class FileCreator extends ACreateEmpty {
      * @param string $AppName - application name
      * @param IL10N $trans - l10n service
      * @param ILogger $logger - logger
-     * @param string $format - format for creation 
+     * @param string $format - format for creation
      */
     public function __construct($AppName,
                                 IL10N $trans,
@@ -104,8 +104,10 @@ class FileCreator extends ACreateEmpty {
     public function getName(): string {
         switch ($this->format) {
             case "xlsx":
+            case "ods":
                 return $this->trans->t("Spreadsheet");
             case "pptx":
+            case "odp":
                 return $this->trans->t("Presentation");
         }
         return $this->trans->t("Document");
@@ -131,6 +133,12 @@ class FileCreator extends ACreateEmpty {
                 return "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
             case "pptx":
                 return "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+            case "odt":
+                return "application/vnd.oasis.opendocument.text";
+            case "ods":
+                return "application/vnd.oasis.opendocument.spreadsheet";
+            case "odp":
+                return "application/vnd.oasis.opendocument.presentation";
         }
         return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
     }

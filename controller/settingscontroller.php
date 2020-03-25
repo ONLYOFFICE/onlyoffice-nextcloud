@@ -130,7 +130,8 @@ class SettingsController extends Controller {
             "toolbarNoTabs" => $this->config->GetCustomizationToolbarNoTabs(),
             "successful" => $this->config->SettingsAreSuccessful(),
             "watermark" => $this->config->GetWatermarkSettings(),
-            "tagsEnabled" => App::isEnabled("systemtags")
+            "tagsEnabled" => App::isEnabled("systemtags"),
+            "odf" => $this->config->GetOdfDefault(),
         ];
         return new TemplateResponse($this->appName, "settings", $data, "blank");
     }
@@ -192,6 +193,7 @@ class SettingsController extends Controller {
      * @param bool $feedback - display feedback
      * @param bool $help - display help
      * @param bool $toolbarNoTabs - display toolbar tab
+     * @param bool $odf - create ODF files by default
      *
      * @return array
      */
@@ -203,7 +205,8 @@ class SettingsController extends Controller {
                                     $compactHeader,
                                     $feedback,
                                     $help,
-                                    $toolbarNoTabs
+                                    $toolbarNoTabs,
+                                    $odf
                                     ) {
 
         $this->config->SetDefaultFormats($defFormats);
@@ -215,6 +218,7 @@ class SettingsController extends Controller {
         $this->config->SetCustomizationFeedback($feedback);
         $this->config->SetCustomizationHelp($help);
         $this->config->SetCustomizationToolbarNoTabs($toolbarNoTabs);
+        $this->config->SetOdfDefault($odf);
 
         return [
             ];
@@ -253,7 +257,8 @@ class SettingsController extends Controller {
     public function GetSettings() {
         $result = [
             "formats" => $this->config->FormatsSetting(),
-            "sameTab" => $this->config->GetSameTab()
+            "sameTab" => $this->config->GetSameTab(),
+            "odf" => $this->config->GetOdfDefault(),
         ];
         return $result;
     }
