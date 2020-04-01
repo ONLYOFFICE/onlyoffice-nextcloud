@@ -219,7 +219,7 @@ The table below will help you to make the right choice.
 | Notes                           | + | + |
 | | [Get it now](https://www.onlyoffice.com/download.aspx?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud)  | [Start Free Trial](https://www.onlyoffice.com/connectors-request.aspx?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud)  |
 
-\*  It's possible to add documents for comparison from your local drive, from URL and from ownCloud storage.
+\*  It's possible to add documents for comparison from your local drive, from URL and from Nextcloud storage.
 
 \** Changing style and deleting (Full support coming soon)
 
