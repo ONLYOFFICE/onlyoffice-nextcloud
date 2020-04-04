@@ -208,6 +208,7 @@
             var feedback = $("#onlyofficeFeedback").is(":checked");
             var help = $("#onlyofficeHelp").is(":checked");
             var toolbarNoTabs = !$("#onlyofficeToolbarNoTabs").is(":checked");
+            var odf = $("#defaultOdf").is(":checked");
 
             $.ajax({
                 method: "PUT",
@@ -221,7 +222,8 @@
                     compactHeader: compactHeader,
                     feedback: feedback,
                     help: help,
-                    toolbarNoTabs: toolbarNoTabs
+                    toolbarNoTabs: toolbarNoTabs,
+                    odf: odf,
                 },
                 success: function onSuccess(response) {
                     $(".section-onlyoffice").removeClass("icon-loading");

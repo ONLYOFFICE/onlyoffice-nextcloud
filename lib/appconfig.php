@@ -31,9 +31,11 @@ namespace OCA\Onlyoffice;
 
 use \DateInterval;
 use \DateTime;
+use \Exception;
 
 use OCP\IConfig;
 use OCP\ILogger;
+use OCP\IUser;
 
 /**
  * Application configutarion
@@ -153,6 +155,13 @@ class AppConfig {
      * @var string
      */
     private $_customizationToolbarNoTabs = "customizationToolbarNoTabs";
+
+    /**
+     * The config key for ODF being set as default
+     *
+     * @var string
+     */
+    private $_odfDefault = "odf";
 
     /**
      * The config key for the setting limit groups
@@ -488,6 +497,29 @@ class AppConfig {
             $url = $this->GetSystemValue($this->_storageUrl);
         }
         return $url;
+    }
+
+    /**
+     * Set whether default file type is set to ODF
+     *
+     * @param bool $default
+     */
+    public function SetOdfDefault($default = false) {
+        $this->config->setAppValue($this->appName, $this->_odfDefault, $default);
+    }
+
+    /**
+     * Get whether default file type is set to ODF
+     *
+     * @return bool
+     */
+    public function GetOdfDefault() {
+        $odfDefault = $this->GetSystemValue($this->_odfDefault);
+
+        if (empty($odfDefault)) {
+            $odfDefault = $this->config->getAppValue($this->appName, $this->_odfDefault, false);
+        }
+        return $odfDefault;
     }
 
     /**
