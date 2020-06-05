@@ -30,7 +30,6 @@
 namespace OCA\Onlyoffice;
 
 use OCP\AppFramework\Http\ContentSecurityPolicy;
-use OCP\AppFramework\Http\NotFoundResponse;
 use OCP\AppFramework\Http\Response;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\DirectEditing\IEditor;
@@ -81,14 +80,14 @@ class DirectEditor implements IEditor {
     /**
      * Application configuration
      *
-     * @var OCA\Onlyoffice\AppConfig
+     * @var AppConfig
      */
     private $config;
 
     /**
      * Hash generator
      *
-     * @var OCA\Onlyoffice\Crypt
+     * @var Crypt
      */
     private $crypt;
 
@@ -97,8 +96,8 @@ class DirectEditor implements IEditor {
      * @param IURLGenerator $urlGenerator - url generator service
      * @param IL10N $trans - l10n service
      * @param ILogger $logger - logger
-     * @param OCA\Onlyoffice\AppConfig $config - application configuration
-     * @param OCA\Onlyoffice\Crypt $crypt - hash generator
+     * @param AppConfig $config - application configuration
+     * @param Crypt $crypt - hash generator
      */
     public function __construct($AppName,
                                 IURLGenerator $urlGenerator,
@@ -218,12 +217,12 @@ class DirectEditor implements IEditor {
             $token->useTokenScope();
             $file = $token->getFile();
             $fileId = $file->getId();
-            $this->logger->debug("DirectEditor open: $fileId", array("app" => $this->appName));
+            $this->logger->debug("DirectEditor open: $fileId", ["app" => $this->appName]);
 
             $documentServerUrl = $this->config->GetDocumentServerUrl();
 
             if (empty($documentServerUrl)) {
-                $this->logger->error("documentServerUrl is empty", array("app" => $this->appName));
+                $this->logger->error("documentServerUrl is empty", ["app" => $this->appName]);
                 return $this->renderError($this->trans->t("ONLYOFFICE app is not configured. Please contact admin"));
             }
 
@@ -263,7 +262,7 @@ class DirectEditor implements IEditor {
 
             return $response;
         } catch (\Exception $e) {
-            $this->logger->error("DirectEditor open: " . $e->getMessage(), array("app" => $this->appName));
+            $this->logger->logException($e, ["DirectEditor open", "app" => $this->appName]);
             return $this->renderError($e->getMessage());
         }
     }
@@ -277,13 +276,13 @@ class DirectEditor implements IEditor {
      * @return TemplateResponse
      */
     private function renderError($error, $hint = "") {
-        return new TemplateResponse("", "error", array(
-                "errors" => array(
-                    array(
+        return new TemplateResponse("", "error", [
+                "errors" => [
+                    [
                         "error" => $error,
                         "hint" => $hint
-                    )
-                )
-        ), "error");
+                    ]
+                ]
+            ], "error");
     }
 }

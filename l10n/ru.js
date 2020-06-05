@@ -78,6 +78,10 @@ OC.L10N.register(
     "Show watermark for read only link shares" : "Отображать водяной знак при доступе только на чтение по ссылке",
     "Show watermark on link shares with specific system tags" : "Отображать водяной знак при доступе по ссылке с определенными системными метками",
     "Select tag" : "Выберите метку",
-    "Select file to compare" : "Выбрать файл для сравнения"
+    "Select file to compare" : "Выбрать файл для сравнения",
+    "Review mode for viewing": "Режим рецензирования при просмотре",
+    "Markup": "Изменения",
+    "Final": "Изменённый документ",
+    "Original": "Исходный документ"
 },
 "nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);");

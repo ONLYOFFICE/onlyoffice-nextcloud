@@ -52,14 +52,14 @@ class AppConfig {
     /**
      * Config service
      *
-     * @var OCP\IConfig
+     * @var IConfig
      */
     private $config;
 
     /**
      * Logger
      *
-     * @var OCP\ILogger
+     * @var ILogger
      */
     private $logger;
 
@@ -153,6 +153,13 @@ class AppConfig {
      * @var string
      */
     private $_customizationToolbarNoTabs = "customizationToolbarNoTabs";
+
+    /**
+     * The config key for the review mode setting
+     *
+     * @var string
+     */
+    private $_customizationReviewDisplay = "customizationReviewDisplay";
 
     /**
      * The config key for the setting limit groups
@@ -279,7 +286,7 @@ class AppConfig {
             && array_key_exists($key, $this->config->getSystemValue($this->appName))) {
             return $this->config->getSystemValue($this->appName)[$key];
         }
-        return NULL;
+        return null;
     }
 
     /**
@@ -290,12 +297,12 @@ class AppConfig {
      * @return bool
      */
     public function SelectDemo($value) {
-        $this->logger->info("Select demo: " . json_encode($value), array("app" => $this->appName));
+        $this->logger->info("Select demo: " . json_encode($value), ["app" => $this->appName]);
 
         $data = $this->GetDemoData();
 
         if ($value === true && !$data["available"]) {
-            $this->logger->info("Trial demo is overdue: " . json_encode($data), array("app" => $this->appName));
+            $this->logger->info("Trial demo is overdue: " . json_encode($data), ["app" => $this->appName]);
             return false;
         }
 
@@ -324,7 +331,7 @@ class AppConfig {
         }
         $data = json_decode($data, true);
 
-        $overdue = new DateTime(isset($data["start"]) ? $data["start"]["date"] : NULL);
+        $overdue = new DateTime(isset($data["start"]) ? $data["start"]["date"] : null);
         $overdue->add(new DateInterval("P" . $this->DEMO_PARAM["TRIAL"] . "D"));
         if ($overdue > new DateTime()) {
             $data["available"] = true;
@@ -360,7 +367,7 @@ class AppConfig {
             }
         }
 
-        $this->logger->info("SetDocumentServerUrl: $documentServer", array("app" => $this->appName));
+        $this->logger->info("SetDocumentServerUrl: $documentServer", ["app" => $this->appName]);
 
         $this->config->setAppValue($this->appName, $this->_documentserver, $documentServer);
     }
@@ -404,7 +411,7 @@ class AppConfig {
             }
         }
 
-        $this->logger->info("SetDocumentServerInternalUrl: $documentServerInternal", array("app" => $this->appName));
+        $this->logger->info("SetDocumentServerInternalUrl: $documentServerInternal", ["app" => $this->appName]);
 
         $this->config->setAppValue($this->appName, $this->_documentserverInternal, $documentServerInternal);
     }
@@ -450,7 +457,7 @@ class AppConfig {
 
             if ($from !== $documentServerUrl)
             {
-                $this->logger->debug("Replace url from $from to $documentServerUrl", array("app" => $this->appName));
+                $this->logger->debug("Replace url from $from to $documentServerUrl", ["app" => $this->appName]);
                 $url = str_replace($from, $documentServerUrl, $url);
             }
         }
@@ -472,7 +479,7 @@ class AppConfig {
             }
         }
 
-        $this->logger->info("SetStorageUrl: $storageUrl", array("app" => $this->appName));
+        $this->logger->info("SetStorageUrl: $storageUrl", ["app" => $this->appName]);
 
         $this->config->setAppValue($this->appName, $this->_storageUrl, $storageUrl);
     }
@@ -498,9 +505,9 @@ class AppConfig {
     public function SetDocumentServerSecret($secret) {
         $secret = trim($secret);
         if (empty($secret)) {
-            $this->logger->info("Clear secret key", array("app" => $this->appName));
+            $this->logger->info("Clear secret key", ["app" => $this->appName]);
         } else {
-            $this->logger->info("Set secret key", array("app" => $this->appName));
+            $this->logger->info("Set secret key", ["app" => $this->appName]);
         }
 
         $this->config->setAppValue($this->appName, $this->_jwtSecret, $secret);
@@ -545,7 +552,7 @@ class AppConfig {
      */
     public function SetDefaultFormats($formats) {
         $value = json_encode($formats);
-        $this->logger->info("Set default formats: $value", array("app" => $this->appName));
+        $this->logger->info("Set default formats: $value", ["app" => $this->appName]);
 
         $this->config->setAppValue($this->appName, $this->_defFormats, $value);
     }
@@ -570,7 +577,7 @@ class AppConfig {
      */
     public function SetEditableFormats($formats) {
         $value = json_encode($formats);
-        $this->logger->info("Set editing formats: $value", array("app" => $this->appName));
+        $this->logger->info("Set editing formats: $value", ["app" => $this->appName]);
 
         $this->config->setAppValue($this->appName, $this->_editFormats, $value);
     }
@@ -594,7 +601,7 @@ class AppConfig {
      * @param bool $value - same tab
      */
     public function SetSameTab($value) {
-        $this->logger->info("Set opening in a same tab: " . json_encode($value), array("app" => $this->appName));
+        $this->logger->info("Set opening in a same tab: " . json_encode($value), ["app" => $this->appName]);
 
         $this->config->setAppValue($this->appName, $this->_sameTab, json_encode($value));
     }
@@ -614,7 +621,7 @@ class AppConfig {
      * @param bool $value - display chat
      */
     public function SetCustomizationChat($value) {
-        $this->logger->info("Set chat display: " . json_encode($value), array("app" => $this->appName));
+        $this->logger->info("Set chat display: " . json_encode($value), ["app" => $this->appName]);
 
         $this->config->setAppValue($this->appName, $this->_customizationChat, json_encode($value));
     }
@@ -634,7 +641,7 @@ class AppConfig {
      * @param bool $value - display compact header
      */
     public function SetCustomizationCompactHeader($value) {
-        $this->logger->info("Set compact header display: " . json_encode($value), array("app" => $this->appName));
+        $this->logger->info("Set compact header display: " . json_encode($value), ["app" => $this->appName]);
 
         $this->config->setAppValue($this->appName, $this->_customizationCompactHeader, json_encode($value));
     }
@@ -654,7 +661,7 @@ class AppConfig {
      * @param bool $value - display feedback
      */
     public function SetCustomizationFeedback($value) {
-        $this->logger->info("Set feedback display: " . json_encode($value), array("app" => $this->appName));
+        $this->logger->info("Set feedback display: " . json_encode($value), ["app" => $this->appName]);
 
         $this->config->setAppValue($this->appName, $this->_customizationFeedback, json_encode($value));
     }
@@ -674,7 +681,7 @@ class AppConfig {
      * @param bool $value - display help
      */
     public function SetCustomizationHelp($value) {
-        $this->logger->info("Set help display: " . json_encode($value), array("app" => $this->appName));
+        $this->logger->info("Set help display: " . json_encode($value), ["app" => $this->appName]);
 
         $this->config->setAppValue($this->appName, $this->_customizationHelp, json_encode($value));
     }
@@ -694,7 +701,7 @@ class AppConfig {
      * @param bool $value - without tabs
      */
     public function SetCustomizationToolbarNoTabs($value) {
-        $this->logger->info("Set without tabs: " . json_encode($value), array("app" => $this->appName));
+        $this->logger->info("Set without tabs: " . json_encode($value), ["app" => $this->appName]);
 
         $this->config->setAppValue($this->appName, $this->_customizationToolbarNoTabs, json_encode($value));
     }
@@ -709,11 +716,40 @@ class AppConfig {
     }
 
     /**
+     * Save review viewing mode setting
+     *
+     * @param string $value - review mode
+     */
+    public function SetCustomizationReviewDisplay($value) {
+        $this->logger->info("Set review mode: " . $value, array("app" => $this->appName));
+
+        $this->config->setAppValue($this->appName, $this->_customizationReviewDisplay, $value);
+    }
+
+    /**
+     * Get review viewing mode setting
+     *
+     * @return string
+     */
+    public function GetCustomizationReviewDisplay() {
+        $value = $this->config->getAppValue($this->appName, $this->_customizationReviewDisplay, "original");
+        if ($value === "markup") {
+            return "markup";
+        }
+        if ($value === "final") {
+            return "final";
+        }
+        return "original";
+    }
+
+    /**
      * Save watermark settings
      *
      * @param array $settings - watermark settings
      */
     public function SetWatermarkSettings($settings) {
+        $this->logger->info("Set watermark enabled: " . $settings["enabled"], ["app" => $this->appName]);
+
         if ($settings["enabled"] !== "true") {
             $this->config->setAppValue(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_enabled", "no");
             return;
@@ -806,7 +842,7 @@ class AppConfig {
             $groups = array();
         }
         $value = json_encode($groups);
-        $this->logger->info("Set groups: $value", array("app" => $this->appName));
+        $this->logger->info("Set groups: $value", ["app" => $this->appName]);
 
         $this->config->setAppValue($this->appName, $this->_groups, $value);
     }

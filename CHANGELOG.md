@@ -1,5 +1,12 @@
 # Change Log
 
+## 4.2.0
+## Added
+- review display settings
+
+## Changed
+- compatible with Nextcloud 19
+
 ## 4.1.4
 ## Changed
 - fix file opening in Nextcloud Android mobile application

@@ -63,7 +63,7 @@ class SettingsController extends Controller {
     /**
      * Application configuration
      *
-     * @var OCA\Onlyoffice\AppConfig
+     * @var AppConfig
      */
     private $config;
 
@@ -77,7 +77,7 @@ class SettingsController extends Controller {
     /**
      * Hash generator
      *
-     * @var OCA\Onlyoffice\Crypt
+     * @var Crypt
      */
     private $crypt;
 
@@ -87,8 +87,8 @@ class SettingsController extends Controller {
      * @param IURLGenerator $urlGenerator - url generator service
      * @param IL10N $trans - l10n service
      * @param ILogger $logger - logger
-     * @param OCA\Onlyoffice\AppConfig $config - application configuration
-     * @param OCA\Onlyoffice\Crypt $crypt - hash generator
+     * @param AppConfig $config - application configuration
+     * @param Crypt $crypt - hash generator
      */
     public function __construct($AppName,
                                     IRequest $request,
@@ -130,7 +130,8 @@ class SettingsController extends Controller {
             "toolbarNoTabs" => $this->config->GetCustomizationToolbarNoTabs(),
             "successful" => $this->config->SettingsAreSuccessful(),
             "watermark" => $this->config->GetWatermarkSettings(),
-            "tagsEnabled" => App::isEnabled("systemtags")
+            "tagsEnabled" => App::isEnabled("systemtags"),
+            "reviewDisplay" => $this->config->GetCustomizationReviewDisplay()
         ];
         return new TemplateResponse($this->appName, "settings", $data, "blank");
     }
@@ -192,6 +193,7 @@ class SettingsController extends Controller {
      * @param bool $feedback - display feedback
      * @param bool $help - display help
      * @param bool $toolbarNoTabs - display toolbar tab
+     * @param string $reviewDisplay - review viewing mode
      *
      * @return array
      */
@@ -203,7 +205,8 @@ class SettingsController extends Controller {
                                     $compactHeader,
                                     $feedback,
                                     $help,
-                                    $toolbarNoTabs
+                                    $toolbarNoTabs,
+                                    $reviewDisplay
                                     ) {
 
         $this->config->SetDefaultFormats($defFormats);
@@ -215,6 +218,7 @@ class SettingsController extends Controller {
         $this->config->SetCustomizationFeedback($feedback);
         $this->config->SetCustomizationHelp($help);
         $this->config->SetCustomizationToolbarNoTabs($toolbarNoTabs);
+        $this->config->SetCustomizationReviewDisplay($reviewDisplay);
 
         return [
             ];
@@ -273,7 +277,7 @@ class SettingsController extends Controller {
             }
 
         } catch (\Exception $e) {
-            $this->logger->error("Protocol on check error: " . $e->getMessage(), array("app" => $this->appName));
+            $this->logger->logException($e, ["Protocol on check error", "app" => $this->appName]);
             return $e->getMessage();
         }
 
@@ -287,7 +291,7 @@ class SettingsController extends Controller {
             }
 
         } catch (\Exception $e) {
-            $this->logger->error("HealthcheckRequest on check error: " . $e->getMessage(), array("app" => $this->appName));
+            $this->logger->logException($e, ["HealthcheckRequest on check error", "app" => $this->appName]);
             return $e->getMessage();
         }
 
@@ -297,7 +301,7 @@ class SettingsController extends Controller {
 
             $commandResponse = $documentService->CommandRequest("version");
 
-            $this->logger->debug("CommandRequest on check: " . json_encode($commandResponse), array("app" => $this->appName));
+            $this->logger->debug("CommandRequest on check: " . json_encode($commandResponse), ["app" => $this->appName]);
 
             if (empty($commandResponse)) {
                 throw new \Exception($this->trans->t("Error occurred in the document service"));
@@ -309,11 +313,11 @@ class SettingsController extends Controller {
             }
 
         } catch (\Exception $e) {
-            $this->logger->error("CommandRequest on check error: " . $e->getMessage(), array("app" => $this->appName));
+            $this->logger->logException($e, ["CommandRequest on check error", "app" => $this->appName]);
             return $e->getMessage();
         }
 
-        $convertedFileUri;
+        $convertedFileUri = null;
         try {
 
             $hashUrl = $this->crypt->GetHash(["action" => "empty"]);
@@ -325,14 +329,14 @@ class SettingsController extends Controller {
             $convertedFileUri = $documentService->GetConvertedUri($fileUrl, "docx", "docx", "check_" . rand());
 
         } catch (\Exception $e) {
-            $this->logger->error("GetConvertedUri on check error: " . $e->getMessage(), array("app" => $this->appName));
+            $this->logger->logException($e, ["GetConvertedUri on check error", "app" => $this->appName]);
             return $e->getMessage();
         }
 
         try {
             $documentService->Request($convertedFileUri);
         } catch (\Exception $e) {
-            $this->logger->error("Request converted file on check error: " . $e->getMessage(), array("app" => $this->appName));
+            $this->logger->logException($e, ["Request converted file on check error", "app" => $this->appName]);
             return $e->getMessage();
         }
 

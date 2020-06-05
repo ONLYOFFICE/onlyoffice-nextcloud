@@ -86,7 +86,7 @@ class FileUtility {
     /**
      * Application configuration
      *
-     * @var OCA\Onlyoffice\AppConfig
+     * @var AppConfig
      */
     private $config;
 
@@ -94,7 +94,7 @@ class FileUtility {
      * @param string $AppName - application name
      * @param IL10N $trans - l10n service
      * @param ILogger $logger - logger
-     * @param OCA\Onlyoffice\AppConfig $config - application configuration
+     * @param AppConfig $config - application configuration
      * @param IManager $shareManager - Share manager
      * @param IManager $ISession - Session
      */
@@ -125,7 +125,7 @@ class FileUtility {
         list ($node, $error, $share) = $this->getNodeByToken($shareToken);
 
         if (isset($error)) {
-            return [NULL, $error, NULL];
+            return [null, $error, null];
         }
 
         if ($node instanceof Folder) {
@@ -133,28 +133,28 @@ class FileUtility {
                 try {
                     $files = $node->getById($fileId);
                 } catch (\Exception $e) {
-                    $this->logger->error("getFileByToken: $fileId " . $e->getMessage(), array("app" => $this->appName));
-                    return [NULL, $this->trans->t("Invalid request"), NULL];
+                    $this->logger->logException($e, ["getFileByToken: $fileId", "app" => $this->appName]);
+                    return [null, $this->trans->t("Invalid request"), null];
                 }
 
                 if (empty($files)) {
-                    $this->logger->info("Files not found: $fileId", array("app" => $this->appName));
-                    return [NULL, $this->trans->t("File not found"), NULL];
+                    $this->logger->info("Files not found: $fileId", ["app" => $this->appName]);
+                    return [null, $this->trans->t("File not found"), null];
                 }
                 $file = $files[0];
             } else {
                 try {
                     $file = $node->get($path);
                 } catch (\Exception $e) {
-                    $this->logger->error("getFileByToken for path: $path " . $e->getMessage(), array("app" => $this->appName));
-                    return [NULL, $this->trans->t("Invalid request"), NULL];
+                    $this->logger->logException($e, ["getFileByToken for path: $path", "app" => $this->appName]);
+                    return [null, $this->trans->t("Invalid request"), null];
                 }
             }
         } else {
             $file = $node;
         }
 
-        return [$file, NULL, $share];
+        return [$file, null, $share];
     }
 
     /**
@@ -168,21 +168,21 @@ class FileUtility {
         list ($share, $error) = $this->getShare($shareToken);
 
         if (isset($error)) {
-            return [NULL, $error, NULL];
+            return [null, $error, null];
         }
 
         if (($share->getPermissions() & Constants::PERMISSION_READ) === 0) {
-            return [NULL, $this->trans->t("You do not have enough permissions to view the file"), NULL];
+            return [null, $this->trans->t("You do not have enough permissions to view the file"), null];
         }
 
         try {
             $node = $share->getNode();
         } catch (NotFoundException $e) {
-            $this->logger->error("getNodeByToken error: " . $e->getMessage(), array("app" => $this->appName));
-            return [NULL, $this->trans->t("File not found"), NULL];
+            $this->logger->logException($e, ["getNodeByToken error", "app" => $this->appName]);
+            return [null, $this->trans->t("File not found"), null];
         }
 
-        return [$node, NULL, $share];
+        return [$node, null, $share];
     }
 
     /**
@@ -194,28 +194,28 @@ class FileUtility {
      */
     private function getShare($shareToken) {
         if (empty($shareToken)) {
-            return [NULL, $this->trans->t("FileId is empty")];
+            return [null, $this->trans->t("FileId is empty")];
         }
 
-        $share;
+        $share = null;
         try {
             $share = $this->shareManager->getShareByToken($shareToken);
         } catch (ShareNotFound $e) {
-            $this->logger->error("getShare error: " . $e->getMessage(), array("app" => $this->appName));
-            $share = NULL;
+            $this->logger->logException($e, ["getShare error", "app" => $this->appName]);
+            $share = null;
         }
 
-        if ($share === NULL || $share === false) {
-            return [NULL, $this->trans->t("You do not have enough permissions to view the file")];
+        if ($share === null || $share === false) {
+            return [null, $this->trans->t("You do not have enough permissions to view the file")];
         }
 
         if ($share->getPassword()
             && (!$this->session->exists("public_link_authenticated")
                 || $this->session->get("public_link_authenticated") !== (string) $share->getId())) {
-            return [NULL, $this->trans->t("You do not have enough permissions to view the file")];
+            return [null, $this->trans->t("You do not have enough permissions to view the file")];
         }
 
-        return [$share, NULL];
+        return [$share, null];
     }
 
     /**
@@ -237,7 +237,7 @@ class FileUtility {
                     return $key;
                 }
             } catch (\Exception $e) {
-                $this->logger->error("Failed to request federated key " . $file->getId() . " " . $e->getMessage(), array("app" => $this->appName));
+                $this->logger->logException($e, ["Failed to request federated key " . $file->getId(), "app" => $this->appName]);
             }
         }
 
@@ -273,12 +273,12 @@ class FileUtility {
 
         $data = $body["ocs"]["data"];
         if (!empty($data["error"])) {
-            $this->logger->error("Error federated key " . $data["error"], array("app" => $this->appName));
+            $this->logger->error("Error federated key " . $data["error"], ["app" => $this->appName]);
             return null;
         }
 
         $key = $data["key"];
-        $this->logger->debug("Federated key: $key", array("app" => $this->appName));
+        $this->logger->debug("Federated key: $key", ["app" => $this->appName]);
 
         return $key;
     }

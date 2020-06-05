@@ -50,13 +50,13 @@ class DocumentService {
     /**
      * Application configuration
      *
-     * @var OCA\Onlyoffice\AppConfig
+     * @var AppConfig
      */
     private $config;
 
     /**
      * @param IL10N $trans - l10n service
-     * @param OCA\Onlyoffice\AppConfig $config - application configutarion
+     * @param AppConfig $config - application configutarion
      */
     public function __construct(IL10N $trans, AppConfig $appConfig) {
         $this->trans = $trans;
@@ -99,7 +99,7 @@ class DocumentService {
 
         $isEndConvert = $responceFromConvertService->EndConvert;
 
-        if ($isEndConvert !== NULL && strtolower($isEndConvert) === "true") {
+        if ($isEndConvert !== null && strtolower($isEndConvert) === "true") {
             return $responceFromConvertService->FileUrl;
         }
 
@@ -151,13 +151,13 @@ class DocumentService {
             $data["tenant"] = $this->config->GetSystemValue("instanceid", true);
         }
 
-        $opts = array(
+        $opts = [
             "timeout" => "120",
             "headers" => [
                 "Content-type" => "application/json"
             ],
             "body" => json_encode($data)
-        );
+        ];
 
         if (!empty($this->config->GetDocumentServerSecret())) {
             $params = [
@@ -279,12 +279,12 @@ class DocumentService {
             "c" => $method
         ];
 
-        $opts = array(
+        $opts = [
             "headers" => [
                 "Content-type" => "application/json"
             ],
             "body" => json_encode($data)
-        );
+        ];
 
         if (!empty($this->config->GetDocumentServerSecret())) {
             $params = [
@@ -347,11 +347,11 @@ class DocumentService {
      *
      * @return string
      */
-    public function Request($url, $method = "get", $opts = NULL) {
+    public function Request($url, $method = "get", $opts = null) {
         $httpClientService = \OC::$server->getHTTPClientService();
         $client = $httpClientService->newClient();
 
-        if (NULL === $opts) {
+        if (null === $opts) {
             $opts = array();
         }
         if (substr($url, 0, strlen("https")) === "https" && $this->config->TurnOffVerification()) {

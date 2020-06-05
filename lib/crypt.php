@@ -41,12 +41,12 @@ class Crypt {
     /**
      * Application configuration
      *
-     * @var OCA\Onlyoffice\AppConfig
+     * @var AppConfig
      */
     private $config;
 
     /**
-     * @param OCA\Onlyoffice\AppConfig $config - application configutarion
+     * @param AppConfig $config - application configutarion
      */
     public function __construct(AppConfig $appConfig) {
         $this->config = $appConfig;
@@ -71,9 +71,9 @@ class Crypt {
      * @return array
      */
     public function ReadHash($token) {
-        $result = NULL;
-        $error = NULL;
-        if ($token === NULL) {
+        $result = null;
+        $error = null;
+        if ($token === null) {
             return [$result, "token is empty"];
         }
         try {
