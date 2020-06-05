@@ -228,9 +228,13 @@ class EditorController extends Controller {
         $name = $folder->getNonExistingName($name);
 
         try {
-            $file = $folder->newFile($name);
+            if (\version_compare(\implode(".", \OCP\Util::getVersion()), "19", "<")) {
+                $file = $folder->newFile($name);
 
-            $file->putContent($template);
+                $file->putContent($template);
+            } else {
+                $file = $folder->newFile($name, $template);
+            }
         } catch (NotPermittedException $e) {
             $this->logger->logException($e, ["message" => "Can't create file: $name", "app" => $this->appName]);
             return ["error" => $this->trans->t("Can't create file")];
