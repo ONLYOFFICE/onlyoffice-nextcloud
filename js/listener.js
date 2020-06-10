@@ -32,10 +32,15 @@
             AppName: "onlyoffice",
             context: null,
             folderUrl: null,
-            frameSelector: null
+            frameSelector: null,
+            canExpandHeader: true,
         }, OCA.Onlyoffice);
 
     OCA.Onlyoffice.ShowHeaderButton = function () {
+        if (!OCA.Onlyoffice.canExpandHeader) {
+            return;
+        }
+
         var wrapper = $("<div id='onlyofficeHeader' />")
 
         var btnClose = $("<a class='icon icon-close-white'></a>");
@@ -63,6 +68,9 @@
 
         $(OCA.Onlyoffice.frameSelector).remove();
         $("#onlyofficeHeader").remove();
+        if (OCA.Viewer) {
+            OCA.Viewer.close();
+        }
 
         OCA.Onlyoffice.context = null;
 

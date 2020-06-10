@@ -30,8 +30,11 @@
 namespace OCA\Onlyoffice\AppInfo;
 
 use OCP\AppFramework\App;
+use OCP\AppFramework\Http\ContentSecurityPolicy;
 use OCP\DirectEditing\RegisterDirectEditorEvent;
 use OCP\Util;
+
+use OCA\Viewer\Event\LoadViewer;
 
 use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\Controller\CallbackController;
@@ -81,6 +84,25 @@ class Application extends App {
                     Util::addStyle("onlyoffice", "main");
                 }
             });
+
+        if (class_exists(LoadViewer::class)) {
+            $eventDispatcher->addListener(LoadViewer::class,
+                function() {
+                    if (!empty($this->appConfig->GetDocumentServerUrl())
+                        && $this->appConfig->SettingsAreSuccessful()
+                        && $this->appConfig->isUserAllowedToUse()) {
+                        Util::addScript("onlyoffice", "viewer");
+                        Util::addScript("onlyoffice", "listener");
+
+                        Util::addStyle("onlyoffice", "viewer");
+
+                        $csp = new ContentSecurityPolicy();
+                        $csp->addAllowedFrameDomain("'self'");
+                        $cspManager = $this->getContainer()->getServer()->getContentSecurityPolicyManager();
+                        $cspManager->addDefaultPolicy($csp);
+                    }
+                });
+        }
 
         $eventDispatcher->addListener("OCA\Files_Sharing::loadAdditionalScripts",
             function() {

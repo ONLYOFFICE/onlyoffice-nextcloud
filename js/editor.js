@@ -152,7 +152,9 @@
                         config.events.onRequestClose = OCA.Onlyoffice.onRequestClose;
                     }
 
-                    if (OCA.Onlyoffice.inframe && config._files_sharing && !shareToken) {
+                    if (OCA.Onlyoffice.inframe
+                        && config._files_sharing && !shareToken
+                        && window.parent.OCA.Onlyoffice.context) {
                         config.events.onRequestSharingSettings = OCA.Onlyoffice.onRequestSharingSettings;
                     }
 
