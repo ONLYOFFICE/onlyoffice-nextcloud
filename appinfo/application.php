@@ -73,6 +73,11 @@ class Application extends App {
                     && $this->appConfig->isUserAllowedToUse()) {
                     Util::addScript("onlyoffice", "desktop");
                     Util::addScript("onlyoffice", "main");
+
+                    if ($this->appConfig->GetSameTab()) {
+                        Util::addScript("onlyoffice", "listener");
+                    }
+
                     Util::addStyle("onlyoffice", "main");
                 }
             });
@@ -82,6 +87,11 @@ class Application extends App {
                 if (!empty($this->appConfig->GetDocumentServerUrl())
                     && $this->appConfig->SettingsAreSuccessful()) {
                     Util::addScript("onlyoffice", "main");
+
+                    if ($this->appConfig->GetSameTab()) {
+                        Util::addScript("onlyoffice", "listener");
+                    }
+
                     Util::addStyle("onlyoffice", "main");
                 }
             });
