@@ -256,7 +256,7 @@ class DirectEditor implements IEditor {
                 $csp->addAllowedScriptDomain($documentServerUrl);
                 $csp->addAllowedFrameDomain($documentServerUrl);
             } else {
-                $csp->addAllowedFrameDomain($this->urlGenerator->getAbsoluteURL("/"));
+                $csp->addAllowedFrameDomain("'self'");
             }
             $response->setContentSecurityPolicy($csp);
 
