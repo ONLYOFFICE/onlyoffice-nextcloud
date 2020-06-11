@@ -32,6 +32,7 @@
             AppName: "onlyoffice",
             context: null,
             folderUrl: null,
+            frameSelector: null,
         }, OCA.Onlyoffice);
 
     OCA.Onlyoffice.setting = {};
@@ -101,6 +102,7 @@
         } else if ($("#isPublic").val() === "1" && !$("#filestable").length) {
             location.href = url;
         } else {
+            OCA.Onlyoffice.frameSelector = "#onlyofficeFrame";
             var $iframe = $("<iframe id=\"onlyofficeFrame\" nonce=\"" + btoa(OC.requestToken) + "\" scrolling=\"no\" allowfullscreen src=\"" + url + "&inframe=true\" />");
             $("#app-content").append($iframe);
 

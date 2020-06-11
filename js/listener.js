@@ -32,6 +32,7 @@
             AppName: "onlyoffice",
             context: null,
             folderUrl: null,
+            frameSelector: null
         }, OCA.Onlyoffice);
 
     OCA.Onlyoffice.ShowHeaderButton = function () {
@@ -60,7 +61,7 @@
     OCA.Onlyoffice.CloseEditor = function () {
         $("body").removeClass("onlyoffice-inline");
 
-        $("#onlyofficeFrame").remove();
+        $(OCA.Onlyoffice.frameSelector).remove();
         $("#onlyofficeHeader").remove();
 
         OCA.Onlyoffice.context = null;
@@ -87,7 +88,7 @@
         OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Save as"),
             function (fileDir) {
                 saveData.dir = fileDir;
-                $("#onlyofficeFrame")[0].contentWindow.OCA.Onlyoffice.editorSaveAs(saveData);
+                $(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.editorSaveAs(saveData);
             },
             false,
             "httpd/unix-directory");
@@ -95,27 +96,27 @@
 
     OCA.Onlyoffice.onRequestInsertImage = function (imageMimes) {
         OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Insert image"),
-            $("#onlyofficeFrame")[0].contentWindow.OCA.Onlyoffice.editorInsertImage,
+            $(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.editorInsertImage,
             false,
             imageMimes);
     };
 
     OCA.Onlyoffice.onRequestMailMergeRecipients = function (recipientMimes) {
         OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Select recipients"),
-            $("#onlyofficeFrame")[0].contentWindow.OCA.Onlyoffice.editorSetRecipient,
+            $(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.editorSetRecipient,
             false,
             recipientMimes);
     };
 
     OCA.Onlyoffice.onRequestCompareFile = function (revisedMimes) {
         OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Select file to compare"),
-            $("#onlyofficeFrame")[0].contentWindow.OCA.Onlyoffice.editorSetRevised,
+            $(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.editorSetRevised,
             false,
             revisedMimes);
     };
 
     window.addEventListener("message", function(event) {
-        if ($("#onlyofficeFrame")[0].contentWindow !== event.source
+        if ($(OCA.Onlyoffice.frameSelector)[0].contentWindow !== event.source
             || !event.data["method"]) {
             return;
         }
