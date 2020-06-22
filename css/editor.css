@@ -26,12 +26,17 @@
  *
  */
 
-#content.app-onlyoffice {
+#content.app-onlyoffice,
+#body-public #content.app-onlyoffice {
     min-height: calc(100% - 50px);
 }
 
-#body-public #content {
+#body-public #content.app-public {
     height: 100%;
+}
+
+#body-public footer {
+    display: none;
 }
 
 #app > iframe {
