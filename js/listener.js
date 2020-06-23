@@ -68,7 +68,7 @@
 
         $(OCA.Onlyoffice.frameSelector).remove();
         $("#onlyofficeHeader").remove();
-        if (OCA.Viewer) {
+        if (OCA.Viewer && OCA.Viewer.close) {
             OCA.Viewer.close();
         }
 
