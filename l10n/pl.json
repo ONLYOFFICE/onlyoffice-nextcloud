@@ -75,6 +75,7 @@
     "Show watermark for download hidden shares" : "Pokaż znak wodny dla udostępnień z ukrytym pobieraniem",
     "Show watermark for read only link shares" : "Pokaż znak wodny dla udostępnień linków tylko do odczytu",
     "Show watermark on link shares with specific system tags" : "Pokaż znak wodny dla udostępnień linków z wybranymi tagami",
-    "Select tag" : "Wybierz tag"
+    "Select tag" : "Wybierz tag",
+    "version": "wersja"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }
