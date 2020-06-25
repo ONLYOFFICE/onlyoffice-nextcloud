@@ -35,8 +35,8 @@
 
     OCA.Onlyoffice.InitEditor = function () {
         var displayError = function (error) {
-            OC.Notification.show(error, {
-                type: "error"
+            OCP.Toast.error(error, {
+                timeout: -1
             });
         };
 
@@ -152,7 +152,9 @@
                         config.events.onRequestClose = OCA.Onlyoffice.onRequestClose;
                     }
 
-                    if (OCA.Onlyoffice.inframe && config._files_sharing && !shareToken) {
+                    if (OCA.Onlyoffice.inframe
+                        && config._files_sharing && !shareToken
+                        && window.parent.OCA.Onlyoffice.context) {
                         config.events.onRequestSharingSettings = OCA.Onlyoffice.onRequestSharingSettings;
                     }
 
@@ -199,16 +201,11 @@
             saveData,
             function onSuccess(response) {
                 if (response.error) {
-                    OC.Notification.show(response.error, {
-                        type: "error",
-                        timeout: 3
-                    });
+                    OCP.Toast.error(response.error);
                     return;
                 }
 
-                OC.Notification.show(t(OCA.Onlyoffice.AppName, "File saved") + " (" + response.name + ")", {
-                    timeout: 3
-                });
+                OCP.Toast.success(t(OCA.Onlyoffice.AppName, "File saved") + " (" + response.name + ")");
             });
     };
 
@@ -238,10 +235,7 @@
             }),
             function onSuccess(response) {
                 if (response.error) {
-                    OC.Notification.show(response.error, {
-                        type: "error",
-                        timeout: 3
-                    });
+                    OCP.Toast.error(response.error);
                     return;
                 }
 
@@ -272,10 +266,7 @@
             }),
             function onSuccess(response) {
                 if (response.error) {
-                    OC.Notification.show(response.error, {
-                        type: "error",
-                        timeout: 3
-                    });
+                    OCP.Toast.error(response.error);
                     return;
                 }
 
@@ -325,10 +316,7 @@
             }),
             function onSuccess(response) {
                 if (response.error) {
-                    OC.Notification.show(response.error, {
-                        type: "error",
-                        timeout: 3
-                    });
+                    OCP.Toast.error(response.error);
                     return;
                 }
 

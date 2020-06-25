@@ -172,14 +172,13 @@
 
                         $(".section-onlyoffice-common, .section-onlyoffice-watermark").toggleClass("onlyoffice-hide", (!response.documentserver.length && !demo) || !!response.error.length);
 
-                        var message =
-                            response.error
-                                ? (t(OCA.Onlyoffice.AppName, "Error when trying to connect") + " (" + response.error + ")")
-                                : t(OCA.Onlyoffice.AppName, "Settings have been successfully updated");
-                        OC.Notification.show(message, {
-                            type: response.error ? "error" : null,
-                            timeout: 3
-                        });
+                        var versionMessage = response.version ? (" (" + t(OCA.Onlyoffice.AppName, "version") + " " + response.version + ")") : "";
+
+                        if (response.error) {
+                            OCP.Toast.error(t(OCA.Onlyoffice.AppName, "Error when trying to connect") + " (" + response.error + ")" + versionMessage);
+                        } else {
+                            OCP.Toast.success(t(OCA.Onlyoffice.AppName, "Settings have been successfully updated") + versionMessage);
+                        }
                     }
                 }
             });
@@ -228,10 +227,7 @@
                 success: function onSuccess(response) {
                     $(".section-onlyoffice").removeClass("icon-loading");
                     if (response) {
-                        var message = t(OCA.Onlyoffice.AppName, "Settings have been successfully updated");
-                        OC.Notification.show(message, {
-                            timeout: 3
-                        });
+                        OCP.Toast.success(t(OCA.Onlyoffice.AppName, "Settings have been successfully updated"));
                     }
                 }
             });
@@ -276,10 +272,7 @@
                 success: function onSuccess(response) {
                     $(".section-onlyoffice").removeClass("icon-loading");
                     if (response) {
-                        var message = t(OCA.Onlyoffice.AppName, "Settings have been successfully updated");
-                        OC.Notification.show(message, {
-                            timeout: 3
-                        });
+                        OCP.Toast.success(t(OCA.Onlyoffice.AppName, "Settings have been successfully updated"));
                     }
                 }
             });

@@ -26,28 +26,12 @@
  *
  */
 
-#content.app-onlyoffice,
-#body-public #content.app-onlyoffice {
-    min-height: calc(100% - 50px);
-}
-
-#body-public #content.app-public {
-    height: 100%;
-}
-
-#body-public footer {
-    display: none;
-}
-
-#app > iframe {
+#onlyofficeViewerFrame {
+    background-color: #fff;
+    width: 100%;
+    height: calc(100vh - 50px);
+    display: block;
     position: absolute;
-    vertical-align: top;
-}
-
-.AscDesktopEditor #body-user #header {
-    display: none;
-}
-.AscDesktopEditor #body-user #content {
-    min-height: 100%;
-    padding-top: 0;
+    top: 50px;
+    z-index: 110;
 }

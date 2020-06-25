@@ -33,6 +33,7 @@ use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\ContentSecurityPolicy;
 use OCP\AppFramework\Http\RedirectResponse;
 use OCP\AppFramework\Http\TemplateResponse;
+use OCP\AppFramework\Http\Template\PublicTemplateResponse;
 use OCP\Constants;
 use OCP\Files\File;
 use OCP\Files\Folder;
@@ -469,7 +470,8 @@ class EditorController extends Controller {
     public function index($fileId, $filePath = null, $shareToken = null, $inframe = false) {
         $this->logger->debug("Open: $fileId $filePath", ["app" => $this->appName]);
 
-        if (empty($shareToken) && !$this->userSession->isLoggedIn()) {
+        $isLoggedIn = $this->userSession->isLoggedIn();
+        if (empty($shareToken) && !$isLoggedIn) {
             $redirectUrl = $this->urlGenerator->linkToRoute("core.login.showLoginForm", [
                 "redirect_url" => $this->request->getRequestUri()
             ]);
@@ -496,11 +498,21 @@ class EditorController extends Controller {
             "inframe" => false
         ];
 
+        $response = null;
         if ($inframe === true) {
             $params["inframe"] = true;
             $response = new TemplateResponse($this->appName, "editor", $params, "plain");
         } else {
-            $response = new TemplateResponse($this->appName, "editor", $params);
+            if ($isLoggedIn) {
+                $response = new TemplateResponse($this->appName, "editor", $params);
+            } else {
+                $response = new PublicTemplateResponse($this->appName, "editor", $params);
+
+                list ($file, $error, $share) = $this->fileUtility->getFileByToken($fileId, $shareToken);
+                if (!isset($error)) {
+                    $response->setHeaderTitle($file->getName());
+                }
+            }
         }
 
         $csp = new ContentSecurityPolicy();
@@ -510,7 +522,7 @@ class EditorController extends Controller {
             $csp->addAllowedScriptDomain($documentServerUrl);
             $csp->addAllowedFrameDomain($documentServerUrl);
         } else {
-            $csp->addAllowedFrameDomain($this->urlGenerator->getAbsoluteURL("/"));
+            $csp->addAllowedFrameDomain("'self'");
         }
         $response->setContentSecurityPolicy($csp);
 

@@ -61,6 +61,7 @@ OC.L10N.register(
     "Secure view enables you to secure documents by embedding a watermark" : "A visualização segura permite proteger documentos incorporando uma marca d'água",
     "Supported placeholders" : "Espaços reservados suportados",
     "Select tag" : "Selecionar etiqueta",
-    "Select file to compare" : "Selecionar arquivo para comparar"
+    "Select file to compare" : "Selecionar arquivo para comparar",
+    "version": "versão"
 },
 "nplurals=2; plural=(n != 1);");

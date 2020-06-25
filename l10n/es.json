@@ -62,6 +62,7 @@
     "Select file to compare" : "Seleccione un archivo para comparar",
     "Markup": "Cambios",
     "Final": "Final",
-    "Original": "Original"
+    "Original": "Original",
+    "version": "versión"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

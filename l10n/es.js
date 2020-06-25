@@ -64,6 +64,7 @@ OC.L10N.register(
     "Select file to compare" : "Seleccione un archivo para comparar",
     "Markup": "Cambios",
     "Final": "Final",
-    "Original": "Original"
+    "Original": "Original",
+    "version": "versión"
 },
 "nplurals=2; plural=(n != 1);");

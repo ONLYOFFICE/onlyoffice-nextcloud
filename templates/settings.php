@@ -31,11 +31,6 @@
     script("onlyoffice", "settings");
 
     if ($_["tagsEnabled"]) {
-        if (\version_compare(\implode(".", \OCP\Util::getVersion()), "16", "<")) {
-            script("core", [
-                "oc-backbone-webdav"
-            ]);
-        }
         script("core", [
             "systemtags/systemtags",
             "systemtags/systemtagmodel",
