@@ -1,5 +1,15 @@
 # Change Log
 
+## 4.3.0
+## Added
+- integration to viewer app
+- show the version of the Document Service on the settings page
+
+## Changed
+- Nextcloud v16 is no longer supported
+- notification with toastify
+- proper header bar for public share links
+
 ## 4.2.0
 ## Added
 - review display settings
