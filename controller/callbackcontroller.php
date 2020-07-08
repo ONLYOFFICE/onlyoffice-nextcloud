@@ -147,7 +147,6 @@ class CallbackController extends Controller {
      * @param AppConfig $config - application configuration
      * @param Crypt $crypt - hash generator
      * @param IManager $shareManager - Share manager
-     * @param IVersionManager $versionManager - versionManager
      */
     public function __construct($AppName,
                                     IRequest $request,
@@ -158,8 +157,7 @@ class CallbackController extends Controller {
                                     ILogger $logger,
                                     AppConfig $config,
                                     Crypt $crypt,
-                                    IManager $shareManager,
-                                    IVersionManager $versionManager
+                                    IManager $shareManager
                                     ) {
         parent::__construct($AppName, $request);
 
@@ -171,7 +169,14 @@ class CallbackController extends Controller {
         $this->config = $config;
         $this->crypt = $crypt;
         $this->shareManager = $shareManager;
-        $this->versionManager = $versionManager;
+
+        if (\OC::$server->getAppManager()->isInstalled("files_versions")) {
+            try {
+                $this->versionManager = \OC::$server->query(\OCA\Files_Versions\Versions\IVersionManager::class);
+            } catch (QueryException $e) {
+                $this->logger->logException($e, ["message" => "VersionManager init error", "app" => $this->appName]);
+            }
+        }
     }
 
 
@@ -523,7 +528,7 @@ class CallbackController extends Controller {
             return [null, new JSONResponse(["message" => $this->trans->t("File not found")], Http::STATUS_NOT_FOUND)];
         }
 
-        if (!empty($version)) {
+        if (!empty($version) && $this->versionManager !== null) {
             $owner = $file->getFileInfo()->getOwner();
             $versions = array_reverse($this->versionManager->getVersionsForFile($owner, $file));
 

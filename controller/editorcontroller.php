@@ -149,7 +149,6 @@ class EditorController extends Controller {
      * @param Crypt $crypt - hash generator
      * @param IManager $shareManager - Share manager
      * @param IManager $ISession - Session
-     * @param IVersionManager $versionManager - versionManager
      */
     public function __construct($AppName,
                                     IRequest $request,
@@ -162,8 +161,7 @@ class EditorController extends Controller {
                                     AppConfig $config,
                                     Crypt $crypt,
                                     IManager $shareManager,
-                                    ISession $session,
-                                    IVersionManager $versionManager
+                                    ISession $session
                                     ) {
         parent::__construct($AppName, $request);
 
@@ -175,7 +173,14 @@ class EditorController extends Controller {
         $this->logger = $logger;
         $this->config = $config;
         $this->crypt = $crypt;
-        $this->versionManager = $versionManager;
+
+        if (\OC::$server->getAppManager()->isInstalled("files_versions")) {
+            try {
+                $this->versionManager = \OC::$server->query(\OCA\Files_Versions\Versions\IVersionManager::class);
+            } catch (QueryException $e) {
+                $this->logger->logException($e, ["message" => "VersionManager init error", "app" => $this->appName]);
+            }
+        }
 
         $this->fileUtility = new FileUtility($AppName, $trans, $logger, $config, $shareManager, $session);
     }
@@ -439,8 +444,11 @@ class EditorController extends Controller {
             return ["error" => $error];
         }
 
-        $owner = $file->getFileInfo()->getOwner();
-        $versions = array_reverse($this->versionManager->getVersionsForFile($owner, $file));
+        $versions = array();
+        if ($this->versionManager !== null) {
+            $owner = $file->getFileInfo()->getOwner();
+            $versions = array_reverse($this->versionManager->getVersionsForFile($owner, $file));
+        }
 
         $instanceId = $this->config->GetSystemValue("instanceid", true);
         $versionNum = 0;
@@ -500,8 +508,11 @@ class EditorController extends Controller {
             return ["error" => $error];
         }
 
-        $owner = $file->getFileInfo()->getOwner();
-        $versions = array_reverse($this->versionManager->getVersionsForFile($owner, $file));
+        $versions = array();
+        if ($this->versionManager !== null) {
+            $owner = $file->getFileInfo()->getOwner();
+            $versions = array_reverse($this->versionManager->getVersionsForFile($owner, $file));
+        }
 
         $key = null;
         $fileUrl = null;
