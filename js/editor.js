@@ -133,6 +133,7 @@
                     config.events = {
                         "onDocumentStateChange": setPageTitle,
                         "onRequestHistory": function () { OCA.Onlyoffice.onRequestHistory(fileId); },
+                        "onRequestHistoryData": function (event) { OCA.Onlyoffice.onRequestHistoryData(fileId, event.data); },
                     };
 
                     if (config.editorConfig.tenant) {
@@ -196,6 +197,23 @@
                     };
                 }
                 OCA.Onlyoffice.docEditor.refreshHistory(data);
+        });
+    };
+
+    OCA.Onlyoffice.onRequestHistoryData = function(fileId, version) {
+        $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/version?fileId={fileId}&version={version}",
+            {
+                fileId: fileId,
+                version: version
+            }),
+            function onSuccess(response) {
+                if (response.error) {
+                    response = {
+                        error: response.error,
+                        version: version,
+                    };
+                }
+                OCA.Onlyoffice.docEditor.setHistoryData(response);
         });
     };
 

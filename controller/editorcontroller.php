@@ -476,6 +476,57 @@ class EditorController extends Controller {
     }
 
     /**
+     * Get file attributes of specific version
+     *
+     * @param integer $fileId - file identifier
+     * @param integer $version - file version
+     *
+     * @return array
+     *
+     * @NoAdminRequired
+     */
+    public function version($fileId, $version) {
+        $this->logger->debug("Request version for: $fileId ($version)", ["app" => $this->appName]);
+
+        $version = empty($version) ? null : $version;
+
+        $user = $this->userSession->getUser();
+        $userId = $user->getUID();
+
+        list ($file, $error, $share) = $this->getFile($userId, $fileId);
+
+        if (isset($error)) {
+            $this->logger->error("History: $fileId $error", ["app" => $this->appName]);
+            return ["error" => $error];
+        }
+
+        $owner = $file->getFileInfo()->getOwner();
+        $versions = array_reverse($this->versionManager->getVersionsForFile($owner, $file));
+
+        $key = null;
+        $fileUrl = null;
+        if ($version > count($versions)) {
+            $key = $this->fileUtility->getKey($file, true);
+            $fileUrl = $this->getUrl($file, $user);
+        } else {
+            $fileVersion = array_values($versions)[$version - 1];
+
+            $instanceId = $this->config->GetSystemValue("instanceid", true);
+            $key = $instanceId . "_" . $fileVersion->getSourceFile()->getEtag() . "_" . $fileVersion->getRevisionId();
+
+            $fileUrl = $this->getUrl($file, $user, null, $version);
+        }
+
+        $key = DocumentService::GenerateRevisionId($key);
+
+        return array(
+            "url" => $fileUrl,
+            "version" => $version,
+            "key" => $key
+        );
+    }
+
+    /**
      * Get presigned url to file
      *
      * @param string $filePath - file path
@@ -860,13 +911,13 @@ class EditorController extends Controller {
      *
      * @return string
      */
-    private function getUrl($file, $user = null, $shareToken = null) {
+    private function getUrl($file, $user = null, $shareToken = null, $version = null) {
         $userId = null;
         if (!empty($user)) {
             $userId = $user->getUID();
         }
 
-        $hashUrl = $this->crypt->GetHash(["fileId" => $file->getId(), "userId" => $userId, "shareToken" => $shareToken, "action" => "download"]);
+        $hashUrl = $this->crypt->GetHash(["fileId" => $file->getId(), "userId" => $userId, "shareToken" => $shareToken, "action" => "download", "version" => $version]);
 
         $fileUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.download", ["doc" => $hashUrl]);
 
