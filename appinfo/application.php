@@ -198,8 +198,7 @@ class Application extends App {
                 $this->appConfig,
                 $this->crypt,
                 $c->query("IManager"),
-                $c->query("Session"),
-                $c->query("ClientService")
+                $c->query("Session")
             );
         });
 
