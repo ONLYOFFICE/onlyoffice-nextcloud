@@ -546,11 +546,18 @@ class EditorController extends Controller {
 
         $key = DocumentService::GenerateRevisionId($key);
 
-        return array(
+        $result = [
             "url" => $fileUrl,
             "version" => $version,
             "key" => $key
-        );
+        ];
+
+        if (!empty($this->config->GetDocumentServerSecret())) {
+            $token = \Firebase\JWT\JWT::encode($result, $this->config->GetDocumentServerSecret());
+            $result["token"] = $token;
+        }
+
+        return $result;
     }
 
     /**
