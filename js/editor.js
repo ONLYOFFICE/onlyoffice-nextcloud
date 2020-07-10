@@ -132,8 +132,8 @@
 
                     config.events = {
                         "onDocumentStateChange": setPageTitle,
-                        "onRequestHistory": function () { OCA.Onlyoffice.onRequestHistory(fileId); },
-                        "onRequestHistoryData": function (event) { OCA.Onlyoffice.onRequestHistoryData(fileId, event.data); },
+                        "onRequestHistory": function () { OCA.Onlyoffice.onRequestHistory(fileId, shareToken); },
+                        "onRequestHistoryData": function (event) { OCA.Onlyoffice.onRequestHistoryData(fileId, event.data, shareToken); },
                         "onRequestHistoryClose": OCA.Onlyoffice.onRequestHistoryClose,
                     };
 
@@ -176,10 +176,11 @@
         });
     };
 
-    OCA.Onlyoffice.onRequestHistory = function (fileId) {
-        $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/history?fileId={fileId}",
+    OCA.Onlyoffice.onRequestHistory = function (fileId, shareToken) {
+        $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/history?fileId={fileId}&shareToken={shareToken}",
             {
-                fileId: fileId
+                fileId: fileId,
+                shareToken: shareToken || "",
             }),
             function onSuccess(response) {
                 if (response.error) {
@@ -201,11 +202,12 @@
         });
     };
 
-    OCA.Onlyoffice.onRequestHistoryData = function(fileId, version) {
-        $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/version?fileId={fileId}&version={version}",
+    OCA.Onlyoffice.onRequestHistoryData = function(fileId, version, shareToken) {
+        $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/version?fileId={fileId}&version={version}&shareToken={shareToken}",
             {
                 fileId: fileId,
-                version: version
+                version: version,
+                shareToken: shareToken || "",
             }),
             function onSuccess(response) {
                 if (response.error) {

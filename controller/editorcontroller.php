@@ -426,18 +426,25 @@ class EditorController extends Controller {
      * Get versions history for file
      *
      * @param integer $fileId - file identifier
+     * @param string $shareToken - access token
      *
      * @return array
      *
      * @NoAdminRequired
+     * @PublicPage
      */
-    public function history($fileId) {
+    public function history($fileId, $shareToken = null) {
         $this->logger->debug("Request history for: $fileId", ["app" => $this->appName]);
 
         $history = [];
 
-        $userId = $this->userSession->getUser()->getUID();
-        list ($file, $error, $share) = $this->getFile($userId, $fileId);
+        $user = $this->userSession->getUser();
+        $userId = null;
+        if (!empty($user)) {
+            $userId = $user->getUID();
+        }
+
+        list ($file, $error, $share) = empty($shareToken) ? $this->getFile($userId, $fileId) : $this->fileUtility->getFileByToken($fileId, $shareToken);
 
         if (isset($error)) {
             $this->logger->error("History: $fileId $error", ["app" => $this->appName]);
@@ -488,20 +495,25 @@ class EditorController extends Controller {
      *
      * @param integer $fileId - file identifier
      * @param integer $version - file version
+     * @param string $shareToken - access token
      *
      * @return array
      *
      * @NoAdminRequired
+     * @PublicPage
      */
-    public function version($fileId, $version) {
+    public function version($fileId, $version, $shareToken = null) {
         $this->logger->debug("Request version for: $fileId ($version)", ["app" => $this->appName]);
 
         $version = empty($version) ? null : $version;
 
         $user = $this->userSession->getUser();
-        $userId = $user->getUID();
+        $userId = null;
+        if (!empty($user)) {
+            $userId = $user->getUID();
+        }
 
-        list ($file, $error, $share) = $this->getFile($userId, $fileId);
+        list ($file, $error, $share) = empty($shareToken) ? $this->getFile($userId, $fileId) : $this->fileUtility->getFileByToken($fileId, $shareToken);
 
         if (isset($error)) {
             $this->logger->error("History: $fileId $error", ["app" => $this->appName]);
@@ -518,14 +530,14 @@ class EditorController extends Controller {
         $fileUrl = null;
         if ($version > count($versions)) {
             $key = $this->fileUtility->getKey($file, true);
-            $fileUrl = $this->getUrl($file, $user);
+            $fileUrl = $this->getUrl($file, $user, $shareToken);
         } else {
             $fileVersion = array_values($versions)[$version - 1];
 
             $instanceId = $this->config->GetSystemValue("instanceid", true);
             $key = $instanceId . "_" . $fileVersion->getSourceFile()->getEtag() . "_" . $fileVersion->getRevisionId();
 
-            $fileUrl = $this->getUrl($file, $user, null, $version);
+            $fileUrl = $this->getUrl($file, $user, $shareToken, $version);
         }
 
         $key = DocumentService::GenerateRevisionId($key);

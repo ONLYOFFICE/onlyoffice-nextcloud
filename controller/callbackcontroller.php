@@ -242,7 +242,7 @@ class CallbackController extends Controller {
         }
 
         $shareToken = isset($hashData->shareToken) ? $hashData->shareToken : null;
-        list ($file, $error) = empty($shareToken) ? $this->getFile($userId, $fileId, null, $version) : $this->getFileByToken($fileId, $shareToken);
+        list ($file, $error) = empty($shareToken) ? $this->getFile($userId, $fileId, null, $version) : $this->getFileByToken($fileId, $shareToken, $version);
 
         if (isset($error)) {
             return $error;
@@ -546,10 +546,11 @@ class CallbackController extends Controller {
      *
      * @param integer $fileId - file identifier
      * @param string $shareToken - access token
+     * @param integer $version - file version
      *
      * @return array
      */
-    private function getFileByToken($fileId, $shareToken) {
+    private function getFileByToken($fileId, $shareToken, $version = null) {
         list ($share, $error) = $this->getShare($shareToken);
 
         if (isset($error)) {
@@ -577,6 +578,16 @@ class CallbackController extends Controller {
             $file = $files[0];
         } else {
             $file = $node;
+        }
+
+        if (!empty($version) && $this->versionManager !== null) {
+            $owner = $file->getFileInfo()->getOwner();
+            $versions = array_reverse($this->versionManager->getVersionsForFile($owner, $file));
+
+            if ($version <= count($versions)) {
+                $fileVersion = array_values($versions)[$version - 1];
+                $file = $this->versionManager->getVersionFile($owner, $file->getFileInfo(), $fileVersion->getRevisionId());
+            }
         }
 
         return [$file, null];
