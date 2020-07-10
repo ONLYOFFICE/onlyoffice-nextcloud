@@ -467,27 +467,39 @@ class EditorController extends Controller {
             $key = $instanceId . "_" . $version->getSourceFile()->getEtag() . "_" . $version->getRevisionId();
             $key = DocumentService::GenerateRevisionId($key);
 
-            array_push(
-                $history,
-                array(
-                    "created" => date("m/d/Y H:m", $version->getTimestamp()),
-                    "key" => $key,
-                    "version" => $versionNum
-                )
-            );
+            $historyItem = [
+                "created" => date("m/d/Y H:m", $version->getTimestamp()),
+                "key" => $key,
+                "version" => $versionNum
+            ];
+
+            if ($owner !== null) {
+                $historyItem["user"] = [
+                    "id" => $owner->getUID(),
+                    "name" => $owner->getDisplayName()
+                ];
+            }
+
+            array_push($history, $historyItem);
         }
 
         $key = $this->fileUtility->getKey($file, true);
         $key = DocumentService::GenerateRevisionId($key);
 
-        array_push(
-            $history,
-            array(
-                "created" => date("m/d/Y H:m", $file->getMTime()),
-                "key" => $key,
-                "version" => $versionNum + 1
-            )
-        );
+        $historyItem = [
+            "created" => date("m/d/Y H:m", $file->getMTime()),
+            "key" => $key,
+            "version" => $versionNum + 1
+        ];
+
+        if ($owner !== null) {
+            $historyItem["user"] = [
+                "id" => $owner->getUID(),
+                "name" => $owner->getDisplayName()
+            ];
+        }
+
+        array_push($history, $historyItem);
 
         return $history;
     }
