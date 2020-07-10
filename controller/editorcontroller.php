@@ -468,7 +468,7 @@ class EditorController extends Controller {
             $key = DocumentService::GenerateRevisionId($key);
 
             $historyItem = [
-                "created" => date("m/d/Y H:m", $version->getTimestamp()),
+                "created" => $this->trans->l("datetime", $version->getTimestamp(), ["width" => "short"]),
                 "key" => $key,
                 "version" => $versionNum
             ];
@@ -487,7 +487,7 @@ class EditorController extends Controller {
         $key = DocumentService::GenerateRevisionId($key);
 
         $historyItem = [
-            "created" => date("m/d/Y H:m", $file->getMTime()),
+            "created" => $this->trans->l("datetime", $file->getMTime(), ["width" => "short"]),
             "key" => $key,
             "version" => $versionNum + 1
         ];
