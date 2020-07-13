@@ -30,7 +30,9 @@
 
     OCA.Onlyoffice = _.extend({
             AppName: "onlyoffice",
-            inframe: false
+            inframe: false,
+            fileId: null,
+            shareToken: null
         }, OCA.Onlyoffice);
 
     OCA.Onlyoffice.InitEditor = function () {
@@ -40,11 +42,11 @@
             });
         };
 
-        var fileId = $("#iframeEditor").data("id");
-        var shareToken = $("#iframeEditor").data("sharetoken");
+        OCA.Onlyoffice.fileId = $("#iframeEditor").data("id");
+        OCA.Onlyoffice.shareToken = $("#iframeEditor").data("sharetoken");
         var directToken = $("#iframeEditor").data("directtoken");
         OCA.Onlyoffice.inframe = !!$("#iframeEditor").data("inframe");
-        if (!fileId && !shareToken && !directToken) {
+        if (!OCA.Onlyoffice.fileId && !OCA.Onlyoffice.shareToken && !directToken) {
             displayError(t(OCA.Onlyoffice.AppName, "FileId is empty"));
             return;
         }
@@ -56,7 +58,7 @@
 
         var configUrl = OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/config/{fileId}",
             {
-                fileId: fileId || 0
+                fileId: OCA.Onlyoffice.fileId || 0
             });
 
         var params = [];
@@ -64,8 +66,8 @@
         if (filePath) {
             params.push("filePath=" + encodeURIComponent(filePath));
         }
-        if (shareToken) {
-            params.push("shareToken=" + encodeURIComponent(shareToken));
+        if (OCA.Onlyoffice.shareToken) {
+            params.push("shareToken=" + encodeURIComponent(OCA.Onlyoffice.shareToken));
         }
         if (directToken) {
             $("html").addClass("onlyoffice-full-page");
@@ -133,8 +135,8 @@
 
                     config.events = {
                         "onDocumentStateChange": setPageTitle,
-                        "onRequestHistory": function () { OCA.Onlyoffice.onRequestHistory(fileId, shareToken); },
-                        "onRequestHistoryData": function (event) { OCA.Onlyoffice.onRequestHistoryData(fileId, event.data, shareToken); },
+                        "onRequestHistory": OCA.Onlyoffice.onRequestHistory,
+                        "onRequestHistoryData": OCA.Onlyoffice.onRequestHistoryData,
                         "onRequestHistoryClose": OCA.Onlyoffice.onRequestHistoryClose,
                     };
 
@@ -144,7 +146,7 @@
                         };
                     }
 
-                    if (OCA.Onlyoffice.inframe && !shareToken
+                    if (OCA.Onlyoffice.inframe && !OCA.Onlyoffice.shareToken
                         || OC.currentUser) {
                         config.events.onRequestSaveAs = OCA.Onlyoffice.onRequestSaveAs;
                         config.events.onRequestInsertImage = OCA.Onlyoffice.onRequestInsertImage;
@@ -157,7 +159,7 @@
                     }
 
                     if (OCA.Onlyoffice.inframe
-                        && config._files_sharing && !shareToken
+                        && config._files_sharing && !OCA.Onlyoffice.shareToken
                         && window.parent.OCA.Onlyoffice.context) {
                         config.events.onRequestSharingSettings = OCA.Onlyoffice.onRequestSharingSettings;
                     }
@@ -177,11 +179,11 @@
         });
     };
 
-    OCA.Onlyoffice.onRequestHistory = function (fileId, shareToken) {
+    OCA.Onlyoffice.onRequestHistory = function () {
         $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/history?fileId={fileId}&shareToken={shareToken}",
             {
-                fileId: fileId,
-                shareToken: shareToken || "",
+                fileId: OCA.Onlyoffice.fileId || 0,
+                shareToken: OCA.Onlyoffice.shareToken || "",
             }),
             function onSuccess(response) {
                 if (response.error) {
@@ -203,12 +205,14 @@
         });
     };
 
-    OCA.Onlyoffice.onRequestHistoryData = function (fileId, version, shareToken) {
+    OCA.Onlyoffice.onRequestHistoryData = function (event) {
+        var version = event.data;
+
         $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/version?fileId={fileId}&version={version}&shareToken={shareToken}",
             {
-                fileId: fileId,
+                fileId: OCA.Onlyoffice.fileId || 0,
                 version: version,
-                shareToken: shareToken || "",
+                shareToken: OCA.Onlyoffice.shareToken || "",
             }),
             function onSuccess(response) {
                 if (response.error) {
