@@ -530,6 +530,15 @@ class CallbackController extends Controller {
 
         if (!empty($version) && $this->versionManager !== null) {
             $owner = $file->getFileInfo()->getOwner();
+
+            if ($owner->getUID() !== $userId) {
+                list ($file, $error) = $this->getFile($owner->getUID(), $file->getId());
+
+                if (isset($error)) {
+                    return [null, $error];
+                }
+            }
+
             $versions = array_reverse($this->versionManager->getVersionsForFile($owner, $file));
 
             if ($version <= count($versions)) {
