@@ -36,6 +36,7 @@
     OCA.Onlyoffice.onRequestClose = function () {
 
         $(OCA.Onlyoffice.frameSelector).remove();
+        OCA.Onlyoffice.frameSelector = null;
 
         if (OCA.Viewer && OCA.Viewer.close) {
             OCA.Viewer.close();
@@ -77,6 +78,12 @@
             revisedMimes);
     };
 
+    OCA.Onlyoffice.onDocumentReady = function () {
+        if (OCA.Onlyoffice.bindVersionClick) {
+            OCA.Onlyoffice.bindVersionClick();
+        }
+    };
+
     window.addEventListener("message", function (event) {
         if ($(OCA.Onlyoffice.frameSelector)[0].contentWindow !== event.source
             || !event.data["method"]) {
@@ -107,6 +114,9 @@
                 break;
             case "editorRequestCompareFile":
                 OCA.Onlyoffice.onRequestCompareFile(event.data.param);
+                break;
+            case "onDocumentReady":
+                OCA.Onlyoffice.onDocumentReady();
                 break;
         }
     }, false);

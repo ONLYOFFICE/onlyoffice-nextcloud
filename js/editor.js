@@ -140,6 +140,10 @@
                         "onRequestHistoryClose": OCA.Onlyoffice.onRequestHistoryClose,
                     };
 
+                    if (OCA.Onlyoffice.inframe) {
+                        config.events.onDocumentReady = OCA.Onlyoffice.onDocumentReady;
+                    }
+
                     if (config.editorConfig.tenant) {
                         config.events.onAppReady = function () {
                             OCA.Onlyoffice.docEditor.showMessage(t(OCA.Onlyoffice.AppName, "You are using public demo ONLYOFFICE Document Server. Please do not store private sensitive data."));
@@ -179,7 +183,7 @@
         });
     };
 
-    OCA.Onlyoffice.onRequestHistory = function () {
+    OCA.Onlyoffice.onRequestHistory = function (version) {
         $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/history?fileId={fileId}&shareToken={shareToken}",
             {
                 fileId: OCA.Onlyoffice.fileId || 0,
@@ -195,6 +199,10 @@
                             currentVersion = fileVersion.version;
                         }
                     });
+
+                    if (version) {
+                        currentVersion = Math.min(currentVersion, version);
+                    }
 
                     data = {
                         currentVersion: currentVersion,
@@ -227,6 +235,15 @@
 
     OCA.Onlyoffice.onRequestHistoryClose = function () {
         location.reload(true);
+    };
+
+    OCA.Onlyoffice.onDocumentReady = function() {
+        if (OCA.Onlyoffice.inframe) {
+            window.parent.postMessage({
+                method: "onDocumentReady"
+            },
+            "*");
+        }
     };
 
     OCA.Onlyoffice.onRequestSaveAs = function (event) {
