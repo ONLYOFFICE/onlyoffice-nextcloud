@@ -282,4 +282,19 @@ class FileUtility {
 
         return $key;
     }
+
+    /**
+     * Generate unique file version key
+     *
+     * @param OCA\Files_Versions\Versions\IVersion $version - file version
+     *
+     * @return string
+     */
+    public function getVersionKey($version) {
+        $instanceId = $this->config->GetSystemValue("instanceid", true);
+
+        $key = $instanceId . "_" . $version->getSourceFile()->getEtag() . "_" . $version->getRevisionId();
+
+        return $key;
+    }
 }
