@@ -30,65 +30,19 @@
 
     OCA.Onlyoffice = _.extend({
             AppName: "onlyoffice",
-            context: null,
-            folderUrl: null,
             frameSelector: null,
-            canExpandHeader: true,
         }, OCA.Onlyoffice);
 
-    OCA.Onlyoffice.ShowHeaderButton = function () {
-        if (!OCA.Onlyoffice.canExpandHeader) {
-            return;
-        }
-
-        var wrapper = $("<div id='onlyofficeHeader' />")
-
-        var btnClose = $("<a class='icon icon-close-white'></a>");
-        btnClose.on("click", function() {
-            OCA.Onlyoffice.CloseEditor();
-        });
-        wrapper.prepend(btnClose);
-
-        if (!$("#isPublic").val()) {
-            var btnShare = $("<a class='icon icon-shared icon-white'></a>");
-            btnShare.on("click", function () {
-                OCA.Onlyoffice.OpenShareDialog();
-            })
-            wrapper.prepend(btnShare);
-        }
-
-        if (!$("#header .header-right").length) {
-            $("#header").append("<div class='header-right'></div>");
-        }
-        wrapper.prependTo(".header-right");
-    };
-
-    OCA.Onlyoffice.CloseEditor = function () {
-        $("body").removeClass("onlyoffice-inline");
+    OCA.Onlyoffice.onRequestClose = function () {
 
         $(OCA.Onlyoffice.frameSelector).remove();
-        $("#onlyofficeHeader").remove();
+
         if (OCA.Viewer && OCA.Viewer.close) {
             OCA.Viewer.close();
         }
 
-        OCA.Onlyoffice.context = null;
-
-        var url = OCA.Onlyoffice.folderUrl;
-        if (!!url) {
-            window.history.pushState(null, null, url);
-            OCA.Onlyoffice.folderUrl = null;
-        }
-    };
-
-    OCA.Onlyoffice.OpenShareDialog = function () {
-        if (OCA.Onlyoffice.context) {
-            if (!$("#app-sidebar").is(":visible")) {
-                OCA.Onlyoffice.context.fileList.showDetailsView(OCA.Onlyoffice.context.fileName, "shareTabView");
-                OC.Apps.showAppSidebar();
-            } else {
-                OC.Apps.hideAppSidebar();
-            }
+        if (OCA.Onlyoffice.CloseEditor) {
+            OCA.Onlyoffice.CloseEditor();
         }
     };
 
@@ -130,13 +84,17 @@
         }
         switch (event.data.method) {
             case "editorShowHeaderButton":
-                OCA.Onlyoffice.ShowHeaderButton();
+                if (OCA.Onlyoffice.ShowHeaderButton) {
+                    OCA.Onlyoffice.ShowHeaderButton();
+                }
                 break;
             case "editorRequestClose":
-                OCA.Onlyoffice.CloseEditor();
+                OCA.Onlyoffice.onRequestClose();
                 break;
             case "editorRequestSharingSettings":
-                OCA.Onlyoffice.OpenShareDialog();
+                if (OCA.Onlyoffice.OpenShareDialog) {
+                    OCA.Onlyoffice.OpenShareDialog();
+                }
                 break;
             case "editorRequestSaveAs":
                 OCA.Onlyoffice.onRequestSaveAs(event.data.param);

@@ -76,7 +76,8 @@
             var dsVersion = DocsAPI.DocEditor.version();
             var versionArray = dsVersion.split(".");
             if (versionArray[0] < 5 || versionArray[0] == 5 && versionArray[1] < 5) {
-                if (OCA.Onlyoffice.inframe) {
+                if (OCA.Onlyoffice.inframe
+                    && window.parent.OCA.Onlyoffice.ShowHeaderButton) {
                     window.parent.postMessage({
                         method: "editorShowHeaderButton"
                     },

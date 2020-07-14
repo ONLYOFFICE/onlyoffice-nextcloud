@@ -96,8 +96,6 @@
 
     var initPage = function () {
         if (OCA.Viewer) {
-            OCA.Onlyoffice.canExpandHeader = false;
-
             OCA.Onlyoffice.frameSelector = "#onlyofficeViewerFrame";
 
             OCA.Onlyoffice.GetSettings(function(){
