@@ -954,10 +954,11 @@ class EditorController extends Controller {
      * @param integer $file - file
      * @param IUser $user - user with access
      * @param string $shareToken - access token
+     * @param integer $version - file version
      *
      * @return string
      */
-    private function getUrl($file, $user = null, $shareToken = null, $version = null) {
+    private function getUrl($file, $user = null, $shareToken = null, $version = 0) {
         $userId = null;
         if (!empty($user)) {
             $userId = $user->getUID();

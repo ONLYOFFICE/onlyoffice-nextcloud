@@ -494,7 +494,7 @@ class CallbackController extends Controller {
      *
      * @return array
      */
-    private function getFile($userId, $fileId, $filePath = null, $version = null) {
+    private function getFile($userId, $fileId, $filePath = null, $version = 0) {
         if (empty($fileId)) {
             return [null, new JSONResponse(["message" => $this->trans->t("FileId is empty")], Http::STATUS_BAD_REQUEST)];
         }
@@ -528,7 +528,7 @@ class CallbackController extends Controller {
             return [null, new JSONResponse(["message" => $this->trans->t("File not found")], Http::STATUS_NOT_FOUND)];
         }
 
-        if (!empty($version) && $this->versionManager !== null) {
+        if ($version > 0 && $this->versionManager !== null) {
             $owner = $file->getFileInfo()->getOwner();
 
             if ($owner->getUID() !== $userId) {
@@ -559,7 +559,7 @@ class CallbackController extends Controller {
      *
      * @return array
      */
-    private function getFileByToken($fileId, $shareToken, $version = null) {
+    private function getFileByToken($fileId, $shareToken, $version = 0) {
         list ($share, $error) = $this->getShare($shareToken);
 
         if (isset($error)) {
@@ -589,7 +589,7 @@ class CallbackController extends Controller {
             $file = $node;
         }
 
-        if (!empty($version) && $this->versionManager !== null) {
+        if ($version > 0 && $this->versionManager !== null) {
             $owner = $file->getFileInfo()->getOwner();
             $versions = array_reverse($this->versionManager->getVersionsForFile($owner, $file));
 
