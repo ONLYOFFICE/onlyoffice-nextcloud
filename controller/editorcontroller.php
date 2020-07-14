@@ -622,6 +622,7 @@ class EditorController extends Controller {
      * @param integer $fileId - file identifier
      * @param string $filePath - file path
      * @param string $shareToken - access token
+     * @param integer $version - file version
      * @param bool $inframe - open in frame
      *
      * @return TemplateResponse|RedirectResponse
@@ -629,8 +630,8 @@ class EditorController extends Controller {
      * @NoAdminRequired
      * @NoCSRFRequired
      */
-    public function index($fileId, $filePath = null, $shareToken = null, $inframe = false) {
-        $this->logger->debug("Open: $fileId $filePath", ["app" => $this->appName]);
+    public function index($fileId, $filePath = null, $shareToken = null, $version = 0, $inframe = false) {
+        $this->logger->debug("Open: $fileId ($version) $filePath ", ["app" => $this->appName]);
 
         $isLoggedIn = $this->userSession->isLoggedIn();
         if (empty($shareToken) && !$isLoggedIn) {
@@ -657,6 +658,7 @@ class EditorController extends Controller {
             "filePath" => $filePath,
             "shareToken" => $shareToken,
             "directToken" => null,
+            "version" => $version,
             "inframe" => false
         ];
 
@@ -696,6 +698,7 @@ class EditorController extends Controller {
      *
      * @param integer $fileId - file identifier
      * @param string $shareToken - access token
+     * @param integer $version - file version
      * @param bool $inframe - open in frame
      *
      * @return TemplateResponse
@@ -704,8 +707,8 @@ class EditorController extends Controller {
      * @NoCSRFRequired
      * @PublicPage
      */
-    public function PublicPage($fileId, $shareToken, $inframe = false) {
-        return $this->index($fileId, null, $shareToken, $inframe);
+    public function PublicPage($fileId, $shareToken, $version = 0, $inframe = false) {
+        return $this->index($fileId, null, $shareToken, $version, $inframe);
     }
 
     /**
@@ -715,6 +718,7 @@ class EditorController extends Controller {
      * @param string $filePath - file path
      * @param string $shareToken - access token
      * @param string $directToken - direct token
+     * @param integer $version - file version
      * @param integer $inframe - open in frame. 0 - no, 1 - yes, 2 - without goback for old editor (5.4)
      * @param bool $desktop - desktop label
      *
@@ -723,7 +727,7 @@ class EditorController extends Controller {
      * @NoAdminRequired
      * @PublicPage
      */
-    public function config($fileId, $filePath = null, $shareToken = null, $directToken = null, $inframe = 0, $desktop = false) {
+    public function config($fileId, $filePath = null, $shareToken = null, $directToken = null, $version = 0, $inframe = 0, $desktop = false) {
 
         if (!empty($directToken)) {
             list ($directData, $error) = $this->crypt->ReadHash($directToken);
@@ -776,8 +780,25 @@ class EditorController extends Controller {
             return ["error" => $this->trans->t("Format is not supported")];
         }
 
-        $fileUrl = $this->getUrl($file, $user, $shareToken);
-        $key = $this->fileUtility->getKey($file, true);
+        $fileUrl = $this->getUrl($file, $user, $shareToken, $version);
+
+        $key = null;
+        if ($version > 0
+            && $this->versionManager !== null) {
+            $owner = $file->getFileInfo()->getOwner();
+            if ($owner !== null) {
+                $versions = array_reverse($this->versionManager->getVersionsForFile($owner, $file));
+
+                if ($version <= count($versions)) {
+                    $fileVersion = array_values($versions)[$version - 1];
+
+                    $key = $this->fileUtility->getVersionKey($fileVersion);
+                }
+            }
+        }
+        if ($key === null) {
+            $key = $this->fileUtility->getKey($file, true);
+        }
         $key = DocumentService::GenerateRevisionId($key);
 
         $params = [
@@ -801,7 +822,8 @@ class EditorController extends Controller {
         }
 
         $canEdit = isset($format["edit"]) && $format["edit"];
-        $editable = $file->isUpdateable()
+        $editable = $version < 1
+                    && $file->isUpdateable()
                     && (empty($shareToken) || ($share->getPermissions() & Constants::PERMISSION_UPDATE) === Constants::PERMISSION_UPDATE);
         $params["document"]["permissions"]["edit"] = $editable;
         if ($editable && $canEdit) {
@@ -894,7 +916,7 @@ class EditorController extends Controller {
             $params["token"] = $token;
         }
 
-        $this->logger->debug("Config is generated for: $fileId with key $key", ["app" => $this->appName]);
+        $this->logger->debug("Config is generated for: $fileId ($version) with key $key", ["app" => $this->appName]);
 
         return $params;
     }

@@ -69,7 +69,7 @@
                 }
 
                 fileList.add(response, { animate: true });
-                OCA.Onlyoffice.OpenEditor(response.id, dir, response.name, winEditor);
+                OCA.Onlyoffice.OpenEditor(response.id, dir, response.name, 0, winEditor);
 
                 OCA.Onlyoffice.context = { fileList: fileList };
                 OCA.Onlyoffice.context.fileName = response.name;
@@ -79,8 +79,11 @@
         );
     };
 
-    OCA.Onlyoffice.OpenEditor = function (fileId, fileDir, fileName, winEditor) {
-        var filePath = fileDir.replace(new RegExp("\/$"), "") + "/" + fileName;
+    OCA.Onlyoffice.OpenEditor = function (fileId, fileDir, fileName, version, winEditor) {
+        var filePath = "";
+        if (fileName) {
+            filePath = fileDir.replace(new RegExp("\/$"), "") + "/" + fileName;
+        }
         var url = OC.generateUrl("/apps/" + OCA.Onlyoffice.AppName + "/{fileId}?filePath={filePath}",
             {
                 fileId: fileId,
@@ -93,6 +96,10 @@
                     shareToken: encodeURIComponent($("#sharingToken").val()),
                     fileId: fileId
                 });
+        }
+
+        if (version > 0) {
+            url += "&version=" + version;
         }
 
         if (winEditor && winEditor.location) {
@@ -142,10 +149,6 @@
     OCA.Onlyoffice.CloseEditor = function () {
         $("body").removeClass("onlyoffice-inline");
         $("#onlyofficeHeader").remove();
-
-        if (OCA.Onlyoffice.unbindVersionClick) {
-            OCA.Onlyoffice.unbindVersionClick();
-        }
 
         OCA.Onlyoffice.context = null;
 
@@ -312,26 +315,37 @@
         return extension;
     }
 
-    OCA.Onlyoffice.openVersion = function (version) {
+    OCA.Onlyoffice.openVersion = function (fileId, version) {
         if (OCA.Onlyoffice.frameSelector) {
             $(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.onRequestHistory(version);
+            return;
         }
+
+        OCA.Onlyoffice.OpenEditor(fileId, "", "", version)
     };
 
     OCA.Onlyoffice.bindVersionClick = function () {
-        OCA.Onlyoffice.unbindVersionClick();
+        unbindVersionClick();
         $(document).on("click.onlyoffice-version", "#versionsTabView .downloadVersion", function() {
             var versionNodes = $("#versionsTabView ul.versions>li");
             var versionNode = $(this).closest("#versionsTabView ul.versions>li")[0];
 
+            var href = $(this).attr("href");
+            var search = new RegExp("\/versions\/\\w+\/versions\/(\\d+)\/\\d+");
+            var result = search.exec(href);
+            if (result && result.length > 1) {
+                var fileId = result[1];
+            }
+
             var versionNum = versionNodes.length - $.inArray(versionNode, versionNodes);
-            OCA.Onlyoffice.openVersion(versionNum);
+
+            OCA.Onlyoffice.openVersion(fileId || "", versionNum);
 
             return false;
         });
     };
 
-    OCA.Onlyoffice.unbindVersionClick = function() {
+    var unbindVersionClick = function() {
         $(document).off("click.onlyoffice-version", "#versionsTabView .downloadVersion");
     }
 
@@ -364,6 +378,10 @@
         } else {
             OC.Plugins.register("OCA.Files.FileList", OCA.Onlyoffice.FileList);
             OC.Plugins.register("OCA.Files.NewFileMenu", OCA.Onlyoffice.NewFileMenu);
+
+            if (OCA.Versions) {
+                OCA.Onlyoffice.bindVersionClick();
+            }
         }
     };
 

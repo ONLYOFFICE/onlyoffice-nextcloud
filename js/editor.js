@@ -44,6 +44,7 @@
 
         OCA.Onlyoffice.fileId = $("#iframeEditor").data("id");
         OCA.Onlyoffice.shareToken = $("#iframeEditor").data("sharetoken");
+        OCA.Onlyoffice.version = $("#iframeEditor").data("version");
         var directToken = $("#iframeEditor").data("directtoken");
         OCA.Onlyoffice.inframe = !!$("#iframeEditor").data("inframe");
         if (!OCA.Onlyoffice.fileId && !OCA.Onlyoffice.shareToken && !directToken) {
@@ -72,6 +73,9 @@
         if (directToken) {
             $("html").addClass("onlyoffice-full-page");
             params.push("directToken=" + encodeURIComponent(directToken));
+        }
+        if (OCA.Onlyoffice.version > 0) {
+            params.push("version=" + OCA.Onlyoffice.version);
         }
 
         if (OCA.Onlyoffice.inframe || directToken) {
