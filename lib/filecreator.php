@@ -156,7 +156,7 @@ class FileCreator extends ACreateEmpty {
         try {
             $file->putContent($template);
         } catch (NotPermittedException $e) {
-            $this->logger->logException($e, ["FileCreator: Can't create file: $fileName", "app" => $this->appName]);
+            $this->logger->logException($e, ["message" => "FileCreator: Can't create file: $fileName", "app" => $this->appName]);
         }
     }
 }

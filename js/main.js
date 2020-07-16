@@ -223,7 +223,7 @@
                 return;
             }
 
-            var register = function() {
+            var register = function () {
                 var formats = OCA.Onlyoffice.setting.formats;
 
                 $.each(formats, function (ext, config) {
@@ -313,7 +313,7 @@
             var fileName = $("#filename").val();
             var extension = getFileExtension(fileName);
 
-            var initSharedButton = function() {
+            var initSharedButton = function () {
                 var formats = OCA.Onlyoffice.setting.formats;
 
                 var config = formats[extension];

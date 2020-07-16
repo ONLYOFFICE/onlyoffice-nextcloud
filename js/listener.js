@@ -77,7 +77,7 @@
             revisedMimes);
     };
 
-    window.addEventListener("message", function(event) {
+    window.addEventListener("message", function (event) {
         if ($(OCA.Onlyoffice.frameSelector)[0].contentWindow !== event.source
             || !event.data["method"]) {
             return;

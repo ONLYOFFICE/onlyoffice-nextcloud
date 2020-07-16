@@ -113,7 +113,7 @@
                     var docIsChanged = null;
                     var docIsChangedTimeout = null;
 
-                    var setPageTitle = function(event) {
+                    var setPageTitle = function (event) {
                         clearTimeout(docIsChangedTimeout);
 
                         if (docIsChanged !== event.data) {
@@ -136,7 +136,7 @@
                     };
 
                     if (config.editorConfig.tenant) {
-                        config.events.onAppReady = function() {
+                        config.events.onAppReady = function () {
                             OCA.Onlyoffice.docEditor.showMessage(t(OCA.Onlyoffice.AppName, "You are using public demo ONLYOFFICE Document Server. Please do not store private sensitive data."));
                         };
                     }
@@ -287,14 +287,14 @@
         "*");
     };
 
-    OCA.Onlyoffice.onRequestSharingSettings = function() {
+    OCA.Onlyoffice.onRequestSharingSettings = function () {
         window.parent.postMessage({
             method: "editorRequestSharingSettings"
         },
         "*");
     };
 
-    OCA.Onlyoffice.onRequestCompareFile = function() {
+    OCA.Onlyoffice.onRequestCompareFile = function () {
         var revisedMimes = [
             "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         ];
@@ -310,7 +310,7 @@
         }
     };
 
-    OCA.Onlyoffice.editorSetRevised = function(filePath) {
+    OCA.Onlyoffice.editorSetRevised = function (filePath) {
         $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/url?filePath={filePath}",
             {
                 filePath: filePath
