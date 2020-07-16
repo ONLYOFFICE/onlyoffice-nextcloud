@@ -451,6 +451,7 @@ class EditorController extends Controller {
             return ["error" => $error];
         }
 
+        $owner = null;
         $versions = array();
         if ($this->versionManager !== null) {
             $owner = $file->getFileInfo()->getOwner();
@@ -469,15 +470,12 @@ class EditorController extends Controller {
             $historyItem = [
                 "created" => $this->trans->l("datetime", $version->getTimestamp(), ["width" => "short"]),
                 "key" => $key,
-                "version" => $versionNum
-            ];
-
-            if ($owner !== null) {
-                $historyItem["user"] = [
+                "user" => [
                     "id" => $this->buildUserId($owner->getUID()),
                     "name" => $owner->getDisplayName()
-                ];
-            }
+                ],
+                "version" => $versionNum
+            ];
 
             array_push($history, $historyItem);
         }
