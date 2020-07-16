@@ -133,7 +133,7 @@ class FileUtility {
                 try {
                     $files = $node->getById($fileId);
                 } catch (\Exception $e) {
-                    $this->logger->logException($e, ["getFileByToken: $fileId", "app" => $this->appName]);
+                    $this->logger->logException($e, ["message" => "getFileByToken: $fileId", "app" => $this->appName]);
                     return [null, $this->trans->t("Invalid request"), null];
                 }
 
@@ -146,7 +146,7 @@ class FileUtility {
                 try {
                     $file = $node->get($path);
                 } catch (\Exception $e) {
-                    $this->logger->logException($e, ["getFileByToken for path: $path", "app" => $this->appName]);
+                    $this->logger->logException($e, ["message" => "getFileByToken for path: $path", "app" => $this->appName]);
                     return [null, $this->trans->t("Invalid request"), null];
                 }
             }
@@ -178,7 +178,7 @@ class FileUtility {
         try {
             $node = $share->getNode();
         } catch (NotFoundException $e) {
-            $this->logger->logException($e, ["getNodeByToken error", "app" => $this->appName]);
+            $this->logger->logException($e, ["message" => "getNodeByToken error", "app" => $this->appName]);
             return [null, $this->trans->t("File not found"), null];
         }
 
@@ -201,7 +201,7 @@ class FileUtility {
         try {
             $share = $this->shareManager->getShareByToken($shareToken);
         } catch (ShareNotFound $e) {
-            $this->logger->logException($e, ["getShare error", "app" => $this->appName]);
+            $this->logger->logException($e, ["message" => "getShare error", "app" => $this->appName]);
             $share = null;
         }
 
@@ -237,7 +237,7 @@ class FileUtility {
                     return $key;
                 }
             } catch (\Exception $e) {
-                $this->logger->logException($e, ["Failed to request federated key " . $file->getId(), "app" => $this->appName]);
+                $this->logger->logException($e, ["message" => "Failed to request federated key " . $file->getId(), "app" => $this->appName]);
             }
         }
 

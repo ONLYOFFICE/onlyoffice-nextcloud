@@ -116,6 +116,42 @@
         }
     };
 
+    OCA.Onlyoffice.ShowHeaderButton = function () {
+        var wrapper = $("<div id='onlyofficeHeader' />")
+
+        var btnClose = $("<a class='icon icon-close-white'></a>");
+        btnClose.on("click", function() {
+            OCA.Onlyoffice.CloseEditor();
+        });
+        wrapper.prepend(btnClose);
+
+        if (!$("#isPublic").val()) {
+            var btnShare = $("<a class='icon icon-shared icon-white'></a>");
+            btnShare.on("click", function () {
+                OCA.Onlyoffice.OpenShareDialog();
+            })
+            wrapper.prepend(btnShare);
+        }
+
+        if (!$("#header .header-right").length) {
+            $("#header").append("<div class='header-right'></div>");
+        }
+        wrapper.prependTo(".header-right");
+    };
+
+    OCA.Onlyoffice.CloseEditor = function () {
+        $("body").removeClass("onlyoffice-inline");
+        $("#onlyofficeHeader").remove();
+
+        OCA.Onlyoffice.context = null;
+
+        var url = OCA.Onlyoffice.folderUrl;
+        if (!!url) {
+            window.history.pushState(null, null, url);
+            OCA.Onlyoffice.folderUrl = null;
+        }
+    };
+
     OCA.Onlyoffice.OpenShareDialog = function () {
         if (OCA.Onlyoffice.context) {
             if (!$("#app-sidebar").is(":visible")) {
@@ -187,7 +223,7 @@
                 return;
             }
 
-            var register = function() {
+            var register = function () {
                 var formats = OCA.Onlyoffice.setting.formats;
 
                 $.each(formats, function (ext, config) {
@@ -277,7 +313,7 @@
             var fileName = $("#filename").val();
             var extension = getFileExtension(fileName);
 
-            var initSharedButton = function() {
+            var initSharedButton = function () {
                 var formats = OCA.Onlyoffice.setting.formats;
 
                 var config = formats[extension];

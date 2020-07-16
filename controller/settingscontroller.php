@@ -281,7 +281,7 @@ class SettingsController extends Controller {
             }
 
         } catch (\Exception $e) {
-            $this->logger->logException($e, ["Protocol on check error", "app" => $this->appName]);
+            $this->logger->logException($e, ["message" => "Protocol on check error", "app" => $this->appName]);
             return [$e->getMessage(), $version];
         }
 
@@ -295,7 +295,7 @@ class SettingsController extends Controller {
             }
 
         } catch (\Exception $e) {
-            $this->logger->logException($e, ["HealthcheckRequest on check error", "app" => $this->appName]);
+            $this->logger->logException($e, ["message" => "HealthcheckRequest on check error", "app" => $this->appName]);
             return [$e->getMessage(), $version];
         }
 
@@ -317,7 +317,7 @@ class SettingsController extends Controller {
             }
 
         } catch (\Exception $e) {
-            $this->logger->logException($e, ["CommandRequest on check error", "app" => $this->appName]);
+            $this->logger->logException($e, ["message" => "CommandRequest on check error", "app" => $this->appName]);
             return [$e->getMessage(), $version];
         }
 
@@ -333,14 +333,14 @@ class SettingsController extends Controller {
             $convertedFileUri = $documentService->GetConvertedUri($fileUrl, "docx", "docx", "check_" . rand());
 
         } catch (\Exception $e) {
-            $this->logger->logException($e, ["GetConvertedUri on check error", "app" => $this->appName]);
+            $this->logger->logException($e, ["message" => "GetConvertedUri on check error", "app" => $this->appName]);
             return [$e->getMessage(), $version];
         }
 
         try {
             $documentService->Request($convertedFileUri);
         } catch (\Exception $e) {
-            $this->logger->logException($e, ["Request converted file on check error", "app" => $this->appName]);
+            $this->logger->logException($e, ["message" => "Request converted file on check error", "app" => $this->appName]);
             return [$e->getMessage(), $version];
         }
 

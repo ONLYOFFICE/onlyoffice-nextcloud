@@ -65,10 +65,10 @@
     }
 
     OCA.Onlyoffice.directEditor = {
-        close: function() {
+        close: function () {
             callMobileMessage("close");
         },
-        loaded: function() {
+        loaded: function () {
             callMobileMessage("loaded");
         }
     };

@@ -61,7 +61,7 @@
         $("#onlyofficeGroups").click(groupListToggle);
         groupListToggle();
 
-        var demoToggle = function() {
+        var demoToggle = function () {
             $("#onlyofficeAddrSettings input:not(#onlyofficeStorageUrl)").prop("disabled", $("#onlyofficeDemo").prop("checked"));
         };
 
@@ -87,14 +87,14 @@
             "allTags",
             "linkTags",
         ];
-        $.each(watermarkLists, function(i, watermarkList) {
-            var watermarkListToggle = function() {
+        $.each(watermarkLists, function (i, watermarkList) {
+            var watermarkListToggle = function () {
                 if ($("#onlyofficeWatermark_" + watermarkList).prop("checked")) {
                     if (watermarkList.indexOf("Group") >= 0) {
                         OC.Settings.setupGroupsSelect($("#onlyofficeWatermark_" + watermarkList + "List"));
                     } else {
                         OC.SystemTags.collection.fetch({
-                            success: function() {
+                            success: function () {
                                 $("#onlyofficeWatermark_" + watermarkList + "List").select2({
                                     allowClear: true,
                                     closeOnSelect: false,
@@ -102,13 +102,13 @@
                                     separator: "|",
                                     toggleSelect: true,
                                     placeholder: t(OCA.Onlyoffice.AppName, "Select tag"),
-                                    query: _.debounce(function(query) {
+                                    query: _.debounce(function (query) {
                                         query.callback({
                                             results: OC.SystemTags.collection.filterByName(query.term)
                                         });
                                     }, 100, true),
-                                    initSelection: function(element, callback) {
-                                        var selection = ($(element).val() || []).split("|").map(function(tagId){
+                                    initSelection: function (element, callback) {
+                                        var selection = ($(element).val() || []).split("|").map(function (tagId) {
                                             return OC.SystemTags.collection.get(tagId);
                                         });
                                         callback(selection);
@@ -119,8 +119,8 @@
                                     formatSelection: function (tag) {
                                         return tag.get("name");
                                     },
-                                    sortResults: function(results) {
-                                        results.sort(function(a, b) {
+                                    sortResults: function (results) {
+                                        results.sort(function (a, b) {
                                             return OC.Util.naturalSortCompare(a.get("name"), b.get("name"));
                                         });
                                         return results;
@@ -188,12 +188,12 @@
             $(".section-onlyoffice").addClass("icon-loading");
 
             var defFormats = {};
-            $("input[id^=\"onlyofficeDefFormat\"]").each(function() {
+            $("input[id^=\"onlyofficeDefFormat\"]").each(function () {
                 defFormats[this.name] = this.checked;
             });
 
             var editFormats = {};
-            $("input[id^=\"onlyofficeEditFormat\"]").each(function() {
+            $("input[id^=\"onlyofficeEditFormat\"]").each(function () {
                 editFormats[this.name] = this.checked;
             });
 

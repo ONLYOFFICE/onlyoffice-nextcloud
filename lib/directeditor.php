@@ -262,7 +262,7 @@ class DirectEditor implements IEditor {
 
             return $response;
         } catch (\Exception $e) {
-            $this->logger->logException($e, ["DirectEditor open", "app" => $this->appName]);
+            $this->logger->logException($e, ["message" => "DirectEditor open", "app" => $this->appName]);
             return $this->renderError($e->getMessage());
         }
     }

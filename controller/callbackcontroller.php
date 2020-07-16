@@ -462,7 +462,7 @@ class CallbackController extends Controller {
                     $newData = $documentService->Request($url);
 
                     $this->logger->debug("Track put content " . $file->getPath(), ["app" => $this->appName]);
-                    $this->retryOperation(function () use ($file, $newData){
+                    $this->retryOperation(function () use ($file, $newData) {
                         return $file->putContent($newData);
                     });
 

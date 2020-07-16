@@ -67,7 +67,7 @@
                     src: self.url + "&inframe=true",
                 },
                 on: {
-                    load: function() {
+                    load: function () {
                         self.doneLoading();
                     },
                 },
@@ -96,13 +96,11 @@
 
     var initPage = function () {
         if (OCA.Viewer) {
-            OCA.Onlyoffice.canExpandHeader = false;
-
             OCA.Onlyoffice.frameSelector = "#onlyofficeViewerFrame";
 
-            OCA.Onlyoffice.GetSettings(function(){
+            OCA.Onlyoffice.GetSettings(function () {
 
-                var mimes = $.map(OCA.Onlyoffice.setting.formats, function(format) {
+                var mimes = $.map(OCA.Onlyoffice.setting.formats, function (format) {
                     return format.mime;
                 });
 

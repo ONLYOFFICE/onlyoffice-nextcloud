@@ -329,7 +329,7 @@ class EditorController extends Controller {
         try {
             $newFileUri = $documentService->GetConvertedUri($fileUrl, $ext, $internalExtension, $key);
         } catch (\Exception $e) {
-            $this->logger->logException($e, ["GetConvertedUri: " . $file->getId(), "app" => $this->appName]);
+            $this->logger->logException($e, ["message" => "GetConvertedUri: " . $file->getId(), "app" => $this->appName]);
             return ["error" => $e->getMessage()];
         }
 
@@ -341,7 +341,7 @@ class EditorController extends Controller {
         try {
             $newData = $documentService->Request($newFileUri);
         } catch (\Exception $e) {
-            $this->logger->logException($e, ["Failed to download converted file", "app" => $this->appName]);
+            $this->logger->logException($e, ["message" => "Failed to download converted file", "app" => $this->appName]);
             return ["error" => $this->trans->t("Failed to download converted file")];
         }
 
@@ -353,7 +353,7 @@ class EditorController extends Controller {
 
             $file->putContent($newData);
         } catch (NotPermittedException $e) {
-            $this->logger->logException($e, ["Can't create file: $newFileName", "app" => $this->appName]);
+            $this->logger->logException($e, ["message" => "Can't create file: $newFileName", "app" => $this->appName]);
             return ["error" => $this->trans->t("Can't create file")];
         }
 
@@ -401,7 +401,7 @@ class EditorController extends Controller {
             $documentService = new DocumentService($this->trans, $this->config);
             $newData = $documentService->Request($url);
         } catch (\Exception $e) {
-            $this->logger->logException($e, ["Failed to download file for saving: $url", "app" => $this->appName]);
+            $this->logger->logException($e, ["message" => "Failed to download file for saving: $url", "app" => $this->appName]);
             return ["error" => $this->trans->t("Download failed")];
         }
 
@@ -412,7 +412,7 @@ class EditorController extends Controller {
 
             $file->putContent($newData);
         } catch (NotPermittedException $e) {
-            $this->logger->logException($e, ["Can't save file: $name", "app" => $this->appName]);
+            $this->logger->logException($e, ["message" => "Can't save file: $name", "app" => $this->appName]);
             return ["error" => $this->trans->t("Can't create file")];
         }
 
@@ -920,7 +920,7 @@ class EditorController extends Controller {
         try {
             $files = $this->root->getUserFolder($userId)->getById($fileId);
         } catch (\Exception $e) {
-            $this->logger->logException($e, ["getFile: $fileId", "app" => $this->appName]);
+            $this->logger->logException($e, ["message" => "getFile: $fileId", "app" => $this->appName]);
             return [null, $this->trans->t("Invalid request"), null];
         }
 
@@ -1088,7 +1088,7 @@ class EditorController extends Controller {
                 "date" => (new \DateTime())->format("Y-m-d H:i:s"),
                 "themingName" => \OC::$server->getThemingDefaults()->getName()
             ];
-            $watermarkTemplate = preg_replace_callback("/{(.+?)}/", function($matches) use ($replacements)
+            $watermarkTemplate = preg_replace_callback("/{(.+?)}/", function ($matches) use ($replacements)
                 {
                     return $replacements[$matches[1]];
                 }, $watermarkTemplate);
