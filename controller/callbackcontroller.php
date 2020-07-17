@@ -502,12 +502,14 @@ class CallbackController extends Controller {
                         return $file->putContent($newData);
                     });
 
-                    $changes = null;
-                    if (!empty($changesurl)) {
-                        $changesurl = $this->config->ReplaceDocumentServerUrlToInternal($changesurl);
-                        $changes = $documentService->Request($changesurl);
+                    if ($this->versionManager !== null) {
+                        $changes = null;
+                        if (!empty($changesurl)) {
+                            $changesurl = $this->config->ReplaceDocumentServerUrlToInternal($changesurl);
+                            $changes = $documentService->Request($changesurl);
+                        }
+                        FileVersions::saveHistory($file->getFileInfo(), $history, $changes);
                     }
-                    FileVersions::saveHistory($file->getFileInfo(), $history, $changes);
 
                     $result = 0;
                 } catch (\Exception $e) {
