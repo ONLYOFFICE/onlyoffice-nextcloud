@@ -1020,12 +1020,28 @@ class EditorController extends Controller {
      * @return string
      */
     private function getUrl($file, $user = null, $shareToken = null, $version = 0, $changes = false) {
+
+        $data = [
+            "action" => "download",
+            "fileId" => $file->getId()
+        ];
+
         $userId = null;
         if (!empty($user)) {
             $userId = $user->getUID();
+            $data["userId"] = $userId;
+        }
+        if (!empty($shareToken)) {
+            $data["shareToken"] = $shareToken;
+        }
+        if ($version > 0) {
+            $data["version"] = $version;
+        }
+        if ($changes) {
+            $data["changes"] = true;
         }
 
-        $hashUrl = $this->crypt->GetHash(["fileId" => $file->getId(), "userId" => $userId, "shareToken" => $shareToken, "action" => "download", "version" => $version, "changes" => $changes]);
+        $hashUrl = $this->crypt->GetHash($data);
 
         $fileUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.download", ["doc" => $hashUrl]);
 
