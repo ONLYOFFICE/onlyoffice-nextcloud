@@ -504,6 +504,7 @@ class CallbackController extends Controller {
 
                     $changes = null;
                     if (!empty($changesurl)) {
+                        $changesurl = $this->config->ReplaceDocumentServerUrlToInternal($changesurl);
                         $changes = $documentService->Request($changesurl);
                     }
                     FileVersions::saveHistory($file->getFileInfo(), $history, $changes);
