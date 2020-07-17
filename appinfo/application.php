@@ -42,6 +42,7 @@ use OCA\Onlyoffice\Controller\EditorController;
 use OCA\Onlyoffice\Controller\SettingsController;
 use OCA\Onlyoffice\Crypt;
 use OCA\Onlyoffice\DirectEditor;
+use OCA\Onlyoffice\Hooks;
 
 class Application extends App {
 
@@ -216,5 +217,8 @@ class Application extends App {
                 $c->query("IManager")
             );
         });
+
+
+        Hooks::connectHooks();
     }
 }

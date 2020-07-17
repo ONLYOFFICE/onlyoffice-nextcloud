@@ -254,4 +254,27 @@ class FileVersions {
             $logger->logException($e, ["message" => "saveHistory: save $fileId history error", "app" => self::$appName]);
         }
     }
+
+    /**
+     * Delete all versions of file
+     *
+     * @param string $ownerId - file owner id
+     * @param string $fileId - file id
+     */
+    public static function deleteAllVersions($ownerId, $fileId) {
+        $logger = \OC::$server->getLogger();
+
+        $logger->debug("deleteAllVersions $ownerId $fileId", ["app" => self::$appName]);
+
+        if ($ownerId === null || $fileId === null) {
+            return;
+        }
+
+        list ($view, $path) = self::getView($ownerId, $fileId);
+        if ($view === null) {
+            return;
+        }
+
+        $view->unlink($path);
+    }
 }
