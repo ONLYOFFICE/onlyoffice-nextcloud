@@ -1045,7 +1045,8 @@ class EditorController extends Controller {
 
         $fileUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.download", ["doc" => $hashUrl]);
 
-        if (!empty($this->config->GetStorageUrl())) {
+        if (!empty($this->config->GetStorageUrl())
+            && !$changes) {
             $fileUrl = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->config->GetStorageUrl(), $fileUrl);
         }
 
