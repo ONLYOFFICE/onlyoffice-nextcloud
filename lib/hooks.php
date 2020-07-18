@@ -33,6 +33,8 @@ use OC\Files\Filesystem;
 
 use OCP\Util;
 
+use OCA\Onlyoffice\FileVersions;
+
 /**
  * The class to handle the filesystem hooks
  *
@@ -50,6 +52,9 @@ class Hooks {
     public static function connectHooks() {
         // Listen file deletion
         Util::connectHook("OC_Filesystem", "delete", Hooks::class, "fileDelete");
+
+        // Listen file version deletion
+        Util::connectHook("\OCP\Versions", "preDelete", Hooks::class, "fileVersionDelete");
     }
 
     /**
@@ -72,6 +77,34 @@ class Hooks {
             FileVersions::deleteAllVersions($ownerId, $fileId);
         } catch (\Exception $e) {
             \OC::$server->getLogger()->logException($e, ["message" => "Hook: fileDelete " . json_encode($params), "app" => self::$appName]);
+        }
+    }
+
+    /**
+     * Erase versions of deleted version of file
+     *
+     * @param array $params - hook param
+     */
+    public static function fileVersionDelete($params) {
+        $pathVersion = $params["path"];
+        if (empty($pathVersion)) {
+            return;
+        }
+
+        try {
+            list ($filePath, $versionId) = FileVersions::splitPathVersion($pathVersion);
+            if (empty($filePath)) {
+                return;
+            }
+
+            $ownerId = Filesystem::getOwner($filePath);
+
+            $fileInfo = Filesystem::getFileInfo($filePath);
+            $fileId = $fileInfo->getId();
+
+            FileVersions::deleteVersion($ownerId, $fileId, $versionId);
+        } catch (\Exception $e) {
+            \OC::$server->getLogger()->logException($e, ["message" => "Hook: fileVersionDelete " . json_encode($params), "app" => self::$appName]);
         }
     }
 }

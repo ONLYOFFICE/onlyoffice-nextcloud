@@ -61,6 +61,23 @@ class FileVersions {
     private static $historyExt = ".json";
 
     /**
+     * Split file path and version id
+     *
+     * @param string $pathVersion - version path
+     *
+     * @return array
+     */
+    public static function splitPathVersion($pathVersion) {
+        $pos = strrpos($pathVersion, ".v");
+        if ($pos === false) {
+            return false;
+        }
+        $filePath = substr($pathVersion, 0, $pos);
+        $versionId = substr($pathVersion, 2 + $pos - strlen($pathVersion));
+        return [$filePath, $versionId];
+    }
+
+    /**
      * Check if folder is not exist
      *
      * @param string $userId - user id
@@ -276,5 +293,42 @@ class FileVersions {
         }
 
         $view->unlink($path);
+    }
+
+    /**
+     * Delete changes and history
+     *
+     * @param string $ownerId - file owner id
+     * @param string $fileId - file id
+     * @param string $versionId - file version
+    */
+    public static function deleteVersion($ownerId, $fileId, $versionId) {
+        $logger = \OC::$server->getLogger();
+
+        $logger->debug("deleteVersion $fileId ($versionId)", ["app" => self::$appName]);
+
+        if ($ownerId === null) {
+            return;
+        }
+        if ($fileId === null || empty($versionId)) {
+            return;
+        }
+
+        list ($view, $path) = self::getView($ownerId, $fileId);
+        if ($view === null) {
+            return null;
+        }
+
+        $historyPath = $path . "/" . $versionId . self::$historyExt;
+        if ($view->file_exists($historyPath)) {
+            $view->unlink($historyPath);
+            $logger->debug("deleteVersion $historyPath", ["app" => self::$appName]);
+        }
+
+        $changesPath = $path . "/" . $versionId . self::$changesExt;
+        if ($view->file_exists($changesPath)) {
+            $view->unlink($changesPath);
+            $logger->debug("deleteVersion $changesPath", ["app" => self::$appName]);
+        }
     }
 }
