@@ -55,6 +55,9 @@ class Hooks {
 
         // Listen file version deletion
         Util::connectHook("\OCP\Versions", "preDelete", Hooks::class, "fileVersionDelete");
+
+        // Listen file version restore
+        Util::connectHook("\OCP\Versions", "rollback", Hooks::class, "fileVersionRestore");
     }
 
     /**
@@ -105,6 +108,31 @@ class Hooks {
             FileVersions::deleteVersion($ownerId, $fileId, $versionId);
         } catch (\Exception $e) {
             \OC::$server->getLogger()->logException($e, ["message" => "Hook: fileVersionDelete " . json_encode($params), "app" => self::$appName]);
+        }
+    }
+
+    /**
+     * Erase versions of restored version of file
+     *
+     * @param array $params - hook param
+     */
+    public static function fileVersionRestore($params) {
+        $filePath = $params["path"];
+        if (empty($filePath)) {
+            return;
+        }
+
+        $versionId = $params["revision"];
+
+        try {
+            $ownerId = Filesystem::getOwner($filePath);
+
+            $fileInfo = Filesystem::getFileInfo($filePath);
+            $fileId = $fileInfo->getId();
+
+            FileVersions::deleteVersion($ownerId, $fileId, $versionId);
+        } catch (\Exception $e) {
+            \OC::$server->getLogger()->logException($e, ["message" => "Hook: fileVersionRestore " . json_encode($params), "app" => self::$appName]);
         }
     }
 }
