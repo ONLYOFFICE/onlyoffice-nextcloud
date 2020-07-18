@@ -111,10 +111,11 @@ class FileVersions {
      * @param string $ownerId - file owner id
      * @param string $fileId - file id
      * @param string $versionId - file version
+     * @param string $prevVersion - previous version for check
      *
      * @return array
      */
-    public static function getHistoryData($ownerId, $fileId, $versionId) {
+    public static function getHistoryData($ownerId, $fileId, $versionId, $prevVersion) {
         $logger = \OC::$server->getLogger();
 
         if ($ownerId === null || $fileId === null) {
@@ -135,6 +136,11 @@ class FileVersions {
 
         try {
             $historyData = json_decode($historyDataString, true);
+
+            if ($historyData["prev"] !== $prevVersion) {
+                $logger->debug("getHistoryData: previous $prevVersion != " . $historyData["prev"], ["app" => self::$appName]);
+                return null;
+            }
 
             return $historyData;
         } catch (\Exception $e) {
@@ -204,8 +210,9 @@ class FileVersions {
      * @param OCP\Files\FileInfo $fileInfo - file info
      * @param array $history - file history
      * @param string $changes - file changes
+     * @param string $prevVersion - previous version for check
      */
-    public static function saveHistory($fileInfo, $history, $changes) {
+    public static function saveHistory($fileInfo, $history, $changes, $prevVersion) {
         $logger = \OC::$server->getLogger();
 
         $owner = $fileInfo->getOwner();
@@ -228,6 +235,7 @@ class FileVersions {
             $view->touch($changesPath);
             $view->file_put_contents($changesPath, $changes);
 
+            $history["prev"] = $prevVersion;
             $historyPath = $path . "/" . $versionId . self::$historyExt;
             $view->touch($historyPath);
             $view->file_put_contents($historyPath, json_encode($history));

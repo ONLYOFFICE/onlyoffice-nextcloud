@@ -463,6 +463,7 @@ class EditorController extends Controller {
             }
         }
 
+        $prevVersion = "";
         $versionNum = 0;
         foreach ($versions as $version) {
             $versionNum = $versionNum + 1;
@@ -481,11 +482,13 @@ class EditorController extends Controller {
             ];
 
             $versionId = $version->getRevisionId();
-            $historyData = FileVersions::getHistoryData($ownerId, $fileId, $versionId);
+            $historyData = FileVersions::getHistoryData($ownerId, $fileId, $versionId, $prevVersion);
             if ($historyData !== null) {
                 $historyItem["changes"] = $historyData["changes"];
                 $historyItem["serverVersion"] = $historyData["serverVersion"];
             }
+
+            $prevVersion = $versionId;
 
             array_push($history, $historyItem);
         }
@@ -507,7 +510,7 @@ class EditorController extends Controller {
         }
 
         $versionId = $file->getFileInfo()->getMtime();
-        $historyData = FileVersions::getHistoryData($ownerId, $fileId, $versionId);
+        $historyData = FileVersions::getHistoryData($ownerId, $fileId, $versionId, $prevVersion);
         if ($historyData !== null) {
             $historyItem["changes"] = $historyData["changes"];
             $historyItem["serverVersion"] = $historyData["serverVersion"];
