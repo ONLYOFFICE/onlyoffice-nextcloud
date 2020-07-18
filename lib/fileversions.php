@@ -139,6 +139,15 @@ class FileVersions {
 
             if ($historyData["prev"] !== $prevVersion) {
                 $logger->debug("getHistoryData: previous $prevVersion != " . $historyData["prev"], ["app" => self::$appName]);
+
+                $view->unlink($historyPath);
+                $logger->debug("getHistoryData: delete $historyPath", ["app" => self::$appName]);
+
+                $changesPath = $path . "/" . $versionId . self::$changesExt;
+                if ($view->file_exists($changesPath)) {
+                    $view->unlink($changesPath);
+                    $logger->debug("getHistoryData: delete $changesPath", ["app" => self::$appName]);
+                }
                 return null;
             }
 
