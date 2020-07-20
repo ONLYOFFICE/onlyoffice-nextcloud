@@ -214,7 +214,7 @@ class DocumentService {
                 $errorMessage = $errorMessageTemplate . ": Error while accessing the conversion result database";
                 break;
             case -5:
-                $errorMessage = $errorMessageTemplate . ": Error unexpected guid";
+                $errorMessage = $errorMessageTemplate . ": Incorrect password";
                 break;
             case -4:
                 $errorMessage = $errorMessageTemplate . ": Error while downloading the document file to be converted.";
