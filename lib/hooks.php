@@ -50,6 +50,9 @@ class Hooks {
     private static $appName = "onlyoffice";
 
     public static function connectHooks() {
+        // Listen user deletion
+        Util::connectHook("OC_User", "pre_deleteUser", Hooks::class, "userDelete");
+
         // Listen file deletion
         Util::connectHook("OC_Filesystem", "delete", Hooks::class, "fileDelete");
 
@@ -58,6 +61,17 @@ class Hooks {
 
         // Listen file version restore
         Util::connectHook("\OCP\Versions", "rollback", Hooks::class, "fileVersionRestore");
+    }
+
+    /**
+     * Erase user file versions
+     *
+     * @param array $params - hook params
+     */
+    public static function userDelete($params) {
+        $userId = $params["uid"];
+
+        FileVersions::deleteAllVersions($userId);
     }
 
     /**
