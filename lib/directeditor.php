@@ -244,6 +244,7 @@ class DirectEditor implements IEditor {
                 "filePath" => $filePath,
                 "shareToken" => null,
                 "directToken" => $directToken,
+                "version" => 0,
                 "inframe" => false
             ];
 
