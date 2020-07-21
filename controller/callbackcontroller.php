@@ -587,9 +587,14 @@ class CallbackController extends Controller {
      *
      * @return string
      */
-    private function parseUserId($uniqueUserId) {
+    private function parseUserId($userId) {
         $instanceId = $this->config->GetSystemValue("instanceid", true);
-        $userId = ltrim($uniqueUserId, $instanceId . "_");
+        $instanceId = $instanceId . "_";
+
+        if (substr($userId, 0, strlen($instanceId)) === $instanceId) {
+            return substr($userId, strlen($instanceId));
+        }
+
         return $userId;
     }
 
