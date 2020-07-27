@@ -459,7 +459,7 @@ class EditorController extends Controller {
             $owner = $file->getFileInfo()->getOwner();
             if ($owner !== null) {
                 $ownerId = $owner->getUID();
-                $versions = array_reverse($this->versionManager->getVersionsForFile($owner, $file));
+                $versions = array_reverse($this->versionManager->getVersionsForFile($owner, $file->getFileInfo()));
             }
         }
 
@@ -558,7 +558,7 @@ class EditorController extends Controller {
             $owner = $file->getFileInfo()->getOwner();
             if ($owner !== null) {
                 $ownerId = $owner->getUID();
-                $versions = array_reverse($this->versionManager->getVersionsForFile($owner, $file));
+                $versions = array_reverse($this->versionManager->getVersionsForFile($owner, $file->getFileInfo()));
             }
         }
 
@@ -832,7 +832,7 @@ class EditorController extends Controller {
             && $this->versionManager !== null) {
             $owner = $file->getFileInfo()->getOwner();
             if ($owner !== null) {
-                $versions = array_reverse($this->versionManager->getVersionsForFile($owner, $file));
+                $versions = array_reverse($this->versionManager->getVersionsForFile($owner, $file->getFileInfo()));
 
                 if ($version <= count($versions)) {
                     $fileVersion = array_values($versions)[$version - 1];

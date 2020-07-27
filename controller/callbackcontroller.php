@@ -267,7 +267,7 @@ class CallbackController extends Controller {
                 return new JSONResponse(["message" => $this->trans->t("Files not found")], Http::STATUS_NOT_FOUND);
             }
 
-            $versions = array_reverse($this->versionManager->getVersionsForFile($owner, $file));
+            $versions = array_reverse($this->versionManager->getVersionsForFile($owner, $file->getFileInfo()));
 
             $versionId = null;
             if ($version > count($versions)) {
@@ -585,7 +585,7 @@ class CallbackController extends Controller {
                 }
             }
 
-            $versions = array_reverse($this->versionManager->getVersionsForFile($owner, $file));
+            $versions = array_reverse($this->versionManager->getVersionsForFile($owner, $file->getFileInfo()));
 
             if ($version <= count($versions)) {
                 $fileVersion = array_values($versions)[$version - 1];
@@ -637,7 +637,7 @@ class CallbackController extends Controller {
 
         if ($version > 0 && $this->versionManager !== null) {
             $owner = $file->getFileInfo()->getOwner();
-            $versions = array_reverse($this->versionManager->getVersionsForFile($owner, $file));
+            $versions = array_reverse($this->versionManager->getVersionsForFile($owner, $file->getFileInfo()));
 
             if ($version <= count($versions)) {
                 $fileVersion = array_values($versions)[$version - 1];
