@@ -149,6 +149,7 @@
 
             var onlyofficeInternalUrl = ($("#onlyofficeInternalUrl:visible").val() || "").trim();
             var onlyofficeStorageUrl = ($("#onlyofficeStorageUrl:visible").val() || "").trim();
+            var onlyofficeVerifyPeerOff = $("#onlyofficeVerifyPeerOff").prop("checked");
             var onlyofficeSecret = ($("#onlyofficeSecret:visible").val() || "").trim();
             var demo = $("#onlyofficeDemo").prop("checked");
 
@@ -159,6 +160,7 @@
                     documentserver: onlyofficeUrl,
                     documentserverInternal: onlyofficeInternalUrl,
                     storageUrl: onlyofficeStorageUrl,
+                    verifyPeerOff: onlyofficeVerifyPeerOff,
                     secret: onlyofficeSecret,
                     demo: demo
                 },

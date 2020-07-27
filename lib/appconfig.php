@@ -398,6 +398,28 @@ class AppConfig {
     }
 
     /**
+     * Save the document service verification setting to the application configuration
+     *
+     * @param bool $verifyPeerOff - parameter verification setting
+     */
+    public function SetVerifyPeerOff($verifyPeerOff) {
+        $this->logger->info("SetDocumentServerUrl: $verifyPeerOff", ["app" => $this->appName]);
+
+        $this->config->setAppValue($this->appName, $this->_verification, json_encode($verifyPeerOff));
+    }
+
+    /**
+     * Get the document service verification setting to the application configuration
+     *
+     * @return bool
+     */
+    public function GetVerifyPeerOff() {
+        $value = $this->config->getAppValue($this->appName, $this->_verification, "") === "true";
+
+        return $value;
+    }
+
+    /**
      * Save the document service address available from Nextcloud to the application configuration
      *
      * @param string $documentServerInternal - document service address
@@ -906,6 +928,9 @@ class AppConfig {
      */
     public function TurnOffVerification() {
         $turnOff = $this->GetSystemValue($this->_verification);
+        if(empty($turnOff)) {
+            $turnOff = $this->GetVerifyPeerOff();
+        }
         return $turnOff === true;
     }
 
