@@ -43,6 +43,7 @@ use OCP\ILogger;
 use OCP\IRequest;
 use OCP\ISession;
 use OCP\IURLGenerator;
+use OCP\IUser;
 use OCP\IUserManager;
 use OCP\IUserSession;
 use OCP\Share\IManager;
@@ -149,7 +150,7 @@ class EditorController extends Controller {
      * @param AppConfig $config - application configuration
      * @param Crypt $crypt - hash generator
      * @param IManager $shareManager - Share manager
-     * @param IManager $ISession - Session
+     * @param ISession $ISession - Session
      */
     public function __construct($AppName,
                                     IRequest $request,

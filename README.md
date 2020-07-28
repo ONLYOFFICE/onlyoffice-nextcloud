@@ -65,11 +65,11 @@ There are several ways to do that:
     ```
     chown -R www-data:www-data onlyoffice
     ```
-3. In Nextcloud open the `~/index.php/settings/apps/disabled` page with _Not enabled_ apps by administrator and click _Enable_ for the **ONLYOFFICE** application.
+3. In Nextcloud open the `~/settings/apps/disabled` page with _Not enabled_ apps by administrator and click _Enable_ for the **ONLYOFFICE** application.
 
 ## Configuring Nextcloud ONLYOFFICE integration app
 
-In Nextcloud open the `~/index.php/settings/admin/onlyoffice` page with administrative settings for **ONLYOFFICE** section.
+In Nextcloud open the `~/settings/admin/onlyoffice` page with administrative settings for **ONLYOFFICE** section.
 Enter the following address to connect ONLYOFFICE Document Server:
 
 ```
