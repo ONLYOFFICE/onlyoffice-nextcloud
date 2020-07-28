@@ -210,7 +210,8 @@ class CallbackController extends Controller {
         $changes = isset($hashData->changes) ? $hashData->changes : false;
         $this->logger->debug("Download: $fileId ($version)" . ($changes ? " changes" : ""), ["app" => $this->appName]);
 
-        if (!$this->userSession->isLoggedIn()) {
+        if (!$this->userSession->isLoggedIn()
+            && !$changes) {
             if (!empty($this->config->GetDocumentServerSecret())) {
                 $header = \OC::$server->getRequest()->getHeader($this->config->JwtHeader());
                 if (empty($header)) {
@@ -278,13 +279,13 @@ class CallbackController extends Controller {
                 $versionId = $fileVersion->getRevisionId();
             }
 
-            $changes = FileVersions::getChangesFile($owner->getUID(), $fileId, $versionId);
-            if ($changes === null) {
+            $changesFile = FileVersions::getChangesFile($owner->getUID(), $fileId, $versionId);
+            if ($changesFile === null) {
                 $this->logger->error("Download: changes $fileId ($version) was not found", ["app" => $this->appName]);
                 return new JSONResponse(["message" => $this->trans->t("Files not found")], Http::STATUS_NOT_FOUND);
             }
 
-            $file = $changes;
+            $file = $changesFile;
         }
 
         try {
