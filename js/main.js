@@ -41,11 +41,8 @@
         var dir = fileList.getCurrentDirectory();
 
         if (!OCA.Onlyoffice.setting.sameTab || OCA.Onlyoffice.Desktop) {
-            var winEditor = window.open("");
-            if (winEditor) {
-                winEditor.document.write(t(OCA.Onlyoffice.AppName, "Loading, please wait."));
-                winEditor.document.close();
-            }
+            $loaderUrl = OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/loader");
+            var winEditor = window.open($loaderUrl);
         }
 
         var createData = {

@@ -39,6 +39,7 @@ return [
        ["name" => "editor#convert", "url" => "/ajax/convert", "verb" => "POST"],
        ["name" => "editor#save", "url" => "/ajax/save", "verb" => "POST"],
        ["name" => "editor#url", "url" => "/ajax/url", "verb" => "GET"],
+       ["name" => "editor#loader", "url" => "/ajax/loader", "verb" => "GET"],
        ["name" => "settings#save_address", "url" => "/ajax/settings/address", "verb" => "PUT"],
        ["name" => "settings#save_common", "url" => "/ajax/settings/common", "verb" => "PUT"],
        ["name" => "settings#save_watermark", "url" => "/ajax/settings/watermark", "verb" => "PUT"],
