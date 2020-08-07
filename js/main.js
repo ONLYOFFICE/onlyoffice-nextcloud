@@ -130,7 +130,7 @@
 
     OCA.Onlyoffice.FileClick = function (fileName, context) {
         var fileInfoModel = context.fileInfoModel || context.fileList.getModelForFile(fileName);
-        OCA.Onlyoffice.OpenEditor(fileInfoModel.id, context.dir, fileName, null, true);
+        OCA.Onlyoffice.OpenEditor(fileInfoModel.id, context.dir, fileName, null, OCA.Onlyoffice.setting.readOnly);
 
         OCA.Onlyoffice.context = context;
         OCA.Onlyoffice.context.fileName = fileName;
@@ -214,14 +214,15 @@
 
                     if (config.def) {
                         fileList.fileActions.setDefault(config.mime, "onlyofficeOpen");
-						OCA.Files.fileActions.registerAction({
-							name: 'edit_onlyoffice',
-							displayName: t('edit_onlyoffice', 'Open for editing'),
-							mime: config.mime,
-							actionHandler: OCA.Onlyoffice.FileEditClick,
-							permissions: OC.PERMISSION_UPDATE,
-							iconClass: 'icon-edit'
-						});
+                        if (OCA.Onlyoffice.setting.readOnly)
+							OCA.Files.fileActions.registerAction({
+								name: 'edit_onlyoffice',
+								displayName: t('edit_onlyoffice', 'Open for editing'),
+								mime: config.mime,
+								actionHandler: OCA.Onlyoffice.FileEditClick,
+								permissions: OC.PERMISSION_UPDATE,
+								iconClass: 'icon-edit'
+							});
 
                     }
 
@@ -234,14 +235,15 @@
                             iconClass: "icon-onlyoffice-convert",
                             actionHandler: OCA.Onlyoffice.FileConvertClick
                         });
-						fileList.fileActions.registerAction({
-							name: "onlyofficeOpen",
-							displayName: t(OCA.Onlyoffice.AppName, "Open for editing in ONLYOFFICE"),
-							mime: config.mime,
-							permissions: OC.PERMISSION_UPDATE,
-							iconClass: "icon-onlyoffice-open",
-							actionHandler: OCA.Onlyoffice.FileEditClick
-						});
+                        if (OCA.Onlyoffice.setting.readOnly)
+							fileList.fileActions.registerAction({
+								name: "onlyofficeOpen",
+								displayName: t(OCA.Onlyoffice.AppName, "Open for editing in ONLYOFFICE"),
+								mime: config.mime,
+								permissions: OC.PERMISSION_UPDATE,
+								iconClass: "icon-onlyoffice-open",
+								actionHandler: OCA.Onlyoffice.FileEditClick
+							});
                     }
                 });
             }

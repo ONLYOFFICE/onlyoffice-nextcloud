@@ -122,6 +122,7 @@ class SettingsController extends Controller {
             "currentServer" => $this->urlGenerator->getAbsoluteURL("/"),
             "formats" => $this->config->FormatsSetting(),
             "sameTab" => $this->config->GetSameTab(),
+            "readOnly" => $this->config->GetReadOnly(),
             "limitGroups" => $this->config->GetLimitGroups(),
             "chat" => $this->config->GetCustomizationChat(),
             "compactHeader" => $this->config->GetCustomizationCompactHeader(),
@@ -189,6 +190,7 @@ class SettingsController extends Controller {
      * @param array $defFormats - formats array with default action
      * @param array $editFormats - editable formats array
      * @param bool $sameTab - open in the same tab
+     * @param bool $readOnly - click opens read only
      * @param array $limitGroups - list of groups
      * @param bool $chat - display chat
      * @param bool $compactHeader - display compact header
@@ -202,6 +204,7 @@ class SettingsController extends Controller {
     public function SaveCommon($defFormats,
                                     $editFormats,
                                     $sameTab,
+                                    $readOnly,
                                     $limitGroups,
                                     $chat,
                                     $compactHeader,
@@ -214,6 +217,7 @@ class SettingsController extends Controller {
         $this->config->SetDefaultFormats($defFormats);
         $this->config->SetEditableFormats($editFormats);
         $this->config->SetSameTab($sameTab);
+        $this->config->SetReadOnly($readOnly);
         $this->config->SetLimitGroups($limitGroups);
         $this->config->SetCustomizationChat($chat);
         $this->config->SetCustomizationCompactHeader($compactHeader);
@@ -259,7 +263,8 @@ class SettingsController extends Controller {
     public function GetSettings() {
         $result = [
             "formats" => $this->config->FormatsSetting(),
-            "sameTab" => $this->config->GetSameTab()
+            "sameTab" => $this->config->GetSameTab(),
+            "readOnly" => $this->config->GetReadOnly()
         ];
         return $result;
     }

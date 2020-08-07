@@ -120,6 +120,13 @@ class AppConfig {
     private $_sameTab = "sameTab";
 
     /**
+     * The config key for the setting read only
+     *
+     * @var string
+     */
+    private $_readOnly = "readOnly";
+
+    /**
      * The config key for the chat display setting
      *
      * @var string
@@ -613,6 +620,26 @@ class AppConfig {
      */
     public function GetSameTab() {
         return $this->config->getAppValue($this->appName, $this->_sameTab, "false") === "true";
+    }
+
+    /**
+     * Save the opening setting in a read only
+     *
+     * @param bool $value - same tab
+     */
+    public function SetReadOnly($value) {
+        $this->logger->info("Set opening in a same tab: " . json_encode($value), ["app" => $this->appName]);
+
+        $this->config->setAppValue($this->appName, $this->_readOnly, json_encode($value));
+    }
+
+    /**
+     * Get the opening setting in a read only
+     *
+     * @return bool
+     */
+    public function GetReadOnly() {
+        return $this->config->getAppValue($this->appName, $this->_readOnly, "false") === "true";
     }
 
     /**
