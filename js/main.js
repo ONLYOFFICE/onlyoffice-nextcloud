@@ -79,7 +79,7 @@
         );
     };
 
-    OCA.Onlyoffice.OpenEditor = function (fileId, fileDir, fileName, winEditor) {
+    OCA.Onlyoffice.OpenEditor = function (fileId, fileDir, fileName, winEditor, readonly) {
         var filePath = fileDir.replace(new RegExp("\/$"), "") + "/" + fileName;
         var url = OC.generateUrl("/apps/" + OCA.Onlyoffice.AppName + "/{fileId}?filePath={filePath}",
             {
@@ -94,7 +94,8 @@
                     fileId: fileId
                 });
         }
-
+		if (readonly)
+			url += '&readonly=1';
         if (winEditor && winEditor.location) {
             winEditor.location.href = url;
         } else if (!OCA.Onlyoffice.setting.sameTab || OCA.Onlyoffice.Desktop) {
@@ -128,6 +129,14 @@
     };
 
     OCA.Onlyoffice.FileClick = function (fileName, context) {
+        var fileInfoModel = context.fileInfoModel || context.fileList.getModelForFile(fileName);
+        OCA.Onlyoffice.OpenEditor(fileInfoModel.id, context.dir, fileName, null, true);
+
+        OCA.Onlyoffice.context = context;
+        OCA.Onlyoffice.context.fileName = fileName;
+    };
+
+    OCA.Onlyoffice.FileEditClick = function (fileName, context) {
         var fileInfoModel = context.fileInfoModel || context.fileList.getModelForFile(fileName);
         OCA.Onlyoffice.OpenEditor(fileInfoModel.id, context.dir, fileName);
 
@@ -205,6 +214,15 @@
 
                     if (config.def) {
                         fileList.fileActions.setDefault(config.mime, "onlyofficeOpen");
+						OCA.Files.fileActions.registerAction({
+							name: 'edit_onlyoffice',
+							displayName: t('edit_onlyoffice', 'Open for editing'),
+							mime: config.mime,
+							actionHandler: OCA.Onlyoffice.FileEditClick,
+							permissions: OC.PERMISSION_UPDATE,
+							iconClass: 'icon-edit'
+						});
+
                     }
 
                     if (config.conv) {
@@ -216,6 +234,14 @@
                             iconClass: "icon-onlyoffice-convert",
                             actionHandler: OCA.Onlyoffice.FileConvertClick
                         });
+						fileList.fileActions.registerAction({
+							name: "onlyofficeOpen",
+							displayName: t(OCA.Onlyoffice.AppName, "Open for editing in ONLYOFFICE"),
+							mime: config.mime,
+							permissions: OC.PERMISSION_UPDATE,
+							iconClass: "icon-onlyoffice-open",
+							actionHandler: OCA.Onlyoffice.FileEditClick
+						});
                     }
                 });
             }
