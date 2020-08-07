@@ -89,6 +89,9 @@
         if (OCA.Onlyoffice.Desktop) {
             params.push("desktop=true");
         }
+        if (window.location.search.includes("&readonly=1")) {
+        	params.push("readonly=true");
+		}
         if (params.length) {
             configUrl += "?" + params.join("&");
         }
