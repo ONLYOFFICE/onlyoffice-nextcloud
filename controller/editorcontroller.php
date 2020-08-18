@@ -883,9 +883,7 @@ class EditorController extends Controller {
         $editable = $version < 1
                     && $file->isUpdateable()
                     && (empty($shareToken) || ($share->getPermissions() & Constants::PERMISSION_UPDATE) === Constants::PERMISSION_UPDATE);
-        if ($readonly)
-        	$editable = false;
-        $params["document"]["permissions"]["edit"] = $editable;
+        $params["document"]["permissions"]["edit"] = $editable && !$readonly;
         if ($editable && $canEdit) {
             $hashCallback = $this->crypt->GetHash(["userId" => $userId, "fileId" => $file->getId(), "filePath" => $filePath, "shareToken" => $shareToken, "action" => "track"]);
             $callback = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.track", ["doc" => $hashCallback]);
