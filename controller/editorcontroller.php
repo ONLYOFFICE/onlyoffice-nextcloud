@@ -641,17 +641,16 @@ class EditorController extends Controller {
         $canEdit = isset($format["edit"]) && $format["edit"];
         $editable = $file->isUpdateable()
                     && (empty($shareToken) || ($share->getPermissions() & Constants::PERMISSION_UPDATE) === Constants::PERMISSION_UPDATE);
-        $params["document"]["permissions"]["edit"] = $editable && !$readonly;
-        if ($editable && $canEdit) {
-            $hashCallback = $this->crypt->GetHash(["userId" => $userId, "fileId" => $file->getId(), "filePath" => $filePath, "shareToken" => $shareToken, "action" => "track"]);
-            $callback = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.track", ["doc" => $hashCallback]);
+		$hashCallback = $this->crypt->GetHash(["userId" => $userId, "fileId" => $file->getId(), "filePath" => $filePath, "shareToken" => $shareToken, "action" => "track"]);
+		$callback = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.track", ["doc" => $hashCallback]);
 
-            if (!empty($this->config->GetStorageUrl())) {
-                $callback = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->config->GetStorageUrl(), $callback);
-            }
+		if (!empty($this->config->GetStorageUrl())) {
+			$callback = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->config->GetStorageUrl(), $callback);
+		}
 
-            $params["editorConfig"]["callbackUrl"] = $callback;
-        } else {
+		$params["editorConfig"]["callbackUrl"] = $callback;
+        $params["document"]["permissions"]["edit"] = $editable;
+        if (!$editable || !$canEdit || $readonly) {
             $params["editorConfig"]["mode"] = "view";
         }
 
