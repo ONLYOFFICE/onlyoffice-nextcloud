@@ -55,9 +55,9 @@
         <p><input id="onlyofficeUrl" value="<?php p($_["documentserver"]) ?>" placeholder="https://<documentserver>/" type="text"></p>
 
         <p>
-        <input type="checkbox" class="checkbox" id="onlyofficeVerifyPeerOff"
-            <?php if ($_["verifyPeerOff"]) { ?>checked="checked"<?php } ?> />
-        <label for="onlyofficeVerifyPeerOff"><?php p($l->t("Disable sertificate verification (insecure)")) ?></label>
+            <input type="checkbox" class="checkbox" id="onlyofficeVerifyPeerOff"
+                <?php if ($_["verifyPeerOff"]) { ?>checked="checked"<?php } ?> />
+            <label for="onlyofficeVerifyPeerOff"><?php p($l->t("Disable certificate verification (insecure)")) ?></label>
         </p>
 
         <p class="onlyoffice-header"><?php p($l->t("Secret key (leave blank to disable)")) ?></p>
