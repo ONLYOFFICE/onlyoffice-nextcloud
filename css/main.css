@@ -91,7 +91,8 @@ body.onlyoffice-inline #content #app-content {
 .AscDesktopEditor #body-user #app-sidebar {
     height: 100vh;
 }
-.AscDesktopEditor #body-user table.multiselect thead {
+.AscDesktopEditor #body-user table.multiselect thead,
+.AscDesktopEditor #app-content-files thead {
     top: 44px;
 }
 .AscDesktopEditor #body-user #gallery-button {
