@@ -548,16 +548,15 @@ class EditorController extends Controller {
 
     /**
      * Get template loader Onlyoffice
-     * 
+     *
      * @return TemplateResponse
-     * 
+     *
      * @NoAdminRequired
      * @NoCSRFRequired
      * @PublicPage
-     * 
      */
     public function loader() {
-        return new TemplateResponse($this->appName, "loader");
+        return new TemplateResponse($this->appName, "loader", [], "plain");
     }
 
     /**
