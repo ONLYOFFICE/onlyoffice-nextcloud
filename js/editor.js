@@ -137,6 +137,8 @@
                     };
                     setPageTitle(false);
 
+                    OCA.Onlyoffice.documentType = config.documentType;
+
                     config.events = {
                         "onDocumentStateChange": setPageTitle,
                         "onRequestHistory": OCA.Onlyoffice.onRequestHistory,
@@ -244,7 +246,8 @@
     OCA.Onlyoffice.onDocumentReady = function() {
         if (OCA.Onlyoffice.inframe) {
             window.parent.postMessage({
-                method: "onDocumentReady"
+                method: "onDocumentReady",
+                param: OCA.Onlyoffice.documentType
             },
             "*");
         }

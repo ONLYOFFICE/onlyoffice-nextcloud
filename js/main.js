@@ -154,6 +154,10 @@
             window.history.pushState(null, null, url);
             OCA.Onlyoffice.folderUrl = null;
         }
+
+        if (OCA.Versions) {
+            OCA.Onlyoffice.bindVersionClick();
+        }
     };
 
     OCA.Onlyoffice.OpenShareDialog = function () {
@@ -322,7 +326,7 @@
     };
 
     OCA.Onlyoffice.bindVersionClick = function () {
-        unbindVersionClick();
+        OCA.Onlyoffice.unbindVersionClick();
         $(document).on("click.onlyoffice-version", "#versionsTabView .downloadVersion", function() {
             var versionNodes = $("#versionsTabView ul.versions>li");
             var versionNode = $(this).closest("#versionsTabView ul.versions>li")[0];
@@ -342,7 +346,7 @@
         });
     };
 
-    var unbindVersionClick = function() {
+    OCA.Onlyoffice.unbindVersionClick = function() {
         $(document).off("click.onlyoffice-version", "#versionsTabView .downloadVersion");
     }
 
