@@ -117,6 +117,7 @@ class SettingsController extends Controller {
             "documentserver" => $this->config->GetDocumentServerUrl(true),
             "documentserverInternal" => $this->config->GetDocumentServerInternalUrl(true),
             "storageUrl" => $this->config->GetStorageUrl(),
+            "verifyPeerOff" => $this->config->GetVerifyPeerOff(),
             "secret" => $this->config->GetDocumentServerSecret(true),
             "demo" => $this->config->GetDemoData(),
             "currentServer" => $this->urlGenerator->getAbsoluteURL("/"),
@@ -142,6 +143,7 @@ class SettingsController extends Controller {
      * @param string $documentserver - document service address
      * @param string $documentserverInternal - document service address available from Nextcloud
      * @param string $storageUrl - Nextcloud address available from document server
+     * @param bool $verifyPeerOff - parameter verification setting
      * @param string $secret - secret key for signature
      * @param bool $demo - use demo server
      *
@@ -150,6 +152,7 @@ class SettingsController extends Controller {
     public function SaveAddress($documentserver,
                                     $documentserverInternal,
                                     $storageUrl,
+                                    $verifyPeerOff,
                                     $secret,
                                     $demo
                                     ) {
@@ -159,6 +162,7 @@ class SettingsController extends Controller {
         }
         if ($demo !== true) {
             $this->config->SetDocumentServerUrl($documentserver);
+            $this->config->SetVerifyPeerOff($verifyPeerOff);
             $this->config->SetDocumentServerInternalUrl($documentserverInternal);
             $this->config->SetDocumentServerSecret($secret);
         }
@@ -175,6 +179,7 @@ class SettingsController extends Controller {
 
         return [
             "documentserver" => $this->config->GetDocumentServerUrl(true),
+            "verifyPeerOff" => $this->config->GetVerifyPeerOff(),
             "documentserverInternal" => $this->config->GetDocumentServerInternalUrl(true),
             "storageUrl" => $this->config->GetStorageUrl(),
             "secret" => $this->config->GetDocumentServerSecret(true),

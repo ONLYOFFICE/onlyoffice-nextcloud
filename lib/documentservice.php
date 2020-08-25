@@ -354,7 +354,7 @@ class DocumentService {
         if (null === $opts) {
             $opts = array();
         }
-        if (substr($url, 0, strlen("https")) === "https" && $this->config->TurnOffVerification()) {
+        if (substr($url, 0, strlen("https")) === "https" && $this->config->GetVerifyPeerOff()) {
             $opts["verify"] = false;
         }
         if (!array_key_exists("timeout", $opts)) {

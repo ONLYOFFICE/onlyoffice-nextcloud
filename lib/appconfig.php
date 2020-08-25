@@ -900,13 +900,29 @@ class AppConfig {
     }
 
     /**
-     * Get the turn off verification setting
+     * Save the document service verification setting to the application configuration
+     *
+     * @param bool $verifyPeerOff - parameter verification setting
+     */
+    public function SetVerifyPeerOff($verifyPeerOff) {
+        $this->logger->info("SetVerifyPeerOff " . json_encode($verifyPeerOff), ["app" => $this->appName]);
+
+        $this->config->setAppValue($this->appName, $this->_verification, json_encode($verifyPeerOff));
+    }
+
+    /**
+     * Get the document service verification setting to the application configuration
      *
      * @return bool
      */
-    public function TurnOffVerification() {
-        $turnOff = $this->GetSystemValue($this->_verification);
-        return $turnOff === true;
+    public function GetVerifyPeerOff() {
+        $turnOff = $this->config->getAppValue($this->appName, $this->_verification, "");
+
+        if (!empty($turnOff)) {
+            return $turnOff === "true";
+        }
+
+        return $this->GetSystemValue($this->_verification);
     }
 
     /**

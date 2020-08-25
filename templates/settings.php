@@ -54,6 +54,12 @@
         <p><?php p($l->t("Document Editing Service address")) ?></p>
         <p><input id="onlyofficeUrl" value="<?php p($_["documentserver"]) ?>" placeholder="https://<documentserver>/" type="text"></p>
 
+        <p>
+            <input type="checkbox" class="checkbox" id="onlyofficeVerifyPeerOff"
+                <?php if ($_["verifyPeerOff"]) { ?>checked="checked"<?php } ?> />
+            <label for="onlyofficeVerifyPeerOff"><?php p($l->t("Disable certificate verification (insecure)")) ?></label>
+        </p>
+
         <p class="onlyoffice-header"><?php p($l->t("Secret key (leave blank to disable)")) ?></p>
         <p><input id="onlyofficeSecret" value="<?php p($_["secret"]) ?>" placeholder="secret" type="text"></p>
 
