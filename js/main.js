@@ -332,15 +332,18 @@
             var versionNode = $(this).closest("#versionsTabView ul.versions>li")[0];
 
             var href = $(this).attr("href");
-            var search = new RegExp("\/versions\/\\w+\/versions\/(\\d+)\/\\d+");
+            var search = new RegExp("\/versions\/(\\d+)\/\\d+$");
             var result = search.exec(href);
             if (result && result.length > 1) {
                 var fileId = result[1];
             }
+            if (!fileId) {
+                return true;
+            }
 
             var versionNum = versionNodes.length - $.inArray(versionNode, versionNodes);
 
-            OCA.Onlyoffice.openVersion(fileId || "", versionNum);
+            OCA.Onlyoffice.openVersion(fileId, versionNum);
 
             return false;
         });
