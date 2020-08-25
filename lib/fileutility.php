@@ -129,7 +129,7 @@ class FileUtility {
         }
 
         if ($node instanceof Folder) {
-            if ($fileId !== null) {
+            if ($fileId !== null && $fileId !== 0) {
                 try {
                     $files = $node->getById($fileId);
                 } catch (\Exception $e) {
@@ -279,6 +279,21 @@ class FileUtility {
 
         $key = $data["key"];
         $this->logger->debug("Federated key: $key", ["app" => $this->appName]);
+
+        return $key;
+    }
+
+    /**
+     * Generate unique file version key
+     *
+     * @param OCA\Files_Versions\Versions\IVersion $version - file version
+     *
+     * @return string
+     */
+    public function getVersionKey($version) {
+        $instanceId = $this->config->GetSystemValue("instanceid", true);
+
+        $key = $instanceId . "_" . $version->getSourceFile()->getEtag() . "_" . $version->getRevisionId();
 
         return $key;
     }

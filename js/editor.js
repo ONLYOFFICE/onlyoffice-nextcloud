@@ -30,7 +30,9 @@
 
     OCA.Onlyoffice = _.extend({
             AppName: "onlyoffice",
-            inframe: false
+            inframe: false,
+            fileId: null,
+            shareToken: null
         }, OCA.Onlyoffice);
 
     OCA.Onlyoffice.InitEditor = function () {
@@ -40,11 +42,12 @@
             });
         };
 
-        var fileId = $("#iframeEditor").data("id");
-        var shareToken = $("#iframeEditor").data("sharetoken");
+        OCA.Onlyoffice.fileId = $("#iframeEditor").data("id");
+        OCA.Onlyoffice.shareToken = $("#iframeEditor").data("sharetoken");
+        OCA.Onlyoffice.version = $("#iframeEditor").data("version");
         var directToken = $("#iframeEditor").data("directtoken");
         OCA.Onlyoffice.inframe = !!$("#iframeEditor").data("inframe");
-        if (!fileId && !shareToken && !directToken) {
+        if (!OCA.Onlyoffice.fileId && !OCA.Onlyoffice.shareToken && !directToken) {
             displayError(t(OCA.Onlyoffice.AppName, "FileId is empty"));
             return;
         }
@@ -56,7 +59,7 @@
 
         var configUrl = OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/config/{fileId}",
             {
-                fileId: fileId || 0
+                fileId: OCA.Onlyoffice.fileId || 0
             });
 
         var params = [];
@@ -64,12 +67,15 @@
         if (filePath) {
             params.push("filePath=" + encodeURIComponent(filePath));
         }
-        if (shareToken) {
-            params.push("shareToken=" + encodeURIComponent(shareToken));
+        if (OCA.Onlyoffice.shareToken) {
+            params.push("shareToken=" + encodeURIComponent(OCA.Onlyoffice.shareToken));
         }
         if (directToken) {
             $("html").addClass("onlyoffice-full-page");
             params.push("directToken=" + encodeURIComponent(directToken));
+        }
+        if (OCA.Onlyoffice.version > 0) {
+            params.push("version=" + OCA.Onlyoffice.version);
         }
 
         if (OCA.Onlyoffice.inframe || directToken) {
@@ -133,7 +139,14 @@
 
                     config.events = {
                         "onDocumentStateChange": setPageTitle,
+                        "onRequestHistory": OCA.Onlyoffice.onRequestHistory,
+                        "onRequestHistoryData": OCA.Onlyoffice.onRequestHistoryData,
+                        "onDocumentReady": OCA.Onlyoffice.onDocumentReady,
                     };
+
+                    if (!OCA.Onlyoffice.version) {
+                        config.events.onRequestHistoryClose = OCA.Onlyoffice.onRequestHistoryClose;
+                    }
 
                     if (config.editorConfig.tenant) {
                         config.events.onAppReady = function () {
@@ -141,7 +154,7 @@
                         };
                     }
 
-                    if (OCA.Onlyoffice.inframe && !shareToken
+                    if (OCA.Onlyoffice.inframe && !OCA.Onlyoffice.shareToken
                         || OC.currentUser) {
                         config.events.onRequestSaveAs = OCA.Onlyoffice.onRequestSaveAs;
                         config.events.onRequestInsertImage = OCA.Onlyoffice.onRequestInsertImage;
@@ -154,7 +167,7 @@
                     }
 
                     if (OCA.Onlyoffice.inframe
-                        && config._files_sharing && !shareToken
+                        && config._files_sharing && !OCA.Onlyoffice.shareToken
                         && window.parent.OCA.Onlyoffice.context) {
                         config.events.onRequestSharingSettings = OCA.Onlyoffice.onRequestSharingSettings;
                     }
@@ -172,6 +185,73 @@
                 }
             }
         });
+    };
+
+    OCA.Onlyoffice.onRequestHistory = function (version) {
+        $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/history?fileId={fileId}&shareToken={shareToken}",
+            {
+                fileId: OCA.Onlyoffice.fileId || 0,
+                shareToken: OCA.Onlyoffice.shareToken || "",
+            }),
+            function onSuccess(response) {
+                if (response.error) {
+                    var data = {error: response.error};
+                } else {
+                    var currentVersion = 0;
+                    $.each(response, function (i, fileVersion) {
+                        if (fileVersion.version >= currentVersion) {
+                            currentVersion = fileVersion.version;
+                        }
+                    });
+
+                    if (version) {
+                        currentVersion = Math.min(currentVersion, version);
+                    }
+
+                    data = {
+                        currentVersion: currentVersion,
+                        history: response,
+                    };
+                }
+                OCA.Onlyoffice.docEditor.refreshHistory(data);
+        });
+    };
+
+    OCA.Onlyoffice.onRequestHistoryData = function (event) {
+        var version = event.data;
+
+        $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/version?fileId={fileId}&version={version}&shareToken={shareToken}",
+            {
+                fileId: OCA.Onlyoffice.fileId || 0,
+                version: version,
+                shareToken: OCA.Onlyoffice.shareToken || "",
+            }),
+            function onSuccess(response) {
+                if (response.error) {
+                    response = {
+                        error: response.error,
+                        version: version,
+                    };
+                }
+                OCA.Onlyoffice.docEditor.setHistoryData(response);
+        });
+    };
+
+    OCA.Onlyoffice.onRequestHistoryClose = function () {
+        location.reload(true);
+    };
+
+    OCA.Onlyoffice.onDocumentReady = function() {
+        if (OCA.Onlyoffice.inframe) {
+            window.parent.postMessage({
+                method: "onDocumentReady"
+            },
+            "*");
+        }
+
+        if (OCA.Onlyoffice.version > 0) {
+            OCA.Onlyoffice.onRequestHistory(OCA.Onlyoffice.version);
+        }
     };
 
     OCA.Onlyoffice.onRequestSaveAs = function (event) {

@@ -49,12 +49,14 @@ use OCP\IUserSession;
 use OCP\Share\IManager;
 
 use OCA\Files\Helper;
+use OCA\Files_Versions\Versions\IVersionManager;
 
 use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\Crypt;
 use OCA\Onlyoffice\DocumentService;
 use OCA\Onlyoffice\FileUtility;
 use OCA\Onlyoffice\TemplateManager;
+use OCA\Onlyoffice\FileVersions;
 
 /**
  * Controller with the main functions
@@ -125,6 +127,13 @@ class EditorController extends Controller {
     private $fileUtility;
 
     /**
+     * File version manager
+     *
+     * @var IVersionManager
+    */
+    private $versionManager;
+
+    /**
      * Mobile regex from https://github.com/ONLYOFFICE/CommunityServer/blob/v9.1.1/web/studio/ASC.Web.Studio/web.appsettings.config#L35
      */
     const USER_AGENT_MOBILE = "/android|avantgo|playbook|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od|ad)|iris|kindle|lge |maemo|midp|mmp|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\\/|plucker|pocket|psp|symbian|treo|up\\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i";
@@ -166,6 +175,14 @@ class EditorController extends Controller {
         $this->logger = $logger;
         $this->config = $config;
         $this->crypt = $crypt;
+
+        if (\OC::$server->getAppManager()->isInstalled("files_versions")) {
+            try {
+                $this->versionManager = \OC::$server->query(IVersionManager::class);
+            } catch (QueryException $e) {
+                $this->logger->logException($e, ["message" => "VersionManager init error", "app" => $this->appName]);
+            }
+        }
 
         $this->fileUtility = new FileUtility($AppName, $trans, $logger, $config, $shareManager, $session);
     }
@@ -408,6 +425,204 @@ class EditorController extends Controller {
     }
 
     /**
+     * Get versions history for file
+     *
+     * @param integer $fileId - file identifier
+     * @param string $shareToken - access token
+     *
+     * @return array
+     *
+     * @NoAdminRequired
+     * @PublicPage
+     */
+    public function history($fileId, $shareToken = null) {
+        $this->logger->debug("Request history for: $fileId", ["app" => $this->appName]);
+
+        $history = [];
+
+        $user = $this->userSession->getUser();
+        $userId = null;
+        if (!empty($user)) {
+            $userId = $user->getUID();
+        }
+
+        list ($file, $error, $share) = empty($shareToken) ? $this->getFile($userId, $fileId) : $this->fileUtility->getFileByToken($fileId, $shareToken);
+
+        if (isset($error)) {
+            $this->logger->error("History: $fileId $error", ["app" => $this->appName]);
+            return ["error" => $error];
+        }
+
+        if ($fileId === 0) {
+            $fileId = $file->getId();
+        }
+
+        $owner = null;
+        $ownerId = null;
+        $versions = array();
+        if ($this->versionManager !== null) {
+            $owner = $file->getFileInfo()->getOwner();
+            if ($owner !== null) {
+                $ownerId = $owner->getUID();
+                $versions = array_reverse($this->versionManager->getVersionsForFile($owner, $file->getFileInfo()));
+            }
+        }
+
+        $prevVersion = "";
+        $versionNum = 0;
+        foreach ($versions as $version) {
+            $versionNum = $versionNum + 1;
+
+            $key = $this->fileUtility->getVersionKey($version);
+            $key = DocumentService::GenerateRevisionId($key);
+
+            $historyItem = [
+                "created" => $this->trans->l("datetime", $version->getTimestamp(), ["width" => "short"]),
+                "key" => $key,
+                "user" => [
+                    "id" => $this->buildUserId($ownerId),
+                    "name" => $owner->getDisplayName()
+                ],
+                "version" => $versionNum
+            ];
+
+            $versionId = $version->getRevisionId();
+            $historyData = FileVersions::getHistoryData($ownerId, $fileId, $versionId, $prevVersion);
+            if ($historyData !== null) {
+                $historyItem["changes"] = $historyData["changes"];
+                $historyItem["serverVersion"] = $historyData["serverVersion"];
+            }
+
+            $prevVersion = $versionId;
+
+            array_push($history, $historyItem);
+        }
+
+        $key = $this->fileUtility->getKey($file, true);
+        $key = DocumentService::GenerateRevisionId($key);
+
+        $historyItem = [
+            "created" => $this->trans->l("datetime", $file->getMTime(), ["width" => "short"]),
+            "key" => $key,
+            "version" => $versionNum + 1
+        ];
+
+        if ($owner !== null) {
+            $historyItem["user"] = [
+                "id" => $this->buildUserId($owner->getUID()),
+                "name" => $owner->getDisplayName()
+            ];
+        }
+
+        $versionId = $file->getFileInfo()->getMtime();
+        $historyData = FileVersions::getHistoryData($ownerId, $fileId, $versionId, $prevVersion);
+        if ($historyData !== null) {
+            $historyItem["changes"] = $historyData["changes"];
+            $historyItem["serverVersion"] = $historyData["serverVersion"];
+        }
+
+        array_push($history, $historyItem);
+
+        return $history;
+    }
+
+    /**
+     * Get file attributes of specific version
+     *
+     * @param integer $fileId - file identifier
+     * @param integer $version - file version
+     * @param string $shareToken - access token
+     *
+     * @return array
+     *
+     * @NoAdminRequired
+     * @PublicPage
+     */
+    public function version($fileId, $version, $shareToken = null) {
+        $this->logger->debug("Request version for: $fileId ($version)", ["app" => $this->appName]);
+
+        $version = empty($version) ? null : $version;
+
+        $user = $this->userSession->getUser();
+        $userId = null;
+        if (!empty($user)) {
+            $userId = $user->getUID();
+        }
+
+        list ($file, $error, $share) = empty($shareToken) ? $this->getFile($userId, $fileId) : $this->fileUtility->getFileByToken($fileId, $shareToken);
+
+        if (isset($error)) {
+            $this->logger->error("History: $fileId $error", ["app" => $this->appName]);
+            return ["error" => $error];
+        }
+
+        if ($fileId === 0) {
+            $fileId = $file->getId();
+        }
+
+        $owner = null;
+        $ownerId = null;
+        $versions = array();
+        if ($this->versionManager !== null) {
+            $owner = $file->getFileInfo()->getOwner();
+            if ($owner !== null) {
+                $ownerId = $owner->getUID();
+                $versions = array_reverse($this->versionManager->getVersionsForFile($owner, $file->getFileInfo()));
+            }
+        }
+
+        $key = null;
+        $fileUrl = null;
+        $versionId = null;
+        if ($version > count($versions)) {
+            $key = $this->fileUtility->getKey($file, true);
+            $versionId = $file->getFileInfo()->getMtime();
+
+            $fileUrl = $this->getUrl($file, $user, $shareToken);
+        } else {
+            $fileVersion = array_values($versions)[$version - 1];
+
+            $key = $this->fileUtility->getVersionKey($fileVersion);
+            $versionId = $fileVersion->getRevisionId();
+
+            $fileUrl = $this->getUrl($file, $user, $shareToken, $version);
+        }
+        $key = DocumentService::GenerateRevisionId($key);
+
+        $result = [
+            "url" => $fileUrl,
+            "version" => $version,
+            "key" => $key
+        ];
+
+        if ($version > 1
+            && count($versions) >= $version - 1
+            && FileVersions::hasChanges($ownerId, $fileId, $versionId)) {
+
+            $changesUrl = $this->getUrl($file, $user, $shareToken, $version, true);
+            $result["changesUrl"] = $changesUrl;
+
+            $prevVersion = array_values($versions)[$version - 2];
+            $prevVersionKey = $this->fileUtility->getVersionKey($prevVersion);
+            $prevVersionKey = DocumentService::GenerateRevisionId($prevVersionKey);
+
+            $prevVersionUrl = $this->getUrl($file, $user, $shareToken, $version - 1);
+
+            $result["previous"] = [
+                "key" => $prevVersionKey,
+                "url" => $prevVersionUrl
+            ];
+        }
+
+        if (!empty($this->config->GetDocumentServerSecret())) {
+            $token = \Firebase\JWT\JWT::encode($result, $this->config->GetDocumentServerSecret());
+            $result["token"] = $token;
+        }
+
+        return $result;
+    }
+
+    /**
      * Get presigned url to file
      *
      * @param string $filePath - file path
@@ -461,6 +676,7 @@ class EditorController extends Controller {
      * @param integer $fileId - file identifier
      * @param string $filePath - file path
      * @param string $shareToken - access token
+     * @param integer $version - file version
      * @param bool $inframe - open in frame
      *
      * @return TemplateResponse|RedirectResponse
@@ -468,8 +684,8 @@ class EditorController extends Controller {
      * @NoAdminRequired
      * @NoCSRFRequired
      */
-    public function index($fileId, $filePath = null, $shareToken = null, $inframe = false) {
-        $this->logger->debug("Open: $fileId $filePath", ["app" => $this->appName]);
+    public function index($fileId, $filePath = null, $shareToken = null, $version = 0, $inframe = false) {
+        $this->logger->debug("Open: $fileId ($version) $filePath ", ["app" => $this->appName]);
 
         $isLoggedIn = $this->userSession->isLoggedIn();
         if (empty($shareToken) && !$isLoggedIn) {
@@ -496,6 +712,7 @@ class EditorController extends Controller {
             "filePath" => $filePath,
             "shareToken" => $shareToken,
             "directToken" => null,
+            "version" => $version,
             "inframe" => false
         ];
 
@@ -535,6 +752,7 @@ class EditorController extends Controller {
      *
      * @param integer $fileId - file identifier
      * @param string $shareToken - access token
+     * @param integer $version - file version
      * @param bool $inframe - open in frame
      *
      * @return TemplateResponse
@@ -543,8 +761,8 @@ class EditorController extends Controller {
      * @NoCSRFRequired
      * @PublicPage
      */
-    public function PublicPage($fileId, $shareToken, $inframe = false) {
-        return $this->index($fileId, null, $shareToken, $inframe);
+    public function PublicPage($fileId, $shareToken, $version = 0, $inframe = false) {
+        return $this->index($fileId, null, $shareToken, $version, $inframe);
     }
 
     /**
@@ -567,6 +785,7 @@ class EditorController extends Controller {
      * @param string $filePath - file path
      * @param string $shareToken - access token
      * @param string $directToken - direct token
+     * @param integer $version - file version
      * @param integer $inframe - open in frame. 0 - no, 1 - yes, 2 - without goback for old editor (5.4)
      * @param bool $desktop - desktop label
      *
@@ -575,7 +794,7 @@ class EditorController extends Controller {
      * @NoAdminRequired
      * @PublicPage
      */
-    public function config($fileId, $filePath = null, $shareToken = null, $directToken = null, $inframe = 0, $desktop = false) {
+    public function config($fileId, $filePath = null, $shareToken = null, $directToken = null, $version = 0, $inframe = 0, $desktop = false) {
 
         if (!empty($directToken)) {
             list ($directData, $error) = $this->crypt->ReadHash($directToken);
@@ -628,8 +847,25 @@ class EditorController extends Controller {
             return ["error" => $this->trans->t("Format is not supported")];
         }
 
-        $fileUrl = $this->getUrl($file, $user, $shareToken);
-        $key = $this->fileUtility->getKey($file, true);
+        $fileUrl = $this->getUrl($file, $user, $shareToken, $version);
+
+        $key = null;
+        if ($version > 0
+            && $this->versionManager !== null) {
+            $owner = $file->getFileInfo()->getOwner();
+            if ($owner !== null) {
+                $versions = array_reverse($this->versionManager->getVersionsForFile($owner, $file->getFileInfo()));
+
+                if ($version <= count($versions)) {
+                    $fileVersion = array_values($versions)[$version - 1];
+
+                    $key = $this->fileUtility->getVersionKey($fileVersion);
+                }
+            }
+        }
+        if ($key === null) {
+            $key = $this->fileUtility->getKey($file, true);
+        }
         $key = DocumentService::GenerateRevisionId($key);
 
         $params = [
@@ -653,7 +889,8 @@ class EditorController extends Controller {
         }
 
         $canEdit = isset($format["edit"]) && $format["edit"];
-        $editable = $file->isUpdateable()
+        $editable = $version < 1
+                    && $file->isUpdateable()
                     && (empty($shareToken) || ($share->getPermissions() & Constants::PERMISSION_UPDATE) === Constants::PERMISSION_UPDATE);
         $params["document"]["permissions"]["edit"] = $editable;
         if ($editable && $canEdit) {
@@ -746,7 +983,7 @@ class EditorController extends Controller {
             $params["token"] = $token;
         }
 
-        $this->logger->debug("Config is generated for: $fileId with key $key", ["app" => $this->appName]);
+        $this->logger->debug("Config is generated for: $fileId ($version) with key $key", ["app" => $this->appName]);
 
         return $params;
     }
@@ -799,23 +1036,42 @@ class EditorController extends Controller {
     /**
      * Generate secure link to download document
      *
-     * @param integer $file - file
+     * @param File $file - file
      * @param IUser $user - user with access
      * @param string $shareToken - access token
+     * @param integer $version - file version
+     * @param bool $changes - is required url to file changes
      *
      * @return string
      */
-    private function getUrl($file, $user = null, $shareToken = null) {
+    private function getUrl($file, $user = null, $shareToken = null, $version = 0, $changes = false) {
+
+        $data = [
+            "action" => "download",
+            "fileId" => $file->getId()
+        ];
+
         $userId = null;
         if (!empty($user)) {
             $userId = $user->getUID();
+            $data["userId"] = $userId;
+        }
+        if (!empty($shareToken)) {
+            $data["shareToken"] = $shareToken;
+        }
+        if ($version > 0) {
+            $data["version"] = $version;
+        }
+        if ($changes) {
+            $data["changes"] = true;
         }
 
-        $hashUrl = $this->crypt->GetHash(["fileId" => $file->getId(), "userId" => $userId, "shareToken" => $shareToken, "action" => "download"]);
+        $hashUrl = $this->crypt->GetHash($data);
 
         $fileUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.download", ["doc" => $hashUrl]);
 
-        if (!empty($this->config->GetStorageUrl())) {
+        if (!empty($this->config->GetStorageUrl())
+            && !$changes) {
             $fileUrl = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->config->GetStorageUrl(), $fileUrl);
         }
 
