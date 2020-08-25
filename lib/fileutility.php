@@ -129,7 +129,7 @@ class FileUtility {
         }
 
         if ($node instanceof Folder) {
-            if ($fileId !== null) {
+            if ($fileId !== null && $fileId !== 0) {
                 try {
                     $files = $node->getById($fileId);
                 } catch (\Exception $e) {
