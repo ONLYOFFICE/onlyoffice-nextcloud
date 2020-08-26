@@ -111,7 +111,14 @@
             $("#app-content").append($iframe);
 
             $("body").addClass("onlyoffice-inline");
-            OC.Apps.hideAppSidebar();
+
+            if (OCA.Files.Sidebar) {
+                OCA.Files.Sidebar.close();
+                return;
+            } else {
+                //todo: remove. only for v17
+                OC.Apps.hideAppSidebar();
+            }
 
             $("html, body").scrollTop(0);
 
@@ -166,7 +173,12 @@
                 OCA.Onlyoffice.context.fileList.showDetailsView(OCA.Onlyoffice.context.fileName, "sharing");
                 OC.Apps.showAppSidebar();
             } else {
-                OC.Apps.hideAppSidebar();
+                if (OCA.Files.Sidebar) {
+                    OCA.Files.Sidebar.close();
+                } else {
+                    //todo: remove. only for v17
+                    OC.Apps.hideAppSidebar();
+                }
             }
         }
     };
