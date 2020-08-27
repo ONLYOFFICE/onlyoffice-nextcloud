@@ -230,17 +230,20 @@ class CallbackController extends Controller {
             }
         }
 
+        $userId = null;
         if ($this->userSession->isLoggedIn()) {
             $userId = $this->userSession->getUser()->getUID();
         } else {
             \OC_Util::tearDownFS();
 
-            $userId = $hashData->userId;
-            \OC_User::setUserId($userId);
+            if (isset($hashData->userId)) {
+                $userId = $hashData->userId;
+                \OC_User::setUserId($userId);
 
-            $user = $this->userManager->get($userId);
-            if (!empty($user)) {
-                \OC_Util::setupFS($userId);
+                $user = $this->userManager->get($userId);
+                if (!empty($user)) {
+                    \OC_Util::setupFS($userId);
+                }
             }
         }
 
