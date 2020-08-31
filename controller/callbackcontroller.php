@@ -581,19 +581,21 @@ class CallbackController extends Controller {
         if ($version > 0 && $this->versionManager !== null) {
             $owner = $file->getFileInfo()->getOwner();
 
-            if ($owner->getUID() !== $userId) {
-                list ($file, $error) = $this->getFile($owner->getUID(), $file->getId());
+            if ($owner !== null) {
+                if ($owner->getUID() !== $userId) {
+                    list ($file, $error) = $this->getFile($owner->getUID(), $file->getId());
 
-                if (isset($error)) {
-                    return [null, $error];
+                    if (isset($error)) {
+                        return [null, $error];
+                    }
                 }
-            }
 
-            $versions = array_reverse($this->versionManager->getVersionsForFile($owner, $file->getFileInfo()));
+                $versions = array_reverse($this->versionManager->getVersionsForFile($owner, $file->getFileInfo()));
 
-            if ($version <= count($versions)) {
-                $fileVersion = array_values($versions)[$version - 1];
-                $file = $this->versionManager->getVersionFile($owner, $file->getFileInfo(), $fileVersion->getRevisionId());
+                if ($version <= count($versions)) {
+                    $fileVersion = array_values($versions)[$version - 1];
+                    $file = $this->versionManager->getVersionFile($owner, $file->getFileInfo(), $fileVersion->getRevisionId());
+                }
             }
         }
 
@@ -641,11 +643,14 @@ class CallbackController extends Controller {
 
         if ($version > 0 && $this->versionManager !== null) {
             $owner = $file->getFileInfo()->getOwner();
-            $versions = array_reverse($this->versionManager->getVersionsForFile($owner, $file->getFileInfo()));
 
-            if ($version <= count($versions)) {
-                $fileVersion = array_values($versions)[$version - 1];
-                $file = $this->versionManager->getVersionFile($owner, $file->getFileInfo(), $fileVersion->getRevisionId());
+            if ($owner !== null) {
+                $versions = array_reverse($this->versionManager->getVersionsForFile($owner, $file->getFileInfo()));
+
+                if ($version <= count($versions)) {
+                    $fileVersion = array_values($versions)[$version - 1];
+                    $file = $this->versionManager->getVersionFile($owner, $file->getFileInfo(), $fileVersion->getRevisionId());
+                }
             }
         }
 
