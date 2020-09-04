@@ -2,27 +2,17 @@
  *
  * (c) Copyright Ascensio System SIA 2020
  *
- * This program is a free software product.
- * You can redistribute it and/or modify it under the terms of the GNU Affero General Public License
- * (AGPL) version 3 as published by the Free Software Foundation.
- * In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended to the effect
- * that Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * This program is distributed WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * For details, see the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * You can contact Ascensio System SIA at 20A-12 Ernesta Birznieka-Upisha street, Riga, Latvia, EU, LV-1050.
- *
- * The interactive user interfaces in modified source and object code versions of the Program
- * must display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
- *
- * Pursuant to Section 7(b) of the License you must retain the original Product logo when distributing the program.
- * Pursuant to Section 7(e) we decline to grant you any rights under trademark law for use of our trademarks.
- *
- * All the Product's GUI elements, including illustrations and icon sets, as well as technical
- * writing content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0 International.
- * See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  *
  */
 
@@ -30,7 +20,10 @@
 
     OCA.Onlyoffice = _.extend({
             AppName: "onlyoffice",
-            inframe: false
+            inframe: false,
+            fileId: null,
+            shareToken: null,
+            insertImageType: null
         }, OCA.Onlyoffice);
 
     OCA.Onlyoffice.InitEditor = function () {
@@ -40,11 +33,12 @@
             });
         };
 
-        var fileId = $("#iframeEditor").data("id");
-        var shareToken = $("#iframeEditor").data("sharetoken");
+        OCA.Onlyoffice.fileId = $("#iframeEditor").data("id");
+        OCA.Onlyoffice.shareToken = $("#iframeEditor").data("sharetoken");
+        OCA.Onlyoffice.version = $("#iframeEditor").data("version");
         var directToken = $("#iframeEditor").data("directtoken");
         OCA.Onlyoffice.inframe = !!$("#iframeEditor").data("inframe");
-        if (!fileId && !shareToken && !directToken) {
+        if (!OCA.Onlyoffice.fileId && !OCA.Onlyoffice.shareToken && !directToken) {
             displayError(t(OCA.Onlyoffice.AppName, "FileId is empty"));
             return;
         }
@@ -56,7 +50,7 @@
 
         var configUrl = OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/config/{fileId}",
             {
-                fileId: fileId || 0
+                fileId: OCA.Onlyoffice.fileId || 0
             });
 
         var params = [];
@@ -64,19 +58,23 @@
         if (filePath) {
             params.push("filePath=" + encodeURIComponent(filePath));
         }
-        if (shareToken) {
-            params.push("shareToken=" + encodeURIComponent(shareToken));
+        if (OCA.Onlyoffice.shareToken) {
+            params.push("shareToken=" + encodeURIComponent(OCA.Onlyoffice.shareToken));
         }
         if (directToken) {
             $("html").addClass("onlyoffice-full-page");
             params.push("directToken=" + encodeURIComponent(directToken));
+        }
+        if (OCA.Onlyoffice.version > 0) {
+            params.push("version=" + OCA.Onlyoffice.version);
         }
 
         if (OCA.Onlyoffice.inframe || directToken) {
             var dsVersion = DocsAPI.DocEditor.version();
             var versionArray = dsVersion.split(".");
             if (versionArray[0] < 5 || versionArray[0] == 5 && versionArray[1] < 5) {
-                if (OCA.Onlyoffice.inframe) {
+                if (OCA.Onlyoffice.inframe
+                    && window.parent.OCA.Onlyoffice.ShowHeaderButton) {
                     window.parent.postMessage({
                         method: "editorShowHeaderButton"
                     },
@@ -112,7 +110,7 @@
                     var docIsChanged = null;
                     var docIsChangedTimeout = null;
 
-                    var setPageTitle = function(event) {
+                    var setPageTitle = function (event) {
                         clearTimeout(docIsChangedTimeout);
 
                         if (docIsChanged !== event.data) {
@@ -130,17 +128,26 @@
                     };
                     setPageTitle(false);
 
+                    OCA.Onlyoffice.documentType = config.documentType;
+
                     config.events = {
                         "onDocumentStateChange": setPageTitle,
+                        "onRequestHistory": OCA.Onlyoffice.onRequestHistory,
+                        "onRequestHistoryData": OCA.Onlyoffice.onRequestHistoryData,
+                        "onDocumentReady": OCA.Onlyoffice.onDocumentReady,
                     };
 
+                    if (!OCA.Onlyoffice.version) {
+                        config.events.onRequestHistoryClose = OCA.Onlyoffice.onRequestHistoryClose;
+                    }
+
                     if (config.editorConfig.tenant) {
-                        config.events.onAppReady = function() {
+                        config.events.onAppReady = function () {
                             OCA.Onlyoffice.docEditor.showMessage(t(OCA.Onlyoffice.AppName, "You are using public demo ONLYOFFICE Document Server. Please do not store private sensitive data."));
                         };
                     }
 
-                    if (OCA.Onlyoffice.inframe && !shareToken
+                    if (OCA.Onlyoffice.inframe && !OCA.Onlyoffice.shareToken
                         || OC.currentUser) {
                         config.events.onRequestSaveAs = OCA.Onlyoffice.onRequestSaveAs;
                         config.events.onRequestInsertImage = OCA.Onlyoffice.onRequestInsertImage;
@@ -153,7 +160,7 @@
                     }
 
                     if (OCA.Onlyoffice.inframe
-                        && config._files_sharing && !shareToken
+                        && config._files_sharing && !OCA.Onlyoffice.shareToken
                         && window.parent.OCA.Onlyoffice.context) {
                         config.events.onRequestSharingSettings = OCA.Onlyoffice.onRequestSharingSettings;
                     }
@@ -171,6 +178,74 @@
                 }
             }
         });
+    };
+
+    OCA.Onlyoffice.onRequestHistory = function (version) {
+        $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/history?fileId={fileId}&shareToken={shareToken}",
+            {
+                fileId: OCA.Onlyoffice.fileId || 0,
+                shareToken: OCA.Onlyoffice.shareToken || "",
+            }),
+            function onSuccess(response) {
+                if (response.error) {
+                    var data = {error: response.error};
+                } else {
+                    var currentVersion = 0;
+                    $.each(response, function (i, fileVersion) {
+                        if (fileVersion.version >= currentVersion) {
+                            currentVersion = fileVersion.version;
+                        }
+                    });
+
+                    if (version) {
+                        currentVersion = Math.min(currentVersion, version);
+                    }
+
+                    data = {
+                        currentVersion: currentVersion,
+                        history: response,
+                    };
+                }
+                OCA.Onlyoffice.docEditor.refreshHistory(data);
+        });
+    };
+
+    OCA.Onlyoffice.onRequestHistoryData = function (event) {
+        var version = event.data;
+
+        $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/version?fileId={fileId}&version={version}&shareToken={shareToken}",
+            {
+                fileId: OCA.Onlyoffice.fileId || 0,
+                version: version,
+                shareToken: OCA.Onlyoffice.shareToken || "",
+            }),
+            function onSuccess(response) {
+                if (response.error) {
+                    response = {
+                        error: response.error,
+                        version: version,
+                    };
+                }
+                OCA.Onlyoffice.docEditor.setHistoryData(response);
+        });
+    };
+
+    OCA.Onlyoffice.onRequestHistoryClose = function () {
+        location.reload(true);
+    };
+
+    OCA.Onlyoffice.onDocumentReady = function() {
+        if (OCA.Onlyoffice.inframe) {
+            window.parent.postMessage({
+                method: "onDocumentReady",
+                param: OCA.Onlyoffice.documentType
+            },
+            "*");
+        }
+
+        if (OCA.Onlyoffice.version > 0) {
+            OCA.Onlyoffice.onRequestHistory(OCA.Onlyoffice.version);
+        }
     };
 
     OCA.Onlyoffice.onRequestSaveAs = function (event) {
@@ -209,13 +284,15 @@
             });
     };
 
-    OCA.Onlyoffice.onRequestInsertImage = function () {
+    OCA.Onlyoffice.onRequestInsertImage = function (event) {
         var imageMimes = [
             "image/bmp", "image/x-bmp", "image/x-bitmap", "application/bmp",
             "image/gif",
             "image/jpeg", "image/jpg", "application/jpg", "application/x-jpg",
             "image/png", "image/x-png", "application/png", "application/x-png"
         ];
+
+        OCA.Onlyoffice.insertImageType = event.data.c;
 
         if (OCA.Onlyoffice.inframe) {
             window.parent.postMessage({
@@ -237,6 +314,10 @@
                 if (response.error) {
                     OCP.Toast.error(response.error);
                     return;
+                }
+
+                if (OCA.Onlyoffice.insertImageType) {
+                    response.c = OCA.Onlyoffice.insertImageType;
                 }
 
                 OCA.Onlyoffice.docEditor.insertImage(response);
@@ -286,14 +367,14 @@
         "*");
     };
 
-    OCA.Onlyoffice.onRequestSharingSettings = function() {
+    OCA.Onlyoffice.onRequestSharingSettings = function () {
         window.parent.postMessage({
             method: "editorRequestSharingSettings"
         },
         "*");
     };
 
-    OCA.Onlyoffice.onRequestCompareFile = function() {
+    OCA.Onlyoffice.onRequestCompareFile = function () {
         var revisedMimes = [
             "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         ];
@@ -309,7 +390,7 @@
         }
     };
 
-    OCA.Onlyoffice.editorSetRevised = function(filePath) {
+    OCA.Onlyoffice.editorSetRevised = function (filePath) {
         $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/url?filePath={filePath}",
             {
                 filePath: filePath

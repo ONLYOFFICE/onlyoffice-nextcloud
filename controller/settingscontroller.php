@@ -3,27 +3,17 @@
  *
  * (c) Copyright Ascensio System SIA 2020
  *
- * This program is a free software product.
- * You can redistribute it and/or modify it under the terms of the GNU Affero General Public License
- * (AGPL) version 3 as published by the Free Software Foundation.
- * In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended to the effect
- * that Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * This program is distributed WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * For details, see the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * You can contact Ascensio System SIA at 20A-12 Ernesta Birznieka-Upisha street, Riga, Latvia, EU, LV-1050.
- *
- * The interactive user interfaces in modified source and object code versions of the Program
- * must display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
- *
- * Pursuant to Section 7(b) of the License you must retain the original Product logo when distributing the program.
- * Pursuant to Section 7(e) we decline to grant you any rights under trademark law for use of our trademarks.
- *
- * All the Product's GUI elements, including illustrations and icon sets, as well as technical
- * writing content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0 International.
- * See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  *
  */
 
@@ -117,6 +107,7 @@ class SettingsController extends Controller {
             "documentserver" => $this->config->GetDocumentServerUrl(true),
             "documentserverInternal" => $this->config->GetDocumentServerInternalUrl(true),
             "storageUrl" => $this->config->GetStorageUrl(),
+            "verifyPeerOff" => $this->config->GetVerifyPeerOff(),
             "secret" => $this->config->GetDocumentServerSecret(true),
             "demo" => $this->config->GetDemoData(),
             "currentServer" => $this->urlGenerator->getAbsoluteURL("/"),
@@ -142,6 +133,7 @@ class SettingsController extends Controller {
      * @param string $documentserver - document service address
      * @param string $documentserverInternal - document service address available from Nextcloud
      * @param string $storageUrl - Nextcloud address available from document server
+     * @param bool $verifyPeerOff - parameter verification setting
      * @param string $secret - secret key for signature
      * @param bool $demo - use demo server
      *
@@ -150,6 +142,7 @@ class SettingsController extends Controller {
     public function SaveAddress($documentserver,
                                     $documentserverInternal,
                                     $storageUrl,
+                                    $verifyPeerOff,
                                     $secret,
                                     $demo
                                     ) {
@@ -159,6 +152,7 @@ class SettingsController extends Controller {
         }
         if ($demo !== true) {
             $this->config->SetDocumentServerUrl($documentserver);
+            $this->config->SetVerifyPeerOff($verifyPeerOff);
             $this->config->SetDocumentServerInternalUrl($documentserverInternal);
             $this->config->SetDocumentServerSecret($secret);
         }
@@ -175,6 +169,7 @@ class SettingsController extends Controller {
 
         return [
             "documentserver" => $this->config->GetDocumentServerUrl(true),
+            "verifyPeerOff" => $this->config->GetVerifyPeerOff(),
             "documentserverInternal" => $this->config->GetDocumentServerInternalUrl(true),
             "storageUrl" => $this->config->GetStorageUrl(),
             "secret" => $this->config->GetDocumentServerSecret(true),
@@ -281,7 +276,7 @@ class SettingsController extends Controller {
             }
 
         } catch (\Exception $e) {
-            $this->logger->logException($e, ["Protocol on check error", "app" => $this->appName]);
+            $this->logger->logException($e, ["message" => "Protocol on check error", "app" => $this->appName]);
             return [$e->getMessage(), $version];
         }
 
@@ -295,7 +290,7 @@ class SettingsController extends Controller {
             }
 
         } catch (\Exception $e) {
-            $this->logger->logException($e, ["HealthcheckRequest on check error", "app" => $this->appName]);
+            $this->logger->logException($e, ["message" => "HealthcheckRequest on check error", "app" => $this->appName]);
             return [$e->getMessage(), $version];
         }
 
@@ -317,7 +312,7 @@ class SettingsController extends Controller {
             }
 
         } catch (\Exception $e) {
-            $this->logger->logException($e, ["CommandRequest on check error", "app" => $this->appName]);
+            $this->logger->logException($e, ["message" => "CommandRequest on check error", "app" => $this->appName]);
             return [$e->getMessage(), $version];
         }
 
@@ -333,14 +328,14 @@ class SettingsController extends Controller {
             $convertedFileUri = $documentService->GetConvertedUri($fileUrl, "docx", "docx", "check_" . rand());
 
         } catch (\Exception $e) {
-            $this->logger->logException($e, ["GetConvertedUri on check error", "app" => $this->appName]);
+            $this->logger->logException($e, ["message" => "GetConvertedUri on check error", "app" => $this->appName]);
             return [$e->getMessage(), $version];
         }
 
         try {
             $documentService->Request($convertedFileUri);
         } catch (\Exception $e) {
-            $this->logger->logException($e, ["Request converted file on check error", "app" => $this->appName]);
+            $this->logger->logException($e, ["message" => "Request converted file on check error", "app" => $this->appName]);
             return [$e->getMessage(), $version];
         }
 

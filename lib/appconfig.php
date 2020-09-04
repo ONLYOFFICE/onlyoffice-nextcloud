@@ -3,27 +3,17 @@
  *
  * (c) Copyright Ascensio System SIA 2020
  *
- * This program is a free software product.
- * You can redistribute it and/or modify it under the terms of the GNU Affero General Public License
- * (AGPL) version 3 as published by the Free Software Foundation.
- * In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended to the effect
- * that Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * This program is distributed WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * For details, see the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * You can contact Ascensio System SIA at 20A-12 Ernesta Birznieka-Upisha street, Riga, Latvia, EU, LV-1050.
- *
- * The interactive user interfaces in modified source and object code versions of the Program
- * must display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
- *
- * Pursuant to Section 7(b) of the License you must retain the original Product logo when distributing the program.
- * Pursuant to Section 7(e) we decline to grant you any rights under trademark law for use of our trademarks.
- *
- * All the Product's GUI elements, including illustrations and icon sets, as well as technical
- * writing content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0 International.
- * See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  *
  */
 
@@ -900,13 +890,29 @@ class AppConfig {
     }
 
     /**
-     * Get the turn off verification setting
+     * Save the document service verification setting to the application configuration
+     *
+     * @param bool $verifyPeerOff - parameter verification setting
+     */
+    public function SetVerifyPeerOff($verifyPeerOff) {
+        $this->logger->info("SetVerifyPeerOff " . json_encode($verifyPeerOff), ["app" => $this->appName]);
+
+        $this->config->setAppValue($this->appName, $this->_verification, json_encode($verifyPeerOff));
+    }
+
+    /**
+     * Get the document service verification setting to the application configuration
      *
      * @return bool
      */
-    public function TurnOffVerification() {
-        $turnOff = $this->GetSystemValue($this->_verification);
-        return $turnOff === true;
+    public function GetVerifyPeerOff() {
+        $turnOff = $this->config->getAppValue($this->appName, $this->_verification, "");
+
+        if (!empty($turnOff)) {
+            return $turnOff === "true";
+        }
+
+        return $this->GetSystemValue($this->_verification);
     }
 
     /**
@@ -990,6 +996,9 @@ class AppConfig {
         "odp" => [ "mime" => "application/vnd.oasis.opendocument.presentation", "type" => "presentation", "conv" => true, "editable" => true ],
         "ods" => [ "mime" => "application/vnd.oasis.opendocument.spreadsheet", "type" => "spreadsheet", "conv" => true, "editable" => true ],
         "odt" => [ "mime" => "application/vnd.oasis.opendocument.text", "type" => "text", "conv" => true, "editable" => true ],
+        "otp" => [ "mime" => "application/vnd.oasis.opendocument.presentation-template", "type" => "presentation", "conv" => true ],
+        "ots" => [ "mime" => "application/vnd.oasis.opendocument.spreadsheet-template", "type" => "spreadsheet", "conv" => true ],
+        "ott" => [ "mime" => "application/vnd.oasis.opendocument.text-template", "type" => "text", "conv" => true ],
         "pdf" => [ "mime" => "application/pdf", "type" => "text" ],
         "pot" => [ "type" => "presentation", "conv" => true ],
         "potm" => [ "mime" => "application/vnd.ms-powerpoint.template.macroEnabled.12", "type" => "presentation", "conv" => true ],

@@ -78,6 +78,7 @@ OC.L10N.register(
     "Show watermark for read only link shares" : "Pokaż znak wodny dla udostępnień linków tylko do odczytu",
     "Show watermark on link shares with specific system tags" : "Pokaż znak wodny dla udostępnień linków z wybranymi tagami",
     "Select tag" : "Wybierz tag",
-    "version": "wersja"
+    "version": "wersja",
+    "Disable certificate verification (insecure)": "Wyłącz weryfikację certyfikatu (niebezpieczne)"
 },
 "nplurals=2; plural=(n != 1);");

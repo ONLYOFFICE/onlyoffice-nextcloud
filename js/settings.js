@@ -2,27 +2,17 @@
  *
  * (c) Copyright Ascensio System SIA 2020
  *
- * This program is a free software product.
- * You can redistribute it and/or modify it under the terms of the GNU Affero General Public License
- * (AGPL) version 3 as published by the Free Software Foundation.
- * In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended to the effect
- * that Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * This program is distributed WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * For details, see the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * You can contact Ascensio System SIA at 20A-12 Ernesta Birznieka-Upisha street, Riga, Latvia, EU, LV-1050.
- *
- * The interactive user interfaces in modified source and object code versions of the Program
- * must display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
- *
- * Pursuant to Section 7(b) of the License you must retain the original Product logo when distributing the program.
- * Pursuant to Section 7(e) we decline to grant you any rights under trademark law for use of our trademarks.
- *
- * All the Product's GUI elements, including illustrations and icon sets, as well as technical
- * writing content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0 International.
- * See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  *
  */
 
@@ -61,7 +51,7 @@
         $("#onlyofficeGroups").click(groupListToggle);
         groupListToggle();
 
-        var demoToggle = function() {
+        var demoToggle = function () {
             $("#onlyofficeAddrSettings input:not(#onlyofficeStorageUrl)").prop("disabled", $("#onlyofficeDemo").prop("checked"));
         };
 
@@ -87,14 +77,14 @@
             "allTags",
             "linkTags",
         ];
-        $.each(watermarkLists, function(i, watermarkList) {
-            var watermarkListToggle = function() {
+        $.each(watermarkLists, function (i, watermarkList) {
+            var watermarkListToggle = function () {
                 if ($("#onlyofficeWatermark_" + watermarkList).prop("checked")) {
                     if (watermarkList.indexOf("Group") >= 0) {
                         OC.Settings.setupGroupsSelect($("#onlyofficeWatermark_" + watermarkList + "List"));
                     } else {
                         OC.SystemTags.collection.fetch({
-                            success: function() {
+                            success: function () {
                                 $("#onlyofficeWatermark_" + watermarkList + "List").select2({
                                     allowClear: true,
                                     closeOnSelect: false,
@@ -102,13 +92,13 @@
                                     separator: "|",
                                     toggleSelect: true,
                                     placeholder: t(OCA.Onlyoffice.AppName, "Select tag"),
-                                    query: _.debounce(function(query) {
+                                    query: _.debounce(function (query) {
                                         query.callback({
                                             results: OC.SystemTags.collection.filterByName(query.term)
                                         });
                                     }, 100, true),
-                                    initSelection: function(element, callback) {
-                                        var selection = ($(element).val() || []).split("|").map(function(tagId){
+                                    initSelection: function (element, callback) {
+                                        var selection = ($(element).val() || []).split("|").map(function (tagId) {
                                             return OC.SystemTags.collection.get(tagId);
                                         });
                                         callback(selection);
@@ -119,8 +109,8 @@
                                     formatSelection: function (tag) {
                                         return tag.get("name");
                                     },
-                                    sortResults: function(results) {
-                                        results.sort(function(a, b) {
+                                    sortResults: function (results) {
+                                        results.sort(function (a, b) {
                                             return OC.Util.naturalSortCompare(a.get("name"), b.get("name"));
                                         });
                                         return results;
@@ -149,6 +139,7 @@
 
             var onlyofficeInternalUrl = ($("#onlyofficeInternalUrl:visible").val() || "").trim();
             var onlyofficeStorageUrl = ($("#onlyofficeStorageUrl:visible").val() || "").trim();
+            var onlyofficeVerifyPeerOff = $("#onlyofficeVerifyPeerOff").prop("checked");
             var onlyofficeSecret = ($("#onlyofficeSecret:visible").val() || "").trim();
             var demo = $("#onlyofficeDemo").prop("checked");
 
@@ -159,6 +150,7 @@
                     documentserver: onlyofficeUrl,
                     documentserverInternal: onlyofficeInternalUrl,
                     storageUrl: onlyofficeStorageUrl,
+                    verifyPeerOff: onlyofficeVerifyPeerOff,
                     secret: onlyofficeSecret,
                     demo: demo
                 },
@@ -188,12 +180,12 @@
             $(".section-onlyoffice").addClass("icon-loading");
 
             var defFormats = {};
-            $("input[id^=\"onlyofficeDefFormat\"]").each(function() {
+            $("input[id^=\"onlyofficeDefFormat\"]").each(function () {
                 defFormats[this.name] = this.checked;
             });
 
             var editFormats = {};
-            $("input[id^=\"onlyofficeEditFormat\"]").each(function() {
+            $("input[id^=\"onlyofficeEditFormat\"]").each(function () {
                 editFormats[this.name] = this.checked;
             });
 
