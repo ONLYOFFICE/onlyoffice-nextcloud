@@ -1,5 +1,17 @@
 # Change Log
 
+## 5.0.0
+## Added
+- support for OpenDocument Templates
+- Japanese translation- certificate verification setting
+- version history
+
+## Changed
+- apache license
+- fix styles for desktop
+- loader page when creating a file
+- fix share tab opening
+
 ## 4.3.0
 ## Added
 - integration to viewer app
