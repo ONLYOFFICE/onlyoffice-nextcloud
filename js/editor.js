@@ -292,7 +292,9 @@
             "image/png", "image/x-png", "application/png", "application/x-png"
         ];
 
-        OCA.Onlyoffice.insertImageType = event.data.c;
+        if (event.data) {
+            OCA.Onlyoffice.insertImageType = event.data.c;
+        }
 
         if (OCA.Onlyoffice.inframe) {
             window.parent.postMessage({
