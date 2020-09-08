@@ -36,6 +36,8 @@ use OCP\IUserSession;
 use OCP\Lock\LockedException;
 use OCP\Share\Exceptions\ShareNotFound;
 use OCP\Share\IManager;
+use OCP\IDBConnection;
+use OCP\AppFramework\Utility\ITimeFactory;
 
 use OCA\Files_Versions\Versions\IVersionManager;
 
@@ -43,6 +45,8 @@ use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\Crypt;
 use OCA\Onlyoffice\DocumentService;
 use OCA\Onlyoffice\FileVersions;
+use OCA\Onlyoffice\LockingManager;
+use OCA\Onlyoffice\LockingProvider;
 
 /**
  * Callback handler for the document server.
@@ -115,6 +119,20 @@ class CallbackController extends Controller {
     private $versionManager;
 
     /**
+     * Time factory
+     *
+     * @var ITimeFactory
+     */
+    private $timeFactory;
+
+    /**
+     * Database provider
+     *
+     * @var IDBConnection
+     */
+    private $db;
+
+    /**
      * Status of the document
      *
      * @var Array
@@ -148,7 +166,9 @@ class CallbackController extends Controller {
                                     ILogger $logger,
                                     AppConfig $config,
                                     Crypt $crypt,
-                                    IManager $shareManager
+                                    IManager $shareManager,
+                                    ITimeFactory $timeFactory,
+                                    IDBConnection $db
                                     ) {
         parent::__construct($AppName, $request);
 
@@ -160,6 +180,8 @@ class CallbackController extends Controller {
         $this->config = $config;
         $this->crypt = $crypt;
         $this->shareManager = $shareManager;
+
+        $this->lockingProvider = new LockingProvider($db, $logger, $timeFactory);
 
         if (\OC::$server->getAppManager()->isInstalled("files_versions")) {
             try {
@@ -418,6 +440,46 @@ class CallbackController extends Controller {
 
         $trackerStatus = $this->_trackerStatus[$status];
 
+        $shareToken = isset($hashData->shareToken) ? $hashData->shareToken : null;
+        $filePath = null;
+
+        \OC_Util::tearDownFS();
+
+        $userId = $this->parseUserId($users[0]);
+        \OC_User::setUserId($userId);
+
+        $user = $this->userManager->get($userId);
+        if (!empty($user)) {
+            \OC_Util::setupFS($userId);
+
+            if ($userId === $hashData->userId) {
+                $filePath = $hashData->filePath;
+            }
+        } else {
+            if (empty($shareToken)) {
+                // author of the callback link
+                $userId = $hashData->userId;
+                \OC_User::setUserId($userId);
+                $this->logger->debug("Track for $userId: $fileId status $trackerStatus", ["app" => $this->appName]);
+
+                $user = $this->userManager->get($userId);
+                if (!empty($user)) {
+                    \OC_Util::setupFS($userId);
+
+                    // path for author of the callback link
+                    $filePath = $hashData->filePath;
+                }
+            } else {
+                $this->logger->debug("Track $fileId by token for $userId", ["app" => $this->appName]);
+            }
+        }
+        list ($file, $error) = empty($shareToken) ? $this->getFile($userId, $fileId, $filePath) : $this->getFileByToken($fileId, $shareToken);
+
+        if (isset($error)) {
+            $this->logger->error("track error $fileId " . json_encode($error->getData()),  ["app" => $this->appName]);
+            return $error;
+        }
+
         $result = 1;
         switch ($trackerStatus) {
             case "MustSave":
@@ -428,47 +490,7 @@ class CallbackController extends Controller {
                 }
 
                 try {
-                    $shareToken = isset($hashData->shareToken) ? $hashData->shareToken : null;
-                    $filePath = null;
-
-                    \OC_Util::tearDownFS();
-
-                    // author of the latest changes
-                    $userId = $this->parseUserId($users[0]);
-                    \OC_User::setUserId($userId);
-
-                    $user = $this->userManager->get($userId);
-                    if (!empty($user)) {
-                        \OC_Util::setupFS($userId);
-
-                        if ($userId === $hashData->userId) {
-                            $filePath = $hashData->filePath;
-                        }
-                    } else {
-                        if (empty($shareToken)) {
-                            // author of the callback link
-                            $userId = $hashData->userId;
-                            \OC_User::setUserId($userId);
-                            $this->logger->debug("Track for $userId: $fileId status $trackerStatus", ["app" => $this->appName]);
-
-                            $user = $this->userManager->get($userId);
-                            if (!empty($user)) {
-                                \OC_Util::setupFS($userId);
-
-                                // path for author of the callback link
-                                $filePath = $hashData->filePath;
-                            }
-                        } else {
-                            $this->logger->debug("Track $fileId by token for $userId", ["app" => $this->appName]);
-                        }
-                    }
-
-                    list ($file, $error) = empty($shareToken) ? $this->getFile($userId, $fileId, $filePath) : $this->getFileByToken($fileId, $shareToken);
-
-                    if (isset($error)) {
-                        $this->logger->error("track error $fileId " . json_encode($error->getData()),  ["app" => $this->appName]);
-                        return $error;
-                    }
+                    LockingManager :: unlockFile($file, LockingProvider::LOCK_SHARED, $this->lockingProvider);
 
                     $url = $this->config->ReplaceDocumentServerUrlToInternal($url);
 
@@ -513,7 +535,13 @@ class CallbackController extends Controller {
                 break;
 
             case "Editing":
+                LockingManager :: lockFile($file, LockingProvider::LOCK_SHARED, $this->lockingProvider);
+
+                $result = 0;
+                break;
             case "Closed":
+                LockingManager :: unlockFile($file, LockingProvider::LOCK_SHARED, $this->lockingProvider);
+
                 $result = 0;
                 break;
         }
