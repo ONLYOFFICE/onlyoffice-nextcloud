@@ -100,12 +100,12 @@
             var $iframe = $("<iframe id=\"onlyofficeFrame\" nonce=\"" + btoa(OC.requestToken) + "\" scrolling=\"no\" allowfullscreen src=\"" + url + "&inframe=true\" />");
             $("#app-content").append($iframe);
 
-            var scrollTop = $(window).scrollTop();
-            $(OCA.Onlyoffice.frameSelector).css("top", scrollTop);
-
             $("body").addClass("onlyoffice-inline");
 
             if (OCA.Files.Sidebar) {
+                var scrollTop = $(window).scrollTop();
+                $(OCA.Onlyoffice.frameSelector).css("top", scrollTop);
+
                 OCA.Files.Sidebar.close();
                 return;
             } else {
