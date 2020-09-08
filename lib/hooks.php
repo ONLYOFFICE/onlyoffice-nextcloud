@@ -86,6 +86,7 @@ class Hooks {
 
         $fileId = $fileInfo->getId();
 
+        //todo: if (!forcesave)
         KeyManager::delete($fileId);
     }
 
