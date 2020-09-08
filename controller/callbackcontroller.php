@@ -416,58 +416,62 @@ class CallbackController extends Controller {
             $url = isset($payload->url) ? $payload->url : null;
         }
 
-        $trackerStatus = $this->_trackerStatus[$status];
+        try {
+            $shareToken = isset($hashData->shareToken) ? $hashData->shareToken : null;
+            $filePath = null;
 
-        $result = 1;
-        switch ($trackerStatus) {
-            case "MustSave":
-            case "Corrupted":
-                if (empty($url)) {
-                    $this->logger->error("Track without url: $fileId status $trackerStatus", ["app" => $this->appName]);
-                    return new JSONResponse(["message" => "Url not found"], Http::STATUS_BAD_REQUEST);
+            \OC_Util::tearDownFS();
+
+            $user = null;
+            if (isset($users)) {
+                // author of the latest changes
+                $userId = $this->parseUserId($users[0]);
+                \OC_User::setUserId($userId);
+
+                $user = $this->userManager->get($userId);
+            }
+
+            if (!empty($user)) {
+                \OC_Util::setupFS($userId);
+
+                if ($userId === $hashData->userId) {
+                    $filePath = $hashData->filePath;
                 }
-
-                try {
-                    $shareToken = isset($hashData->shareToken) ? $hashData->shareToken : null;
-                    $filePath = null;
-
-                    \OC_Util::tearDownFS();
-
-                    // author of the latest changes
-                    $userId = $this->parseUserId($users[0]);
+            } else {
+                if (empty($shareToken)) {
+                    // author of the callback link
+                    $userId = $hashData->userId;
                     \OC_User::setUserId($userId);
+                    $this->logger->debug("Track for $userId: $fileId status $status", ["app" => $this->appName]);
 
                     $user = $this->userManager->get($userId);
                     if (!empty($user)) {
                         \OC_Util::setupFS($userId);
 
-                        if ($userId === $hashData->userId) {
-                            $filePath = $hashData->filePath;
-                        }
-                    } else {
-                        if (empty($shareToken)) {
-                            // author of the callback link
-                            $userId = $hashData->userId;
-                            \OC_User::setUserId($userId);
-                            $this->logger->debug("Track for $userId: $fileId status $trackerStatus", ["app" => $this->appName]);
-
-                            $user = $this->userManager->get($userId);
-                            if (!empty($user)) {
-                                \OC_Util::setupFS($userId);
-
-                                // path for author of the callback link
-                                $filePath = $hashData->filePath;
-                            }
-                        } else {
-                            $this->logger->debug("Track $fileId by token for $userId", ["app" => $this->appName]);
-                        }
+                        // path for author of the callback link
+                        $filePath = $hashData->filePath;
                     }
+                } else {
+                    $this->logger->debug("Track $fileId by token for $userId", ["app" => $this->appName]);
+                }
+            }
 
-                    list ($file, $error) = empty($shareToken) ? $this->getFile($userId, $fileId, $filePath) : $this->getFileByToken($fileId, $shareToken);
+            list ($file, $error) = empty($shareToken) ? $this->getFile($userId, $fileId, $filePath) : $this->getFileByToken($fileId, $shareToken);
 
-                    if (isset($error)) {
-                        $this->logger->error("track error $fileId " . json_encode($error->getData()),  ["app" => $this->appName]);
-                        return $error;
+            if (isset($error)) {
+                $this->logger->error("track error $fileId " . json_encode($error->getData()),  ["app" => $this->appName]);
+                return $error;
+            }
+
+            $trackerStatus = $this->_trackerStatus[$status];
+
+            $result = 1;
+            switch ($trackerStatus) {
+                case "MustSave":
+                case "Corrupted":
+                    if (empty($url)) {
+                        $this->logger->error("Track without url: $fileId status $status", ["app" => $this->appName]);
+                        return new JSONResponse(["message" => "Url not found"], Http::STATUS_BAD_REQUEST);
                     }
 
                     $url = $this->config->ReplaceDocumentServerUrlToInternal($url);
@@ -507,15 +511,15 @@ class CallbackController extends Controller {
                     }
 
                     $result = 0;
-                } catch (\Exception $e) {
-                    $this->logger->logException($e, ["message" => "Track: $fileId status $trackerStatus error", "app" => $this->appName]);
-                }
-                break;
+                    break;
 
-            case "Editing":
-            case "Closed":
-                $result = 0;
-                break;
+                case "Editing":
+                case "Closed":
+                    $result = 0;
+                    break;
+            }
+        } catch (\Exception $e) {
+            $this->logger->logException($e, ["message" => "Track: $fileId status $status error", "app" => $this->appName]);
         }
 
         $this->logger->debug("Track: $fileId status $status result $result", ["app" => $this->appName]);
