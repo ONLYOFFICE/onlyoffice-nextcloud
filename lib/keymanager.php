@@ -71,4 +71,20 @@ class KeyManager {
         ");
         return (bool)$insert->execute([$fileId, $key]);
     }
+
+    /**
+     * Delete document identifier
+     *
+     * @param integer $fileId - file identifier
+     *
+     * @return bool
+     */
+    public static function delete($fileId) {
+        $connection = \OC::$server->getDatabaseConnection();
+        $delete = $connection->prepare("
+            DELETE FROM `*PREFIX*" . self::TableName_Key . "`
+            WHERE `file_id` = ?
+        ");
+        return (bool)$delete->execute([$fileId]);
+    }
 }
