@@ -33,6 +33,7 @@ use OCP\ILogger;
 use OCP\IRequest;
 use OCP\IUserManager;
 use OCP\IUserSession;
+use OCP\Lock\ILockingProvider;
 use OCP\Lock\LockedException;
 use OCP\Share\Exceptions\ShareNotFound;
 use OCP\Share\IManager;
@@ -496,6 +497,8 @@ class CallbackController extends Controller {
 
                     $newData = $documentService->Request($url);
 
+                    $file->unlock(ILockingProvider::LOCK_SHARED);
+
                     $this->logger->debug("Track put content " . $file->getPath(), ["app" => $this->appName]);
                     $this->retryOperation(function () use ($file, $newData) {
                         return $file->putContent($newData);
@@ -514,7 +517,13 @@ class CallbackController extends Controller {
                     break;
 
                 case "Editing":
+                    $file->lock(ILockingProvider::LOCK_SHARED);
+
+                    $result = 0;
+                    break;
                 case "Closed":
+                    $file->unlock(ILockingProvider::LOCK_SHARED);
+
                     $result = 0;
                     break;
             }
