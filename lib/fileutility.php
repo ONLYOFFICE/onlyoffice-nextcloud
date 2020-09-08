@@ -30,6 +30,7 @@ use OCP\Share\IManager;
 use OCA\Files_Sharing\External\Storage as SharingExternalStorage;
 
 use OCA\Onlyoffice\AppConfig;
+use OCA\Onlyoffice\KeyManager;
 
 /**
  * File utility
@@ -217,6 +218,8 @@ class FileUtility {
      * @return string
      */
     public function getKey($file, $origin = false) {
+        $fileId = $file->getId();
+
         if ($origin
             && $file->getStorage()->instanceOfStorage(SharingExternalStorage::class)) {
 
@@ -227,13 +230,19 @@ class FileUtility {
                     return $key;
                 }
             } catch (\Exception $e) {
-                $this->logger->logException($e, ["message" => "Failed to request federated key " . $file->getId(), "app" => $this->appName]);
+                $this->logger->logException($e, ["message" => "Failed to request federated key $fileId", "app" => $this->appName]);
             }
         }
 
-        $instanceId = $this->config->GetSystemValue("instanceid", true);
+        $key = KeyManager::get($fileId);
 
-        $key = $instanceId . "_" . $file->getEtag();
+        if (empty($key) ) {
+            $instanceId = $this->config->GetSystemValue("instanceid", true);
+
+            $key = $instanceId . "_" . $file->getEtag();
+
+            KeyManager::set($fileId, $key);
+        }
 
         return $key;
     }
