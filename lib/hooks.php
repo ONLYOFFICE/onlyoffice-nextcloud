@@ -79,6 +79,10 @@ class Hooks {
             $ownerId = Filesystem::getOwner($filePath);
 
             $fileInfo = Filesystem::getFileInfo($filePath);
+            if ($fileInfo === false) {
+                return;
+            }
+
             $fileId = $fileInfo->getId();
 
             FileVersions::deleteAllVersions($ownerId, $fileId);
@@ -107,6 +111,10 @@ class Hooks {
             $ownerId = Filesystem::getOwner($filePath);
 
             $fileInfo = Filesystem::getFileInfo($filePath);
+            if ($fileInfo === false) {
+                return;
+            }
+
             $fileId = $fileInfo->getId();
 
             FileVersions::deleteVersion($ownerId, $fileId, $versionId);
@@ -132,6 +140,10 @@ class Hooks {
             $ownerId = Filesystem::getOwner($filePath);
 
             $fileInfo = Filesystem::getFileInfo($filePath);
+            if ($fileInfo === false) {
+                return;
+            }
+
             $fileId = $fileInfo->getId();
 
             FileVersions::deleteVersion($ownerId, $fileId, $versionId);
