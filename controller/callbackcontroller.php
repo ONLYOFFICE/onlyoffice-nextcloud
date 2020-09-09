@@ -502,7 +502,8 @@ class CallbackController extends Controller {
                     //unlock key for future federated save
                     KeyManager::lock($fileId, false);
 
-                    if ($this->versionManager !== null) {
+                    if (!$isForcesave
+                        && $this->versionManager !== null) {
                         $changes = null;
                         if (!empty($changesurl)) {
                             $changesurl = $this->config->ReplaceDocumentServerUrlToInternal($changesurl);
