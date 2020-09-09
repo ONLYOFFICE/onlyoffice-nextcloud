@@ -111,21 +111,16 @@ class CallbackController extends Controller {
      * File version manager
      *
      * @var IVersionManager
-    */
+     */
     private $versionManager;
 
     /**
      * Status of the document
-     *
-     * @var Array
      */
-    private $_trackerStatus = [
-        0 => "NotFound",
-        1 => "Editing",
-        2 => "MustSave",
-        3 => "Corrupted",
-        4 => "Closed"
-    ];
+    private const TrackerStatus_Editing = 1;
+    private const TrackerStatus_MustSave = 2;
+    private const TrackerStatus_Corrupted = 3;
+    private const TrackerStatus_Closed = 4;
 
     /**
      * @param string $AppName - application name
@@ -416,14 +411,12 @@ class CallbackController extends Controller {
             $url = isset($payload->url) ? $payload->url : null;
         }
 
-        $trackerStatus = $this->_trackerStatus[$status];
-
         $result = 1;
-        switch ($trackerStatus) {
-            case "MustSave":
-            case "Corrupted":
+        switch ($status) {
+            case self::TrackerStatus_MustSave:
+            case self::TrackerStatus_Corrupted:
                 if (empty($url)) {
-                    $this->logger->error("Track without url: $fileId status $trackerStatus", ["app" => $this->appName]);
+                    $this->logger->error("Track without url: $fileId status $status", ["app" => $this->appName]);
                     return new JSONResponse(["message" => "Url not found"], Http::STATUS_BAD_REQUEST);
                 }
 
@@ -449,7 +442,7 @@ class CallbackController extends Controller {
                             // author of the callback link
                             $userId = $hashData->userId;
                             \OC_User::setUserId($userId);
-                            $this->logger->debug("Track for $userId: $fileId status $trackerStatus", ["app" => $this->appName]);
+                            $this->logger->debug("Track for $userId: $fileId status $status", ["app" => $this->appName]);
 
                             $user = $this->userManager->get($userId);
                             if (!empty($user)) {
@@ -508,12 +501,12 @@ class CallbackController extends Controller {
 
                     $result = 0;
                 } catch (\Exception $e) {
-                    $this->logger->logException($e, ["message" => "Track: $fileId status $trackerStatus error", "app" => $this->appName]);
+                    $this->logger->logException($e, ["message" => "Track: $fileId status $status error", "app" => $this->appName]);
                 }
                 break;
 
-            case "Editing":
-            case "Closed":
+            case self::TrackerStatus_Editing:
+            case self::TrackerStatus_Closed:
                 $result = 0;
                 break;
         }
