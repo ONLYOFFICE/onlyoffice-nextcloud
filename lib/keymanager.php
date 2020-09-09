@@ -76,15 +76,35 @@ class KeyManager {
      * Delete document identifier
      *
      * @param integer $fileId - file identifier
+     * @param bool $unlock - delete even with lock label
      *
      * @return bool
      */
-    public static function delete($fileId) {
+    public static function delete($fileId, $unlock = false) {
         $connection = \OC::$server->getDatabaseConnection();
         $delete = $connection->prepare("
             DELETE FROM `*PREFIX*" . self::TableName_Key . "`
             WHERE `file_id` = ?
-        ");
+            " . ($unlock === false ? "AND `lock` != 1" : "")
+        );
         return (bool)$delete->execute([$fileId]);
+    }
+
+    /**
+     * Change lock status
+     *
+     * @param integer $fileId - file identifier
+     * @param integer $lock - status
+     *
+     * @return bool
+     */
+    public static function lock($fileId, $lock = true) {
+        $connection = \OC::$server->getDatabaseConnection();
+        $update = $connection->prepare("
+            UPDATE `*PREFIX*" . self::TableName_Key . "`
+            SET `lock` = ?
+            WHERE `file_id` = ?
+        ");
+        return (bool)$update->execute([$lock === true ? 1 : 0, $fileId]);
     }
 }

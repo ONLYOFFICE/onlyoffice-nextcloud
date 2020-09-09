@@ -86,7 +86,6 @@ class Hooks {
 
         $fileId = $fileInfo->getId();
 
-        //todo: if (!forcesave)
         KeyManager::delete($fileId);
     }
 
@@ -111,7 +110,7 @@ class Hooks {
 
             $fileId = $fileInfo->getId();
 
-            KeyManager::delete($fileId);
+            KeyManager::delete($fileId, true);
 
             FileVersions::deleteAllVersions($ownerId, $fileId);
         } catch (\Exception $e) {

@@ -27,6 +27,13 @@
         <length>128</length>
         <comments>unique key for the docoment server</comments>
       </field>
+      <field>
+        <name>lock</name>
+        <type>integer</type>
+        <default>0</default>
+        <notnull>true</notnull>
+        <comments>do not delete on file change</comments>
+      </field>
       <index>
         <name>file_id_index</name>
         <unique>true</unique>
