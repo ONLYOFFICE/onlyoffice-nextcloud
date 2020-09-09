@@ -34,6 +34,13 @@
         <notnull>true</notnull>
         <comments>do not delete on file change</comments>
       </field>
+      <field>
+        <name>fs</name>
+        <type>integer</type>
+        <default>0</default>
+        <notnull>true</notnull>
+        <comments>last forcesave done</comments>
+      </field>
       <index>
         <name>file_id_index</name>
         <unique>true</unique>

@@ -490,6 +490,8 @@ class CallbackController extends Controller {
 
                     $newData = $documentService->Request($url);
 
+                    $prevIsForcesave = KeyManager::wasForcesave($fileId);
+
                     $isForcesave = $status === self::TrackerStatus_ForceSave || $status === self::TrackerStatus_CorruptedForceSave;
                     //lock the key when forcesave and unlock if last forcesave is broken
                     KeyManager::lock($fileId, $isForcesave);
@@ -501,8 +503,10 @@ class CallbackController extends Controller {
 
                     //unlock key for future federated save
                     KeyManager::lock($fileId, false);
+                    KeyManager::setForcesave($fileId, $isForcesave);
 
                     if (!$isForcesave
+                        && !$prevIsForcesave
                         && $this->versionManager !== null) {
                         $changes = null;
                         if (!empty($changesurl)) {

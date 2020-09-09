@@ -107,4 +107,44 @@ class KeyManager {
         ");
         return (bool)$update->execute([$lock === true ? 1 : 0, $fileId]);
     }
+
+    /**
+     * Change forcesave status
+     *
+     * @param integer $fileId - file identifier
+     * @param integer $fs - status
+     *
+     * @return bool
+     */
+    public static function setForcesave($fileId, $fs = true) {
+        $connection = \OC::$server->getDatabaseConnection();
+        $update = $connection->prepare("
+            UPDATE `*PREFIX*" . self::TableName_Key . "`
+            SET `fs` = ?
+            WHERE `file_id` = ?
+        ");
+        return (bool)$update->execute([$fs === true ? 1 : 0, $fileId]);
+    }
+
+    /**
+     * Get forcesave status
+     *
+     * @param integer $fileId - file identifier
+     *
+     * @return bool
+     */
+    public static function wasForcesave($fileId) {
+        $connection = \OC::$server->getDatabaseConnection();
+        $select = $connection->prepare("
+            SELECT `fs`
+            FROM  `*PREFIX*" . self::TableName_Key . "`
+            WHERE `file_id` = ?
+        ");
+        $result = $select->execute([$fileId]);
+
+        $rows = $result ? $select->fetch() : [];
+        $fs = is_array($rows) && isset($rows["fs"]) ? $rows["fs"] : "";
+
+        return $fs === "1";
+    }
 }
