@@ -868,9 +868,6 @@ class EditorController extends Controller {
             ],
             "documentType" => $format["type"],
             "editorConfig" => [
-                "customization" => [
-                    "forcesave" => true
-                ],
                 "lang" => str_replace("_", "-", \OC::$server->getL10NFactory("")->get("")->getLanguageCode()),
                 "region" => str_replace("_", "-", \OC::$server->getL10NFactory("")->findLocale())
             ]
@@ -1105,6 +1102,11 @@ class EditorController extends Controller {
         //default is false
         if ($this->config->GetCustomizationFeedback() === true) {
             $params["editorConfig"]["customization"]["feedback"] = true;
+        }
+
+        //default is false
+        if ($this->config->GetCustomizationForcesave() === true) {
+            $params["editorConfig"]["customization"]["forcesave"] = true;
         }
 
         //default is true

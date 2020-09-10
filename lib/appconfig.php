@@ -131,6 +131,13 @@ class AppConfig {
     private $_customizationFeedback = "customizationFeedback";
 
     /**
+     * The config key for the forcesave setting
+     *
+     * @var string
+     */
+    private $_customizationForcesave = "customizationForcesave";
+
+    /**
      * The config key for the help display setting
      *
      * @var string
@@ -656,6 +663,26 @@ class AppConfig {
      */
     public function GetCustomizationFeedback() {
         return $this->config->getAppValue($this->appName, $this->_customizationFeedback, "true") === "true";
+    }
+
+    /**
+     * Save forcesave setting
+     *
+     * @param bool $value - forcesave
+     */
+    public function SetCustomizationForcesave($value) {
+        $this->logger->info("Set forcesave: " . json_encode($value), ["app" => $this->appName]);
+
+        $this->config->setAppValue($this->appName, $this->_customizationForcesave, json_encode($value));
+    }
+
+    /**
+     * Get forcesave setting
+     *
+     * @return bool
+     */
+    public function GetCustomizationForcesave() {
+        return $this->config->getAppValue($this->appName, $this->_customizationForcesave, "false") === "true";
     }
 
     /**

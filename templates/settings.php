@@ -144,7 +144,15 @@
         <a target="_blank" class="icon-info svg" title="" href="https://api.onlyoffice.com/editors/config/editor/customization" data-original-title="<?php p($l->t("View details")) ?>"></a>
     </h3>
 
-    <p><?php p($l->t("The customization section allows personalizing the editor interface")) ?></p>
+    <p>
+        <input type="checkbox" class="checkbox" id="onlyofficeForcesave"
+            <?php if ($_["forcesave"]) { ?>checked="checked"<?php } ?> />
+        <label for="onlyofficeForcesave"><?php p($l->t("Keep intermediate versions when editing")) ?></label>
+    </p>
+
+    <p class="onlyoffice-header">
+        <?php p($l->t("The customization section allows personalizing the editor interface")) ?>
+    </p>
 
     <p>
         <input type="checkbox" class="checkbox" id="onlyofficeChat"
