@@ -66,6 +66,7 @@ OC.L10N.register(
     "Final": "Final",
     "Original": "Original",
     "version": "versión",
-    "Disable certificate verification (insecure)": "Desactivar la verificación de certificados (inseguro)"
+    "Disable certificate verification (insecure)": "Desactivar la verificación de certificados (inseguro)",
+    "Keep intermediate versions when editing": "Mantener las versiones intermedias durante la edición"
 },
 "nplurals=2; plural=(n != 1);");
