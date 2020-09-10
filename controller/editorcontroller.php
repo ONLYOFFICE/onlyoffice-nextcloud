@@ -39,6 +39,7 @@ use OCP\IUserSession;
 use OCP\Share\IManager;
 
 use OCA\Files\Helper;
+use OCA\Files_Sharing\External\Storage as SharingExternalStorage;
 use OCA\Files_Versions\Versions\IVersionManager;
 
 use OCA\Onlyoffice\AppConfig;
@@ -961,6 +962,11 @@ class EditorController extends Controller {
         }
 
         $params = $this->setCustomization($params);
+
+        if ($file->getStorage()->instanceOfStorage(SharingExternalStorage::class)) {
+            //otherwise forcesave will delete the key
+            $params["editorConfig"]["customization"]["forcesave"] = false;
+        }
 
         $params = $this->setWatermark($params, !empty($shareToken), $userId, $file);
 
