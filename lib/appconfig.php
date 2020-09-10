@@ -208,13 +208,6 @@ class AppConfig {
     public $_customization_customer = "customization_customer";
 
     /**
-     * The config key for the feedback
-     *
-     * @var string
-     */
-    public $_customization_feedback = "customization_feedback";
-
-    /**
      * The config key for the loaderLogo
      *
      * @var string

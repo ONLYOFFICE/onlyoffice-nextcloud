@@ -1128,11 +1128,6 @@ class EditorController extends Controller {
             $params["editorConfig"]["customization"]["customer"] = $customer;
         }
 
-        $feedback = $this->config->GetSystemValue($this->config->_customization_feedback);
-        if (isset($feedback)) {
-            $params["editorConfig"]["customization"]["feedback"] = $feedback;
-        }
-
         $loaderLogo = $this->config->GetSystemValue($this->config->_customization_loaderLogo);
         if (isset($loaderLogo)) {
             $params["editorConfig"]["customization"]["loaderLogo"] = $loaderLogo;
