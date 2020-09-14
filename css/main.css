@@ -40,6 +40,9 @@ body.onlyoffice-inline .searchbox,
 body.onlyoffice-inline #app-content #controls {
     display: none;
 }
+body.onlyoffice-inline #app-navigation-toggle {
+    display: none !important;
+}
 body.onlyoffice-inline #content #app-content {
     margin-left: 0;
 }
