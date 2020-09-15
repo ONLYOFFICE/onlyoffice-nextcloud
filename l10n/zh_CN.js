@@ -79,11 +79,12 @@ OC.L10N.register(
     "Show watermark on link shares with specific system tags" : "在有特定系统标签的分享链接中展示水印",
     "Select tag" : "选择标签",
     "Select file to compare" : "选择文件比较",
+    "Review mode for viewing": "审阅模式浏览",
     "Markup": "修订",
     "Final": "最终版",
     "Original": "原始版本",
     "version": "版本",
     "Disable certificate verification (insecure)": "关闭证书校验(不安全)",
-    "Review mode for viewing": "审阅模式浏览"
+    "Keep intermediate versions when editing": "编辑时保留中间版本"
 },
 "nplurals=2; plural=(n != 1);");
