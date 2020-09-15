@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<database>
+  <name>*dbname*</name>
+  <create>true</create>
+  <overwrite>false</overwrite>
+  <charset>utf8</charset>
+  <table>
+    <name>*dbprefix*onlyoffice_filekey</name>
+    <declaration>
+      <field>
+        <name>id</name>
+        <type>integer</type>
+        <default>0</default>
+        <notnull>true</notnull>
+        <autoincrement>1</autoincrement>
+      </field>
+      <field>
+        <name>file_id</name>
+        <type>bigint</type>
+        <default>-1</default>
+        <comments>internal file identifier</comments>
+      </field>
+      <field>
+        <name>key</name>
+        <type>text</type>
+        <notnull>true</notnull>
+        <length>128</length>
+        <comments>unique key for the docoment server</comments>
+      </field>
+      <field>
+        <name>lock</name>
+        <type>integer</type>
+        <default>0</default>
+        <notnull>true</notnull>
+        <comments>do not delete on file change</comments>
+      </field>
+      <field>
+        <name>fs</name>
+        <type>integer</type>
+        <default>0</default>
+        <notnull>true</notnull>
+        <comments>last forcesave done</comments>
+      </field>
+      <index>
+        <name>file_id_index</name>
+        <unique>true</unique>
+        <field>
+          <name>file_id</name>
+          <sorting>ascending</sorting>
+        </field>
+      </index>
+    </declaration>
+  </table>
+</database>
