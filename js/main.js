@@ -103,17 +103,14 @@
             $("body").addClass("onlyoffice-inline");
 
             if (OCA.Files.Sidebar) {
-                var scrollTop = $(window).scrollTop();
-                $(OCA.Onlyoffice.frameSelector).css("top", scrollTop);
-
                 OCA.Files.Sidebar.close();
-                return;
             } else {
                 //todo: remove. only for v17
                 OC.Apps.hideAppSidebar();
             }
 
-            $("html, body").scrollTop(0);
+            var scrollTop = $(window).scrollTop();
+            $(OCA.Onlyoffice.frameSelector).css("top", scrollTop);
 
             OCA.Onlyoffice.folderUrl = location.href;
             window.history.pushState(null, null, url);
