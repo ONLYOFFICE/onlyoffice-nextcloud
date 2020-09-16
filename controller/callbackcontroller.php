@@ -37,6 +37,7 @@ use OCP\Lock\LockedException;
 use OCP\Share\Exceptions\ShareNotFound;
 use OCP\Share\IManager;
 
+use OCA\Files_Sharing\External\Storage as SharingExternalStorage;
 use OCA\Files_Versions\Versions\IVersionManager;
 
 use OCA\Onlyoffice\AppConfig;
@@ -493,6 +494,13 @@ class CallbackController extends Controller {
                     $prevIsForcesave = KeyManager::wasForcesave($fileId);
 
                     $isForcesave = $status === self::TrackerStatus_ForceSave || $status === self::TrackerStatus_CorruptedForceSave;
+
+                    if ($isForcesave
+                        && $file->getStorage()->instanceOfStorage(SharingExternalStorage::class)) {
+                        $this->logger->info("Track: $fileId status $status not allowed for external file", ["app" => $this->appName]);
+                        break;
+                    }
+
                     //lock the key when forcesave and unlock if last forcesave is broken
                     KeyManager::lock($fileId, $isForcesave);
 
