@@ -82,6 +82,7 @@ OC.L10N.register(
     "Markup": "マークアップ",
     "Final": "最終版",
     "Original": "オリジナル",
-    "version": "バージョン"
+    "version": "バージョン",
+    "Keep intermediate versions when editing": "編集時に、中間バージョンを保持する"
 },
 "nplurals=2; plural=(n != 1);");

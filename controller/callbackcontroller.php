@@ -37,10 +37,12 @@ use OCP\Lock\LockedException;
 use OCP\Share\Exceptions\ShareNotFound;
 use OCP\Share\IManager;
 
+use OCA\Files_Sharing\External\Storage as SharingExternalStorage;
 use OCA\Files_Versions\Versions\IVersionManager;
 
 use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\Crypt;
+use OCA\Onlyoffice\KeyManager;
 use OCA\Onlyoffice\DocumentService;
 use OCA\Onlyoffice\FileVersions;
 
@@ -111,21 +113,18 @@ class CallbackController extends Controller {
      * File version manager
      *
      * @var IVersionManager
-    */
+     */
     private $versionManager;
 
     /**
      * Status of the document
-     *
-     * @var Array
      */
-    private $_trackerStatus = [
-        0 => "NotFound",
-        1 => "Editing",
-        2 => "MustSave",
-        3 => "Corrupted",
-        4 => "Closed"
-    ];
+    private const TrackerStatus_Editing = 1;
+    private const TrackerStatus_MustSave = 2;
+    private const TrackerStatus_Corrupted = 3;
+    private const TrackerStatus_Closed = 4;
+    private const TrackerStatus_ForceSave = 6;
+    private const TrackerStatus_CorruptedForceSave = 7;
 
     /**
      * @param string $AppName - application name
@@ -416,14 +415,14 @@ class CallbackController extends Controller {
             $url = isset($payload->url) ? $payload->url : null;
         }
 
-        $trackerStatus = $this->_trackerStatus[$status];
-
         $result = 1;
-        switch ($trackerStatus) {
-            case "MustSave":
-            case "Corrupted":
+        switch ($status) {
+            case self::TrackerStatus_MustSave:
+            case self::TrackerStatus_Corrupted:
+            case self::TrackerStatus_ForceSave:
+            case self::TrackerStatus_CorruptedForceSave:
                 if (empty($url)) {
-                    $this->logger->error("Track without url: $fileId status $trackerStatus", ["app" => $this->appName]);
+                    $this->logger->error("Track without url: $fileId status $status", ["app" => $this->appName]);
                     return new JSONResponse(["message" => "Url not found"], Http::STATUS_BAD_REQUEST);
                 }
 
@@ -449,7 +448,7 @@ class CallbackController extends Controller {
                             // author of the callback link
                             $userId = $hashData->userId;
                             \OC_User::setUserId($userId);
-                            $this->logger->debug("Track for $userId: $fileId status $trackerStatus", ["app" => $this->appName]);
+                            $this->logger->debug("Track for $userId: $fileId status $status", ["app" => $this->appName]);
 
                             $user = $this->userManager->get($userId);
                             if (!empty($user)) {
@@ -492,12 +491,31 @@ class CallbackController extends Controller {
 
                     $newData = $documentService->Request($url);
 
+                    $prevIsForcesave = KeyManager::wasForcesave($fileId);
+
+                    $isForcesave = $status === self::TrackerStatus_ForceSave || $status === self::TrackerStatus_CorruptedForceSave;
+
+                    if ($isForcesave
+                        && $file->getStorage()->instanceOfStorage(SharingExternalStorage::class)) {
+                        $this->logger->info("Track: $fileId status $status not allowed for external file", ["app" => $this->appName]);
+                        break;
+                    }
+
+                    //lock the key when forcesave and unlock if last forcesave is broken
+                    KeyManager::lock($fileId, $isForcesave);
+
                     $this->logger->debug("Track put content " . $file->getPath(), ["app" => $this->appName]);
                     $this->retryOperation(function () use ($file, $newData) {
                         return $file->putContent($newData);
                     });
 
-                    if ($this->versionManager !== null) {
+                    //unlock key for future federated save
+                    KeyManager::lock($fileId, false);
+                    KeyManager::setForcesave($fileId, $isForcesave);
+
+                    if (!$isForcesave
+                        && !$prevIsForcesave
+                        && $this->versionManager !== null) {
                         $changes = null;
                         if (!empty($changesurl)) {
                             $changesurl = $this->config->ReplaceDocumentServerUrlToInternal($changesurl);
@@ -508,12 +526,12 @@ class CallbackController extends Controller {
 
                     $result = 0;
                 } catch (\Exception $e) {
-                    $this->logger->logException($e, ["message" => "Track: $fileId status $trackerStatus error", "app" => $this->appName]);
+                    $this->logger->logException($e, ["message" => "Track: $fileId status $status error", "app" => $this->appName]);
                 }
                 break;
 
-            case "Editing":
-            case "Closed":
+            case self::TrackerStatus_Editing:
+            case self::TrackerStatus_Closed:
                 $result = 0;
                 break;
         }

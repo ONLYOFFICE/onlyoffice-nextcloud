@@ -1,5 +1,14 @@
 # Change Log
 
+## 6.0.0
+## Added
+- saving intermediate versions when editing
+- Chinese translation
+
+## Changed
+- fix image insertion
+- fix styles for inline editor
+
 ## 5.0.0
 ## Added
 - support for OpenDocument Templates

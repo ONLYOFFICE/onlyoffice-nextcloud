@@ -39,6 +39,7 @@ use OCP\IUserSession;
 use OCP\Share\IManager;
 
 use OCA\Files\Helper;
+use OCA\Files_Sharing\External\Storage as SharingExternalStorage;
 use OCA\Files_Versions\Versions\IVersionManager;
 
 use OCA\Onlyoffice\AppConfig;
@@ -962,6 +963,11 @@ class EditorController extends Controller {
 
         $params = $this->setCustomization($params);
 
+        if ($file->getStorage()->instanceOfStorage(SharingExternalStorage::class)) {
+            //otherwise forcesave will delete the key
+            $params["editorConfig"]["customization"]["forcesave"] = false;
+        }
+
         $params = $this->setWatermark($params, !empty($shareToken), $userId, $file);
 
         if ($this->config->UseDemo()) {
@@ -1104,14 +1110,14 @@ class EditorController extends Controller {
             $params["editorConfig"]["customization"]["feedback"] = true;
         }
 
+        //default is false
+        if ($this->config->GetCustomizationForcesave() === true) {
+            $params["editorConfig"]["customization"]["forcesave"] = true;
+        }
+
         //default is true
         if ($this->config->GetCustomizationHelp() === false) {
             $params["editorConfig"]["customization"]["help"] = false;
-        }
-
-        //default is false
-        if ($this->config->GetCustomizationToolbarNoTabs() === true) {
-            $params["editorConfig"]["customization"]["toolbarNoTabs"] = true;
         }
 
         //default is original
@@ -1120,17 +1126,22 @@ class EditorController extends Controller {
             $params["editorConfig"]["customization"]["reviewDisplay"] = $reviewDisplay;
         }
 
+        //default is false
+        if ($this->config->GetCustomizationToolbarNoTabs() === true) {
+            $params["editorConfig"]["customization"]["toolbarNoTabs"] = true;
+        }
+
 
         /* from system config */
+
+        $autosave = $this->config->GetSystemValue($this->config->_customization_autosave);
+        if (isset($autosave)) {
+            $params["editorConfig"]["customization"]["autosave"] = $autosave;
+        }
 
         $customer = $this->config->GetSystemValue($this->config->_customization_customer);
         if (isset($customer)) {
             $params["editorConfig"]["customization"]["customer"] = $customer;
-        }
-
-        $feedback = $this->config->GetSystemValue($this->config->_customization_feedback);
-        if (isset($feedback)) {
-            $params["editorConfig"]["customization"]["feedback"] = $feedback;
         }
 
         $loaderLogo = $this->config->GetSystemValue($this->config->_customization_loaderLogo);
@@ -1151,11 +1162,6 @@ class EditorController extends Controller {
         $zoom = $this->config->GetSystemValue($this->config->_customization_zoom);
         if (isset($zoom)) {
             $params["editorConfig"]["customization"]["zoom"] = $zoom;
-        }
-
-        $autosave = $this->config->GetSystemValue($this->config->_customization_autosave);
-        if (isset($autosave)) {
-            $params["editorConfig"]["customization"]["autosave"] = $autosave;
         }
 
         return $params;

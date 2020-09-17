@@ -104,13 +104,13 @@
 
             if (OCA.Files.Sidebar) {
                 OCA.Files.Sidebar.close();
-                return;
             } else {
                 //todo: remove. only for v17
                 OC.Apps.hideAppSidebar();
             }
 
-            $("html, body").scrollTop(0);
+            var scrollTop = $(window).scrollTop();
+            $(OCA.Onlyoffice.frameSelector).css("top", scrollTop);
 
             OCA.Onlyoffice.folderUrl = location.href;
             window.history.pushState(null, null, url);
@@ -118,11 +118,15 @@
     };
 
     OCA.Onlyoffice.ShowHeaderButton = function () {
+        if ($("#onlyofficeHeader").length) {
+            return;
+        }
+
         var wrapper = $("<div id='onlyofficeHeader' />")
 
         var btnClose = $("<a class='icon icon-close-white'></a>");
         btnClose.on("click", function() {
-            OCA.Onlyoffice.CloseEditor();
+            OCA.Onlyoffice.onRequestClose();
         });
         wrapper.prepend(btnClose);
 

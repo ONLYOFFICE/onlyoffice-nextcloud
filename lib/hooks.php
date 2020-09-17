@@ -24,6 +24,7 @@ use OC\Files\Filesystem;
 use OCP\Util;
 
 use OCA\Onlyoffice\FileVersions;
+use OCA\Onlyoffice\KeyManager;
 
 /**
  * The class to handle the filesystem hooks
@@ -42,6 +43,9 @@ class Hooks {
     public static function connectHooks() {
         // Listen user deletion
         Util::connectHook("OC_User", "pre_deleteUser", Hooks::class, "userDelete");
+
+        // Listen file change
+        Util::connectHook("OC_Filesystem", "write", Hooks::class, "fileUpdate");
 
         // Listen file deletion
         Util::connectHook("OC_Filesystem", "delete", Hooks::class, "fileDelete");
@@ -65,6 +69,27 @@ class Hooks {
     }
 
     /**
+     * Listen of file change
+     *
+     * @param array $params - hook params
+     */
+    public static function fileUpdate($params) {
+        $filePath = $params[Filesystem::signal_param_path];
+        if (empty($filePath)) {
+            return;
+        }
+
+        $fileInfo = Filesystem::getFileInfo($filePath);
+        if ($fileInfo === false) {
+            return;
+        }
+
+        $fileId = $fileInfo->getId();
+
+        KeyManager::delete($fileId);
+    }
+
+    /**
      * Erase versions of deleted file
      *
      * @param array $params - hook params
@@ -79,7 +104,13 @@ class Hooks {
             $ownerId = Filesystem::getOwner($filePath);
 
             $fileInfo = Filesystem::getFileInfo($filePath);
+            if ($fileInfo === false) {
+                return;
+            }
+
             $fileId = $fileInfo->getId();
+
+            KeyManager::delete($fileId, true);
 
             FileVersions::deleteAllVersions($ownerId, $fileId);
         } catch (\Exception $e) {
@@ -107,6 +138,10 @@ class Hooks {
             $ownerId = Filesystem::getOwner($filePath);
 
             $fileInfo = Filesystem::getFileInfo($filePath);
+            if ($fileInfo === false) {
+                return;
+            }
+
             $fileId = $fileInfo->getId();
 
             FileVersions::deleteVersion($ownerId, $fileId, $versionId);
@@ -132,6 +167,10 @@ class Hooks {
             $ownerId = Filesystem::getOwner($filePath);
 
             $fileInfo = Filesystem::getFileInfo($filePath);
+            if ($fileInfo === false) {
+                return;
+            }
+
             $fileId = $fileInfo->getId();
 
             FileVersions::deleteVersion($ownerId, $fileId, $versionId);
