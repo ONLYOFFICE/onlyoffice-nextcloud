@@ -22,13 +22,17 @@ namespace OCA\Onlyoffice;
 use OC\Files\View;
 use OC\Preview\Provider;
 
+use OCP\AppFramework\QueryException;
 use OCP\Files\FileInfo;
+use OCP\Files\IRootFolder;
 use OCP\IL10N;
 use OCP\ILogger;
 use OCP\Image;
 use OCP\ISession;
 use OCP\IURLGenerator;
 use OCP\Share\IManager;
+
+use OCA\Files_Versions\Versions\IVersionManager;
 
 use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\Crypt;
@@ -49,6 +53,13 @@ class Preview extends Provider {
      * @var string
      */
     private $appName;
+
+    /**
+     * Root folder
+     *
+     * @var IRootFolder
+     */
+    private $root;
 
     /**
      * Logger
@@ -84,6 +95,13 @@ class Preview extends Provider {
      * @var Crypt
      */
     private $crypt;
+
+    /**
+     * File version manager
+     *
+     * @var IVersionManager
+    */
+    private $versionManager;
 
     /**
      * File utility
@@ -135,6 +153,7 @@ class Preview extends Provider {
 
     /**
      * @param string $appName - application name
+     * @param IRootFolder $root - root folder
      * @param ILogger $logger - logger
      * @param IL10N $trans - l10n service
      * @param AppConfig $config - application configuration
@@ -144,6 +163,7 @@ class Preview extends Provider {
      * @param ISession $session - session
      */
     public function __construct(string $appName,
+                                    IRootFolder $root,
                                     ILogger $logger,
                                     IL10N $trans,
                                     AppConfig $config,
@@ -153,11 +173,20 @@ class Preview extends Provider {
                                     ISession $session
                                     ) {
         $this->appName = $appName;
+        $this->root = $root;
         $this->logger = $logger;
         $this->trans = $trans;
         $this->config = $config;
         $this->urlGenerator = $urlGenerator;
         $this->crypt = $crypt;
+
+        if (\OC::$server->getAppManager()->isInstalled("files_versions")) {
+            try {
+                $this->versionManager = \OC::$server->query(IVersionManager::class);
+            } catch (QueryException $e) {
+                $this->logger->logException($e, ["message" => "VersionManager init error", "app" => $this->appName]);
+            }
+        }
 
         $this->fileUtility = new FileUtility($appName, $trans, $logger, $config, $shareManager, $session);
     }
@@ -255,10 +284,11 @@ class Preview extends Provider {
      *
      * @param File $file - file
      * @param IUser $user - user with access
+     * @param int $version - file version
      *
      * @return string
      */
-    private function getUrl($file, $user = null) {
+    private function getUrl($file, $user = null, $version = 0) {
 
         $data = [
             "action" => "download",
@@ -269,6 +299,9 @@ class Preview extends Provider {
         if (!empty($user)) {
             $userId = $user->getUID();
             $data["userId"] = $userId;
+        }
+        if ($version > 0) {
+            $data["version"] = $version;
         }
 
         $hashUrl = $this->crypt->GetHash($data);
@@ -300,14 +333,41 @@ class Preview extends Provider {
         $owner = $fileInfo->getOwner();
 
         $key = null;
+        $versionNum = 0;
         if (FileVersions::splitPathVersion($path) !== false) {
-            return [null, null, null];
+            if ($this->versionManager === null || $owner === null) {
+                return [null, null, null];
+            }
+
+            $versionFolder = new View("/" . $owner->getUID() . "/files_versions");
+            $absolutePath = $fileInfo->getPath();
+            $relativePath = $versionFolder->getRelativePath($absolutePath);
+
+            list ($filePath, $fileVersion) = FileVersions::splitPathVersion($relativePath);
+
+            $sourceFile = $this->root->getUserFolder($owner->getUID())->get($filePath);
+
+            $fileInfo = $sourceFile->getFileInfo();
+
+            $versions = array_reverse($this->versionManager->getVersionsForFile($owner, $fileInfo));
+
+            foreach ($versions as $version) {
+                $versionNum = $versionNum + 1;
+
+                $versionId = $version->getRevisionId();
+                if (strcmp($versionId, $fileVersion) === 0) {
+                    $key = $this->fileUtility->getVersionKey($version);
+                    $key = DocumentService::GenerateRevisionId($key);
+
+                    break;
+                }
+            }
         } else {
             $key = $this->fileUtility->getKey($fileInfo);
             $key = DocumentService::GenerateRevisionId($key);
         }
 
-        $fileUrl = $this->getUrl($fileInfo, $owner);
+        $fileUrl = $this->getUrl($fileInfo, $owner, $versionNum);
 
         $fileExtension = $fileInfo->getExtension();
 
