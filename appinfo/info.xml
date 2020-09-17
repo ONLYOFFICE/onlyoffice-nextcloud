@@ -13,7 +13,7 @@
     </types>
     <documentation>
         <admin>https://api.onlyoffice.com/editors/nextcloud</admin>
-        <developer>https://api.onlyoffice.com/editors/nextcloud</developer>
+        <developer>https://github.com/ONLYOFFICE/onlyoffice-nextcloud</developer>
         <user>https://api.onlyoffice.com/editors/nextcloud</user>
     </documentation>
     <category>files</category>
