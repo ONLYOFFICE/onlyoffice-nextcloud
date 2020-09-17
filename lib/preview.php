@@ -224,6 +224,9 @@ class Preview extends Provider {
      * @return bool
      */
     public function isAvailable(FileInfo $fileInfo) {
+        if ($this->config->GetPreview() !== true) {
+            return false;
+        }
         if (!in_array($fileInfo->getMimetype(), self::$capabilities, true)) {
             return false;
         }
