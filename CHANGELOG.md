@@ -1,5 +1,8 @@
 # Change Log
 
+## Added
+- use guest name from talk
+
 ## 6.0.2
 ## Changed
 - compatible with Nextcloud 20

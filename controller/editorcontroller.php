@@ -779,13 +779,14 @@ class EditorController extends Controller {
      * @param integer $version - file version
      * @param integer $inframe - open in frame. 0 - no, 1 - yes, 2 - without goback for old editor (5.4)
      * @param bool $desktop - desktop label
+     * @param string $guestName - nickname not logged user
      *
      * @return array
      *
      * @NoAdminRequired
      * @PublicPage
      */
-    public function config($fileId, $filePath = null, $shareToken = null, $directToken = null, $version = 0, $inframe = 0, $desktop = false) {
+    public function config($fileId, $filePath = null, $shareToken = null, $directToken = null, $version = 0, $inframe = 0, $desktop = false, $guestName = null) {
 
         if (!empty($directToken)) {
             list ($directData, $error) = $this->crypt->ReadHash($directToken);
@@ -905,6 +906,10 @@ class EditorController extends Controller {
             $params["editorConfig"]["user"] = [
                 "id" => $this->buildUserId($userId),
                 "name" => $user->getDisplayName()
+            ];
+        } else if (!empty($guestName)) {
+            $params["editorConfig"]["user"] = [
+                "name" => $guestName
             ];
         }
 
