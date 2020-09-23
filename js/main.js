@@ -84,7 +84,8 @@
                     fileId: fileId
                 });
         }
-
+		if (readonly)
+			url += '&readonly=1';
         if (version > 0) {
             url += "&version=" + version;
         }
