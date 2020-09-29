@@ -710,7 +710,7 @@ class EditorController extends Controller {
         $response = null;
         if ($inframe === true) {
             $params["inframe"] = true;
-            $response = new TemplateResponse($this->appName, "editor", $params, "plain");
+            $response = new TemplateResponse($this->appName, "editor", $params, "base");
         } else {
             if ($isLoggedIn) {
                 $response = new TemplateResponse($this->appName, "editor", $params);
