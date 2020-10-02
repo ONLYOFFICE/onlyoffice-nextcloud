@@ -220,8 +220,11 @@ class CallbackController extends Controller {
         }
 
         $userId = null;
+
+        $user = null;
         if ($this->userSession->isLoggedIn()) {
-            $userId = $this->userSession->getUser()->getUID();
+            $user = $this->userSession->getUser();
+            $userId = $user->getUID();
         } else {
             \OC_Util::tearDownFS();
 
@@ -246,6 +249,13 @@ class CallbackController extends Controller {
         if ($this->userSession->isLoggedIn() && !$file->isReadable()) {
             $this->logger->error("Download without access right", ["app" => $this->appName]);
             return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
+        }
+
+        if (empty($user)) {
+            $owner = $file->getFileInfo()->getOwner();
+            if ($owner !== null) {
+                \OC_Util::setupFS($owner->getUID());
+            }
         }
 
         if ($changes) {
@@ -467,6 +477,13 @@ class CallbackController extends Controller {
                     if (isset($error)) {
                         $this->logger->error("track error $fileId " . json_encode($error->getData()),  ["app" => $this->appName]);
                         return $error;
+                    }
+
+                    if (empty($user)) {
+                        $owner = $file->getFileInfo()->getOwner();
+                        if ($owner !== null) {
+                            \OC_Util::setupFS($owner->getUID());
+                        }
                     }
 
                     $url = $this->config->ReplaceDocumentServerUrlToInternal($url);
