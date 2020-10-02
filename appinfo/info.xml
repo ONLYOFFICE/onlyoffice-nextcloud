@@ -35,4 +35,7 @@
         <admin>OCA\Onlyoffice\AdminSettings</admin>
         <admin-section>OCA\Onlyoffice\AdminSection</admin-section>
     </settings>
+    <commands>
+        <command>OCA\Onlyoffice\Command\DocumentServer</command>
+    </commands>
 </info>
