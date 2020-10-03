@@ -1,5 +1,9 @@
 # Change Log
 
+## 6.0.2
+## Changed
+- compatible with Nextcloud 20
+
 ## 6.0.0
 ## Added
 - saving intermediate versions when editing

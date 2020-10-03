@@ -79,6 +79,7 @@ OC.L10N.register(
     "Show watermark on link shares with specific system tags" : "Wasserzeichen auf Link-Freigaben mit bestimmten System-Tags anzeigen",
     "Select tag" : "Wählen Sie ein Tag",
     "Select file to compare" : "Datei zum Vergleich auswählen",
+    "Review mode for viewing": "Review-Modus zum Anzeigen",
     "Markup": "Markup",
     "Final": "Endgültig",
     "Original": "Original",
