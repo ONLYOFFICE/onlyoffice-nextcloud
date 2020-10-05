@@ -23,6 +23,7 @@ use OC\Files\Node\File;
 use OC\Files\View;
 
 use OCP\Files\FileInfo;
+use OCP\IUser;
 
 /**
  * File versions
@@ -51,6 +52,13 @@ class FileVersions {
      * @var string
      */
     private static $historyExt = ".json";
+
+    /**
+     * File name contain author
+     *
+     * @var string
+     */
+    private static $authorExt = "_author.json";
 
     /**
      * Split file path and version id
@@ -325,6 +333,46 @@ class FileVersions {
         if ($view->file_exists($changesPath)) {
             $view->unlink($changesPath);
             $logger->debug("deleteVersion $changesPath", ["app" => self::$appName]);
+        }
+    }
+
+    /**
+     * Save file author
+     *
+     * @param FileInfo $fileInfo - file info
+     * @param IUser $author - version author
+     */
+    public static function saveAuthor($fileInfo, $author) {
+        $logger = \OC::$server->getLogger();
+
+        if ($fileInfo === null || $author === null) {
+            return;
+        }
+
+        $owner = $fileInfo->getOwner();
+        if ($owner === null) {
+            return;
+        }
+
+        $ownerId = $owner->getUID();
+        $fileId = $fileInfo->getId();
+        $versionId = $fileInfo->getMtime();
+
+        list ($view, $path) = self::getView($ownerId, $fileId, true);
+
+        try {
+            $authorPath = $path . "/" . $versionId . self::$authorExt;
+            $view->touch($authorPath);
+
+            $authorData = [
+                "id" => $author->getUID(),
+                "name" => $author->getDisplayName()
+            ];
+            $view->file_put_contents($authorPath, json_encode($authorData));
+
+            $logger->debug("saveAuthor: $fileId for $ownerId stored author $authorPath", ["app" => self::$appName]);
+        } catch (\Exception $e) {
+            $logger->logException($e, ["message" => "saveAuthor: save $fileId author error", "app" => self::$appName]);
         }
     }
 }
