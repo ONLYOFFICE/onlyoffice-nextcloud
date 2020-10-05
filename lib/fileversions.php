@@ -375,4 +375,36 @@ class FileVersions {
             $logger->logException($e, ["message" => "saveAuthor: save $fileId author error", "app" => self::$appName]);
         }
     }
+
+    /**
+     * Get version author id and name
+     *
+     * @param string $ownerId - file owner id
+     * @param string $fileId - file id
+     * @param string $versionId - file version
+     *
+     * @return array
+     */
+    public static function getAuthor($ownerId, $fileId, $versionId) {
+        if ($ownerId === null || $fileId === null) {
+            return null;
+        }
+
+        list ($view, $path) = self::getView($ownerId, $fileId);
+        if ($view === null) {
+            return null;
+        }
+
+        $authorPath = $path . "/" . $versionId . self::$authorExt;
+        if (!$view->file_exists($authorPath)) {
+            return null;
+        }
+
+        $authorDataString = $view->file_get_contents($authorPath);
+        $author = json_decode($authorDataString, true);
+
+        \OC::$server->getLogger()->debug("getAuthor: $fileId v.$versionId for $ownerId get author $authorPath", ["app" => self::$appName]);
+
+        return $author;
+    }
 }
