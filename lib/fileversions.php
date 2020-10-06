@@ -407,4 +407,35 @@ class FileVersions {
 
         return $author;
     }
+
+    /**
+     * Delete version author info
+     *
+     * @param string $ownerId - file owner id
+     * @param string $fileId - file id
+     * @param string $versionId - file version
+    */
+    public static function deleteAuthor($ownerId, $fileId, $versionId) {
+        $logger = \OC::$server->getLogger();
+
+        $logger->debug("deleteAuthor $fileId ($versionId)", ["app" => self::$appName]);
+
+        if ($ownerId === null) {
+            return;
+        }
+        if ($fileId === null || empty($versionId)) {
+            return;
+        }
+
+        list ($view, $path) = self::getView($ownerId, $fileId);
+        if ($view === null) {
+            return null;
+        }
+
+        $authorPath = $path . "/" . $versionId . self::$authorExt;
+        if ($view->file_exists($authorPath)) {
+            $view->unlink($authorPath);
+            $logger->debug("deleteAuthor $authorPath", ["app" => self::$appName]);
+        }
+    }
 }
