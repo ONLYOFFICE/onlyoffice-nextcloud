@@ -101,12 +101,16 @@ class Hooks {
         }
 
         try {
-            $ownerId = Filesystem::getOwner($filePath);
-
             $fileInfo = Filesystem::getFileInfo($filePath);
             if ($fileInfo === false) {
                 return;
             }
+
+            $owner = $fileInfo->getOwner();
+            if (empty($owner)) {
+                return;
+            }
+            $ownerId = $owner->getUID();
 
             $fileId = $fileInfo->getId();
 
@@ -134,13 +138,16 @@ class Hooks {
             if (empty($filePath)) {
                 return;
             }
-
-            $ownerId = Filesystem::getOwner($filePath);
-
             $fileInfo = Filesystem::getFileInfo($filePath);
             if ($fileInfo === false) {
                 return;
             }
+
+            $owner = $fileInfo->getOwner();
+            if (empty($owner)) {
+                return;
+            }
+            $ownerId = $owner->getUID();
 
             $fileId = $fileInfo->getId();
 
@@ -164,12 +171,16 @@ class Hooks {
         $versionId = $params["revision"];
 
         try {
-            $ownerId = Filesystem::getOwner($filePath);
-
             $fileInfo = Filesystem::getFileInfo($filePath);
             if ($fileInfo === false) {
                 return;
             }
+
+            $owner = $fileInfo->getOwner();
+            if (empty($owner)) {
+                return;
+            }
+            $ownerId = $owner->getUID();
 
             $fileId = $fileInfo->getId();
 
