@@ -22,6 +22,8 @@ namespace OCA\Onlyoffice;
 use OC\Files\Node\File;
 use OC\Files\View;
 
+use OCP\Files\FileInfo;
+
 /**
  * File versions
  *
@@ -70,7 +72,7 @@ class FileVersions {
     /**
      * Check if folder is not exist
      *
-     * @param string $userId - user id
+     * @param View $view - view
      * @param string $path - folder path
      * @param bool $createIfNotExist - create folder if not exist
      *
@@ -90,7 +92,7 @@ class FileVersions {
     /**
      * Get view and path for changes
      *
-     * @param string $user - user id
+     * @param string $userId - user id
      * @param string $fileId - file id
      * @param bool $createIfNotExist - create folder if not exist
      *
@@ -227,7 +229,7 @@ class FileVersions {
     /**
      * Save history to storage
      *
-     * @param OCP\Files\FileInfo $fileInfo - file info
+     * @param FileInfo $fileInfo - file info
      * @param array $history - file history
      * @param string $changes - file changes
      * @param string $prevVersion - previous version for check
