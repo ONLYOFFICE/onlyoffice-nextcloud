@@ -331,6 +331,10 @@ class SettingsController extends Controller {
 
             $convertedFileUri = $documentService->GetConvertedUri($fileUrl, "docx", "docx", "check_" . rand());
 
+            if (strcmp($convertedFileUri, $fileUrl) === 0) {
+                $this->logger->debug("GetConvertedUri skipped", ["app" => $this->appName]);
+            }
+
         } catch (\Exception $e) {
             $this->logger->logException($e, ["message" => "GetConvertedUri on check error", "app" => $this->appName]);
             return [$e->getMessage(), $version];
