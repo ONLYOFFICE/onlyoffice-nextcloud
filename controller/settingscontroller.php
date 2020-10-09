@@ -310,10 +310,7 @@ class SettingsController extends Controller {
                 throw new \Exception($this->trans->t("Error occurred in the document service"));
             }
 
-            $version = floatval($commandResponse->version);
-            if ($version > 0.0 && $version < 4.2) {
-                throw new \Exception($this->trans->t("Not supported version"));
-            }
+            $version = $commandResponse->version;
 
         } catch (\Exception $e) {
             $this->logger->logException($e, ["message" => "CommandRequest on check error", "app" => $this->appName]);
