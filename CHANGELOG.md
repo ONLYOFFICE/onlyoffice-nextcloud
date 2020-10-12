@@ -4,6 +4,7 @@
 - use guest name from talk
 - connection test command
 - store author name for version
+- generate file preview
 
 ## Changed
 - Nextcloud v17 is no longer supported
