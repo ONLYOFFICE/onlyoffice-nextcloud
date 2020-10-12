@@ -3,6 +3,7 @@
 ## Added
 - use guest name from talk
 - connection test command
+- store author name for version
 
 ## 6.0.2
 ## Changed
