@@ -2,6 +2,7 @@
 
 ## Added
 - use guest name from talk
+- connection test command
 
 ## 6.0.2
 ## Changed

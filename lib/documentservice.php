@@ -31,6 +31,13 @@ use OCA\Onlyoffice\AppConfig;
 class DocumentService {
 
     /**
+     * Application name
+     *
+     * @var string
+     */
+    private static $appName = "onlyoffice";
+
+    /**
      * l10n service
      *
      * @var IL10N
@@ -358,5 +365,88 @@ class DocumentService {
         }
 
         return $response->getBody();
+    }
+
+    /**
+     * Checking document service location
+     *
+     * @param OCP\IURLGenerator $urlGenerator - url generator
+     * @param OCA\Onlyoffice\Crypt $crypt -crypt
+     * 
+     * @return array
+     */
+    public function checkDocServiceUrl($urlGenerator, $crypt) {
+        $logger = \OC::$server->getLogger();
+        $version = null;
+
+        try {
+
+            if (preg_match("/^https:\/\//i", $urlGenerator->getAbsoluteURL("/"))
+                && preg_match("/^http:\/\//i", $this->config->GetDocumentServerUrl())) {
+                throw new \Exception($this->trans->t("Mixed Active Content is not allowed. HTTPS address for Document Server is required."));
+            }
+
+        } catch (\Exception $e) {
+            $logger->logException($e, ["message" => "Protocol on check error", "app" => self::$appName]);
+            return [$e->getMessage(), $version];
+        }
+
+        try {
+
+            $healthcheckResponse = $this->HealthcheckRequest();
+            if (!$healthcheckResponse) {
+                throw new \Exception($this->trans->t("Bad healthcheck status"));
+            }
+
+        } catch (\Exception $e) {
+            $logger->logException($e, ["message" => "HealthcheckRequest on check error", "app" => self::$appName]);
+            return [$e->getMessage(), $version];
+        }
+
+        try {
+
+            $commandResponse = $this->CommandRequest("version");
+
+            $logger->debug("CommandRequest on check: " . json_encode($commandResponse), ["app" => self::$appName]);
+
+            if (empty($commandResponse)) {
+                throw new \Exception($this->trans->t("Error occurred in the document service"));
+            }
+
+            $version = $commandResponse->version;
+
+        } catch (\Exception $e) {
+            $logger->logException($e, ["message" => "CommandRequest on check error", "app" => self::$appName]);
+            return [$e->getMessage(), $version];
+        }
+
+        $convertedFileUri = null;
+        try {
+
+            $hashUrl = $crypt->GetHash(["action" => "empty"]);
+            $fileUrl = $urlGenerator->linkToRouteAbsolute(self::$appName . ".callback.emptyfile", ["doc" => $hashUrl]);
+            if (!empty($this->config->GetStorageUrl())) {
+                $fileUrl = str_replace($urlGenerator->getAbsoluteURL("/"), $this->config->GetStorageUrl(), $fileUrl);
+            }
+
+            $convertedFileUri = $this->GetConvertedUri($fileUrl, "docx", "docx", "check_" . rand());
+
+            if (strcmp($convertedFileUri, $fileUrl) === 0) {
+                $this->logger->debug("GetConvertedUri skipped", ["app" => $this->appName]);
+            }
+
+        } catch (\Exception $e) {
+            $logger->logException($e, ["message" => "GetConvertedUri on check error", "app" => self::$appName]);
+            return [$e->getMessage(), $version];
+        }
+
+        try {
+            $this->Request($convertedFileUri);
+        } catch (\Exception $e) {
+            $logger->logException($e, ["message" => "Request converted file on check error", "app" => self::$appName]);
+            return [$e->getMessage(), $version];
+        }
+
+        return ["", $version];
     }
 }
