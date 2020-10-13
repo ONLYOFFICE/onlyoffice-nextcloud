@@ -449,15 +449,16 @@ class EditorController extends Controller {
             $fileId = $file->getId();
         }
 
-        $owner = null;
         $ownerId = null;
+        $owner = $file->getFileInfo()->getOwner();
+        if ($owner !== null) {
+            $ownerId = $owner->getUID();
+        }
+
         $versions = array();
-        if ($this->versionManager !== null) {
-            $owner = $file->getFileInfo()->getOwner();
-            if ($owner !== null) {
-                $ownerId = $owner->getUID();
-                $versions = array_reverse($this->versionManager->getVersionsForFile($owner, $file->getFileInfo()));
-            }
+        if ($this->versionManager !== null
+            && $owner !== null) {
+            $versions = array_reverse($this->versionManager->getVersionsForFile($owner, $file->getFileInfo()));
         }
 
         $prevVersion = "";
