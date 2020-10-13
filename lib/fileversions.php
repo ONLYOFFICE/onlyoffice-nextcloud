@@ -23,6 +23,7 @@ use OC\Files\Node\File;
 use OC\Files\View;
 
 use OCP\Files\FileInfo;
+use OCP\IUser;
 
 /**
  * File versions
@@ -51,6 +52,13 @@ class FileVersions {
      * @var string
      */
     private static $historyExt = ".json";
+
+    /**
+     * File name contain author
+     *
+     * @var string
+     */
+    private static $authorExt = "_author.json";
 
     /**
      * Split file path and version id
@@ -325,6 +333,109 @@ class FileVersions {
         if ($view->file_exists($changesPath)) {
             $view->unlink($changesPath);
             $logger->debug("deleteVersion $changesPath", ["app" => self::$appName]);
+        }
+    }
+
+    /**
+     * Save file author
+     *
+     * @param FileInfo $fileInfo - file info
+     * @param IUser $author - version author
+     */
+    public static function saveAuthor($fileInfo, $author) {
+        $logger = \OC::$server->getLogger();
+
+        if ($fileInfo === null || $author === null) {
+            return;
+        }
+
+        $owner = $fileInfo->getOwner();
+        if ($owner === null) {
+            return;
+        }
+
+        $ownerId = $owner->getUID();
+        $fileId = $fileInfo->getId();
+        $versionId = $fileInfo->getMtime();
+
+        list ($view, $path) = self::getView($ownerId, $fileId, true);
+
+        try {
+            $authorPath = $path . "/" . $versionId . self::$authorExt;
+            $view->touch($authorPath);
+
+            $authorData = [
+                "id" => $author->getUID(),
+                "name" => $author->getDisplayName()
+            ];
+            $view->file_put_contents($authorPath, json_encode($authorData));
+
+            $logger->debug("saveAuthor: $fileId for $ownerId stored author $authorPath", ["app" => self::$appName]);
+        } catch (\Exception $e) {
+            $logger->logException($e, ["message" => "saveAuthor: save $fileId author error", "app" => self::$appName]);
+        }
+    }
+
+    /**
+     * Get version author id and name
+     *
+     * @param string $ownerId - file owner id
+     * @param string $fileId - file id
+     * @param string $versionId - file version
+     *
+     * @return array
+     */
+    public static function getAuthor($ownerId, $fileId, $versionId) {
+        if ($ownerId === null || $fileId === null) {
+            return null;
+        }
+
+        list ($view, $path) = self::getView($ownerId, $fileId);
+        if ($view === null) {
+            return null;
+        }
+
+        $authorPath = $path . "/" . $versionId . self::$authorExt;
+        if (!$view->file_exists($authorPath)) {
+            return null;
+        }
+
+        $authorDataString = $view->file_get_contents($authorPath);
+        $author = json_decode($authorDataString, true);
+
+        \OC::$server->getLogger()->debug("getAuthor: $fileId v.$versionId for $ownerId get author $authorPath", ["app" => self::$appName]);
+
+        return $author;
+    }
+
+    /**
+     * Delete version author info
+     *
+     * @param string $ownerId - file owner id
+     * @param string $fileId - file id
+     * @param string $versionId - file version
+    */
+    public static function deleteAuthor($ownerId, $fileId, $versionId) {
+        $logger = \OC::$server->getLogger();
+
+        $logger->debug("deleteAuthor $fileId ($versionId)", ["app" => self::$appName]);
+
+        if ($ownerId === null) {
+            return;
+        }
+        if ($fileId === null || empty($versionId)) {
+            return;
+        }
+
+        list ($view, $path) = self::getView($ownerId, $fileId);
+        if ($view === null) {
+            return null;
+        }
+
+        $authorPath = $path . "/" . $versionId . self::$authorExt;
+        if ($view->file_exists($authorPath)) {
+            $view->unlink($authorPath);
+            $logger->debug("deleteAuthor $authorPath", ["app" => self::$appName]);
         }
     }
 }
