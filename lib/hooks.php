@@ -152,6 +152,7 @@ class Hooks {
             $fileId = $fileInfo->getId();
 
             FileVersions::deleteVersion($ownerId, $fileId, $versionId);
+            FileVersions::deleteAuthor($ownerId, $fileId, $versionId);
         } catch (\Exception $e) {
             \OC::$server->getLogger()->logException($e, ["message" => "Hook: fileVersionDelete " . json_encode($params), "app" => self::$appName]);
         }

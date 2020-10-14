@@ -2,6 +2,11 @@
 
 ## Added
 - use guest name from talk
+- connection test command
+- store author name for version
+
+## Changed
+- Nextcloud v17 is no longer supported
 
 ## 6.0.2
 ## Changed
@@ -19,7 +24,8 @@
 ## 5.0.0
 ## Added
 - support for OpenDocument Templates
-- Japanese translation- certificate verification setting
+- Japanese translation
+- certificate verification setting
 - version history
 
 ## Changed

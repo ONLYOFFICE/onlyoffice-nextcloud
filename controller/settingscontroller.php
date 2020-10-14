@@ -164,7 +164,8 @@ class SettingsController extends Controller {
         if (empty($error)) {
             $documentserver = $this->config->GetDocumentServerUrl();
             if (!empty($documentserver)) {
-                list ($error, $version) = $this->checkDocServiceUrl();
+                $documentService = new DocumentService($this->trans, $this->config);
+                list ($error, $version) = $documentService->checkDocServiceUrl($this->urlGenerator, $this->crypt);
                 $this->config->SetSettingsError($error);
             }
         }
@@ -265,89 +266,5 @@ class SettingsController extends Controller {
             "sameTab" => $this->config->GetSameTab()
         ];
         return $result;
-    }
-
-
-    /**
-     * Checking document service location
-     *
-     * @return array
-     */
-    private function checkDocServiceUrl() {
-        $version = null;
-
-        try {
-
-            if (preg_match("/^https:\/\//i", $this->urlGenerator->getAbsoluteURL("/"))
-                && preg_match("/^http:\/\//i", $this->config->GetDocumentServerUrl())) {
-                throw new \Exception($this->trans->t("Mixed Active Content is not allowed. HTTPS address for Document Server is required."));
-            }
-
-        } catch (\Exception $e) {
-            $this->logger->logException($e, ["message" => "Protocol on check error", "app" => $this->appName]);
-            return [$e->getMessage(), $version];
-        }
-
-        try {
-
-            $documentService = new DocumentService($this->trans, $this->config);
-
-            $healthcheckResponse = $documentService->HealthcheckRequest();
-            if (!$healthcheckResponse) {
-                throw new \Exception($this->trans->t("Bad healthcheck status"));
-            }
-
-        } catch (\Exception $e) {
-            $this->logger->logException($e, ["message" => "HealthcheckRequest on check error", "app" => $this->appName]);
-            return [$e->getMessage(), $version];
-        }
-
-        try {
-
-            $documentService = new DocumentService($this->trans, $this->config);
-
-            $commandResponse = $documentService->CommandRequest("version");
-
-            $this->logger->debug("CommandRequest on check: " . json_encode($commandResponse), ["app" => $this->appName]);
-
-            if (empty($commandResponse)) {
-                throw new \Exception($this->trans->t("Error occurred in the document service"));
-            }
-
-            $version = $commandResponse->version;
-
-        } catch (\Exception $e) {
-            $this->logger->logException($e, ["message" => "CommandRequest on check error", "app" => $this->appName]);
-            return [$e->getMessage(), $version];
-        }
-
-        $convertedFileUri = null;
-        try {
-
-            $hashUrl = $this->crypt->GetHash(["action" => "empty"]);
-            $fileUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.emptyfile", ["doc" => $hashUrl]);
-            if (!empty($this->config->GetStorageUrl())) {
-                $fileUrl = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->config->GetStorageUrl(), $fileUrl);
-            }
-
-            $convertedFileUri = $documentService->GetConvertedUri($fileUrl, "docx", "docx", "check_" . rand());
-
-            if (strcmp($convertedFileUri, $fileUrl) === 0) {
-                $this->logger->debug("GetConvertedUri skipped", ["app" => $this->appName]);
-            }
-
-        } catch (\Exception $e) {
-            $this->logger->logException($e, ["message" => "GetConvertedUri on check error", "app" => $this->appName]);
-            return [$e->getMessage(), $version];
-        }
-
-        try {
-            $documentService->Request($convertedFileUri);
-        } catch (\Exception $e) {
-            $this->logger->logException($e, ["message" => "Request converted file on check error", "app" => $this->appName]);
-            return [$e->getMessage(), $version];
-        }
-
-        return ["", $version];
     }
 }

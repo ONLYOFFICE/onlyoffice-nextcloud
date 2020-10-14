@@ -542,6 +542,10 @@ class CallbackController extends Controller {
                         FileVersions::saveHistory($file->getFileInfo(), $history, $changes, $prevVersion);
                     }
 
+                    if (!empty($user)) {
+                        FileVersions::saveAuthor($file->getFileInfo(), $user);
+                    }
+
                     $result = 0;
                 } catch (\Exception $e) {
                     $this->logger->logException($e, ["message" => "Track: $fileId status $status error", "app" => $this->appName]);
