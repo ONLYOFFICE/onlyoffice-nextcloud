@@ -102,12 +102,7 @@
 
             $("body").addClass("onlyoffice-inline");
 
-            if (OCA.Files.Sidebar) {
-                OCA.Files.Sidebar.close();
-            } else {
-                //todo: remove. only for v17
-                OC.Apps.hideAppSidebar();
-            }
+            OCA.Files.Sidebar.close();
 
             var scrollTop = $(window).scrollTop();
             $(OCA.Onlyoffice.frameSelector).css("top", scrollTop);
@@ -167,12 +162,7 @@
                 OCA.Onlyoffice.context.fileList.showDetailsView(OCA.Onlyoffice.context.fileName, "sharing");
                 OC.Apps.showAppSidebar();
             } else {
-                if (OCA.Files.Sidebar) {
-                    OCA.Files.Sidebar.close();
-                } else {
-                    //todo: remove. only for v17
-                    OC.Apps.hideAppSidebar();
-                }
+                OCA.Files.Sidebar.close();
             }
         }
     };
