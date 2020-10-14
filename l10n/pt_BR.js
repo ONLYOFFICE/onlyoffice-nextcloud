@@ -63,6 +63,7 @@ OC.L10N.register(
     "Select tag" : "Selecionar etiqueta",
     "Select file to compare" : "Selecionar arquivo para comparar",
     "version": "versão",
-    "Disable certificate verification (insecure)": "Desativar a verificação do certificado (inseguro)"
+    "Disable certificate verification (insecure)": "Desativar a verificação do certificado (inseguro)",
+    "Generate document preview": "Gerar visualização de documentos"
 },
 "nplurals=2; plural=(n != 1);");

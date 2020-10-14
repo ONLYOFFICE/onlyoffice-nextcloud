@@ -83,6 +83,7 @@ OC.L10N.register(
     "Final": "最終版",
     "Original": "オリジナル",
     "version": "バージョン",
-    "Keep intermediate versions when editing": "編集時に、中間バージョンを保持する"
+    "Keep intermediate versions when editing": "編集時に、中間バージョンを保持する",
+    "Generate document preview": "ドキュメント・プレビューを生成する"
 },
 "nplurals=2; plural=(n != 1);");
