@@ -199,6 +199,13 @@
                         if (fileVersion.version >= currentVersion) {
                             currentVersion = fileVersion.version;
                         }
+
+                        fileVersion.created = moment(fileVersion.created * 1000).format("L LTS");
+                        if (fileVersion.changes) {
+                            $.each(fileVersion.changes, function (j, change) {
+                                change.created = moment(change.created + "+00:00").format("L LTS");
+                            });
+                        }
                     });
 
                     if (version) {
