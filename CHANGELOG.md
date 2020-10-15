@@ -5,6 +5,7 @@
 - connection test command
 - store author name for version
 - generate file preview
+- Italian translation
 
 ## Changed
 - Nextcloud v17 is no longer supported

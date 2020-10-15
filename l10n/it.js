@@ -79,11 +79,13 @@ OC.L10N.register(
     "Show watermark on link shares with specific system tags" : "Mostra filigrana sulle condivisioni di link con tag di sistema specifici",
     "Select tag" : "Seleziona tag",
     "Select file to compare" : "Seleziona file da confrontare",
+    "Review mode for viewing": "Modalità di revisione per la visualizzazione",
     "Markup": "Markup",
     "Final": "Finale",
     "Original": "Originale",
     "version": "versione",
     "Disable certificate verification (insecure)": "Disattiva la verifica del certificato (non sicuro)",
-    "Review mode for viewing": "Modalità di revisione per la visualizzazione"
+    "Keep intermediate versions when editing": "Mantieni le versioni intermedie durante la modifica",
+    "Generate document preview": "Genera l'anteprima del documento"
 },
 "nplurals=2; plural=(n != 1);");
