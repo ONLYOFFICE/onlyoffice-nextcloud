@@ -77,10 +77,12 @@
     "Show watermark on link shares with specific system tags" : "特定のシステムタグが付いていてリンク共有されたものに透かしを入れる",
     "Select tag" : "タグを選択",
     "Select file to compare" : "比較するファイルを選択",
+    "Review mode for viewing": "表示するためのレビューモード",
     "Markup": "マークアップ",
     "Final": "最終版",
     "Original": "オリジナル",
     "version": "バージョン",
+    "Disable certificate verification (insecure)": "証明書の検証を無効にする（安全でない",
     "Keep intermediate versions when editing": "編集時に、中間バージョンを保持する",
     "Generate document preview": "ドキュメント・プレビューを生成する"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
