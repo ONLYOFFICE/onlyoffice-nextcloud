@@ -154,7 +154,7 @@ The instruction on enabling _master key_ based encryption is available in the of
 ONLYOFFICE offers different versions of its online document editors that can be deployed on your own servers.
 
 * Community Edition (`onlyoffice-documentserver` package)
-* Enterprise Edition (`onlyoffice-documentserver-ie` package)
+* Enterprise Edition (`onlyoffice-documentserver-ee` package)
 
 The table below will help you to make the right choice.
 
