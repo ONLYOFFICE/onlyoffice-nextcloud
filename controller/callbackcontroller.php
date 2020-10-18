@@ -577,7 +577,7 @@ class CallbackController extends Controller {
         try {
             $files = $this->root->getUserFolder($userId)->getById($fileId);
         } catch (\Exception $e) {
-            $this->logger->errorlogException($e, ["message" => "getFile: $fileId", "app" => $this->appName]);
+            $this->logger->logException($e, ["message" => "getFile: $fileId", "app" => $this->appName]);
             return [null, new JSONResponse(["message" => $this->trans->t("Invalid request")], Http::STATUS_BAD_REQUEST)];
         }
 
