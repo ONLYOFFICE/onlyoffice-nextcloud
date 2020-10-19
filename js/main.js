@@ -364,14 +364,14 @@
 
                 var button = document.createElement("a");
                 button.href = OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/s/" + encodeURIComponent($("#sharingToken").val()));
-                button.className = "button";
+                button.className = "onlyoffice-public-open button";
                 button.innerText = t(OCA.Onlyoffice.AppName, "Open in ONLYOFFICE")
 
                 if (!OCA.Onlyoffice.setting.sameTab) {
                     button.target = "_blank";
                 }
 
-                $("#preview").append(button);
+                $("#preview").prepend(button);
             };
 
             OCA.Onlyoffice.GetSettings(initSharedButton);
