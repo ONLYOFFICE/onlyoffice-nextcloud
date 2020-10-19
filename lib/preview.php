@@ -32,6 +32,7 @@ use OCP\ISession;
 use OCP\IURLGenerator;
 use OCP\Share\IManager;
 
+use OCA\Files_Sharing\External\Storage as SharingExternalStorage;
 use OCA\Files_Versions\Versions\IVersionManager;
 
 use OCA\Onlyoffice\AppConfig;
@@ -231,6 +232,9 @@ class Preview extends Provider {
             return false;
         }
         if (!$fileInfo || $fileInfo->getSize() === 0) {
+            return false;
+        }
+        if ($fileInfo->getStorage()->instanceOfStorage(SharingExternalStorage::class)) {
             return false;
         }
         return true;
