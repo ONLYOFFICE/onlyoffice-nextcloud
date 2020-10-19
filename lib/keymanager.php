@@ -94,7 +94,7 @@ class KeyManager {
      * Change lock status
      *
      * @param integer $fileId - file identifier
-     * @param integer $lock - status
+     * @param bool $lock - status
      *
      * @return bool
      */
@@ -112,7 +112,7 @@ class KeyManager {
      * Change forcesave status
      *
      * @param integer $fileId - file identifier
-     * @param integer $fs - status
+     * @param bool $fs - status
      *
      * @return bool
      */

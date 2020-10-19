@@ -66,7 +66,7 @@ body.onlyoffice-inline #content #app-content {
     height: 50px;
 }
 
-#onlyoffice-public-open {
+.onlyoffice-public-open {
     display: inline-block;
     margin-top: 10px;
 }
