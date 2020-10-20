@@ -101,12 +101,16 @@ class Hooks {
         }
 
         try {
-            $ownerId = Filesystem::getOwner($filePath);
-
             $fileInfo = Filesystem::getFileInfo($filePath);
             if ($fileInfo === false) {
                 return;
             }
+
+            $owner = $fileInfo->getOwner();
+            if (empty($owner)) {
+                return;
+            }
+            $ownerId = $owner->getUID();
 
             $fileId = $fileInfo->getId();
 
@@ -134,17 +138,21 @@ class Hooks {
             if (empty($filePath)) {
                 return;
             }
-
-            $ownerId = Filesystem::getOwner($filePath);
-
             $fileInfo = Filesystem::getFileInfo($filePath);
             if ($fileInfo === false) {
                 return;
             }
 
+            $owner = $fileInfo->getOwner();
+            if (empty($owner)) {
+                return;
+            }
+            $ownerId = $owner->getUID();
+
             $fileId = $fileInfo->getId();
 
             FileVersions::deleteVersion($ownerId, $fileId, $versionId);
+            FileVersions::deleteAuthor($ownerId, $fileId, $versionId);
         } catch (\Exception $e) {
             \OC::$server->getLogger()->logException($e, ["message" => "Hook: fileVersionDelete " . json_encode($params), "app" => self::$appName]);
         }
@@ -164,12 +172,16 @@ class Hooks {
         $versionId = $params["revision"];
 
         try {
-            $ownerId = Filesystem::getOwner($filePath);
-
             $fileInfo = Filesystem::getFileInfo($filePath);
             if ($fileInfo === false) {
                 return;
             }
+
+            $owner = $fileInfo->getOwner();
+            if (empty($owner)) {
+                return;
+            }
+            $ownerId = $owner->getUID();
 
             $fileId = $fileInfo->getId();
 

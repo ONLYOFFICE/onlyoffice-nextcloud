@@ -190,6 +190,7 @@
             });
 
             var sameTab = $("#onlyofficeSameTab").is(":checked");
+            var preview = $("#onlyofficePreview").is(":checked");
 
             var limitGroupsString = $("#onlyofficeGroups").prop("checked") ? $("#onlyofficeLimitGroups").val() : "";
             var limitGroups = limitGroupsString ? limitGroupsString.split("|") : [];
@@ -209,6 +210,7 @@
                     defFormats: defFormats,
                     editFormats: editFormats,
                     sameTab: sameTab,
+                    preview: preview,
                     limitGroups: limitGroups,
                     chat: chat,
                     compactHeader: compactHeader,

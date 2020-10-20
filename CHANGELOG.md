@@ -1,5 +1,17 @@
 # Change Log
 
+## 6.1.0
+## Added
+- use guest name from talk
+- connection test command
+- store author name for version
+- generate file preview
+- Italian translation
+
+## Changed
+- display local time in history
+- Nextcloud v17 is no longer supported
+
 ## 6.0.2
 ## Changed
 - compatible with Nextcloud 20
@@ -16,7 +28,8 @@
 ## 5.0.0
 ## Added
 - support for OpenDocument Templates
-- Japanese translation- certificate verification setting
+- Japanese translation
+- certificate verification setting
 - version history
 
 ## Changed

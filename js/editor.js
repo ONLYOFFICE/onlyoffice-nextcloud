@@ -38,6 +38,7 @@
         OCA.Onlyoffice.version = $("#iframeEditor").data("version");
         var directToken = $("#iframeEditor").data("directtoken");
         OCA.Onlyoffice.inframe = !!$("#iframeEditor").data("inframe");
+        var guestName = localStorage.getItem("nick");
         if (!OCA.Onlyoffice.fileId && !OCA.Onlyoffice.shareToken && !directToken) {
             displayError(t(OCA.Onlyoffice.AppName, "FileId is empty"));
             return;
@@ -67,6 +68,9 @@
         }
         if (OCA.Onlyoffice.version > 0) {
             params.push("version=" + OCA.Onlyoffice.version);
+        }
+        if (guestName) {
+            params.push("guestName=" + encodeURIComponent(guestName));
         }
 
         if (OCA.Onlyoffice.inframe || directToken) {
@@ -194,6 +198,13 @@
                     $.each(response, function (i, fileVersion) {
                         if (fileVersion.version >= currentVersion) {
                             currentVersion = fileVersion.version;
+                        }
+
+                        fileVersion.created = moment(fileVersion.created * 1000).format("L LTS");
+                        if (fileVersion.changes) {
+                            $.each(fileVersion.changes, function (j, change) {
+                                change.created = moment(change.created + "+00:00").format("L LTS");
+                            });
                         }
                     });
 

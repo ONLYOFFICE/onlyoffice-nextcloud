@@ -24,6 +24,7 @@ use OCP\AppFramework\Http\ContentSecurityPolicy;
 use OCP\AppFramework\Http\RedirectResponse;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Http\Template\PublicTemplateResponse;
+use OCP\AppFramework\QueryException;
 use OCP\Constants;
 use OCP\Files\File;
 use OCP\Files\Folder;
@@ -448,15 +449,16 @@ class EditorController extends Controller {
             $fileId = $file->getId();
         }
 
-        $owner = null;
         $ownerId = null;
+        $owner = $file->getFileInfo()->getOwner();
+        if ($owner !== null) {
+            $ownerId = $owner->getUID();
+        }
+
         $versions = array();
-        if ($this->versionManager !== null) {
-            $owner = $file->getFileInfo()->getOwner();
-            if ($owner !== null) {
-                $ownerId = $owner->getUID();
-                $versions = array_reverse($this->versionManager->getVersionsForFile($owner, $file->getFileInfo()));
-            }
+        if ($this->versionManager !== null
+            && $owner !== null) {
+            $versions = array_reverse($this->versionManager->getVersionsForFile($owner, $file->getFileInfo()));
         }
 
         $prevVersion = "";
@@ -468,16 +470,22 @@ class EditorController extends Controller {
             $key = DocumentService::GenerateRevisionId($key);
 
             $historyItem = [
-                "created" => $this->trans->l("datetime", $version->getTimestamp(), ["width" => "short"]),
+                "created" => $version->getTimestamp(),
                 "key" => $key,
-                "user" => [
-                    "id" => $this->buildUserId($ownerId),
-                    "name" => $owner->getDisplayName()
-                ],
                 "version" => $versionNum
             ];
 
             $versionId = $version->getRevisionId();
+
+            $author = FileVersions::getAuthor($ownerId, $fileId, $versionId);
+            $authorId = $author !== null ? $author["id"] : $ownerId;
+            $authorName = $author !== null ? $author["name"] : $owner->getDisplayName();
+
+            $historyItem["user"] = [
+                "id" => $this->buildUserId($authorId),
+                "name" => $authorName
+            ];
+
             $historyData = FileVersions::getHistoryData($ownerId, $fileId, $versionId, $prevVersion);
             if ($historyData !== null) {
                 $historyItem["changes"] = $historyData["changes"];
@@ -493,19 +501,26 @@ class EditorController extends Controller {
         $key = DocumentService::GenerateRevisionId($key);
 
         $historyItem = [
-            "created" => $this->trans->l("datetime", $file->getMTime(), ["width" => "short"]),
+            "created" => $file->getMTime(),
             "key" => $key,
             "version" => $versionNum + 1
         ];
 
-        if ($owner !== null) {
+        $versionId = $file->getFileInfo()->getMtime();
+
+        $author = FileVersions::getAuthor($ownerId, $fileId, $versionId);
+        if ($author !== null) {
             $historyItem["user"] = [
-                "id" => $this->buildUserId($owner->getUID()),
+                "id" => $this->buildUserId($author["id"]),
+                "name" => $author["name"]
+            ];
+        } else if ($owner !== null) {
+            $historyItem["user"] = [
+                "id" => $this->buildUserId($ownerId),
                 "name" => $owner->getDisplayName()
             ];
         }
 
-        $versionId = $file->getFileInfo()->getMtime();
         $historyData = FileVersions::getHistoryData($ownerId, $fileId, $versionId, $prevVersion);
         if ($historyData !== null) {
             $historyItem["changes"] = $historyData["changes"];
@@ -779,13 +794,14 @@ class EditorController extends Controller {
      * @param integer $version - file version
      * @param integer $inframe - open in frame. 0 - no, 1 - yes, 2 - without goback for old editor (5.4)
      * @param bool $desktop - desktop label
+     * @param string $guestName - nickname not logged user
      *
      * @return array
      *
      * @NoAdminRequired
      * @PublicPage
      */
-    public function config($fileId, $filePath = null, $shareToken = null, $directToken = null, $version = 0, $inframe = 0, $desktop = false) {
+    public function config($fileId, $filePath = null, $shareToken = null, $directToken = null, $version = 0, $inframe = 0, $desktop = false, $guestName = null) {
 
         if (!empty($directToken)) {
             list ($directData, $error) = $this->crypt->ReadHash($directToken);
@@ -905,6 +921,10 @@ class EditorController extends Controller {
             $params["editorConfig"]["user"] = [
                 "id" => $this->buildUserId($userId),
                 "name" => $user->getDisplayName()
+            ];
+        } else if (!empty($guestName)) {
+            $params["editorConfig"]["user"] = [
+                "name" => $guestName
             ];
         }
 

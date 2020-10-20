@@ -23,6 +23,7 @@ use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataDownloadResponse;
 use OCP\AppFramework\Http\JSONResponse;
+use OCP\AppFramework\QueryException;
 use OCP\Files\File;
 use OCP\Files\Folder;
 use OCP\Files\IRootFolder;
@@ -541,6 +542,10 @@ class CallbackController extends Controller {
                         FileVersions::saveHistory($file->getFileInfo(), $history, $changes, $prevVersion);
                     }
 
+                    if (!empty($user)) {
+                        FileVersions::saveAuthor($file->getFileInfo(), $user);
+                    }
+
                     $result = 0;
                 } catch (\Exception $e) {
                     $this->logger->logException($e, ["message" => "Track: $fileId status $status error", "app" => $this->appName]);
@@ -577,7 +582,7 @@ class CallbackController extends Controller {
         try {
             $files = $this->root->getUserFolder($userId)->getById($fileId);
         } catch (\Exception $e) {
-            $this->logger->errorlogException($e, ["message" => "getFile: $fileId", "app" => $this->appName]);
+            $this->logger->logException($e, ["message" => "getFile: $fileId", "app" => $this->appName]);
             return [null, new JSONResponse(["message" => $this->trans->t("Invalid request")], Http::STATUS_BAD_REQUEST)];
         }
 
