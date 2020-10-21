@@ -93,6 +93,14 @@ Enable or disable the _Open file in the same tab_ setting.
 The **Open in ONLYOFFICE** action will be added to the file context menu.
 You can specify this action as default and it will be used when the file name is clicked for the selected file types.
 
+## Checking the connection 
+
+You can check the connection to ONLYOFFICE Document Server by using the following occ command:
+
+`occ onlyoffice:documentserver --check`
+
+You will see a text either with information about the successful connection or the cause of the error. 
+
 ## How it works
 
 The ONLYOFFICE integration follows the API documented here https://api.onlyoffice.com/editors/basic:
