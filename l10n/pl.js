@@ -53,7 +53,6 @@ OC.L10N.register(
     "Display the header more compact" : "Wyświetlaj bardziej kompaktowy nagłówek",
     "Display Feedback & Support menu button" : "Wyświetlaj Opinie i Support",
     "Display Help menu button" : "Wyświetlaj menu pomocy",
-    "Display toolbar tabs" : "Wyświetlaj wstążki",
     "Save as" : "Zapisz jako",
     "File saved" : "Plik zapisany",
     "Insert image" : "Wstaw obraz",
