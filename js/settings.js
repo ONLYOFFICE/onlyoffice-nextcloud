@@ -21,9 +21,7 @@
     $(document).ready(function () {
         OCA.Onlyoffice = _.extend({}, OCA.Onlyoffice);
         if (!OCA.Onlyoffice.AppName) {
-            OCA.Onlyoffice = {
-                AppName: "onlyoffice"
-            };
+            OCA.Onlyoffice.AppName = "onlyoffice"
         }
 
         var advToogle = function () {
@@ -83,40 +81,45 @@
                     if (watermarkList.indexOf("Group") >= 0) {
                         OC.Settings.setupGroupsSelect($("#onlyofficeWatermark_" + watermarkList + "List"));
                     } else {
-                        OC.SystemTags.collection.fetch({
-                            success: function () {
-                                $("#onlyofficeWatermark_" + watermarkList + "List").select2({
-                                    allowClear: true,
-                                    closeOnSelect: false,
-                                    multiple: true,
-                                    separator: "|",
-                                    toggleSelect: true,
-                                    placeholder: t(OCA.Onlyoffice.AppName, "Select tag"),
-                                    query: _.debounce(function (query) {
-                                        query.callback({
-                                            results: OC.SystemTags.collection.filterByName(query.term)
+                        OCA.Onlyoffice.getTags((listTags) => {
+                            $("#onlyofficeWatermark_" + watermarkList + "List").select2({
+                                allowClear: true,
+                                closeOnSelect: false,
+                                multiple: true,
+                                separator: "|",
+                                toggleSelect: true,
+                                placeholder: t(OCA.Onlyoffice.AppName, "Select tag"),
+                                query: _.debounce(function (query) {
+                                    query.callback({
+                                        results: listTags
+                                    });
+                                }, 100, false),
+                                initSelection: function (element, callback) {
+                                    let tag = null;
+                                    var selection = ($(element).val() || []).split("|").map
+                                    (function (tagId) {
+                                        listTags.forEach((_tag) => {
+                                            if(_tag.id === tagId) {
+                                                tag = _tag;
+                                            }
                                         });
-                                    }, 100, true),
-                                    initSelection: function (element, callback) {
-                                        var selection = ($(element).val() || []).split("|").map(function (tagId) {
-                                            return OC.SystemTags.collection.get(tagId);
-                                        });
-                                        callback(selection);
-                                    },
-                                    formatResult: function (tag) {
-                                        return OC.SystemTags.getDescriptiveTag(tag);
-                                    },
-                                    formatSelection: function (tag) {
-                                        return tag.get("name");
-                                    },
-                                    sortResults: function (results) {
-                                        results.sort(function (a, b) {
-                                            return OC.Util.naturalSortCompare(a.get("name"), b.get("name"));
-                                        });
-                                        return results;
-                                    }
-                                });
-                            }
+                                        return tag;
+                                    });
+                                    callback(selection);
+                                },
+                                formatResult: function (tag) {
+                                    return OCA.Onlyoffice.getDescriptiveTag(tag);
+                                },
+                                formatSelection: function (tag) {
+                                    return tag.displayName;
+                                },
+                                sortResults: function (results) {
+                                    results.sort(function (a, b) {
+                                        return OC.Util.naturalSortCompare(a.displayName, b.displayName);
+                                    });
+                                    return results;
+                                }
+                            });
                         });
                     }
                 } else {

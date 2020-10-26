@@ -21,13 +21,7 @@
     script("onlyoffice", "settings");
 
     if ($_["tagsEnabled"]) {
-        script("core", [
-            "systemtags/systemtags",
-            "systemtags/systemtagmodel",
-            "systemtags/systemtagsmappingcollection",
-            "systemtags/systemtagscollection",
-            "systemtags/systemtagsinputfield",
-        ]);
+        script("onlyoffice", "tagmanager");
     }
 ?>
 <div class="section section-onlyoffice section-onlyoffice-addr">
