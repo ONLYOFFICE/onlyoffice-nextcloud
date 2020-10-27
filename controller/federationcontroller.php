@@ -116,6 +116,7 @@ class FederationController extends OCSController {
      * @param string $shareToken - access token
      * @param string $path - file path
      * @param bool $lock - status
+     * @param bool $fs - status
      *
      * @return DataResponse
      *
@@ -123,7 +124,7 @@ class FederationController extends OCSController {
      * @NoCSRFRequired
      * @PublicPage
      */
-    public function keylock($shareToken, $path, $lock) {
+    public function keylock($shareToken, $path, $lock, $fs) {
         list ($file, $error, $share) = $this->fileUtility->getFileByToken(null, $shareToken, $path);
 
         if (isset($error)) {
@@ -134,6 +135,9 @@ class FederationController extends OCSController {
         $fileId = $file->getId();
 
         KeyManager::lock($fileId, $lock);
+        if (!empty($fs)) {
+            KeyManager::setForcesave($fileId, $fs);
+        }
 
         $this->logger->debug("Federated request lock for " . $fileId, ["app" => $this->appName]);
         return new DataResponse();

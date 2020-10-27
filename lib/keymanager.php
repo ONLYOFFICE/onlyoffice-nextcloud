@@ -159,8 +159,9 @@ class KeyManager {
      *
      * @param File $file - file
      * @param bool $lock - status
+     * @param bool $fs - status
      */
-    public static function lockFederatedKey($file, $lock = true) {
+    public static function lockFederatedKey($file, $lock = true, $fs) {
         $logger = \OC::$server->getLogger();
 
         $remote = $file->getStorage()->getRemote();
@@ -177,6 +178,9 @@ class KeyManager {
                 "lock" => $lock
             ]
         ];
+        if (!empty($fs)) {
+            $data["body"]["fs"] = $fs;
+        }
 
         $response = $client->post($remote . "ocs/v2.php/apps/" . self::App_Name . "/api/v1/keylock?format=json", $data);
         $body = \json_decode($response->getBody(), true);

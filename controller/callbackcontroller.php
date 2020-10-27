@@ -515,7 +515,7 @@ class CallbackController extends Controller {
 
                     if ($isForcesave
                         && $file->getStorage()->instanceOfStorage(SharingExternalStorage::class)) {
-                        KeyManager::lockFederatedKey($file, $isForcesave);
+                        KeyManager::lockFederatedKey($file, $isForcesave, null);
                     }
 
                     //lock the key when forcesave and unlock if last forcesave is broken
@@ -525,6 +525,11 @@ class CallbackController extends Controller {
                     $this->retryOperation(function () use ($file, $newData) {
                         return $file->putContent($newData);
                     });
+
+                    if ($isForcesave
+                        && $file->getStorage()->instanceOfStorage(SharingExternalStorage::class)) {
+                        KeyManager::lockFederatedKey($file, false, $isForcesave);
+                    }
 
                     //unlock key for future federated save
                     KeyManager::lock($fileId, false);
