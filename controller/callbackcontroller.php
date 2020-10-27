@@ -513,27 +513,27 @@ class CallbackController extends Controller {
 
                     $isForcesave = $status === self::TrackerStatus_ForceSave || $status === self::TrackerStatus_CorruptedForceSave;
 
-                    if ($isForcesave
-                        && $file->getStorage()->instanceOfStorage(SharingExternalStorage::class)) {
-                        KeyManager::lockFederatedKey($file, $isForcesave, null);
+                    if ($file->getStorage()->instanceOfStorage(SharingExternalStorage::class)) {
+                        if ($isForcesave) {
+                            KeyManager::lockFederatedKey($file, $isForcesave, null);
+                        }
+                    } else {
+                        KeyManager::lock($fileId, $isForcesave);
                     }
-
-                    //lock the key when forcesave and unlock if last forcesave is broken
-                    KeyManager::lock($fileId, $isForcesave);
 
                     $this->logger->debug("Track put content " . $file->getPath(), ["app" => $this->appName]);
                     $this->retryOperation(function () use ($file, $newData) {
                         return $file->putContent($newData);
                     });
 
-                    if ($isForcesave
-                        && $file->getStorage()->instanceOfStorage(SharingExternalStorage::class)) {
-                        KeyManager::lockFederatedKey($file, false, $isForcesave);
+                    if ($file->getStorage()->instanceOfStorage(SharingExternalStorage::class)) {
+                        if ($isForcesave) {
+                            KeyManager::lockFederatedKey($file, false, $isForcesave);
+                        }
+                    } else {
+                        KeyManager::lock($fileId, false);
+                        KeyManager::setForcesave($fileId, $isForcesave);
                     }
-
-                    //unlock key for future federated save
-                    KeyManager::lock($fileId, false);
-                    KeyManager::setForcesave($fileId, $isForcesave);
 
                     if (!$isForcesave
                         && !$prevIsForcesave
