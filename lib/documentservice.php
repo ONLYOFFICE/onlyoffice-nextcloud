@@ -432,7 +432,7 @@ class DocumentService {
             $convertedFileUri = $this->GetConvertedUri($fileUrl, "docx", "docx", "check_" . rand());
 
             if (strcmp($convertedFileUri, $fileUrl) === 0) {
-                $this->logger->debug("GetConvertedUri skipped", ["app" => $this->appName]);
+                $logger->debug("GetConvertedUri skipped", ["app" => $this->appName]);
             }
 
         } catch (\Exception $e) {
