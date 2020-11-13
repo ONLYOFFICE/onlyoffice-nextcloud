@@ -231,10 +231,10 @@ class CallbackController extends Controller {
 
             if (isset($hashData->userId)) {
                 $userId = $hashData->userId;
-                \OC_User::setUserId($userId);
 
                 $user = $this->userManager->get($userId);
                 if (!empty($user)) {
+                    \OC_User::setUserId($userId);
                     \OC_Util::setupFS($userId);
                 }
             }
@@ -445,10 +445,10 @@ class CallbackController extends Controller {
 
                     // author of the latest changes
                     $userId = $this->parseUserId($users[0]);
-                    \OC_User::setUserId($userId);
 
                     $user = $this->userManager->get($userId);
                     if (!empty($user)) {
+                        \OC_User::setUserId($userId);
                         \OC_Util::setupFS($userId);
 
                         if ($userId === $hashData->userId) {
@@ -458,11 +458,11 @@ class CallbackController extends Controller {
                         if (empty($shareToken)) {
                             // author of the callback link
                             $userId = $hashData->userId;
-                            \OC_User::setUserId($userId);
                             $this->logger->debug("Track for $userId: $fileId status $status", ["app" => $this->appName]);
 
                             $user = $this->userManager->get($userId);
                             if (!empty($user)) {
+                                \OC_User::setUserId($userId);
                                 \OC_Util::setupFS($userId);
 
                                 // path for author of the callback link
