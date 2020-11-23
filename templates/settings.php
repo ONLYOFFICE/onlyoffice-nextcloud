@@ -22,11 +22,7 @@
 
     if ($_["tagsEnabled"]) {
         script("core", [
-            "systemtags/systemtags",
-            "systemtags/systemtagmodel",
-            "systemtags/systemtagsmappingcollection",
-            "systemtags/systemtagscollection",
-            "systemtags/systemtagsinputfield",
+            "dist/systemtags",
         ]);
     }
 ?>
