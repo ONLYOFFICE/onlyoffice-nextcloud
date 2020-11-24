@@ -151,9 +151,7 @@
             OCA.Onlyoffice.folderUrl = null;
         }
 
-        if (OCA.Versions) {
-            OCA.Onlyoffice.bindVersionClick();
-        }
+        OCA.Onlyoffice.bindVersionClick();
     };
 
     OCA.Onlyoffice.OpenShareDialog = function () {
@@ -379,9 +377,7 @@
             OC.Plugins.register("OCA.Files.FileList", OCA.Onlyoffice.FileList);
             OC.Plugins.register("OCA.Files.NewFileMenu", OCA.Onlyoffice.NewFileMenu);
 
-            if (OCA.Versions) {
-                OCA.Onlyoffice.bindVersionClick();
-            }
+            OCA.Onlyoffice.bindVersionClick();
         }
     };
 
