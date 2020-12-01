@@ -102,6 +102,12 @@
     </p>
 
     <p>
+        <input type="checkbox" class="checkbox" id="onlyofficeVersionHistory"
+            <?php if ($_["versionHistory"]) { ?>checked="checked"<?php } ?> />
+        <label for="onlyofficeVersionHistory"><?php p($l->t("Keep document version history")) ?></label>
+    </p>
+
+    <p>
         <input type="checkbox" class="checkbox" id="onlyofficeSameTab"
             <?php if ($_["sameTab"]) { ?>checked="checked"<?php } ?> />
         <label for="onlyofficeSameTab"><?php p($l->t("Open file in the same tab")) ?></label>

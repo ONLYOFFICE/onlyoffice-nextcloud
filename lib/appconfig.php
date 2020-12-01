@@ -117,6 +117,13 @@ class AppConfig {
     private $_preview = "preview";
 
     /**
+     * The config key for the keep versions history
+     *
+     * @var string
+     */
+    private $_versionHistory = "versionHistory";
+
+    /**
      * The config key for the chat display setting
      *
      * @var string
@@ -630,6 +637,26 @@ class AppConfig {
      */
     public function GetPreview() {
         return $this->config->getAppValue($this->appName, $this->_preview, "false") === "true";
+    }
+
+    /**
+     * Save keep versions history
+     *
+     * @param bool $value - version history
+     */
+    public function SetVersionHistory($value) {
+        $this->logger->info("Set keep versions history: " . json_encode($value), ["app" => $this->appName]);
+
+        $this->config->setAppValue($this->appName, $this->_versionHistory, json_encode($value));
+    }
+
+    /**
+     * Get keep versions history
+     *
+     * @return bool
+     */
+    public function GetVersionHistory() {
+        return $this->config->getAppValue($this->appName, $this->_versionHistory, "false") === "true";
     }
 
     /**

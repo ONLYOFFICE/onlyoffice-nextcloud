@@ -191,6 +191,7 @@
 
             var sameTab = $("#onlyofficeSameTab").is(":checked");
             var preview = $("#onlyofficePreview").is(":checked");
+            var versionHistory = $("#onlyofficeVersionHistory").is(":checked");
 
             var limitGroupsString = $("#onlyofficeGroups").prop("checked") ? $("#onlyofficeLimitGroups").val() : "";
             var limitGroups = limitGroupsString ? limitGroupsString.split("|") : [];
@@ -211,6 +212,7 @@
                     editFormats: editFormats,
                     sameTab: sameTab,
                     preview: preview,
+                    versionHistory: versionHistory,
                     limitGroups: limitGroups,
                     chat: chat,
                     compactHeader: compactHeader,
