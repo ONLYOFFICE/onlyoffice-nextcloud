@@ -91,7 +91,9 @@
             OCA.Onlyoffice.GetSettings(function () {
 
                 var mimes = $.map(OCA.Onlyoffice.setting.formats, function (format) {
-                    return format.mime;
+                    if (format.def) {
+                        return format.mime;
+                    }
                 });
 
                 OCA.Viewer.registerHandler({
