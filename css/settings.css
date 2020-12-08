@@ -64,3 +64,7 @@
     -moz-column-width: 140px;
     -webkit-column-width: 140px;
 }
+#onlyofficeClearVersionHistory {
+    margin-left: 20px;
+    margin-top: 5px;
+}

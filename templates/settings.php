@@ -113,6 +113,10 @@
         <label for="onlyofficeSameTab"><?php p($l->t("Open file in the same tab")) ?></label>
     </p>
 
+    <p>
+        <button id="onlyofficeClearVersionHistory" class="button"><?php p($l->t("Clear change info for all version history")) ?></button>
+    </p>
+
     <p class="onlyoffice-header"><?php p($l->t("The default application for opening the format")) ?></p>
     <div class="onlyoffice-exts">
         <?php foreach ($_["formats"] as $format => $setting) { ?>
