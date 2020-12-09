@@ -18,7 +18,7 @@
 
 (function ($, OC) {
 
-    $(document).ready(function () {
+    window.onload = function () {
         OCA.Onlyoffice = _.extend({}, OCA.Onlyoffice);
         if (!OCA.Onlyoffice.AppName) {
             OCA.Onlyoffice = {
@@ -280,6 +280,6 @@
                 $("#onlyofficeAddrSave").click();
             }
         });
-    });
+    };
 
 })(jQuery, OC);
