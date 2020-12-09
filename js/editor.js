@@ -418,6 +418,6 @@
             });
     };
 
-    $(document).ready(OCA.Onlyoffice.InitEditor);
+    OCA.Onlyoffice.InitEditor();
 
 })(jQuery, OCA);
