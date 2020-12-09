@@ -38,6 +38,7 @@ return [
        ["name" => "settings#get_settings", "url" => "/ajax/settings", "verb" => "GET"],
     ],
     "ocs" => [
-        ["name" => "federation#key", "url" => "/api/v1/key", "verb" => "POST"]
+        ["name" => "federation#key", "url" => "/api/v1/key", "verb" => "POST"],
+        ["name" => "federation#keylock", "url" => "/api/v1/keylock", "verb" => "POST"]
     ]
 ];
