@@ -200,7 +200,7 @@
             var feedback = $("#onlyofficeFeedback").is(":checked");
             var forcesave = $("#onlyofficeForcesave").is(":checked");
             var help = $("#onlyofficeHelp").is(":checked");
-            var toolbarNoTabs = !$("#onlyofficeToolbarNoTabs").is(":checked");
+            var toolbarNoTabs = $("#onlyofficeToolbarNoTabs").is(":checked");
             var reviewDisplay = $("input[type='radio'][name='reviewDisplay']:checked").attr("id").replace("onlyofficeReviewDisplay_", "");
 
             $.ajax({

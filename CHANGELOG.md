@@ -1,5 +1,9 @@
 # Change Log
 
+## 6.2.0
+## Changed
+- the ability to use forcesave for federated share files
+
 ## 6.1.0
 ## Added
 - use guest name from talk

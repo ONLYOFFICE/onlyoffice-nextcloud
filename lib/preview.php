@@ -213,7 +213,6 @@ class Preview extends Provider {
      */
     public function getMimeType() {
         $m = self::getMimeTypeRegex();
-        $this->logger->debug("getMimeType $m", ["app" => $this->appName]);
         return $m;
     }
 
@@ -228,10 +227,10 @@ class Preview extends Provider {
         if ($this->config->GetPreview() !== true) {
             return false;
         }
-        if (!in_array($fileInfo->getMimetype(), self::$capabilities, true)) {
+        if (!$fileInfo || $fileInfo->getSize() === 0) {
             return false;
         }
-        if (!$fileInfo || $fileInfo->getSize() === 0) {
+        if (!in_array($fileInfo->getMimetype(), self::$capabilities, true)) {
             return false;
         }
         if ($fileInfo->getStorage()->instanceOfStorage(SharingExternalStorage::class)) {

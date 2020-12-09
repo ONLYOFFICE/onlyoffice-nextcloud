@@ -22,11 +22,7 @@
 
     if ($_["tagsEnabled"]) {
         script("core", [
-            "systemtags/systemtags",
-            "systemtags/systemtagmodel",
-            "systemtags/systemtagsmappingcollection",
-            "systemtags/systemtagscollection",
-            "systemtags/systemtagsinputfield",
+            "dist/systemtags",
         ]);
     }
 ?>
@@ -186,8 +182,8 @@
 
     <p>
         <input type="checkbox" class="checkbox" id="onlyofficeToolbarNoTabs"
-            <?php if (!$_["toolbarNoTabs"]) { ?>checked="checked"<?php } ?> />
-        <label for="onlyofficeToolbarNoTabs"><?php p($l->t("Display toolbar tabs")) ?></label>
+            <?php if ($_["toolbarNoTabs"]) { ?>checked="checked"<?php } ?> />
+        <label for="onlyofficeToolbarNoTabs"><?php p($l->t("Display monochrome toolbar header")) ?></label>
     </p>
 
     <p class="onlyoffice-header">
