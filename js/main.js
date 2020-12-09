@@ -140,6 +140,8 @@
     };
 
     OCA.Onlyoffice.CloseEditor = function () {
+        OCA.Onlyoffice.frameSelector = null;
+
         $("body").removeClass("onlyoffice-inline");
         $("#onlyofficeHeader").remove();
 
