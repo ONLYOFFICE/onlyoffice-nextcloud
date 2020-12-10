@@ -282,6 +282,21 @@
                 $("#onlyofficeAddrSave").click();
             }
         });
+
+        $("#onlyofficeClearVersionHistory").click(function () {
+            $(".section-onlyoffice").addClass("icon-loading");
+
+            $.ajax({
+                method: "GET",
+                url: OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/settings/history"),
+                success: function onSuccess(response) {
+                    $(".section-onlyoffice").removeClass("icon-loading");
+                    if (response) {
+                        OCP.Toast.success(t(OCA.Onlyoffice.AppName, "All history successfully deleted"));
+                    }
+                }
+            });
+        });
     });
 
 })(jQuery, OC);
