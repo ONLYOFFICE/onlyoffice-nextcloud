@@ -38,6 +38,7 @@
         OCA.Onlyoffice.version = $("#iframeEditor").data("version");
         var directToken = $("#iframeEditor").data("directtoken");
         OCA.Onlyoffice.inframe = !!$("#iframeEditor").data("inframe");
+        OCA.Onlyoffice.filePath = $("#iframeEditor").data("path");
         var guestName = localStorage.getItem("nick");
         if (!OCA.Onlyoffice.fileId && !OCA.Onlyoffice.shareToken && !directToken) {
             displayError(t(OCA.Onlyoffice.AppName, "FileId is empty"));
@@ -265,6 +266,11 @@
             url: event.data.url
         };
 
+        var arrayPath = OCA.Onlyoffice.filePath.split("/");
+        arrayPath.pop();
+        arrayPath.shift();
+        var currentDir = "/" + arrayPath.join("/");
+
         if (OCA.Onlyoffice.inframe) {
             window.parent.postMessage({
                 method: "editorRequestSaveAs",
@@ -278,7 +284,10 @@
                     OCA.Onlyoffice.editorSaveAs(saveData);
                 },
                 false,
-                "httpd/unix-directory");
+                "httpd/unix-directory",
+                true,
+                OC.dialogs.FILEPICKER_TYPE_CHOOSE,
+                currentDir);
         }
     };
 
