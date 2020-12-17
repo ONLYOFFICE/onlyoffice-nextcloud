@@ -456,21 +456,11 @@ class CallbackController extends Controller {
                         }
                     } else {
                         if (empty($shareToken)) {
-                            // author of the callback link
-                            $userId = $hashData->userId;
-                            $this->logger->debug("Track for $userId: $fileId status $status", ["app" => $this->appName]);
-
-                            $user = $this->userManager->get($userId);
-                            if (!empty($user)) {
-                                \OC_User::setUserId($userId);
-                                \OC_Util::setupFS($userId);
-
-                                // path for author of the callback link
-                                $filePath = $hashData->filePath;
-                            }
-                        } else {
-                            $this->logger->debug("Track $fileId by token for $userId", ["app" => $this->appName]);
+                            $this->logger->error("Track without token: $fileId status $status", ["app" => $this->appName]);
+                            return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
                         }
+
+                        $this->logger->debug("Track $fileId by token for $userId", ["app" => $this->appName]);
                     }
 
                     list ($file, $error) = empty($shareToken) ? $this->getFile($userId, $fileId, $filePath) : $this->getFileByToken($fileId, $shareToken);
