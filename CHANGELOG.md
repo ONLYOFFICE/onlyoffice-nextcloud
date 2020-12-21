@@ -3,6 +3,9 @@
 ## Added
 - hide secret key in settings
 
+## Changed
+- thumbnails for small files only
+
 ## 6.2.0
 ## Changed
 - the ability to use forcesave for federated share files
