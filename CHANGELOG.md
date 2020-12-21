@@ -1,5 +1,8 @@
 # Change Log
 
+## Changed
+- thumbnails for small files only
+
 ## 6.2.0
 ## Changed
 - the ability to use forcesave for federated share files
