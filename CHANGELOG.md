@@ -1,5 +1,8 @@
 # Change Log
 
+## Added
+- hide secret key in settings
+
 ## 6.1.0
 ## Added
 - use guest name from talk
