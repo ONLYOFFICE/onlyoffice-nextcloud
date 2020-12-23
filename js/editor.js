@@ -285,7 +285,7 @@
                 },
                 false,
                 "httpd/unix-directory",
-                true,
+                false,
                 OC.dialogs.FILEPICKER_TYPE_CHOOSE,
                 currentDir);
         }
