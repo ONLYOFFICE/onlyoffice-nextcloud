@@ -287,7 +287,7 @@
             $(".section-onlyoffice").addClass("icon-loading");
 
             $.ajax({
-                method: "GET",
+                method: "DELETE",
                 url: OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/settings/history"),
                 success: function onSuccess(response) {
                     $(".section-onlyoffice").removeClass("icon-loading");
