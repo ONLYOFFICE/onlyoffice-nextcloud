@@ -27,12 +27,12 @@ use OCP\ILogger;
 use OCP\IRequest;
 use OCP\IURLGenerator;
 
-use OC\User\Database;
 use OC\Files\View;
 
 use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\Crypt;
 use OCA\Onlyoffice\DocumentService;
+use OCA\Onlyoffice\FileVersions;
 
 /**
  * Settings controller for the administration page
@@ -265,18 +265,9 @@ class SettingsController extends Controller {
      * @return array
      */
     public function ClearHistory() {
-        $userDatabase = new Database();
-        $userIds = $userDatabase->getUsers();
 
-        $view = new View("/");
+        FileVersions::clearHistory();
 
-        foreach ($userIds as $userId) {
-            $path = $userId . "/" . $this->appName;
-
-            if ($view->file_exists($path)) {
-                $view->unlink($path);
-            }
-        }
         return [
             ];
     }

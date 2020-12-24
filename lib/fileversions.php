@@ -21,6 +21,7 @@ namespace OCA\Onlyoffice;
 
 use OC\Files\Node\File;
 use OC\Files\View;
+use OC\User\Database;
 
 use OCP\Files\FileInfo;
 use OCP\IUser;
@@ -334,6 +335,28 @@ class FileVersions {
             $view->unlink($changesPath);
             $logger->debug("deleteVersion $changesPath", ["app" => self::$appName]);
         }
+    }
+
+    /**
+     * Clear all version history
+     */
+    public static function clearHistory() {
+        $logger = \OC::$server->getLogger();
+
+        $userDatabase = new Database();
+        $userIds = $userDatabase->getUsers();
+
+        $view = new View("/");
+
+        foreach ($userIds as $userId) {
+            $path = $userId . "/" . self::$appName;
+
+            if ($view->file_exists($path)) {
+                $view->unlink($path);
+            }
+        }
+
+        $logger->debug("clear all history", ["app" => self::$appName]);
     }
 
     /**
