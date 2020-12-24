@@ -656,7 +656,7 @@ class AppConfig {
      * @return bool
      */
     public function GetVersionHistory() {
-        return $this->config->getAppValue($this->appName, $this->_versionHistory, "false") === "true";
+        return $this->config->getAppValue($this->appName, $this->_versionHistory, "true") === "true";
     }
 
     /**
