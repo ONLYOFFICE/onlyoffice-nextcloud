@@ -98,13 +98,13 @@
     <p>
         <input type="checkbox" class="checkbox" id="onlyofficePreview"
             <?php if ($_["preview"]) { ?>checked="checked"<?php } ?> />
-        <label for="onlyofficePreview"><?php p($l->t("Generate document preview")) ?> <?php p($l->t("(may take up disk place)")) ?></label>
+        <label for="onlyofficePreview"><?php p($l->t("Generate document preview")) ?> <?php p($l->t("(take up disk space)")) ?></label>
     </p>
 
     <p>
         <input type="checkbox" class="checkbox" id="onlyofficeVersionHistory"
             <?php if ($_["versionHistory"]) { ?>checked="checked"<?php } ?> />
-        <label for="onlyofficeVersionHistory"><?php p($l->t("Keep document version history")) ?> <?php p($l->t("(may take up disk place)")) ?></label>
+        <label for="onlyofficeVersionHistory"><?php p($l->t("Keep document version history")) ?> <?php p($l->t("(take up disk space)")) ?></label>
     </p>
 
     <p>
