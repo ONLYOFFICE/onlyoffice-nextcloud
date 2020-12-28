@@ -1,6 +1,7 @@
 # Change Log
 
 ## Added
+- save as in current folder
 - hide secret key in settings
 
 ## Changed
