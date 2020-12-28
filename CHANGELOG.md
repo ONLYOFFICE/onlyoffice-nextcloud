@@ -1,5 +1,8 @@
 # Change Log
 
+## Added
+- save as in current folder
+
 ## 6.1.0
 ## Added
 - use guest name from talk
