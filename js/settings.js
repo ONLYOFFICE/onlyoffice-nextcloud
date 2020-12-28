@@ -283,6 +283,14 @@
             }
         });
 
+        $("#onlyofficeSecret-show").click(function () {
+            if ($("#onlyofficeSecret").attr("type") == "password") {
+                $("#onlyofficeSecret").attr("type", "text");
+            } else {
+                $("#onlyofficeSecret").attr("type", "password");
+            }
+        });
+
         $("#onlyofficeClearVersionHistory").click(function () {
             $(".section-onlyoffice").addClass("icon-loading");
 

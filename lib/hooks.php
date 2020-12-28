@@ -87,6 +87,8 @@ class Hooks {
         $fileId = $fileInfo->getId();
 
         KeyManager::delete($fileId);
+
+        \OC::$server->getLogger()->debug("Hook fileUpdate " . json_encode($params), ["app" => self::$appName]);
     }
 
     /**

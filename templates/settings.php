@@ -47,7 +47,11 @@
         </p>
 
         <p class="onlyoffice-header"><?php p($l->t("Secret key (leave blank to disable)")) ?></p>
-        <p><input id="onlyofficeSecret" value="<?php p($_["secret"]) ?>" placeholder="secret" type="text"></p>
+        <p>
+            <input id="onlyofficeSecret" value="<?php p($_["secret"]) ?>" placeholder="secret" type="password" />
+            <input type="checkbox" id="personal-show" class="hidden-visually" name="show" />
+            <label id="onlyofficeSecret-show" for="personal-show" class="personal-show-label"></label>
+        </p>
 
         <p>
             <a id="onlyofficeAdv" class="onlyoffice-header">

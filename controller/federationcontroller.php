@@ -27,9 +27,12 @@ use OCP\IRequest;
 use OCP\ISession;
 use OCP\Share\IManager;
 
+use OCA\Files_Sharing\External\Storage as SharingExternalStorage;
+
 use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\DocumentService;
 use OCA\Onlyoffice\FileUtility;
+use OCA\Onlyoffice\KeyManager;
 
 /**
  * OCS handler
@@ -107,5 +110,45 @@ class FederationController extends OCSController {
         $this->logger->debug("Federated request get for " . $file->getId() . " key $key", ["app" => $this->appName]);
 
         return new DataResponse(["key" => $key]);
+    }
+
+    /**
+     * Lock the origin document key for editor
+     *
+     * @param string $shareToken - access token
+     * @param string $path - file path
+     * @param bool $lock - status
+     * @param bool $fs - status
+     *
+     * @return DataResponse
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     * @PublicPage
+     */
+    public function keylock($shareToken, $path, $lock, $fs) {
+        list ($file, $error, $share) = $this->fileUtility->getFileByToken(null, $shareToken, $path);
+
+        if (isset($error)) {
+            $this->logger->error("Federated getFileByToken: $error", ["app" => $this->appName]);
+            return new DataResponse(["error" => $error]);
+        }
+
+        $fileId = $file->getId();
+
+        if ($file->getStorage()->instanceOfStorage(SharingExternalStorage::class)) {
+            $isLock = KeyManager::lockFederatedKey($file, $lock, $fs);
+            if (!$isLock) {
+                return new DataResponse(["error" => "Failed request"]);
+            }
+        } else {
+            KeyManager::lock($fileId, $lock);
+            if (!empty($fs)) {
+                KeyManager::setForcesave($fileId, $fs);
+            }
+        }
+
+        $this->logger->debug("Federated request lock for " . $fileId, ["app" => $this->appName]);
+        return new DataResponse();
     }
 }

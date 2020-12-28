@@ -39,6 +39,7 @@ return [
        ["name" => "settings#clear_history", "url" => "/ajax/settings/history", "verb" => "DELETE"],
     ],
     "ocs" => [
-        ["name" => "federation#key", "url" => "/api/v1/key", "verb" => "POST"]
+        ["name" => "federation#key", "url" => "/api/v1/key", "verb" => "POST"],
+        ["name" => "federation#keylock", "url" => "/api/v1/keylock", "verb" => "POST"]
     ]
 ];

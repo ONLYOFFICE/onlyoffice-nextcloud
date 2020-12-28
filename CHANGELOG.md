@@ -1,5 +1,16 @@
 # Change Log
 
+## Added
+- save as in current folder
+- hide secret key in settings
+
+## Changed
+- thumbnails for small files only
+
+## 6.2.0
+## Changed
+- the ability to use forcesave for federated share files
+
 ## 6.1.0
 ## Added
 - use guest name from talk

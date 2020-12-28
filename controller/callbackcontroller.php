@@ -456,21 +456,11 @@ class CallbackController extends Controller {
                         }
                     } else {
                         if (empty($shareToken)) {
-                            // author of the callback link
-                            $userId = $hashData->userId;
-                            $this->logger->debug("Track for $userId: $fileId status $status", ["app" => $this->appName]);
-
-                            $user = $this->userManager->get($userId);
-                            if (!empty($user)) {
-                                \OC_User::setUserId($userId);
-                                \OC_Util::setupFS($userId);
-
-                                // path for author of the callback link
-                                $filePath = $hashData->filePath;
-                            }
-                        } else {
-                            $this->logger->debug("Track $fileId by token for $userId", ["app" => $this->appName]);
+                            $this->logger->error("Track without token: $fileId status $status", ["app" => $this->appName]);
+                            return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
                         }
+
+                        $this->logger->debug("Track $fileId by token for $userId", ["app" => $this->appName]);
                     }
 
                     list ($file, $error) = empty($shareToken) ? $this->getFile($userId, $fileId, $filePath) : $this->getFileByToken($fileId, $shareToken);
@@ -513,23 +503,28 @@ class CallbackController extends Controller {
 
                     $isForcesave = $status === self::TrackerStatus_ForceSave || $status === self::TrackerStatus_CorruptedForceSave;
 
-                    if ($isForcesave
-                        && $file->getStorage()->instanceOfStorage(SharingExternalStorage::class)) {
-                        $this->logger->info("Track: $fileId status $status not allowed for external file", ["app" => $this->appName]);
-                        break;
+                    if ($file->getStorage()->instanceOfStorage(SharingExternalStorage::class)) {
+                        $isLock = KeyManager::lockFederatedKey($file, $isForcesave, null);
+                        if ($isForcesave && !$isLock) {
+                            break;
+                        }
+                    } else {
+                        KeyManager::lock($fileId, $isForcesave);
                     }
-
-                    //lock the key when forcesave and unlock if last forcesave is broken
-                    KeyManager::lock($fileId, $isForcesave);
 
                     $this->logger->debug("Track put content " . $file->getPath(), ["app" => $this->appName]);
                     $this->retryOperation(function () use ($file, $newData) {
                         return $file->putContent($newData);
                     });
 
-                    //unlock key for future federated save
-                    KeyManager::lock($fileId, false);
-                    KeyManager::setForcesave($fileId, $isForcesave);
+                    if ($file->getStorage()->instanceOfStorage(SharingExternalStorage::class)) {
+                        if ($isForcesave) {
+                            KeyManager::lockFederatedKey($file, false, $isForcesave);
+                        }
+                    } else {
+                        KeyManager::lock($fileId, false);
+                        KeyManager::setForcesave($fileId, $isForcesave);
+                    }
 
                     if (!$isForcesave
                         && !$prevIsForcesave
