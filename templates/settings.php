@@ -114,7 +114,7 @@
     <p>
         <input type="checkbox" class="checkbox" id="onlyofficeVersionHistory"
             <?php if ($_["versionHistory"]) { ?>checked="checked"<?php } ?> />
-        <label for="onlyofficeVersionHistory"><?php p($l->t("Keep document version history")) ?> <?php p($l->t("(take up disk space)")) ?></label>
+        <label for="onlyofficeVersionHistory"><?php p($l->t("Keep metadata for each version once the document is edited (it will take up disk space)")) ?></label>
         <button id="onlyofficeClearVersionHistory" class="button"><?php p($l->t("Clear")) ?></button>
     </p>
 
