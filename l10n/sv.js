@@ -79,6 +79,6 @@ OC.L10N.register(
     "Select tag" : "Välj tagg",
     "version": "verzia",
     "Disable certificate verification (insecure)": "Använd inte certifikatsverifiering (osäkert)",
-    "Generate document preview": "Skapa förhandsgranskning av dokument"
+    "Use ONLYOFFICE to generate a document preview (it will take up disk space)": "Använd ONLYOFFICE för att generera en förhandsgranskning av dokument (detta använder diskutrymme)"
 },
 "nplurals=2; plural=(n != 1);");

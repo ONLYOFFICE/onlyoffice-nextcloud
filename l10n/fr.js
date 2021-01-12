@@ -86,6 +86,6 @@ OC.L10N.register(
     "version": "version",
     "Disable certificate verification (insecure)": "Désactiver la vérification du certificat (non sur)",
     "Keep intermediate versions when editing": "Sauvegarder les versions intermédiaires lors de l'édition",
-    "Generate document preview": "Générer l'aperçu du document"
+    "Use ONLYOFFICE to generate a document preview (it will take up disk space)": "Utilisez ONLYOFFICE pour générer l'aperçu du document (occupe de l'espace disque)"
 },
 "nplurals=2; plural=(n != 1);");
