@@ -528,7 +528,8 @@ class CallbackController extends Controller {
 
                     if (!$isForcesave
                         && !$prevIsForcesave
-                        && $this->versionManager !== null) {
+                        && $this->versionManager !== null
+                        && $this->config->GetVersionHistory()) {
                         $changes = null;
                         if (!empty($changesurl)) {
                             $changesurl = $this->config->ReplaceDocumentServerUrlToInternal($changesurl);
@@ -537,7 +538,7 @@ class CallbackController extends Controller {
                         FileVersions::saveHistory($file->getFileInfo(), $history, $changes, $prevVersion);
                     }
 
-                    if (!empty($user)) {
+                    if (!empty($user) && $this->config->GetVersionHistory()) {
                         FileVersions::saveAuthor($file->getFileInfo(), $user);
                     }
 

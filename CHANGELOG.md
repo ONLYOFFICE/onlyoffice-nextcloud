@@ -3,6 +3,8 @@
 ## Added
 - save as in current folder
 - hide secret key in settings
+- configuring version storage
+- clearing history data
 
 ## Changed
 - thumbnails for small files only
