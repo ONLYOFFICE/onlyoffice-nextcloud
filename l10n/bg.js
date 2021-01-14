@@ -86,6 +86,6 @@ OC.L10N.register(
     "version": "версия",
     "Disable certificate verification (insecure)": "Деактивиране на проверката на сертификата (несигурно)",
     "Keep intermediate versions when editing": "Съхранявайте междинни версии при редактиране",
-    "Generate document preview": "Генериране на визуализация на документ"
+    "Use ONLYOFFICE to generate a document preview (it will take up disk space)": "Използвайте ONLYOFFICE, за да генерирате преглед на документа (ще заеме дисково пространство)"
 },
 "nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);");

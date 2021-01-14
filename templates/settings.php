@@ -102,7 +102,7 @@
     <p>
         <input type="checkbox" class="checkbox" id="onlyofficePreview"
             <?php if ($_["preview"]) { ?>checked="checked"<?php } ?> />
-        <label for="onlyofficePreview"><?php p($l->t("Generate document preview")) ?> <?php p($l->t("(take up disk space)")) ?></label>
+        <label for="onlyofficePreview"><?php p($l->t("Use ONLYOFFICE to generate a document preview (it will take up disk space)")) ?></label>
     </p>
 
     <p>
