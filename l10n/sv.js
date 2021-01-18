@@ -53,6 +53,7 @@ OC.L10N.register(
     "Display the header more compact" : "Visa kompakt sidhuvud",
     "Display Feedback & Support menu button" : "Visa Feedback & Support i menyn",
     "Display Help menu button" : "Visa hjälp i menyn",
+    "Display monochrome toolbar header" : "Visa svartvit verktygsfältshuvud",
     "Save as" : "Spara som",
     "File saved" : "Filen har sparats",
     "Insert image" : "Infoga bild",
