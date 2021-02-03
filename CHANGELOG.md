@@ -8,6 +8,7 @@
 
 ## Changed
 - thumbnails for small files only
+- do not store history for federated share files
 
 ## 6.2.0
 ## Changed
