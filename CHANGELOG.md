@@ -9,6 +9,7 @@
 ## Changed
 - thumbnails for small files only
 - do not store history for federated share files
+- compatible with Nextcloud 21
 
 ## 6.2.0
 ## Changed
