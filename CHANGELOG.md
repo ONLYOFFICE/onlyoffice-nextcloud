@@ -10,6 +10,7 @@
 - thumbnails for small files only
 - do not store history for federated share files
 - compatible with Nextcloud 21
+- Nextcloud v18 is no longer supported
 
 ## 6.2.0
 ## Changed
