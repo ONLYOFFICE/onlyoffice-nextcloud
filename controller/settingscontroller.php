@@ -27,8 +27,6 @@ use OCP\ILogger;
 use OCP\IRequest;
 use OCP\IURLGenerator;
 
-use OC\Files\View;
-
 use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\Crypt;
 use OCA\Onlyoffice\DocumentService;
@@ -261,7 +259,7 @@ class SettingsController extends Controller {
 
     /**
      * Clear all version history
-     * 
+     *
      * @return array
      */
     public function ClearHistory() {
