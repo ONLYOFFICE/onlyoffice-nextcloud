@@ -690,7 +690,7 @@ class EditorController extends Controller {
      * @NoAdminRequired
      * @NoCSRFRequired
      */
-    public function index($fileId, $filePath = null, $shareToken = null, $version = 0, $inframe = false) {
+    public function index($fileId, $filePath = null, $shareToken = null, $version = 0, $inframe = false, $readonly = false) {
         $this->logger->debug("Open: $fileId ($version) $filePath ", ["app" => $this->appName]);
 
         $isLoggedIn = $this->userSession->isLoggedIn();
@@ -794,6 +794,7 @@ class EditorController extends Controller {
      * @param integer $version - file version
      * @param integer $inframe - open in frame. 0 - no, 1 - yes, 2 - without goback for old editor (5.4)
      * @param bool $desktop - desktop label
+     * @param bool $readonly - open readonly
      * @param string $guestName - nickname not logged user
      *
      * @return array
@@ -801,7 +802,7 @@ class EditorController extends Controller {
      * @NoAdminRequired
      * @PublicPage
      */
-    public function config($fileId, $filePath = null, $shareToken = null, $directToken = null, $version = 0, $inframe = 0, $desktop = false, $guestName = null) {
+    public function config($fileId, $filePath = null, $shareToken = null, $directToken = null, $version = 0, $inframe = 0, $desktop = false, $readonly = false, $guestName = null) {
 
         if (!empty($directToken)) {
             list ($directData, $error) = $this->crypt->ReadHash($directToken);
@@ -899,17 +900,16 @@ class EditorController extends Controller {
         $editable = $version < 1
                     && $file->isUpdateable()
                     && (empty($shareToken) || ($share->getPermissions() & Constants::PERMISSION_UPDATE) === Constants::PERMISSION_UPDATE);
+		$hashCallback = $this->crypt->GetHash(["userId" => $userId, "fileId" => $file->getId(), "filePath" => $filePath, "shareToken" => $shareToken, "action" => "track"]);
+		$callback = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.track", ["doc" => $hashCallback]);
+
+		if (!empty($this->config->GetStorageUrl())) {
+			$callback = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->config->GetStorageUrl(), $callback);
+		}
+
+		$params["editorConfig"]["callbackUrl"] = $callback;
         $params["document"]["permissions"]["edit"] = $editable;
-        if ($editable && $canEdit) {
-            $hashCallback = $this->crypt->GetHash(["userId" => $userId, "fileId" => $file->getId(), "filePath" => $filePath, "shareToken" => $shareToken, "action" => "track"]);
-            $callback = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.track", ["doc" => $hashCallback]);
-
-            if (!empty($this->config->GetStorageUrl())) {
-                $callback = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->config->GetStorageUrl(), $callback);
-            }
-
-            $params["editorConfig"]["callbackUrl"] = $callback;
-        } else {
+        if (!$editable || !$canEdit || $readonly) {
             $params["editorConfig"]["mode"] = "view";
         }
 
