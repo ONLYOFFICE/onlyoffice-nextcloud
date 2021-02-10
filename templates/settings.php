@@ -22,11 +22,7 @@
 
     if ($_["tagsEnabled"]) {
         script("core", [
-            "systemtags/systemtags",
-            "systemtags/systemtagmodel",
-            "systemtags/systemtagsmappingcollection",
-            "systemtags/systemtagscollection",
-            "systemtags/systemtagsinputfield",
+            "dist/systemtags",
         ]);
     }
 ?>
@@ -97,6 +93,12 @@
             <?php if (count($_["limitGroups"]) > 0) { ?>checked="checked"<?php } ?> />
         <label for="onlyofficeGroups"><?php p($l->t("Restrict access to editors to following groups")) ?></label>
         <input type="hidden" id="onlyofficeLimitGroups" value="<?php p(implode("|", $_["limitGroups"])) ?>" style="display: block" />
+    </p>
+
+    <p>
+        <input type="checkbox" class="checkbox" id="onlyofficePreview"
+            <?php if ($_["preview"]) { ?>checked="checked"<?php } ?> />
+        <label for="onlyofficePreview"><?php p($l->t("Generate document preview")) ?></label>
     </p>
 
     <p>
@@ -186,8 +188,8 @@
 
     <p>
         <input type="checkbox" class="checkbox" id="onlyofficeToolbarNoTabs"
-            <?php if (!$_["toolbarNoTabs"]) { ?>checked="checked"<?php } ?> />
-        <label for="onlyofficeToolbarNoTabs"><?php p($l->t("Display toolbar tabs")) ?></label>
+            <?php if ($_["toolbarNoTabs"]) { ?>checked="checked"<?php } ?> />
+        <label for="onlyofficeToolbarNoTabs"><?php p($l->t("Display monochrome toolbar header")) ?></label>
     </p>
 
     <p class="onlyoffice-header">

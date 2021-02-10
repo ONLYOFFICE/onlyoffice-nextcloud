@@ -191,6 +191,7 @@
 
             var sameTab = $("#onlyofficeSameTab").is(":checked");
             var readOnly = $("#onlyofficeReadOnly").is(":checked");
+            var preview = $("#onlyofficePreview").is(":checked");
 
             var limitGroupsString = $("#onlyofficeGroups").prop("checked") ? $("#onlyofficeLimitGroups").val() : "";
             var limitGroups = limitGroupsString ? limitGroupsString.split("|") : [];
@@ -200,7 +201,7 @@
             var feedback = $("#onlyofficeFeedback").is(":checked");
             var forcesave = $("#onlyofficeForcesave").is(":checked");
             var help = $("#onlyofficeHelp").is(":checked");
-            var toolbarNoTabs = !$("#onlyofficeToolbarNoTabs").is(":checked");
+            var toolbarNoTabs = $("#onlyofficeToolbarNoTabs").is(":checked");
             var reviewDisplay = $("input[type='radio'][name='reviewDisplay']:checked").attr("id").replace("onlyofficeReviewDisplay_", "");
 
             $.ajax({
@@ -211,6 +212,7 @@
                     editFormats: editFormats,
                     sameTab: sameTab,
                     readOnly: readOnly,
+                    preview: preview,
                     limitGroups: limitGroups,
                     chat: chat,
                     compactHeader: compactHeader,

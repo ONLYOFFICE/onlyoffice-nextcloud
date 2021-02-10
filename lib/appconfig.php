@@ -117,6 +117,13 @@ class AppConfig {
     private $_readOnly = "readOnly";
 
     /**
+     * The config key for the generate preview
+     *
+     * @var string
+     */
+    private $_preview = "preview";
+
+    /**
      * The config key for the chat display setting
      *
      * @var string
@@ -630,6 +637,26 @@ class AppConfig {
      */
     public function GetReadOnly() {
         return $this->config->getAppValue($this->appName, $this->_readOnly, "false") === "true";
+    }
+
+    /**
+     * Save generate preview setting
+     *
+     * @param bool $value - preview
+     */
+    public function SetPreview($value) {
+        $this->logger->info("Set generate preview: " . json_encode($value), ["app" => $this->appName]);
+
+        $this->config->setAppValue($this->appName, $this->_preview, json_encode($value));
+    }
+
+    /**
+     * Get generate preview setting
+     *
+     * @return bool
+     */
+    public function GetPreview() {
+        return $this->config->getAppValue($this->appName, $this->_preview, "false") === "true";
     }
 
     /**

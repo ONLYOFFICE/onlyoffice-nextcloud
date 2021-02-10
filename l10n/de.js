@@ -53,7 +53,7 @@ OC.L10N.register(
     "Display the header more compact" : "Kompakten Header anzeigen",
     "Display Feedback & Support menu button" : "Feedback-& Support-Taste anzeigen",
     "Display Help menu button" : "Hilfetaste anzeigen",
-    "Display toolbar tabs" : "Symbolleiste-Registerkarten anzeigen",
+    "Display monochrome toolbar header" : "Monochromen Kopfbereich der Symbolleiste anzeigen",
     "Save as" : "Speichern als",
     "File saved" : "Datei wurde gespeichert",
     "Insert image" : "Bild einfügen",
@@ -79,11 +79,13 @@ OC.L10N.register(
     "Show watermark on link shares with specific system tags" : "Wasserzeichen auf Link-Freigaben mit bestimmten System-Tags anzeigen",
     "Select tag" : "Wähle einen Tag",
     "Select file to compare" : "Datei zum Vergleich auswählen",
+    "Review mode for viewing": "Review-Modus zum Anzeigen",
     "Markup": "Markup",
     "Final": "Endgültig",
     "Original": "Original",
     "version": "version",
     "Disable certificate verification (insecure)": "Zertifikatsüberprüfung deaktivieren (unsicher)",
-    "Keep intermediate versions when editing": "Zwischenversionen bei der Bearbeitung aufbewahren"
+    "Keep intermediate versions when editing": "Zwischenversionen bei der Bearbeitung aufbewahren",
+    "Generate document preview": "Dokumentvorschau generieren"
 },
 "nplurals=2; plural=(n != 1);");

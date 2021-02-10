@@ -26,7 +26,6 @@
     OCA.Onlyoffice.onRequestClose = function () {
 
         $(OCA.Onlyoffice.frameSelector).remove();
-        OCA.Onlyoffice.frameSelector = null;
 
         if (OCA.Viewer && OCA.Viewer.close) {
             OCA.Viewer.close();

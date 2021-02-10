@@ -23,6 +23,7 @@ use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataDownloadResponse;
 use OCP\AppFramework\Http\JSONResponse;
+use OCP\AppFramework\QueryException;
 use OCP\Files\File;
 use OCP\Files\Folder;
 use OCP\Files\IRootFolder;
@@ -220,17 +221,20 @@ class CallbackController extends Controller {
         }
 
         $userId = null;
+
+        $user = null;
         if ($this->userSession->isLoggedIn()) {
-            $userId = $this->userSession->getUser()->getUID();
+            $user = $this->userSession->getUser();
+            $userId = $user->getUID();
         } else {
             \OC_Util::tearDownFS();
 
             if (isset($hashData->userId)) {
                 $userId = $hashData->userId;
-                \OC_User::setUserId($userId);
 
                 $user = $this->userManager->get($userId);
                 if (!empty($user)) {
+                    \OC_User::setUserId($userId);
                     \OC_Util::setupFS($userId);
                 }
             }
@@ -246,6 +250,13 @@ class CallbackController extends Controller {
         if ($this->userSession->isLoggedIn() && !$file->isReadable()) {
             $this->logger->error("Download without access right", ["app" => $this->appName]);
             return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
+        }
+
+        if (empty($user)) {
+            $owner = $file->getFileInfo()->getOwner();
+            if ($owner !== null) {
+                \OC_Util::setupFS($owner->getUID());
+            }
         }
 
         if ($changes) {
@@ -434,10 +445,10 @@ class CallbackController extends Controller {
 
                     // author of the latest changes
                     $userId = $this->parseUserId($users[0]);
-                    \OC_User::setUserId($userId);
 
                     $user = $this->userManager->get($userId);
                     if (!empty($user)) {
+                        \OC_User::setUserId($userId);
                         \OC_Util::setupFS($userId);
 
                         if ($userId === $hashData->userId) {
@@ -447,11 +458,11 @@ class CallbackController extends Controller {
                         if (empty($shareToken)) {
                             // author of the callback link
                             $userId = $hashData->userId;
-                            \OC_User::setUserId($userId);
                             $this->logger->debug("Track for $userId: $fileId status $status", ["app" => $this->appName]);
 
                             $user = $this->userManager->get($userId);
                             if (!empty($user)) {
+                                \OC_User::setUserId($userId);
                                 \OC_Util::setupFS($userId);
 
                                 // path for author of the callback link
@@ -467,6 +478,13 @@ class CallbackController extends Controller {
                     if (isset($error)) {
                         $this->logger->error("track error $fileId " . json_encode($error->getData()),  ["app" => $this->appName]);
                         return $error;
+                    }
+
+                    if (empty($user)) {
+                        $owner = $file->getFileInfo()->getOwner();
+                        if ($owner !== null) {
+                            \OC_Util::setupFS($owner->getUID());
+                        }
                     }
 
                     $url = $this->config->ReplaceDocumentServerUrlToInternal($url);
@@ -495,23 +513,28 @@ class CallbackController extends Controller {
 
                     $isForcesave = $status === self::TrackerStatus_ForceSave || $status === self::TrackerStatus_CorruptedForceSave;
 
-                    if ($isForcesave
-                        && $file->getStorage()->instanceOfStorage(SharingExternalStorage::class)) {
-                        $this->logger->info("Track: $fileId status $status not allowed for external file", ["app" => $this->appName]);
-                        break;
+                    if ($file->getStorage()->instanceOfStorage(SharingExternalStorage::class)) {
+                        $isLock = KeyManager::lockFederatedKey($file, $isForcesave, null);
+                        if ($isForcesave && !$isLock) {
+                            break;
+                        }
+                    } else {
+                        KeyManager::lock($fileId, $isForcesave);
                     }
-
-                    //lock the key when forcesave and unlock if last forcesave is broken
-                    KeyManager::lock($fileId, $isForcesave);
 
                     $this->logger->debug("Track put content " . $file->getPath(), ["app" => $this->appName]);
                     $this->retryOperation(function () use ($file, $newData) {
                         return $file->putContent($newData);
                     });
 
-                    //unlock key for future federated save
-                    KeyManager::lock($fileId, false);
-                    KeyManager::setForcesave($fileId, $isForcesave);
+                    if ($file->getStorage()->instanceOfStorage(SharingExternalStorage::class)) {
+                        if ($isForcesave) {
+                            KeyManager::lockFederatedKey($file, false, $isForcesave);
+                        }
+                    } else {
+                        KeyManager::lock($fileId, false);
+                        KeyManager::setForcesave($fileId, $isForcesave);
+                    }
 
                     if (!$isForcesave
                         && !$prevIsForcesave
@@ -522,6 +545,10 @@ class CallbackController extends Controller {
                             $changes = $documentService->Request($changesurl);
                         }
                         FileVersions::saveHistory($file->getFileInfo(), $history, $changes, $prevVersion);
+                    }
+
+                    if (!empty($user)) {
+                        FileVersions::saveAuthor($file->getFileInfo(), $user);
                     }
 
                     $result = 0;
@@ -560,7 +587,7 @@ class CallbackController extends Controller {
         try {
             $files = $this->root->getUserFolder($userId)->getById($fileId);
         } catch (\Exception $e) {
-            $this->logger->errorlogException($e, ["message" => "getFile: $fileId", "app" => $this->appName]);
+            $this->logger->logException($e, ["message" => "getFile: $fileId", "app" => $this->appName]);
             return [null, new JSONResponse(["message" => $this->trans->t("Invalid request")], Http::STATUS_BAD_REQUEST)];
         }
 

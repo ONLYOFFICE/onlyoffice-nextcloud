@@ -53,7 +53,7 @@ OC.L10N.register(
     "Display the header more compact" : "更紧致的显示菜单栏",
     "Display Feedback & Support menu button" : "显示反馈&支持菜单按钮",
     "Display Help menu button" : "显示帮助菜单按钮",
-    "Display toolbar tabs" : "显示工具栏切签",
+    "Display monochrome toolbar header" : "显示单色工具栏标题",
     "Save as" : "另存为",
     "File saved" : "文件已保存",
     "Insert image" : "插入图片",
@@ -85,6 +85,7 @@ OC.L10N.register(
     "Original": "原始版本",
     "version": "版本",
     "Disable certificate verification (insecure)": "关闭证书校验(不安全)",
-    "Keep intermediate versions when editing": "编辑时保留中间版本"
+    "Keep intermediate versions when editing": "编辑时保留中间版本",
+    "Generate document preview": "产生文件的预览"
 },
 "nplurals=2; plural=(n != 1);");

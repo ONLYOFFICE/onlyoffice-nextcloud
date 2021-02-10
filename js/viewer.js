@@ -104,6 +104,6 @@
         }
     };
 
-    $(document).ready(initPage)
+    initPage();
 
 })(OCA);

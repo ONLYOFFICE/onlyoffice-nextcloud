@@ -51,7 +51,7 @@
     "Display the header more compact" : "Отображать заголовок компактным",
     "Display Feedback & Support menu button" : "Отображать кнопку Обратной связи и поддержки",
     "Display Help menu button" : "Отображать кнопку справки",
-    "Display toolbar tabs" : "Отображать вкладки панели инструментов",
+    "Display monochrome toolbar header" : "Отображать монохромный заголовок панели инструментов",
     "Save as" : "Сохранить как",
     "File saved" : "Файл сохранён",
     "Insert image" : "Вставить изображение",
@@ -83,6 +83,7 @@
     "Original": "Исходный документ",
     "version": "версия",
     "Disable certificate verification (insecure)": "Отключить проверку сертификата (небезопасно)",
-    "Keep intermediate versions when editing": "Хранить промежуточные версии при редактировании"
+    "Keep intermediate versions when editing": "Хранить промежуточные версии при редактировании",
+    "Generate document preview": "Генерировать превью документов"
 },"pluralForm" :"nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);"
 }
