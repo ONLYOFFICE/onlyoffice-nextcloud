@@ -184,7 +184,6 @@ class EditorController extends Controller {
      *
      * @param string $name - file name
      * @param string $dir - folder path
-     * @param string $templateId - file identifier
      * @param string $shareToken - access token
      *
      * @return array
@@ -192,7 +191,7 @@ class EditorController extends Controller {
      * @NoAdminRequired
      * @PublicPage
      */
-    public function create($name, $dir, $templateId = null, $shareToken = null) {
+    public function create($name, $dir, $shareToken = null) {
         $this->logger->debug("Create: $name", ["app" => $this->appName]);
 
         if (empty($shareToken) && !$this->config->isUserAllowedToUse()) {
@@ -236,17 +235,10 @@ class EditorController extends Controller {
             return ["error" => $this->trans->t("You don't have enough permission to create")];
         }
 
-        if (empty($templateId)) {
-            $template = TemplateManager::GetEmptyTemplate($name);
-        } else {
-            $templateFile = TemplateManager::GetTemplate($templateId);
-            if ($templateFile !== null) {
-                $template = $templateFile->getContent();
-            }
-        }
+        $template = TemplateManager::GetEmptyTemplate($name);
 
         if (!$template) {
-            $this->logger->error("Template for file creation not found: $name ($templateId)", ["app" => $this->appName]);
+            $this->logger->error("Template for file creation not found: $name", ["app" => $this->appName]);
             return ["error" => $this->trans->t("Template not found")];
         }
 

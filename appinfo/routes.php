@@ -41,7 +41,6 @@ return [
        ["name" => "settings#clear_history", "url" => "/ajax/settings/history", "verb" => "DELETE"],
        ["name" => "template#add_template", "url" => "/ajax/template", "verb" => "POST"],
        ["name" => "template#delete_template", "url" => "/ajax/template", "verb" => "DELETE"],
-       ["name" => "template#get_templates", "url" => "/ajax/template", "verb" => "GET"],
     ],
     "ocs" => [
         ["name" => "federation#key", "url" => "/api/v1/key", "verb" => "POST"],
