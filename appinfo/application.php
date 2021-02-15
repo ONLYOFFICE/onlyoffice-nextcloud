@@ -27,6 +27,7 @@ use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
 use OCP\AppFramework\Http\ContentSecurityPolicy;
 use OCP\DirectEditing\RegisterDirectEditorEvent;
+use OCP\Files\Template\FileCreatedFromTemplateEvent;
 use OCP\Files\Template\ITemplateManager;
 use OCP\Files\Template\TemplateFileCreator;
 use OCP\IL10N;
@@ -44,6 +45,7 @@ use OCA\Onlyoffice\Crypt;
 use OCA\Onlyoffice\DirectEditor;
 use OCA\Onlyoffice\Hooks;
 use OCA\Onlyoffice\Preview;
+use OCA\Onlyoffice\TemplateManager;
 
 use Psr\Container\ContainerInterface;
 
@@ -223,6 +225,16 @@ class Application extends App implements IBootstrap {
                 });
 
             $container = $this->getContainer();
+
+            $eventDispatcher->addListener(FileCreatedFromTemplateEvent::class,
+                function (FileCreatedFromTemplateEvent $event) {
+                    $template = $event->getTemplate();
+                    if ($template === null) {
+                        $targetFile = $event->getTarget();
+                        $templateEmpty = TemplateManager::GetEmptyTemplate($targetFile->getName());
+                        $targetFile->putContent($templateEmpty);
+                    }
+                });
 
             $previewManager = $container->query(IPreview::class);
             $previewManager->registerProvider(Preview::getMimeTypeRegex(), function() use ($container) {
