@@ -27,8 +27,11 @@ use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
 use OCP\AppFramework\Http\ContentSecurityPolicy;
 use OCP\DirectEditing\RegisterDirectEditorEvent;
-use OCP\Util;
+use OCP\Files\Template\ITemplateManager;
+use OCP\Files\Template\TemplateFileCreator;
+use OCP\IL10N;
 use OCP\IPreview;
+use OCP\Util;
 
 use OCA\Viewer\Event\LoadViewer;
 
@@ -234,6 +237,32 @@ class Application extends App implements IBootstrap {
                         $event->register($editor);
                     }
                 });
+        });
+
+        $context->injectFn(function(ITemplateManager $templateManager, IL10N $trans, $appName) {
+            $templateManager->registerTemplateFileCreator(function () use ($appName, $trans) {
+                $wordTemplate = new TemplateFileCreator($appName, $trans->t("Document"), ".docx");
+                $wordTemplate->addMimetype("application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+                $wordTemplate->setIconClass("icon-onlyoffice-new-docx");
+                $wordTemplate->setRatio(21/29.7);
+                return $wordTemplate;
+            });
+
+            $templateManager->registerTemplateFileCreator(function () use ($appName, $trans) {
+                $cellTemplate = new TemplateFileCreator($appName, $trans->t("Spreadsheet"), ".xlsx");
+                $cellTemplate->addMimetype("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+                $cellTemplate->setIconClass("icon-onlyoffice-new-xlsx");
+                $cellTemplate->setRatio(21/29.7);
+                return $cellTemplate;
+            });
+
+            $templateManager->registerTemplateFileCreator(function () use ($appName, $trans) {
+                $slideTemplate = new TemplateFileCreator($appName, $trans->t("Presentation"), ".pptx");
+                $slideTemplate->addMimetype("application/vnd.openxmlformats-officedocument.presentationml.presentation");
+                $slideTemplate->setIconClass("icon-onlyoffice-new-pptx");
+                $slideTemplate->setRatio(16/9);
+                return $slideTemplate;
+            });
         });
 
         Hooks::connectHooks();
