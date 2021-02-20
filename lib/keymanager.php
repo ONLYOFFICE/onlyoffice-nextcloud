@@ -167,7 +167,7 @@ class KeyManager {
         $logger = \OC::$server->getLogger();
         $action = $lock ? "lock" : "unlock";
 
-        $remote = $file->getStorage()->getRemote();
+        $remote = rtrim($file->getStorage()->getRemote(), "/") . "/";
         $shareToken = $file->getStorage()->getToken();
         $internalPath = $file->getInternalPath();
 
