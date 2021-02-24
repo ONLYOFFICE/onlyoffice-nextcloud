@@ -1,5 +1,6 @@
 # Change Log
 
+## 6.3.0
 ## Added
 - save as in current folder
 - hide secret key in settings
@@ -8,7 +9,7 @@
 
 ## Changed
 - thumbnails for small files only
-- do not store history for federated share files
+- history for federated share files is not stored
 - compatible with Nextcloud 21
 - Nextcloud v18 is no longer supported
 
