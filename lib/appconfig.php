@@ -117,6 +117,13 @@ class AppConfig {
     private $_preview = "preview";
 
     /**
+     * The config key for the keep versions history
+     *
+     * @var string
+     */
+    private $_versionHistory = "versionHistory";
+
+    /**
      * The config key for the chat display setting
      *
      * @var string
@@ -206,6 +213,13 @@ class AppConfig {
      * @var string
      */
     const WATERMARK_APP_NAMESPACE = "files";
+
+    /**
+     * The config key for limit thumbnail size
+     *
+     * @var string
+     */
+    public $_limitThumbSize = "limit_thumb_size";
 
     /**
      * The config key for the modifyFilter
@@ -633,6 +647,26 @@ class AppConfig {
     }
 
     /**
+     * Save keep versions history
+     *
+     * @param bool $value - version history
+     */
+    public function SetVersionHistory($value) {
+        $this->logger->info("Set keep versions history: " . json_encode($value), ["app" => $this->appName]);
+
+        $this->config->setAppValue($this->appName, $this->_versionHistory, json_encode($value));
+    }
+
+    /**
+     * Get keep versions history
+     *
+     * @return bool
+     */
+    public function GetVersionHistory() {
+        return $this->config->getAppValue($this->appName, $this->_versionHistory, "true") === "true";
+    }
+
+    /**
      * Save chat display setting
      *
      * @param bool $value - display chat
@@ -960,6 +994,21 @@ class AppConfig {
         }
 
         return $this->GetSystemValue($this->_verification);
+    }
+
+    /**
+     * Get the limit on size document when generating thumbnails
+     *
+     * @return int
+     */
+    public function GetLimitThumbSize() {
+        $limitSize = (integer)$this->GetSystemValue($this->_limitThumbSize);
+
+        if (!empty($limitSize)) {
+            return $limitSize;
+        }
+
+        return 100*1024*1024;
     }
 
     /**

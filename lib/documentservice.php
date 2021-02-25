@@ -372,7 +372,7 @@ class DocumentService {
      *
      * @param OCP\IURLGenerator $urlGenerator - url generator
      * @param OCA\Onlyoffice\Crypt $crypt -crypt
-     * 
+     *
      * @return array
      */
     public function checkDocServiceUrl($urlGenerator, $crypt) {
@@ -432,7 +432,7 @@ class DocumentService {
             $convertedFileUri = $this->GetConvertedUri($fileUrl, "docx", "docx", "check_" . rand());
 
             if (strcmp($convertedFileUri, $fileUrl) === 0) {
-                $logger->debug("GetConvertedUri skipped", ["app" => $this->appName]);
+                $logger->debug("GetConvertedUri skipped", ["app" => self::$appName]);
             }
 
         } catch (\Exception $e) {

@@ -47,7 +47,11 @@
         </p>
 
         <p class="onlyoffice-header"><?php p($l->t("Secret key (leave blank to disable)")) ?></p>
-        <p><input id="onlyofficeSecret" value="<?php p($_["secret"]) ?>" placeholder="secret" type="text"></p>
+        <p>
+            <input id="onlyofficeSecret" value="<?php p($_["secret"]) ?>" placeholder="secret" type="password" />
+            <input type="checkbox" id="personal-show" class="hidden-visually" name="show" />
+            <label id="onlyofficeSecret-show" for="personal-show" class="personal-show-label"></label>
+        </p>
 
         <p>
             <a id="onlyofficeAdv" class="onlyoffice-header">
@@ -98,13 +102,20 @@
     <p>
         <input type="checkbox" class="checkbox" id="onlyofficePreview"
             <?php if ($_["preview"]) { ?>checked="checked"<?php } ?> />
-        <label for="onlyofficePreview"><?php p($l->t("Generate document preview")) ?></label>
+        <label for="onlyofficePreview"><?php p($l->t("Use ONLYOFFICE to generate a document preview (it will take up disk space)")) ?></label>
     </p>
 
     <p>
         <input type="checkbox" class="checkbox" id="onlyofficeSameTab"
             <?php if ($_["sameTab"]) { ?>checked="checked"<?php } ?> />
         <label for="onlyofficeSameTab"><?php p($l->t("Open file in the same tab")) ?></label>
+    </p>
+
+    <p>
+        <input type="checkbox" class="checkbox" id="onlyofficeVersionHistory"
+            <?php if ($_["versionHistory"]) { ?>checked="checked"<?php } ?> />
+        <label for="onlyofficeVersionHistory"><?php p($l->t("Keep metadata for each version once the document is edited (it will take up disk space)")) ?></label>
+        <button id="onlyofficeClearVersionHistory" class="button"><?php p($l->t("Clear")) ?></button>
     </p>
 
     <p class="onlyoffice-header"><?php p($l->t("The default application for opening the format")) ?></p>

@@ -53,6 +53,7 @@ OC.L10N.register(
     "Display the header more compact" : "Visa kompakt sidhuvud",
     "Display Feedback & Support menu button" : "Visa Feedback & Support i menyn",
     "Display Help menu button" : "Visa hjälp i menyn",
+    "Display monochrome toolbar header" : "Visa svartvit verktygsfältshuvud",
     "Save as" : "Spara som",
     "File saved" : "Filen har sparats",
     "Insert image" : "Infoga bild",
@@ -79,6 +80,7 @@ OC.L10N.register(
     "Select tag" : "Välj tagg",
     "version": "verzia",
     "Disable certificate verification (insecure)": "Använd inte certifikatsverifiering (osäkert)",
-    "Generate document preview": "Skapa förhandsgranskning av dokument"
+    "Use ONLYOFFICE to generate a document preview (it will take up disk space)": "Använd ONLYOFFICE för att generera en förhandsgranskning av dokument (detta använder diskutrymme)",
+    "Keep metadata for each version once the document is edited (it will take up disk space)": "Behåll metadata för varje version när dokumentet redigeras (detta använder diskutrymme) "
 },
 "nplurals=2; plural=(n != 1);");

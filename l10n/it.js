@@ -86,6 +86,8 @@ OC.L10N.register(
     "version": "versione",
     "Disable certificate verification (insecure)": "Disattiva la verifica del certificato (non sicuro)",
     "Keep intermediate versions when editing": "Mantieni le versioni intermedie durante la modifica",
-    "Generate document preview": "Genera l'anteprima del documento"
+    "Use ONLYOFFICE to generate a document preview (it will take up disk space)": "Usare ONLYOFFICE per generare anteprima documenti (occuperà spazio su disco)",
+    "Keep metadata for each version once the document is edited (it will take up disk space)": "Salvare metadati per ogni versione una volta modificato il documento (occuperà spazio su disco)",
+    "All history successfully deleted": "Cronologia eliminata con successo"
 },
 "nplurals=2; plural=(n != 1);");

@@ -21,9 +21,12 @@ namespace OCA\Onlyoffice;
 
 use OC\Files\Node\File;
 use OC\Files\View;
+use OC\User\Database;
 
 use OCP\Files\FileInfo;
 use OCP\IUser;
+
+use OCA\Files_Sharing\External\Storage as SharingExternalStorage;
 
 /**
  * File versions
@@ -245,12 +248,20 @@ class FileVersions {
     public static function saveHistory($fileInfo, $history, $changes, $prevVersion) {
         $logger = \OC::$server->getLogger();
 
-        $owner = $fileInfo->getOwner();
+        if ($fileInfo === null) {
+            return;
+        }
 
+        $owner = $fileInfo->getOwner();
         if ($owner === null) {
             return;
         }
+
         if (empty($history) || empty($changes)) {
+            return;
+        }
+
+        if ($fileInfo->getStorage()->instanceOfStorage(SharingExternalStorage::class)) {
             return;
         }
 
@@ -337,6 +348,28 @@ class FileVersions {
     }
 
     /**
+     * Clear all version history
+     */
+    public static function clearHistory() {
+        $logger = \OC::$server->getLogger();
+
+        $userDatabase = new Database();
+        $userIds = $userDatabase->getUsers();
+
+        $view = new View("/");
+
+        foreach ($userIds as $userId) {
+            $path = $userId . "/" . self::$appName;
+
+            if ($view->file_exists($path)) {
+                $view->unlink($path);
+            }
+        }
+
+        $logger->debug("clear all history", ["app" => self::$appName]);
+    }
+
+    /**
      * Save file author
      *
      * @param FileInfo $fileInfo - file info
@@ -351,6 +384,10 @@ class FileVersions {
 
         $owner = $fileInfo->getOwner();
         if ($owner === null) {
+            return;
+        }
+
+        if ($fileInfo->getStorage()->instanceOfStorage(SharingExternalStorage::class)) {
             return;
         }
 

@@ -53,6 +53,7 @@ OC.L10N.register(
     "Display the header more compact" : "Wyświetlaj bardziej kompaktowy nagłówek",
     "Display Feedback & Support menu button" : "Wyświetlaj Opinie i Support",
     "Display Help menu button" : "Wyświetlaj menu pomocy",
+    "Display monochrome toolbar header" : "Wyświetl monochromatyczny nagłówek paska narzędzi",
     "Save as" : "Zapisz jako",
     "File saved" : "Plik zapisany",
     "Insert image" : "Wstaw obraz",
@@ -79,6 +80,7 @@ OC.L10N.register(
     "Select tag" : "Wybierz tag",
     "version": "wersja",
     "Disable certificate verification (insecure)": "Wyłącz weryfikację certyfikatu (niebezpieczne)",
-    "Generate document preview": "Wygeneruj podgląd dokumentu"
+    "Use ONLYOFFICE to generate a document preview (it will take up disk space)": "Skorzystaj z ONLYOFFICE, aby wygenerować podgląd dokumentu (zajmie to miejsce na dysku)",
+    "Keep metadata for each version once the document is edited (it will take up disk space)": "Zachowaj metadane dla każdej wersji, gdy dokument jest edytowany (zajmie to miejsce na dysku)"
 },
 "nplurals=2; plural=(n != 1);");

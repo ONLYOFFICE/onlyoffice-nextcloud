@@ -227,7 +227,9 @@ class Preview extends Provider {
         if ($this->config->GetPreview() !== true) {
             return false;
         }
-        if (!$fileInfo || $fileInfo->getSize() === 0) {
+        if (!$fileInfo 
+            || $fileInfo->getSize() === 0
+            || $fileInfo->getSize() > $this->config->GetLimitThumbSize()) {
             return false;
         }
         if (!in_array($fileInfo->getMimetype(), self::$capabilities, true)) {

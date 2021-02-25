@@ -53,7 +53,7 @@ body.onlyoffice-inline #content #app-content {
     display: block;
     position: absolute;
     top: 0;
-    z-index: 110;
+    z-index: 1010;
 }
 
 #onlyofficeHeader {

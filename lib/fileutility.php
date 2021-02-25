@@ -270,7 +270,7 @@ class FileUtility {
      * @return string
      */
     private function getFederatedKey($file) {
-        $remote = $file->getStorage()->getRemote();
+        $remote = rtrim($file->getStorage()->getRemote(), "/") . "/";
         $shareToken = $file->getStorage()->getToken();
         $internalPath = $file->getInternalPath();
 
