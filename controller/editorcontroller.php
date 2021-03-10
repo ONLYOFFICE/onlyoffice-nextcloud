@@ -257,6 +257,30 @@ class EditorController extends Controller {
     }
 
     /**
+     * Create new file in folder from editor
+     *
+     * @param string $name - file name
+     * @param string $dir - folder path
+     * 
+     * @return RedirectResponse
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     * @PublicPage
+     */
+    public function createNew($name, $dir) {
+        $this->logger->debug("Create from editor: $name", ["app" => $this->appName]);
+
+        $result = $this->create($name, $dir);
+        if (isset($result["error"])) {
+            return $this->renderError($result["error"]);
+        }
+
+        $openEditor = $fileUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".editor.index", ["fileId" => $result["id"]]);
+        return new RedirectResponse($openEditor);
+    }
+
+    /**
      * Conversion file to Office Open XML format
      *
      * @param integer $fileId - file identifier
@@ -957,6 +981,32 @@ class EditorController extends Controller {
                     "scrollto" => $file->getName()
                 ];
                 $folderLink = $this->urlGenerator->linkToRouteAbsolute("files.view.index", $linkAttr);
+            }
+
+            if ($ext === "docx" || $ext === "xlsx" || $ext === "pptx") {
+                switch($ext) {
+                    case "docx":
+                        $createName = $this->trans->t("Document") . "." . $ext;
+                        break;
+                    case "xlsx":
+                        $createName = $this->trans->t("Spreadsheet") . "." . $ext;
+                        break;
+                    case "pptx":
+                        $createName = $this->trans->t("Presentation") . "." . $ext;
+                        break;
+                }
+                $createParam = [
+                    "dir" => $folderPath,
+                    "name" => $createName
+                ];
+
+                $createUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".editor.create_new", $createParam);
+
+                if (!empty($this->config->GetStorageUrl())) {
+                    $createUrl = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->config->GetStorageUrl(), $createUrl);
+                }
+
+                $params["editorConfig"]["createUrl"] = urldecode($createUrl);
             }
         }
 

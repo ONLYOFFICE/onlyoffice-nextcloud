@@ -27,6 +27,7 @@ return [
        ["name" => "editor#public_page", "url" => "/s/{shareToken}", "verb" => "GET"],
        ["name" => "editor#config", "url" => "/ajax/config/{fileId}", "verb" => "GET"],
        ["name" => "editor#create", "url" => "/ajax/new", "verb" => "POST"],
+       ["name" => "editor#create_new", "url" => "/ajax/new", "verb" => "GET"],
        ["name" => "editor#convert", "url" => "/ajax/convert", "verb" => "POST"],
        ["name" => "editor#save", "url" => "/ajax/save", "verb" => "POST"],
        ["name" => "editor#url", "url" => "/ajax/url", "verb" => "GET"],
