@@ -261,22 +261,21 @@ class EditorController extends Controller {
      *
      * @param string $name - file name
      * @param string $dir - folder path
-     * 
-     * @return RedirectResponse
+     *
+     * @return TemplateResponse|RedirectResponse
      *
      * @NoAdminRequired
      * @NoCSRFRequired
-     * @PublicPage
      */
     public function createNew($name, $dir) {
-        $this->logger->debug("Create from editor: $name", ["app" => $this->appName]);
+        $this->logger->debug("Create from editor: $name in $dir", ["app" => $this->appName]);
 
         $result = $this->create($name, $dir);
         if (isset($result["error"])) {
             return $this->renderError($result["error"]);
         }
 
-        $openEditor = $fileUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".editor.index", ["fileId" => $result["id"]]);
+        $openEditor = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".editor.index", ["fileId" => $result["id"]]);
         return new RedirectResponse($openEditor);
     }
 
