@@ -999,11 +999,6 @@ class EditorController extends Controller {
             ];
 
             $createUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".editor.create_new", $createParam);
-
-            if (!empty($this->config->GetStorageUrl())) {
-                $createUrl = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->config->GetStorageUrl(), $createUrl);
-            }
-
             $params["editorConfig"]["createUrl"] = urldecode($createUrl);
         }
 
