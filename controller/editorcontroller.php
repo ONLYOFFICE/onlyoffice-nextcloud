@@ -197,6 +197,11 @@ class EditorController extends Controller {
             return ["error" => $this->trans->t("Not permitted")];
         }
 
+        if (empty($name)) {
+            $this->logger->error("File name for creation was not found: $name", ["app" => $this->appName]);
+            return ["error" => $this->trans->t("Template not found")];
+        }
+
         if (empty($shareToken)) {
             $userId = $this->userSession->getUser()->getUID();
             $userFolder = $this->root->getUserFolder($userId);
