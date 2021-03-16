@@ -223,6 +223,9 @@ class EditorController extends Controller {
             }
         }
 
+        if (empty($dir)) {
+            $dir = "/";
+        }
         $folder = $userFolder->get($dir);
 
         if ($folder === null) {
@@ -265,17 +268,16 @@ class EditorController extends Controller {
      * Create new file in folder from editor
      *
      * @param string $name - file name
-     * @param string $dir - folder path
      *
      * @return TemplateResponse|RedirectResponse
      *
      * @NoAdminRequired
      * @NoCSRFRequired
      */
-    public function createNew($name, $dir) {
-        $this->logger->debug("Create from editor: $name in $dir", ["app" => $this->appName]);
+    public function createNew($name) {
+        $this->logger->debug("Create from editor: $name", ["app" => $this->appName]);
 
-        $result = $this->create($name, $dir);
+        $result = $this->create($name, null);
         if (isset($result["error"])) {
             return $this->renderError($result["error"]);
         }
@@ -998,12 +1000,8 @@ class EditorController extends Controller {
                     $createName = $this->trans->t("Presentation") . ".pptx";
                     break;
             }
-            $createParam = [
-                "dir" => $folderPath,
-                "name" => $createName
-            ];
 
-            $createUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".editor.create_new", $createParam);
+            $createUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".editor.create_new", ["name" => $createName]);
             $params["editorConfig"]["createUrl"] = urldecode($createUrl);
         }
 
