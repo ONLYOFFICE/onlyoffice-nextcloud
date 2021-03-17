@@ -1,5 +1,8 @@
 # Change Log
 
+## Added
+- create file from editor
+
 ## 6.3.0
 ## Added
 - save as in current folder
