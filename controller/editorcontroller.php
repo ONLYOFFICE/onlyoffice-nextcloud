@@ -197,6 +197,11 @@ class EditorController extends Controller {
             return ["error" => $this->trans->t("Not permitted")];
         }
 
+        if (empty($name)) {
+            $this->logger->error("File name for creation was not found: $name", ["app" => $this->appName]);
+            return ["error" => $this->trans->t("Template not found")];
+        }
+
         if (empty($shareToken)) {
             $userId = $this->userSession->getUser()->getUID();
             $userFolder = $this->root->getUserFolder($userId);
@@ -218,6 +223,9 @@ class EditorController extends Controller {
             }
         }
 
+        if (empty($dir)) {
+            $dir = "/";
+        }
         $folder = $userFolder->get($dir);
 
         if ($folder === null) {
@@ -254,6 +262,28 @@ class EditorController extends Controller {
 
         $result = Helper::formatFileInfo($fileInfo);
         return $result;
+    }
+
+    /**
+     * Create new file in folder from editor
+     *
+     * @param string $name - file name
+     *
+     * @return TemplateResponse|RedirectResponse
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     */
+    public function createNew($name) {
+        $this->logger->debug("Create from editor: $name", ["app" => $this->appName]);
+
+        $result = $this->create($name, null);
+        if (isset($result["error"])) {
+            return $this->renderError($result["error"]);
+        }
+
+        $openEditor = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".editor.index", ["fileId" => $result["id"]]);
+        return new RedirectResponse($openEditor);
     }
 
     /**
@@ -958,6 +988,21 @@ class EditorController extends Controller {
                 ];
                 $folderLink = $this->urlGenerator->linkToRouteAbsolute("files.view.index", $linkAttr);
             }
+
+            switch($params["documentType"]) {
+                case "text":
+                    $createName = $this->trans->t("Document") . ".docx";
+                    break;
+                case "spreadsheet":
+                    $createName = $this->trans->t("Spreadsheet") . ".xlsx";
+                    break;
+                case "presentation":
+                    $createName = $this->trans->t("Presentation") . ".pptx";
+                    break;
+            }
+
+            $createUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".editor.create_new", ["name" => $createName]);
+            $params["editorConfig"]["createUrl"] = urldecode($createUrl);
         }
 
         if ($folderLink !== null && $inframe !== 2) {

@@ -1,5 +1,8 @@
 # Change Log
 
+## Added
+- create file from editor
+
 ## Changed
 - open a version from the history of supported formats only
 
