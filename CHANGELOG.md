@@ -1,5 +1,8 @@
 # Change Log
 
+## Changed
+- open a version from the history of supported formats only
+
 ## 6.3.0
 ## Added
 - save as in current folder
