@@ -97,6 +97,10 @@ OC.L10N.register(
     "Template successfully added": "Шаблон успешно добавлен",
     "Template successfully deleted": "Шаблон успешно удален",
     "Common templates": "Общие шаблоны",
-    "Failed to delete template": "Не удалось удалить шаблон"
+    "Failed to delete template": "Не удалось удалить шаблон",
+    "Download as": "Скачать как",
+    "Download": "Скачать",
+    "Convert into": "Конвертировать в",
+    "Origin format": "Оригинальный формат"
 },
 "nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);");

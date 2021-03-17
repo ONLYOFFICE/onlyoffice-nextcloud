@@ -26,7 +26,8 @@
     background-image: url("../img/new-pptx.svg");
 }
 .icon-onlyoffice-open,
-.icon-onlyoffice-convert {
+.icon-onlyoffice-convert,
+.icon-onlyoffice-download {
     background-image: url("../img/app-dark.svg");
 }
 
@@ -85,4 +86,11 @@ body.onlyoffice-inline #content #app-content {
 }
 .AscDesktopEditor #body-user #gallery-button {
     display: none;
+}
+.onlyoffice-download-container {
+    display: flex;
+}
+.onlyoffice-download-container p {
+    margin-right: 10px;
+    padding-top: 10px;
 }

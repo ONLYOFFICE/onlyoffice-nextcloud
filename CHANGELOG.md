@@ -1,5 +1,8 @@
 # Change Log
 
+## Added
+- download as
+
 ## 7.0.2
 ## Changed
 - fixed registration of file actions
