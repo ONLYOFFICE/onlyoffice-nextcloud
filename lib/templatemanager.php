@@ -67,10 +67,6 @@ class TemplateManager {
         $lang = \OC::$server->getL10NFactory("")->get("")->getLanguageCode();
 
         $templatePath = self::getTemplatePath($lang, $ext);
-        if (!file_exists($templatePath)) {
-            $lang = "en";
-            $templatePath = self::getTemplatePath($lang, $ext);
-        }
 
         $template = file_get_contents($templatePath);
         return $template;
@@ -85,6 +81,10 @@ class TemplateManager {
      * @return string
      */
     private static function GetTemplatePath(string $lang, string $ext) {
+        if (!array_key_exists($lang, self::$localPath)) {
+            $lang = "en";
+        }
+
         return dirname(__DIR__) . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . self::$localPath[$lang] . DIRECTORY_SEPARATOR . "new" . $ext;
     }
 }
