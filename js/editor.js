@@ -136,6 +136,7 @@
                         "onRequestHistoryData": OCA.Onlyoffice.onRequestHistoryData,
                         "onDocumentReady": OCA.Onlyoffice.onDocumentReady,
                         "onMakeActionLink": OCA.Onlyoffice.onMakeActionLink,
+                        "onRequestUsers": OCA.Onlyoffice.onRequestUsers,
                     };
 
                     if (!OCA.Onlyoffice.version) {
@@ -463,6 +464,15 @@
         }
 
         OCA.Onlyoffice.docEditor.setActionLink(url);
+    };
+
+    OCA.Onlyoffice.onRequestUsers = function (event) {
+        $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/users"),
+        function onSuccess(response) {
+            OCA.Onlyoffice.docEditor.setUsers({
+                "users": response
+            });
+        });
     };
 
     OCA.Onlyoffice.InitEditor();
