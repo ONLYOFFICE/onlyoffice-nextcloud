@@ -85,7 +85,7 @@ OC.L10N.register(
     "Original": "原始版本",
     "version": "版本",
     "Disable certificate verification (insecure)": "关闭证书校验(不安全)",
-    "Keep intermediate versions when editing (forcesave)": "编辑时保留中间版本",
+    "Keep intermediate versions when editing (forcesave)": "编辑时保留中间版本 (强制保存)",
     "Use ONLYOFFICE to generate a document preview (it will take up disk space)": "使用ONLYOFFICE生成文档预览（将占用磁盘空间）",
     "Keep metadata for each version once the document is edited (it will take up disk space)": "编辑文档后保留每个版本的元数据（它将占用磁盘空间）"
 },
