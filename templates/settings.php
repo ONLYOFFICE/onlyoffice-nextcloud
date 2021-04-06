@@ -160,7 +160,7 @@
     <p>
         <input type="checkbox" class="checkbox" id="onlyofficeForcesave"
             <?php if ($_["forcesave"]) { ?>checked="checked"<?php } ?> />
-        <label for="onlyofficeForcesave"><?php p($l->t("Keep intermediate versions when editing")) ?></label>
+        <label for="onlyofficeForcesave"><?php p($l->t("Keep intermediate versions when editing (forcesave)")) ?></label>
     </p>
 
     <p class="onlyoffice-header">

@@ -83,7 +83,7 @@
     "Original": "Original",
     "version": "version",
     "Disable certificate verification (insecure)": "Zertifikatsüberprüfung deaktivieren (unsicher)",
-    "Keep intermediate versions when editing": "Zwischenversionen bei der Bearbeitung aufbewahren",
+    "Keep intermediate versions when editing (forcesave)": "Zwischenversionen bei der Bearbeitung aufbewahren",
     "Use ONLYOFFICE to generate a document preview (it will take up disk space)": "ONLYOFFICE verwenden, um eine Dokumentvorschau zu erstellen (Speicherplatz erforderlich)",
     "Keep metadata for each version once the document is edited (it will take up disk space)": "Metadaten für jede Version beim Bearbeiten des Dokuments aufbewahren (Speicherplatz erforderlich)",
     "All history successfully deleted": "Gesamtverlauf wurde erfolgreich gelöscht"

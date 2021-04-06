@@ -85,7 +85,7 @@ OC.L10N.register(
     "Original": "Original",
     "version": "version",
     "Disable certificate verification (insecure)": "Désactiver la vérification du certificat (non sur)",
-    "Keep intermediate versions when editing": "Sauvegarder les versions intermédiaires lors de l'édition",
+    "Keep intermediate versions when editing (forcesave)": "Sauvegarder les versions intermédiaires lors de l'édition",
     "Use ONLYOFFICE to generate a document preview (it will take up disk space)": "Utilisez ONLYOFFICE pour générer l'aperçu du document (occupe de l'espace disque)",
     "Keep metadata for each version once the document is edited (it will take up disk space)": "Gardez les métadonnées pour chaque version dès que le document est modifié (occupe de l'espace disque)",
     "All history successfully deleted": "L'historique a été supprimé avec succès"
