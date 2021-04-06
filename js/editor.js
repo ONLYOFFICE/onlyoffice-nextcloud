@@ -137,6 +137,7 @@
                         "onDocumentReady": OCA.Onlyoffice.onDocumentReady,
                         "onMakeActionLink": OCA.Onlyoffice.onMakeActionLink,
                         "onRequestUsers": OCA.Onlyoffice.onRequestUsers,
+                        "onRequestSendNotify": OCA.Onlyoffice.onRequestSendNotify,
                     };
 
                     if (!OCA.Onlyoffice.version) {
@@ -473,6 +474,30 @@
                 "users": response
             });
         });
+    };
+
+    OCA.Onlyoffice.onRequestSendNotify = function (event) {
+        var actionLink = event.data.actionLink;
+        var comment = event.data.message;
+        var emails = event.data.emails;
+
+        var fileId = OCA.Onlyoffice.fileId;
+
+        $.post(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/mention"),
+            {
+                fileId: fileId,
+                anchor: JSON.stringify(actionLink),
+                comment: comment,
+                emails: emails
+            },
+            function onSuccess(response) {
+                if (response.error) {
+                    OCP.Toast.error(response.error);
+                    return;
+                }
+
+                OCP.Toast.success(response.message);
+            });
     };
 
     OCA.Onlyoffice.InitEditor();

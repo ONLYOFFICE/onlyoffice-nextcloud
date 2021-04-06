@@ -325,6 +325,70 @@ class EditorController extends Controller {
     }
 
     /**
+     * Send notify about mention
+     *
+     * @param int $fileId - file identifier
+     * @param string $anchor - the anchor on target content
+     * @param string $comment - comment
+     * @param array $emails - emails array to whom to send notify
+     *
+     * @return array
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     */
+    public function mention($fileId, $anchor, $comment, $emails) {
+        $this->logger->debug("mention: from $fileId to " . json_encode($emails), ["app" => $this->appName]);
+
+        if (empty($emails)) {
+            return ["error" => $this->trans->t("Failed to send notification")];
+        }
+
+        $recipientIds = [];
+        foreach ($emails as $email) {
+            $recipients = $this->userManager->getByEmail($email);
+            foreach ($recipients as $recipient) {
+                $recipientId = $recipient->getUID(); 
+                if (!in_array($recipientId, $recipientIds)) {
+                    array_push($recipientIds, $recipientId);
+                }
+            }
+        }
+
+        $user = $this->userSession->getUser();
+        $userId = null;
+        if (!empty($user)) {
+            $userId = $user->getUID();
+        }
+
+        list ($file, $error, $share) = $this->getFile($userId, $fileId);
+        if (isset($error)) {
+            $this->logger->error("Mention: $fileId $error", ["app" => $this->appName]);
+            return ["error" => $this->trans->t("Failed to send notification")];
+        }
+
+        $notificationManager = \OC::$server->getNotificationManager();
+        $notification = $notificationManager->createNotification();
+        $notification->setApp($this->appName)
+            ->setDateTime(new \DateTime())
+            ->setObject("mention", $comment)
+            ->setSubject("mention_info", [
+                "notifierId" => $userId,
+                "fileId" => $file->getId(),
+                "fileName" => $file->getName(),
+                "anchor" => $anchor
+            ]);
+
+        foreach ($recipientIds as $recipientId) {
+            $notification->setUser($recipientId);
+
+            $notificationManager->notify($notification);
+        }
+
+        return ["message" => $this->trans->t("Notification sent successfully")];
+    }
+
+    /**
      * Conversion file to Office Open XML format
      *
      * @param integer $fileId - file identifier

@@ -33,6 +33,7 @@ use OCP\Files\Template\ITemplateManager;
 use OCP\Files\Template\TemplateFileCreator;
 use OCP\IL10N;
 use OCP\IPreview;
+use OCP\Notification\IManager;
 use OCP\Util;
 
 use OCA\Viewer\Event\LoadViewer;
@@ -45,6 +46,7 @@ use OCA\Onlyoffice\Controller\TemplateController;
 use OCA\Onlyoffice\Crypt;
 use OCA\Onlyoffice\DirectEditor;
 use OCA\Onlyoffice\Hooks;
+use OCA\Onlyoffice\Notifier;
 use OCA\Onlyoffice\Preview;
 use OCA\Onlyoffice\TemplateManager;
 use OCA\Onlyoffice\TemplateProvider;
@@ -264,6 +266,11 @@ class Application extends App implements IBootstrap {
                         $event->register($editor);
                     }
                 });
+
+        });
+
+        $context->injectFn(function (IManager $notificationsManager) {
+            $notificationsManager->registerNotifierService(Notifier::class);
         });
 
         $context->injectFn(function(ITemplateManager $templateManager, IL10N $trans, $appName) {
