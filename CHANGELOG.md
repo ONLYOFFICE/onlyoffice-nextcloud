@@ -2,6 +2,7 @@
 
 ## Added
 - create file from editor
+- more empty files in different languages
 
 ## Changed
 - open a version from the history of supported formats only
