@@ -798,13 +798,14 @@ class EditorController extends Controller {
      * @param integer $version - file version
      * @param bool $inframe - open in frame
      * @param bool $template - file is template
+     * @param string $anchor - anchor for file content
      *
      * @return TemplateResponse|RedirectResponse
      *
      * @NoAdminRequired
      * @NoCSRFRequired
      */
-    public function index($fileId, $filePath = null, $shareToken = null, $version = 0, $inframe = false, $template = false) {
+    public function index($fileId, $filePath = null, $shareToken = null, $version = 0, $inframe = false, $template = false, $anchor = null) {
         $this->logger->debug("Open: $fileId ($version) $filePath ", ["app" => $this->appName]);
 
         $isLoggedIn = $this->userSession->isLoggedIn();
@@ -834,7 +835,8 @@ class EditorController extends Controller {
             "directToken" => null,
             "version" => $version,
             "isTemplate" => $template,
-            "inframe" => false
+            "inframe" => false,
+            "anchor" => $anchor
         ];
 
         $response = null;
@@ -911,13 +913,14 @@ class EditorController extends Controller {
      * @param bool $desktop - desktop label
      * @param string $guestName - nickname not logged user
      * @param bool $template - file is template
+     * @param string $anchor - anchor for file content
      *
      * @return array
      *
      * @NoAdminRequired
      * @PublicPage
      */
-    public function config($fileId, $filePath = null, $shareToken = null, $directToken = null, $version = 0, $inframe = false, $desktop = false, $guestName = null, $template = false) {
+    public function config($fileId, $filePath = null, $shareToken = null, $directToken = null, $version = 0, $inframe = false, $desktop = false, $guestName = null, $template = false, $anchor = null) {
 
         if (!empty($directToken)) {
             list ($directData, $error) = $this->crypt->ReadHash($directToken);
@@ -1149,6 +1152,16 @@ class EditorController extends Controller {
 
         if ($this->config->UseDemo()) {
             $params["editorConfig"]["tenant"] = $this->config->GetSystemValue("instanceid", true);
+        }
+
+        if ($anchor !== null) {
+            try {
+                $actionLink = json_decode($anchor, true);
+
+                $params["editorConfig"]["actionLink"] = $actionLink;
+            } catch (\Exception $e) {
+                $this->logger->logException($e, ["message" => "Config: $fileId decode $anchor", "app" => $this->appName]);
+            }
         }
 
         if (!empty($this->config->GetDocumentServerSecret())) {

@@ -3,6 +3,7 @@
 ## Added
 - creation from a template from the editor
 - download as
+- opening action link
 
 ## Changed
 - redirect from dashboard on desktop

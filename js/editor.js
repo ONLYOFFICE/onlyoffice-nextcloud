@@ -40,6 +40,7 @@
         OCA.Onlyoffice.template = $("#iframeEditor").data("template");
         OCA.Onlyoffice.inframe = !!$("#iframeEditor").data("inframe");
         OCA.Onlyoffice.filePath = $("#iframeEditor").data("path");
+        OCA.Onlyoffice.anchor = $("#iframeEditor").attr("data-anchor");
         var guestName = localStorage.getItem("nick");
         if (!OCA.Onlyoffice.fileId && !OCA.Onlyoffice.shareToken && !directToken) {
             displayError(t(OCA.Onlyoffice.AppName, "FileId is empty"));
@@ -76,6 +77,9 @@
         }
         if (guestName) {
             params.push("guestName=" + encodeURIComponent(guestName));
+        }
+        if (OCA.Onlyoffice.anchor) {
+            params.push("anchor=" + encodeURIComponent(OCA.Onlyoffice.anchor));
         }
 
         if (OCA.Onlyoffice.inframe || directToken) {
@@ -131,6 +135,7 @@
                         "onRequestHistory": OCA.Onlyoffice.onRequestHistory,
                         "onRequestHistoryData": OCA.Onlyoffice.onRequestHistoryData,
                         "onDocumentReady": OCA.Onlyoffice.onDocumentReady,
+                        "onMakeActionLink": OCA.Onlyoffice.onMakeActionLink,
                     };
 
                     if (!OCA.Onlyoffice.version) {
@@ -418,6 +423,34 @@
 
                 OCA.Onlyoffice.docEditor.setRevisedFile(response);
             });
+    };
+
+    OCA.Onlyoffice.onMakeActionLink = function (event) {
+        var url = location.href;
+        if (event && event.data) {
+            var indexAnchor = url.indexOf("#");
+            if (indexAnchor != -1) {
+                url = url.substring(0, indexAnchor);
+            }
+
+            var data = JSON.stringify(event.data);
+            data = "anchor=" + encodeURIComponent(data);
+
+            var inframeRegex = /inframe=([^&]*&?)/g;
+            if (inframeRegex.test(url)) {
+                url = url.replace(inframeRegex, data);
+            }
+
+            var anchorRegex = /anchor=([^&]*)/g;
+            if (anchorRegex.test(url)) {
+                url = url.replace(anchorRegex, data);
+            } else {
+                url += (url.indexOf("?") == -1) ? "?" : "&";
+                url += data;
+            }
+        }
+
+        OCA.Onlyoffice.docEditor.setActionLink(url);
     };
 
     OCA.Onlyoffice.InitEditor();
