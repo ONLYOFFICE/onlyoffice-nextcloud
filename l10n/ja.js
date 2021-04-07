@@ -85,7 +85,7 @@ OC.L10N.register(
     "Original": "オリジナル",
     "version": "バージョン",
     "Disable certificate verification (insecure)": "証明書の検証を無効にする（安全でない",
-    "Keep intermediate versions when editing": "編集時に、中間バージョンを保持する",
+    "Keep intermediate versions when editing (forcesave)": "編集時に、中間バージョンを保持する (強制保存)",
     "Use ONLYOFFICE to generate a document preview (it will take up disk space)": "ONLYOFFICEを使用して、ドキュメントプレビューを生成する（ディスク容量がかかる）",
     "Keep metadata for each version once the document is edited (it will take up disk space)": "ドキュメントが編集されたら、各バージョンのメタデータを保持する（ディスクス容量がかかる）"
 },
