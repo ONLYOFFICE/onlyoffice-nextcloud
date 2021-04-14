@@ -40,6 +40,7 @@ use OCP\IUser;
 use OCP\IUserManager;
 use OCP\IUserSession;
 use OCP\Share\IManager;
+use OCP\Share\IShare;
 
 use OCA\Files\Helper;
 use OCA\Files_Versions\Versions\IVersionManager;
@@ -127,6 +128,13 @@ class EditorController extends Controller {
     private $versionManager;
 
     /**
+     * Share manager
+     *
+     * @var IManager
+     */
+    private $shareManager;
+
+    /**
      * Mobile regex from https://github.com/ONLYOFFICE/CommunityServer/blob/v9.1.1/web/studio/ASC.Web.Studio/web.appsettings.config#L35
      */
     const USER_AGENT_MOBILE = "/android|avantgo|playbook|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od|ad)|iris|kindle|lge |maemo|midp|mmp|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\\/|plucker|pocket|psp|symbian|treo|up\\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i";
@@ -168,6 +176,7 @@ class EditorController extends Controller {
         $this->logger = $logger;
         $this->config = $config;
         $this->crypt = $crypt;
+        $this->shareManager = $shareManager;
 
         if (\OC::$server->getAppManager()->isInstalled("files_versions")) {
             try {
@@ -379,7 +388,21 @@ class EditorController extends Controller {
                 "anchor" => $anchor
             ]);
 
+        $accessList = $this->shareManager->getAccessList($file);
+
         foreach ($recipientIds as $recipientId) {
+            if (!in_array($recipientId, $accessList["users"])) {
+                $share = $this->shareManager->newShare();
+                $share->setNode($file)
+                    ->setShareType(IShare::TYPE_USER)
+                    ->setSharedBy($userId)
+                    ->setSharedWith($recipientId)
+                    ->setShareOwner($userId)
+                    ->setPermissions(Constants::PERMISSION_READ);
+
+                $this->shareManager->createShare($share);
+            }
+
             $notification->setUser($recipientId);
 
             $notificationManager->notify($notification);
