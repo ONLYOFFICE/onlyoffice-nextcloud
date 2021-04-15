@@ -98,7 +98,7 @@
 
                 OCA.Viewer.registerHandler({
                     id: OCA.Onlyoffice.AppName,
-                    group: "documents",
+                    group: null,
                     mimes: mimes,
                     component: OnlyofficeViewerVue
                 })
