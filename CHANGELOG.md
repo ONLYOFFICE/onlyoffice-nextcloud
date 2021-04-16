@@ -6,6 +6,7 @@
 
 ## Changed
 - open a version from the history of supported formats only
+- document server v5.5 and earlier is no longer supported
 
 ## 6.3.0
 ## Added
