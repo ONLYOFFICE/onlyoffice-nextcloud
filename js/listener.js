@@ -118,4 +118,10 @@
         }
     }, false);
 
+    window.addEventListener("popstate", function (event) {
+        if ($(OCA.Onlyoffice.frameSelector).length) {
+            OCA.Onlyoffice.onRequestClose();
+        }
+    });
+
 })(OCA);
