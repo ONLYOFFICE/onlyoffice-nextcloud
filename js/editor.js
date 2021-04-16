@@ -75,20 +75,7 @@
         }
 
         if (OCA.Onlyoffice.inframe || directToken) {
-            var dsVersion = DocsAPI.DocEditor.version();
-            var versionArray = dsVersion.split(".");
-            if (versionArray[0] < 5 || versionArray[0] == 5 && versionArray[1] < 5) {
-                if (OCA.Onlyoffice.inframe
-                    && window.parent.OCA.Onlyoffice.ShowHeaderButton) {
-                    window.parent.postMessage({
-                        method: "editorShowHeaderButton"
-                    },
-                    "*");
-                }
-                params.push("inframe=2");
-            } else {
-                params.push("inframe=1");
-            }
+            params.push("inframe=true");
         }
 
         if (OCA.Onlyoffice.Desktop) {

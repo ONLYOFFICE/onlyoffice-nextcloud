@@ -92,11 +92,6 @@
             return;
         }
         switch (event.data.method) {
-            case "editorShowHeaderButton":
-                if (OCA.Onlyoffice.ShowHeaderButton) {
-                    OCA.Onlyoffice.ShowHeaderButton();
-                }
-                break;
             case "editorRequestClose":
                 OCA.Onlyoffice.onRequestClose();
                 break;
