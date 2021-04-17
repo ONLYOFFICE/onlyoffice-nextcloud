@@ -43,9 +43,10 @@ use OCA\Files_Versions\Versions\IVersionManager;
 
 use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\Crypt;
-use OCA\Onlyoffice\KeyManager;
 use OCA\Onlyoffice\DocumentService;
 use OCA\Onlyoffice\FileVersions;
+use OCA\Onlyoffice\KeyManager;
+use OCA\Onlyoffice\TemplateManager;
 
 /**
  * Callback handler for the document server.
@@ -342,7 +343,7 @@ class CallbackController extends Controller {
             }
         }
 
-        $templatePath = dirname(__DIR__) . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . "en" . DIRECTORY_SEPARATOR . "new.docx";
+        $templatePath = TemplateManager::GetTemplatePath("en", ".docx");
 
         $template = file_get_contents($templatePath);
         if (!$template) {
