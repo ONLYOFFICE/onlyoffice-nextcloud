@@ -7,6 +7,7 @@
 ## Changed
 - open a version from the history of supported formats only
 - document server v5.5 and earlier is no longer supported
+- disabled copy to clipboard if there is no download permission
 
 ## 6.3.0
 ## Added

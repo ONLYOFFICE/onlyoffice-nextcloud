@@ -963,6 +963,7 @@ class EditorController extends Controller {
             if (method_exists($share, "getHideDownload") && $share->getHideDownload()) {
                 $params["document"]["permissions"]["download"] = false;
                 $params["document"]["permissions"]["print"] = false;
+                $params["document"]["permissions"]["copy"] = false;
             }
 
             $node = $share->getNode();
