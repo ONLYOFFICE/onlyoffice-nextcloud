@@ -112,38 +112,10 @@
         }
     };
 
-    OCA.Onlyoffice.ShowHeaderButton = function () {
-        if ($("#onlyofficeHeader").length) {
-            return;
-        }
-
-        var wrapper = $("<div id='onlyofficeHeader' />")
-
-        var btnClose = $("<a class='icon icon-close-white'></a>");
-        btnClose.on("click", function() {
-            OCA.Onlyoffice.onRequestClose();
-        });
-        wrapper.prepend(btnClose);
-
-        if (!$("#isPublic").val()) {
-            var btnShare = $("<a class='icon icon-shared icon-white'></a>");
-            btnShare.on("click", function () {
-                OCA.Onlyoffice.OpenShareDialog();
-            })
-            wrapper.prepend(btnShare);
-        }
-
-        if (!$("#header .header-right").length) {
-            $("#header").append("<div class='header-right'></div>");
-        }
-        wrapper.prependTo(".header-right");
-    };
-
     OCA.Onlyoffice.CloseEditor = function () {
         OCA.Onlyoffice.frameSelector = null;
 
         $("body").removeClass("onlyoffice-inline");
-        $("#onlyofficeHeader").remove();
 
         OCA.Onlyoffice.context = null;
 
@@ -158,9 +130,9 @@
 
     OCA.Onlyoffice.OpenShareDialog = function () {
         if (OCA.Onlyoffice.context) {
-            if (!$("#app-sidebar").is(":visible")) {
-                OCA.Onlyoffice.context.fileList.showDetailsView(OCA.Onlyoffice.context.fileName, "sharing");
-                OC.Apps.showAppSidebar();
+            if (!$("#app-sidebar-vue").is(":visible")) {
+                OCA.Files.Sidebar.open(OCA.Onlyoffice.context.dir + "/" + OCA.Onlyoffice.context.fileName);
+                OCA.Files.Sidebar.setActiveTab("sharing");
             } else {
                 OCA.Files.Sidebar.close();
             }

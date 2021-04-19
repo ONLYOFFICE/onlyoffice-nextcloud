@@ -85,7 +85,7 @@ class TemplateManager {
      *
      * @return string
      */
-    private static function GetTemplatePath(string $lang, string $ext) {
+    public static function GetTemplatePath(string $lang, string $ext) {
         if (!array_key_exists($lang, self::$localPath)) {
             $lang = "en";
         }

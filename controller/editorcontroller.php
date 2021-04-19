@@ -821,7 +821,7 @@ class EditorController extends Controller {
      * @param string $shareToken - access token
      * @param string $directToken - direct token
      * @param integer $version - file version
-     * @param integer $inframe - open in frame. 0 - no, 1 - yes, 2 - without goback for old editor (5.4)
+     * @param bool $inframe - open in frame
      * @param bool $desktop - desktop label
      * @param string $guestName - nickname not logged user
      *
@@ -830,7 +830,7 @@ class EditorController extends Controller {
      * @NoAdminRequired
      * @PublicPage
      */
-    public function config($fileId, $filePath = null, $shareToken = null, $directToken = null, $version = 0, $inframe = 0, $desktop = false, $guestName = null) {
+    public function config($fileId, $filePath = null, $shareToken = null, $directToken = null, $version = 0, $inframe = false, $desktop = false, $guestName = null) {
 
         if (!empty($directToken)) {
             list ($directData, $error) = $this->crypt->ReadHash($directToken);
@@ -963,6 +963,7 @@ class EditorController extends Controller {
             if (method_exists($share, "getHideDownload") && $share->getHideDownload()) {
                 $params["document"]["permissions"]["download"] = false;
                 $params["document"]["permissions"]["print"] = false;
+                $params["document"]["permissions"]["copy"] = false;
             }
 
             $node = $share->getNode();
@@ -1005,7 +1006,7 @@ class EditorController extends Controller {
             $params["editorConfig"]["createUrl"] = urldecode($createUrl);
         }
 
-        if ($folderLink !== null && $inframe !== 2) {
+        if ($folderLink !== null) {
             $params["editorConfig"]["customization"]["goback"] = [
                 "url"  => $folderLink
             ];
@@ -1015,13 +1016,13 @@ class EditorController extends Controller {
                     $params["editorConfig"]["customization"]["goback"]["blank"] = false;
                 }
 
-                if ($inframe === 1 || !empty($directToken)) {
+                if ($inframe === true || !empty($directToken)) {
                     $params["editorConfig"]["customization"]["goback"]["requestClose"] = true;
                 }
             }
         }
 
-        if ($inframe === 1) {
+        if ($inframe === true) {
             $params["_files_sharing"] = \OC::$server->getAppManager()->isInstalled("files_sharing");
         }
 
