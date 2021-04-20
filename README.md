@@ -46,7 +46,7 @@ If the server with the Nextcloud installed does not have an Internet access, or 
 To start using ONLYOFFICE Document Server with Nextcloud, the following steps must be performed:
 
 1. Go to the Nextcloud server _apps/_ directory (or some other directory [used](https://docs.nextcloud.com/server/latest/admin_manual/apps_management.html#using-custom-app-directories)):
-    ```
+    ```bash
     cd apps/
     ```
 2. Get the Nextcloud ONLYOFFICE integration app.
@@ -57,13 +57,13 @@ There are several ways to do that:
     b. Or you can download the latest signed version from the application [release page](https://github.com/ONLYOFFICE/onlyoffice-nextcloud/releases) on GitHub.
 
     c. Or you can clone the application source code and compile it yourself: 
-    ```
+    ```bash
     git clone https://github.com/ONLYOFFICE/onlyoffice-nextcloud.git onlyoffice
     git submodule update --init --recursive
     ```
 
 2. Change the owner to update the application right from Nextcloud web interface:
-    ```
+    ```bash
     chown -R www-data:www-data onlyoffice
     ```
 3. In Nextcloud open the `~/settings/apps/disabled` page with _Not enabled_ apps by administrator and click _Enable_ for the **ONLYOFFICE** application.
@@ -151,7 +151,7 @@ However if you set the encryption with the _master key_, ONLYOFFICE application 
 The instruction on enabling _master key_ based encryption is available in the official documentation on [Nextcloud](https://docs.nextcloud.com/server/latest/admin_manual/configuration_files/encryption_configuration.html#occ-encryption-commands) websites.
 
 * If you are using a self-signed certificate for your **Document Server**, Nextcloud will not validate such a certificate and will not allow connection to/from **Document Server**. This issue can be solved the following way: locate the Nextcloud config file (_/nextcloud/config/config.php_) and open it. Insert the following section to it:
-    ```
+    ```php
     'onlyoffice' => array (
         'verify_peer_off' => true
     )
