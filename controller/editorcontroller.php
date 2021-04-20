@@ -239,7 +239,10 @@ class EditorController extends Controller {
         if (empty($templateId)) {
             $template = TemplateManager::GetEmptyTemplate($name);
         } else {
-            $template = TemplateManager::GetTemplate($templateId);
+            $templateFile = TemplateManager::GetTemplate($templateId);
+            if ($templateFile !== null) {
+                $template = $templateFile->getContent();
+            }
         }
 
         if (!$template) {

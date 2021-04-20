@@ -46,6 +46,7 @@ use OCA\Onlyoffice\DirectEditor;
 use OCA\Onlyoffice\Hooks;
 use OCA\Onlyoffice\Preview;
 use OCA\Onlyoffice\TemplateManager;
+use OCA\Onlyoffice\TemplateProvider;
 
 use Psr\Container\ContainerInterface;
 
@@ -168,6 +169,9 @@ class Application extends App implements IBootstrap {
                 $c->get("Logger")
             );
         });
+
+        $context->registerTemplateProvider(TemplateProvider::class);
+
     }
 
     public function boot(IBootContext $context): void {
