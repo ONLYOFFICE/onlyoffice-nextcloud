@@ -22,10 +22,34 @@ namespace OCA\Onlyoffice;
 use OCP\Files\File;
 use OCP\Files\Template\ICustomTemplateProvider;
 use OCP\Files\Template\Template;
+use OCP\IURLGenerator;
 
 use OCA\Onlyoffice\TemplateManager;
 
 class TemplateProvider implements ICustomTemplateProvider {
+
+    /**
+     * Application name
+     *
+     * @var string
+     */
+    private $appName;
+
+    /**
+     * Url generator service
+     *
+     * @var IURLGenerator
+     */
+    private $urlGenerator;
+
+    /**
+     * @param string $AppName - application name
+     * @param IURLGenerator $urlGenerator - url generator service
+     */
+    public function __construct($AppName, IURLGenerator $urlGenerator) {
+        $this->appName = $AppName;
+        $this->urlGenerator = $urlGenerator;
+    }
 
     /**
      * Return a list of additional templates that the template provider is offering
@@ -45,6 +69,9 @@ class TemplateProvider implements ICustomTemplateProvider {
                 $templateFile->getId(),
                 $templateFile
             );
+
+            $template->setCustomPreviewUrl($this->urlGenerator->linkToRouteAbsolute($this->appName . ".template.preview", ["fileId" => $templateFile->getId()]));
+
             array_push($templates, $template);
         }
 

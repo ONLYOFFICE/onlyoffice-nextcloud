@@ -166,7 +166,8 @@ class Application extends App implements IBootstrap {
                 $c->get("AppName"),
                 $c->get("Request"),
                 $c->get("L10N"),
-                $c->get("Logger")
+                $c->get("Logger"),
+                $c->get(IPreview::class)
             );
         });
 

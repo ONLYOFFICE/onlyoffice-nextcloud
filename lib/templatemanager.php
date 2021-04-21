@@ -169,6 +169,23 @@ class TemplateManager {
     }
 
     /**
+     * Check file if it's template
+     *
+     * @param int $fileId - identifier file
+     *
+     * @return bool
+     */
+    public static function IsTemplate($fileId) {
+        $template = self::GetTemplate($fileId);
+
+        if (empty($template)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * Get template
      *
      * @param string $name - file name

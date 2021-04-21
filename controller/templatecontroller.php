@@ -20,8 +20,13 @@
 namespace OCA\Onlyoffice\Controller;
 
 use OCP\AppFramework\Controller;
+use OCP\AppFramework\Http;
+use OCP\AppFramework\Http\DataResponse;
+use OCP\AppFramework\Http\FileDisplayResponse;
+use OCP\Files\NotFoundException;
 use OCP\IL10N;
 use OCP\ILogger;
+use OCP\IPreview;
 use OCP\IRequest;
 
 use OCA\Onlyoffice\TemplateManager;
@@ -46,6 +51,13 @@ class TemplateController extends Controller {
     private $logger;
 
     /**
+     * Preview manager
+     *
+     * @var IPreview
+     */
+    private $preview;
+
+    /**
      * @param string $AppName - application name
      * @param ILogger $logger - logger
      * @param IL10N $trans - l10n service
@@ -53,12 +65,14 @@ class TemplateController extends Controller {
     public function __construct($AppName,
                                     IRequest $request,
                                     IL10N $trans,
-                                    ILogger $logger
+                                    ILogger $logger,
+                                    IPreview $preview
                                     ) {
         parent::__construct($AppName, $request);
 
         $this->trans = $trans;
         $this->logger = $logger;
+        $this->preview = $preview;
     }
 
     /**
@@ -161,5 +175,43 @@ class TemplateController extends Controller {
 
         $this->logger->debug("Template: deleted " . $templates[0]->getName(), ["app" => $this->appName]);
         return [];
+    }
+
+    /**
+     * Returns the origin document key for editor
+     *
+     * @param string $fileId - file identifier
+     * @param int $x - x
+     * @param int $y - y
+     * @param bool $crop - crop
+     * @param string $mode - mode
+     *
+     * @return DataResponse|FileDisplayResponse
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     */
+    public function preview($fileId, $x = 256, $y = 256, $crop = false, $mode = IPreview::MODE_FILL) {
+        if (empty($fileId) || $x === 0 || $y === 0) {
+            return new DataResponse([], Http::STATUS_BAD_REQUEST);
+        }
+
+        $template = TemplateManager::GetTemplate($fileId);
+        if (empty($template)) {
+            return new DataResponse([], Http::STATUS_NOT_FOUND);
+        }
+
+        try {
+            $f = $this->preview->getPreview($template, $x, $y, $crop, $mode);
+            $response = new FileDisplayResponse($f, Http::STATUS_OK, ["Content-Type" => $f->getMimeType()]);
+            $response->cacheFor(3600 * 24);
+
+            return $response;
+        } catch (NotFoundException $e) {
+            return new DataResponse([], Http::STATUS_NOT_FOUND);
+        } catch (\InvalidArgumentException $e) {
+            return new DataResponse([], Http::STATUS_BAD_REQUEST);
+        }
+
     }
 }
