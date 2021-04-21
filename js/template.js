@@ -43,6 +43,21 @@
         });
     }
 
+    OCA.Onlyoffice.DeleteTemplate = function (templateId, callback) {
+        $.ajax({
+            method: "DELETE",
+            url: OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/template?templateId={templateId}",
+            {
+                templateId: templateId
+            }),
+            success: function onSuccess(response) {
+                if (response) {
+                    callback(response);
+                }
+            }
+        });
+    }
+
     OCA.Onlyoffice.AttachItemTemplate = function (template) {
         $.get(OC.filePath(OCA.Onlyoffice.AppName, "templates", "templateItem.html"), 
         function (item) {

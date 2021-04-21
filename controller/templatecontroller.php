@@ -109,4 +109,36 @@ class TemplateController extends Controller {
             "error" => $this->trans->t("Invalid file provided")
         ];
     }
+
+    /**
+     * Delete template
+     *
+     * @param string $templateId - file identifier
+     *
+     * @return array
+     */
+    public function DeleteTemplate($templateId) {
+        $templateDir = TemplateManager::GetGlobalTemplateDir();
+
+        try {
+            $templates = $templateDir->getById($templateId);
+        } catch(\Exception $e) {
+            $this->logger->logException($e, ["message" => "DeleteTemplate: $templateId", "app" => $this->AppName]);
+            return [
+                "error" => $this->trans->t("Failed to delete template")
+            ];
+        }
+
+        if (empty($templates)) {
+            $this->logger->info("Template not found: $templateId", ["app" => $this->AppName]);
+            return [
+                "error" => $this->trans->t("Failed to delete template")
+            ];
+        }
+
+        $templates[0]->delete();
+
+        $this->logger->debug("Template: deleted " . $templates[0]->getName(), ["app" => $this->appName]);
+        return [];
+    }
 }
