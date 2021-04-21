@@ -38,6 +38,7 @@ return [
        ["name" => "settings#save_watermark", "url" => "/ajax/settings/watermark", "verb" => "PUT"],
        ["name" => "settings#get_settings", "url" => "/ajax/settings", "verb" => "GET"],
        ["name" => "settings#clear_history", "url" => "/ajax/settings/history", "verb" => "DELETE"],
+       ["name" => "template#add_template", "url" => "/ajax/template", "verb" => "POST"],
     ],
     "ocs" => [
         ["name" => "federation#key", "url" => "/api/v1/key", "verb" => "POST"],

@@ -78,6 +78,73 @@ class TemplateManager {
     }
 
     /**
+     * Get global template directory
+     *
+     * @return Folder
+     */
+    public static function GetGlobalTemplateDir() {
+        $rootFolder = \OC::$server->getRootFolder();
+
+        $appData = $rootFolder->get("appdata_" . \OC::$server->getConfig()->GetSystemValue("instanceid", null));
+
+        $appDir = $appData->nodeExists("onlyoffice") ? $appData->get("onlyoffice") : $appData->newFolder("onlyoffice");
+        $templateDir = $appDir->nodeExists("template") ? $appDir->get("template") : $appDir->newFolder("template");
+
+        return $templateDir;
+    }
+
+    /**
+     * Get global templates
+     *
+     * @return array
+     */
+    public static function GetGlobalTemplates() {
+        $templateDir = self::GetGlobalTemplateDir();
+        $templatesList = $templateDir->getDirectoryListing();
+
+        return $templatesList;
+    }
+
+    /**
+     * Get type template from mimetype
+     *
+     * @param string $mime - mimetype
+     *
+     * @return string
+     */
+    public static function GetTypeTemplate($mime) {
+        switch($mime) {
+            case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+                return "document";
+            case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+                return "spreadsheet";
+            case "application/vnd.openxmlformats-officedocument.presentationml.presentation":
+                return "presentation";
+        }
+
+        return "";
+    }
+
+    /**
+     * Check template type
+     *
+     * @param string $name - template name
+     *
+     * @return bool
+     */
+    public static function IsTemplateType($name) {
+        $ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
+        switch($ext) {
+            case "docx":
+            case "xlsx":
+            case "pptx":
+                return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Get template path
      *
      * @param string $lang - language
