@@ -350,6 +350,19 @@
                 OCP.Toast.success(message);
             });
         });
+
+        $(document).on("click", ".onlyoffice-template-preview", function (event) {
+            var item = $(event.target).parents(".onlyoffice-template-item");
+            var templateId = $(item).attr("data-id");
+
+            var url = OC.generateUrl("/apps/" + OCA.Onlyoffice.AppName + "/{fileId}?template={template}",
+            {
+                fileId: templateId,
+                template: "true"
+            });
+
+            window.open(url);
+        });
     });
 
 })(jQuery, OC);

@@ -29,16 +29,23 @@
 }
 .onlyoffice-template-item img,
 .onlyoffice-template-delete,
+.onlyoffice-template-preview,
 .onlyoffice-template-item p {
     display: inline-block;
     margin-right: 10px;
     cursor: pointer;
 }
-.onlyoffice-template-delete {
+.onlyoffice-template-delete,
+.onlyoffice-template-preview {
     margin-bottom: -4px;
 }
 .onlyoffice-template-delete {
     opacity: .6;
+}
+.onlyoffice-template-preview {
+    background-image: url("../../../core/img/actions/toggle.svg");
+    height: 16px;
+    width: 16px;
 }
 .onlyoffice-template-item img {
     float: left;

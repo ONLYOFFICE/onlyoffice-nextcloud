@@ -713,13 +713,14 @@ class EditorController extends Controller {
      * @param string $shareToken - access token
      * @param integer $version - file version
      * @param bool $inframe - open in frame
+     * @param bool $template - file is template
      *
      * @return TemplateResponse|RedirectResponse
      *
      * @NoAdminRequired
      * @NoCSRFRequired
      */
-    public function index($fileId, $filePath = null, $shareToken = null, $version = 0, $inframe = false) {
+    public function index($fileId, $filePath = null, $shareToken = null, $version = 0, $inframe = false, $template = false) {
         $this->logger->debug("Open: $fileId ($version) $filePath ", ["app" => $this->appName]);
 
         $isLoggedIn = $this->userSession->isLoggedIn();
@@ -748,7 +749,8 @@ class EditorController extends Controller {
             "shareToken" => $shareToken,
             "directToken" => null,
             "version" => $version,
-            "inframe" => false
+            "inframe" => false,
+            "template" => $template,
         ];
 
         $response = null;
@@ -824,13 +826,14 @@ class EditorController extends Controller {
      * @param bool $inframe - open in frame
      * @param bool $desktop - desktop label
      * @param string $guestName - nickname not logged user
+     * @param bool $template - file is template
      *
      * @return array
      *
      * @NoAdminRequired
      * @PublicPage
      */
-    public function config($fileId, $filePath = null, $shareToken = null, $directToken = null, $version = 0, $inframe = false, $desktop = false, $guestName = null) {
+    public function config($fileId, $filePath = null, $shareToken = null, $directToken = null, $version = 0, $inframe = false, $desktop = false, $guestName = null, $template = false) {
 
         if (!empty($directToken)) {
             list ($directData, $error) = $this->crypt->ReadHash($directToken);
@@ -868,7 +871,7 @@ class EditorController extends Controller {
             }
         }
 
-        list ($file, $error, $share) = empty($shareToken) ? $this->getFile($userId, $fileId, $filePath) : $this->fileUtility->getFileByToken($fileId, $shareToken);
+        list ($file, $error, $share) = empty($shareToken) ? $this->getFile($userId, $fileId, $filePath, $template) : $this->fileUtility->getFileByToken($fileId, $shareToken);
 
         if (isset($error)) {
             $this->logger->error("Config: $fileId $error", ["app" => $this->appName]);
@@ -883,7 +886,7 @@ class EditorController extends Controller {
             return ["error" => $this->trans->t("Format is not supported")];
         }
 
-        $fileUrl = $this->getUrl($file, $user, $shareToken, $version);
+        $fileUrl = $this->getUrl($file, $user, $shareToken, $version, null, $template);
 
         $key = null;
         if ($version > 0
@@ -926,6 +929,7 @@ class EditorController extends Controller {
 
         $canEdit = isset($format["edit"]) && $format["edit"];
         $editable = $version < 1
+                    && !$template
                     && $file->isUpdateable()
                     && (empty($shareToken) || ($share->getPermissions() & Constants::PERMISSION_UPDATE) === Constants::PERMISSION_UPDATE);
         $params["document"]["permissions"]["edit"] = $editable;
@@ -1050,16 +1054,18 @@ class EditorController extends Controller {
      * @param string $userId - user identifier
      * @param integer $fileId - file identifier
      * @param string $filePath - file path
+     * @param bool $template - file is template
      *
      * @return array
      */
-    private function getFile($userId, $fileId, $filePath = null) {
+    private function getFile($userId, $fileId, $filePath = null, $template = false) {
         if (empty($fileId)) {
             return [null, $this->trans->t("FileId is empty"), null];
         }
 
         try {
-            $files = $this->root->getUserFolder($userId)->getById($fileId);
+            $folder = !$template ? $this->root->getUserFolder($userId) : TemplateManager::GetGlobalTemplateDir();
+            $files = $folder->getById($fileId);
         } catch (\Exception $e) {
             $this->logger->logException($e, ["message" => "getFile: $fileId", "app" => $this->appName]);
             return [null, $this->trans->t("Invalid request"), null];
@@ -1097,10 +1103,11 @@ class EditorController extends Controller {
      * @param string $shareToken - access token
      * @param integer $version - file version
      * @param bool $changes - is required url to file changes
+     * @param bool $template - file is template
      *
      * @return string
      */
-    private function getUrl($file, $user = null, $shareToken = null, $version = 0, $changes = false) {
+    private function getUrl($file, $user = null, $shareToken = null, $version = 0, $changes = false, $template = false) {
 
         $data = [
             "action" => "download",
@@ -1120,6 +1127,9 @@ class EditorController extends Controller {
         }
         if ($changes) {
             $data["changes"] = true;
+        }
+        if ($template) {
+            $data["template"] = true;
         }
 
         $hashUrl = $this->crypt->GetHash($data);
