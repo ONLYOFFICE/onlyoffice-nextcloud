@@ -86,6 +86,18 @@
     "Keep intermediate versions when editing (forcesave)": "Хранить промежуточные версии при редактировании (принудительное сохранение)",
     "Use ONLYOFFICE to generate a document preview (it will take up disk space)": "Использовать ONLYOFFICE для создания превью документа (займет место на диске)",
     "Keep metadata for each version once the document is edited (it will take up disk space)": "Сохранять метаданные для каждой версии после редактирования (займет место на диске)",
-    "All history successfully deleted": "История успешно удалена"
+    "All history successfully deleted": "История успешно удалена",
+    "Create": "Создать",
+    "Select template" : "Выбрать шаблон",
+    "Invalid file provided" : "Указан неправильный файл",
+    "Empty": "Пустой",
+    "Error" : "Ошибка",
+    "Add a new template": "Добавить новый шаблон",
+    "Template already exists": "Шаблон уже существует",
+    "Template must be in OOXML format": "Шаблон должен быть в формате OOXML",
+    "Template successfully added": "Шаблон успешно добавлен",
+    "Template successfully deleted": "Шаблон успешно удален",
+    "Common templates": "Общие шаблоны",
+    "Failed to delete template": "Не удалось удалить шаблон"
 },"pluralForm" :"nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);"
 }

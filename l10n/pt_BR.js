@@ -88,6 +88,18 @@ OC.L10N.register(
     "Keep intermediate versions when editing (forcesave)": "Manter versões intermediárias ao editar (forçar salvar)",
     "Use ONLYOFFICE to generate a document preview (it will take up disk space)": "Usar ONLYOFFICE para gerar uma visualização do documento (ocupará espaço em disco)",
     "Keep metadata for each version once the document is edited (it will take up disk space)": "Manter os metadados para cada versão após a edição (ocupará espaço em disco)  (ocupará espaço em disco)",
-    "All history successfully deleted": "O histórico foi excluído com sucesso"
+    "All history successfully deleted": "O histórico foi excluído com sucesso",
+    "Create": "Criar",
+    "Select template" : "Selecionar um modelo",
+    "Invalid file provided" : "Arquivo fornecido inválido",
+    "Empty": "Vazio",
+    "Error" : "Erro",
+    "Add a new template": "Adicionar um novo modelo",
+    "Template already exists": "Modelo já existe",
+    "Template must be in OOXML format": "Modelo deve estar no formato OOXML",
+    "Template successfully added": "Modelo adicionado com sucesso",
+    "Template successfully deleted": "Modelo excluído com sucesso",
+    "Common templates": "Modelos comuns",
+    "Failed to delete template": "Falha ao excluir modelo"
 },
 "nplurals=2; plural=(n != 1);");

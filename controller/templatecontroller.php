@@ -89,14 +89,14 @@ class TemplateController extends Controller {
             if (is_uploaded_file($file["tmp_name"]) && $file["error"] === 0) {
                 if (!TemplateManager::IsTemplateType($file["name"])) {
                     return [
-                        "error" => $this->trans->t("Template must be OOXML format")
+                        "error" => $this->trans->t("Template must be in OOXML format")
                     ];
                 }
 
                 $templateDir = TemplateManager::GetGlobalTemplateDir();
                 if ($templateDir->nodeExists($file["name"])) {
                     return [
-                        "error" => $this->trans->t("Template already exist")
+                        "error" => $this->trans->t("Template already exists")
                     ];
                 }
 
