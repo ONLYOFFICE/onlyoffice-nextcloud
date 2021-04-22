@@ -22,6 +22,71 @@
         AppName: "onlyoffice"
     }, OCA.Onlyoffice);
 
+    OCA.Onlyoffice.OpenTemplatePicker = function (name, extension, type, callback) {
+        OCA.Onlyoffice.GetTemplates(type, (templates, error) => {
+            if (error || templates.length < 1) {
+                callback(false);
+                return;
+            }
+
+            $("#onlyoffice-template-picker").remove();
+
+            $.get(OC.filePath(OCA.Onlyoffice.AppName, "templates", "templatePicker.html"), 
+                function (tmpl) {
+                    var $tmpl = $(tmpl)
+                    var dialog = $tmpl.octemplate({
+                        dialog_name: "onlyoffice-template-picker",
+                        dialog_title: t(OCA.Onlyoffice.AppName, "Select template")
+                    });
+
+                    OCA.Onlyoffice.AttachTemplates(dialog, templates);
+
+                    $("body").append(dialog)
+
+                    $("#onlyoffice-template-picker").ocdialog({
+                        closeOnEscape: true,
+                        modal: true,
+                        buttons: [{
+                            text: t("core", "Cancel"),
+                            classes: "cancel",
+                            click: function() {
+                                $(this).ocdialog("close")
+                            }
+                        }, {
+                            text: t(OCA.Onlyoffice.AppName, "Create"),
+                            classes: "primary",
+                            click: function() {
+                                var templateId = this.dataset.templateId;
+                                var fileList = OCA.Files.App.fileList;
+                                OCA.Onlyoffice.CreateFile(name + extension, fileList, templateId);
+                                $(this).ocdialog("close")
+                            }
+                        }]
+                    });
+                });
+
+            callback(true);
+        });
+    };
+
+    OCA.Onlyoffice.GetTemplates = function (type, callback) {
+        $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/template?type={type}", {
+            type: type
+        }),
+            function onSuccess(response) {
+                if (response.error) {
+                    OC.Notification.show(response.error, {
+                        type: "error",
+                        timeout: 3
+                    });
+                    callback(null, response.error);
+                    return;
+                }
+                callback(response, null);
+                return;
+            });
+    };
+
     OCA.Onlyoffice.AddTemplate = function (file, callback) {
         var data = new FormData();
         data.append("file", file);
@@ -56,6 +121,32 @@
                 }
             }
         });
+    }
+
+    OCA.Onlyoffice.AttachTemplates = function (dialog, templates) {
+        var emptyItem = dialog[0].querySelector(".onlyoffice-template-item");
+        var type = templates[0]["type"];
+
+        templates.forEach(template => {
+            var item = emptyItem.cloneNode(true);
+
+            $(item.querySelector("label")).attr("for", "template_picker-" + template["id"]);
+            item.querySelector("input").id = "template_picker-" + template["id"];
+            item.querySelector("img").src = "/core/img/filetypes/x-office-" + template["type"] + ".svg";
+            item.querySelector("p").textContent = template["name"];
+            item.onclick = function() {
+                dialog[0].dataset.templateId = template["id"];
+            }
+            dialog[0].querySelector(".onlyoffice-template-container").appendChild(item);
+        });
+
+        $(emptyItem.querySelector("label")).attr("for", "template_picker-0");
+        emptyItem.querySelector("input").id = "template_picker-0";
+        emptyItem.querySelector("img").src = "/core/img/filetypes/x-office-" + type + ".svg";
+        emptyItem.querySelector("p").textContent = t(OCA.Onlyoffice.AppName, "Empty");
+        emptyItem.onclick = function() {
+            dialog[0].dataset.templateId = "0";
+        }
     }
 
     OCA.Onlyoffice.AttachItemTemplate = function (template) {

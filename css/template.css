@@ -51,3 +51,10 @@
     float: left;
     margin-top: 5px;
 }
+.onlyoffice-template-item input {
+    position: absolute;
+    left: -10000px;
+}
+.onlyoffice-template-item input:checked + label {
+    color: rgb(55, 137, 243);
+}

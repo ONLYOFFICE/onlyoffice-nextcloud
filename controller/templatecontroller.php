@@ -66,6 +66,17 @@ class TemplateController extends Controller {
     }
 
     /**
+     * Get templates
+     *
+     * @param string $type - template format type
+     *
+     * @return array
+     */
+    public function GetTemplates($type = null) {
+        return TemplateManager::GetGlobalTemplates($type);
+    }
+
+    /**
      * Add global template
      *
      * @return array

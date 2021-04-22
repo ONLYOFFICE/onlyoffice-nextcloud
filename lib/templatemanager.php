@@ -28,6 +28,13 @@ namespace OCA\Onlyoffice;
 class TemplateManager {
 
     /**
+     * Application name
+     *
+     * @var string
+     */
+    private static $appName = "onlyoffice";
+
+    /**
      * Mapping local path to templates
      *
      * @var Array
@@ -96,13 +103,60 @@ class TemplateManager {
     /**
      * Get global templates
      *
+     * @param string $type - template format type
+     *
      * @return array
      */
-    public static function GetGlobalTemplates() {
+    public static function GetGlobalTemplates($type = null) {
+        $templates = [];
         $templateDir = self::GetGlobalTemplateDir();
-        $templatesList = $templateDir->getDirectoryListing();
 
-        return $templatesList;
+        if (!empty($type)) {
+            $mime = self::GetMimeTemplate($type);
+            $templatesList = $templateDir->searchByMime($mime);
+
+        } else {
+            $templatesList = $templateDir->getDirectoryListing();
+        }
+
+        foreach ($templatesList as $templatesItem) {
+            $template = [
+                "id" => $templatesItem->getId(),
+                "name" => $templatesItem->getName(),
+                "type" => TemplateManager::GetTypeTemplate($templatesItem->getMimeType())
+            ];
+            array_push($templates, $template);
+        }
+
+        return $templates;
+    }
+
+    /**
+     * Get template content
+     *
+     * @param string $templateId - identifier file template
+     *
+     * @return string
+     */
+    public static function GetGlobalTemplate($templateId) {
+        $logger = \OC::$server->getLogger();
+
+        $templateDir = self::GetGlobalTemplateDir();
+        try {
+            $templates = $templateDir->getById($templateId);
+        } catch(\Exception $e) {
+            $logger->logException($e, ["message" => "GetGlobalTemplate: $templateId", "app" => self::$appName]);
+            return null;
+        }
+
+        if (empty($templates)) {
+            $logger->info("Template not found: $templateId", ["app" => self::$appName]);
+            return null;
+        }
+
+        $content = $templates[0]->getContent();
+
+        return $content;
     }
 
     /**
@@ -120,6 +174,26 @@ class TemplateManager {
                 return "spreadsheet";
             case "application/vnd.openxmlformats-officedocument.presentationml.presentation":
                 return "presentation";
+        }
+
+        return "";
+    }
+
+    /**
+     * Get mimetype template from format type
+     *
+     * @param string $type - format type
+     *
+     * @return string
+     */
+    public static function GetMimeTemplate($type) {
+        switch($type) {
+            case "document":
+                return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+            case "spreadsheet":
+                return "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            case "presentation":
+                return "application/vnd.openxmlformats-officedocument.presentationml.presentation";
         }
 
         return "";

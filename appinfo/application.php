@@ -70,12 +70,14 @@ class Application extends App {
                     && $this->appConfig->isUserAllowedToUse()) {
                     Util::addScript("onlyoffice", "desktop");
                     Util::addScript("onlyoffice", "main");
+                    Util::addScript("onlyoffice", "template");
 
                     if ($this->appConfig->GetSameTab()) {
                         Util::addScript("onlyoffice", "listener");
                     }
 
                     Util::addStyle("onlyoffice", "main");
+                    Util::addStyle("onlyoffice", "template");
                 }
             });
 
