@@ -35,54 +35,11 @@ class TemplateManager {
     private static $appName = "onlyoffice";
 
     /**
-     * Mapping local path to templates
+     * Template folder name
      *
-     * @var Array
+     * @var string
      */
-    private static $localPath = [
-        "az" => "az-Latn-AZ",
-        "bg" => "bg-BG",
-        "cs" => "cs-CZ",
-        "de" => "de-DE",
-        "de_DE" => "de-DE",
-        "el" => "el-GR",
-        "en" => "en-US",
-        "en_GB" => "en-GB",
-        "es" => "es-ES",
-        "fr" => "fr-FR",
-        "it" => "it-IT",
-        "ja" => "ja-JP",
-        "ko" => "ko-KR",
-        "lv" => "lv-LV",
-        "nl" => "nl-NL",
-        "pl" => "pl-PL",
-        "pt_BR" => "pt-BR",
-        "pt_PT" => "pt-PT",
-        "ru" => "ru-RU",
-        "sk" => "sk-SK",
-        "sv" => "sv-SE",
-        "uk" => "uk-UA",
-        "vi" => "vi-VN",
-        "zh_CN" => "zh-CN"
-    ];
-
-    /**
-     * Get template
-     *
-     * @param string $name - file name
-     *
-     * @return string
-     */
-    public static function GetTemplate(string $name) {
-        $ext = strtolower("." . pathinfo($name, PATHINFO_EXTENSION));
-
-        $lang = \OC::$server->getL10NFactory("")->get("")->getLanguageCode();
-
-        $templatePath = self::getTemplatePath($lang, $ext);
-
-        $template = file_get_contents($templatePath);
-        return $template;
-    }
+    private static $templateFolderName = "template";
 
     /**
      * Get global template directory
@@ -94,8 +51,8 @@ class TemplateManager {
 
         $appData = $rootFolder->get("appdata_" . \OC::$server->getConfig()->GetSystemValue("instanceid", null));
 
-        $appDir = $appData->nodeExists("onlyoffice") ? $appData->get("onlyoffice") : $appData->newFolder("onlyoffice");
-        $templateDir = $appDir->nodeExists("template") ? $appDir->get("template") : $appDir->newFolder("template");
+        $appDir = $appData->nodeExists(self::$appName) ? $appData->get(self::$appName) : $appData->newFolder(self::$appName);
+        $templateDir = $appDir->nodeExists(self::$templateFolderName) ? $appDir->get(self::$templateFolderName) : $appDir->newFolder(self::$templateFolderName);
 
         return $templateDir;
     }
@@ -138,14 +95,14 @@ class TemplateManager {
      *
      * @return string
      */
-    public static function GetGlobalTemplate($templateId) {
+    public static function GetTemplate($templateId) {
         $logger = \OC::$server->getLogger();
 
         $templateDir = self::GetGlobalTemplateDir();
         try {
             $templates = $templateDir->getById($templateId);
         } catch(\Exception $e) {
-            $logger->logException($e, ["message" => "GetGlobalTemplate: $templateId", "app" => self::$appName]);
+            $logger->logException($e, ["message" => "GetTemplate: $templateId", "app" => self::$appName]);
             return null;
         }
 
@@ -219,6 +176,24 @@ class TemplateManager {
     }
 
     /**
+     * Get template
+     *
+     * @param string $name - file name
+     *
+     * @return string
+     */
+    public static function GetEmptyTemplate($name) {
+        $ext = strtolower("." . pathinfo($name, PATHINFO_EXTENSION));
+
+        $lang = \OC::$server->getL10NFactory("")->get("")->getLanguageCode();
+
+        $templatePath = self::GetEmptyTemplatePath($lang, $ext);
+
+        $template = file_get_contents($templatePath);
+        return $template;
+    }
+
+    /**
      * Get template path
      *
      * @param string $lang - language
@@ -226,11 +201,43 @@ class TemplateManager {
      *
      * @return string
      */
-    public static function GetTemplatePath(string $lang, string $ext) {
+    public static function GetEmptyTemplatePath($lang, $ext) {
         if (!array_key_exists($lang, self::$localPath)) {
             $lang = "en";
         }
 
         return dirname(__DIR__) . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . self::$localPath[$lang] . DIRECTORY_SEPARATOR . "new" . $ext;
     }
+
+    /**
+     * Mapping local path to templates
+     *
+     * @var Array
+     */
+    private static $localPath = [
+        "az" => "az-Latn-AZ",
+        "bg" => "bg-BG",
+        "cs" => "cs-CZ",
+        "de" => "de-DE",
+        "de_DE" => "de-DE",
+        "el" => "el-GR",
+        "en" => "en-US",
+        "en_GB" => "en-GB",
+        "es" => "es-ES",
+        "fr" => "fr-FR",
+        "it" => "it-IT",
+        "ja" => "ja-JP",
+        "ko" => "ko-KR",
+        "lv" => "lv-LV",
+        "nl" => "nl-NL",
+        "pl" => "pl-PL",
+        "pt_BR" => "pt-BR",
+        "pt_PT" => "pt-PT",
+        "ru" => "ru-RU",
+        "sk" => "sk-SK",
+        "sv" => "sv-SE",
+        "uk" => "uk-UA",
+        "vi" => "vi-VN",
+        "zh_CN" => "zh-CN"
+    ];
 }

@@ -29,6 +29,7 @@ use OCP\Constants;
 use OCP\Files\File;
 use OCP\Files\Folder;
 use OCP\Files\IRootFolder;
+use OCP\Files\NotPermittedException;
 use OCP\IL10N;
 use OCP\ILogger;
 use OCP\IRequest;
@@ -239,10 +240,11 @@ class EditorController extends Controller {
         }
 
         if (empty($templateId)) {
-            $template = TemplateManager::GetTemplate($name);
+            $template = TemplateManager::GetEmptyTemplate($name);
         } else {
-            $template = TemplateManager::GetGlobalTemplate($templateId);
+            $template = TemplateManager::GetTemplate($templateId);
         }
+
         if (!$template) {
             $this->logger->error("Template for file creation not found: $name ($templateId)", ["app" => $this->appName]);
             return ["error" => $this->trans->t("Template not found")];
@@ -754,8 +756,8 @@ class EditorController extends Controller {
             "shareToken" => $shareToken,
             "directToken" => null,
             "version" => $version,
-            "inframe" => false,
             "template" => $template,
+            "inframe" => false
         ];
 
         $response = null;

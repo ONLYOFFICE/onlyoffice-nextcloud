@@ -319,7 +319,7 @@
     <h3>
         <?php p($l->t("Common templates")) ?>
         <input id="onlyofficeAddTemplate" type="file" class="hidden-visually" />
-        <label for="onlyofficeAddTemplate" class="icon-add" title="<?php p($l->t('Add a new template')) ?>"></label>
+        <label for="onlyofficeAddTemplate" class="icon-add" title="<?php p($l->t("Add a new template")) ?>"></label>
     </h3>
     <ul class="onlyoffice-template-container">
         <?php foreach ($_["templates"] as $template) { ?>

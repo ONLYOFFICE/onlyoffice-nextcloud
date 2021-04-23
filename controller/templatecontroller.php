@@ -20,9 +20,9 @@
 namespace OCA\Onlyoffice\Controller;
 
 use OCP\AppFramework\Controller;
+use OCP\IL10N;
 use OCP\ILogger;
 use OCP\IRequest;
-use OCP\IL10N;
 
 use OCA\Onlyoffice\TemplateManager;
 

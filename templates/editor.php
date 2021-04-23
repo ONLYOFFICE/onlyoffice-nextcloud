@@ -32,8 +32,8 @@
         data-path="<?php p($_["filePath"]) ?>"
         data-sharetoken="<?php p($_["shareToken"]) ?>"
         data-directtoken="<?php p($_["directToken"]) ?>"
-        data-template="<?php p($_["template"]) ?>"
         data-version="<?php p($_["version"]) ?>"
+        data-template="<?php p($_["template"]) ?>"
         data-inframe="<?php p($_["inframe"]) ?>"></div>
 
     <?php if (!empty($_["documentServerUrl"])) { ?>

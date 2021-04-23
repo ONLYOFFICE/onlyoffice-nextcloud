@@ -344,7 +344,7 @@ class CallbackController extends Controller {
             }
         }
 
-        $templatePath = TemplateManager::GetTemplatePath("en", ".docx");
+        $templatePath = TemplateManager::GetEmptyTemplatePath("en", ".docx");
 
         $template = file_get_contents($templatePath);
         if (!$template) {
