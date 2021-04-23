@@ -67,6 +67,8 @@ class TemplateController extends Controller {
      * @param string $type - template format type
      *
      * @return array
+     *
+     * @NoAdminRequired
      */
     public function GetTemplates($type = null) {
         return TemplateManager::GetGlobalTemplates($type);
