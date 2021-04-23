@@ -20,10 +20,6 @@
 namespace OCA\Onlyoffice\Controller;
 
 use OCP\AppFramework\Controller;
-use OCP\AppFramework\Http\DataResponse;
-use OCP\AppFramework\Http\FileDisplayResponse;
-use OCP\AppFramework\Http;
-use OCP\Files\NotFoundException;
 use OCP\ILogger;
 use OCP\IRequest;
 use OCP\IL10N;
@@ -56,13 +52,13 @@ class TemplateController extends Controller {
      */
     public function __construct($AppName,
                                     IRequest $request,
-                                    ILogger $logger,
-                                    IL10N $trans
+                                    IL10N $trans,
+                                    ILogger $logger
                                     ) {
         parent::__construct($AppName, $request);
 
-        $this->logger = $logger;
         $this->trans = $trans;
+        $this->logger = $logger;
     }
 
     /**
