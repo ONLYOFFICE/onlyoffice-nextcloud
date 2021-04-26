@@ -78,8 +78,13 @@ OC.L10N.register(
     "Show watermark for read only link shares" : "Visa vattenmärke för skrivskyddade länkdelningar",
     "Show watermark on link shares with specific system tags" : "Visa vattenmärke för länkdelningar med specifika systemtaggar",
     "Select tag" : "Välj tagg",
+    "Review mode for viewing": "Granskningsläge för visning",
+    "Markup": "Markering",
+    "Final": "Slutgiltig",
+    "Original": "Ursprunglig",
     "version": "verzia",
     "Disable certificate verification (insecure)": "Använd inte certifikatsverifiering (osäkert)",
+    "Keep intermediate versions when editing (forcesave)": "Behåll mellanliggande versioner vid redigering (tvinga att spara)",
     "Use ONLYOFFICE to generate a document preview (it will take up disk space)": "Använd ONLYOFFICE för att generera en förhandsgranskning av dokument (detta använder diskutrymme)",
     "Keep metadata for each version once the document is edited (it will take up disk space)": "Behåll metadata för varje version när dokumentet redigeras (detta använder diskutrymme) "
 },
