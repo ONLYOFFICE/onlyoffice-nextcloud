@@ -756,7 +756,7 @@ class EditorController extends Controller {
             "shareToken" => $shareToken,
             "directToken" => null,
             "version" => $version,
-            "template" => $template,
+            "isTemplate" => $template,
             "inframe" => false
         ];
 
