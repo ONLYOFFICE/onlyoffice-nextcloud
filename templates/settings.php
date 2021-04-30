@@ -230,6 +230,26 @@
     <p><button id="onlyofficeSave" class="button"><?php p($l->t("Save")) ?></button></p>
 </div>
 
+<div class="section section-onlyoffice section-onlyoffice-templates">
+
+    <h3>
+        <?php p($l->t("Common templates")) ?>
+        <input id="onlyofficeAddTemplate" type="file" class="hidden-visually" />
+        <label for="onlyofficeAddTemplate" class="icon-add" title="<?php p($l->t("Add a new template")) ?>"></label>
+    </h3>
+    <ul class="onlyoffice-template-container">
+        <?php foreach ($_["templates"] as $template) { ?>
+            <li data-id=<?php p($template["id"]) ?> class="onlyoffice-template-item" >
+                <img src="/core/img/filetypes/x-office-<?php p($template["type"]) ?>.svg" />
+                <p><?php p($template["name"]) ?></p>
+                <span class="onlyoffice-template-preview"></span>
+                <span class="onlyoffice-template-delete icon-delete"></span>
+            </li>
+        <?php } ?>
+    </ul>
+
+</div>
+
 <div class="section section-onlyoffice section-onlyoffice-watermark <?php if (empty($_["documentserver"]) && !$_["demo"]["enabled"] || !$_["successful"]) { ?>onlyoffice-hide<?php } ?>">
     <h3><?php p($l->t("Secure view settings")) ?></h3>
 
@@ -311,25 +331,5 @@
 
     <br />
     <p><button id="onlyofficeWatermarkSave" class="button"><?php p($l->t("Save")) ?></button></p>
-
-</div>
-
-<div class="section section-onlyoffice section-onlyoffice-templates">
-
-    <h3>
-        <?php p($l->t("Common templates")) ?>
-        <input id="onlyofficeAddTemplate" type="file" class="hidden-visually" />
-        <label for="onlyofficeAddTemplate" class="icon-add" title="<?php p($l->t("Add a new template")) ?>"></label>
-    </h3>
-    <ul class="onlyoffice-template-container">
-        <?php foreach ($_["templates"] as $template) { ?>
-            <li data-id=<?php p($template["id"]) ?> class="onlyoffice-template-item" >
-                <img src="/core/img/filetypes/x-office-<?php p($template["type"]) ?>.svg" />
-                <p><?php p($template["name"]) ?></p>
-                <span class="onlyoffice-template-preview"></span>
-                <span class="onlyoffice-template-delete icon-delete"></span>
-            </li>
-        <?php } ?>
-    </ul>
 
 </div>
