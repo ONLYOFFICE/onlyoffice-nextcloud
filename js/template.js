@@ -19,60 +19,51 @@
  (function ($, OC) {
 
     OCA.Onlyoffice = _.extend({
-        AppName: "onlyoffice"
+        AppName: "onlyoffice",
+        templates: []
     }, OCA.Onlyoffice);
 
-    OCA.Onlyoffice.OpenTemplatePicker = function (name, extension, type, callback) {
-        OCA.Onlyoffice.GetTemplates(type, (templates, error) => {
-            if (error || templates.length < 1) {
-                callback(false);
-                return;
-            }
+    OCA.Onlyoffice.OpenTemplatePicker = function (name, extension, type) {
 
-            $("#onlyoffice-template-picker").remove();
+        $("#onlyoffice-template-picker").remove();
 
-            $.get(OC.filePath(OCA.Onlyoffice.AppName, "templates", "templatePicker.html"), 
-                function (tmpl) {
-                    var $tmpl = $(tmpl)
-                    var dialog = $tmpl.octemplate({
-                        dialog_name: "onlyoffice-template-picker",
-                        dialog_title: t(OCA.Onlyoffice.AppName, "Select template")
-                    });
-
-                    OCA.Onlyoffice.AttachTemplates(dialog, templates);
-
-                    $("body").append(dialog)
-
-                    $("#onlyoffice-template-picker").ocdialog({
-                        closeOnEscape: true,
-                        modal: true,
-                        buttons: [{
-                            text: t("core", "Cancel"),
-                            classes: "cancel",
-                            click: function() {
-                                $(this).ocdialog("close")
-                            }
-                        }, {
-                            text: t(OCA.Onlyoffice.AppName, "Create"),
-                            classes: "primary",
-                            click: function() {
-                                var templateId = this.dataset.templateId;
-                                var fileList = OCA.Files.App.fileList;
-                                OCA.Onlyoffice.CreateFile(name + extension, fileList, templateId);
-                                $(this).ocdialog("close")
-                            }
-                        }]
-                    });
+        $.get(OC.filePath(OCA.Onlyoffice.AppName, "templates", "templatePicker.html"), 
+            function (tmpl) {
+                var $tmpl = $(tmpl)
+                var dialog = $tmpl.octemplate({
+                    dialog_name: "onlyoffice-template-picker",
+                    dialog_title: t(OCA.Onlyoffice.AppName, "Select template")
                 });
 
-            callback(true);
-        });
+                OCA.Onlyoffice.AttachTemplates(dialog, type);
+
+                $("body").append(dialog)
+
+                $("#onlyoffice-template-picker").ocdialog({
+                    closeOnEscape: true,
+                    modal: true,
+                    buttons: [{
+                        text: t("core", "Cancel"),
+                        classes: "cancel",
+                        click: function() {
+                            $(this).ocdialog("close")
+                        }
+                    }, {
+                        text: t(OCA.Onlyoffice.AppName, "Create"),
+                        classes: "primary",
+                        click: function() {
+                            var templateId = this.dataset.templateId;
+                            var fileList = OCA.Files.App.fileList;
+                            OCA.Onlyoffice.CreateFile(name + extension, fileList, templateId);
+                            $(this).ocdialog("close")
+                        }
+                    }]
+                });
+            });
     };
 
-    OCA.Onlyoffice.GetTemplates = function (type, callback) {
-        $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/template?type={type}", {
-            type: type
-        }),
+    OCA.Onlyoffice.GetTemplates = function (callback) {
+        $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/template"),
             function onSuccess(response) {
                 if (response.error) {
                     OC.Notification.show(response.error, {
@@ -123,11 +114,13 @@
         });
     }
 
-    OCA.Onlyoffice.AttachTemplates = function (dialog, templates) {
+    OCA.Onlyoffice.AttachTemplates = function (dialog, type) {
         var emptyItem = dialog[0].querySelector(".onlyoffice-template-item");
-        var type = templates[0]["type"];
 
-        templates.forEach(template => {
+        OCA.Onlyoffice.templates.forEach(template => {
+            if (template.type !== type) {
+                return;
+            }
             var item = emptyItem.cloneNode(true);
 
             $(item.querySelector("label")).attr("for", "template_picker-" + template["id"]);
@@ -161,5 +154,23 @@
             $(".onlyoffice-template-container").append(item);
         });
     }
+
+    OCA.Onlyoffice.TemplateExist = function (type) {
+        var isExist = OCA.Onlyoffice.templates.some((template) => {
+            return template.type === type;
+        });
+
+        return isExist;
+    }
+
+    $(document).ready(function () {
+        OCA.Onlyoffice.GetTemplates((templates, error) => {
+            if (error || !Array.isArray(templates) || templates.length < 1) {
+                return;
+            }
+
+            OCA.Onlyoffice.templates = templates;
+        })
+    });
 
 })(jQuery, OC);
