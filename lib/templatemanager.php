@@ -102,7 +102,6 @@ class TemplateManager {
         }
 
         if (empty($templates)) {
-            $logger->info("Template not found: $templateId", ["app" => self::$appName]);
             return null;
         }
 

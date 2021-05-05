@@ -198,6 +198,7 @@ class TemplateController extends Controller {
 
         $template = TemplateManager::GetTemplate($fileId);
         if (empty($template)) {
+            $this->logger->error("Template not found: $fileId", ["app" => $this->appName]);
             return new DataResponse([], Http::STATUS_NOT_FOUND);
         }
 
