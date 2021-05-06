@@ -102,7 +102,9 @@
 
             $("body").addClass("onlyoffice-inline");
 
-            OCA.Files.Sidebar.close();
+            if (OCA.Files.Sidebar) {
+                OCA.Files.Sidebar.close();
+            }
 
             var scrollTop = $(window).scrollTop();
             $(OCA.Onlyoffice.frameSelector).css("top", scrollTop);
