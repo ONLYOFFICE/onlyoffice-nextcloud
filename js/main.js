@@ -331,6 +331,7 @@
 
     var initPage = function () {
         if ($("#isPublic").val() === "1" && !$("#filestable").length) {
+            //file by shared link
             var fileName = $("#filename").val();
             var extension = getFileExtension(fileName);
 
@@ -356,8 +357,12 @@
 
             OCA.Onlyoffice.GetSettings(initSharedButton);
         } else {
+            if ($("#isPublic").val() === "1" && !!$("#filestable").length) {
+                //folder by shared link
+                OC.Plugins.register("OCA.Files.NewFileMenu", OCA.Onlyoffice.NewFileMenu);
+            }
+
             OC.Plugins.register("OCA.Files.FileList", OCA.Onlyoffice.FileList);
-            OC.Plugins.register("OCA.Files.NewFileMenu", OCA.Onlyoffice.NewFileMenu);
 
             OCA.Onlyoffice.bindVersionClick();
         }
