@@ -37,7 +37,7 @@
 
                 OCA.Onlyoffice.AttachTemplates(dialog, type);
 
-                $("body").append(dialog)
+                $("body").append(dialog);
 
                 $("#onlyoffice-template-picker").ocdialog({
                     closeOnEscape: true,
@@ -97,7 +97,7 @@
                     callback(null, response.error)
                     return;
                 }
-                
+
                 callback(response, null);
             }
         });
@@ -139,6 +139,7 @@
 
         $(emptyItem.querySelector("label")).attr("for", "template_picker-0");
         emptyItem.querySelector("input").id = "template_picker-0";
+        emptyItem.querySelector("input").checked = true;
         emptyItem.querySelector("img").src = "/core/img/filetypes/x-office-" + type + ".svg";
         emptyItem.querySelector("p").textContent = t(OCA.Onlyoffice.AppName, "Empty");
         emptyItem.onclick = function() {
@@ -147,7 +148,7 @@
     }
 
     OCA.Onlyoffice.AttachItemTemplate = function (template) {
-        $.get(OC.filePath(OCA.Onlyoffice.AppName, "templates", "templateItem.html"), 
+        $.get(OC.filePath(OCA.Onlyoffice.AppName, "templates", "templateItem.html"),
         function (item) {
             var item = $(item)
 
