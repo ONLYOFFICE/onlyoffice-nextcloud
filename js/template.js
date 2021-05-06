@@ -20,7 +20,7 @@
 
     OCA.Onlyoffice = _.extend({
         AppName: "onlyoffice",
-        templates: []
+        templates: null
     }, OCA.Onlyoffice);
 
     OCA.Onlyoffice.OpenTemplatePicker = function (name, extension, type) {
@@ -62,7 +62,11 @@
             });
     };
 
-    OCA.Onlyoffice.GetTemplates = function (callback) {
+    OCA.Onlyoffice.GetTemplates = function () {
+        if (OCA.Onlyoffice.templates != null) {
+            return;
+        }
+
         $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/template"),
             function onSuccess(response) {
                 if (response.error) {
@@ -70,10 +74,10 @@
                         type: "error",
                         timeout: 3
                     });
-                    callback(null, response.error);
                     return;
                 }
-                callback(response, null);
+
+                OCA.Onlyoffice.templates = response;
                 return;
             });
     };
@@ -162,15 +166,5 @@
 
         return isExist;
     }
-
-    $(document).ready(function () {
-        OCA.Onlyoffice.GetTemplates((templates, error) => {
-            if (error || !Array.isArray(templates) || templates.length < 1) {
-                return;
-            }
-
-            OCA.Onlyoffice.templates = templates;
-        })
-    });
 
 })(jQuery, OC);

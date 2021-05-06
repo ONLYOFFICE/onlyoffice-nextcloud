@@ -292,6 +292,10 @@
                     }
                 }
             });
+
+            if (OCA.Onlyoffice.GetTemplates) {
+                OCA.Onlyoffice.GetTemplates();
+            }
         }
     };
 
