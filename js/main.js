@@ -132,7 +132,7 @@
 
     OCA.Onlyoffice.OpenShareDialog = function () {
         if (OCA.Onlyoffice.context) {
-            if (!$("#app-sidebar").is(":visible")) {
+            if (!$("#app-sidebar, #app-sidebar-vue").is(":visible")) {
                 OCA.Onlyoffice.context.fileList.showDetailsView(OCA.Onlyoffice.context.fileName, "sharing");
                 OC.Apps.showAppSidebar();
             } else {
