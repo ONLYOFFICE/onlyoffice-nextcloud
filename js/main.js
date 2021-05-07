@@ -106,7 +106,9 @@
 
             $("body").addClass("onlyoffice-inline");
 
-            OCA.Files.Sidebar.close();
+            if (OCA.Files.Sidebar) {
+                OCA.Files.Sidebar.close();
+            }
 
             var scrollTop = $(window).scrollTop();
             $(OCA.Onlyoffice.frameSelector).css("top", scrollTop);
@@ -134,9 +136,9 @@
 
     OCA.Onlyoffice.OpenShareDialog = function () {
         if (OCA.Onlyoffice.context) {
-            if (!$("#app-sidebar-vue").is(":visible")) {
-                OCA.Files.Sidebar.open(OCA.Onlyoffice.context.dir + "/" + OCA.Onlyoffice.context.fileName);
-                OCA.Files.Sidebar.setActiveTab("sharing");
+            if (!$("#app-sidebar, #app-sidebar-vue").is(":visible")) {
+                OCA.Onlyoffice.context.fileList.showDetailsView(OCA.Onlyoffice.context.fileName, "sharing");
+                OC.Apps.showAppSidebar();
             } else {
                 OCA.Files.Sidebar.close();
             }
@@ -210,7 +212,7 @@
                     if (!config.mime) {
                         return true;
                     }
-                    fileList.fileActions.registerAction({
+                    OCA.Files.fileActions.registerAction({
                         name: "onlyofficeOpen",
                         displayName: t(OCA.Onlyoffice.AppName, "Open in ONLYOFFICE"),
                         mime: config.mime,
@@ -220,11 +222,11 @@
                     });
 
                     if (config.def) {
-                        fileList.fileActions.setDefault(config.mime, "onlyofficeOpen");
+                        OCA.Files.fileActions.setDefault(config.mime, "onlyofficeOpen");
                     }
 
                     if (config.conv) {
-                        fileList.fileActions.registerAction({
+                        OCA.Files.fileActions.registerAction({
                             name: "onlyofficeConvert",
                             displayName: t(OCA.Onlyoffice.AppName, "Convert with ONLYOFFICE"),
                             mime: config.mime,

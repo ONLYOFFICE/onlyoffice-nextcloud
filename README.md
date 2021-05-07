@@ -59,6 +59,7 @@ There are several ways to do that:
     c. Or you can clone the application source code and compile it yourself: 
     ```bash
     git clone https://github.com/ONLYOFFICE/onlyoffice-nextcloud.git onlyoffice
+    cd onlyoffice
     git submodule update --init --recursive
     ```
 
