@@ -27,7 +27,7 @@
 
     OCA.Onlyoffice.setting = {};
 
-    OCA.Onlyoffice.CreateFile = function (name, fileList) {
+    OCA.Onlyoffice.CreateFile = function (name, fileList, templateId) {
         var dir = fileList.getCurrentDirectory();
 
         if (!OCA.Onlyoffice.setting.sameTab || OCA.Onlyoffice.Desktop) {
@@ -39,6 +39,10 @@
             name: name,
             dir: dir
         };
+
+        if (templateId) {
+            createData.templateId = templateId;
+        }
 
         if ($("#isPublic").val()) {
             createData.shareToken = encodeURIComponent($("#sharingToken").val());
@@ -253,7 +257,11 @@
                 iconClass: "icon-onlyoffice-new-docx",
                 fileType: "docx",
                 actionHandler: function (name) {
-                    OCA.Onlyoffice.CreateFile(name + ".docx", fileList);
+                    if (!$("#isPublic").val() && OCA.Onlyoffice.TemplateExist("document")) {
+                        OCA.Onlyoffice.OpenTemplatePicker(name, ".docx", "document");
+                    } else {
+                        OCA.Onlyoffice.CreateFile(name + ".docx", fileList);
+                    }
                 }
             });
 
@@ -264,7 +272,11 @@
                 iconClass: "icon-onlyoffice-new-xlsx",
                 fileType: "xlsx",
                 actionHandler: function (name) {
-                    OCA.Onlyoffice.CreateFile(name + ".xlsx", fileList);
+                    if (!$("#isPublic").val() && OCA.Onlyoffice.TemplateExist("spreadsheet")) {
+                        OCA.Onlyoffice.OpenTemplatePicker(name, ".xlsx", "spreadsheet");
+                    } else {
+                        OCA.Onlyoffice.CreateFile(name + ".xlsx", fileList);
+                    }
                 }
             });
 
@@ -275,9 +287,17 @@
                 iconClass: "icon-onlyoffice-new-pptx",
                 fileType: "pptx",
                 actionHandler: function (name) {
-                    OCA.Onlyoffice.CreateFile(name + ".pptx", fileList);
+                    if (!$("#isPublic").val() && OCA.Onlyoffice.TemplateExist("presentation")) {
+                        OCA.Onlyoffice.OpenTemplatePicker(name, ".pptx", "presentation");
+                    } else {
+                        OCA.Onlyoffice.CreateFile(name + ".pptx", fileList);
+                    }
                 }
             });
+
+            if (OCA.Onlyoffice.GetTemplates) {
+                OCA.Onlyoffice.GetTemplates();
+            }
         }
     };
 

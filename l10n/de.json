@@ -86,6 +86,18 @@
     "Keep intermediate versions when editing (forcesave)": "Zwischenversionen bei der Bearbeitung aufbewahren (force save)",
     "Use ONLYOFFICE to generate a document preview (it will take up disk space)": "ONLYOFFICE verwenden, um eine Dokumentvorschau zu erstellen (Speicherplatz erforderlich)",
     "Keep metadata for each version once the document is edited (it will take up disk space)": "Metadaten für jede Version beim Bearbeiten des Dokuments aufbewahren (Speicherplatz erforderlich)",
-    "All history successfully deleted": "Gesamtverlauf wurde erfolgreich gelöscht"
+    "All history successfully deleted": "Gesamtverlauf wurde erfolgreich gelöscht",
+    "Create": "Erstellen",
+    "Select template" : "Vorlage auswählen",
+    "Invalid file provided" : "Ungültige Datei zur Verfügung gestellt",
+    "Empty": "Leer",
+    "Error" : "Fehler",
+    "Add a new template": "Neue Vorlage hinzufügen",
+    "Template already exists": "Vorlage ist bereits vorhanden",
+    "Template must be in OOXML format": "Vorlage soll im OOXML-Format sein",
+    "Template successfully added": "Vorlage wurde erfolgreich hinzugefügt",
+    "Template successfully deleted": "Vorlage wurde erfolgreich entfernt",
+    "Common templates": "Gemeinsame Vorlagen",
+    "Failed to delete template": "Fehler beim Löschen einer Vorlage"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

@@ -31,6 +31,7 @@ use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\Crypt;
 use OCA\Onlyoffice\DocumentService;
 use OCA\Onlyoffice\FileVersions;
+use OCA\Onlyoffice\TemplateManager;
 
 /**
  * Settings controller for the administration page
@@ -126,7 +127,8 @@ class SettingsController extends Controller {
             "successful" => $this->config->SettingsAreSuccessful(),
             "watermark" => $this->config->GetWatermarkSettings(),
             "tagsEnabled" => App::isEnabled("systemtags"),
-            "reviewDisplay" => $this->config->GetCustomizationReviewDisplay()
+            "reviewDisplay" => $this->config->GetCustomizationReviewDisplay(),
+            "templates" => $this->GetGlobalTemplates()
         ];
         return new TemplateResponse($this->appName, "settings", $data, "blank");
     }
@@ -284,5 +286,14 @@ class SettingsController extends Controller {
             "sameTab" => $this->config->GetSameTab()
         ];
         return $result;
+    }
+
+    /**
+     * Get global templates
+     *
+     * @return array
+     */
+    private function GetGlobalTemplates() {
+        return TemplateManager::GetGlobalTemplates();
     }
 }

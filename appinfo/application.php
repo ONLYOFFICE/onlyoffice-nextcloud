@@ -32,6 +32,7 @@ use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\Controller\CallbackController;
 use OCA\Onlyoffice\Controller\EditorController;
 use OCA\Onlyoffice\Controller\SettingsController;
+use OCA\Onlyoffice\Controller\TemplateController;
 use OCA\Onlyoffice\Crypt;
 use OCA\Onlyoffice\DirectEditor;
 use OCA\Onlyoffice\Hooks;
@@ -70,12 +71,14 @@ class Application extends App {
                     && $this->appConfig->isUserAllowedToUse()) {
                     Util::addScript("onlyoffice", "desktop");
                     Util::addScript("onlyoffice", "main");
+                    Util::addScript("onlyoffice", "template");
 
                     if ($this->appConfig->GetSameTab()) {
                         Util::addScript("onlyoffice", "listener");
                     }
 
                     Util::addStyle("onlyoffice", "main");
+                    Util::addStyle("onlyoffice", "template");
                 }
             });
 
@@ -220,6 +223,15 @@ class Application extends App {
                 $this->appConfig,
                 $this->crypt,
                 $c->query("IManager")
+            );
+        });
+
+        $container->registerService("TemplateController", function ($c) {
+            return new TemplateController(
+                $c->query("AppName"),
+                $c->query("Request"),
+                $c->query("L10N"),
+                $c->query("Logger")
             );
         });
 

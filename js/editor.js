@@ -37,6 +37,7 @@
         OCA.Onlyoffice.shareToken = $("#iframeEditor").data("sharetoken");
         OCA.Onlyoffice.version = $("#iframeEditor").data("version");
         var directToken = $("#iframeEditor").data("directtoken");
+        OCA.Onlyoffice.template = $("#iframeEditor").data("template");
         OCA.Onlyoffice.inframe = !!$("#iframeEditor").data("inframe");
         OCA.Onlyoffice.filePath = $("#iframeEditor").data("path");
         var guestName = localStorage.getItem("nick");
@@ -69,6 +70,9 @@
         }
         if (OCA.Onlyoffice.version > 0) {
             params.push("version=" + OCA.Onlyoffice.version);
+        }
+        if (OCA.Onlyoffice.template) {
+            params.push("template=true");
         }
         if (guestName) {
             params.push("guestName=" + encodeURIComponent(guestName));

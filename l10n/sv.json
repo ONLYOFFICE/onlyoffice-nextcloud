@@ -84,6 +84,19 @@
     "Disable certificate verification (insecure)": "Använd inte certifikatsverifiering (osäkert)",
     "Keep intermediate versions when editing (forcesave)": "Behåll mellanliggande versioner vid redigering (tvinga att spara)",
     "Use ONLYOFFICE to generate a document preview (it will take up disk space)": "Använd ONLYOFFICE för att generera en förhandsgranskning av dokument (detta använder diskutrymme)",
-    "Keep metadata for each version once the document is edited (it will take up disk space)": "Behåll metadata för varje version när dokumentet redigeras (detta använder diskutrymme) "
+    "Keep metadata for each version once the document is edited (it will take up disk space)": "Behåll metadata för varje version när dokumentet redigeras (detta använder diskutrymme) ",   
+    "All history successfully deleted": "All historik har tagits bort",
+    "Create": "Skapa",
+    "Select template" : "Välj mall",
+    "Invalid file provided" : "Ogiltig fil tillhandahölls",
+    "Empty": "Tom",
+    "Error" : "Fel",
+    "Add a new template": "Lägg till en ny mall",
+    "Template already exists": "Mallen finns redan",
+    "Template must be in OOXML format": "Mallen måste vara i OOXML-format",
+    "Template successfully added": "Mallen lades till",
+    "Template successfully deleted": "Mallen har tagits bort",
+    "Common templates": "Delade mallar",
+    "Failed to delete template": "Det gick inte att ta bort mallen"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

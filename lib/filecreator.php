@@ -136,7 +136,7 @@ class FileCreator extends ACreateEmpty {
         $this->logger->debug("FileCreator: " . $file->getId() . " " . $file->getName() . " $creatorId $templateId", ["app" => $this->appName]);
 
         $fileName = $file->getName();
-        $template = TemplateManager::GetTemplate($fileName);
+        $template = TemplateManager::GetEmptyTemplate($fileName);
 
         if (!$template) {
             $this->logger->error("FileCreator: Template for file creation not found: $templateId", ["app" => $this->appName]);
