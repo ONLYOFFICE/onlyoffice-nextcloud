@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System SIA 2020
+ * (c) Copyright Ascensio System SIA 2021
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@
         data-sharetoken="<?php p($_["shareToken"]) ?>"
         data-directtoken="<?php p($_["directToken"]) ?>"
         data-version="<?php p($_["version"]) ?>"
+        data-template="<?php p($_["isTemplate"]) ?>"
         data-inframe="<?php p($_["inframe"]) ?>"></div>
 
     <?php if (!empty($_["documentServerUrl"])) { ?>

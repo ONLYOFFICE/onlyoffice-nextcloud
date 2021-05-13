@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System SIA 2020
+ * (c) Copyright Ascensio System SIA 2021
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -136,7 +136,7 @@ class FileCreator extends ACreateEmpty {
         $this->logger->debug("FileCreator: " . $file->getId() . " " . $file->getName() . " $creatorId $templateId", ["app" => $this->appName]);
 
         $fileName = $file->getName();
-        $template = TemplateManager::GetTemplate($fileName);
+        $template = TemplateManager::GetEmptyTemplate($fileName);
 
         if (!$template) {
             $this->logger->error("FileCreator: Template for file creation not found: $templateId", ["app" => $this->appName]);

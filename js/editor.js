@@ -1,6 +1,6 @@
 /**
  *
- * (c) Copyright Ascensio System SIA 2020
+ * (c) Copyright Ascensio System SIA 2021
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,6 +37,7 @@
         OCA.Onlyoffice.shareToken = $("#iframeEditor").data("sharetoken");
         OCA.Onlyoffice.version = $("#iframeEditor").data("version");
         var directToken = $("#iframeEditor").data("directtoken");
+        OCA.Onlyoffice.template = $("#iframeEditor").data("template");
         OCA.Onlyoffice.inframe = !!$("#iframeEditor").data("inframe");
         OCA.Onlyoffice.filePath = $("#iframeEditor").data("path");
         var guestName = localStorage.getItem("nick");
@@ -70,25 +71,15 @@
         if (OCA.Onlyoffice.version > 0) {
             params.push("version=" + OCA.Onlyoffice.version);
         }
+        if (OCA.Onlyoffice.template) {
+            params.push("template=true");
+        }
         if (guestName) {
             params.push("guestName=" + encodeURIComponent(guestName));
         }
 
         if (OCA.Onlyoffice.inframe || directToken) {
-            var dsVersion = DocsAPI.DocEditor.version();
-            var versionArray = dsVersion.split(".");
-            if (versionArray[0] < 5 || versionArray[0] == 5 && versionArray[1] < 5) {
-                if (OCA.Onlyoffice.inframe
-                    && window.parent.OCA.Onlyoffice.ShowHeaderButton) {
-                    window.parent.postMessage({
-                        method: "editorShowHeaderButton"
-                    },
-                    "*");
-                }
-                params.push("inframe=2");
-            } else {
-                params.push("inframe=1");
-            }
+            params.push("inframe=true");
         }
 
         if (OCA.Onlyoffice.Desktop) {
@@ -382,6 +373,8 @@
             OCA.Onlyoffice.directEditor.close();
             return;
         }
+
+        OCA.Onlyoffice.docEditor.destroyEditor();
 
         window.parent.postMessage({
             method: "editorRequestClose"

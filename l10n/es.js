@@ -85,9 +85,21 @@ OC.L10N.register(
     "Original": "Original",
     "version": "versión",
     "Disable certificate verification (insecure)": "Desactivar la verificación de certificados (inseguro)",
-    "Keep intermediate versions when editing": "Mantener las versiones intermedias durante la edición",
+    "Keep intermediate versions when editing (forcesave)": "Mantener las versiones intermedias durante la edición (forzar guardar)",
     "Use ONLYOFFICE to generate a document preview (it will take up disk space)": "Usar ONLYOFFICE para generar una vista previa del documento (ocupará espacio en el disco)",
     "Keep metadata for each version once the document is edited (it will take up disk space)": "Guardar los metadatos de cada versión al editar el documento (ocupará espacio en el disco)",
-    "All history successfully deleted": "Todo el historial se ha eliminado correctamente"
+    "All history successfully deleted": "Todo el historial se ha eliminado correctamente",
+    "Create": "Crear",
+    "Select template" : "Seleccionar plantilla",
+    "Invalid file provided" : "Archivo proporcionado no válido",
+    "Empty": "Vacío",
+    "Error" : "Error",
+    "Add a new template": "Añadir una plantilla nueva",
+    "Template already exists": "La plantilla ya existe",
+    "Template must be in OOXML format": "La plantilla debe tener el formato OOXML",
+    "Template successfully added": "La plantilla se agregó correctamente",
+    "Template successfully deleted": "La plantilla se eliminó correctamente",
+    "Common templates": "Plantillas comunes",
+    "Failed to delete template": "No se pudo eliminar la plantilla"
 },
 "nplurals=2; plural=(n != 1);");

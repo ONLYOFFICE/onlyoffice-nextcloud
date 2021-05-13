@@ -1,5 +1,16 @@
 # Change Log
 
+## 6.4.0
+## Added
+- create file from editor
+- more empty files in different languages
+- file templates
+
+## Changed
+- open a version from the history of supported formats only
+- document server v5.5 and earlier is no longer supported
+- disabled copying to clipboard if there is no download permission
+
 ## 6.3.0
 ## Added
 - save as in current folder

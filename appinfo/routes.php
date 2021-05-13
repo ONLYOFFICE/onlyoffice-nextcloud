@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System SIA 2020
+ * (c) Copyright Ascensio System SIA 2021
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ return [
        ["name" => "callback#emptyfile", "url" => "/empty", "verb" => "GET"],
        ["name" => "callback#track", "url" => "/track", "verb" => "POST"],
        ["name" => "editor#loader", "url" => "/loader", "verb" => "GET"],
+       ["name" => "editor#create_new", "url" => "/new", "verb" => "GET"],
        ["name" => "editor#index", "url" => "/{fileId}", "verb" => "GET"],
        ["name" => "editor#public_page", "url" => "/s/{shareToken}", "verb" => "GET"],
        ["name" => "editor#config", "url" => "/ajax/config/{fileId}", "verb" => "GET"],
@@ -37,6 +38,9 @@ return [
        ["name" => "settings#save_watermark", "url" => "/ajax/settings/watermark", "verb" => "PUT"],
        ["name" => "settings#get_settings", "url" => "/ajax/settings", "verb" => "GET"],
        ["name" => "settings#clear_history", "url" => "/ajax/settings/history", "verb" => "DELETE"],
+       ["name" => "template#add_template", "url" => "/ajax/template", "verb" => "POST"],
+       ["name" => "template#delete_template", "url" => "/ajax/template", "verb" => "DELETE"],
+       ["name" => "template#get_templates", "url" => "/ajax/template", "verb" => "GET"],
     ],
     "ocs" => [
         ["name" => "federation#key", "url" => "/api/v1/key", "verb" => "POST"],
