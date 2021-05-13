@@ -1,5 +1,12 @@
 # Change Log
 
+## 7.0.0
+## Added
+- support for templates from Nextcloud v21
+
+## Changed
+- Nextcloud v19, v20 is no longer supported
+
 ## 6.4.0
 ## Added
 - create file from editor
