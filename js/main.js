@@ -195,47 +195,41 @@
         }
     };
 
-    OCA.Onlyoffice.FileList = {
-        attach: function (fileList) {
-            if (fileList.id == "trashbin") {
-                return;
-            }
+    OCA.Onlyoffice.registerAction = function() {
+        var register = function () {
+            var formats = OCA.Onlyoffice.setting.formats;
 
-            var register = function () {
-                var formats = OCA.Onlyoffice.setting.formats;
-
-                $.each(formats, function (ext, config) {
-                    if (!config.mime) {
-                        return true;
-                    }
-                    OCA.Files.fileActions.registerAction({
-                        name: "onlyofficeOpen",
-                        displayName: t(OCA.Onlyoffice.AppName, "Open in ONLYOFFICE"),
-                        mime: config.mime,
-                        permissions: OC.PERMISSION_READ,
-                        iconClass: "icon-onlyoffice-open",
-                        actionHandler: OCA.Onlyoffice.FileClick
-                    });
-
-                    if (config.def) {
-                        OCA.Files.fileActions.setDefault(config.mime, "onlyofficeOpen");
-                    }
-
-                    if (config.conv) {
-                        OCA.Files.fileActions.registerAction({
-                            name: "onlyofficeConvert",
-                            displayName: t(OCA.Onlyoffice.AppName, "Convert with ONLYOFFICE"),
-                            mime: config.mime,
-                            permissions: ($("#isPublic").val() ? OC.PERMISSION_UPDATE : OC.PERMISSION_READ),
-                            iconClass: "icon-onlyoffice-convert",
-                            actionHandler: OCA.Onlyoffice.FileConvertClick
-                        });
-                    }
+            $.each(formats, function (ext, config) {
+                if (!config.mime) {
+                    return true;
+                }
+                OCA.Files.fileActions.registerAction({
+                    name: "onlyofficeOpen",
+                    displayName: t(OCA.Onlyoffice.AppName, "Open in ONLYOFFICE"),
+                    mime: config.mime,
+                    permissions: OC.PERMISSION_READ,
+                    iconClass: "icon-onlyoffice-open",
+                    actionHandler: OCA.Onlyoffice.FileClick
                 });
-            }
 
-            OCA.Onlyoffice.GetSettings(register);
+                if (config.def) {
+                    OCA.Files.fileActions.setDefault(config.mime, "onlyofficeOpen");
+                }
+
+                if (config.conv) {
+                    OCA.Files.fileActions.registerAction({
+                        name: "onlyofficeConvert",
+                        displayName: t(OCA.Onlyoffice.AppName, "Convert with ONLYOFFICE"),
+                        mime: config.mime,
+                        permissions: ($("#isPublic").val() ? OC.PERMISSION_UPDATE : OC.PERMISSION_READ),
+                        iconClass: "icon-onlyoffice-convert",
+                        actionHandler: OCA.Onlyoffice.FileConvertClick
+                    });
+                }
+            });
         }
+
+        OCA.Onlyoffice.GetSettings(register);
     };
 
     OCA.Onlyoffice.NewFileMenu = {
@@ -362,7 +356,7 @@
                 OC.Plugins.register("OCA.Files.NewFileMenu", OCA.Onlyoffice.NewFileMenu);
             }
 
-            OC.Plugins.register("OCA.Files.FileList", OCA.Onlyoffice.FileList);
+            OCA.Onlyoffice.registerAction();
 
             OCA.Onlyoffice.bindVersionClick();
         }
