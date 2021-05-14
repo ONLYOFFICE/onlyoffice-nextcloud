@@ -1,5 +1,9 @@
 # Change Log
 
+## 6.4.2
+## Changed
+- fixed registration of file actions
+
 ## 7.0.0
 ## Added
 - support for templates from Nextcloud v21
