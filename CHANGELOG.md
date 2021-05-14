@@ -1,5 +1,9 @@
 # Change Log
 
+## 7.0.2
+## Changed
+- fixed registration of file actions
+
 ## 6.4.2
 ## Changed
 - fixed registration of file actions
