@@ -235,6 +235,7 @@ class DirectEditor implements IEditor {
                 "shareToken" => null,
                 "directToken" => $directToken,
                 "version" => 0,
+                "isTemplate" => false,
                 "inframe" => false
             ];
 
