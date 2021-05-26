@@ -184,6 +184,7 @@ class EditorController extends Controller {
      *
      * @param string $name - file name
      * @param string $dir - folder path
+     * @param string $templateId - file identifier
      * @param string $shareToken - access token
      *
      * @return array
@@ -191,7 +192,7 @@ class EditorController extends Controller {
      * @NoAdminRequired
      * @PublicPage
      */
-    public function create($name, $dir, $shareToken = null) {
+    public function create($name, $dir, $templateId = null, $shareToken = null) {
         $this->logger->debug("Create: $name", ["app" => $this->appName]);
 
         if (empty($shareToken) && !$this->config->isUserAllowedToUse()) {
@@ -235,7 +236,14 @@ class EditorController extends Controller {
             return ["error" => $this->trans->t("You don't have enough permission to create")];
         }
 
-        $template = TemplateManager::GetEmptyTemplate($name);
+        if (empty($templateId)) {
+            $template = TemplateManager::GetEmptyTemplate($name);
+        } else {
+            $template = TemplateManager::GetTemplate($templateId);
+            if ($template) {
+                $template = $template->getContent();
+            }
+        }
 
         if (!$template) {
             $this->logger->error("Template for file creation not found: $name", ["app" => $this->appName]);
@@ -268,16 +276,17 @@ class EditorController extends Controller {
      *
      * @param string $name - file name
      * @param string $dir - folder path
+     * @param string $templateId - file identifier
      *
      * @return TemplateResponse|RedirectResponse
      *
      * @NoAdminRequired
      * @NoCSRFRequired
      */
-    public function createNew($name, $dir) {
+    public function createNew($name, $dir, $templateId = null) {
         $this->logger->debug("Create from editor: $name in $dir", ["app" => $this->appName]);
 
-        $result = $this->create($name, $dir);
+        $result = $this->create($name, $dir, $templateId);
         if (isset($result["error"])) {
             return $this->renderError($result["error"]);
         }
@@ -1020,6 +1029,22 @@ class EditorController extends Controller {
 
             $createUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".editor.create_new", $createParam);
             $params["editorConfig"]["createUrl"] = urldecode($createUrl);
+
+            $templatesList = TemplateManager::GetGlobalTemplates($file->getMimeType());
+            if (!empty($templatesList)) {
+                $templates = [];
+                foreach($templatesList as $template) {
+                    $createParam["templateId"] = $template->getId();
+
+                    array_push($templates, [
+                        "image" => "",
+                        "title" => $template->getName(),
+                        "url" => urldecode($this->urlGenerator->linkToRouteAbsolute($this->appName . ".editor.create_new", $createParam))
+                    ]);
+                }
+
+                $params["editorConfig"]["templates"] = $templates;
+            }
         }
 
         if ($folderLink !== null) {
