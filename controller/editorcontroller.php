@@ -35,6 +35,8 @@ use OCP\IL10N;
 use OCP\ILogger;
 use OCP\IRequest;
 use OCP\ISession;
+use OCP\ITags;
+use OCP\ITagManager;
 use OCP\IURLGenerator;
 use OCP\IUser;
 use OCP\IUserManager;
@@ -127,6 +129,13 @@ class EditorController extends Controller {
     private $versionManager;
 
     /**
+     * Tag manager
+     *
+     * @var ITagManager
+    */
+    private $tagManager;
+
+    /**
      * Mobile regex from https://github.com/ONLYOFFICE/CommunityServer/blob/v9.1.1/web/studio/ASC.Web.Studio/web.appsettings.config#L35
      */
     const USER_AGENT_MOBILE = "/android|avantgo|playbook|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od|ad)|iris|kindle|lge |maemo|midp|mmp|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\\/|plucker|pocket|psp|symbian|treo|up\\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i";
@@ -144,6 +153,7 @@ class EditorController extends Controller {
      * @param Crypt $crypt - hash generator
      * @param IManager $shareManager - Share manager
      * @param ISession $ISession - Session
+     * @param ITagManager $tagManager - Tag manager
      */
     public function __construct($AppName,
                                     IRequest $request,
@@ -156,7 +166,8 @@ class EditorController extends Controller {
                                     AppConfig $config,
                                     Crypt $crypt,
                                     IManager $shareManager,
-                                    ISession $session
+                                    ISession $session,
+                                    ITagManager $tagManager
                                     ) {
         parent::__construct($AppName, $request);
 
@@ -168,6 +179,7 @@ class EditorController extends Controller {
         $this->logger = $logger;
         $this->config = $config;
         $this->crypt = $crypt;
+        $this->tagManager = $tagManager;
 
         if (\OC::$server->getAppManager()->isInstalled("files_versions")) {
             try {
@@ -1136,6 +1148,8 @@ class EditorController extends Controller {
 
                 $params["editorConfig"]["templates"] = $templates;
             }
+
+            $params["document"]["info"]["favorite"] = $this->isFavorite($fileId);
         }
 
         if ($folderLink !== null) {
@@ -1486,6 +1500,22 @@ class EditorController extends Controller {
                     return $watermarkText;
                 }
             }
+        }
+
+        return false;
+    }
+
+    /**
+     * Check file favorite
+     *
+     * @param integer $fileId - file identifier
+     *
+     * @return bool
+     */
+    private function isFavorite($fileId) {
+        $currentTags = $this->tagManager->load("files")->getTagsForObjects([$fileId]);
+        if ($currentTags) {
+            return in_array(ITags::TAG_FAVORITE, $currentTags[$fileId]);
         }
 
         return false;
