@@ -97,7 +97,12 @@ class DocumentService {
         $isEndConvert = $responceFromConvertService->EndConvert;
 
         if ($isEndConvert !== null && strtolower($isEndConvert) === "true") {
-            return $responceFromConvertService->FileUrl;
+            $fileUrl = $responceFromConvertService->FileUrl;
+            if ( strpos($fileUrl, "http://") !== 0 && strpos($fileUrl, "https://") !== 0 ){
+                $url = parse_url($document_uri);
+                $fileUrl = $url["scheme"]."://".$url['host'].$fileUrl ;
+            }
+            return $fileUrl;
         }
 
         return "";
