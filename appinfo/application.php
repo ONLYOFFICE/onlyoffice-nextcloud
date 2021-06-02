@@ -21,6 +21,7 @@ namespace OCA\Onlyoffice\AppInfo;
 
 use OCP\AppFramework\App;
 use OCP\AppFramework\Http\ContentSecurityPolicy;
+use OCP\Dashboard\RegisterWidgetEvent;
 use OCP\DirectEditing\RegisterDirectEditorEvent;
 use OCP\Files\IMimeTypeDetector;
 use OCP\Util;
@@ -114,6 +115,17 @@ class Application extends App {
                     Util::addStyle("onlyoffice", "main");
                 }
             });
+
+        if (class_exists(RegisterWidgetEvent::class)) {
+            $eventDispatcher->addListener(RegisterWidgetEvent::class,
+                function () {
+                    if (!empty($this->appConfig->GetDocumentServerUrl())
+                        && $this->appConfig->SettingsAreSuccessful()
+                        && $this->appConfig->isUserAllowedToUse()) {
+                        Util::addScript("onlyoffice", "desktop");
+                    }
+                });
+        }
 
         require_once __DIR__ . "/../3rdparty/jwt/BeforeValidException.php";
         require_once __DIR__ . "/../3rdparty/jwt/ExpiredException.php";
