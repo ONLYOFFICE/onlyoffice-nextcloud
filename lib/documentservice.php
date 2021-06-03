@@ -98,10 +98,11 @@ class DocumentService {
 
         if ($isEndConvert !== null && strtolower($isEndConvert) === "true") {
             $fileUrl = $responceFromConvertService->FileUrl;
-            if ( strpos($fileUrl, "http://") !== 0 && strpos($fileUrl, "https://") !== 0 ){
+            if ( !preg_match("/^https?:\/\//i", $fileUrl) ){
                 $url = parse_url($document_uri);
-                $fileUrl = $url["scheme"]."://".$url['host'].$fileUrl ;
+                $fileUrl = $url["scheme"] . "://" . $url['host'] . (array_key_exists("port", $url) ? (":" . $url["port"]) : "") . $fileUrl ;
             }
+
             return $fileUrl;
         }
 
