@@ -154,6 +154,11 @@
                         config.events.onRequestInsertImage = OCA.Onlyoffice.onRequestInsertImage;
                         config.events.onRequestMailMergeRecipients = OCA.Onlyoffice.onRequestMailMergeRecipients;
                         config.events.onRequestCompareFile = OCA.Onlyoffice.onRequestCompareFile;
+                        config.events.onMetaChange = OCA.Onlyoffice.onMetaChange;
+
+                        if (!OCA.Onlyoffice.filePath) {
+                            OCA.Onlyoffice.filePath = config._file_path;
+                        }
                     }
 
                     if (OCA.Onlyoffice.directEditor || OCA.Onlyoffice.inframe) {
@@ -464,6 +469,23 @@
 
         OCA.Onlyoffice.docEditor.setActionLink(url);
     };
+
+    OCA.Onlyoffice.onMetaChange = function (event) {
+        if (event.data.favorite !== undefined) {
+            $.ajax({
+                url: OC.generateUrl("apps/files/api/v1/files" + OC.encodePath(OCA.Onlyoffice.filePath)),
+                type: "post",
+                data: JSON.stringify({
+                    tags: event.data.favorite ? [OC.TAG_FAVORITE] : []
+                }),
+                contentType: "application/json",
+                dataType: "json",
+                success: function(){
+                    OCA.Onlyoffice.docEditor.setFavorite(event.data.favorite);
+                }
+              })
+        }
+    }
 
     OCA.Onlyoffice.InitEditor();
 
