@@ -457,11 +457,27 @@ class AppConfig {
      * @return string
      */
     public function ReplaceDocumentServerUrlToInternal($url) {
+        // GetDocumentServerInternalUrl() will be the same with GetDocumentServerUrl() if internal url is not specified.
         $documentServerUrl = $this->GetDocumentServerInternalUrl();
+
         if (!empty($documentServerUrl)) {
             $from = $this->GetDocumentServerUrl();
 
+            if (!preg_match("/^https?:\/\//i", $url)){
+                // $url is not a complete url. Form it with $from
+                $parsedUrl = parse_url($from);
+
+                // $url may include VPATH. Judge it to avoid dupe.
+                // https://github.com/ONLYOFFICE/document-server-proxy/blob/master/apache/proxy-to-virtual-path.conf
+                $vpath = $parsedUrl["path"];
+                if (empty($vpath)){
+                    $vpath = "/";
+                }
+                $url = $from.preg_filter("#^$vpath#i", "", $url, 1);
+            }
+
             if (!preg_match("/^https?:\/\//i", $from)) {
+                // Frontend forbids input incomplete url, so this will never happen?
                 $parsedUrl = parse_url($url);
                 $from = $parsedUrl["scheme"] . "://" . $parsedUrl["host"] . (array_key_exists("port", $parsedUrl) ? (":" . $parsedUrl["port"]) : "") . $from;
             }
