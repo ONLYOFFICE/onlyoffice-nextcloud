@@ -177,7 +177,7 @@
                     fileList.add(response, { animate: true });
                 }
 
-                OCP.Toast.success(t(OCA.Onlyoffice.AppName, "File has been converted. Its content might look differently."));
+                OCP.Toast.success(t(OCA.Onlyoffice.AppName, "File has been converted. Its content might look different."));
             });
     };
 

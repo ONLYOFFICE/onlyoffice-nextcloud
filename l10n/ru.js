@@ -101,6 +101,6 @@ OC.L10N.register(
     "Template successfully deleted": "Шаблон успешно удален",
     "Common templates": "Общие шаблоны",
     "Failed to delete template": "Не удалось удалить шаблон",
-    "File has been converted. Its content might look differently.": "Файл сконвертирован. Содержание может отличаться"
+    "File has been converted. Its content might look different.": "Файл был сконвертирован. Его форматирование могло измениться."
 },
 "nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);");

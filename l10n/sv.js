@@ -99,6 +99,7 @@ OC.L10N.register(
     "Template successfully added": "Mallen lades till",
     "Template successfully deleted": "Mallen har tagits bort",
     "Common templates": "Delade mallar",
-    "Failed to delete template": "Det gick inte att ta bort mallen"
+    "Failed to delete template": "Det gick inte att ta bort mallen",
+    "File has been converted. Its content might look different.": "Filen har konverterats. Dess innehåll kan se annorlunda ut."
 },
 "nplurals=2; plural=(n != 1);");
