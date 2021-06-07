@@ -19,11 +19,12 @@
 
 namespace OCA\Onlyoffice;
 
-use OCP\DirectEditing\ACreateEmpty;
+use OCP\DirectEditing\ACreateFromTemplate;
 use OCP\Files\File;
 use OCP\IL10N;
 use OCP\ILogger;
 
+use OCA\Onlyoffice\DirectTemplate;
 use OCA\Onlyoffice\TemplateManager;
 
 /**
@@ -31,7 +32,7 @@ use OCA\Onlyoffice\TemplateManager;
  *
  * @package OCA\Onlyoffice
  */
-class FileCreator extends ACreateEmpty {
+class FileCreator extends ACreateFromTemplate {
 
     /**
      * Application name
@@ -148,5 +149,21 @@ class FileCreator extends ACreateEmpty {
         } catch (NotPermittedException $e) {
             $this->logger->logException($e, ["message" => "FileCreator: Can't create file: $fileName", "app" => $this->appName]);
         }
+    }
+
+    /**
+     * List of available templates for the create from template action
+     *
+     * @return ATemplate[]
+     */
+    public function getTemplates(): array {
+        $templates = [];
+        $globaltemplates = TemplateManager::GetGlobalTemplates($this->getMimetype());
+        foreach($globaltemplates as $template) {
+            $directTemplate = new DirectTemplate($template->getId(), $template->getName(), "");
+            array_push($templates, $directTemplate->jsonSerialize());
+        }
+
+        return $templates;
     }
 }
