@@ -1,5 +1,8 @@
 # Change Log
 
+## Added
+- download as
+
 ## Changed
 - redirect from dashboard on desktop
 
