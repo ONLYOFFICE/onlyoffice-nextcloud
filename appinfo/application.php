@@ -26,6 +26,7 @@ use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
 use OCP\AppFramework\Http\ContentSecurityPolicy;
+use OCP\Dashboard\RegisterWidgetEvent;
 use OCP\DirectEditing\RegisterDirectEditorEvent;
 use OCP\Files\Template\FileCreatedFromTemplateEvent;
 use OCP\Files\Template\ITemplateManager;
@@ -226,6 +227,15 @@ class Application extends App implements IBootstrap {
                         }
 
                         Util::addStyle("onlyoffice", "main");
+                    }
+                });
+
+            $eventDispatcher->addListener(RegisterWidgetEvent::class,
+                function () {
+                    if (!empty($this->appConfig->GetDocumentServerUrl())
+                        && $this->appConfig->SettingsAreSuccessful()
+                        && $this->appConfig->isUserAllowedToUse()) {
+                        Util::addScript("onlyoffice", "desktop");
                     }
                 });
 

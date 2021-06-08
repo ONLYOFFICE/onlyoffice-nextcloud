@@ -97,6 +97,7 @@ OC.L10N.register(
     "Template successfully added": "Szablon został pomyślnie dodany",
     "Template successfully deleted": "Szablon został pomyślnie usunięty",
     "Common templates": "Popularne szablony",
-    "Failed to delete template": "Nie udało się usunąć szablonu"
+    "Failed to delete template": "Nie udało się usunąć szablonu",
+    "File has been converted. Its content might look different.": "Plik został przekonwertowany. Jego zawartość może wyglądać inaczej."
 },
 "nplurals=2; plural=(n != 1);");

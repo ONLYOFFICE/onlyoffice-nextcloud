@@ -25,6 +25,12 @@
     }
 
     OCA.Onlyoffice.Desktop = true;
+
+    if (location.href.indexOf(_oc_appswebroots.dashboard) !== -1) {
+        location.href = location.href.split(_oc_appswebroots.dashboard)[0] + _oc_appswebroots.files;
+        return;
+    }
+
     $("html").addClass("AscDesktopEditor");
 
     var domain = new RegExp("^http(s)?:\/\/[^\/]+").exec(location)[0];

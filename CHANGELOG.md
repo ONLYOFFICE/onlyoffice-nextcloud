@@ -1,5 +1,8 @@
 # Change Log
 
+## Changed
+- redirect from dashboard on desktop
+
 ## 7.0.2
 ## Changed
 - fixed registration of file actions

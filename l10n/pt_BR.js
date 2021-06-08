@@ -97,6 +97,7 @@ OC.L10N.register(
     "Template successfully added": "Modelo adicionado com sucesso",
     "Template successfully deleted": "Modelo excluído com sucesso",
     "Common templates": "Modelos comuns",
-    "Failed to delete template": "Falha ao excluir modelo"
+    "Failed to delete template": "Falha ao excluir modelo",
+    "File has been converted. Its content might look different.": "O arquivo foi convertido. Seu conteúdo pode ser diferente."
 },
 "nplurals=2; plural=(n != 1);");

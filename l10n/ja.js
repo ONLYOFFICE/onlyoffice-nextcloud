@@ -97,6 +97,7 @@ OC.L10N.register(
     "Template successfully added": "テンプレートが正常に追加されました",
     "Template successfully deleted": "テンプレートが正常に削除されました",
     "Common templates": "よく使われるテンプレート",
-    "Failed to delete template": "テンプレートの削除に失敗しました"
+    "Failed to delete template": "テンプレートの削除に失敗しました",
+    "File has been converted. Its content might look different.": "ファイルが変換されました。 その内容は異なって見えるかもしれません。"
 },
 "nplurals=2; plural=(n != 1);");

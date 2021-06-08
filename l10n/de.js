@@ -97,6 +97,7 @@ OC.L10N.register(
     "Template successfully added": "Vorlage wurde erfolgreich hinzugefügt",
     "Template successfully deleted": "Vorlage wurde erfolgreich entfernt",
     "Common templates": "Gemeinsame Vorlagen",
-    "Failed to delete template": "Fehler beim Löschen einer Vorlage"
+    "Failed to delete template": "Fehler beim Löschen einer Vorlage",
+    "File has been converted. Its content might look different.": "Die Datei wurde konvertiert. Der Inhalt könnte anders aussehen."
 },
 "nplurals=2; plural=(n != 1);");

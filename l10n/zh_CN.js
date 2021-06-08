@@ -97,6 +97,7 @@ OC.L10N.register(
     "Template successfully added": "模板成功添加",
     "Template successfully deleted": "模板成功删除",
     "Common templates": "通用模板",
-    "Failed to delete template": "删除模板失败"
+    "Failed to delete template": "删除模板失败",
+    "File has been converted. Its content might look different.": "文件已被转换。其内容可能看起来有所不同。"
 },
 "nplurals=2; plural=(n != 1);");

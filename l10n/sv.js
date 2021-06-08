@@ -78,6 +78,7 @@ OC.L10N.register(
     "Show watermark for read only link shares" : "Visa vattenmärke för skrivskyddade länkdelningar",
     "Show watermark on link shares with specific system tags" : "Visa vattenmärke för länkdelningar med specifika systemtaggar",
     "Select tag" : "Välj tagg",
+    "Select file to compare" : "Välj fil att jämföra",
     "Review mode for viewing": "Granskningsläge för visning",
     "Markup": "Markering",
     "Final": "Slutgiltig",
@@ -96,6 +97,7 @@ OC.L10N.register(
     "Template successfully added": "Mallen lades till",
     "Template successfully deleted": "Mallen har tagits bort",
     "Common templates": "Delade mallar",
-    "Failed to delete template": "Det gick inte att ta bort mallen"
+    "Failed to delete template": "Det gick inte att ta bort mallen",
+    "File has been converted. Its content might look different.": "Filen har konverterats. Dess innehåll kan se annorlunda ut."
 },
 "nplurals=2; plural=(n != 1);");

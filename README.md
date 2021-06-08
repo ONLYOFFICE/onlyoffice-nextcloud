@@ -145,12 +145,6 @@ If the connection is made using the same authorization keys (the _Username and p
 If different authorization keys are used (_Log-in credentials, save in database_ or _User entered, store in database_ authentication options), the co-editing is not available.
 When the _Log-in credentials, save in session_ authentication type is used, the files cannot be opened in the editor.
 
-* Nextcloud provides an option to encrypt the file storage.
-But if the encryption with the _per-user encryption keys_ (used by default in Nextcloud **Default encryption module** app) is enabled, ONLYOFFICE Document Server cannot open the encrypted files for editing and save them after the editing.
-The ONLYOFFICE section of the administrative settings page will display a notification about it.
-However if you set the encryption with the _master key_, ONLYOFFICE application will work as intended.
-The instruction on enabling _master key_ based encryption is available in the official documentation on [Nextcloud](https://docs.nextcloud.com/server/latest/admin_manual/configuration_files/encryption_configuration.html#occ-encryption-commands) websites.
-
 * If you are using a self-signed certificate for your **Document Server**, Nextcloud will not validate such a certificate and will not allow connection to/from **Document Server**. This issue can be solved the following way: locate the Nextcloud config file (_/nextcloud/config/config.php_) and open it. Insert the following section to it:
     ```php
     'onlyoffice' => array (

@@ -95,6 +95,7 @@
     "Template successfully added": "Modello è stato aggiunto con successo",
     "Template successfully deleted": "Modello è stato cancellato con successo",
     "Common templates": "Modelli comuni",
-    "Failed to delete template": "Impossibile eliminare il modello"
+    "Failed to delete template": "Impossibile eliminare il modello",
+    "File has been converted. Its content might look different.": "Il file è stato convertito. Il suo contenuto potrebbe avere un aspetto diverso."
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }
