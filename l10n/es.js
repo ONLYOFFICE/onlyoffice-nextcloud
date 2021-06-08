@@ -100,6 +100,7 @@ OC.L10N.register(
     "Template successfully added": "La plantilla se agregó correctamente",
     "Template successfully deleted": "La plantilla se eliminó correctamente",
     "Common templates": "Plantillas comunes",
-    "Failed to delete template": "No se pudo eliminar la plantilla"
+    "Failed to delete template": "No se pudo eliminar la plantilla",
+    "File has been converted. Its content might look different.": "El archivo se ha convertido. Su contenido puede ser distinto."
 },
 "nplurals=2; plural=(n != 1);");

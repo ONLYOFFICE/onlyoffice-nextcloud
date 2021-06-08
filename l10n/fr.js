@@ -100,6 +100,7 @@ OC.L10N.register(
     "Template successfully added": "Le modèle a été ajouté avec succès",
     "Template successfully deleted": "Le modèle a été supprimé avec succès",
     "Common templates": "Modèles communs",
-    "Failed to delete template": "Impossible de supprimer le modèle"
+    "Failed to delete template": "Impossible de supprimer le modèle",
+    "File has been converted. Its content might look different.": "Le fichier a été converti. Son contenu peut s'afficher différemment."
 },
 "nplurals=2; plural=(n != 1);");
