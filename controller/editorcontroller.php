@@ -1035,6 +1035,7 @@ class EditorController extends Controller {
                 $templates = [];
                 foreach($templatesList as $template) {
                     $createParam["templateId"] = $template->getId();
+                    $createParam["name"] = $template->getName();
 
                     array_push($templates, [
                         "image" => "",
