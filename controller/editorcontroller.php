@@ -720,6 +720,10 @@ class EditorController extends Controller {
     public function download($fileId, $toExtension = null) {
         $this->logger->debug("Download: $fileId $toExtension", ["app" => $this->appName]);
 
+        if (!$this->config->isUserAllowedToUse()) {
+            return $this->renderError($this->trans->t("Not permitted"));
+        }
+
         $user = $this->userSession->getUser();
         $userId = null;
         if (!empty($user)) {
