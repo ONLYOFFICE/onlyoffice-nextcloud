@@ -1,6 +1,7 @@
 # Change Log
 
 ## Added
+- creation from a template from the editor
 - download as
 
 ## Changed
