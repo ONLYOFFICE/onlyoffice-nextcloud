@@ -1,5 +1,8 @@
 # Change Log
 
+## Added
+- creation from a template from the editor
+
 ## 7.0.2
 ## Changed
 - fixed registration of file actions
