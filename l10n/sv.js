@@ -78,6 +78,7 @@ OC.L10N.register(
     "Show watermark for read only link shares" : "Visa vattenmärke för skrivskyddade länkdelningar",
     "Show watermark on link shares with specific system tags" : "Visa vattenmärke för länkdelningar med specifika systemtaggar",
     "Select tag" : "Välj tagg",
+    "Select file to compare" : "Välj fil att jämföra",
     "Review mode for viewing": "Granskningsläge för visning",
     "Markup": "Markering",
     "Final": "Slutgiltig",
