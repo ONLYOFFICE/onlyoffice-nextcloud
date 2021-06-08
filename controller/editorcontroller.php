@@ -735,6 +735,12 @@ class EditorController extends Controller {
 
         $fileName = $file->getName();
         $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+        $toExtension = strtolower($toExtension);
+
+        if ($toExtension === null
+            || $ext === $toExtension) {
+            return new DataDownloadResponse($file->getContent(), $fileName, $file->getMimeType());
+        }
 
         $newFileUri = null;
         $documentService = new DocumentService($this->trans, $this->config);
