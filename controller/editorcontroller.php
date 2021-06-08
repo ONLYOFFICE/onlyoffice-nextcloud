@@ -469,6 +469,10 @@ class EditorController extends Controller {
     public function history($fileId, $shareToken = null) {
         $this->logger->debug("Request history for: $fileId", ["app" => $this->appName]);
 
+        if (empty($shareToken) && !$this->config->isUserAllowedToUse()) {
+            return ["error" => $this->trans->t("Not permitted")];
+        }
+
         $history = [];
 
         $user = $this->userSession->getUser();
@@ -585,6 +589,10 @@ class EditorController extends Controller {
      */
     public function version($fileId, $version, $shareToken = null) {
         $this->logger->debug("Request version for: $fileId ($version)", ["app" => $this->appName]);
+
+        if (empty($shareToken) && !$this->config->isUserAllowedToUse()) {
+            return ["error" => $this->trans->t("Not permitted")];
+        }
 
         $version = empty($version) ? null : $version;
 
