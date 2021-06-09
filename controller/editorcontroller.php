@@ -317,6 +317,10 @@ class EditorController extends Controller {
         $this->logger->debug("Search users", ["app" => $this->appName]);
         $result = [];
 
+        if (!$this->config->isUserAllowedToUse()) {
+            return $result;
+        }
+
         $userId = $this->userSession->getUser()->getUID();
         $users = $this->userManager->search("");
         foreach ($users as $user) {
@@ -348,6 +352,10 @@ class EditorController extends Controller {
      */
     public function mention($fileId, $anchor, $comment, $emails) {
         $this->logger->debug("mention: from $fileId to " . json_encode($emails), ["app" => $this->appName]);
+
+        if (!$this->config->isUserAllowedToUse()) {
+            return ["error" => $this->trans->t("Not permitted")];
+        }
 
         if (empty($emails)) {
             return ["error" => $this->trans->t("Failed to send notification")];
