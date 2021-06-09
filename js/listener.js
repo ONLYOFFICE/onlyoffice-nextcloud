@@ -50,7 +50,7 @@
             },
             false,
             "httpd/unix-directory",
-            false,
+            true,
             OC.dialogs.FILEPICKER_TYPE_CHOOSE,
             currentDir);
     };
@@ -59,21 +59,24 @@
         OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Insert image"),
             $(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.editorInsertImage,
             false,
-            imageMimes);
+            imageMimes,
+            true);
     };
 
     OCA.Onlyoffice.onRequestMailMergeRecipients = function (recipientMimes) {
         OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Select recipients"),
             $(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.editorSetRecipient,
             false,
-            recipientMimes);
+            recipientMimes,
+            true);
     };
 
     OCA.Onlyoffice.onRequestCompareFile = function (revisedMimes) {
         OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Select file to compare"),
             $(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.editorSetRevised,
             false,
-            revisedMimes);
+            revisedMimes,
+            true);
     };
 
     OCA.Onlyoffice.onDocumentReady = function (documentType) {
