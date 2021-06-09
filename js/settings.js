@@ -351,7 +351,7 @@
             });
         });
 
-        $(document).on("click", ".onlyoffice-template-preview", function (event) {
+        $(document).on("click", ".onlyoffice-template-item p", function (event) {
             var item = $(event.target).parents(".onlyoffice-template-item");
             var templateId = $(item).attr("data-id");
 
