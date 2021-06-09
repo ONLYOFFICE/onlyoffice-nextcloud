@@ -728,30 +728,41 @@ class EditorController extends Controller {
      *
      * @param int $fileId - file identifier
      * @param string $toExtension - file extension to download
+     * @param bool $template - file extension to download
      *
      * @return DataDownloadResponse|TemplateResponse
      *
      * @NoAdminRequired
      * @NoCSRFRequired
      */
-    public function download($fileId, $toExtension = null) {
+    public function download($fileId, $toExtension = null, $template = false) {
         $this->logger->debug("Download: $fileId $toExtension", ["app" => $this->appName]);
 
         if (!$this->config->isUserAllowedToUse()) {
             return $this->renderError($this->trans->t("Not permitted"));
         }
 
-        $user = $this->userSession->getUser();
-        $userId = null;
-        if (!empty($user)) {
-            $userId = $user->getUID();
-        }
+        if ($template) {
+            $template = TemplateManager::GetTemplate($fileId);
+            if (empty($template)) {
+                $this->logger->info("Download: template not found: $fileId", ["app" => $this->appName]);
+                return $this->renderError($this->trans->t("File not found"));
+            }
 
-        list ($file, $error, $share) = $this->getFile($userId, $fileId);
-
-        if (isset($error)) {
-            $this->logger->error("Download: $fileId $error", ["app" => $this->appName]);
-            return $this->renderError($error);
+            $file = $template;
+        } else {
+            $user = $this->userSession->getUser();
+            $userId = null;
+            if (!empty($user)) {
+                $userId = $user->getUID();
+            }
+    
+            list ($file, $error, $share) = $this->getFile($userId, $fileId);
+    
+            if (isset($error)) {
+                $this->logger->error("Download: $fileId $error", ["app" => $this->appName]);
+                return $this->renderError($error);
+            }
         }
 
         $fileName = $file->getName();
@@ -759,7 +770,8 @@ class EditorController extends Controller {
         $toExtension = strtolower($toExtension);
 
         if ($toExtension === null
-            || $ext === $toExtension) {
+            || $ext === $toExtension
+            || $template) {
             return new DataDownloadResponse($file->getContent(), $fileName, $file->getMimeType());
         }
 

@@ -363,6 +363,18 @@
 
             window.open(url);
         });
+
+        $(document).on("click", ".onlyoffice-template-download", function (event) {
+            var item = $(event.target).parents(".onlyoffice-template-item");
+            var templateId = $(item).attr("data-id");
+
+            var downloadLink = OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/downloadas?fileId={fileId}&template={template}",{
+                fileId: templateId,
+                template: "true"
+            });
+
+            location.href = downloadLink;
+        });
     });
 
 })(jQuery, OC);

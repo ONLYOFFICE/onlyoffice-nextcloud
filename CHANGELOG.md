@@ -3,6 +3,7 @@
 ## Added
 - creation from a template from the editor
 - download as
+- downloading a template from settings
 
 ## Changed
 - redirect from dashboard on desktop
