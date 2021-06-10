@@ -240,9 +240,9 @@ class EditorController extends Controller {
         if (empty($templateId)) {
             $template = TemplateManager::GetEmptyTemplate($name);
         } else {
-            $template = TemplateManager::GetTemplate($templateId);
-            if ($template) {
-                $template = $template->getContent();
+            $templateFile = TemplateManager::GetTemplate($templateId);
+            if ($templateFile) {
+                $template = $templateFile->getContent();
             }
         }
 
@@ -743,22 +743,22 @@ class EditorController extends Controller {
         }
 
         if ($template) {
-            $template = TemplateManager::GetTemplate($fileId);
-            if (empty($template)) {
+            $templateFile = TemplateManager::GetTemplate($fileId);
+            if (empty($templateFile)) {
                 $this->logger->info("Download: template not found: $fileId", ["app" => $this->appName]);
                 return $this->renderError($this->trans->t("File not found"));
             }
 
-            $file = $template;
+            $file = $templateFile;
         } else {
             $user = $this->userSession->getUser();
             $userId = null;
             if (!empty($user)) {
                 $userId = $user->getUID();
             }
-    
+
             list ($file, $error, $share) = $this->getFile($userId, $fileId);
-    
+
             if (isset($error)) {
                 $this->logger->error("Download: $fileId $error", ["app" => $this->appName]);
                 return $this->renderError($error);
