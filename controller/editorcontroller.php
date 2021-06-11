@@ -913,19 +913,6 @@ class EditorController extends Controller {
     }
 
     /**
-     * Get template loader Onlyoffice
-     *
-     * @return TemplateResponse
-     *
-     * @NoAdminRequired
-     * @NoCSRFRequired
-     * @PublicPage
-     */
-    public function loader() {
-        return new TemplateResponse($this->appName, "loader", [], "plain");
-    }
-
-    /**
      * Collecting the file parameters for the document service
      *
      * @param integer $fileId - file identifier

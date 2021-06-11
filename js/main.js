@@ -31,7 +31,7 @@
         var dir = fileList.getCurrentDirectory();
 
         if (!OCA.Onlyoffice.setting.sameTab || OCA.Onlyoffice.Desktop) {
-            $loaderUrl = OCA.Onlyoffice.Desktop ? "" : OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/loader");
+            $loaderUrl = OCA.Onlyoffice.Desktop ? "" : OC.filePath(OCA.Onlyoffice.AppName, "templates", "loader.html");
             var winEditor = window.open($loaderUrl);
         }
 
