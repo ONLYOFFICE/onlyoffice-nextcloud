@@ -396,10 +396,16 @@ class EditorController extends Controller {
                 "anchor" => $anchor
             ]);
 
+        $canShare = ($file->getPermissions() & Constants::PERMISSION_SHARE) === Constants::PERMISSION_SHARE;
+
         $accessList = $this->shareManager->getAccessList($file);
 
         foreach ($recipientIds as $recipientId) {
             if (!in_array($recipientId, $accessList["users"])) {
+                if (!$canShare) {
+                    continue;
+                }
+
                 $share = $this->shareManager->newShare();
                 $share->setNode($file)
                     ->setShareType(IShare::TYPE_USER)
