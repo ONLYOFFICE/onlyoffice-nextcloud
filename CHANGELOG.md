@@ -1,6 +1,7 @@
 # Change Log
 
 ## Added
+- mentions in comments
 - creation from a template from the editor
 - download as
 - downloading a template from settings
