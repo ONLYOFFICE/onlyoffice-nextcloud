@@ -967,6 +967,7 @@ class AppConfig {
             $group = \OC::$server->getGroupManager()->get($groupName);
             if ($group === null) {
                 \OC::$server->getLogger()->error("Group is unknown $groupName", ["app" => $this->appName]);
+                $this->SetLimitGroups(array_diff($groups, [$groupName]));
             } else {
                 if ($group->inGroup($user)) {
                     return true;
