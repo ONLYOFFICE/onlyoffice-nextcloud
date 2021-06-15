@@ -33,6 +33,7 @@ use OCP\Files\Template\ITemplateManager;
 use OCP\Files\Template\TemplateFileCreator;
 use OCP\IL10N;
 use OCP\IPreview;
+use OCP\ITagManager;
 use OCP\Notification\IManager;
 use OCP\Util;
 
@@ -145,7 +146,8 @@ class Application extends App implements IBootstrap {
                 $this->appConfig,
                 $this->crypt,
                 $c->get("IManager"),
-                $c->get("Session")
+                $c->get("Session"),
+                $c->get(ITagManager::class)
             );
         });
 
