@@ -415,6 +415,8 @@ class EditorController extends Controller {
                     ->setPermissions(Constants::PERMISSION_READ);
 
                 $this->shareManager->createShare($share);
+
+                $this->logger->debug("mention: share $fileId to $recipientId", ["app" => $this->appName]);
             }
 
             $notification->setUser($recipientId);
