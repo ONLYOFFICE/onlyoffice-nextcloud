@@ -230,7 +230,7 @@
     <p><button id="onlyofficeSave" class="button"><?php p($l->t("Save")) ?></button></p>
 </div>
 
-<div class="section section-onlyoffice section-onlyoffice-templates">
+<div class="section section-onlyoffice section-onlyoffice-templates <?php if (empty($_["documentserver"]) && !$_["demo"]["enabled"] || !$_["successful"]) { ?>onlyoffice-hide<?php } ?>">
 
     <h3>
         <?php p($l->t("Common templates")) ?>
