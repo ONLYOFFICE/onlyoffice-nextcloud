@@ -272,7 +272,7 @@
         var arrayPath = OCA.Onlyoffice.filePath.split("/");
         arrayPath.pop();
         arrayPath.shift();
-        var currentDir = "/" + arrayPath.join("/");
+        saveData.dir = "/" + arrayPath.join("/");
 
         if (OCA.Onlyoffice.inframe) {
             window.parent.postMessage({
@@ -290,7 +290,7 @@
                 "httpd/unix-directory",
                 true,
                 OC.dialogs.FILEPICKER_TYPE_CHOOSE,
-                currentDir);
+                saveData.dir);
         }
     };
 
