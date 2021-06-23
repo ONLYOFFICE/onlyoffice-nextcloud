@@ -1,12 +1,31 @@
 # Change Log
 
+## Added
+- mentions in comments
+- favorite status in the editor
+- creation from a template from the editor
+- download as
+- downloading a template from settings
+- opening action link
+
 ## Changed
 - redirect from dashboard on desktop
 - Nextcloud v19 is no longer supported
 
+## 7.0.2
+## Changed
+- fixed registration of file actions
+
 ## 6.4.2
 ## Changed
 - fixed registration of file actions
+
+## 7.0.0
+## Added
+- support for templates from Nextcloud v21
+
+## Changed
+- Nextcloud v19, v20 is no longer supported
 
 ## 6.4.0
 ## Added

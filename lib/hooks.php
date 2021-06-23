@@ -187,6 +187,8 @@ class Hooks {
 
             $fileId = $fileInfo->getId();
 
+            KeyManager::delete($fileId);
+
             FileVersions::deleteVersion($ownerId, $fileId, $versionId);
         } catch (\Exception $e) {
             \OC::$server->getLogger()->logException($e, ["message" => "Hook: fileVersionRestore " . json_encode($params), "app" => self::$appName]);

@@ -19,6 +19,7 @@
 
 namespace OCA\Onlyoffice;
 
+use OCP\Files\File;
 
 /**
  * Template manager
@@ -60,60 +61,51 @@ class TemplateManager {
     /**
      * Get global templates
      *
-     * @param string $type - template format type
+     * @param string $mimetype - mimetype of the template
      *
      * @return array
      */
-    public static function GetGlobalTemplates($type = null) {
-        $templates = [];
+    public static function GetGlobalTemplates($mimetype = null) {
         $templateDir = self::GetGlobalTemplateDir();
 
-        if (!empty($type)) {
-            $mime = self::GetMimeTemplate($type);
-            $templatesList = $templateDir->searchByMime($mime);
+        if (!empty($mimetype)) {
+            $templatesList = $templateDir->searchByMime($mimetype);
 
         } else {
             $templatesList = $templateDir->getDirectoryListing();
         }
 
-        foreach ($templatesList as $templatesItem) {
-            $template = [
-                "id" => $templatesItem->getId(),
-                "name" => $templatesItem->getName(),
-                "type" => TemplateManager::GetTypeTemplate($templatesItem->getMimeType())
-            ];
-            array_push($templates, $template);
-        }
-
-        return $templates;
+        return $templatesList;
     }
 
     /**
-     * Get template content
+     * Get template file
      *
-     * @param string $templateId - identifier file template
+     * @param string $templateId - identifier of the template
      *
-     * @return string
+     * @return File
      */
     public static function GetTemplate($templateId) {
         $logger = \OC::$server->getLogger();
 
+        if (empty($templateId)) {
+            $logger->info("templateId is empty", ["app" => self::$appName]);
+            return null;
+        }
+
         $templateDir = self::GetGlobalTemplateDir();
         try {
             $templates = $templateDir->getById($templateId);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $logger->logException($e, ["message" => "GetTemplate: $templateId", "app" => self::$appName]);
             return null;
         }
 
         if (empty($templates)) {
-            $logger->info("Template not found: $templateId", ["app" => self::$appName]);
             return null;
         }
 
-        $content = $templates[0]->getContent();
-
-        return $content;
+        return $templates[0];
     }
 
     /**
@@ -173,6 +165,23 @@ class TemplateManager {
         }
 
         return false;
+    }
+
+    /**
+     * Check file if it's template
+     *
+     * @param int $fileId - identifier file
+     *
+     * @return bool
+     */
+    public static function IsTemplate($fileId) {
+        $template = self::GetTemplate($fileId);
+
+        if (empty($template)) {
+            return false;
+        }
+
+        return true;
     }
 
     /**

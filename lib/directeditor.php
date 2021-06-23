@@ -236,7 +236,8 @@ class DirectEditor implements IEditor {
                 "directToken" => $directToken,
                 "version" => 0,
                 "isTemplate" => false,
-                "inframe" => false
+                "inframe" => false,
+                "anchor" => null
             ];
 
             $response = new TemplateResponse($this->appName, "editor", $params, "base");

@@ -19,13 +19,23 @@
 
 namespace OCA\Onlyoffice\AppInfo;
 
+use OC\EventDispatcher\SymfonyAdapter;
+
 use OCP\AppFramework\App;
+use OCP\AppFramework\Bootstrap\IBootContext;
+use OCP\AppFramework\Bootstrap\IBootstrap;
+use OCP\AppFramework\Bootstrap\IRegistrationContext;
 use OCP\AppFramework\Http\ContentSecurityPolicy;
 use OCP\Dashboard\RegisterWidgetEvent;
 use OCP\DirectEditing\RegisterDirectEditorEvent;
-use OCP\Files\IMimeTypeDetector;
-use OCP\Util;
+use OCP\Files\Template\FileCreatedFromTemplateEvent;
+use OCP\Files\Template\ITemplateManager;
+use OCP\Files\Template\TemplateFileCreator;
+use OCP\IL10N;
 use OCP\IPreview;
+use OCP\ITagManager;
+use OCP\Notification\IManager;
+use OCP\Util;
 
 use OCA\Viewer\Event\LoadViewer;
 
@@ -37,9 +47,14 @@ use OCA\Onlyoffice\Controller\TemplateController;
 use OCA\Onlyoffice\Crypt;
 use OCA\Onlyoffice\DirectEditor;
 use OCA\Onlyoffice\Hooks;
+use OCA\Onlyoffice\Notifier;
 use OCA\Onlyoffice\Preview;
+use OCA\Onlyoffice\TemplateManager;
+use OCA\Onlyoffice\TemplateProvider;
 
-class Application extends App {
+use Psr\Container\ContainerInterface;
+
+class Application extends App implements IBootstrap {
 
     /**
      * Application configuration
@@ -62,28 +77,132 @@ class Application extends App {
 
         $this->appConfig = new AppConfig($appName);
         $this->crypt = new Crypt($this->appConfig);
+    }
 
-        // Default script and style if configured
-        $eventDispatcher = \OC::$server->getEventDispatcher();
-        $eventDispatcher->addListener("OCA\Files::loadAdditionalScripts",
-            function () {
-                if (!empty($this->appConfig->GetDocumentServerUrl())
-                    && $this->appConfig->SettingsAreSuccessful()
-                    && $this->appConfig->isUserAllowedToUse()) {
-                    Util::addScript("onlyoffice", "desktop");
-                    Util::addScript("onlyoffice", "main");
-                    Util::addScript("onlyoffice", "template");
+    public function register(IRegistrationContext $context): void {
+        require_once __DIR__ . "/../3rdparty/jwt/BeforeValidException.php";
+        require_once __DIR__ . "/../3rdparty/jwt/ExpiredException.php";
+        require_once __DIR__ . "/../3rdparty/jwt/SignatureInvalidException.php";
+        require_once __DIR__ . "/../3rdparty/jwt/JWT.php";
 
-                    if ($this->appConfig->GetSameTab()) {
-                        Util::addScript("onlyoffice", "listener");
+        $context->registerService("L10N", function (ContainerInterface $c) {
+            return $c->get("ServerContainer")->getL10N($c->get("AppName"));
+        });
+
+        $context->registerService("RootStorage", function (ContainerInterface $c) {
+            return $c->get("ServerContainer")->getRootFolder();
+        });
+
+        $context->registerService("UserSession", function (ContainerInterface $c) {
+            return $c->get("ServerContainer")->getUserSession();
+        });
+
+        $context->registerService("UserManager", function (ContainerInterface $c) {
+            return $c->get("ServerContainer")->getUserManager();
+        });
+
+        $context->registerService("Logger", function (ContainerInterface $c) {
+            return $c->get("ServerContainer")->getLogger();
+        });
+
+        $context->registerService("URLGenerator", function (ContainerInterface $c) {
+            return $c->get("ServerContainer")->getURLGenerator();
+        });
+
+        $context->registerService("DirectEditor", function (ContainerInterface $c) {
+            return new DirectEditor(
+                $c->get("AppName"),
+                $c->get("URLGenerator"),
+                $c->get("L10N"),
+                $c->get("Logger"),
+                $this->appConfig,
+                $this->crypt
+            );
+        });
+
+        // Controllers
+        $context->registerService("SettingsController", function (ContainerInterface $c) {
+            return new SettingsController(
+                $c->get("AppName"),
+                $c->get("Request"),
+                $c->get("URLGenerator"),
+                $c->get("L10N"),
+                $c->get("Logger"),
+                $this->appConfig,
+                $this->crypt
+            );
+        });
+
+        $context->registerService("EditorController", function (ContainerInterface $c) {
+            return new EditorController(
+                $c->get("AppName"),
+                $c->get("Request"),
+                $c->get("RootStorage"),
+                $c->get("UserSession"),
+                $c->get("UserManager"),
+                $c->get("URLGenerator"),
+                $c->get("L10N"),
+                $c->get("Logger"),
+                $this->appConfig,
+                $this->crypt,
+                $c->get("IManager"),
+                $c->get("Session"),
+                $c->get(ITagManager::class)
+            );
+        });
+
+        $context->registerService("CallbackController", function (ContainerInterface $c) {
+            return new CallbackController(
+                $c->get("AppName"),
+                $c->get("Request"),
+                $c->get("RootStorage"),
+                $c->get("UserSession"),
+                $c->get("UserManager"),
+                $c->get("L10N"),
+                $c->get("Logger"),
+                $this->appConfig,
+                $this->crypt,
+                $c->get("IManager")
+            );
+        });
+
+        $context->registerService("TemplateController", function (ContainerInterface $c) {
+            return new TemplateController(
+                $c->get("AppName"),
+                $c->get("Request"),
+                $c->get("L10N"),
+                $c->get("Logger"),
+                $c->get(IPreview::class)
+            );
+        });
+
+        $context->registerTemplateProvider(TemplateProvider::class);
+
+    }
+
+    public function boot(IBootContext $context): void {
+
+        $context->injectFn(function (SymfonyAdapter $eventDispatcher) {
+
+            $eventDispatcher->addListener('OCA\Files::loadAdditionalScripts',
+                function() {
+                    if (!empty($this->appConfig->GetDocumentServerUrl())
+                        && $this->appConfig->SettingsAreSuccessful()
+                        && $this->appConfig->isUserAllowedToUse()) {
+
+                        Util::addScript("onlyoffice", "desktop");
+                        Util::addScript("onlyoffice", "main");
+                        Util::addScript("onlyoffice", "template");
+
+                        if ($this->appConfig->GetSameTab()) {
+                            Util::addScript("onlyoffice", "listener");
+                        }
+
+                        Util::addStyle("onlyoffice", "main");
+                        Util::addStyle("onlyoffice", "template");
                     }
+                });
 
-                    Util::addStyle("onlyoffice", "main");
-                    Util::addStyle("onlyoffice", "template");
-                }
-            });
-
-        if (class_exists(LoadViewer::class)) {
             $eventDispatcher->addListener(LoadViewer::class,
                 function () {
                     if (!empty($this->appConfig->GetDocumentServerUrl())
@@ -100,23 +219,21 @@ class Application extends App {
                         $cspManager->addDefaultPolicy($csp);
                     }
                 });
-        }
 
-        $eventDispatcher->addListener("OCA\Files_Sharing::loadAdditionalScripts",
-            function () {
-                if (!empty($this->appConfig->GetDocumentServerUrl())
-                    && $this->appConfig->SettingsAreSuccessful()) {
-                    Util::addScript("onlyoffice", "main");
+            $eventDispatcher->addListener('OCA\Files_Sharing::loadAdditionalScripts',
+                function() {
+                    if (!empty($this->appConfig->GetDocumentServerUrl())
+                        && $this->appConfig->SettingsAreSuccessful()) {
+                        Util::addScript("onlyoffice", "main");
 
-                    if ($this->appConfig->GetSameTab()) {
-                        Util::addScript("onlyoffice", "listener");
+                        if ($this->appConfig->GetSameTab()) {
+                            Util::addScript("onlyoffice", "listener");
+                        }
+
+                        Util::addStyle("onlyoffice", "main");
                     }
+                });
 
-                    Util::addStyle("onlyoffice", "main");
-                }
-            });
-
-        if (class_exists(RegisterWidgetEvent::class)) {
             $eventDispatcher->addListener(RegisterWidgetEvent::class,
                 function () {
                     if (!empty($this->appConfig->GetDocumentServerUrl())
@@ -125,128 +242,69 @@ class Application extends App {
                         Util::addScript("onlyoffice", "desktop");
                     }
                 });
-        }
 
-        require_once __DIR__ . "/../3rdparty/jwt/BeforeValidException.php";
-        require_once __DIR__ . "/../3rdparty/jwt/ExpiredException.php";
-        require_once __DIR__ . "/../3rdparty/jwt/SignatureInvalidException.php";
-        require_once __DIR__ . "/../3rdparty/jwt/JWT.php";
+            $container = $this->getContainer();
 
-        $container = $this->getContainer();
+            $eventDispatcher->addListener(FileCreatedFromTemplateEvent::class,
+                function (FileCreatedFromTemplateEvent $event) {
+                    $template = $event->getTemplate();
+                    if ($template === null) {
+                        $targetFile = $event->getTarget();
+                        $templateEmpty = TemplateManager::GetEmptyTemplate($targetFile->getName());
+                        $targetFile->putContent($templateEmpty);
+                    }
+                });
 
-        //todo: remove in v20
-        $detector = $container->query(IMimeTypeDetector::class);
-        $detector->getAllMappings();
-        $detector->registerType("ott", "application/vnd.oasis.opendocument.text-template");
-        $detector->registerType("ots", "application/vnd.oasis.opendocument.spreadsheet-template");
-        $detector->registerType("otp", "application/vnd.oasis.opendocument.presentation-template");
-
-        $previewManager = $container->query(IPreview::class);
-        $previewManager->registerProvider(Preview::getMimeTypeRegex(), function() use ($container) {
-            return $container->query(Preview::class);
-        });
-
-        $container->registerService("L10N", function ($c) {
-            return $c->query("ServerContainer")->getL10N($c->query("AppName"));
-        });
-
-        $container->registerService("RootStorage", function ($c) {
-            return $c->query("ServerContainer")->getRootFolder();
-        });
-
-        $container->registerService("UserSession", function ($c) {
-            return $c->query("ServerContainer")->getUserSession();
-        });
-
-        $container->registerService("UserManager", function ($c) {
-            return $c->query("ServerContainer")->getUserManager();
-        });
-
-        $container->registerService("Logger", function ($c) {
-            return $c->query("ServerContainer")->getLogger();
-        });
-
-        $container->registerService("URLGenerator", function ($c) {
-            return $c->query("ServerContainer")->getURLGenerator();
-        });
-
-        if (class_exists("OCP\DirectEditing\RegisterDirectEditorEvent")) {
-            $container->registerService("DirectEditor", function ($c) {
-                return new DirectEditor(
-                    $c->query("AppName"),
-                    $c->query("URLGenerator"),
-                    $c->query("L10N"),
-                    $c->query("Logger"),
-                    $this->appConfig,
-                    $this->crypt
-                );
+            $previewManager = $container->query(IPreview::class);
+            $previewManager->registerProvider(Preview::getMimeTypeRegex(), function() use ($container) {
+                return $container->query(Preview::class);
             });
 
             $eventDispatcher->addListener(RegisterDirectEditorEvent::class,
                 function (RegisterDirectEditorEvent $event) use ($container) {
                     if (!empty($this->appConfig->GetDocumentServerUrl())
                         && $this->appConfig->SettingsAreSuccessful()) {
-                        $editor = $container->query("DirectEditor");
+                        $editor = $container->query(DirectEditor::class);
                         $event->register($editor);
                     }
                 });
-        }
 
-
-        // Controllers
-        $container->registerService("SettingsController", function ($c) {
-            return new SettingsController(
-                $c->query("AppName"),
-                $c->query("Request"),
-                $c->query("URLGenerator"),
-                $c->query("L10N"),
-                $c->query("Logger"),
-                $this->appConfig,
-                $this->crypt
-            );
         });
 
-        $container->registerService("EditorController", function ($c) {
-            return new EditorController(
-                $c->query("AppName"),
-                $c->query("Request"),
-                $c->query("RootStorage"),
-                $c->query("UserSession"),
-                $c->query("UserManager"),
-                $c->query("URLGenerator"),
-                $c->query("L10N"),
-                $c->query("Logger"),
-                $this->appConfig,
-                $this->crypt,
-                $c->query("IManager"),
-                $c->query("Session")
-            );
+        $context->injectFn(function (IManager $notificationsManager) {
+            $notificationsManager->registerNotifierService(Notifier::class);
         });
 
-        $container->registerService("CallbackController", function ($c) {
-            return new CallbackController(
-                $c->query("AppName"),
-                $c->query("Request"),
-                $c->query("RootStorage"),
-                $c->query("UserSession"),
-                $c->query("UserManager"),
-                $c->query("L10N"),
-                $c->query("Logger"),
-                $this->appConfig,
-                $this->crypt,
-                $c->query("IManager")
-            );
-        });
+        $context->injectFn(function(ITemplateManager $templateManager, IL10N $trans, $appName) {
+            if (!empty($this->appConfig->GetDocumentServerUrl())
+                && $this->appConfig->SettingsAreSuccessful()
+                && $this->appConfig->isUserAllowedToUse()) {
 
-        $container->registerService("TemplateController", function ($c) {
-            return new TemplateController(
-                $c->query("AppName"),
-                $c->query("Request"),
-                $c->query("L10N"),
-                $c->query("Logger")
-            );
-        });
+                $templateManager->registerTemplateFileCreator(function () use ($appName, $trans) {
+                    $wordTemplate = new TemplateFileCreator($appName, $trans->t("Document"), ".docx");
+                    $wordTemplate->addMimetype("application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+                    $wordTemplate->setIconClass("icon-onlyoffice-new-docx");
+                    $wordTemplate->setRatio(21/29.7);
+                    return $wordTemplate;
+                });
 
+                $templateManager->registerTemplateFileCreator(function () use ($appName, $trans) {
+                    $cellTemplate = new TemplateFileCreator($appName, $trans->t("Spreadsheet"), ".xlsx");
+                    $cellTemplate->addMimetype("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+                    $cellTemplate->setIconClass("icon-onlyoffice-new-xlsx");
+                    $cellTemplate->setRatio(21/29.7);
+                    return $cellTemplate;
+                });
+
+                $templateManager->registerTemplateFileCreator(function () use ($appName, $trans) {
+                    $slideTemplate = new TemplateFileCreator($appName, $trans->t("Presentation"), ".pptx");
+                    $slideTemplate->addMimetype("application/vnd.openxmlformats-officedocument.presentationml.presentation");
+                    $slideTemplate->setIconClass("icon-onlyoffice-new-pptx");
+                    $slideTemplate->setRatio(16/9);
+                    return $slideTemplate;
+                });
+            }
+        });
 
         Hooks::connectHooks();
     }

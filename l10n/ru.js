@@ -89,10 +89,7 @@ OC.L10N.register(
     "Use ONLYOFFICE to generate a document preview (it will take up disk space)": "Использовать ONLYOFFICE для создания превью документа (займет место на диске)",
     "Keep metadata for each version once the document is edited (it will take up disk space)": "Сохранять метаданные для каждой версии после редактирования (займет место на диске)",
     "All history successfully deleted": "История успешно удалена",
-    "Create": "Создать",
-    "Select template" : "Выбрать шаблон",
     "Invalid file provided" : "Указан неправильный файл",
-    "Empty": "Пустой",
     "Error" : "Ошибка",
     "Add a new template": "Добавить новый шаблон",
     "Template already exists": "Шаблон уже существует",
@@ -101,6 +98,14 @@ OC.L10N.register(
     "Template successfully deleted": "Шаблон успешно удален",
     "Common templates": "Общие шаблоны",
     "Failed to delete template": "Не удалось удалить шаблон",
-    "File has been converted. Its content might look different.": "Файл был сконвертирован. Его форматирование могло измениться."
+    "File has been converted. Its content might look different.": "Файл был сконвертирован. Его форматирование могло измениться.",
+    "Download as": "Скачать как",
+    "Download": "Скачать",
+    "Convert into": "Конвертировать в",
+    "Origin format": "Оригинальный формат",
+    "Failed to send notification": "Ошибка отправки оповещения",
+    "Notification sent successfully": "Оповещение успешно отправлено",
+    "%1\$s mentioned in the %2\$s: \"%3\$s\".": "%1\$s упоминул в %2\$s: \"%3\$s\".",
+    "{notifier} mentioned in the {file}: \"%1\$s\".": "{notifier} упоминул в {file}: \"%1\$s\"."
 },
 "nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);");

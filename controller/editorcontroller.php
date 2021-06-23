@@ -21,6 +21,7 @@ namespace OCA\Onlyoffice\Controller;
 
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\ContentSecurityPolicy;
+use OCP\AppFramework\Http\DataDownloadResponse;
 use OCP\AppFramework\Http\RedirectResponse;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Http\Template\PublicTemplateResponse;
@@ -34,11 +35,14 @@ use OCP\IL10N;
 use OCP\ILogger;
 use OCP\IRequest;
 use OCP\ISession;
+use OCP\ITags;
+use OCP\ITagManager;
 use OCP\IURLGenerator;
 use OCP\IUser;
 use OCP\IUserManager;
 use OCP\IUserSession;
 use OCP\Share\IManager;
+use OCP\Share\IShare;
 
 use OCA\Files\Helper;
 use OCA\Files_Versions\Versions\IVersionManager;
@@ -126,6 +130,20 @@ class EditorController extends Controller {
     private $versionManager;
 
     /**
+     * Share manager
+     *
+     * @var IManager
+     */
+    private $shareManager;
+
+    /**
+     * Tag manager
+     *
+     * @var ITagManager
+    */
+    private $tagManager;
+
+    /**
      * Mobile regex from https://github.com/ONLYOFFICE/CommunityServer/blob/v9.1.1/web/studio/ASC.Web.Studio/web.appsettings.config#L35
      */
     const USER_AGENT_MOBILE = "/android|avantgo|playbook|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od|ad)|iris|kindle|lge |maemo|midp|mmp|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\\/|plucker|pocket|psp|symbian|treo|up\\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i";
@@ -143,6 +161,7 @@ class EditorController extends Controller {
      * @param Crypt $crypt - hash generator
      * @param IManager $shareManager - Share manager
      * @param ISession $ISession - Session
+     * @param ITagManager $tagManager - Tag manager
      */
     public function __construct($AppName,
                                     IRequest $request,
@@ -155,7 +174,8 @@ class EditorController extends Controller {
                                     AppConfig $config,
                                     Crypt $crypt,
                                     IManager $shareManager,
-                                    ISession $session
+                                    ISession $session,
+                                    ITagManager $tagManager
                                     ) {
         parent::__construct($AppName, $request);
 
@@ -167,6 +187,8 @@ class EditorController extends Controller {
         $this->logger = $logger;
         $this->config = $config;
         $this->crypt = $crypt;
+        $this->shareManager = $shareManager;
+        $this->tagManager = $tagManager;
 
         if (\OC::$server->getAppManager()->isInstalled("files_versions")) {
             try {
@@ -239,11 +261,14 @@ class EditorController extends Controller {
         if (empty($templateId)) {
             $template = TemplateManager::GetEmptyTemplate($name);
         } else {
-            $template = TemplateManager::GetTemplate($templateId);
+            $templateFile = TemplateManager::GetTemplate($templateId);
+            if ($templateFile) {
+                $template = $templateFile->getContent();
+            }
         }
 
         if (!$template) {
-            $this->logger->error("Template for file creation not found: $name ($templateId)", ["app" => $this->appName]);
+            $this->logger->error("Template for file creation not found: $name", ["app" => $this->appName]);
             return ["error" => $this->trans->t("Template not found")];
         }
 
@@ -273,22 +298,145 @@ class EditorController extends Controller {
      *
      * @param string $name - file name
      * @param string $dir - folder path
+     * @param string $templateId - file identifier
      *
      * @return TemplateResponse|RedirectResponse
      *
      * @NoAdminRequired
      * @NoCSRFRequired
      */
-    public function createNew($name, $dir) {
+    public function createNew($name, $dir, $templateId = null) {
         $this->logger->debug("Create from editor: $name in $dir", ["app" => $this->appName]);
 
-        $result = $this->create($name, $dir);
+        $result = $this->create($name, $dir, $templateId);
         if (isset($result["error"])) {
             return $this->renderError($result["error"]);
         }
 
         $openEditor = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".editor.index", ["fileId" => $result["id"]]);
         return new RedirectResponse($openEditor);
+    }
+
+    /**
+     * Get users
+     *
+     * @return array
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     */
+    public function users() {
+        $this->logger->debug("Search users", ["app" => $this->appName]);
+        $result = [];
+
+        if (!$this->config->isUserAllowedToUse()) {
+            return $result;
+        }
+
+        $userId = $this->userSession->getUser()->getUID();
+        $users = $this->userManager->search("");
+        foreach ($users as $user) {
+            $email = $user->getEMailAddress();
+            if ($user->getUID() != $userId
+                && !empty($email)) {
+                array_push($result, [
+                    "email" => $email,
+                    "name" => $user->getDisplayName()
+                ]);
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Send notify about mention
+     *
+     * @param int $fileId - file identifier
+     * @param string $anchor - the anchor on target content
+     * @param string $comment - comment
+     * @param array $emails - emails array to whom to send notify
+     *
+     * @return array
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     */
+    public function mention($fileId, $anchor, $comment, $emails) {
+        $this->logger->debug("mention: from $fileId to " . json_encode($emails), ["app" => $this->appName]);
+
+        if (!$this->config->isUserAllowedToUse()) {
+            return ["error" => $this->trans->t("Not permitted")];
+        }
+
+        if (empty($emails)) {
+            return ["error" => $this->trans->t("Failed to send notification")];
+        }
+
+        $recipientIds = [];
+        foreach ($emails as $email) {
+            $recipients = $this->userManager->getByEmail($email);
+            foreach ($recipients as $recipient) {
+                $recipientId = $recipient->getUID(); 
+                if (!in_array($recipientId, $recipientIds)) {
+                    array_push($recipientIds, $recipientId);
+                }
+            }
+        }
+
+        $user = $this->userSession->getUser();
+        $userId = null;
+        if (!empty($user)) {
+            $userId = $user->getUID();
+        }
+
+        list ($file, $error, $share) = $this->getFile($userId, $fileId);
+        if (isset($error)) {
+            $this->logger->error("Mention: $fileId $error", ["app" => $this->appName]);
+            return ["error" => $this->trans->t("Failed to send notification")];
+        }
+
+        $notificationManager = \OC::$server->getNotificationManager();
+        $notification = $notificationManager->createNotification();
+        $notification->setApp($this->appName)
+            ->setDateTime(new \DateTime())
+            ->setObject("mention", $comment)
+            ->setSubject("mention_info", [
+                "notifierId" => $userId,
+                "fileId" => $file->getId(),
+                "fileName" => $file->getName(),
+                "anchor" => $anchor
+            ]);
+
+        $canShare = ($file->getPermissions() & Constants::PERMISSION_SHARE) === Constants::PERMISSION_SHARE;
+
+        $accessList = $this->shareManager->getAccessList($file);
+
+        foreach ($recipientIds as $recipientId) {
+            if (!in_array($recipientId, $accessList["users"])) {
+                if (!$canShare) {
+                    continue;
+                }
+
+                $share = $this->shareManager->newShare();
+                $share->setNode($file)
+                    ->setShareType(IShare::TYPE_USER)
+                    ->setSharedBy($userId)
+                    ->setSharedWith($recipientId)
+                    ->setShareOwner($userId)
+                    ->setPermissions(Constants::PERMISSION_READ);
+
+                $this->shareManager->createShare($share);
+
+                $this->logger->debug("mention: share $fileId to $recipientId", ["app" => $this->appName]);
+            }
+
+            $notification->setUser($recipientId);
+
+            $notificationManager->notify($notification);
+        }
+
+        return ["message" => $this->trans->t("Notification sent successfully")];
     }
 
     /**
@@ -719,6 +867,84 @@ class EditorController extends Controller {
     }
 
     /**
+     * Download method
+     *
+     * @param int $fileId - file identifier
+     * @param string $toExtension - file extension to download
+     * @param bool $template - file extension to download
+     *
+     * @return DataDownloadResponse|TemplateResponse
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     */
+    public function download($fileId, $toExtension = null, $template = false) {
+        $this->logger->debug("Download: $fileId $toExtension", ["app" => $this->appName]);
+
+        if (!$this->config->isUserAllowedToUse()) {
+            return $this->renderError($this->trans->t("Not permitted"));
+        }
+
+        if ($template) {
+            $templateFile = TemplateManager::GetTemplate($fileId);
+            if (empty($templateFile)) {
+                $this->logger->info("Download: template not found: $fileId", ["app" => $this->appName]);
+                return $this->renderError($this->trans->t("File not found"));
+            }
+
+            $file = $templateFile;
+        } else {
+            $user = $this->userSession->getUser();
+            $userId = null;
+            if (!empty($user)) {
+                $userId = $user->getUID();
+            }
+
+            list ($file, $error, $share) = $this->getFile($userId, $fileId);
+
+            if (isset($error)) {
+                $this->logger->error("Download: $fileId $error", ["app" => $this->appName]);
+                return $this->renderError($error);
+            }
+        }
+
+        $fileName = $file->getName();
+        $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+        $toExtension = strtolower($toExtension);
+
+        if ($toExtension === null
+            || $ext === $toExtension
+            || $template) {
+            return new DataDownloadResponse($file->getContent(), $fileName, $file->getMimeType());
+        }
+
+        $newFileUri = null;
+        $documentService = new DocumentService($this->trans, $this->config);
+        $key = $this->fileUtility->getKey($file);
+        $fileUrl = $this->getUrl($file, $user);
+        try {
+            $newFileUri = $documentService->GetConvertedUri($fileUrl, $ext, $toExtension, $key);
+        } catch (\Exception $e) {
+            $this->logger->logException($e, ["message" => "GetConvertedUri: " . $file->getId(), "app" => $this->appName]);
+            return $this->renderError($e->getMessage());
+        }
+
+        try {
+            $newData = $documentService->Request($newFileUri);
+        } catch (\Exception $e) {
+            $this->logger->logException($e, ["message" => "Failed to download converted file", "app" => $this->appName]);
+            return $this->renderError($this->trans->t("Failed to download converted file"));
+        }
+
+        $fileNameWithoutExt = substr($fileName, 0, strlen($fileName) - strlen($ext) - 1);
+        $newFileName = $fileNameWithoutExt . "." . $toExtension;
+
+        $formats = $this->config->FormatsSetting();
+
+        return new DataDownloadResponse($newData, $newFileName, $formats[$toExtension]["mime"]);
+    }
+
+    /**
      * Print editor section
      *
      * @param integer $fileId - file identifier
@@ -727,13 +953,14 @@ class EditorController extends Controller {
      * @param integer $version - file version
      * @param bool $inframe - open in frame
      * @param bool $template - file is template
+     * @param string $anchor - anchor for file content
      *
      * @return TemplateResponse|RedirectResponse
      *
      * @NoAdminRequired
      * @NoCSRFRequired
      */
-    public function index($fileId, $filePath = null, $shareToken = null, $version = 0, $inframe = false, $template = false) {
+    public function index($fileId, $filePath = null, $shareToken = null, $version = 0, $inframe = false, $template = false, $anchor = null) {
         $this->logger->debug("Open: $fileId ($version) $filePath ", ["app" => $this->appName]);
 
         $isLoggedIn = $this->userSession->isLoggedIn();
@@ -763,7 +990,8 @@ class EditorController extends Controller {
             "directToken" => null,
             "version" => $version,
             "isTemplate" => $template,
-            "inframe" => false
+            "inframe" => false,
+            "anchor" => $anchor
         ];
 
         $response = null;
@@ -816,19 +1044,6 @@ class EditorController extends Controller {
     }
 
     /**
-     * Get template loader Onlyoffice
-     *
-     * @return TemplateResponse
-     *
-     * @NoAdminRequired
-     * @NoCSRFRequired
-     * @PublicPage
-     */
-    public function loader() {
-        return new TemplateResponse($this->appName, "loader", [], "plain");
-    }
-
-    /**
      * Collecting the file parameters for the document service
      *
      * @param integer $fileId - file identifier
@@ -840,13 +1055,14 @@ class EditorController extends Controller {
      * @param bool $desktop - desktop label
      * @param string $guestName - nickname not logged user
      * @param bool $template - file is template
+     * @param string $anchor - anchor for file content
      *
      * @return array
      *
      * @NoAdminRequired
      * @PublicPage
      */
-    public function config($fileId, $filePath = null, $shareToken = null, $directToken = null, $version = 0, $inframe = false, $desktop = false, $guestName = null, $template = false) {
+    public function config($fileId, $filePath = null, $shareToken = null, $directToken = null, $version = 0, $inframe = false, $desktop = false, $guestName = null, $template = false, $anchor = null) {
 
         if (!empty($directToken)) {
             list ($directData, $error) = $this->crypt->ReadHash($directToken);
@@ -1033,9 +1249,30 @@ class EditorController extends Controller {
 
             $createUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".editor.create_new", $createParam);
             $params["editorConfig"]["createUrl"] = urldecode($createUrl);
+
+            $templatesList = TemplateManager::GetGlobalTemplates($file->getMimeType());
+            if (!empty($templatesList)) {
+                $templates = [];
+                foreach($templatesList as $template) {
+                    $createParam["templateId"] = $template->getId();
+                    $createParam["name"] = $template->getName();
+
+                    array_push($templates, [
+                        "image" => "",
+                        "title" => $template->getName(),
+                        "url" => urldecode($this->urlGenerator->linkToRouteAbsolute($this->appName . ".editor.create_new", $createParam))
+                    ]);
+                }
+
+                $params["editorConfig"]["templates"] = $templates;
+            }
+
+            $params["document"]["info"]["favorite"] = $this->isFavorite($fileId);
+            $params["_file_path"] = $userFolder->getRelativePath($file->getPath());
         }
 
-        if ($folderLink !== null) {
+        if ($folderLink !== null
+            && $this->config->GetSystemValue($this->config->_customization_goback) !== false) {
             $params["editorConfig"]["customization"]["goback"] = [
                 "url"  => $folderLink
             ];
@@ -1061,6 +1298,16 @@ class EditorController extends Controller {
 
         if ($this->config->UseDemo()) {
             $params["editorConfig"]["tenant"] = $this->config->GetSystemValue("instanceid", true);
+        }
+
+        if ($anchor !== null) {
+            try {
+                $actionLink = json_decode($anchor, true);
+
+                $params["editorConfig"]["actionLink"] = $actionLink;
+            } catch (\Exception $e) {
+                $this->logger->logException($e, ["message" => "Config: $fileId decode $anchor", "app" => $this->appName]);
+            }
         }
 
         if (!empty($this->config->GetDocumentServerSecret())) {
@@ -1373,6 +1620,22 @@ class EditorController extends Controller {
                     return $watermarkText;
                 }
             }
+        }
+
+        return false;
+    }
+
+    /**
+     * Check file favorite
+     *
+     * @param integer $fileId - file identifier
+     *
+     * @return bool
+     */
+    private function isFavorite($fileId) {
+        $currentTags = $this->tagManager->load("files")->getTagsForObjects([$fileId]);
+        if ($currentTags) {
+            return in_array(ITags::TAG_FAVORITE, $currentTags[$fileId]);
         }
 
         return false;

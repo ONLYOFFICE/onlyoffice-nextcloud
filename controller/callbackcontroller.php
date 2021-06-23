@@ -372,6 +372,8 @@ class CallbackController extends Controller {
      * @param string $token - request signature
      * @param array $history - file history
      * @param string $changesurl - link to file changes
+     * @param integer $forcesavetype - the type of force save action
+     * @param array $actions - the array of action
      *
      * @return array
      *
@@ -380,7 +382,7 @@ class CallbackController extends Controller {
      * @PublicPage
      * @CORS
      */
-    public function track($doc, $users, $key, $status, $url, $token, $history, $changesurl) {
+    public function track($doc, $users, $key, $status, $url, $token, $history, $changesurl, $forcesavetype, $actions) {
 
         list ($hashData, $error) = $this->crypt->ReadHash($doc);
         if ($hashData === null) {
@@ -445,8 +447,17 @@ class CallbackController extends Controller {
 
                     \OC_Util::tearDownFS();
 
+                    $isForcesave = $status === self::TrackerStatus_ForceSave || $status === self::TrackerStatus_CorruptedForceSave;
+
                     // author of the latest changes
                     $userId = $this->parseUserId($users[0]);
+
+                    if ($isForcesave
+                        && $forcesavetype === 1
+                        && !empty($actions)) {
+                        // the user who clicked Save
+                        $userId = $this->parseUserId($actions[0]["userid"]);
+                    }
 
                     $user = $this->userManager->get($userId);
                     if (!empty($user)) {
@@ -502,8 +513,6 @@ class CallbackController extends Controller {
                     $newData = $documentService->Request($url);
 
                     $prevIsForcesave = KeyManager::wasForcesave($fileId);
-
-                    $isForcesave = $status === self::TrackerStatus_ForceSave || $status === self::TrackerStatus_CorruptedForceSave;
 
                     if ($file->getStorage()->instanceOfStorage(SharingExternalStorage::class)) {
                         $isLock = KeyManager::lockFederatedKey($file, $isForcesave, null);
