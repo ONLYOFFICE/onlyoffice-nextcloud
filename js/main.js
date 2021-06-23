@@ -443,7 +443,8 @@
 
             OCA.Onlyoffice.GetSettings(initSharedButton);
         } else {
-            if ($("#isPublic").val() === "1" && !!$("#filestable").length) {
+            if ($("#isPublic").val() === "1" && !!$("#filestable").length
+                || OC.config.version.split(".")[0] < 21) {
                 //folder by shared link
                 OC.Plugins.register("OCA.Files.NewFileMenu", OCA.Onlyoffice.NewFileMenu);
             }
