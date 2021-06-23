@@ -262,13 +262,13 @@ class EditorController extends Controller {
             $template = TemplateManager::GetEmptyTemplate($name);
         } else {
             $templateFile = TemplateManager::GetTemplate($templateId);
-            if ($templateFile) {
+            if ($templateFile !== null) {
                 $template = $templateFile->getContent();
             }
         }
 
         if (!$template) {
-            $this->logger->error("Template for file creation not found: $name", ["app" => $this->appName]);
+            $this->logger->error("Template for file creation not found: $name ($templateId)", ["app" => $this->appName]);
             return ["error" => $this->trans->t("Template not found")];
         }
 
