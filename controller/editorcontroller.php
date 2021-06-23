@@ -1271,7 +1271,8 @@ class EditorController extends Controller {
             $params["_file_path"] = $userFolder->getRelativePath($file->getPath());
         }
 
-        if ($folderLink !== null) {
+        if ($folderLink !== null
+            && $this->config->GetSystemValue($this->config->_customization_goback) !== false) {
             $params["editorConfig"]["customization"]["goback"] = [
                 "url"  => $folderLink
             ];
