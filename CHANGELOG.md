@@ -2,6 +2,7 @@
 
 ## Changed
 - redirect from dashboard on desktop
+- Nextcloud v19 is no longer supported
 
 ## 6.4.2
 ## Changed
