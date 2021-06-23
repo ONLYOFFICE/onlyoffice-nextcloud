@@ -176,7 +176,9 @@ class Application extends App implements IBootstrap {
             );
         });
 
-        $context->registerTemplateProvider(TemplateProvider::class);
+        if (interface_exists("OCP\Files\Template\ICustomTemplateProvider")) {
+            $context->registerTemplateProvider(TemplateProvider::class);
+        }
 
     }
 
@@ -245,15 +247,17 @@ class Application extends App implements IBootstrap {
 
             $container = $this->getContainer();
 
-            $eventDispatcher->addListener(FileCreatedFromTemplateEvent::class,
-                function (FileCreatedFromTemplateEvent $event) {
-                    $template = $event->getTemplate();
-                    if ($template === null) {
-                        $targetFile = $event->getTarget();
-                        $templateEmpty = TemplateManager::GetEmptyTemplate($targetFile->getName());
-                        $targetFile->putContent($templateEmpty);
-                    }
-                });
+            if (class_exists("OCP\Files\Template\FileCreatedFromTemplateEvent")) {
+                $eventDispatcher->addListener(FileCreatedFromTemplateEvent::class,
+                    function (FileCreatedFromTemplateEvent $event) {
+                        $template = $event->getTemplate();
+                        if ($template === null) {
+                            $targetFile = $event->getTarget();
+                            $templateEmpty = TemplateManager::GetEmptyTemplate($targetFile->getName());
+                            $targetFile->putContent($templateEmpty);
+                        }
+                    });
+            }
 
             $previewManager = $container->query(IPreview::class);
             $previewManager->registerProvider(Preview::getMimeTypeRegex(), function() use ($container) {
@@ -275,36 +279,38 @@ class Application extends App implements IBootstrap {
             $notificationsManager->registerNotifierService(Notifier::class);
         });
 
-        $context->injectFn(function(ITemplateManager $templateManager, IL10N $trans, $appName) {
-            if (!empty($this->appConfig->GetDocumentServerUrl())
-                && $this->appConfig->SettingsAreSuccessful()
-                && $this->appConfig->isUserAllowedToUse()) {
+        if (class_exists("OCP\Files\Template\TemplateFileCreator")) {
+            $context->injectFn(function(ITemplateManager $templateManager, IL10N $trans, $appName) {
+                if (!empty($this->appConfig->GetDocumentServerUrl())
+                    && $this->appConfig->SettingsAreSuccessful()
+                    && $this->appConfig->isUserAllowedToUse()) {
 
-                $templateManager->registerTemplateFileCreator(function () use ($appName, $trans) {
-                    $wordTemplate = new TemplateFileCreator($appName, $trans->t("Document"), ".docx");
-                    $wordTemplate->addMimetype("application/vnd.openxmlformats-officedocument.wordprocessingml.document");
-                    $wordTemplate->setIconClass("icon-onlyoffice-new-docx");
-                    $wordTemplate->setRatio(21/29.7);
-                    return $wordTemplate;
-                });
+                    $templateManager->registerTemplateFileCreator(function () use ($appName, $trans) {
+                        $wordTemplate = new TemplateFileCreator($appName, $trans->t("Document"), ".docx");
+                        $wordTemplate->addMimetype("application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+                        $wordTemplate->setIconClass("icon-onlyoffice-new-docx");
+                        $wordTemplate->setRatio(21/29.7);
+                        return $wordTemplate;
+                    });
 
-                $templateManager->registerTemplateFileCreator(function () use ($appName, $trans) {
-                    $cellTemplate = new TemplateFileCreator($appName, $trans->t("Spreadsheet"), ".xlsx");
-                    $cellTemplate->addMimetype("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-                    $cellTemplate->setIconClass("icon-onlyoffice-new-xlsx");
-                    $cellTemplate->setRatio(21/29.7);
-                    return $cellTemplate;
-                });
+                    $templateManager->registerTemplateFileCreator(function () use ($appName, $trans) {
+                        $cellTemplate = new TemplateFileCreator($appName, $trans->t("Spreadsheet"), ".xlsx");
+                        $cellTemplate->addMimetype("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+                        $cellTemplate->setIconClass("icon-onlyoffice-new-xlsx");
+                        $cellTemplate->setRatio(21/29.7);
+                        return $cellTemplate;
+                    });
 
-                $templateManager->registerTemplateFileCreator(function () use ($appName, $trans) {
-                    $slideTemplate = new TemplateFileCreator($appName, $trans->t("Presentation"), ".pptx");
-                    $slideTemplate->addMimetype("application/vnd.openxmlformats-officedocument.presentationml.presentation");
-                    $slideTemplate->setIconClass("icon-onlyoffice-new-pptx");
-                    $slideTemplate->setRatio(16/9);
-                    return $slideTemplate;
-                });
-            }
-        });
+                    $templateManager->registerTemplateFileCreator(function () use ($appName, $trans) {
+                        $slideTemplate = new TemplateFileCreator($appName, $trans->t("Presentation"), ".pptx");
+                        $slideTemplate->addMimetype("application/vnd.openxmlformats-officedocument.presentationml.presentation");
+                        $slideTemplate->setIconClass("icon-onlyoffice-new-pptx");
+                        $slideTemplate->setRatio(16/9);
+                        return $slideTemplate;
+                    });
+                }
+            });
+        }
 
         Hooks::connectHooks();
     }
