@@ -1,5 +1,8 @@
 # Change Log
 
+## Changed
+- compatible with Nextcloud 22
+
 ## 7.0.2
 ## Changed
 - fixed registration of file actions
