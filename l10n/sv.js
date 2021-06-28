@@ -101,6 +101,14 @@ OC.L10N.register(
     "Template successfully deleted": "Mallen har tagits bort",
     "Common templates": "Delade mallar",
     "Failed to delete template": "Det gick inte att ta bort mallen",
-    "File has been converted. Its content might look different.": "Filen har konverterats. Dess innehåll kan se annorlunda ut."
+    "File has been converted. Its content might look different.": "Filen har konverterats. Dess innehåll kan se annorlunda ut.",
+    "Download as": "Ladda ned som",
+    "Download": "Ladda ned",
+    "Convert into": "Konvertera till",
+    "Origin format": "Ursprungsformat",
+    "Failed to send notification": "Det gick inte att skicka aviseringen",
+    "Notification sent successfully": "Aviseringen har skickats",
+    "%1\$s mentioned in the %2\$s: \"%3\$s\".": "%1\$s har nämnt i %2\$s: \"%3\$s\".",
+    "{notifier} mentioned in the {file}: \"%1\$s\".": "{notifier} har nämnt i {file}: \"%1\$s\"."
 },
 "nplurals=2; plural=(n != 1);");

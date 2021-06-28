@@ -101,6 +101,14 @@ OC.L10N.register(
     "Template successfully deleted": "模板成功删除",
     "Common templates": "通用模板",
     "Failed to delete template": "删除模板失败",
-    "File has been converted. Its content might look different.": "文件已被转换。其内容可能看起来有所不同。"
+    "File has been converted. Its content might look different.": "文件已被转换。其内容可能看起来有所不同。",
+    "Download as": "下载为",
+    "Download": "下载",
+    "Convert into": "转换为",
+    "Origin format": "原产地格式",
+    "Failed to send notification": "发送通知失败",
+    "Notification sent successfully": "通知发送成功",
+    "%1\$s mentioned in the %2\$s: \"%3\$s\".": "%1\$s 提到 %2\$s: \"%3\$s\".",
+    "{notifier} mentioned in the {file}: \"%1\$s\".": "{notifier} 提到 {file}: \"%1\$s\"."
 },
 "nplurals=2; plural=(n != 1);");

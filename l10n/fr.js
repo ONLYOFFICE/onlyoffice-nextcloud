@@ -101,6 +101,14 @@ OC.L10N.register(
     "Template successfully deleted": "Le modèle a été supprimé avec succès",
     "Common templates": "Modèles communs",
     "Failed to delete template": "Impossible de supprimer le modèle",
-    "File has been converted. Its content might look different.": "Le fichier a été converti. Son contenu peut s'afficher différemment."
+    "File has been converted. Its content might look different.": "Le fichier a été converti. Son contenu peut s'afficher différemment.",
+    "Download as": "Télécharger sous",
+    "Download": "Télécharger",
+    "Convert into": "Convertir en",
+    "Origin format": "Format d’origin",
+    "Failed to send notification": "Échec de l’envoi de la notification",
+    "Notification sent successfully": "Notification a été envoyée avec succès",
+    "%1\$s mentioned in the %2\$s: \"%3\$s\".": "%1\$s a mentionné dans %2\$s: \"%3\$s\".",
+    "{notifier} mentioned in the {file}: \"%1\$s\".": "{notifier}  a mentionné dans {file}: \"%1\$s\"."
 },
 "nplurals=2; plural=(n != 1);");
