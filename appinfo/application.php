@@ -254,7 +254,9 @@ class Application extends App implements IBootstrap {
                         if ($template === null) {
                             $targetFile = $event->getTarget();
                             $templateEmpty = TemplateManager::GetEmptyTemplate($targetFile->getName());
-                            $targetFile->putContent($templateEmpty);
+                            if ($templateEmpty) {
+                                $targetFile->putContent($templateEmpty);
+                            }
                         }
                     });
             }

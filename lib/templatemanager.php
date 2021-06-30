@@ -197,6 +197,9 @@ class TemplateManager {
         $lang = \OC::$server->getL10NFactory("")->get("")->getLanguageCode();
 
         $templatePath = self::GetEmptyTemplatePath($lang, $ext);
+        if (!file_exists($templatePath)) {
+            return false;
+        }
 
         $template = file_get_contents($templatePath);
         return $template;
