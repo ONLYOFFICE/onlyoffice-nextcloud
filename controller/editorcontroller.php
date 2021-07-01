@@ -253,7 +253,7 @@ class EditorController extends Controller {
             $this->logger->error("Folder for file creation was not found: $dir", ["app" => $this->appName]);
             return ["error" => $this->trans->t("The required folder was not found")];
         }
-        if (!$folder->isCreatable()) {
+        if (!($folder->isCreatable() && $folder->isUpdateable())) {
             $this->logger->error("Folder for file creation without permission: $dir", ["app" => $this->appName]);
             return ["error" => $this->trans->t("You don't have enough permission to create")];
         }
@@ -510,7 +510,7 @@ class EditorController extends Controller {
         }
 
         $folder = $file->getParent();
-        if (!$folder->isCreatable()) {
+        if (!($folder->isCreatable() && $folder->isUpdateable())) {
             $folder = $this->root->getUserFolder($userId);
         }
 
