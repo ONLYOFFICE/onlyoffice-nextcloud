@@ -1,5 +1,6 @@
 # Change Log
 
+## 7.0.4
 ## Changed
 - compatible with Nextcloud 22
 
