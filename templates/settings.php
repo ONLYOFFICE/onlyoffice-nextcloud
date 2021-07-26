@@ -37,9 +37,9 @@
     <h3><?php p($l->t("Server settings")) ?></h3>
 
     <div id="onlyofficeAddrSettings">
-        <p class="settings-hint"><?php p($l->t("ONLYOFFICE Document Service Location specifies the address of the server with the document services installed. Please change the '<documentserver>' for the server address in the below line.")) ?></p>
+        <p class="settings-hint"><?php p($l->t("ONLYOFFICE Docs Location specifies the address of the server with the document services installed. Please change the '<documentserver>' for the server address in the below line.")) ?></p>
 
-        <p><?php p($l->t("Document Editing Service address")) ?></p>
+        <p><?php p($l->t("ONLYOFFICE Docs address")) ?></p>
         <p><input id="onlyofficeUrl" value="<?php p($_["documentserver"]) ?>" placeholder="https://<documentserver>/" type="text"></p>
 
         <p>
@@ -62,10 +62,10 @@
             </a>
         </p>
         <div id="onlyofficeSecretPanel" class="onlyoffice-hide">
-            <p class="onlyoffice-header"><?php p($l->t("Document Editing Service address for internal requests from the server")) ?></p>
+            <p class="onlyoffice-header"><?php p($l->t("ONLYOFFICE Docs address for internal requests from the server")) ?></p>
             <p><input id="onlyofficeInternalUrl" value="<?php p($_["documentserverInternal"]) ?>" placeholder="https://<documentserver>/" type="text"></p>
 
-            <p class="onlyoffice-header"><?php p($l->t("Server address for internal requests from the Document Editing Service")) ?></p>
+            <p class="onlyoffice-header"><?php p($l->t("Server address for internal requests from ONLYOFFICE Docs")) ?></p>
             <p><input id="onlyofficeStorageUrl" value="<?php p($_["storageUrl"]) ?>" placeholder="<?php p($_["currentServer"]) ?>" type="text"></p>
         </div>
     </div>
@@ -78,13 +78,13 @@
             <input type="checkbox" class="checkbox" id="onlyofficeDemo"
                 <?php if ($_["demo"]["enabled"]) { ?>checked="checked"<?php } ?>
                 <?php if (!$_["demo"]["available"]) { ?>disabled="disabled"<?php } ?> />
-            <label for="onlyofficeDemo"><?php p($l->t("Connect to demo ONLYOFFICE Document Server")) ?></label>
+            <label for="onlyofficeDemo"><?php p($l->t("Connect to demo ONLYOFFICE Docs server")) ?></label>
 
             <br />
             <?php if ($_["demo"]["available"]) { ?>
             <em><?php p($l->t("This is a public test server, please do not use it for private sensitive data. The server will be available during a 30-day period.")) ?></em>
             <?php } else { ?>
-            <em><?php p($l->t("The 30-day test period is over, you can no longer connect to demo ONLYOFFICE Document Server.")) ?></em>
+            <em><?php p($l->t("The 30-day test period is over, you can no longer connect to demo ONLYOFFICE Docs server.")) ?></em>
             <?php } ?>
         </div>
     </div>

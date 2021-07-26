@@ -154,7 +154,7 @@ class SettingsController extends Controller {
                                     ) {
         $error = null;
         if (!$this->config->SelectDemo($demo === true)) {
-            $error = $this->trans->t("The 30-day test period is over, you can no longer connect to demo ONLYOFFICE Document Server.");
+            $error = $this->trans->t("The 30-day test period is over, you can no longer connect to demo ONLYOFFICE Docs server.");
         }
         if ($demo !== true) {
             $this->config->SetDocumentServerUrl($documentserver);
