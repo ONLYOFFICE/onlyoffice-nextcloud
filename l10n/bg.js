@@ -104,7 +104,6 @@ OC.L10N.register(
     "File has been converted. Its content might look different.": "Файлът бе преобразуван. Съдържанието му може да изглежда различно.",
     "Download as": "Изтегли като",
     "Download": "Изтегли",
-    "Convert into": "Конвертирай в",
     "Origin format": "Формат на произход",
     "Failed to send notification": "Неуспешно изпращане на известие",
     "Notification sent successfully": "Успешно изпратено известие",

@@ -104,7 +104,6 @@ OC.L10N.register(
     "File has been converted. Its content might look different.": "ファイルが変換されました。 その内容は異なって見えるかもしれません。",
     "Download as": "別の形式でダウンロード",
     "Download": "ダウンロード",
-    "Convert into": "に変換する",
     "Origin format": "オリジンの形式",
     "Failed to send notification": "通知を送信できませんでした",
     "Notification sent successfully": "通知を送信しました",
