@@ -1253,13 +1253,13 @@ class EditorController extends Controller {
             $templatesList = TemplateManager::GetGlobalTemplates($file->getMimeType());
             if (!empty($templatesList)) {
                 $templates = [];
-                foreach($templatesList as $template) {
-                    $createParam["templateId"] = $template->getId();
-                    $createParam["name"] = $template->getName();
+                foreach($templatesList as $templateItem) {
+                    $createParam["templateId"] = $templateItem->getId();
+                    $createParam["name"] = $templateItem->getName();
 
                     array_push($templates, [
                         "image" => "",
-                        "title" => $template->getName(),
+                        "title" => $templateItem->getName(),
                         "url" => urldecode($this->urlGenerator->linkToRouteAbsolute($this->appName . ".editor.create_new", $createParam))
                     ]);
                 }
@@ -1267,7 +1267,9 @@ class EditorController extends Controller {
                 $params["editorConfig"]["templates"] = $templates;
             }
 
-            $params["document"]["info"]["favorite"] = $this->isFavorite($fileId);
+            if (!$template) {
+                $params["document"]["info"]["favorite"] = $this->isFavorite($fileId);
+            }
             $params["_file_path"] = $userFolder->getRelativePath($file->getPath());
         }
 
