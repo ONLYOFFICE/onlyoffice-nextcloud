@@ -1109,7 +1109,7 @@ class EditorController extends Controller {
 
         $fileName = $file->getName();
         $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-        $format = $this->config->FormatsSetting()[$ext];
+        $format = !empty($ext) ? $this->config->FormatsSetting()[$ext] : null;
         if (!isset($format)) {
             $this->logger->info("Format is not supported for editing: $fileName", ["app" => $this->appName]);
             return ["error" => $this->trans->t("Format is not supported")];
