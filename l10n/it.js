@@ -108,6 +108,7 @@ OC.L10N.register(
     "Failed to send notification": "Invio di notifica non riuscito",
     "Notification sent successfully": "Notifica è stata inviata con successo",
     "%1\$s mentioned in the %2\$s: \"%3\$s\".": "%1\$s ha menzionato in %2\$s: \"%3\$s\".",
-    "{notifier} mentioned in the {file}: \"%1\$s\".": "{notifier} ha menzionato nel {file}: \"%1\$s\"."
+    "{notifier} mentioned in the {file}: \"%1\$s\".": "{notifier} ha menzionato nel {file}: \"%1\$s\".",
+    "Choose a format to convert {fileName}": "Scegli un formato per convertire {fileName}"
 },
 "nplurals=2; plural=(n != 1);");

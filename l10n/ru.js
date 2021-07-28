@@ -107,8 +107,8 @@ OC.L10N.register(
     "Origin format": "Оригинальный формат",
     "Failed to send notification": "Ошибка отправки оповещения",
     "Notification sent successfully": "Оповещение успешно отправлено",
-    "%1\$s mentioned in the %2\$s: \"%3\$s\".": "%1\$s упоминул в %2\$s: \"%3\$s\".",
-    "{notifier} mentioned in the {file}: \"%1\$s\".": "{notifier} упоминул в {file}: \"%1\$s\".",
-    "Choose a format to convert {fileName}": "Выберите формат для конвертации {fileName}"
+    "%1\$s mentioned in the %2\$s: \"%3\$s\".": "%1\$s упомянул в %2\$s: \"%3\$s\".",
+    "{notifier} mentioned in the {file}: \"%1\$s\".": "{notifier} упомянул в {file}: \"%1\$s\".",
+    "Choose a format to convert {fileName}": "Выберите формат для {fileName}"
 },
 "nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);");

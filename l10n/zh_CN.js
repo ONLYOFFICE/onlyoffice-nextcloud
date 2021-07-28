@@ -108,6 +108,7 @@ OC.L10N.register(
     "Failed to send notification": "发送通知失败",
     "Notification sent successfully": "通知发送成功",
     "%1\$s mentioned in the %2\$s: \"%3\$s\".": "%1\$s 提到 %2\$s: \"%3\$s\".",
-    "{notifier} mentioned in the {file}: \"%1\$s\".": "{notifier} 提到 {file}: \"%1\$s\"."
+    "{notifier} mentioned in the {file}: \"%1\$s\".": "{notifier} 提到 {file}: \"%1\$s\".",
+    "Choose a format to convert {fileName}": "选择要转换{fileName}的格式"
 },
 "nplurals=2; plural=(n != 1);");
