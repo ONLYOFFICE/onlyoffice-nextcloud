@@ -132,14 +132,17 @@
 
                     config.events = {
                         "onDocumentStateChange": setPageTitle,
-                        "onRequestHistory": OCA.Onlyoffice.onRequestHistory,
-                        "onRequestHistoryData": OCA.Onlyoffice.onRequestHistoryData,
                         "onDocumentReady": OCA.Onlyoffice.onDocumentReady,
                         "onMakeActionLink": OCA.Onlyoffice.onMakeActionLink,
                     };
 
-                    if (!OCA.Onlyoffice.version) {
-                        config.events.onRequestHistoryClose = OCA.Onlyoffice.onRequestHistoryClose;
+                    if (!OCA.Onlyoffice.template) {
+                        config.events.onRequestHistory = OCA.Onlyoffice.onRequestHistory;
+                        config.events.onRequestHistoryData = OCA.Onlyoffice.onRequestHistoryData;
+
+                        if (!OCA.Onlyoffice.version) {
+                            config.events.onRequestHistoryClose = OCA.Onlyoffice.onRequestHistoryClose;
+                        }
                     }
 
                     if (config.editorConfig.tenant) {
