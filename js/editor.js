@@ -272,10 +272,12 @@
             url: event.data.url
         };
 
-        var arrayPath = OCA.Onlyoffice.filePath.split("/");
-        arrayPath.pop();
-        arrayPath.shift();
-        saveData.dir = "/" + arrayPath.join("/");
+        if (OCA.Onlyoffice.filePath) {
+            var arrayPath = OCA.Onlyoffice.filePath.split("/");
+            arrayPath.pop();
+            arrayPath.shift();
+            saveData.dir = "/" + arrayPath.join("/");
+        }
 
         if (OCA.Onlyoffice.inframe) {
             window.parent.postMessage({
