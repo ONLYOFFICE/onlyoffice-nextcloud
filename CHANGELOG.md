@@ -1,5 +1,6 @@
 # Change Log
 
+## 7.1.0
 ## Added
 - mentions in comments
 - favorite status in the editor
@@ -10,8 +11,11 @@
 
 ## Changed
 - redirect from dashboard on desktop
-- compatible with Nextcloud 22
 - Nextcloud v19 is no longer supported
+
+## 7.0.4
+## Changed
+- compatible with Nextcloud 22
 
 ## 7.0.2
 ## Changed
