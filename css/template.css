@@ -29,23 +29,24 @@
 }
 .onlyoffice-template-item img,
 .onlyoffice-template-delete,
-.onlyoffice-template-preview,
+.onlyoffice-template-download,
 .onlyoffice-template-item p {
     display: inline-block;
     margin-right: 10px;
     cursor: pointer;
 }
 .onlyoffice-template-delete,
-.onlyoffice-template-preview {
+.onlyoffice-template-download {
     margin-bottom: -4px;
 }
 .onlyoffice-template-delete {
     opacity: .6;
 }
-.onlyoffice-template-preview {
-    background-image: url("../../../core/img/actions/toggle.svg");
+.onlyoffice-template-download {
+    background-image: url("../../../core/img/actions/download.svg");
     height: 16px;
     width: 16px;
+    opacity: .6;
 }
 .onlyoffice-template-item img {
     float: left;
@@ -57,4 +58,7 @@
 }
 .onlyoffice-template-item input:checked + label {
     color: rgb(55, 137, 243);
+}
+.section-onlyoffice-templates input {
+    display: none;
 }

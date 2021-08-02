@@ -40,6 +40,7 @@ use OCA\Onlyoffice\Crypt;
 use OCA\Onlyoffice\DocumentService;
 use OCA\Onlyoffice\FileUtility;
 use OCA\Onlyoffice\FileVersions;
+use OCA\Onlyoffice\TemplateManager;
 
 /**
  * Preview provider
@@ -293,10 +294,11 @@ class Preview extends Provider {
      * @param File $file - file
      * @param IUser $user - user with access
      * @param int $version - file version
+     * @param bool $template - file is template
      *
      * @return string
      */
-    private function getUrl($file, $user = null, $version = 0) {
+    private function getUrl($file, $user = null, $version = 0, $template = false) {
 
         $data = [
             "action" => "download",
@@ -310,6 +312,9 @@ class Preview extends Provider {
         }
         if ($version > 0) {
             $data["version"] = $version;
+        }
+        if ($template) {
+            $data["template"] = true;
         }
 
         $hashUrl = $this->crypt->GetHash($data);
@@ -342,6 +347,7 @@ class Preview extends Provider {
 
         $key = null;
         $versionNum = 0;
+        $template = false;
         if (FileVersions::splitPathVersion($path) !== false) {
             if ($this->versionManager === null || $owner === null) {
                 return [null, null, null];
@@ -375,7 +381,11 @@ class Preview extends Provider {
             $key = DocumentService::GenerateRevisionId($key);
         }
 
-        $fileUrl = $this->getUrl($fileInfo, $owner, $versionNum);
+        if (TemplateManager::IsTemplate($fileInfo->getId())) {
+            $template = true;
+        }
+
+        $fileUrl = $this->getUrl($fileInfo, $owner, $versionNum, $template);
 
         $fileExtension = $fileInfo->getExtension();
 

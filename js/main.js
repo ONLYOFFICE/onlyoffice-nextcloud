@@ -26,12 +26,13 @@
         }, OCA.Onlyoffice);
 
     OCA.Onlyoffice.setting = {};
+    OCA.Onlyoffice.mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent);
 
     OCA.Onlyoffice.CreateFile = function (name, fileList, templateId) {
         var dir = fileList.getCurrentDirectory();
 
-        if (!OCA.Onlyoffice.setting.sameTab || OCA.Onlyoffice.Desktop) {
-            $loaderUrl = OCA.Onlyoffice.Desktop ? "" : OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/loader");
+        if (!OCA.Onlyoffice.setting.sameTab || OCA.Onlyoffice.mobile || OCA.Onlyoffice.Desktop) {
+            $loaderUrl = OCA.Onlyoffice.Desktop ? "" : OC.filePath(OCA.Onlyoffice.AppName, "templates", "loader.html");
             var winEditor = window.open($loaderUrl);
         }
 
@@ -95,7 +96,7 @@
 
         if (winEditor && winEditor.location) {
             winEditor.location.href = url;
-        } else if (!OCA.Onlyoffice.setting.sameTab || OCA.Onlyoffice.Desktop) {
+        } else if (!OCA.Onlyoffice.setting.sameTab || OCA.Onlyoffice.mobile || OCA.Onlyoffice.Desktop) {
             winEditor = window.open(url, "_blank");
         } else if ($("#isPublic").val() === "1" && !$("#filestable").length) {
             location.href = url;
@@ -136,9 +137,9 @@
 
     OCA.Onlyoffice.OpenShareDialog = function () {
         if (OCA.Onlyoffice.context) {
-            if (!$("#app-sidebar, #app-sidebar-vue").is(":visible")) {
-                OCA.Onlyoffice.context.fileList.showDetailsView(OCA.Onlyoffice.context.fileName, "sharing");
-                OC.Apps.showAppSidebar();
+            if (!$("#app-sidebar-vue").is(":visible")) {
+                OCA.Files.Sidebar.open(OCA.Onlyoffice.context.dir + "/" + OCA.Onlyoffice.context.fileName);
+                OCA.Files.Sidebar.setActiveTab("sharing");
             } else {
                 OCA.Files.Sidebar.close();
             }
@@ -177,9 +178,70 @@
                     fileList.add(response, { animate: true });
                 }
 
-                OCP.Toast.success(t(OCA.Onlyoffice.AppName, "File created"));
+                OCP.Toast.success(t(OCA.Onlyoffice.AppName, "File has been converted. Its content might look different."));
             });
     };
+
+    OCA.Onlyoffice.DownloadClick = function (fileName, context) {
+        $.get(OC.filePath(OCA.Onlyoffice.AppName, "templates", "downloadPicker.html"), 
+            function (tmpl) {
+                var dialog = $(tmpl).octemplate({
+                    dialog_name: "download-picker",
+                    dialog_title: t("onlyoffice", "Download as")
+                });
+
+                $(dialog[0].querySelectorAll("p")).text(fileName + " " + t(OCA.Onlyoffice.AppName, "Convert into"));
+
+                var extension = getFileExtension(fileName);
+                var selectNode = dialog[0].querySelectorAll("select")[0];
+                var optionNodeOrigin = selectNode.querySelectorAll("option")[0];
+
+                $(optionNodeOrigin).attr("data-value", extension);
+                $(optionNodeOrigin).text(t(OCA.Onlyoffice.AppName, "Origin format"));
+
+                dialog[0].dataset.format = extension;
+                selectNode.onclick = function() {
+                    dialog[0].dataset.format = $("#onlyoffice-download-select option:selected").attr("data-value");
+                }
+
+                OCA.Onlyoffice.setting.formats[extension].saveas.forEach(ext => {
+                    var optionNode = optionNodeOrigin.cloneNode(true);
+
+                    $(optionNode).attr("data-value", ext);
+                    $(optionNode).text(ext);
+
+                    selectNode.append(optionNode);
+                })
+
+                $("body").append(dialog)
+
+                $("#download-picker").ocdialog({
+                    closeOnEscape: true,
+                    modal: true,
+                    buttons: [{
+                        text: t("core", "Cancel"),
+                        classes: "cancel",
+                        click: function() {
+                            $(this).ocdialog("close")
+                        }
+                    }, {
+                        text: t("onlyoffice", "Download"),
+                        classes: "primary",
+                        click: function() {
+                            var format = this.dataset.format;
+                            var fileId = context.fileInfoModel.id;
+                            var downloadLink = OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/downloadas?fileId={fileId}&toExtension={toExtension}",{
+                                fileId: fileId,
+                                toExtension: format
+                            });
+
+                            location.href = downloadLink;
+                            $(this).ocdialog("close")
+                        }
+                    }]
+                });
+            });
+    }
 
     OCA.Onlyoffice.GetSettings = function (callbackSettings) {
         if (OCA.Onlyoffice.setting.formats) {
@@ -228,6 +290,17 @@
                         permissions: ($("#isPublic").val() ? OC.PERMISSION_UPDATE : OC.PERMISSION_READ),
                         iconClass: "icon-onlyoffice-convert",
                         actionHandler: OCA.Onlyoffice.FileConvertClick
+                    });
+                }
+
+                if (config.saveas && !$("#isPublic").val()) {
+                    OCA.Files.fileActions.registerAction({
+                        name: "onlyofficeDownload",
+                        displayName: t(OCA.Onlyoffice.AppName, "Download as"),
+                        mime: config.mime,
+                        permissions: OC.PERMISSION_READ,
+                        iconClass: "icon-onlyoffice-download",
+                        actionHandler: OCA.Onlyoffice.DownloadClick
                     });
                 }
             });
@@ -345,6 +418,7 @@
 
     var initPage = function () {
         if ($("#isPublic").val() === "1" && !$("#filestable").length) {
+            //file by shared link
             var fileName = $("#filename").val();
             var extension = getFileExtension(fileName);
 
@@ -370,7 +444,11 @@
 
             OCA.Onlyoffice.GetSettings(initSharedButton);
         } else {
-            OC.Plugins.register("OCA.Files.NewFileMenu", OCA.Onlyoffice.NewFileMenu);
+            if ($("#isPublic").val() === "1" && !!$("#filestable").length
+                || OC.config.version.split(".")[0] < 21) {
+                //folder by shared link
+                OC.Plugins.register("OCA.Files.NewFileMenu", OCA.Onlyoffice.NewFileMenu);
+            }
 
             OCA.Onlyoffice.registerAction();
 
