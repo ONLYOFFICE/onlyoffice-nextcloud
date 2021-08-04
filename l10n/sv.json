@@ -107,6 +107,6 @@
     "Notification sent successfully": "Aviseringen har skickats",
     "%1$s mentioned in the %2$s: \"%3$s\".": "%1$s har nämnt i %2$s: \"%3$s\".",
     "{notifier} mentioned in the {file}: \"%1$s\".": "{notifier} har nämnt i {file}: \"%1$s\".",
-    "Choose a format to convert {fileName}": "Välj ett filformat för att konvertera {fileName}"
+    "Choose a format to convert {fileName}": "Välj det filformat som {fileName} ska konverteras till."
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }
