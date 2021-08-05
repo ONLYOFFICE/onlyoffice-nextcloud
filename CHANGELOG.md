@@ -1,5 +1,9 @@
 # Change Log
 
+## 7.1.2
+## Changed
+- fix editing from mobile app
+
 ## 7.1.0
 ## Added
 - mentions in comments
