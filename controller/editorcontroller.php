@@ -1268,7 +1268,7 @@ class EditorController extends Controller {
             }
 
             if (!$template) {
-                $params["document"]["info"]["favorite"] = $this->isFavorite($fileId);
+                $params["document"]["info"]["favorite"] = $this->isFavorite($fileId, $userId);
             }
             $params["_file_path"] = $userFolder->getRelativePath($file->getPath());
         }
@@ -1631,11 +1631,12 @@ class EditorController extends Controller {
      * Check file favorite
      *
      * @param integer $fileId - file identifier
+     * @param string $userId - user identifier
      *
      * @return bool
      */
-    private function isFavorite($fileId) {
-        $currentTags = $this->tagManager->load("files")->getTagsForObjects([$fileId]);
+    private function isFavorite($fileId, $userId = null) {
+        $currentTags = $this->tagManager->load("files", [], false, $userId)->getTagsForObjects([$fileId]);
         if ($currentTags) {
             return in_array(ITags::TAG_FAVORITE, $currentTags[$fileId]);
         }
