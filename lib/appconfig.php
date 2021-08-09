@@ -945,12 +945,14 @@ class AppConfig {
     /**
      * Check access for group
      *
+     * @param string $userId - user identifier
+     *
      * @return bool
      */
-    public function isUserAllowedToUse() {
+    public function isUserAllowedToUse($userId = null) {
         // no user -> no
         $userSession = \OC::$server->getUserSession();
-        if ($userSession === null || !$userSession->isLoggedIn()) {
+        if (is_null($userId) && ($userSession === null || !$userSession->isLoggedIn())) {
             return false;
         }
 
@@ -960,7 +962,14 @@ class AppConfig {
             return true;
         }
 
-        $user = $userSession->getUser();
+        if (is_null($userId)) {
+            $user = $userSession->getUser();
+        } else {
+            $user = \OC::$server->getUserManager()->get($userId);
+            if (empty($user)) {
+                return false;
+            }
+        }
 
         foreach ($groups as $groupName) {
             // group unknown -> error and allow nobody
