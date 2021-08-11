@@ -190,6 +190,7 @@
             });
 
             var sameTab = $("#onlyofficeSameTab").is(":checked");
+            var shareDirectly = $("#onlyofficeShareDirectly").is(":checked");
             var preview = $("#onlyofficePreview").is(":checked");
             var versionHistory = $("#onlyofficeVersionHistory").is(":checked");
 
@@ -211,6 +212,7 @@
                     defFormats: defFormats,
                     editFormats: editFormats,
                     sameTab: sameTab,
+                    shareDirectly: shareDirectly,
                     preview: preview,
                     versionHistory: versionHistory,
                     limitGroups: limitGroups,

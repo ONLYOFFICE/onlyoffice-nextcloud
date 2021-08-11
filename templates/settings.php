@@ -101,6 +101,13 @@
         <input type="hidden" id="onlyofficeLimitGroups" value="<?php p(implode("|", $_["limitGroups"])) ?>" style="display: block" />
     </p>
 
+
+    <p>
+        <input type="checkbox" class="checkbox" id="onlyofficeShareDirectly"
+            <?php if ($_["shareDirectly"]) { ?>checked="checked"<?php } ?> />
+        <label for="onlyofficeShareDirectly"><?php p($l->t("Use ONLYOFFICE to open a share link document directly")) ?></label>
+    </p>
+
     <p>
         <input type="checkbox" class="checkbox" id="onlyofficePreview"
             <?php if ($_["preview"]) { ?>checked="checked"<?php } ?> />

@@ -432,9 +432,9 @@
 
                 var editorUrl = OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/s/" + encodeURIComponent($("#sharingToken").val()));
 
-                if (_oc_appswebroots.richdocuments
+                if (!OCA.Onlyoffice.setting.shareDirectly && (_oc_appswebroots.richdocuments
                     || _oc_appswebroots.files_pdfviewer && extension === "pdf"
-                    || _oc_appswebroots.text && extension === "txt") {
+                    || _oc_appswebroots.text && extension === "txt")) {
 
                     var button = document.createElement("a");
                     button.href = editorUrl;

@@ -115,6 +115,7 @@ class SettingsController extends Controller {
             "currentServer" => $this->urlGenerator->getAbsoluteURL("/"),
             "formats" => $this->config->FormatsSetting(),
             "sameTab" => $this->config->GetSameTab(),
+            "shareDirectly" => $this->config->GetShareDirectly(),
             "preview" => $this->config->GetPreview(),
             "versionHistory" => $this->config->GetVersionHistory(),
             "limitGroups" => $this->config->GetLimitGroups(),
@@ -191,6 +192,7 @@ class SettingsController extends Controller {
      * @param array $defFormats - formats array with default action
      * @param array $editFormats - editable formats array
      * @param bool $sameTab - open in the same tab
+     * @param bool $shareDirectly - open share link directly
      * @param bool $preview - generate preview files
      * @param bool $versionHistory - keep version history
      * @param array $limitGroups - list of groups
@@ -207,6 +209,7 @@ class SettingsController extends Controller {
     public function SaveCommon($defFormats,
                                     $editFormats,
                                     $sameTab,
+                                    $shareDirectly,
                                     $preview,
                                     $versionHistory,
                                     $limitGroups,
@@ -222,6 +225,7 @@ class SettingsController extends Controller {
         $this->config->SetDefaultFormats($defFormats);
         $this->config->SetEditableFormats($editFormats);
         $this->config->SetSameTab($sameTab);
+        $this->config->SetShareDirectly($shareDirectly);
         $this->config->SetPreview($preview);
         $this->config->SetVersionHistory($versionHistory);
         $this->config->SetLimitGroups($limitGroups);
@@ -283,7 +287,8 @@ class SettingsController extends Controller {
     public function GetSettings() {
         $result = [
             "formats" => $this->config->FormatsSetting(),
-            "sameTab" => $this->config->GetSameTab()
+            "sameTab" => $this->config->GetSameTab(),
+            "shareDirectly" => $this->config->GetShareDirectly()
         ];
         return $result;
     }

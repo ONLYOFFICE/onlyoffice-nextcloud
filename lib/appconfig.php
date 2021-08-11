@@ -110,6 +110,13 @@ class AppConfig {
     private $_sameTab = "sameTab";
 
     /**
+     * The config key for the opening share link directly by ONLYOFFICE
+     *
+     * @var string
+     */
+    private $_shareDirectly = "shareDirectly";
+
+    /**
      * The config key for the generate preview
      *
      * @var string
@@ -631,6 +638,26 @@ class AppConfig {
      */
     public function GetSameTab() {
         return $this->config->getAppValue($this->appName, $this->_sameTab, "true") === "true";
+    }
+
+    /**
+     * Save share directly setting
+     *
+     * @param bool $value - preview
+     */
+    public function SetShareDirectly($value) {
+        $this->logger->info("Set generate preview: " . json_encode($value), ["app" => $this->appName]);
+
+        $this->config->setAppValue($this->appName, $this->_shareDirectly, json_encode($value));
+    }
+
+    /**
+     * Get share directly setting
+     *
+     * @return bool
+     */
+    public function GetShareDirectly() {
+        return $this->config->getAppValue($this->appName, $this->_shareDirectly, "false") === "true";
     }
 
     /**
