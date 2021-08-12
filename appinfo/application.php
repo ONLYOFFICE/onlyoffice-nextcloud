@@ -31,6 +31,7 @@ use OCP\DirectEditing\RegisterDirectEditorEvent;
 use OCP\Files\Template\FileCreatedFromTemplateEvent;
 use OCP\Files\Template\ITemplateManager;
 use OCP\Files\Template\TemplateFileCreator;
+use OCA\Files\Event\LoadAdditionalScriptsEvent;
 use OCP\IL10N;
 use OCP\IPreview;
 use OCP\ITagManager;
@@ -38,12 +39,18 @@ use OCP\Notification\IManager;
 use OCP\Util;
 
 use OCA\Viewer\Event\LoadViewer;
+use OCA\Files_Sharing\Event\BeforeTemplateRenderedEvent;
 
 use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\Controller\CallbackController;
 use OCA\Onlyoffice\Controller\EditorController;
 use OCA\Onlyoffice\Controller\SettingsController;
 use OCA\Onlyoffice\Controller\TemplateController;
+use OCA\Onlyoffice\Listeners\FilesListener;
+use OCA\Onlyoffice\Listeners\FileSharingListener;
+use OCA\Onlyoffice\Listeners\DirectEditorListener;
+use OCA\Onlyoffice\Listeners\ViewerListener;
+use OCA\Onlyoffice\Listeners\WidgetListener;
 use OCA\Onlyoffice\Crypt;
 use OCA\Onlyoffice\DirectEditor;
 use OCA\Onlyoffice\Hooks;
@@ -176,6 +183,12 @@ class Application extends App implements IBootstrap {
             );
         });
 
+        $context->registerEventListener(LoadAdditionalScriptsEvent::class, FilesListener::class);
+        $context->registerEventListener(RegisterDirectEditorEvent::class, DirectEditorListener::class);
+        $context->registerEventListener(LoadViewer::class, ViewerListener::class);
+        $context->registerEventListener(BeforeTemplateRenderedEvent::class, FileSharingListener::class);
+        $context->registerEventListener(RegisterWidgetEvent::class, WidgetListener::class);
+
         if (interface_exists("OCP\Files\Template\ICustomTemplateProvider")) {
             $context->registerTemplateProvider(TemplateProvider::class);
         }
@@ -185,65 +198,6 @@ class Application extends App implements IBootstrap {
     public function boot(IBootContext $context): void {
 
         $context->injectFn(function (SymfonyAdapter $eventDispatcher) {
-
-            $eventDispatcher->addListener('OCA\Files::loadAdditionalScripts',
-                function() {
-                    if (!empty($this->appConfig->GetDocumentServerUrl())
-                        && $this->appConfig->SettingsAreSuccessful()
-                        && $this->appConfig->isUserAllowedToUse()) {
-
-                        Util::addScript("onlyoffice", "desktop");
-                        Util::addScript("onlyoffice", "main");
-                        Util::addScript("onlyoffice", "template");
-
-                        if ($this->appConfig->GetSameTab()) {
-                            Util::addScript("onlyoffice", "listener");
-                        }
-
-                        Util::addStyle("onlyoffice", "main");
-                        Util::addStyle("onlyoffice", "template");
-                    }
-                });
-
-            $eventDispatcher->addListener(LoadViewer::class,
-                function () {
-                    if (!empty($this->appConfig->GetDocumentServerUrl())
-                        && $this->appConfig->SettingsAreSuccessful()
-                        && $this->appConfig->isUserAllowedToUse()) {
-                        Util::addScript("onlyoffice", "viewer");
-                        Util::addScript("onlyoffice", "listener");
-
-                        Util::addStyle("onlyoffice", "viewer");
-
-                        $csp = new ContentSecurityPolicy();
-                        $csp->addAllowedFrameDomain("'self'");
-                        $cspManager = $this->getContainer()->getServer()->getContentSecurityPolicyManager();
-                        $cspManager->addDefaultPolicy($csp);
-                    }
-                });
-
-            $eventDispatcher->addListener('OCA\Files_Sharing::loadAdditionalScripts',
-                function() {
-                    if (!empty($this->appConfig->GetDocumentServerUrl())
-                        && $this->appConfig->SettingsAreSuccessful()) {
-                        Util::addScript("onlyoffice", "main");
-
-                        if ($this->appConfig->GetSameTab()) {
-                            Util::addScript("onlyoffice", "listener");
-                        }
-
-                        Util::addStyle("onlyoffice", "main");
-                    }
-                });
-
-            $eventDispatcher->addListener(RegisterWidgetEvent::class,
-                function () {
-                    if (!empty($this->appConfig->GetDocumentServerUrl())
-                        && $this->appConfig->SettingsAreSuccessful()
-                        && $this->appConfig->isUserAllowedToUse()) {
-                        Util::addScript("onlyoffice", "desktop");
-                    }
-                });
 
             $container = $this->getContainer();
 
@@ -265,15 +219,6 @@ class Application extends App implements IBootstrap {
             $previewManager->registerProvider(Preview::getMimeTypeRegex(), function() use ($container) {
                 return $container->query(Preview::class);
             });
-
-            $eventDispatcher->addListener(RegisterDirectEditorEvent::class,
-                function (RegisterDirectEditorEvent $event) use ($container) {
-                    if (!empty($this->appConfig->GetDocumentServerUrl())
-                        && $this->appConfig->SettingsAreSuccessful()) {
-                        $editor = $container->query(DirectEditor::class);
-                        $event->register($editor);
-                    }
-                });
 
         });
 
