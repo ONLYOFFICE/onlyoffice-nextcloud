@@ -819,6 +819,61 @@ class EditorController extends Controller {
     }
 
     /**
+     * Restore file version
+     *
+     * @param integer $fileId - file identifier
+     * @param integer $version - file version
+     * @param string $shareToken - access token
+     *
+     * @return array
+     *
+     * @NoAdminRequired
+     * @PublicPage
+     */
+    public function restore($fileId, $version, $shareToken = null) {
+        $this->logger->debug("Request restore version for: $fileId ($version)", ["app" => $this->appName]);
+
+        if (empty($shareToken) && !$this->config->isUserAllowedToUse()) {
+            return ["error" => $this->trans->t("Not permitted")];
+        }
+
+        $version = empty($version) ? null : $version;
+
+        $user = $this->userSession->getUser();
+        $userId = null;
+        if (!empty($user)) {
+            $userId = $user->getUID();
+        }
+
+        list ($file, $error, $share) = empty($shareToken) ? $this->getFile($userId, $fileId) : $this->fileUtility->getFileByToken($fileId, $shareToken);
+
+        if (isset($error)) {
+            $this->logger->error("Restore: $fileId $error", ["app" => $this->appName]);
+            return ["error" => $error];
+        }
+
+        if ($fileId === 0) {
+            $fileId = $file->getId();
+        }
+
+        $owner = null;
+        $versions = array();
+        if ($this->versionManager !== null) {
+            $owner = $file->getFileInfo()->getOwner();
+            if ($owner !== null) {
+                $versions = array_reverse($this->versionManager->getVersionsForFile($owner, $file->getFileInfo()));
+            }
+
+            if (count($versions) >= $version) {
+                $fileVersion = array_values($versions)[$version - 1];
+                $this->versionManager->rollback($fileVersion);
+            }
+        }
+
+        return $this->history($fileId, $shareToken);
+    }
+
+    /**
      * Get presigned url to file
      *
      * @param string $filePath - file path
@@ -1173,6 +1228,13 @@ class EditorController extends Controller {
             $params["editorConfig"]["callbackUrl"] = $callback;
         } else {
             $params["editorConfig"]["mode"] = "view";
+        }
+
+        if (!$template
+            && $file->isUpdateable()
+            && (empty($shareToken) || ($share->getPermissions() & Constants::PERMISSION_UPDATE) === Constants::PERMISSION_UPDATE)) {
+
+            $params["document"]["permissions"]["changeHistory"] = true;
         }
 
         if (\OC::$server->getRequest()->isUserAgent([$this::USER_AGENT_MOBILE])) {
