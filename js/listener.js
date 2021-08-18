@@ -84,6 +84,17 @@
         }
     };
 
+    OCA.Onlyoffice.onShowMessage = function (messageObj) {
+        switch (messageObj.type) {
+            case "success":
+                OCP.Toast.success(messageObj.message, messageObj.props);
+                break;
+            case "error":
+                OCP.Toast.error(messageObj.message, messageObj.props);
+                break;
+        }
+    }
+
     window.addEventListener("message", function (event) {
         if (!$(OCA.Onlyoffice.frameSelector).length
             || $(OCA.Onlyoffice.frameSelector)[0].contentWindow !== event.source
@@ -114,6 +125,8 @@
             case "onDocumentReady":
                 OCA.Onlyoffice.onDocumentReady(event.data.param);
                 break;
+            case "onShowMessage":
+                OCA.Onlyoffice.onShowMessage(event.data.param);
         }
     }, false);
 
