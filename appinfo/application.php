@@ -42,6 +42,7 @@ use OCA\Viewer\Event\LoadViewer;
 use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\Controller\CallbackController;
 use OCA\Onlyoffice\Controller\EditorController;
+use OCA\Onlyoffice\Controller\EditorApiController;
 use OCA\Onlyoffice\Controller\SettingsController;
 use OCA\Onlyoffice\Controller\TemplateController;
 use OCA\Onlyoffice\Crypt;
@@ -135,6 +136,23 @@ class Application extends App implements IBootstrap {
 
         $context->registerService("EditorController", function (ContainerInterface $c) {
             return new EditorController(
+                $c->get("AppName"),
+                $c->get("Request"),
+                $c->get("RootStorage"),
+                $c->get("UserSession"),
+                $c->get("UserManager"),
+                $c->get("URLGenerator"),
+                $c->get("L10N"),
+                $c->get("Logger"),
+                $this->appConfig,
+                $this->crypt,
+                $c->get("IManager"),
+                $c->get("Session")
+            );
+        });
+
+        $context->registerService("EditorApiController", function (ContainerInterface $c) {
+            return new EditorApiController(
                 $c->get("AppName"),
                 $c->get("Request"),
                 $c->get("RootStorage"),
