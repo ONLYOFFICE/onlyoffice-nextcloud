@@ -9,7 +9,7 @@
     <version>7.1.2</version>
     <namespace>Onlyoffice</namespace>
     <types>
-        <filesystem/>
+        <prevent_group_restriction/>
     </types>
     <documentation>
         <admin>https://api.onlyoffice.com/editors/nextcloud</admin>
