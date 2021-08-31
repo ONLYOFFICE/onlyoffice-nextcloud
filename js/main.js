@@ -190,7 +190,7 @@
                     dialog_title: t("onlyoffice", "Download as")
                 });
 
-                $(dialog[0].querySelectorAll("p")).text(fileName + " " + t(OCA.Onlyoffice.AppName, "Convert into"));
+                $(dialog[0].querySelectorAll("p")).text(t(OCA.Onlyoffice.AppName, "Choose a format to convert {fileName}", {fileName: fileName}));
 
                 var extension = getFileExtension(fileName);
                 var selectNode = dialog[0].querySelectorAll("select")[0];
