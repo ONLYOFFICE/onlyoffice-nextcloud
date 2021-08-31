@@ -27,6 +27,9 @@ use OCA\Files\Event\LoadAdditionalScriptsEvent;
 
 use OCA\Onlyoffice\AppConfig;
 
+/**
+ * File listener
+ */
 class FilesListener implements IEventListener {
 
     /**
@@ -36,6 +39,9 @@ class FilesListener implements IEventListener {
      */
     private $appConfig;
 
+    /**
+     * @param AppConfig $config - application configuration
+     */
     public function __construct(AppConfig $appConfig) {
         $this->appConfig = $appConfig;
     }

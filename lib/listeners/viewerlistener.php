@@ -28,6 +28,9 @@ use OCA\Viewer\Event\LoadViewer;
 
 use OCA\Onlyoffice\AppConfig;
 
+/**
+ * Viewer listener
+ */
 class ViewerListener implements IEventListener {
 
     /**
@@ -37,6 +40,9 @@ class ViewerListener implements IEventListener {
      */
     private $appConfig;
 
+    /**
+     * @param AppConfig $config - application configuration
+     */
     public function __construct(AppConfig $appConfig) {
         $this->appConfig = $appConfig;
     }

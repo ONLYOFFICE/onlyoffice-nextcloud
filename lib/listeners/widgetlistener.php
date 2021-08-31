@@ -26,6 +26,9 @@ use OCP\Dashboard\RegisterWidgetEvent;
 
 use OCA\Onlyoffice\AppConfig;
 
+/**
+ * Widget listener
+ */
 class WidgetListener implements IEventListener {
 
     /**
@@ -35,6 +38,9 @@ class WidgetListener implements IEventListener {
      */
     private $appConfig;
 
+    /**
+     * @param AppConfig $config - application configuration
+     */
     public function __construct(AppConfig $appConfig) {
         $this->appConfig = $appConfig;
     }

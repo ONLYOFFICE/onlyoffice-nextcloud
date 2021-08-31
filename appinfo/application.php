@@ -25,7 +25,6 @@ use OCP\AppFramework\App;
 use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
-use OCP\AppFramework\Http\ContentSecurityPolicy;
 use OCP\Dashboard\RegisterWidgetEvent;
 use OCP\DirectEditing\RegisterDirectEditorEvent;
 use OCP\Files\Template\FileCreatedFromTemplateEvent;
@@ -36,10 +35,9 @@ use OCP\IL10N;
 use OCP\IPreview;
 use OCP\ITagManager;
 use OCP\Notification\IManager;
-use OCP\Util;
 
-use OCA\Viewer\Event\LoadViewer;
 use OCA\Files_Sharing\Event\BeforeTemplateRenderedEvent;
+use OCA\Viewer\Event\LoadViewer;
 
 use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\Controller\CallbackController;

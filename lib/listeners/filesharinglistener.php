@@ -27,6 +27,9 @@ use OCA\Files_Sharing\Event\BeforeTemplateRenderedEvent;
 
 use OCA\Onlyoffice\AppConfig;
 
+/**
+ * File Sharing listener
+ */
 class FileSharingListener implements IEventListener {
 
     /**
@@ -36,6 +39,9 @@ class FileSharingListener implements IEventListener {
      */
     private $appConfig;
 
+    /**
+     * @param AppConfig $config - application configuration
+     */
     public function __construct(AppConfig $appConfig) {
         $this->appConfig = $appConfig;
     }
