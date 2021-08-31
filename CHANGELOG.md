@@ -1,5 +1,8 @@
 # Change Log
 
+## Changed
+- open share link directly
+
 ## 7.1.2
 ## Changed
 - fix editing from mobile app
