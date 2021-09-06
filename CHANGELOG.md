@@ -1,6 +1,7 @@
 # Change Log
 
 ## Changed
+- fixed privacy rules for get users when mention
 - open share link directly
 
 ## 7.1.2
