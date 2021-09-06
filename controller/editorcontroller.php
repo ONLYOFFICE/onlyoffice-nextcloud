@@ -340,6 +340,13 @@ class EditorController extends Controller {
         $groupManager = \OC::$server->getGroupManager();
         $currentUserGroups = $groupManager->getUserGroupIds($currentUser);
 
+        if (\OC::$server->getConfig()->getAppValue("core", "shareapi_exclude_groups", "no") === "yes") {
+            $excludedGroups = json_decode(\OC::$server->getConfig()->getAppValue("core", "shareapi_exclude_groups_list", ""), true);
+            if (!empty(array_intersect($currentUserGroups, $excludedGroups))) {
+                return $result;
+            }
+        }
+
         $shareMemberGroups = $this->shareManager->shareWithGroupMembersOnly();
 
         $users = $this->userManager->search("");
