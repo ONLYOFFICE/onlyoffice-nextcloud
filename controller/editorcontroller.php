@@ -328,17 +328,31 @@ class EditorController extends Controller {
     public function users() {
         $this->logger->debug("Search users", ["app" => $this->appName]);
         $result = [];
+        $currentUserGroups = [];
 
         if (!$this->config->isUserAllowedToUse()) {
             return $result;
         }
 
-        $userId = $this->userSession->getUser()->getUID();
+        $currentUser = $this->userSession->getUser();
+        $currentUserId = $currentUser->getUID();
+
+        $groupManager = \OC::$server->getGroupManager();
+        $currentUserGroups = $groupManager->getUserGroupIds($currentUser);
+
+        $shareMemberGroups = $this->shareManager->shareWithGroupMembersOnly();
+
         $users = $this->userManager->search("");
         foreach ($users as $user) {
             $email = $user->getEMailAddress();
-            if ($user->getUID() != $userId
-                && !empty($email)) {
+            if ($user->getUID() != $currentUserId && !empty($email)) {
+                if ($shareMemberGroups) {
+                    $userGroups = $groupManager->getUserGroupIds($user);
+                    if (empty(array_intersect($currentUserGroups, $userGroups))) {
+                        continue;
+                    }
+                }
+
                 array_push($result, [
                     "email" => $email,
                     "name" => $user->getDisplayName()
