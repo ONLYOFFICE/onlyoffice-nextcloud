@@ -27,11 +27,6 @@
         }, OCA.Onlyoffice);
 
     OCA.Onlyoffice.InitEditor = function () {
-        var displayError = function (error) {
-            OCP.Toast.error(error, {
-                timeout: -1
-            });
-        };
 
         OCA.Onlyoffice.fileId = $("#iframeEditor").data("id");
         OCA.Onlyoffice.shareToken = $("#iframeEditor").data("sharetoken");
@@ -43,12 +38,12 @@
         OCA.Onlyoffice.anchor = $("#iframeEditor").attr("data-anchor");
         var guestName = localStorage.getItem("nick");
         if (!OCA.Onlyoffice.fileId && !OCA.Onlyoffice.shareToken && !directToken) {
-            displayError(t(OCA.Onlyoffice.AppName, "FileId is empty"));
+            OCA.Onlyoffice.showMessage(t(OCA.Onlyoffice.AppName, "FileId is empty"), "error", {timeout: -1});
             return;
         }
 
         if (typeof DocsAPI === "undefined") {
-            displayError(t(OCA.Onlyoffice.AppName, "ONLYOFFICE cannot be reached. Please contact admin"));
+            OCA.Onlyoffice.showMessage(t(OCA.Onlyoffice.AppName, "ONLYOFFICE cannot be reached. Please contact admin"), "error", {timeout: -1});
             return;
         }
 
@@ -95,7 +90,7 @@
             success: function onSuccess(config) {
                 if (config) {
                     if (config.error != null) {
-                        displayError(config.error);
+                        OCA.Onlyoffice.showMessage(config.error, "error", {timeout: -1});
                         return;
                     }
 
@@ -301,11 +296,11 @@
             saveData,
             function onSuccess(response) {
                 if (response.error) {
-                    OCP.Toast.error(response.error);
+                    OCA.Onlyoffice.showMessage(response.error, "error");
                     return;
                 }
 
-                OCP.Toast.success(t(OCA.Onlyoffice.AppName, "File saved") + " (" + response.name + ")");
+                OCA.Onlyoffice.showMessage(t(OCA.Onlyoffice.AppName, "File saved") + " (" + response.name + ")");
             });
     };
 
@@ -343,7 +338,7 @@
             }),
             function onSuccess(response) {
                 if (response.error) {
-                    OCP.Toast.error(response.error);
+                    OCA.Onlyoffice.showMessage(response.error, "error");
                     return;
                 }
 
@@ -382,7 +377,7 @@
             }),
             function onSuccess(response) {
                 if (response.error) {
-                    OCP.Toast.error(response.error);
+                    OCA.Onlyoffice.showMessage(response.error, "error");
                     return;
                 }
 
@@ -499,11 +494,11 @@
             },
             function onSuccess(response) {
                 if (response.error) {
-                    OCP.Toast.error(response.error);
+                    OCA.Onlyoffice.showMessage(response.error, "error");
                     return;
                 }
 
-                OCP.Toast.success(response.message);
+                OCA.Onlyoffice.showMessage(response.message);
             });
     };
 
@@ -525,5 +520,29 @@
     }
 
     OCA.Onlyoffice.InitEditor();
+
+    OCA.Onlyoffice.showMessage = function (message, type = "success", props = null) {
+        if (OCA.Onlyoffice.inframe) {
+            window.parent.postMessage({
+                method: "onShowMessage",
+                param: {
+                    message: message,
+                    type: type,
+                    props: props
+                }
+            },
+            "*");
+            return;
+        }
+
+        switch (type) {
+            case "success":
+                OCP.Toast.success(message, props);
+                break;
+            case "error":
+                OCP.Toast.error(message, props);
+                break;
+        }
+    };
 
 })(jQuery, OCA);
