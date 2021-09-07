@@ -21,7 +21,6 @@ namespace OCA\Onlyoffice\Controller;
 
 use OCP\AppFramework\OCSController;
 use OCP\AppFramework\Http\JSONResponse;
-use OCP\AppFramework\Http\Template\PublicTemplateResponse;
 use OCP\AppFramework\QueryException;
 use OCP\Constants;
 use OCP\Files\File;
@@ -46,7 +45,6 @@ use OCA\Onlyoffice\Crypt;
 use OCA\Onlyoffice\DocumentService;
 use OCA\Onlyoffice\FileUtility;
 use OCA\Onlyoffice\TemplateManager;
-use OCA\Onlyoffice\FileVersions;
 
 /**
  * Controller with the main functions
@@ -124,13 +122,6 @@ class EditorApiController extends OCSController {
     private $versionManager;
 
     /**
-     * Share manager
-     *
-     * @var IManager
-     */
-    private $shareManager;
-
-    /**
      * Tag manager
      *
      * @var ITagManager
@@ -181,7 +172,6 @@ class EditorApiController extends OCSController {
         $this->logger = $logger;
         $this->config = $config;
         $this->crypt = $crypt;
-        $this->shareManager = $shareManager;
         $this->tagManager = $tagManager;
 
         if (\OC::$server->getAppManager()->isInstalled("files_versions")) {
