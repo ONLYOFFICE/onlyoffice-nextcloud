@@ -52,10 +52,7 @@
             return;
         }
 
-        var configUrl = OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/config/{fileId}",
-            {
-                fileId: OCA.Onlyoffice.fileId || 0
-            });
+        var configUrl = OC.linkToOCS("apps/" + OCA.Onlyoffice.AppName + "/api/v1/config", 2) + (OCA.Onlyoffice.fileId || 0);
 
         var params = [];
         var filePath = $("#iframeEditor").data("path");
