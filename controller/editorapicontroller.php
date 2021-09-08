@@ -231,10 +231,6 @@ class EditorApiController extends OCSController {
 
             $user = $this->userManager->get($userId);
         } else {
-            if (empty($shareToken) && !$this->config->isUserAllowedToUse()) {
-                return new JSONResponse(["error" => $this->trans->t("Not permitted")]);
-            }
-
             $user = $this->userSession->getUser();
             $userId = null;
             if (!empty($user)) {
@@ -247,6 +243,14 @@ class EditorApiController extends OCSController {
         if (isset($error)) {
             $this->logger->error("Config: $fileId $error", ["app" => $this->appName]);
             return new JSONResponse(["error" => $error]);
+        }
+
+        $checkUserAllowGroups = $userId;
+        if (!empty($share)) {
+            $checkUserAllowGroups = $share->getSharedBy();
+        }
+        if (!$this->config->isUserAllowedToUse($checkUserAllowGroups)) {
+            return new JSONResponse(["error" => $this->trans->t("Not permitted")]);
         }
 
         $fileName = $file->getName();
