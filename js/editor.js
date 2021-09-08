@@ -191,33 +191,7 @@
                 shareToken: OCA.Onlyoffice.shareToken || "",
             }),
             function onSuccess(response) {
-                if (response.error) {
-                    var data = {error: response.error};
-                } else {
-                    var currentVersion = 0;
-                    $.each(response, function (i, fileVersion) {
-                        if (fileVersion.version >= currentVersion) {
-                            currentVersion = fileVersion.version;
-                        }
-
-                        fileVersion.created = moment(fileVersion.created * 1000).format("L LTS");
-                        if (fileVersion.changes) {
-                            $.each(fileVersion.changes, function (j, change) {
-                                change.created = moment(change.created + "+00:00").format("L LTS");
-                            });
-                        }
-                    });
-
-                    if (version) {
-                        currentVersion = Math.min(currentVersion, version);
-                    }
-
-                    data = {
-                        currentVersion: currentVersion,
-                        history: response,
-                    };
-                }
-                OCA.Onlyoffice.docEditor.refreshHistory(data);
+                OCA.Onlyoffice.refreshHistory(response, version);
         });
     };
 
@@ -253,29 +227,7 @@
                 shareToken: OCA.Onlyoffice.shareToken || "",
             }),
             success: function onSuccess(response) {
-                if (response.error) {
-                    var data = {error: response.error};
-                } else {
-                    var currentVersion = 0;
-                    $.each(response, function (i, fileVersion) {
-                        if (fileVersion.version >= currentVersion) {
-                            currentVersion = fileVersion.version;
-                        }
-
-                        fileVersion.created = moment(fileVersion.created * 1000).format("L LTS");
-                        if (fileVersion.changes) {
-                            $.each(fileVersion.changes, function (j, change) {
-                                change.created = moment(change.created + "+00:00").format("L LTS");
-                            });
-                        }
-                    });
-
-                    data = {
-                        currentVersion: currentVersion,
-                        history: response,
-                    };
-                }
-                OCA.Onlyoffice.docEditor.refreshHistory(data);
+                OCA.Onlyoffice.refreshHistory(response, version);
 
                 if (OCA.Onlyoffice.inframe) {
                     window.parent.postMessage({
@@ -591,5 +543,35 @@
                 break;
         }
     };
+
+    OCA.Onlyoffice.refreshHistory = function (response, version) {
+        if (response.error) {
+            var data = {error: response.error};
+        } else {
+            var currentVersion = 0;
+            $.each(response, function (i, fileVersion) {
+                if (fileVersion.version >= currentVersion) {
+                    currentVersion = fileVersion.version;
+                }
+
+                fileVersion.created = moment(fileVersion.created * 1000).format("L LTS");
+                if (fileVersion.changes) {
+                    $.each(fileVersion.changes, function (j, change) {
+                        change.created = moment(change.created + "+00:00").format("L LTS");
+                    });
+                }
+            });
+
+            if (version) {
+                currentVersion = Math.min(currentVersion, version);
+            }
+
+            data = {
+                currentVersion: currentVersion,
+                history: response,
+            };
+        }
+        OCA.Onlyoffice.docEditor.refreshHistory(data);
+    }
 
 })(jQuery, OCA);
