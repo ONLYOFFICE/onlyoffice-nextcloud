@@ -35,7 +35,7 @@ return [
        ["name" => "editor#url", "url" => "/ajax/url", "verb" => "GET"],
        ["name" => "editor#history", "url" => "/ajax/history", "verb" => "GET"],
        ["name" => "editor#version", "url" => "/ajax/version", "verb" => "GET"],
-       ["name" => "editor#restore", "url" => "/ajax/restore", "verb" => "GET"],
+       ["name" => "editor#restore", "url" => "/ajax/restore", "verb" => "PUT"],
        ["name" => "settings#save_address", "url" => "/ajax/settings/address", "verb" => "PUT"],
        ["name" => "settings#save_common", "url" => "/ajax/settings/common", "verb" => "PUT"],
        ["name" => "settings#save_watermark", "url" => "/ajax/settings/watermark", "verb" => "PUT"],

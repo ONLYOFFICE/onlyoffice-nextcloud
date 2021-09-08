@@ -244,36 +244,39 @@
     OCA.Onlyoffice.onRequestRestore = function (event) {
         var version = event.data.version;
 
-        $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/restore?fileId={fileId}&version={version}&shareToken={shareToken}",
-        {
-            fileId: OCA.Onlyoffice.fileId || 0,
-            version: version,
-            shareToken: OCA.Onlyoffice.shareToken || "",
-        }),
-        function onSuccess(response) {
-            if (response.error) {
-                var data = {error: response.error};
-            } else {
-                var currentVersion = 0;
-                $.each(response, function (i, fileVersion) {
-                    if (fileVersion.version >= currentVersion) {
-                        currentVersion = fileVersion.version;
-                    }
+        $.ajax({
+            method: "PUT",
+            url: OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/restore?fileId={fileId}&version={version}&shareToken={shareToken}",
+            {
+                fileId: OCA.Onlyoffice.fileId || 0,
+                version: version,
+                shareToken: OCA.Onlyoffice.shareToken || "",
+            }),
+            success: function onSuccess(response) {
+                if (response.error) {
+                    var data = {error: response.error};
+                } else {
+                    var currentVersion = 0;
+                    $.each(response, function (i, fileVersion) {
+                        if (fileVersion.version >= currentVersion) {
+                            currentVersion = fileVersion.version;
+                        }
 
-                    fileVersion.created = moment(fileVersion.created * 1000).format("L LTS");
-                    if (fileVersion.changes) {
-                        $.each(fileVersion.changes, function (j, change) {
-                            change.created = moment(change.created + "+00:00").format("L LTS");
-                        });
-                    }
-                });
+                        fileVersion.created = moment(fileVersion.created * 1000).format("L LTS");
+                        if (fileVersion.changes) {
+                            $.each(fileVersion.changes, function (j, change) {
+                                change.created = moment(change.created + "+00:00").format("L LTS");
+                            });
+                        }
+                    });
 
-                data = {
-                    currentVersion: currentVersion,
-                    history: response,
-                };
+                    data = {
+                        currentVersion: currentVersion,
+                        history: response,
+                    };
+                }
+                OCA.Onlyoffice.docEditor.refreshHistory(data);
             }
-            OCA.Onlyoffice.docEditor.refreshHistory(data);
         });
     };
 
