@@ -110,6 +110,11 @@
                     OCA.Onlyoffice.OpenShareDialog();
                 }
                 break;
+            case "onRefreshVersionsDialog":
+                if (OCA.Onlyoffice.RefreshVersionsDialog) {
+                    OCA.Onlyoffice.RefreshVersionsDialog();
+                }
+                break;
             case "editorRequestSaveAs":
                 OCA.Onlyoffice.onRequestSaveAs(event.data.param);
                 break;

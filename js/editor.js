@@ -276,6 +276,13 @@
                     };
                 }
                 OCA.Onlyoffice.docEditor.refreshHistory(data);
+
+                if (OCA.Onlyoffice.inframe) {
+                    window.parent.postMessage({
+                        method: "onRefreshVersionsDialog"
+                    },
+                    "*");
+                }
             }
         });
     };

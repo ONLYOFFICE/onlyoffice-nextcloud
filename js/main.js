@@ -146,6 +146,16 @@
         }
     };
 
+    OCA.Onlyoffice.RefreshVersionsDialog = function () {
+        if (OCA.Onlyoffice.context) {
+            if ($("#app-sidebar-vue").is(":visible")) {
+                OCA.Files.Sidebar.close();
+                OCA.Files.Sidebar.open(OCA.Onlyoffice.context.dir + "/" + OCA.Onlyoffice.context.fileName);
+                OCA.Files.Sidebar.setActiveTab("versionsTabView");
+            }
+        }
+    };
+
     OCA.Onlyoffice.FileClick = function (fileName, context) {
         var fileInfoModel = context.fileInfoModel || context.fileList.getModelForFile(fileName);
         OCA.Onlyoffice.OpenEditor(fileInfoModel.id, context.dir, fileName);
