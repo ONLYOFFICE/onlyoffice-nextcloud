@@ -1064,6 +1064,9 @@ class EditorController extends Controller {
      */
     public function config($fileId, $filePath = null, $shareToken = null, $directToken = null, $version = 0, $inframe = false, $desktop = false, $guestName = null, $template = false, $anchor = null) {
 
+$start=hrtime(true);
+$this->logger->debug("Config Time start " . (hrtime(true) - $start)/1e+6, ["app" => $this->appName]);
+
         if (!empty($directToken)) {
             list ($directData, $error) = $this->crypt->ReadHash($directToken);
             if ($directData === null) {
@@ -1100,7 +1103,11 @@ class EditorController extends Controller {
             }
         }
 
+$this->logger->debug("Config Time before get file " . (hrtime(true) - $start)/1e+6, ["app" => $this->appName]);
+
         list ($file, $error, $share) = empty($shareToken) ? $this->getFile($userId, $fileId, $filePath, $template) : $this->fileUtility->getFileByToken($fileId, $shareToken);
+
+$this->logger->debug("Config Time after get file " . (hrtime(true) - $start)/1e+6, ["app" => $this->appName]);
 
         if (isset($error)) {
             $this->logger->error("Config: $fileId $error", ["app" => $this->appName]);
@@ -1115,14 +1122,23 @@ class EditorController extends Controller {
             return ["error" => $this->trans->t("Format is not supported")];
         }
 
+$this->logger->debug("Config Time before get url " . (hrtime(true) - $start)/1e+6, ["app" => $this->appName]);
+
         $fileUrl = $this->getUrl($file, $user, $shareToken, $version, null, $template);
+
+$this->logger->debug("Config Time after get url " . (hrtime(true) - $start)/1e+6, ["app" => $this->appName]);
 
         $key = null;
         if ($version > 0
             && $this->versionManager !== null) {
             $owner = $file->getFileInfo()->getOwner();
             if ($owner !== null) {
+
+$this->logger->debug("Config Time before get versions " . (hrtime(true) - $start)/1e+6, ["app" => $this->appName]);
+
                 $versions = array_reverse($this->versionManager->getVersionsForFile($owner, $file->getFileInfo()));
+
+$this->logger->debug("Config Time after get versions " . (hrtime(true) - $start)/1e+6, ["app" => $this->appName]);
 
                 if ($version <= count($versions)) {
                     $fileVersion = array_values($versions)[$version - 1];
@@ -1132,9 +1148,21 @@ class EditorController extends Controller {
             }
         }
         if ($key === null) {
+
+$this->logger->debug("Config Time before get key " . (hrtime(true) - $start)/1e+6, ["app" => $this->appName]);
+
             $key = $this->fileUtility->getKey($file, true);
+
+$this->logger->debug("Config Time after get key " . (hrtime(true) - $start)/1e+6, ["app" => $this->appName]);
+
         }
+
+$this->logger->debug("Config Time before generate key " . (hrtime(true) - $start)/1e+6, ["app" => $this->appName]);
+
         $key = DocumentService::GenerateRevisionId($key);
+
+$this->logger->debug("Config Time after generate key " . (hrtime(true) - $start)/1e+6, ["app" => $this->appName]);
+
 
         $params = [
             "document" => [
@@ -1151,6 +1179,8 @@ class EditorController extends Controller {
             ]
         ];
 
+$this->logger->debug("Config Time before permissions " . (hrtime(true) - $start)/1e+6, ["app" => $this->appName]);
+
         $permissions_modifyFilter = $this->config->GetSystemValue($this->config->_permissions_modifyFilter);
         if (isset($permissions_modifyFilter)) {
             $params["document"]["permissions"]["modifyFilter"] = $permissions_modifyFilter;
@@ -1162,6 +1192,9 @@ class EditorController extends Controller {
                     && $file->isUpdateable()
                     && (empty($shareToken) || ($share->getPermissions() & Constants::PERMISSION_UPDATE) === Constants::PERMISSION_UPDATE);
         $params["document"]["permissions"]["edit"] = $editable;
+
+$this->logger->debug("Config Time after permissions " . (hrtime(true) - $start)/1e+6, ["app" => $this->appName]);
+
         if ($editable && $canEdit) {
             $hashCallback = $this->crypt->GetHash(["userId" => $userId, "fileId" => $file->getId(), "filePath" => $filePath, "shareToken" => $shareToken, "action" => "track"]);
             $callback = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.track", ["doc" => $hashCallback]);
@@ -1169,6 +1202,8 @@ class EditorController extends Controller {
             if (!empty($this->config->GetStorageUrl())) {
                 $callback = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->config->GetStorageUrl(), $callback);
             }
+
+$this->logger->debug("Config Time after get callback " . (hrtime(true) - $start)/1e+6, ["app" => $this->appName]);
 
             $params["editorConfig"]["callbackUrl"] = $callback;
         } else {
@@ -1178,6 +1213,8 @@ class EditorController extends Controller {
         if (\OC::$server->getRequest()->isUserAgent([$this::USER_AGENT_MOBILE])) {
             $params["type"] = "mobile";
         }
+
+$this->logger->debug("Config Time before user id " . (hrtime(true) - $start)/1e+6, ["app" => $this->appName]);
 
         if (!empty($userId)) {
             $params["editorConfig"]["user"] = [
@@ -1189,6 +1226,8 @@ class EditorController extends Controller {
                 "name" => $guestName
             ];
         }
+
+$this->logger->debug("Config Time after user id " . (hrtime(true) - $start)/1e+6, ["app" => $this->appName]);
 
         $folderLink = null;
 
@@ -1213,6 +1252,9 @@ class EditorController extends Controller {
                 }
             }
         } else if (!empty($userId)) {
+
+$this->logger->debug("Config Time before user folder " . (hrtime(true) - $start)/1e+6, ["app" => $this->appName]);
+
             $userFolder = $this->root->getUserFolder($userId);
             $folderPath = $userFolder->getRelativePath($file->getParent()->getPath());
             if (!empty($folderPath)) {
@@ -1222,6 +1264,8 @@ class EditorController extends Controller {
                 ];
                 $folderLink = $this->urlGenerator->linkToRouteAbsolute("files.view.index", $linkAttr);
             }
+
+$this->logger->debug("Config Time after user folder " . (hrtime(true) - $start)/1e+6, ["app" => $this->appName]);
 
             switch($params["documentType"]) {
                 case "text":
@@ -1250,10 +1294,15 @@ class EditorController extends Controller {
             $createUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".editor.create_new", $createParam);
             $params["editorConfig"]["createUrl"] = urldecode($createUrl);
 
+$this->logger->debug("Config Time before templates " . (hrtime(true) - $start)/1e+6, ["app" => $this->appName]);
+
             $templatesList = TemplateManager::GetGlobalTemplates($file->getMimeType());
             if (!empty($templatesList)) {
                 $templates = [];
                 foreach($templatesList as $templateItem) {
+
+$this->logger->debug("Config Time template " . (hrtime(true) - $start)/1e+6, ["app" => $this->appName]);
+
                     $createParam["templateId"] = $templateItem->getId();
                     $createParam["name"] = $templateItem->getName();
 
@@ -1266,6 +1315,8 @@ class EditorController extends Controller {
 
                 $params["editorConfig"]["templates"] = $templates;
             }
+
+$this->logger->debug("Config Time after templates " . (hrtime(true) - $start)/1e+6, ["app" => $this->appName]);
 
             if (!$template) {
                 $params["document"]["info"]["favorite"] = $this->isFavorite($fileId, $userId);
@@ -1290,13 +1341,21 @@ class EditorController extends Controller {
             }
         }
 
+$this->logger->debug("Config Time before sharing " . (hrtime(true) - $start)/1e+6, ["app" => $this->appName]);
+
         if ($inframe === true) {
             $params["_files_sharing"] = \OC::$server->getAppManager()->isInstalled("files_sharing");
         }
 
+$this->logger->debug("Config Time before customization " . (hrtime(true) - $start)/1e+6, ["app" => $this->appName]);
+
         $params = $this->setCustomization($params);
 
+$this->logger->debug("Config Time after customization " . (hrtime(true) - $start)/1e+6, ["app" => $this->appName]);
+
         $params = $this->setWatermark($params, !empty($shareToken), $userId, $file);
+
+$this->logger->debug("Config Time after watermark " . (hrtime(true) - $start)/1e+6, ["app" => $this->appName]);
 
         if ($this->config->UseDemo()) {
             $params["editorConfig"]["tenant"] = $this->config->GetSystemValue("instanceid", true);
@@ -1312,10 +1371,14 @@ class EditorController extends Controller {
             }
         }
 
+$this->logger->debug("Config Time before token " . (hrtime(true) - $start)/1e+6, ["app" => $this->appName]);
+
         if (!empty($this->config->GetDocumentServerSecret())) {
             $token = \Firebase\JWT\JWT::encode($params, $this->config->GetDocumentServerSecret());
             $params["token"] = $token;
         }
+
+$this->logger->debug("Config Time end " . (hrtime(true) - $start)/1e+6, ["app" => $this->appName]);
 
         $this->logger->debug("Config is generated for: $fileId ($version) with key $key", ["app" => $this->appName]);
 
