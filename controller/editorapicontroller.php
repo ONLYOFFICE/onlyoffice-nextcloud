@@ -317,6 +317,13 @@ class EditorApiController extends OCSController {
             $params["editorConfig"]["mode"] = "view";
         }
 
+        if (!$template
+            && $file->isUpdateable()
+            && (empty($shareToken) || ($share->getPermissions() & Constants::PERMISSION_UPDATE) === Constants::PERMISSION_UPDATE)) {
+
+            $params["document"]["permissions"]["changeHistory"] = true;
+        }
+
         if (\OC::$server->getRequest()->isUserAgent([$this::USER_AGENT_MOBILE])) {
             $params["type"] = "mobile";
         }

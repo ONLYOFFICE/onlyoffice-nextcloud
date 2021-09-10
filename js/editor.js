@@ -131,6 +131,7 @@
                     if (!OCA.Onlyoffice.template) {
                         config.events.onRequestHistory = OCA.Onlyoffice.onRequestHistory;
                         config.events.onRequestHistoryData = OCA.Onlyoffice.onRequestHistoryData;
+                        config.events.onRequestRestore = OCA.Onlyoffice.onRequestRestore;
 
                         if (!OCA.Onlyoffice.version) {
                             config.events.onRequestHistoryClose = OCA.Onlyoffice.onRequestHistoryClose;
@@ -190,33 +191,7 @@
                 shareToken: OCA.Onlyoffice.shareToken || "",
             }),
             function onSuccess(response) {
-                if (response.error) {
-                    var data = {error: response.error};
-                } else {
-                    var currentVersion = 0;
-                    $.each(response, function (i, fileVersion) {
-                        if (fileVersion.version >= currentVersion) {
-                            currentVersion = fileVersion.version;
-                        }
-
-                        fileVersion.created = moment(fileVersion.created * 1000).format("L LTS");
-                        if (fileVersion.changes) {
-                            $.each(fileVersion.changes, function (j, change) {
-                                change.created = moment(change.created + "+00:00").format("L LTS");
-                            });
-                        }
-                    });
-
-                    if (version) {
-                        currentVersion = Math.min(currentVersion, version);
-                    }
-
-                    data = {
-                        currentVersion: currentVersion,
-                        history: response,
-                    };
-                }
-                OCA.Onlyoffice.docEditor.refreshHistory(data);
+                OCA.Onlyoffice.refreshHistory(response, version);
         });
     };
 
@@ -237,6 +212,30 @@
                     };
                 }
                 OCA.Onlyoffice.docEditor.setHistoryData(response);
+        });
+    };
+
+    OCA.Onlyoffice.onRequestRestore = function (event) {
+        var version = event.data.version;
+
+        $.ajax({
+            method: "PUT",
+            url: OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/restore?fileId={fileId}&version={version}&shareToken={shareToken}",
+            {
+                fileId: OCA.Onlyoffice.fileId || 0,
+                version: version,
+                shareToken: OCA.Onlyoffice.shareToken || "",
+            }),
+            success: function onSuccess(response) {
+                OCA.Onlyoffice.refreshHistory(response, version);
+
+                if (OCA.Onlyoffice.inframe) {
+                    window.parent.postMessage({
+                        method: "onRefreshVersionsDialog"
+                    },
+                    "*");
+                }
+            }
         });
     };
 
@@ -544,5 +543,35 @@
                 break;
         }
     };
+
+    OCA.Onlyoffice.refreshHistory = function (response, version) {
+        if (response.error) {
+            var data = {error: response.error};
+        } else {
+            var currentVersion = 0;
+            $.each(response, function (i, fileVersion) {
+                if (fileVersion.version >= currentVersion) {
+                    currentVersion = fileVersion.version;
+                }
+
+                fileVersion.created = moment(fileVersion.created * 1000).format("L LTS");
+                if (fileVersion.changes) {
+                    $.each(fileVersion.changes, function (j, change) {
+                        change.created = moment(change.created + "+00:00").format("L LTS");
+                    });
+                }
+            });
+
+            if (version) {
+                currentVersion = Math.min(currentVersion, version);
+            }
+
+            data = {
+                currentVersion: currentVersion,
+                history: response,
+            };
+        }
+        OCA.Onlyoffice.docEditor.refreshHistory(data);
+    }
 
 })(jQuery, OCA);
