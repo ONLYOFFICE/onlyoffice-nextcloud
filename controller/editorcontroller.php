@@ -1008,7 +1008,15 @@ class EditorController extends Controller {
             return new RedirectResponse($redirectUrl);
         }
 
-        if (empty($shareToken) && !$this->config->isUserAllowedToUse()) {
+        $shareBy = null;
+        if (!empty($shareToken) && !$isLoggedIn) {
+            list ($share, $error) = $this->fileUtility->getShare($shareToken);
+            if (!empty($share)) {
+                $shareBy = $share->getSharedBy();
+            }
+        }
+
+        if (!$this->config->isUserAllowedToUse($shareBy)) {
             return $this->renderError($this->trans->t("Not permitted"));
         }
 
