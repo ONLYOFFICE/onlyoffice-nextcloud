@@ -29,13 +29,13 @@ return [
        ["name" => "editor#public_page", "url" => "/s/{shareToken}", "verb" => "GET"],
        ["name" => "editor#users", "url" => "/ajax/users", "verb" => "GET"],
        ["name" => "editor#mention", "url" => "/ajax/mention", "verb" => "POST"],
-       ["name" => "editor#config", "url" => "/ajax/config/{fileId}", "verb" => "GET"],
        ["name" => "editor#create", "url" => "/ajax/new", "verb" => "POST"],
        ["name" => "editor#convert", "url" => "/ajax/convert", "verb" => "POST"],
        ["name" => "editor#save", "url" => "/ajax/save", "verb" => "POST"],
        ["name" => "editor#url", "url" => "/ajax/url", "verb" => "GET"],
        ["name" => "editor#history", "url" => "/ajax/history", "verb" => "GET"],
        ["name" => "editor#version", "url" => "/ajax/version", "verb" => "GET"],
+       ["name" => "editor#restore", "url" => "/ajax/restore", "verb" => "PUT"],
        ["name" => "settings#save_address", "url" => "/ajax/settings/address", "verb" => "PUT"],
        ["name" => "settings#save_common", "url" => "/ajax/settings/common", "verb" => "PUT"],
        ["name" => "settings#save_watermark", "url" => "/ajax/settings/watermark", "verb" => "PUT"],
@@ -47,6 +47,7 @@ return [
     ],
     "ocs" => [
         ["name" => "federation#key", "url" => "/api/v1/key", "verb" => "POST"],
-        ["name" => "federation#keylock", "url" => "/api/v1/keylock", "verb" => "POST"]
+        ["name" => "federation#keylock", "url" => "/api/v1/keylock", "verb" => "POST"],
+        ["name" => "editorapi#config", "url" => "/api/v1/config/{fileId}", "verb" => "GET"]
     ]
 ];

@@ -106,6 +106,8 @@
         }
     };
 
-    initPage();
+    $(document).ready(function() {
+        initPage();
+    });
 
 })(OCA);

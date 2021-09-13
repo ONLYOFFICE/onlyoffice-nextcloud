@@ -104,11 +104,11 @@ OC.L10N.register(
     "File has been converted. Its content might look different.": "Файлът бе преобразуван. Съдържанието му може да изглежда различно.",
     "Download as": "Изтегли като",
     "Download": "Изтегли",
-    "Convert into": "Конвертирай в",
     "Origin format": "Формат на произход",
     "Failed to send notification": "Неуспешно изпращане на известие",
     "Notification sent successfully": "Успешно изпратено известие",
     "%1\$s mentioned in the %2\$s: \"%3\$s\".": "%1\$s, споменат във %2\$s: \"%3\$s\".",
-    "{notifier} mentioned in the {file}: \"%1\$s\".": "{notifier} ha mencionado en {file}: \"%1\$s\"."
+    "{notifier} mentioned in the {file}: \"%1\$s\".": "{notifier} ha mencionado en {file}: \"%1\$s\".",
+    "Choose a format to convert {fileName}": "Изберете формат за конвертиране {fileName}"
 },
 "nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);");

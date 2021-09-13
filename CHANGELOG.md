@@ -1,5 +1,16 @@
 # Change Log
 
+## Added
+- versions restore from editor
+
+## Changed
+- editing by link only for available groups
+- open share link directly
+
+## 7.1.2
+## Changed
+- fix editing from mobile app
+
 ## 7.1.0
 ## Added
 - mentions in comments

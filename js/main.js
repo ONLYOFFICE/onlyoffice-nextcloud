@@ -146,6 +146,16 @@
         }
     };
 
+    OCA.Onlyoffice.RefreshVersionsDialog = function () {
+        if (OCA.Onlyoffice.context) {
+            if ($("#app-sidebar-vue").is(":visible")) {
+                OCA.Files.Sidebar.close();
+                OCA.Files.Sidebar.open(OCA.Onlyoffice.context.dir + "/" + OCA.Onlyoffice.context.fileName);
+                OCA.Files.Sidebar.setActiveTab("versionsTabView");
+            }
+        }
+    };
+
     OCA.Onlyoffice.FileClick = function (fileName, context) {
         var fileInfoModel = context.fileInfoModel || context.fileList.getModelForFile(fileName);
         OCA.Onlyoffice.OpenEditor(fileInfoModel.id, context.dir, fileName);
@@ -190,7 +200,7 @@
                     dialog_title: t("onlyoffice", "Download as")
                 });
 
-                $(dialog[0].querySelectorAll("p")).text(fileName + " " + t(OCA.Onlyoffice.AppName, "Convert into"));
+                $(dialog[0].querySelectorAll("p")).text(t(OCA.Onlyoffice.AppName, "Choose a format to convert {fileName}", {fileName: fileName}));
 
                 var extension = getFileExtension(fileName);
                 var selectNode = dialog[0].querySelectorAll("select")[0];
@@ -430,16 +440,27 @@
                     return;
                 }
 
-                var button = document.createElement("a");
-                button.href = OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/s/" + encodeURIComponent($("#sharingToken").val()));
-                button.className = "onlyoffice-public-open button";
-                button.innerText = t(OCA.Onlyoffice.AppName, "Open in ONLYOFFICE")
+                var editorUrl = OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/s/" + encodeURIComponent($("#sharingToken").val()));
 
-                if (!OCA.Onlyoffice.setting.sameTab) {
-                    button.target = "_blank";
+                if (_oc_appswebroots.richdocuments
+                    || _oc_appswebroots.files_pdfviewer && extension === "pdf"
+                    || _oc_appswebroots.text && extension === "txt") {
+
+                    var button = document.createElement("a");
+                    button.href = editorUrl;
+                    button.className = "onlyoffice-public-open button";
+                    button.innerText = t(OCA.Onlyoffice.AppName, "Open in ONLYOFFICE")
+
+                    if (!OCA.Onlyoffice.setting.sameTab) {
+                        button.target = "_blank";
+                    }
+
+                    $("#preview").prepend(button);
+                } else {
+                    OCA.Onlyoffice.frameSelector = "#onlyofficeFrame";
+                    var $iframe = $("<iframe id=\"onlyofficeFrame\" nonce=\"" + btoa(OC.requestToken) + "\" scrolling=\"no\" allowfullscreen src=\"" + editorUrl + "?inframe=true\" />");
+                    $("#app-content").append($iframe);
                 }
-
-                $("#preview").prepend(button);
             };
 
             OCA.Onlyoffice.GetSettings(initSharedButton);
