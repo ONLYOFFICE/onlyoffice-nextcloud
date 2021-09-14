@@ -478,7 +478,10 @@
     };
 
     OCA.Onlyoffice.onRequestUsers = function (event) {
-        $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/users"),
+        $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/users?fileId={fileId}", 
+        {
+            fileId: OCA.Onlyoffice.fileId || 0
+        }),
         function onSuccess(response) {
             OCA.Onlyoffice.docEditor.setUsers({
                 "users": response
