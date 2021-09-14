@@ -340,11 +340,9 @@ class EditorController extends Controller {
         $groupManager = \OC::$server->getGroupManager();
         $currentUserGroups = $groupManager->getUserGroupIds($currentUser);
 
-        if (\OC::$server->getConfig()->getAppValue("core", "shareapi_exclude_groups", "no") === "yes") {
-            $excludedGroups = json_decode(\OC::$server->getConfig()->getAppValue("core", "shareapi_exclude_groups_list", ""), true);
-            if (!empty(array_intersect($currentUserGroups, $excludedGroups))) {
-                return $result;
-            }
+        $excludedGroups = $this->getShareExcludedGroups();
+        if (count(array_intersect($currentUserGroups, $excludedGroups)) === count($currentUserGroups)) {
+            return $result;
         }
 
         $shareMemberGroups = $this->shareManager->shareWithGroupMembersOnly();
@@ -1437,6 +1435,21 @@ class EditorController extends Controller {
         }
 
         return $fileUrl;
+    }
+
+    /**
+     * Return excluded groups list for share
+     *
+     * @return array
+     */
+    private function getShareExcludedGroups() {
+        $excludedGroups = [];
+
+        if (\OC::$server->getConfig()->getAppValue("core", "shareapi_exclude_groups", "no") === "yes") {
+            $excludedGroups = json_decode(\OC::$server->getConfig()->getAppValue("core", "shareapi_exclude_groups_list", ""), true);
+        }
+
+        return $excludedGroups;
     }
 
     /**
