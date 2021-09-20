@@ -84,6 +84,21 @@
         }
     };
 
+    OCA.Onlyoffice.changeFavicon = function (favicon) {
+        $('link[rel="icon"]').attr("href", favicon);
+    };
+
+    OCA.Onlyoffice.onShowMessage = function (messageObj) {
+        switch (messageObj.type) {
+            case "success":
+                OCP.Toast.success(messageObj.message, messageObj.props);
+                break;
+            case "error":
+                OCP.Toast.error(messageObj.message, messageObj.props);
+                break;
+        }
+    }
+
     window.addEventListener("message", function (event) {
         if (!$(OCA.Onlyoffice.frameSelector).length
             || $(OCA.Onlyoffice.frameSelector)[0].contentWindow !== event.source
@@ -97,6 +112,11 @@
             case "editorRequestSharingSettings":
                 if (OCA.Onlyoffice.OpenShareDialog) {
                     OCA.Onlyoffice.OpenShareDialog();
+                }
+                break;
+            case "onRefreshVersionsDialog":
+                if (OCA.Onlyoffice.RefreshVersionsDialog) {
+                    OCA.Onlyoffice.RefreshVersionsDialog();
                 }
                 break;
             case "editorRequestSaveAs":
@@ -114,6 +134,11 @@
             case "onDocumentReady":
                 OCA.Onlyoffice.onDocumentReady(event.data.param);
                 break;
+            case "changeFavicon":
+                OCA.Onlyoffice.changeFavicon(event.data.param);
+                break;
+            case "onShowMessage":
+                OCA.Onlyoffice.onShowMessage(event.data.param);
         }
     }, false);
 
@@ -123,4 +148,10 @@
         }
     });
 
+    window.addEventListener("DOMNodeRemoved", function(event) {
+        if ($(event.target).length && $(OCA.Onlyoffice.frameSelector).length
+            && ($(event.target)[0].id === "viewer" || $(event.target)[0].id === $(OCA.Onlyoffice.frameSelector)[0].id)) {
+            OCA.Onlyoffice.changeFavicon($(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.faviconBase);
+        }
+    });
 })(OCA);

@@ -104,11 +104,11 @@ OC.L10N.register(
     "File has been converted. Its content might look different.": "ファイルが変換されました。 その内容は異なって見えるかもしれません。",
     "Download as": "別の形式でダウンロード",
     "Download": "ダウンロード",
-    "Convert into": "に変換する",
     "Origin format": "オリジンの形式",
     "Failed to send notification": "通知を送信できませんでした",
     "Notification sent successfully": "通知を送信しました",
     "%1\$s mentioned in the %2\$s: \"%3\$s\".": "%1\$s は %2\$s: \"%3\$s\"に記載されました。",
-    "{notifier} mentioned in the {file}: \"%1\$s\".": "{notifier} は {file}: \"%1\$s\"に記載しました。"
+    "{notifier} mentioned in the {file}: \"%1\$s\".": "{notifier} は {file}: \"%1\$s\"に記載しました。",
+    "Choose a format to convert {fileName}": "{fileName}を変換する形式を選択してください"
 },
 "nplurals=2; plural=(n != 1);");

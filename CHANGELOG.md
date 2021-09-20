@@ -1,5 +1,13 @@
 # Change Log
 
+## Added
+- set favicon on editor page
+- versions restore from editor
+
+## Changed
+- editing by link only for available groups
+- open share link directly
+
 ## 7.1.2
 ## Changed
 - fix editing from mobile app
