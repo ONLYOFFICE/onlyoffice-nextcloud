@@ -37,6 +37,11 @@
         OCA.Onlyoffice.filePath = $("#iframeEditor").data("path");
         OCA.Onlyoffice.anchor = $("#iframeEditor").attr("data-anchor");
         var guestName = localStorage.getItem("nick");
+
+        if (OCA.Onlyoffice.inframe) {
+            OCA.Onlyoffice.faviconBase = $('link[rel="icon"]').attr("href");
+        }
+
         if (!OCA.Onlyoffice.fileId && !OCA.Onlyoffice.shareToken && !directToken) {
             OCA.Onlyoffice.showMessage(t(OCA.Onlyoffice.AppName, "FileId is empty"), "error", {timeout: -1});
             return;
@@ -178,6 +183,17 @@
                     if (!OCA.Onlyoffice.directEditor
                         && config.type === "mobile" && $("#app > iframe").css("position") === "fixed") {
                         $("#app > iframe").css("height", "calc(100% - 50px)");
+                    }
+
+                    var favicon = OC.filePath(OCA.Onlyoffice.AppName, "img", OCA.Onlyoffice.documentType + ".ico");
+                    if (OCA.Onlyoffice.inframe) {
+                        window.parent.postMessage({
+                            method: "changeFavicon",
+                            param: favicon
+                        },
+                        "*");
+                    } else {
+                        $('link[rel="icon"]').attr("href", favicon);
                     }
                 }
             }

@@ -1,6 +1,7 @@
 # Change Log
 
 ## Added
+- set favicon on editor page
 - versions restore from editor
 
 ## Changed

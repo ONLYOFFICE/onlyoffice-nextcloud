@@ -84,6 +84,10 @@
         }
     };
 
+    OCA.Onlyoffice.changeFavicon = function (favicon) {
+        $('link[rel="icon"]').attr("href", favicon);
+    };
+
     OCA.Onlyoffice.onShowMessage = function (messageObj) {
         switch (messageObj.type) {
             case "success":
@@ -130,6 +134,9 @@
             case "onDocumentReady":
                 OCA.Onlyoffice.onDocumentReady(event.data.param);
                 break;
+            case "changeFavicon":
+                OCA.Onlyoffice.changeFavicon(event.data.param);
+                break;
             case "onShowMessage":
                 OCA.Onlyoffice.onShowMessage(event.data.param);
         }
@@ -141,4 +148,10 @@
         }
     });
 
+    window.addEventListener("DOMNodeRemoved", function(event) {
+        if ($(event.target).length && $(OCA.Onlyoffice.frameSelector).length
+            && ($(event.target)[0].id === "viewer" || $(event.target)[0].id === $(OCA.Onlyoffice.frameSelector)[0].id)) {
+            OCA.Onlyoffice.changeFavicon($(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.faviconBase);
+        }
+    });
 })(OCA);
