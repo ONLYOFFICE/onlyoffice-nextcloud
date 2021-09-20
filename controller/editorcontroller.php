@@ -28,15 +28,12 @@ use OCP\AppFramework\Http\Template\PublicTemplateResponse;
 use OCP\AppFramework\QueryException;
 use OCP\Constants;
 use OCP\Files\File;
-use OCP\Files\Folder;
 use OCP\Files\IRootFolder;
 use OCP\Files\NotPermittedException;
 use OCP\IL10N;
 use OCP\ILogger;
 use OCP\IRequest;
 use OCP\ISession;
-use OCP\ITags;
-use OCP\ITagManager;
 use OCP\IURLGenerator;
 use OCP\IUser;
 use OCP\IUserManager;
@@ -137,18 +134,6 @@ class EditorController extends Controller {
     private $shareManager;
 
     /**
-     * Tag manager
-     *
-     * @var ITagManager
-    */
-    private $tagManager;
-
-    /**
-     * Mobile regex from https://github.com/ONLYOFFICE/CommunityServer/blob/v9.1.1/web/studio/ASC.Web.Studio/web.appsettings.config#L35
-     */
-    const USER_AGENT_MOBILE = "/android|avantgo|playbook|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od|ad)|iris|kindle|lge |maemo|midp|mmp|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\\/|plucker|pocket|psp|symbian|treo|up\\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i";
-
-    /**
      * @param string $AppName - application name
      * @param IRequest $request - request object
      * @param IRootFolder $root - root folder
@@ -161,7 +146,6 @@ class EditorController extends Controller {
      * @param Crypt $crypt - hash generator
      * @param IManager $shareManager - Share manager
      * @param ISession $ISession - Session
-     * @param ITagManager $tagManager - Tag manager
      */
     public function __construct($AppName,
                                     IRequest $request,
@@ -174,8 +158,7 @@ class EditorController extends Controller {
                                     AppConfig $config,
                                     Crypt $crypt,
                                     IManager $shareManager,
-                                    ISession $session,
-                                    ITagManager $tagManager
+                                    ISession $session
                                     ) {
         parent::__construct($AppName, $request);
 
@@ -188,7 +171,6 @@ class EditorController extends Controller {
         $this->config = $config;
         $this->crypt = $crypt;
         $this->shareManager = $shareManager;
-        $this->tagManager = $tagManager;
 
         if (\OC::$server->getAppManager()->isInstalled("files_versions")) {
             try {
@@ -559,10 +541,10 @@ class EditorController extends Controller {
 
         $internalExtension = "docx";
         switch ($format["type"]) {
-            case "spreadsheet":
+            case "cell":
                 $internalExtension = "xlsx";
                 break;
-            case "presentation":
+            case "slide":
                 $internalExtension = "pptx";
                 break;
         }
@@ -888,6 +870,61 @@ class EditorController extends Controller {
     }
 
     /**
+     * Restore file version
+     *
+     * @param integer $fileId - file identifier
+     * @param integer $version - file version
+     * @param string $shareToken - access token
+     *
+     * @return array
+     *
+     * @NoAdminRequired
+     * @PublicPage
+     */
+    public function restore($fileId, $version, $shareToken = null) {
+        $this->logger->debug("Request restore version for: $fileId ($version)", ["app" => $this->appName]);
+
+        if (empty($shareToken) && !$this->config->isUserAllowedToUse()) {
+            return ["error" => $this->trans->t("Not permitted")];
+        }
+
+        $version = empty($version) ? null : $version;
+
+        $user = $this->userSession->getUser();
+        $userId = null;
+        if (!empty($user)) {
+            $userId = $user->getUID();
+        }
+
+        list ($file, $error, $share) = empty($shareToken) ? $this->getFile($userId, $fileId) : $this->fileUtility->getFileByToken($fileId, $shareToken);
+
+        if (isset($error)) {
+            $this->logger->error("Restore: $fileId $error", ["app" => $this->appName]);
+            return ["error" => $error];
+        }
+
+        if ($fileId === 0) {
+            $fileId = $file->getId();
+        }
+
+        $owner = null;
+        $versions = array();
+        if ($this->versionManager !== null) {
+            $owner = $file->getFileInfo()->getOwner();
+            if ($owner !== null) {
+                $versions = array_reverse($this->versionManager->getVersionsForFile($owner, $file->getFileInfo()));
+            }
+
+            if (count($versions) >= $version) {
+                $fileVersion = array_values($versions)[$version - 1];
+                $this->versionManager->rollback($fileVersion);
+            }
+        }
+
+        return $this->history($fileId, $shareToken);
+    }
+
+    /**
      * Get presigned url to file
      *
      * @param string $filePath - file path
@@ -1040,7 +1077,15 @@ class EditorController extends Controller {
             return new RedirectResponse($redirectUrl);
         }
 
-        if (empty($shareToken) && !$this->config->isUserAllowedToUse()) {
+        $shareBy = null;
+        if (!empty($shareToken) && !$isLoggedIn) {
+            list ($share, $error) = $this->fileUtility->getShare($shareToken);
+            if (!empty($share)) {
+                $shareBy = $share->getSharedBy();
+            }
+        }
+
+        if (!$this->config->isUserAllowedToUse($shareBy)) {
             return $this->renderError($this->trans->t("Not permitted"));
         }
 
@@ -1110,285 +1155,6 @@ class EditorController extends Controller {
      */
     public function PublicPage($fileId, $shareToken, $version = 0, $inframe = false) {
         return $this->index($fileId, null, $shareToken, $version, $inframe);
-    }
-
-    /**
-     * Collecting the file parameters for the document service
-     *
-     * @param integer $fileId - file identifier
-     * @param string $filePath - file path
-     * @param string $shareToken - access token
-     * @param string $directToken - direct token
-     * @param integer $version - file version
-     * @param bool $inframe - open in frame
-     * @param bool $desktop - desktop label
-     * @param string $guestName - nickname not logged user
-     * @param bool $template - file is template
-     * @param string $anchor - anchor for file content
-     *
-     * @return array
-     *
-     * @NoAdminRequired
-     * @PublicPage
-     */
-    public function config($fileId, $filePath = null, $shareToken = null, $directToken = null, $version = 0, $inframe = false, $desktop = false, $guestName = null, $template = false, $anchor = null) {
-
-        if (!empty($directToken)) {
-            list ($directData, $error) = $this->crypt->ReadHash($directToken);
-            if ($directData === null) {
-                $this->logger->error("Config for directEditor with empty or not correct hash: $error", ["app" => $this->appName]);
-                return ["error" => $this->trans->t("Not permitted")];
-            }
-            if ($directData->action !== "direct") {
-                $this->logger->error("Config for directEditor with other data", ["app" => $this->appName]);
-                return ["error" => $this->trans->t("Invalid request")];
-            }
-
-            $fileId = $directData->fileId;
-            $userId = $directData->userId;
-            if ($this->userSession->isLoggedIn()
-                && $userId === $this->userSession->getUser()->getUID()) {
-                $redirectUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".editor.index",
-                    [
-                        "fileId" => $fileId,
-                        "filePath" => $filePath
-                    ]);
-                return ["redirectUrl" => $redirectUrl];
-            }
-
-            $user = $this->userManager->get($userId);
-        } else {
-            if (empty($shareToken) && !$this->config->isUserAllowedToUse()) {
-                return ["error" => $this->trans->t("Not permitted")];
-            }
-
-            $user = $this->userSession->getUser();
-            $userId = null;
-            if (!empty($user)) {
-                $userId = $user->getUID();
-            }
-        }
-
-        list ($file, $error, $share) = empty($shareToken) ? $this->getFile($userId, $fileId, $filePath, $template) : $this->fileUtility->getFileByToken($fileId, $shareToken);
-
-        if (isset($error)) {
-            $this->logger->error("Config: $fileId $error", ["app" => $this->appName]);
-            return ["error" => $error];
-        }
-
-        $fileName = $file->getName();
-        $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-        $format = !empty($ext) ? $this->config->FormatsSetting()[$ext] : null;
-        if (!isset($format)) {
-            $this->logger->info("Format is not supported for editing: $fileName", ["app" => $this->appName]);
-            return ["error" => $this->trans->t("Format is not supported")];
-        }
-
-        $fileUrl = $this->getUrl($file, $user, $shareToken, $version, null, $template);
-
-        $key = null;
-        if ($version > 0
-            && $this->versionManager !== null) {
-            $owner = $file->getFileInfo()->getOwner();
-            if ($owner !== null) {
-                $versions = array_reverse($this->versionManager->getVersionsForFile($owner, $file->getFileInfo()));
-
-                if ($version <= count($versions)) {
-                    $fileVersion = array_values($versions)[$version - 1];
-
-                    $key = $this->fileUtility->getVersionKey($fileVersion);
-                }
-            }
-        }
-        if ($key === null) {
-            $key = $this->fileUtility->getKey($file, true);
-        }
-        $key = DocumentService::GenerateRevisionId($key);
-
-        $params = [
-            "document" => [
-                "fileType" => $ext,
-                "key" => $key,
-                "permissions" => [],
-                "title" => $fileName,
-                "url" => $fileUrl,
-            ],
-            "documentType" => $format["type"],
-            "editorConfig" => [
-                "lang" => str_replace("_", "-", \OC::$server->getL10NFactory("")->get("")->getLanguageCode()),
-                "region" => str_replace("_", "-", \OC::$server->getL10NFactory("")->findLocale())
-            ]
-        ];
-
-        $permissions_modifyFilter = $this->config->GetSystemValue($this->config->_permissions_modifyFilter);
-        if (isset($permissions_modifyFilter)) {
-            $params["document"]["permissions"]["modifyFilter"] = $permissions_modifyFilter;
-        }
-
-        $canEdit = isset($format["edit"]) && $format["edit"];
-        $editable = $version < 1
-                    && !$template
-                    && $file->isUpdateable()
-                    && (empty($shareToken) || ($share->getPermissions() & Constants::PERMISSION_UPDATE) === Constants::PERMISSION_UPDATE);
-        $params["document"]["permissions"]["edit"] = $editable;
-        if ($editable && $canEdit) {
-            $hashCallback = $this->crypt->GetHash(["userId" => $userId, "fileId" => $file->getId(), "filePath" => $filePath, "shareToken" => $shareToken, "action" => "track"]);
-            $callback = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.track", ["doc" => $hashCallback]);
-
-            if (!empty($this->config->GetStorageUrl())) {
-                $callback = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->config->GetStorageUrl(), $callback);
-            }
-
-            $params["editorConfig"]["callbackUrl"] = $callback;
-        } else {
-            $params["editorConfig"]["mode"] = "view";
-        }
-
-        if (\OC::$server->getRequest()->isUserAgent([$this::USER_AGENT_MOBILE])) {
-            $params["type"] = "mobile";
-        }
-
-        if (!empty($userId)) {
-            $params["editorConfig"]["user"] = [
-                "id" => $this->buildUserId($userId),
-                "name" => $user->getDisplayName()
-            ];
-        } else if (!empty($guestName)) {
-            $params["editorConfig"]["user"] = [
-                "name" => $guestName
-            ];
-        }
-
-        $folderLink = null;
-
-        if (!empty($shareToken)) {
-            if (method_exists($share, "getHideDownload") && $share->getHideDownload()) {
-                $params["document"]["permissions"]["download"] = false;
-                $params["document"]["permissions"]["print"] = false;
-                $params["document"]["permissions"]["copy"] = false;
-            }
-
-            $node = $share->getNode();
-            if ($node instanceof Folder) {
-                $sharedFolder = $node;
-                $folderPath = $sharedFolder->getRelativePath($file->getParent()->getPath());
-                if (!empty($folderPath)) {
-                    $linkAttr = [
-                        "path" => $folderPath,
-                        "scrollto" => $file->getName(),
-                        "token" => $shareToken
-                    ];
-                    $folderLink = $this->urlGenerator->linkToRouteAbsolute("files_sharing.sharecontroller.showShare", $linkAttr);
-                }
-            }
-        } else if (!empty($userId)) {
-            $userFolder = $this->root->getUserFolder($userId);
-            $folderPath = $userFolder->getRelativePath($file->getParent()->getPath());
-            if (!empty($folderPath)) {
-                $linkAttr = [
-                    "dir" => $folderPath,
-                    "scrollto" => $file->getName()
-                ];
-                $folderLink = $this->urlGenerator->linkToRouteAbsolute("files.view.index", $linkAttr);
-            }
-
-            switch($params["documentType"]) {
-                case "text":
-                    $createName = $this->trans->t("Document") . ".docx";
-                    break;
-                case "spreadsheet":
-                    $createName = $this->trans->t("Spreadsheet") . ".xlsx";
-                    break;
-                case "presentation":
-                    $createName = $this->trans->t("Presentation") . ".pptx";
-                    break;
-            }
-
-            $createParam = [
-                "dir" => "/",
-                "name" => $createName
-            ];
-
-            if (!empty($folderPath)) {
-                $folder = $userFolder->get($folderPath);
-                if (!empty($folder) && $folder->isCreatable()) {
-                    $createParam["dir"] = $folderPath;
-                }
-            }
-
-            $createUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".editor.create_new", $createParam);
-            $params["editorConfig"]["createUrl"] = urldecode($createUrl);
-
-            $templatesList = TemplateManager::GetGlobalTemplates($file->getMimeType());
-            if (!empty($templatesList)) {
-                $templates = [];
-                foreach($templatesList as $templateItem) {
-                    $createParam["templateId"] = $templateItem->getId();
-                    $createParam["name"] = $templateItem->getName();
-
-                    array_push($templates, [
-                        "image" => "",
-                        "title" => $templateItem->getName(),
-                        "url" => urldecode($this->urlGenerator->linkToRouteAbsolute($this->appName . ".editor.create_new", $createParam))
-                    ]);
-                }
-
-                $params["editorConfig"]["templates"] = $templates;
-            }
-
-            if (!$template) {
-                $params["document"]["info"]["favorite"] = $this->isFavorite($fileId, $userId);
-            }
-            $params["_file_path"] = $userFolder->getRelativePath($file->getPath());
-        }
-
-        if ($folderLink !== null
-            && $this->config->GetSystemValue($this->config->_customization_goback) !== false) {
-            $params["editorConfig"]["customization"]["goback"] = [
-                "url"  => $folderLink
-            ];
-
-            if (!$desktop) {
-                if ($this->config->GetSameTab()) {
-                    $params["editorConfig"]["customization"]["goback"]["blank"] = false;
-                }
-
-                if ($inframe === true || !empty($directToken)) {
-                    $params["editorConfig"]["customization"]["goback"]["requestClose"] = true;
-                }
-            }
-        }
-
-        if ($inframe === true) {
-            $params["_files_sharing"] = \OC::$server->getAppManager()->isInstalled("files_sharing");
-        }
-
-        $params = $this->setCustomization($params);
-
-        $params = $this->setWatermark($params, !empty($shareToken), $userId, $file);
-
-        if ($this->config->UseDemo()) {
-            $params["editorConfig"]["tenant"] = $this->config->GetSystemValue("instanceid", true);
-        }
-
-        if ($anchor !== null) {
-            try {
-                $actionLink = json_decode($anchor, true);
-
-                $params["editorConfig"]["actionLink"] = $actionLink;
-            } catch (\Exception $e) {
-                $this->logger->logException($e, ["message" => "Config: $fileId decode $anchor", "app" => $this->appName]);
-            }
-        }
-
-        if (!empty($this->config->GetDocumentServerSecret())) {
-            $token = \Firebase\JWT\JWT::encode($params, $this->config->GetDocumentServerSecret());
-            $params["token"] = $token;
-        }
-
-        $this->logger->debug("Config is generated for: $fileId ($version) with key $key", ["app" => $this->appName]);
-
-        return $params;
     }
 
     /**
@@ -1513,219 +1279,6 @@ class EditorController extends Controller {
         $instanceId = $this->config->GetSystemValue("instanceid", true);
         $userId = $instanceId . "_" . $userId;
         return $userId;
-    }
-
-    /**
-     * Set customization parameters
-     *
-     * @param array params - file parameters
-     *
-     * @return array
-     */
-    private function setCustomization($params) {
-        //default is true
-        if ($this->config->GetCustomizationChat() === false) {
-            $params["editorConfig"]["customization"]["chat"] = false;
-        }
-
-        //default is false
-        if ($this->config->GetCustomizationCompactHeader() === true) {
-            $params["editorConfig"]["customization"]["compactHeader"] = true;
-        }
-
-        //default is false
-        if ($this->config->GetCustomizationFeedback() === true) {
-            $params["editorConfig"]["customization"]["feedback"] = true;
-        }
-
-        //default is false
-        if ($this->config->GetCustomizationForcesave() === true) {
-            $params["editorConfig"]["customization"]["forcesave"] = true;
-        }
-
-        //default is true
-        if ($this->config->GetCustomizationHelp() === false) {
-            $params["editorConfig"]["customization"]["help"] = false;
-        }
-
-        //default is original
-        $reviewDisplay = $this->config->GetCustomizationReviewDisplay();
-        if ($reviewDisplay !== "original") {
-            $params["editorConfig"]["customization"]["reviewDisplay"] = $reviewDisplay;
-        }
-
-        //default is false
-        if ($this->config->GetCustomizationToolbarNoTabs() === true) {
-            $params["editorConfig"]["customization"]["toolbarNoTabs"] = true;
-        }
-
-
-        /* from system config */
-
-        $autosave = $this->config->GetSystemValue($this->config->_customization_autosave);
-        if (isset($autosave)) {
-            $params["editorConfig"]["customization"]["autosave"] = $autosave;
-        }
-
-        $customer = $this->config->GetSystemValue($this->config->_customization_customer);
-        if (isset($customer)) {
-            $params["editorConfig"]["customization"]["customer"] = $customer;
-        }
-
-        $loaderLogo = $this->config->GetSystemValue($this->config->_customization_loaderLogo);
-        if (isset($loaderLogo)) {
-            $params["editorConfig"]["customization"]["loaderLogo"] = $loaderLogo;
-        }
-
-        $loaderName = $this->config->GetSystemValue($this->config->_customization_loaderName);
-        if (isset($loaderName)) {
-            $params["editorConfig"]["customization"]["loaderName"] = $loaderName;
-        }
-
-        $logo = $this->config->GetSystemValue($this->config->_customization_logo);
-        if (isset($logo)) {
-            $params["editorConfig"]["customization"]["logo"] = $logo;
-        }
-
-        $zoom = $this->config->GetSystemValue($this->config->_customization_zoom);
-        if (isset($zoom)) {
-            $params["editorConfig"]["customization"]["zoom"] = $zoom;
-        }
-
-        return $params;
-    }
-
-    /**
-     * Set watermark parameters
-     *
-     * @param array params - file parameters
-     * @param bool isPublic - with access token
-     * @param string userId - user identifier
-     * @param string file - file
-     *
-     * @return array
-     */
-    private function setWatermark($params, $isPublic, $userId, $file) {
-        $watermarkTemplate = $this->getWatermarkText($isPublic, $userId, $file,
-            $params["document"]["permissions"]["edit"] !== false,
-            !array_key_exists("download", $params["document"]["permissions"]) || $params["document"]["permissions"]["download"] !== false);
-
-        if ($watermarkTemplate !== false) {
-            $replacements = [
-                "userId" => $userId,
-                "date" => (new \DateTime())->format("Y-m-d H:i:s"),
-                "themingName" => \OC::$server->getThemingDefaults()->getName()
-            ];
-            $watermarkTemplate = preg_replace_callback("/{(.+?)}/", function ($matches) use ($replacements)
-                {
-                    return $replacements[$matches[1]];
-                }, $watermarkTemplate);
-
-            $params["document"]["options"] = [
-                "watermark_on_draw" => [
-                    "align" => 1,
-                    "height" => 100,
-                    "paragraphs" => array([
-                        "align" => 2,
-                        "runs" => array([
-                            "fill" => [182, 182, 182],
-                            "font-size" => 70,
-                            "text" => $watermarkTemplate,
-                        ])
-                    ]),
-                    "rotate" => -45,
-                    "width" => 250,
-                ]
-            ];
-        }
-
-        return $params;
-    }
-
-    /**
-     * Should watermark
-     *
-     * @param bool isPublic - with access token
-     * @param string userId - user identifier
-     * @param string file - file
-     * @param bool canEdit - edit permission
-     * @param bool canDownload - download permission
-     *
-     * @return bool|string
-     */
-    private function getWatermarkText($isPublic, $userId, $file, $canEdit, $canDownload) {
-        $watermarkSettings = $this->config->GetWatermarkSettings();
-        if (!$watermarkSettings["enabled"]) {
-            return false;
-        }
-
-        $watermarkText = $watermarkSettings["text"];
-        $fileId = $file->getId();
-
-        if ($isPublic) {
-            if ($watermarkSettings["linkAll"]) {
-                return $watermarkText;
-            }
-            if ($watermarkSettings["linkRead"] && !$canEdit) {
-                return $watermarkText;
-            }
-            if ($watermarkSettings["linkSecure"] && !$canDownload) {
-                return $watermarkText;
-            }
-            if ($watermarkSettings["linkTags"]) {
-                $tags = $watermarkSettings["linkTagsList"];
-                $fileTags = \OC::$server->getSystemTagObjectMapper()->getTagIdsForObjects([$fileId], "files")[$fileId];
-                foreach ($fileTags as $tagId) {
-                    if (in_array($tagId, $tags, true)) {
-                        return $watermarkText;
-                    }
-                }
-            }
-        } else {
-            if ($watermarkSettings["shareAll"]
-                && ($file->getOwner() === null || $file->getOwner()->getUID() !== $userId)) {
-                return $watermarkText;
-            }
-            if ($watermarkSettings["shareRead"] && !$canEdit) {
-                return $watermarkText;
-            }
-        }
-        if ($watermarkSettings["allGroups"]) {
-            $groups = $watermarkSettings["allGroupsList"];
-            foreach ($groups as $group) {
-                if (\OC::$server->getGroupManager()->isInGroup($userId, $group)) {
-                    return $watermarkText;
-                }
-            }
-        }
-        if ($watermarkSettings["allTags"]) {
-            $tags = $watermarkSettings["allTagsList"];
-            $fileTags = \OC::$server->getSystemTagObjectMapper()->getTagIdsForObjects([$fileId], "files")[$fileId];
-            foreach ($fileTags as $tagId) {
-                if (in_array($tagId, $tags, true)) {
-                    return $watermarkText;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Check file favorite
-     *
-     * @param integer $fileId - file identifier
-     * @param string $userId - user identifier
-     *
-     * @return bool
-     */
-    private function isFavorite($fileId, $userId = null) {
-        $currentTags = $this->tagManager->load("files", [], false, $userId)->getTagsForObjects([$fileId]);
-        if ($currentTags) {
-            return in_array(ITags::TAG_FAVORITE, $currentTags[$fileId]);
-        }
-
-        return false;
     }
 
     /**
