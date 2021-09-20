@@ -472,10 +472,10 @@ class EditorController extends Controller {
 
         $internalExtension = "docx";
         switch ($format["type"]) {
-            case "spreadsheet":
+            case "cell":
                 $internalExtension = "xlsx";
                 break;
-            case "presentation":
+            case "slide":
                 $internalExtension = "pptx";
                 break;
         }

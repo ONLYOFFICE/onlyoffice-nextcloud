@@ -376,14 +376,14 @@ class EditorApiController extends OCSController {
                 $folderLink = $this->urlGenerator->linkToRouteAbsolute("files.view.index", $linkAttr);
             }
 
-            switch($params["documentType"]) {
-                case "text":
+            switch ($params["documentType"]) {
+                case "word":
                     $createName = $this->trans->t("Document") . ".docx";
                     break;
-                case "spreadsheet":
+                case "cell":
                     $createName = $this->trans->t("Spreadsheet") . ".xlsx";
                     break;
-                case "presentation":
+                case "slide":
                     $createName = $this->trans->t("Presentation") . ".pptx";
                     break;
             }
