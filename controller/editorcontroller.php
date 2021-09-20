@@ -302,25 +302,76 @@ class EditorController extends Controller {
     /**
      * Get users
      *
+     * @param $fileId - file identifier
+     *
      * @return array
      *
      * @NoAdminRequired
      * @NoCSRFRequired
      */
-    public function users() {
+    public function users($fileId) {
         $this->logger->debug("Search users", ["app" => $this->appName]);
         $result = [];
+        $currentUserGroups = [];
 
         if (!$this->config->isUserAllowedToUse()) {
             return $result;
         }
 
-        $userId = $this->userSession->getUser()->getUID();
-        $users = $this->userManager->search("");
+        $currentUser = $this->userSession->getUser();
+        $currentUserId = $currentUser->getUID();
+
+        $groupManager = \OC::$server->getGroupManager();
+        $currentUserGroups = $groupManager->getUserGroupIds($currentUser);
+
+        $excludedGroups = $this->getShareExcludedGroups();
+        $isMemberExcludedGroups = true;
+        if (count(array_intersect($currentUserGroups, $excludedGroups)) !== count($currentUserGroups)) {
+            $isMemberExcludedGroups = false;
+        }
+
+        list ($file, $error, $share) = $this->getFile($currentUserId, $fileId);
+        if (isset($error)) {
+            $this->logger->error("Users: $fileId $error", ["app" => $this->appName]);
+            return $result;
+        }
+
+        $canShare = (($file->getPermissions() & Constants::PERMISSION_SHARE) === Constants::PERMISSION_SHARE)
+                    && !$isMemberExcludedGroups;
+
+        $shareMemberGroups = $this->shareManager->shareWithGroupMembersOnly();
+
+        $all = false;
+        $users = [];
+        if ($canShare) {
+            if ($shareMemberGroups) {
+                foreach ($currentUserGroups as $currentUserGroup) {
+                    $group = $groupManager->get($currentUserGroup);
+                    foreach ($group->getUsers() as $user) {
+                        if (!in_array($user, $users)) {
+                            array_push($users, $user);
+                        }
+                    }
+                }
+            } else {
+                $users = $this->userManager->search("");
+                $all = true;
+            }
+        }
+
+        if (!$all) {
+            $accessList = $this->shareManager->getAccessList($file);
+            foreach ($accessList["users"] as $accessUser) {
+                $user = $this->userManager->get($accessUser);
+                if (!in_array($user, $users)) {
+                    array_push($users, $this->userManager->get($accessUser));
+                }
+            }
+        }
+
         foreach ($users as $user) {
             $email = $user->getEMailAddress();
-            if ($user->getUID() != $userId
-                && !empty($email)) {
+            if ($user->getUID() != $currentUserId && !empty($email)) {
                 array_push($result, [
                     "email" => $email,
                     "name" => $user->getDisplayName()
@@ -372,6 +423,15 @@ class EditorController extends Controller {
             $userId = $user->getUID();
         }
 
+        $groupManager = \OC::$server->getGroupManager();
+        $currentUserGroups = $groupManager->getUserGroupIds($user);
+
+        $excludedGroups = $this->getShareExcludedGroups();
+        $isMemberExcludedGroups = true;
+        if (count(array_intersect($currentUserGroups, $excludedGroups)) !== count($currentUserGroups)) {
+            $isMemberExcludedGroups = false;
+        }
+
         list ($file, $error, $share) = $this->getFile($userId, $fileId);
         if (isset($error)) {
             $this->logger->error("Mention: $fileId $error", ["app" => $this->appName]);
@@ -390,7 +450,9 @@ class EditorController extends Controller {
                 "anchor" => $anchor
             ]);
 
-        $canShare = ($file->getPermissions() & Constants::PERMISSION_SHARE) === Constants::PERMISSION_SHARE;
+        $shareMemberGroups = $this->shareManager->shareWithGroupMembersOnly();
+        $canShare = (($file->getPermissions() & Constants::PERMISSION_SHARE) === Constants::PERMISSION_SHARE)
+                    && !$isMemberExcludedGroups;
 
         $accessList = $this->shareManager->getAccessList($file);
 
@@ -398,6 +460,13 @@ class EditorController extends Controller {
             if (!in_array($recipientId, $accessList["users"])) {
                 if (!$canShare) {
                     continue;
+                }
+                if ($shareMemberGroups) {
+                    $recipient = $this->userManager->get($recipientId);
+                    $recipientGroups = $groupManager->getUserGroupIds($recipient);
+                    if (empty(array_intersect($currentUserGroups, $recipientGroups))) {
+                        continue;
+                    }
                 }
 
                 $share = $this->shareManager->newShare();
@@ -1182,6 +1251,21 @@ class EditorController extends Controller {
         }
 
         return $fileUrl;
+    }
+
+    /**
+     * Return excluded groups list for share
+     *
+     * @return array
+     */
+    private function getShareExcludedGroups() {
+        $excludedGroups = [];
+
+        if (\OC::$server->getConfig()->getAppValue("core", "shareapi_exclude_groups", "no") === "yes") {
+            $excludedGroups = json_decode(\OC::$server->getConfig()->getAppValue("core", "shareapi_exclude_groups_list", ""), true);
+        }
+
+        return $excludedGroups;
     }
 
     /**
