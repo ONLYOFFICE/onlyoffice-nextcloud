@@ -623,6 +623,11 @@ class EditorApiController extends OCSController {
             $params["editorConfig"]["customization"]["reviewDisplay"] = $reviewDisplay;
         }
 
+        $theme = $this->config->GetCustomizationTheme();
+        if (isset($theme)) {
+            $params["editorConfig"]["customization"]["uiTheme"] = $theme;
+        }
+
         //default is false
         if ($this->config->GetCustomizationToolbarNoTabs() === true) {
             $params["editorConfig"]["customization"]["toolbarNoTabs"] = true;
