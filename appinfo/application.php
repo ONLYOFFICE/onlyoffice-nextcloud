@@ -152,7 +152,8 @@ class Application extends App implements IBootstrap {
                 $this->appConfig,
                 $this->crypt,
                 $c->get("IManager"),
-                $c->get("Session")
+                $c->get("Session"),
+                $c->get("GroupManager")
             );
         });
 

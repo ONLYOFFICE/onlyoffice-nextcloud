@@ -38,6 +38,7 @@ use OCP\IURLGenerator;
 use OCP\IUser;
 use OCP\IUserManager;
 use OCP\IUserSession;
+use OCP\IGroupManager;
 use OCP\Share\IManager;
 use OCP\Share\IShare;
 
@@ -134,6 +135,13 @@ class EditorController extends Controller {
     private $shareManager;
 
     /**
+     * Group manager
+     *
+     * @var IGroupManager
+     */
+    private $groupManager;
+
+    /**
      * @param string $AppName - application name
      * @param IRequest $request - request object
      * @param IRootFolder $root - root folder
@@ -145,7 +153,8 @@ class EditorController extends Controller {
      * @param AppConfig $config - application configuration
      * @param Crypt $crypt - hash generator
      * @param IManager $shareManager - Share manager
-     * @param ISession $ISession - Session
+     * @param ISession $session - Session
+     * @param IGroupManager $groupManager - group Manager
      */
     public function __construct($AppName,
                                     IRequest $request,
@@ -158,7 +167,8 @@ class EditorController extends Controller {
                                     AppConfig $config,
                                     Crypt $crypt,
                                     IManager $shareManager,
-                                    ISession $session
+                                    ISession $session,
+                                    IGroupManager $groupManager
                                     ) {
         parent::__construct($AppName, $request);
 
@@ -171,6 +181,7 @@ class EditorController extends Controller {
         $this->config = $config;
         $this->crypt = $crypt;
         $this->shareManager = $shareManager;
+        $this->groupManager = $groupManager;
 
         if (\OC::$server->getAppManager()->isInstalled("files_versions")) {
             try {
@@ -321,8 +332,7 @@ class EditorController extends Controller {
         $currentUser = $this->userSession->getUser();
         $currentUserId = $currentUser->getUID();
 
-        $groupManager = \OC::$server->getGroupManager();
-        $currentUserGroups = $groupManager->getUserGroupIds($currentUser);
+        $currentUserGroups = $this->groupManager->getUserGroupIds($currentUser);
 
         $excludedGroups = $this->getShareExcludedGroups();
         $isMemberExcludedGroups = true;
@@ -346,7 +356,7 @@ class EditorController extends Controller {
         if ($canShare) {
             if ($shareMemberGroups) {
                 foreach ($currentUserGroups as $currentUserGroup) {
-                    $group = $groupManager->get($currentUserGroup);
+                    $group = $this->groupManager->get($currentUserGroup);
                     foreach ($group->getUsers() as $user) {
                         if (!in_array($user, $users)) {
                             array_push($users, $user);
@@ -423,8 +433,7 @@ class EditorController extends Controller {
             $userId = $user->getUID();
         }
 
-        $groupManager = \OC::$server->getGroupManager();
-        $currentUserGroups = $groupManager->getUserGroupIds($user);
+        $currentUserGroups = $this->groupManager->getUserGroupIds($user);
 
         $excludedGroups = $this->getShareExcludedGroups();
         $isMemberExcludedGroups = true;
@@ -463,7 +472,7 @@ class EditorController extends Controller {
                 }
                 if ($shareMemberGroups) {
                     $recipient = $this->userManager->get($recipientId);
-                    $recipientGroups = $groupManager->getUserGroupIds($recipient);
+                    $recipientGroups = $this->groupManager->getUserGroupIds($recipient);
                     if (empty(array_intersect($currentUserGroups, $recipientGroups))) {
                         continue;
                     }
