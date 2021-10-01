@@ -39,6 +39,8 @@ use OCP\IUserSession;
 use OCP\Share\IManager;
 
 use OCA\Files_Versions\Versions\IVersionManager;
+use OCA\FilesLock\Service\LockService;
+use OCA\FilesLock\Exceptions\LockNotFoundException;
 
 use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\Crypt;
@@ -302,10 +304,25 @@ class EditorApiController extends OCSController {
             $params["document"]["permissions"]["modifyFilter"] = $permissions_modifyFilter;
         }
 
+        $isTempLock = false;
+        if ($version < 1
+            && \OC::$server->getAppManager()->isInstalled("files_lock")) {
+            try {
+                $lockService = \OC::$server->get(LockService::class);
+                $lock = $lockService->getLockFromFileId($file->getId());
+                $lockOwner = $lock->getUserId();
+                if ($userId !== $lockOwner) {
+                    $isTempLock = true;
+                    $this->logger->debug("File" . $file->getId() . "is locked by $lockOwner", ["app" => $this->appName]);
+                }
+            } catch (LockNotFoundException $e) {}
+        }
+
         $canEdit = isset($format["edit"]) && $format["edit"];
         $editable = $version < 1
                     && !$template
                     && $file->isUpdateable()
+                    && !$isTempLock
                     && (empty($shareToken) || ($share->getPermissions() & Constants::PERMISSION_UPDATE) === Constants::PERMISSION_UPDATE);
         $params["document"]["permissions"]["edit"] = $editable;
         if ($editable && $canEdit) {
