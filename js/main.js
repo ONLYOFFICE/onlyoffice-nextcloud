@@ -26,7 +26,8 @@
         }, OCA.Onlyoffice);
 
     OCA.Onlyoffice.setting = {};
-    OCA.Onlyoffice.mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent);
+    OCA.Onlyoffice.mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini|Macintosh/i.test(navigator.userAgent)
+                            && navigator.maxTouchPoints && navigator.maxTouchPoints > 1;
 
     OCA.Onlyoffice.CreateFile = function (name, fileList, templateId) {
         var dir = fileList.getCurrentDirectory();
