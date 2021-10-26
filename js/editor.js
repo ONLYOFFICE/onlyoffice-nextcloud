@@ -537,8 +537,6 @@
         }
     }
 
-    OCA.Onlyoffice.InitEditor();
-
     OCA.Onlyoffice.showMessage = function (message, type = "success", props = null) {
         if (OCA.Onlyoffice.inframe) {
             window.parent.postMessage({
@@ -592,5 +590,7 @@
         }
         OCA.Onlyoffice.docEditor.refreshHistory(data);
     }
+
+    OCA.Onlyoffice.InitEditor();
 
 })(jQuery, OCA);
