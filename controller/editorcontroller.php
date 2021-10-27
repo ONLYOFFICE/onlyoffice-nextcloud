@@ -667,7 +667,6 @@ class EditorController extends Controller {
      * @return array
      *
      * @NoAdminRequired
-     * @PublicPage
      */
     public function history($fileId, $shareToken = null) {
         $this->logger->debug("Request history for: $fileId", ["app" => $this->appName]);
@@ -788,7 +787,6 @@ class EditorController extends Controller {
      * @return array
      *
      * @NoAdminRequired
-     * @PublicPage
      */
     public function version($fileId, $version, $shareToken = null) {
         $this->logger->debug("Request version for: $fileId ($version)", ["app" => $this->appName]);
