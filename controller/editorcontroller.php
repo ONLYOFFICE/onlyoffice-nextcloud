@@ -329,6 +329,15 @@ class EditorController extends Controller {
             return $result;
         }
 
+        if (!$this->shareManager->allowEnumeration()) {
+            return $result;
+        }
+
+        $autocompleteMemberGroup = false;
+        if ($this->shareManager->limitEnumerationToGroups()) {
+            $autocompleteMemberGroup = true;
+        }
+
         $currentUser = $this->userSession->getUser();
         $currentUserId = $currentUser->getUID();
 
@@ -354,7 +363,7 @@ class EditorController extends Controller {
         $all = false;
         $users = [];
         if ($canShare) {
-            if ($shareMemberGroups) {
+            if ($shareMemberGroups || $autocompleteMemberGroup) {
                 foreach ($currentUserGroups as $currentUserGroup) {
                     $group = $this->groupManager->get($currentUserGroup);
                     foreach ($group->getUsers() as $user) {
