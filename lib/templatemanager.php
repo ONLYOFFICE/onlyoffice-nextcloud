@@ -19,6 +19,8 @@
 
 namespace OCA\Onlyoffice;
 
+use OCP\Files\NotFoundException;
+
 use OCP\Files\File;
 
 /**
@@ -48,12 +50,17 @@ class TemplateManager {
      * @return Folder
      */
     public static function GetGlobalTemplateDir() {
+        $dirPath = "appdata_" . \OC::$server->getConfig()->GetSystemValue("instanceid", null)
+                                . "/" . self::$appName
+                                . "/" . self::$templateFolderName;
+
         $rootFolder = \OC::$server->getRootFolder();
-
-        $appData = $rootFolder->get("appdata_" . \OC::$server->getConfig()->GetSystemValue("instanceid", null));
-
-        $appDir = $appData->nodeExists(self::$appName) ? $appData->get(self::$appName) : $appData->newFolder(self::$appName);
-        $templateDir = $appDir->nodeExists(self::$templateFolderName) ? $appDir->get(self::$templateFolderName) : $appDir->newFolder(self::$templateFolderName);
+        $templateDir = null;
+        try {
+            $templateDir = $rootFolder->get($dirPath);
+        } catch (NotFoundException $e) {
+            $templateDir = $rootFolder->newFolder($dirPath);
+        }
 
         return $templateDir;
     }
@@ -68,11 +75,10 @@ class TemplateManager {
     public static function GetGlobalTemplates($mimetype = null) {
         $templateDir = self::GetGlobalTemplateDir();
 
-        if (!empty($mimetype)) {
+        $templatesList = $templateDir->getDirectoryListing();
+        if (!empty($mimetype)
+            && is_array($templatesList) && count($templatesList) > 0) {
             $templatesList = $templateDir->searchByMime($mimetype);
-
-        } else {
-            $templatesList = $templateDir->getDirectoryListing();
         }
 
         return $templatesList;

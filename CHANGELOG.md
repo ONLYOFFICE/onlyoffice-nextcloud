@@ -1,5 +1,16 @@
 # Change Log
 
+## 7.2.0
+## Added
+- set favicon on editor page
+- versions restore from editor
+
+## Changed
+- fixed privacy rules for get users when mention
+- document server v6.0 and earlier is no longer supported
+- editing by link only for available groups
+- open share link directly
+
 ## 7.1.2
 ## Changed
 - fix editing from mobile app
