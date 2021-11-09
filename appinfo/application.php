@@ -210,13 +210,18 @@ class Application extends App implements IBootstrap {
             $context->registerTemplateProvider(TemplateProvider::class);
         }
 
+        $container = $this->getContainer();
+
+        $previewManager = $container->query(IPreview::class);
+        $previewManager->registerProvider(Preview::getMimeTypeRegex(), function() use ($container) {
+            return $container->query(Preview::class);
+        });
+
     }
 
     public function boot(IBootContext $context): void {
 
         $context->injectFn(function (SymfonyAdapter $eventDispatcher) {
-
-            $container = $this->getContainer();
 
             if (class_exists("OCP\Files\Template\FileCreatedFromTemplateEvent")) {
                 $eventDispatcher->addListener(FileCreatedFromTemplateEvent::class,
@@ -231,12 +236,6 @@ class Application extends App implements IBootstrap {
                         }
                     });
             }
-
-            $previewManager = $container->query(IPreview::class);
-            $previewManager->registerProvider(Preview::getMimeTypeRegex(), function() use ($container) {
-                return $container->query(Preview::class);
-            });
-
         });
 
         $context->injectFn(function (IManager $notificationsManager) {
