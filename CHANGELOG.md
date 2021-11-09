@@ -1,5 +1,11 @@
 # Change Log
 
+## Added
+- check document server version
+
+## Changed
+- fix preview generation
+
 ## 7.2.0
 ## Added
 - set favicon on editor page
