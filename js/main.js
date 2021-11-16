@@ -254,6 +254,42 @@
             });
     }
 
+    OCA.Onlyoffice.OpenFormPicker = function (name) {
+        var filterMimes = [
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        ];
+
+        var buttons = [
+            {
+                text: t(OCA.Onlyoffice.AppName, "From blank"),
+                type: "blank"
+            },
+            {
+                text: t(OCA.Onlyoffice.AppName, "From an existing file"),
+                type: "target",
+                defaultButton: true
+            }
+        ];
+
+        OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Overwrite the form"),
+            function (filePath, type) {
+                var fileList = OCA.Files.App.fileList;
+
+                if (type === "blank") {
+                    OCA.Onlyoffice.CreateFile(name, fileList);
+                    return;
+                }
+            },
+            false,
+            filterMimes,
+            true,
+            OC.dialogs.FILEPICKER_TYPE_CUSTOM,
+            "",
+            {
+                buttons: buttons
+            });
+    }
+
     OCA.Onlyoffice.GetSettings = function (callbackSettings) {
         if (OCA.Onlyoffice.setting.formats) {
 
@@ -328,54 +364,68 @@
                 return;
             }
 
-            menu.addMenuEntry({
-                id: "onlyofficeDocx",
-                displayName: t(OCA.Onlyoffice.AppName, "Document"),
-                templateName: t(OCA.Onlyoffice.AppName, "Document"),
-                iconClass: "icon-onlyoffice-new-docx",
-                fileType: "docx",
-                actionHandler: function (name) {
-                    if (!$("#isPublic").val() && OCA.Onlyoffice.TemplateExist("document")) {
-                        OCA.Onlyoffice.OpenTemplatePicker(name, ".docx", "document");
-                    } else {
-                        OCA.Onlyoffice.CreateFile(name + ".docx", fileList);
+            if ($("#isPublic").val() === "1" && !!$("#filestable").length
+                || OC.config.version.split(".")[0] < 21) {
+                menu.addMenuEntry({
+                    id: "onlyofficeDocx",
+                    displayName: t(OCA.Onlyoffice.AppName, "Document"),
+                    templateName: t(OCA.Onlyoffice.AppName, "Document"),
+                    iconClass: "icon-onlyoffice-new-docx",
+                    fileType: "docx",
+                    actionHandler: function (name) {
+                        if (!$("#isPublic").val() && OCA.Onlyoffice.TemplateExist("document")) {
+                            OCA.Onlyoffice.OpenTemplatePicker(name, ".docx", "document");
+                        } else {
+                            OCA.Onlyoffice.CreateFile(name + ".docx", fileList);
+                        }
                     }
-                }
-            });
+                });
 
-            menu.addMenuEntry({
-                id: "onlyofficeXlsx",
-                displayName: t(OCA.Onlyoffice.AppName, "Spreadsheet"),
-                templateName: t(OCA.Onlyoffice.AppName, "Spreadsheet"),
-                iconClass: "icon-onlyoffice-new-xlsx",
-                fileType: "xlsx",
-                actionHandler: function (name) {
-                    if (!$("#isPublic").val() && OCA.Onlyoffice.TemplateExist("spreadsheet")) {
-                        OCA.Onlyoffice.OpenTemplatePicker(name, ".xlsx", "spreadsheet");
-                    } else {
-                        OCA.Onlyoffice.CreateFile(name + ".xlsx", fileList);
+                menu.addMenuEntry({
+                    id: "onlyofficeXlsx",
+                    displayName: t(OCA.Onlyoffice.AppName, "Spreadsheet"),
+                    templateName: t(OCA.Onlyoffice.AppName, "Spreadsheet"),
+                    iconClass: "icon-onlyoffice-new-xlsx",
+                    fileType: "xlsx",
+                    actionHandler: function (name) {
+                        if (!$("#isPublic").val() && OCA.Onlyoffice.TemplateExist("spreadsheet")) {
+                            OCA.Onlyoffice.OpenTemplatePicker(name, ".xlsx", "spreadsheet");
+                        } else {
+                            OCA.Onlyoffice.CreateFile(name + ".xlsx", fileList);
+                        }
                     }
-                }
-            });
+                });
 
-            menu.addMenuEntry({
-                id: "onlyofficePpts",
-                displayName: t(OCA.Onlyoffice.AppName, "Presentation"),
-                templateName: t(OCA.Onlyoffice.AppName, "Presentation"),
-                iconClass: "icon-onlyoffice-new-pptx",
-                fileType: "pptx",
-                actionHandler: function (name) {
-                    if (!$("#isPublic").val() && OCA.Onlyoffice.TemplateExist("presentation")) {
-                        OCA.Onlyoffice.OpenTemplatePicker(name, ".pptx", "presentation");
-                    } else {
-                        OCA.Onlyoffice.CreateFile(name + ".pptx", fileList);
+                menu.addMenuEntry({
+                    id: "onlyofficePpts",
+                    displayName: t(OCA.Onlyoffice.AppName, "Presentation"),
+                    templateName: t(OCA.Onlyoffice.AppName, "Presentation"),
+                    iconClass: "icon-onlyoffice-new-pptx",
+                    fileType: "pptx",
+                    actionHandler: function (name) {
+                        if (!$("#isPublic").val() && OCA.Onlyoffice.TemplateExist("presentation")) {
+                            OCA.Onlyoffice.OpenTemplatePicker(name, ".pptx", "presentation");
+                        } else {
+                            OCA.Onlyoffice.CreateFile(name + ".pptx", fileList);
+                        }
                     }
-                }
-            });
+                });
 
-            if (OCA.Onlyoffice.GetTemplates) {
-                OCA.Onlyoffice.GetTemplates();
+                if (OCA.Onlyoffice.GetTemplates) {
+                    OCA.Onlyoffice.GetTemplates();
+                }
             }
+
+            menu.addMenuEntry({
+                id: "onlyofficeDocxf",
+                displayName: t(OCA.Onlyoffice.AppName, "Master Form"),
+                templateName: t(OCA.Onlyoffice.AppName, "Master Form"),
+                iconClass: "icon-onlyoffice-new-docx",
+                fileType: "docxf",
+                actionHandler: function (name) {
+                    OCA.Onlyoffice.OpenFormPicker(name + ".docxf");
+                }
+            });
         }
     };
 
@@ -466,11 +516,7 @@
 
             OCA.Onlyoffice.GetSettings(initSharedButton);
         } else {
-            if ($("#isPublic").val() === "1" && !!$("#filestable").length
-                || OC.config.version.split(".")[0] < 21) {
-                //folder by shared link
-                OC.Plugins.register("OCA.Files.NewFileMenu", OCA.Onlyoffice.NewFileMenu);
-            }
+            OC.Plugins.register("OCA.Files.NewFileMenu", OCA.Onlyoffice.NewFileMenu);
 
             OCA.Onlyoffice.registerAction();
 
