@@ -31,6 +31,7 @@ use OCP\Files\Template\FileCreatedFromTemplateEvent;
 use OCP\Files\Template\ITemplateManager;
 use OCP\Files\Template\TemplateFileCreator;
 use OCA\Files\Event\LoadAdditionalScriptsEvent;
+use OCP\Files\IMimeTypeDetector;
 use OCP\IL10N;
 use OCP\IPreview;
 use OCP\ITagManager;
@@ -217,6 +218,10 @@ class Application extends App implements IBootstrap {
             return $container->query(Preview::class);
         });
 
+        $detector = $container->query(IMimeTypeDetector::class);
+        $detector->getAllMappings();
+        $detector->registerType("docxf", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+        $detector->registerType("oform", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
     }
 
     public function boot(IBootContext $context): void {
