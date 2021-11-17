@@ -29,7 +29,7 @@
     OCA.Onlyoffice.mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini|Macintosh/i.test(navigator.userAgent)
                             && navigator.maxTouchPoints && navigator.maxTouchPoints > 1;
 
-    OCA.Onlyoffice.CreateFile = function (name, fileList, templateId) {
+    OCA.Onlyoffice.CreateFile = function (name, fileList, templateId, targetId) {
         var dir = fileList.getCurrentDirectory();
 
         if (!OCA.Onlyoffice.setting.sameTab || OCA.Onlyoffice.mobile || OCA.Onlyoffice.Desktop) {
@@ -44,6 +44,10 @@
 
         if (templateId) {
             createData.templateId = templateId;
+        }
+
+        if (targetId) {
+            createData.targetId = targetId;
         }
 
         if ($("#isPublic").val()) {
@@ -274,11 +278,19 @@
         OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Overwrite the form"),
             function (filePath, type) {
                 var fileList = OCA.Files.App.fileList;
+                var dialogFileList = OC.dialogs.filelist;
+                var targetId = 0;
 
-                if (type === "blank") {
-                    OCA.Onlyoffice.CreateFile(name, fileList);
-                    return;
+                if (type === "target") {
+                    var targetFileName = filePath.split("/").pop();
+                    dialogFileList.forEach(item => {
+                        if (item.name === targetFileName) {
+                            targetId = item.id;
+                        }
+                    })
                 }
+
+                OCA.Onlyoffice.CreateFile(name, fileList, 0, targetId);
             },
             false,
             filterMimes,

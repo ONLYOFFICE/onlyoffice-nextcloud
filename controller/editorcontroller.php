@@ -200,6 +200,7 @@ class EditorController extends Controller {
      * @param string $name - file name
      * @param string $dir - folder path
      * @param string $templateId - file identifier
+     * @param int $targetId - identifier of the file for using as template for create
      * @param string $shareToken - access token
      *
      * @return array
@@ -207,7 +208,7 @@ class EditorController extends Controller {
      * @NoAdminRequired
      * @PublicPage
      */
-    public function create($name, $dir, $templateId = null, $shareToken = null) {
+    public function create($name, $dir, $templateId = null, $targetId = 0, $shareToken = null) {
         $this->logger->debug("Create: $name", ["app" => $this->appName]);
 
         if (empty($shareToken) && !$this->config->isUserAllowedToUse()) {
@@ -219,6 +220,7 @@ class EditorController extends Controller {
             return ["error" => $this->trans->t("Template not found")];
         }
 
+        $userId = null;
         if (empty($shareToken)) {
             $userId = $this->userSession->getUser()->getUID();
             $userFolder = $this->root->getUserFolder($userId);
@@ -251,13 +253,20 @@ class EditorController extends Controller {
             return ["error" => $this->trans->t("You don't have enough permission to create")];
         }
 
-        if (empty($templateId)) {
-            $template = TemplateManager::GetEmptyTemplate($name);
-        } else {
+        if (!empty($templateId)) {
             $templateFile = TemplateManager::GetTemplate($templateId);
             if ($templateFile !== null) {
                 $template = $templateFile->getContent();
             }
+        } elseif (!empty($targetId)) {
+            list($file, $error, $share) = $this->getFile($userId, $targetId);
+            if (isset($error)) {
+                $this->logger->error("Target file for create: $targetId $error", ["app" => $this->appName]);
+            } else {
+                $template = $file->getContent();
+            }
+        } else {
+            $template = TemplateManager::GetEmptyTemplate($name);
         }
 
         if (!$template) {
