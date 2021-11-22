@@ -220,9 +220,10 @@ class EditorController extends Controller {
             return ["error" => $this->trans->t("Template not found")];
         }
 
-        $userId = null;
+        $user = null;
         if (empty($shareToken)) {
-            $userId = $this->userSession->getUser()->getUID();
+            $user = $this->userSession->getUser();
+            $userId = $user->getUID();
             $userFolder = $this->root->getUserFolder($userId);
         } else {
             list ($userFolder, $error, $share) = $this->fileUtility->getNodeByToken($shareToken);
@@ -259,12 +260,22 @@ class EditorController extends Controller {
                 $template = $templateFile->getContent();
             }
         } elseif (!empty($targetId)) {
-            list($file, $error, $share) = $this->getFile($userId, $targetId);
-            if (isset($error)) {
-                $this->logger->error("Target file for create: $targetId $error", ["app" => $this->appName]);
-            } else {
-                $template = $file->getContent();
+            $targetFile = $folder->getById($targetId)[0];
+            $targetName = $targetFile->getName();
+            $targetExt = strtolower(pathinfo($targetName, PATHINFO_EXTENSION));
+            $targetKey = $this->fileUtility->getKey($targetFile);
+            
+            $fileUrl = $this->getUrl($targetFile, $user, $shareToken);
+
+            $ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
+            $documentService = new DocumentService($this->trans, $this->config);
+            try {
+                $newFileUri = $documentService->GetConvertedUri($fileUrl, $targetExt, $ext, $targetKey);
+            } catch (\Exception $e) {
+                $this->logger->logException($e, ["message" => "GetConvertedUri: " . $targetFile->getId(), "app" => $this->appName]);
+                return ["error" => $e->getMessage()];
             }
+            $template = $documentService->Request($newFileUri);
         } else {
             $template = TemplateManager::GetEmptyTemplate($name);
         }
