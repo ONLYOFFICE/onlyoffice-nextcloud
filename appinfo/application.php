@@ -220,8 +220,8 @@ class Application extends App implements IBootstrap {
 
         $detector = $container->query(IMimeTypeDetector::class);
         $detector->getAllMappings();
-        $detector->registerType("docxf", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
-        $detector->registerType("oform", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+        $detector->registerType("docxf", "application/vnd.openxmlformats-officedocument.wordprocessingml.document.docxf");
+        $detector->registerType("oform", "application/vnd.openxmlformats-officedocument.wordprocessingml.document.oform");
     }
 
     public function boot(IBootContext $context): void {
