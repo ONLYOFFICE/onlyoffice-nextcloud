@@ -269,13 +269,13 @@
                 type: "blank"
             },
             {
-                text: t(OCA.Onlyoffice.AppName, "From an existing file"),
+                text: t(OCA.Onlyoffice.AppName, "From an existing DOCX file"),
                 type: "target",
                 defaultButton: true
             }
         ];
 
-        OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Overwrite the form"),
+        OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Create new master form"),
             function (filePath, type) {
                 var fileList = OCA.Files.App.fileList;
                 var dialogFileList = OC.dialogs.filelist;
