@@ -319,13 +319,14 @@ class EditorApiController extends OCSController {
         }
 
         $canEdit = isset($format["edit"]) && $format["edit"];
+        $canFillForms = isset($format["fillForms"]) && $format["fillForms"];
         $editable = $version < 1
                     && !$template
                     && $file->isUpdateable()
                     && !$isTempLock
                     && (empty($shareToken) || ($share->getPermissions() & Constants::PERMISSION_UPDATE) === Constants::PERMISSION_UPDATE);
         $params["document"]["permissions"]["edit"] = $editable;
-        if ($editable && $canEdit) {
+        if ($editable && ($canEdit || $canFillForms)) {
             $hashCallback = $this->crypt->GetHash(["userId" => $userId, "fileId" => $file->getId(), "filePath" => $filePath, "shareToken" => $shareToken, "action" => "track"]);
             $callback = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.track", ["doc" => $hashCallback]);
 

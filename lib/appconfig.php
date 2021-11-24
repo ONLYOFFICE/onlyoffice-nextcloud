@@ -1102,7 +1102,7 @@ class AppConfig {
         "docm" => [ "mime" => "application/vnd.ms-word.document.macroEnabled.12", "type" => "word", "conv" => true, "saveas" => ["docx", "odt", "pdf", "rtf", "txt"] ],
         "docx" => [ "mime" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "type" => "word", "edit" => true, "def" => true, "saveas" => ["odt", "pdf", "rtf", "txt", "docxf"] ],
         "docxf" => [ "mime" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document.docxf", "type" => "word", "edit" => true, "def" => true, "saveas" => ["odt", "pdf", "rtf", "txt"] ],
-        "oform" => [ "mime" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document.oform", "type" => "word", "edit" => true, "def" => true ],
+        "oform" => [ "mime" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document.oform", "type" => "word", "fillForms" => true, "def" => true ],
         "dot" => [ "type" => "word", "conv" => true, "saveas" => ["docx", "odt", "pdf", "rtf", "txt"] ],
         "dotx" => [ "mime" => "application/vnd.openxmlformats-officedocument.wordprocessingml.template", "type" => "word", "conv" => true, "saveas" => ["docx", "odt", "pdf", "rtf", "txt"] ],
         "epub" => [ "mime" => "application/epub+zip", "type" => "word", "conv" => true, "saveas" => ["docx", "odt", "pdf", "rtf", "txt"] ],
