@@ -443,7 +443,7 @@
                 id: "onlyofficeDocxf",
                 displayName: t(OCA.Onlyoffice.AppName, "Master Form"),
                 templateName: t(OCA.Onlyoffice.AppName, "Master Form"),
-                iconClass: "icon-onlyoffice-new-docx",
+                iconClass: "icon-onlyoffice-new-docxf",
                 fileType: "docxf",
                 actionHandler: function (name) {
                     OCA.Onlyoffice.OpenFormPicker(name + ".docxf");
