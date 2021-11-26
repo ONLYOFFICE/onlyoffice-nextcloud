@@ -38,4 +38,9 @@
     <commands>
         <command>OCA\Onlyoffice\Command\DocumentServer</command>
     </commands>
+    <repair-steps>
+        <post-migration>
+            <step>OCA\Onlyoffice\Migration\MimeRepair</step>
+        </post-migration>
+    </repair-steps>
 </info>
