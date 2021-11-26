@@ -256,7 +256,7 @@
                     }]
                 });
             });
-    }
+    };
 
     OCA.Onlyoffice.OpenFormPicker = function (name) {
         var filterMimes = [
@@ -300,7 +300,15 @@
             {
                 buttons: buttons
             });
-    }
+    };
+
+    OCA.Onlyoffice.CreateFormClick = function (fileName, context) {
+        var fileList = context.fileList;
+        var name = fileName.replace(/\.[^.]+$/, ".oform");
+        var targetId = context.fileInfoModel.id;
+
+        OCA.Onlyoffice.CreateFile(name, fileList, 0, targetId);
+    };
 
     OCA.Onlyoffice.GetSettings = function (callbackSettings) {
         if (OCA.Onlyoffice.setting.formats) {
@@ -360,6 +368,17 @@
                         permissions: OC.PERMISSION_READ,
                         iconClass: "icon-onlyoffice-fill",
                         actionHandler: OCA.Onlyoffice.FileClick
+                    });
+                }
+
+                if (config.createForm) {
+                    OCA.Files.fileActions.registerAction({
+                        name: "onlyofficeCreateForm",
+                        displayName: t(OCA.Onlyoffice.AppName, "Create form"),
+                        mime: config.mime,
+                        permissions: ($("#isPublic").val() ? OC.PERMISSION_UPDATE : OC.PERMISSION_READ),
+                        iconClass: "icon-onlyoffice-create",
+                        actionHandler: OCA.Onlyoffice.CreateFormClick
                     });
                 }
 
