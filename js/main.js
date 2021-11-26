@@ -29,10 +29,10 @@
     OCA.Onlyoffice.mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini|Macintosh/i.test(navigator.userAgent)
                             && navigator.maxTouchPoints && navigator.maxTouchPoints > 1;
 
-    OCA.Onlyoffice.CreateFile = function (name, fileList, templateId, targetId) {
+    OCA.Onlyoffice.CreateFile = function (name, fileList, templateId, targetId, open = true) {
         var dir = fileList.getCurrentDirectory();
 
-        if (!OCA.Onlyoffice.setting.sameTab || OCA.Onlyoffice.mobile || OCA.Onlyoffice.Desktop) {
+        if ((!OCA.Onlyoffice.setting.sameTab || OCA.Onlyoffice.mobile || OCA.Onlyoffice.Desktop) && open) {
             $loaderUrl = OCA.Onlyoffice.Desktop ? "" : OC.filePath(OCA.Onlyoffice.AppName, "templates", "loader.html");
             var winEditor = window.open($loaderUrl);
         }
@@ -66,7 +66,9 @@
                 }
 
                 fileList.add(response, { animate: true });
-                OCA.Onlyoffice.OpenEditor(response.id, dir, response.name, 0, winEditor);
+                if (open) {
+                    OCA.Onlyoffice.OpenEditor(response.id, dir, response.name, 0, winEditor);
+                }
 
                 OCA.Onlyoffice.context = { fileList: fileList };
                 OCA.Onlyoffice.context.fileName = response.name;
@@ -307,7 +309,7 @@
         var name = fileName.replace(/\.[^.]+$/, ".oform");
         var targetId = context.fileInfoModel.id;
 
-        OCA.Onlyoffice.CreateFile(name, fileList, 0, targetId);
+        OCA.Onlyoffice.CreateFile(name, fileList, 0, targetId, false);
     };
 
     OCA.Onlyoffice.GetSettings = function (callbackSettings) {
