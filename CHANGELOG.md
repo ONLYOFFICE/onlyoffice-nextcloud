@@ -5,6 +5,7 @@
 
 ## Changed
 - fix preview generation
+- compatible with Nextcloud 23
 
 ## 7.2.0
 ## Added
