@@ -267,17 +267,17 @@
 
         var buttons = [
             {
-                text: t(OCA.Onlyoffice.AppName, "From blank"),
+                text: t(OCA.Onlyoffice.AppName, "Blank"),
                 type: "blank"
             },
             {
-                text: t(OCA.Onlyoffice.AppName, "From an existing DOCX file"),
+                text: t(OCA.Onlyoffice.AppName, "From text document"),
                 type: "target",
                 defaultButton: true
             }
         ];
 
-        OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Create new master form"),
+        OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Create new Form template"),
             function (filePath, type) {
                 var fileList = OCA.Files.App.fileList;
                 var dialogFileList = OC.dialogs.filelist;
@@ -462,8 +462,8 @@
 
             menu.addMenuEntry({
                 id: "onlyofficeDocxf",
-                displayName: t(OCA.Onlyoffice.AppName, "Master Form"),
-                templateName: t(OCA.Onlyoffice.AppName, "Master Form"),
+                displayName: t(OCA.Onlyoffice.AppName, "Form template"),
+                templateName: t(OCA.Onlyoffice.AppName, "Form template"),
                 iconClass: "icon-onlyoffice-new-docxf",
                 fileType: "docxf",
                 actionHandler: function (name) {
