@@ -1,5 +1,6 @@
 # Change Log
 
+## 7.2.1
 ## Added
 - check document server version
 
