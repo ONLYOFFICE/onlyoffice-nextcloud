@@ -1,5 +1,13 @@
 # Change Log
 
+## 7.2.1
+## Added
+- check document server version
+
+## Changed
+- fix preview generation
+- compatible with Nextcloud 23
+
 ## 7.2.0
 ## Added
 - set favicon on editor page

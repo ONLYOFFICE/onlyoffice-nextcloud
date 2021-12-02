@@ -414,6 +414,10 @@ class DocumentService {
             }
 
             $version = $commandResponse->version;
+            $versionF = floatval($version);
+            if ($versionF > 0.0 && $versionF <= 6.0) {
+                throw new \Exception($this->trans->t("Not supported version"));
+            }
 
         } catch (\Exception $e) {
             $logger->logException($e, ["message" => "CommandRequest on check error", "app" => self::$appName]);
