@@ -1,5 +1,8 @@
 # Change Log
 
+## Changed
+- Nextcloud v20 is no longer supported
+
 ## 7.2.1
 ## Added
 - check document server version
