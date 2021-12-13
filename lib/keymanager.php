@@ -39,6 +39,11 @@ class KeyManager {
     private const TableName_Key = "onlyoffice_filekey";
 
     /**
+     * Health remote list
+     */
+    private static $healthRemote = [];
+
+    /**
      * Get document identifier
      *
      * @param integer $fileId - file identifier
@@ -216,6 +221,10 @@ class KeyManager {
     public static function healthCheck($remote) {
         $remote = rtrim($remote, "/") . "/";
 
+        if (in_array($remote, self::$healthRemote)) {
+            return true;
+        }
+
         $httpClientService = \OC::$server->getHTTPClientService();
         $client = $httpClientService->newClient();
 
@@ -225,6 +234,7 @@ class KeyManager {
 
             $data = $body["ocs"]["data"];
             if ($data["alive"]) {
+                array_push(self::$healthRemote, $remote);
                 return true;
             }
         } catch (\Exception $e) {
