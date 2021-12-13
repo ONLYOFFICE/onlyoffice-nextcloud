@@ -514,7 +514,7 @@ class CallbackController extends Controller {
 
                     $prevIsForcesave = KeyManager::wasForcesave($fileId);
 
-                    if ($file->getStorage()->instanceOfStorage(SharingExternalStorage::class)) {
+                    if ($this->isFederatedOperation($file)) {
                         $isLock = KeyManager::lockFederatedKey($file, $isForcesave, null);
                         if ($isForcesave && !$isLock) {
                             break;
@@ -528,7 +528,7 @@ class CallbackController extends Controller {
                         return $file->putContent($newData);
                     });
 
-                    if ($file->getStorage()->instanceOfStorage(SharingExternalStorage::class)) {
+                    if ($this->isFederatedOperation($file)) {
                         if ($isForcesave) {
                             KeyManager::lockFederatedKey($file, false, $isForcesave);
                         }
@@ -694,6 +694,25 @@ class CallbackController extends Controller {
         }
 
         return [$file, null];
+    }
+
+    /**
+     * Check of federated capable
+     *
+     * @param File $file - file
+     *
+     * @return bool
+     */
+    private function isFederatedOperation($file) {
+        $storage = $file->getStorage();
+
+        $alive = false;
+        $isFederated = $storage->instanceOfStorage(SharingExternalStorage::class);
+        if ($isFederated) {
+            $alive = KeyManager::healthCheck($storage->getRemote());
+        }
+
+        return $isFederated && $alive;
     }
 
     /**

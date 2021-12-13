@@ -205,4 +205,32 @@ class KeyManager {
             return false;
         }
     }
+
+    /**
+     * Health check remote instance
+     *
+     * @param string $remote - remote instance
+     *
+     * @return bool
+     */
+    public static function healthCheck($remote) {
+        $remote = rtrim($remote, "/") . "/";
+
+        $httpClientService = \OC::$server->getHTTPClientService();
+        $client = $httpClientService->newClient();
+
+        try {
+            $response = $client->get($remote . "ocs/v2.php/apps/" . self::App_Name . "/api/v1/healthcheck?format=json");
+            $body = json_decode($response->getBody(), true);
+
+            $data = $body["ocs"]["data"];
+            if ($data["alive"]) {
+                return true;
+            }
+        } catch (\Exception $e) {
+            \OC::$server->getLogger()->logException($e, ["message" => "Failed to request federated health check for" . $remote, "app" => self::App_Name]);
+        }
+
+        return false;
+    }
 }
