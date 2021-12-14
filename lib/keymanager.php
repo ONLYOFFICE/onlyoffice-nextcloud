@@ -39,11 +39,6 @@ class KeyManager {
     private const TableName_Key = "onlyoffice_filekey";
 
     /**
-     * Health remote list
-     */
-    private static $healthRemote = [];
-
-    /**
      * Get document identifier
      *
      * @param integer $fileId - file identifier
@@ -209,38 +204,5 @@ class KeyManager {
             $logger->logException($e, ["message" => "Failed to request federated " . $action . " for " . $file->getFileInfo()->getId(), "app" => self::App_Name]);
             return false;
         }
-    }
-
-    /**
-     * Health check remote instance
-     *
-     * @param string $remote - remote instance
-     *
-     * @return bool
-     */
-    public static function healthCheck($remote) {
-        $remote = rtrim($remote, "/") . "/";
-
-        if (in_array($remote, self::$healthRemote)) {
-            return true;
-        }
-
-        $httpClientService = \OC::$server->getHTTPClientService();
-        $client = $httpClientService->newClient();
-
-        try {
-            $response = $client->get($remote . "ocs/v2.php/apps/" . self::App_Name . "/api/v1/healthcheck?format=json");
-            $body = json_decode($response->getBody(), true);
-
-            $data = $body["ocs"]["data"];
-            if ($data["alive"]) {
-                array_push(self::$healthRemote, $remote);
-                return true;
-            }
-        } catch (\Exception $e) {
-            \OC::$server->getLogger()->logException($e, ["message" => "Failed to request federated health check for" . $remote, "app" => self::App_Name]);
-        }
-
-        return false;
     }
 }
