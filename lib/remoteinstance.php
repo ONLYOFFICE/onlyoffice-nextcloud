@@ -34,9 +34,78 @@ class RemoteInstance {
     private const App_Name = "onlyoffice";
 
     /**
+     * Table name
+     */
+    private const TableName_Key = "onlyoffice_instance";
+
+    /**
+     * Time to live of remote instance (12 hours)
+     */
+    private static $ttl = 60 * 60 * 12;
+
+    /**
      * Health remote list
      */
     private static $healthRemote = [];
+
+    /**
+     * Get document identifier
+     *
+     * @param string $remote - remote instance
+     *
+     * @return string
+     */
+    public static function get($remote) {
+        $connection = \OC::$server->getDatabaseConnection();
+        $select = $connection->prepare("
+            SELECT remote, expire
+            FROM  `*PREFIX*" . self::TableName_Key . "`
+            WHERE `remote` = ?
+        ");
+        $result = $select->execute([$remote]);
+
+        $dbremote = $result ? $select->fetch() : [];
+
+        return $dbremote;
+    }
+
+    /**
+     * Store remote instance
+     *
+     * @param string $remote - remote instance
+     *
+     * @return bool
+     */
+    public static function set($remote) {
+        $expire = time() + self::$ttl;
+
+        $connection = \OC::$server->getDatabaseConnection();
+        $insert = $connection->prepare("
+            INSERT INTO `*PREFIX*" . self::TableName_Key . "`
+                (`remote`, `expire`)
+            VALUES (?, ?)
+        ");
+        return (bool)$insert->execute([$remote, $expire]);
+    }
+
+    /**
+     * Update remote instance
+     *
+     * @param string $remote - remote instance
+     *
+     * @return bool
+     */
+    public static function update($remote) {
+        $expire = time() + self::$ttl;
+
+        $connection = \OC::$server->getDatabaseConnection();
+        $update = $connection->prepare("
+            UPDATE `*PREFIX*" . self::TableName_Key . "`
+            SET expire = ?
+            WHERE remote = ?
+        ");
+        return (bool)$update->execute([$expire, $remote]);
+    }
 
     /**
      * Health check remote instance
@@ -46,9 +115,16 @@ class RemoteInstance {
      * @return bool
      */
     public static function healthCheck($remote) {
+        $logger = \OC::$server->getLogger();
         $remote = rtrim($remote, "/") . "/";
 
         if (in_array($remote, self::$healthRemote)) {
+            return true;
+        }
+
+        $dbremote = self::get($remote);
+        if (!empty($dbremote) && $dbremote["expire"] > time()) {
+            array_push(self::$healthRemote, $dbremote["remote"]);
             return true;
         }
 
@@ -61,11 +137,19 @@ class RemoteInstance {
 
             $data = $body["ocs"]["data"];
             if ($data["alive"]) {
+                if (empty($dbremote)) {
+                    self::set($remote);
+                } else {
+                    self::update($remote);
+                }
+
+                $logger->debug("Remote instance " . $remote . " was stored to database", ["app" => self::App_Name]);
+
                 array_push(self::$healthRemote, $remote);
                 return true;
             }
         } catch (\Exception $e) {
-            \OC::$server->getLogger()->logException($e, ["message" => "Failed to request federated health check for" . $remote, "app" => self::App_Name]);
+            $logger->logException($e, ["message" => "Failed to request federated health check for" . $remote, "app" => self::App_Name]);
         }
 
         return false;
