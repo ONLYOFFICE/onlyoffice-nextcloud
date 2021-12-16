@@ -234,11 +234,11 @@
 
         $.ajax({
             method: "PUT",
-            url: OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/restore?fileId={fileId}&version={version}",
-            {
+            url: OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/restore"),
+            data: {
                 fileId: OCA.Onlyoffice.fileId || 0,
                 version: version,
-            }),
+            },
             success: function onSuccess(response) {
                 OCA.Onlyoffice.refreshHistory(response, version);
 
