@@ -671,16 +671,15 @@ class EditorController extends Controller {
      * Get versions history for file
      *
      * @param integer $fileId - file identifier
-     * @param string $shareToken - access token
      *
      * @return array
      *
      * @NoAdminRequired
      */
-    public function history($fileId, $shareToken = null) {
+    public function history($fileId) {
         $this->logger->debug("Request history for: $fileId", ["app" => $this->appName]);
 
-        if (empty($shareToken) && !$this->config->isUserAllowedToUse()) {
+        if (!$this->config->isUserAllowedToUse()) {
             return ["error" => $this->trans->t("Not permitted")];
         }
 
@@ -692,7 +691,7 @@ class EditorController extends Controller {
             $userId = $user->getUID();
         }
 
-        list ($file, $error, $share) = empty($shareToken) ? $this->getFile($userId, $fileId) : $this->fileUtility->getFileByToken($fileId, $shareToken);
+        list ($file, $error, $share) = $this->getFile($userId, $fileId);
 
         if (isset($error)) {
             $this->logger->error("History: $fileId $error", ["app" => $this->appName]);
@@ -791,16 +790,15 @@ class EditorController extends Controller {
      *
      * @param integer $fileId - file identifier
      * @param integer $version - file version
-     * @param string $shareToken - access token
      *
      * @return array
      *
      * @NoAdminRequired
      */
-    public function version($fileId, $version, $shareToken = null) {
+    public function version($fileId, $version) {
         $this->logger->debug("Request version for: $fileId ($version)", ["app" => $this->appName]);
 
-        if (empty($shareToken) && !$this->config->isUserAllowedToUse()) {
+        if (!$this->config->isUserAllowedToUse()) {
             return ["error" => $this->trans->t("Not permitted")];
         }
 
@@ -812,7 +810,7 @@ class EditorController extends Controller {
             $userId = $user->getUID();
         }
 
-        list ($file, $error, $share) = empty($shareToken) ? $this->getFile($userId, $fileId) : $this->fileUtility->getFileByToken($fileId, $shareToken);
+        list ($file, $error, $share) = $this->getFile($userId, $fileId);
 
         if (isset($error)) {
             $this->logger->error("History: $fileId $error", ["app" => $this->appName]);
@@ -841,14 +839,14 @@ class EditorController extends Controller {
             $key = $this->fileUtility->getKey($file, true);
             $versionId = $file->getFileInfo()->getMtime();
 
-            $fileUrl = $this->getUrl($file, $user, $shareToken);
+            $fileUrl = $this->getUrl($file, $user);
         } else {
             $fileVersion = array_values($versions)[$version - 1];
 
             $key = $this->fileUtility->getVersionKey($fileVersion);
             $versionId = $fileVersion->getRevisionId();
 
-            $fileUrl = $this->getUrl($file, $user, $shareToken, $version);
+            $fileUrl = $this->getUrl($file, $user, null, $version);
         }
         $key = DocumentService::GenerateRevisionId($key);
 
@@ -862,14 +860,14 @@ class EditorController extends Controller {
             && count($versions) >= $version - 1
             && FileVersions::hasChanges($ownerId, $fileId, $versionId)) {
 
-            $changesUrl = $this->getUrl($file, $user, $shareToken, $version, true);
+            $changesUrl = $this->getUrl($file, $user, null, $version, true);
             $result["changesUrl"] = $changesUrl;
 
             $prevVersion = array_values($versions)[$version - 2];
             $prevVersionKey = $this->fileUtility->getVersionKey($prevVersion);
             $prevVersionKey = DocumentService::GenerateRevisionId($prevVersionKey);
 
-            $prevVersionUrl = $this->getUrl($file, $user, $shareToken, $version - 1);
+            $prevVersionUrl = $this->getUrl($file, $user, null, $version - 1);
 
             $result["previous"] = [
                 "key" => $prevVersionKey,
@@ -890,17 +888,16 @@ class EditorController extends Controller {
      *
      * @param integer $fileId - file identifier
      * @param integer $version - file version
-     * @param string $shareToken - access token
      *
      * @return array
      *
      * @NoAdminRequired
      * @PublicPage
      */
-    public function restore($fileId, $version, $shareToken = null) {
+    public function restore($fileId, $version) {
         $this->logger->debug("Request restore version for: $fileId ($version)", ["app" => $this->appName]);
 
-        if (empty($shareToken) && !$this->config->isUserAllowedToUse()) {
+        if (!$this->config->isUserAllowedToUse()) {
             return ["error" => $this->trans->t("Not permitted")];
         }
 
@@ -912,7 +909,7 @@ class EditorController extends Controller {
             $userId = $user->getUID();
         }
 
-        list ($file, $error, $share) = empty($shareToken) ? $this->getFile($userId, $fileId) : $this->fileUtility->getFileByToken($fileId, $shareToken);
+        list ($file, $error, $share) = $this->getFile($userId, $fileId);
 
         if (isset($error)) {
             $this->logger->error("Restore: $fileId $error", ["app" => $this->appName]);
@@ -937,7 +934,7 @@ class EditorController extends Controller {
             }
         }
 
-        return $this->history($fileId, $shareToken);
+        return $this->history($fileId);
     }
 
     /**
