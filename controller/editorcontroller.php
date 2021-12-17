@@ -260,7 +260,7 @@ class EditorController extends Controller {
                 $template = $templateFile->getContent();
             }
         } elseif (!empty($targetId)) {
-            $targetFile = $folder->getById($targetId)[0];
+            $targetFile = $userFolder->getById($targetId)[0];
             $targetName = $targetFile->getName();
             $targetExt = strtolower(pathinfo($targetName, PATHINFO_EXTENSION));
             $targetKey = $this->fileUtility->getKey($targetFile);
