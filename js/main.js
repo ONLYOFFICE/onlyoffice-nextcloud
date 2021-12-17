@@ -366,7 +366,7 @@
                         name: "onlyofficeFill",
                         displayName: t(OCA.Onlyoffice.AppName, "Fill in form in ONLYOFFICE"),
                         mime: config.mime,
-                        permissions: OC.PERMISSION_READ,
+                        permissions: OC.PERMISSION_UPDATE,
                         iconClass: "icon-onlyoffice-fill",
                         actionHandler: OCA.Onlyoffice.FileClick
                     });
