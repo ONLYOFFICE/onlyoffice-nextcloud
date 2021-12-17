@@ -260,7 +260,7 @@
             });
     };
 
-    OCA.Onlyoffice.OpenFormPicker = function (name) {
+    OCA.Onlyoffice.OpenFormPicker = function (name, filelist) {
         var filterMimes = [
             "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         ];
@@ -279,7 +279,6 @@
 
         OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Create new Form template"),
             function (filePath, type) {
-                var fileList = OCA.Files.App.fileList;
                 var dialogFileList = OC.dialogs.filelist;
                 var targetId = 0;
 
@@ -292,7 +291,7 @@
                     })
                 }
 
-                OCA.Onlyoffice.CreateFile(name, fileList, 0, targetId);
+                OCA.Onlyoffice.CreateFile(name, filelist, 0, targetId);
             },
             false,
             filterMimes,
@@ -467,7 +466,7 @@
                 iconClass: "icon-onlyoffice-new-docxf",
                 fileType: "docxf",
                 actionHandler: function (name) {
-                    OCA.Onlyoffice.OpenFormPicker(name + ".docxf");
+                    OCA.Onlyoffice.OpenFormPicker(name + ".docxf", fileList);
                 }
             });
         }
