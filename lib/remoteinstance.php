@@ -53,12 +53,12 @@ class RemoteInstance {
      *
      * @param string $remote - remote instance
      *
-     * @return string
+     * @return array
      */
     public static function get($remote) {
         $connection = \OC::$server->getDatabaseConnection();
         $select = $connection->prepare("
-            SELECT remote, expire
+            SELECT remote, expire, status
             FROM  `*PREFIX*" . self::TableName_Key . "`
             WHERE `remote` = ?
         ");
@@ -73,38 +73,36 @@ class RemoteInstance {
      * Store remote instance
      *
      * @param string $remote - remote instance
+     * @param bool $status - remote status
      *
      * @return bool
      */
-    public static function set($remote) {
-        $expire = time() + self::$ttl;
-
+    public static function set($remote, $status) {
         $connection = \OC::$server->getDatabaseConnection();
         $insert = $connection->prepare("
             INSERT INTO `*PREFIX*" . self::TableName_Key . "`
-                (`remote`, `expire`)
-            VALUES (?, ?)
+                (`remote`, `status`, `expire`)
+            VALUES (?, ?, ?)
         ");
-        return (bool)$insert->execute([$remote, $expire]);
+        return (bool)$insert->execute([$remote, $status === true ? 1 : 0, time()]);
     }
 
     /**
      * Update remote instance
      *
-     * @param string $remote - remote instance
+     * @param array $remote - remote instance
+     * @param bool $status - remote status
      *
      * @return bool
      */
-    public static function update($remote) {
-        $expire = time() + self::$ttl;
-
+    public static function update($remote, $status) {
         $connection = \OC::$server->getDatabaseConnection();
         $update = $connection->prepare("
             UPDATE `*PREFIX*" . self::TableName_Key . "`
-            SET expire = ?
+            SET status = ?, expire = ? 
             WHERE remote = ?
         ");
-        return (bool)$update->execute([$expire, $remote]);
+        return (bool)$update->execute([$status === true ? 1 : 0, time(), $remote]);
     }
 
     /**
@@ -118,40 +116,44 @@ class RemoteInstance {
         $logger = \OC::$server->getLogger();
         $remote = rtrim($remote, "/") . "/";
 
-        if (in_array($remote, self::$healthRemote)) {
-            return true;
+        if (array_key_exists($remote, self::$healthRemote)) {
+            return self::$healthRemote[$remote];
         }
 
         $dbremote = self::get($remote);
-        if (!empty($dbremote) && $dbremote["expire"] > time()) {
-            array_push(self::$healthRemote, $dbremote["remote"]);
-            return true;
+        if (!empty($dbremote) && $dbremote["expire"] + self::$ttl > time()) {
+            self::$healthRemote[$remote] = $dbremote["status"];
+            return self::$healthRemote[$remote];
         }
 
         $httpClientService = \OC::$server->getHTTPClientService();
         $client = $httpClientService->newClient();
 
         try {
+            $status = false;
             $response = $client->get($remote . "ocs/v2.php/apps/" . self::App_Name . "/api/v1/healthcheck?format=json");
             $body = json_decode($response->getBody(), true);
 
             $data = $body["ocs"]["data"];
-            if ($data["alive"]) {
-                if (empty($dbremote)) {
-                    self::set($remote);
-                } else {
-                    self::update($remote);
-                }
 
-                $logger->debug("Remote instance " . $remote . " was stored to database", ["app" => self::App_Name]);
-
-                array_push(self::$healthRemote, $remote);
-                return true;
+            if (isset($data["alive"])) {
+                $status = $data["alive"];
             }
+
         } catch (\Exception $e) {
             $logger->logException($e, ["message" => "Failed to request federated health check for" . $remote, "app" => self::App_Name]);
         }
 
-        return false;
+        if (empty($dbremote)) {
+            self::set($remote, $status);
+        } else {
+            self::update($remote, $status);
+        }
+
+        $logger->debug("Remote instance " . $remote . " was stored to database", ["app" => self::App_Name]);
+
+        self::$healthRemote[$remote] = $status;
+
+        return self::$healthRemote[$remote];
     }
 }
