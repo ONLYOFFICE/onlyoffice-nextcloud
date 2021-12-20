@@ -117,11 +117,13 @@ class RemoteInstance {
         $remote = rtrim($remote, "/") . "/";
 
         if (array_key_exists($remote, self::$healthRemote)) {
+            $logger->debug("Remote instance " . $remote . " from local cache", ["app" => self::App_Name]);
             return self::$healthRemote[$remote];
         }
 
         $dbremote = self::get($remote);
         if (!empty($dbremote) && $dbremote["expire"] + self::$ttl > time()) {
+            $logger->debug("Remote instance " . $remote . " from database", ["app" => self::App_Name]);
             self::$healthRemote[$remote] = $dbremote["status"];
             return self::$healthRemote[$remote];
         }
