@@ -298,7 +298,7 @@
             filterMimes,
             true,
             OC.dialogs.FILEPICKER_TYPE_CUSTOM,
-            "",
+            filelist.getCurrentDirectory(),
             {
                 buttons: buttons
             });
