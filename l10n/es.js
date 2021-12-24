@@ -109,6 +109,13 @@ OC.L10N.register(
     "Notification sent successfully": "Notificación enviada correctamente",
     "%1\$s mentioned in the %2\$s: \"%3\$s\".": "%1\$s ha mencionado en %2\$s: \"%3\$s\".",
     "{notifier} mentioned in the {file}: \"%1\$s\".": "{notifier} ha mencionado en {file}: \"%1\$s\".",
-    "Choose a format to convert {fileName}": "Elija un formato para convertir {fileName}"
+    "Choose a format to convert {fileName}": "Elija un formato para convertir {fileName}",
+    "Form template": "Plantilla de formulario",
+    "Blank": "En blanco",
+    "From text document": "Desde documento de texto",
+    "Create new Form template": "Crear nueva plantilla de formulario",
+    "Create form": "Crear formulario",
+    "Fill in form in ONLYOFFICE": "Rellenar el formulario en ONLYOFFICE",
+    "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online": "Por favor, actualice ONLYOFFICE Docs a la versión 7.0 para poder trabajar con formularios rellenables en línea"
 },
 "nplurals=2; plural=(n != 1);");
