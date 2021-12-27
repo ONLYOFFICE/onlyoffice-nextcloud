@@ -111,4 +111,4 @@ OC.L10N.register(
     "{notifier} mentioned in the {file}: \"%1\$s\".": "{notifier} 提到 {file}: \"%1\$s\".",
     "Choose a format to convert {fileName}": "选择要转换{fileName}的格式"
 },
-"nplurals=2; plural=(n != 1);");
+"nplurals=1; plural=0;");

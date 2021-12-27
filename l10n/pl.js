@@ -111,4 +111,4 @@ OC.L10N.register(
     "{notifier} mentioned in the {file}: \"%1\$s\".": "{notifier} dodał(a) w {file} następujący komentarz: \"%1\$s\".",
     "Choose a format to convert {fileName}": "Wybierz format, do którego chcesz przekonwertować {fileName}"
 },
-"nplurals=2; plural=(n != 1);");
+"nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);");

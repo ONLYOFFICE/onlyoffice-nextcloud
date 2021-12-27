@@ -111,4 +111,4 @@ OC.L10N.register(
     "{notifier} mentioned in the {file}: \"%1\$s\".": "{notifier} ha mencionado en {file}: \"%1\$s\".",
     "Choose a format to convert {fileName}": "Изберете формат за конвертиране {fileName}"
 },
-"nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);");
+"nplurals=2; plural=(n != 1);");

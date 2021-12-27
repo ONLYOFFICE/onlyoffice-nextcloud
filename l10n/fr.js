@@ -111,4 +111,4 @@ OC.L10N.register(
     "{notifier} mentioned in the {file}: \"%1\$s\".": "{notifier}  a mentionné dans {file}: \"%1\$s\".",
     "Choose a format to convert {fileName}": "Choisissez un format à convertir {fileName}"
 },
-"nplurals=2; plural=(n != 1);");
+"nplurals=2; plural=(n > 1);");

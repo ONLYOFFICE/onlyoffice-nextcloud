@@ -111,4 +111,4 @@ OC.L10N.register(
     "{notifier} mentioned in the {file}: \"%1\$s\".": "{notifier} は {file}: \"%1\$s\"に記載しました。",
     "Choose a format to convert {fileName}": "{fileName}を変換する形式を選択してください"
 },
-"nplurals=2; plural=(n != 1);");
+"nplurals=1; plural=0;");
