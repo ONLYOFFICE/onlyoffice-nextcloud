@@ -172,18 +172,17 @@ The table below will help you to make the right choice.
 | **Support** | **Community Edition** | **Enterprise Edition** |
 | Documentation | [Help Center](https://helpcenter.onlyoffice.com/installation/docs-community-index.aspx) | [Help Center](https://helpcenter.onlyoffice.com/installation/docs-enterprise-index.aspx) |
 | Standard support | [GitHub](https://github.com/ONLYOFFICE/DocumentServer/issues) or paid | One year support included |
-| Premium support | [Buy Now](https://www.onlyoffice.com/support.aspx?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud) | [Buy Now](https://www.onlyoffice.com/support.aspx?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud) |
+| Premium support | [Contact us](mailto:sales@onlyoffice.com) | [Contact us](mailto:sales@onlyoffice.com) |
 | **Services** | **Community Edition** | **Enterprise Edition** |
 | Conversion Service                | + | + |
 | Document Builder Service          | + | + |
 | **Interface** | **Community Edition** | **Enterprise Edition** |
 | Tabbed interface                       | + | + |
 | Dark theme                             | + | + |
-| 150% scaling                           | + | + |
+| 125%, 150%, 175%, 200% scaling         | + | + |
 | White Label                            | - | - |
-| Integrated test example (node.js)*     | - | + |
-| Mobile web editors | - | + |
-| Access to pro features via desktop     | - | + |
+| Integrated test example (node.js)      | + | + |
+| Mobile web editors                     | - | +* |
 | **Plugins & Macros** | **Community Edition** | **Enterprise Edition** |
 | Plugins                           | + | + |
 | Macros                            | + | + |
@@ -197,30 +196,34 @@ The table below will help you to make the right choice.
 | **Document Editor features** | **Community Edition** | **Enterprise Edition** |
 | Font and paragraph formatting   | + | + |
 | Object insertion                | + | + |
-| Adding Content control          | - | + | 
+| Adding Content control          | + | + | 
 | Editing Content control         | + | + | 
 | Layout tools                    | + | + |
 | Table of contents               | + | + |
 | Navigation panel                | + | + |
 | Mail Merge                      | + | + |
-| Comparing Documents             | - | +* |
+| Comparing Documents             | + | + |
 | **Spreadsheet Editor features** | **Community Edition** | **Enterprise Edition** |
 | Font and paragraph formatting   | + | + |
 | Object insertion                | + | + |
 | Functions, formulas, equations  | + | + |
 | Table templates                 | + | + |
 | Pivot tables                    | + | + |
-| Data validation                 | + | + |
-| Conditional formatting  for viewing | +** | +** |
+| Data validation	          | + | + |
+| Conditional formatting          | + | + |
+| Sparklines	                  | + | + |
+| Sheet Views                     | + | + |
 | **Presentation Editor features** | **Community Edition** | **Enterprise Edition** |
 | Font and paragraph formatting   | + | + |
 | Object insertion                | + | + |
 | Transitions                     | + | + |
 | Presenter mode                  | + | + |
 | Notes                           | + | + |
+| **Form creator features** | **Community Edition** | **Enterprise Edition** |
+| Adding form fields	          | + | + |
+| Form preview                    | + | + |
+| Saving as PDF	                  | + | + |
 | | [Get it now](https://www.onlyoffice.com/download-docs.aspx?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud#docs-community)  | [Start Free Trial](https://www.onlyoffice.com/download-docs.aspx?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud#docs-enterprise)  |
 
-\*  It's possible to add documents for comparison from your local drive, from URL and from Nextcloud storage.
-
-\** Support for all conditions and gradient. Adding/Editing capabilities are coming soon
+\* If supported by DMS.
 
