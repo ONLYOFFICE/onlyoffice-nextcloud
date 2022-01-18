@@ -107,6 +107,13 @@
     "Notification sent successfully": "通知发送成功",
     "%1$s mentioned in the %2$s: \"%3$s\".": "%1$s 提到 %2$s: \"%3$s\".",
     "{notifier} mentioned in the {file}: \"%1$s\".": "{notifier} 提到 {file}: \"%1$s\".",
-    "Choose a format to convert {fileName}": "选择要转换{fileName}的格式"
+    "Choose a format to convert {fileName}": "选择要转换{fileName}的格式",
+    "Form template": "表单模板",
+    "Blank": "空白",
+    "From text document": "从文本文件",
+    "Create new Form template": "创建新的表单模板",
+    "Create form": "创建表单",
+    "Fill in form in ONLYOFFICE": "在ONLYOFFICE上填写表单",
+    "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online": "请将ONLYOFFICE Docs更新到7.0版本，以便在线编辑可填写的表单"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }
