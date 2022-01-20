@@ -222,6 +222,8 @@ class Application extends App implements IBootstrap {
         $detector->getAllMappings();
         $detector->registerType("docxf", "application/vnd.openxmlformats-officedocument.wordprocessingml.document.docxf");
         $detector->registerType("oform", "application/vnd.openxmlformats-officedocument.wordprocessingml.document.oform");
+
+        Hooks::connectHooks();
     }
 
     public function boot(IBootContext $context): void {
@@ -279,7 +281,5 @@ class Application extends App implements IBootstrap {
                 }
             });
         }
-
-        Hooks::connectHooks();
     }
 }
