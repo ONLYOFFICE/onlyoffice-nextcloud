@@ -1,5 +1,8 @@
 # Change Log
 
+## Changed
+- fixed link in mention notifications
+
 ## 7.2.1
 ## Added
 - check document server version
