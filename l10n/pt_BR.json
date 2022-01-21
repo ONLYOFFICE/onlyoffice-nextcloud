@@ -115,5 +115,5 @@
     "Create form": "Criar formulário",
     "Fill in form in ONLYOFFICE": "Preencher formulário no ONLYOFFICE",
     "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online": "Atualize o ONLYOFFICE Docs para a versão 7.0 para trabalhar em formulários preenchíveis online"
-},"pluralForm" :"nplurals=2; plural=(n != 1);"
+},"pluralForm" :"nplurals=2; plural=(n > 1);"
 }

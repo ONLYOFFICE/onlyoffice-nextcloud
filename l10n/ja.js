@@ -118,4 +118,4 @@ OC.L10N.register(
     "Fill in form in ONLYOFFICE": "ONLYOFFICEでフォームを記入する",
     "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online": "オンラインで入力可能なフォームを作成するには、ONLYOFFICE Docs 7.0版まで更新してください"
     },
-"nplurals=2; plural=(n != 1);");
+"nplurals=1; plural=0;");
