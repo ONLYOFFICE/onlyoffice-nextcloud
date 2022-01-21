@@ -1,5 +1,8 @@
 # Change Log
 
+## Changed
+- fixed link in mention notifications
+
 ## 7.3.0
 ## Added
 - support docxf and oform formats
