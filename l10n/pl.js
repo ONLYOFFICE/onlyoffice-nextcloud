@@ -109,6 +109,13 @@ OC.L10N.register(
     "Notification sent successfully": "Powiadomienie zostało wysłane",
     "%1\$s mentioned in the %2\$s: \"%3\$s\".": "%1\$s dodał(a) w %2\$s następujący komentarz: \"%3\$s\".",
     "{notifier} mentioned in the {file}: \"%1\$s\".": "{notifier} dodał(a) w {file} następujący komentarz: \"%1\$s\".",
-    "Choose a format to convert {fileName}": "Wybierz format, do którego chcesz przekonwertować {fileName}"
+    "Choose a format to convert {fileName}": "Wybierz format, do którego chcesz przekonwertować {fileName}",
+    "Form template": "Szablon formularza",
+    "Blank": "Pusty",
+    "From text document": "Szablon formularza z pliku tekstowego",
+    "Create new Form template": "Utwórz nowy szablon formularza",
+    "Create form": "Utwórz formularz",
+    "Fill in form in ONLYOFFICE": "Wypełnić formularz w ONLYOFFICE",
+    "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online": "Zaktualizuj ONLYOFFICE Docs do wersji 7.0, aby działały w formularzach do wypełniania online"
 },
-"nplurals=2; plural=(n != 1);");
+"nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);");

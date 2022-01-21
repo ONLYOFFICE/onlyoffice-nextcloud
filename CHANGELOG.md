@@ -3,6 +3,13 @@
 ## Changed
 - fixed link in mention notifications
 
+## 7.3.0
+## Added
+- support docxf and oform formats
+- create blank docxf from creation menu
+- create docxf from docx from creation menu
+- create oform from docxf from document manager
+
 ## 7.2.1
 ## Added
 - check document server version

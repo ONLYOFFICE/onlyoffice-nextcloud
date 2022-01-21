@@ -107,6 +107,13 @@
     "Notification sent successfully": "Notificação enviada com sucesso",
     "%1$s mentioned in the %2$s: \"%3$s\".": "%1$s mencionado em %2$s: \"%3$s\".",
     "{notifier} mentioned in the {file}: \"%1$s\".": "{notifier}  mencionado em {file}: \"%1$s\".",
-    "Choose a format to convert {fileName}": "Escolha um formato para converter {fileName}"
-},"pluralForm" :"nplurals=2; plural=(n != 1);"
+    "Choose a format to convert {fileName}": "Escolha um formato para converter {fileName}",
+    "Form template": "Modelo de formulário",
+    "Blank": "Em branco",
+    "From text document": "Do documento de texto",
+    "Create new Form template": "Criar novo modelo de formulário",
+    "Create form": "Criar formulário",
+    "Fill in form in ONLYOFFICE": "Preencher formulário no ONLYOFFICE",
+    "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online": "Atualize o ONLYOFFICE Docs para a versão 7.0 para trabalhar em formulários preenchíveis online"
+},"pluralForm" :"nplurals=2; plural=(n > 1);"
 }
