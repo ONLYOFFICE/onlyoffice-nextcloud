@@ -256,7 +256,7 @@ class Application extends App implements IBootstrap {
                     && $this->appConfig->isUserAllowedToUse()) {
 
                     $templateManager->registerTemplateFileCreator(function () use ($appName, $trans) {
-                        $wordTemplate = new TemplateFileCreator($appName, $trans->t("Document"), ".docx");
+                        $wordTemplate = new TemplateFileCreator($appName, $trans->t("New document"), ".docx");
                         $wordTemplate->addMimetype("application/vnd.openxmlformats-officedocument.wordprocessingml.document");
                         $wordTemplate->setIconClass("icon-onlyoffice-new-docx");
                         $wordTemplate->setRatio(21/29.7);
@@ -264,7 +264,7 @@ class Application extends App implements IBootstrap {
                     });
 
                     $templateManager->registerTemplateFileCreator(function () use ($appName, $trans) {
-                        $cellTemplate = new TemplateFileCreator($appName, $trans->t("Spreadsheet"), ".xlsx");
+                        $cellTemplate = new TemplateFileCreator($appName, $trans->t("New spreadsheet"), ".xlsx");
                         $cellTemplate->addMimetype("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
                         $cellTemplate->setIconClass("icon-onlyoffice-new-xlsx");
                         $cellTemplate->setRatio(21/29.7);
@@ -272,7 +272,7 @@ class Application extends App implements IBootstrap {
                     });
 
                     $templateManager->registerTemplateFileCreator(function () use ($appName, $trans) {
-                        $slideTemplate = new TemplateFileCreator($appName, $trans->t("Presentation"), ".pptx");
+                        $slideTemplate = new TemplateFileCreator($appName, $trans->t("New presentation"), ".pptx");
                         $slideTemplate->addMimetype("application/vnd.openxmlformats-officedocument.presentationml.presentation");
                         $slideTemplate->setIconClass("icon-onlyoffice-new-pptx");
                         $slideTemplate->setRatio(16/9);

@@ -2,6 +2,7 @@
 
 ## Changed
 - fixed link in mention notifications
+- title for new file
 
 ## 7.3.0
 ## Added
