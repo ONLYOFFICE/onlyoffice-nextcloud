@@ -110,7 +110,7 @@ OC.L10N.register(
     "%1\$s mentioned in the %2\$s: \"%3\$s\".": "%1\$s dodał(a) w %2\$s następujący komentarz: \"%3\$s\".",
     "{notifier} mentioned in the {file}: \"%1\$s\".": "{notifier} dodał(a) w {file} następujący komentarz: \"%1\$s\".",
     "Choose a format to convert {fileName}": "Wybierz format, do którego chcesz przekonwertować {fileName}",
-    "New form template": "Szablon formularza",
+    "New form template": "Nowy szablon formularza",
     "Blank": "Pusty",
     "From text document": "Szablon formularza z pliku tekstowego",
     "Create new Form template": "Utwórz nowy szablon formularza",
