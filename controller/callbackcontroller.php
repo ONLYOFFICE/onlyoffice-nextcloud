@@ -23,6 +23,7 @@ use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataDownloadResponse;
 use OCP\AppFramework\Http\JSONResponse;
+use OCP\AppFramework\Http\StreamResponse;
 use OCP\AppFramework\QueryException;
 use OCP\Files\File;
 use OCP\Files\Folder;
@@ -177,7 +178,7 @@ class CallbackController extends Controller {
      *
      * @param string $doc - verification token with the file identifier
      *
-     * @return DataDownloadResponse|JSONResponse
+     * @return StreamResponse|JSONResponse
      *
      * @NoAdminRequired
      * @NoCSRFRequired
@@ -294,7 +295,10 @@ class CallbackController extends Controller {
         }
 
         try {
-            return new DataDownloadResponse($file->getContent(), $file->getName(), $file->getMimeType());
+            $response = new StreamResponse($file->fopen('rb'));
+            $response->addHeader('Content-Disposition', 'attachment; filename="' . rawurldecode($file->getName()) . '"');
+            $response->addHeader('Content-Type', $file->getMimeType());
+            return $response;
         } catch (NotPermittedException  $e) {
             $this->logger->logException($e, ["message" => "Download Not permitted: $fileId ($version)", "app" => $this->appName]);
             return new JSONResponse(["message" => $this->trans->t("Not permitted")], Http::STATUS_FORBIDDEN);
