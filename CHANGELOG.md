@@ -1,6 +1,7 @@
 # Change Log
 
 ## Changed
+- Nextcloud v20 is no longer supported
 - fixed link in mention notifications
 - title for new file
 

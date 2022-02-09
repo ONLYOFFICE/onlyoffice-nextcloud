@@ -408,8 +408,7 @@
                 return;
             }
 
-            if ($("#isPublic").val() === "1" && !!$("#filestable").length
-                || OC.config.version.split(".")[0] < 21) {
+            if ($("#isPublic").val() === "1" && !!$("#filestable").length) {
                 menu.addMenuEntry({
                     id: "onlyofficeDocx",
                     displayName: t(OCA.Onlyoffice.AppName, "New document"),
