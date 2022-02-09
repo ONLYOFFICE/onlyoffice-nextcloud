@@ -86,10 +86,9 @@ class MimeRepair implements IRepairStep {
 
         $customAliasPath = \OC::$SERVERROOT . "/config/" . self::CUSTOM_MIMETYPEALIASES;
 
-        $formats = $this->config->FormatsSetting();
         $mimes = [
-            $formats["docxf"]["mime"] => self::DOCUMENT_ALIAS,
-            $formats["oform"]["mime"] => self::DOCUMENT_ALIAS
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document.docxf" => self::DOCUMENT_ALIAS,
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document.oform" => self::DOCUMENT_ALIAS
         ];
 
         $customAlias = $mimes;
