@@ -52,6 +52,13 @@
             return;
         }
 
+        var docsVersion = DocsAPI.DocEditor.version().split(".");
+        if (docsVersion[0] < 6
+            || docsVersion[0] == 6 && docsVersion[1] == 0) {
+            OCA.Onlyoffice.showMessage(t(OCA.Onlyoffice.AppName, "Not supported version"), "error", {timeout: -1});
+            return;
+        }
+
         var configUrl = OC.linkToOCS("apps/" + OCA.Onlyoffice.AppName + "/api/v1/config", 2) + (OCA.Onlyoffice.fileId || 0);
 
         var params = [];
@@ -100,7 +107,7 @@
                     }
 
                     if ((config.document.fileType === "docxf" || config.document.fileType === "oform")
-                        && DocsAPI.DocEditor.version().split(".")[0] < 7) {
+                        && docsVersion[0] < 7) {
                         OCA.Onlyoffice.showMessage(t(OCA.Onlyoffice.AppName, "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online"), "error", {timeout: -1});
                         return;
                     }
