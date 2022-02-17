@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System SIA 2021
+ * (c) Copyright Ascensio System SIA 2022
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -122,6 +122,8 @@ class Preview extends Provider {
         "application/msword",
         "application/vnd.ms-word.document.macroEnabled.12",
         "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document.docxf",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document.oform",
         "application/vnd.openxmlformats-officedocument.wordprocessingml.template",
         "application/epub+zip",
         "text/html",

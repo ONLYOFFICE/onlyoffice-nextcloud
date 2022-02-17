@@ -24,9 +24,9 @@ OC.L10N.register(
     "File created" : "Fichier créé",
     "Open in ONLYOFFICE" : "Ouvrir dans ONLYOFFICE",
     "Convert with ONLYOFFICE" : "Convertir avec ONLYOFFICE",
-    "Document" : "Document",
-    "Spreadsheet" : "Feuille de calcul",
-    "Presentation" : "Présentation",
+    "New document" : "Nouveau document",
+    "New spreadsheet" : "Nouvelle feuille de calcul",
+    "New presentation" : "Nouvelle présentation",
     "Error when trying to connect" : "Erreur durant la tentative de connexion",
     "Settings have been successfully updated" : "Les paramètres ont été mis à jour avec succès",
     "Server can't read xml" : "Le serveur ne peut pas lire le XML",
@@ -109,6 +109,13 @@ OC.L10N.register(
     "Notification sent successfully": "Notification a été envoyée avec succès",
     "%1\$s mentioned in the %2\$s: \"%3\$s\".": "%1\$s a mentionné dans %2\$s: \"%3\$s\".",
     "{notifier} mentioned in the {file}: \"%1\$s\".": "{notifier}  a mentionné dans {file}: \"%1\$s\".",
-    "Choose a format to convert {fileName}": "Choisissez un format à convertir {fileName}"
+    "Choose a format to convert {fileName}": "Choisissez un format à convertir {fileName}",
+    "New form template": "Nouveau modèle de formulaire",
+    "Blank": "Vide",
+    "From text document": "À partir d'un fichier texte",
+    "Create new Form template": "Créer un nouveau modèle de formulaire",
+    "Create form": "Créer un formulaire",
+    "Fill in form in ONLYOFFICE": "Remplir le formulaire dans ONLYOFFICE",
+    "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online": "Veuillez mettre à jour ONLYOFFICE Docs vers la version 7.0 pour travailler sur les formulaires à remplir en ligne"
 },
-"nplurals=2; plural=(n != 1);");
+"nplurals=2; plural=(n > 1);");

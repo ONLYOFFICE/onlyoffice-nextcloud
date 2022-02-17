@@ -24,9 +24,9 @@ OC.L10N.register(
     "File created" : "Arquivo criado",
     "Open in ONLYOFFICE" : "Abrir no ONLYOFFICE",
     "Convert with ONLYOFFICE" : "Converta com ONLYOFFICE",
-    "Document" : "Documento",
-    "Spreadsheet" : "Planilha",
-    "Presentation" : "Apresentação",
+    "New document" : "Novo documento",
+    "New spreadsheet" : "Nova planilha",
+    "New presentation" : "Nova apresentação",
     "Error when trying to connect" : "Erro ao tentar conectar",
     "Settings have been successfully updated" : "Configurações salvas com sucesso",
     "Server can't read xml" : "Servidor não pode ler xml",
@@ -109,6 +109,13 @@ OC.L10N.register(
     "Notification sent successfully": "Notificação enviada com sucesso",
     "%1\$s mentioned in the %2\$s: \"%3\$s\".": "%1\$s mencionado em %2\$s: \"%3\$s\".",
     "{notifier} mentioned in the {file}: \"%1\$s\".": "{notifier}  mencionado em {file}: \"%1\$s\".",
-    "Choose a format to convert {fileName}": "Escolha um formato para converter {fileName}"
+    "Choose a format to convert {fileName}": "Escolha um formato para converter {fileName}",
+    "New form template": "Novo modelo de formulário",
+    "Blank": "Em branco",
+    "From text document": "Do documento de texto",
+    "Create new Form template": "Criar novo modelo de formulário",
+    "Create form": "Criar formulário",
+    "Fill in form in ONLYOFFICE": "Preencher formulário no ONLYOFFICE",
+    "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online": "Atualize o ONLYOFFICE Docs para a versão 7.0 para trabalhar em formulários preenchíveis online"
 },
-"nplurals=2; plural=(n != 1);");
+"nplurals=2; plural=(n > 1);");

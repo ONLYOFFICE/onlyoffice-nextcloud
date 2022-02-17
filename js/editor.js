@@ -1,6 +1,6 @@
 /**
  *
- * (c) Copyright Ascensio System SIA 2021
+ * (c) Copyright Ascensio System SIA 2022
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,6 +52,13 @@
             return;
         }
 
+        var docsVersion = DocsAPI.DocEditor.version().split(".");
+        if (docsVersion[0] < 6
+            || docsVersion[0] == 6 && docsVersion[1] == 0) {
+            OCA.Onlyoffice.showMessage(t(OCA.Onlyoffice.AppName, "Not supported version"), "error", {timeout: -1});
+            return;
+        }
+
         var configUrl = OC.linkToOCS("apps/" + OCA.Onlyoffice.AppName + "/api/v1/config", 2) + (OCA.Onlyoffice.fileId || 0);
 
         var params = [];
@@ -96,6 +103,12 @@
                 if (config) {
                     if (config.error != null) {
                         OCA.Onlyoffice.showMessage(config.error, "error", {timeout: -1});
+                        return;
+                    }
+
+                    if ((config.document.fileType === "docxf" || config.document.fileType === "oform")
+                        && docsVersion[0] < 7) {
+                        OCA.Onlyoffice.showMessage(t(OCA.Onlyoffice.AppName, "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online"), "error", {timeout: -1});
                         return;
                     }
 
@@ -201,10 +214,9 @@
     };
 
     OCA.Onlyoffice.onRequestHistory = function (version) {
-        $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/history?fileId={fileId}&shareToken={shareToken}",
+        $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/history?fileId={fileId}",
             {
                 fileId: OCA.Onlyoffice.fileId || 0,
-                shareToken: OCA.Onlyoffice.shareToken || "",
             }),
             function onSuccess(response) {
                 OCA.Onlyoffice.refreshHistory(response, version);
@@ -214,11 +226,10 @@
     OCA.Onlyoffice.onRequestHistoryData = function (event) {
         var version = event.data;
 
-        $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/version?fileId={fileId}&version={version}&shareToken={shareToken}",
+        $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/version?fileId={fileId}&version={version}",
             {
                 fileId: OCA.Onlyoffice.fileId || 0,
                 version: version,
-                shareToken: OCA.Onlyoffice.shareToken || "",
             }),
             function onSuccess(response) {
                 if (response.error) {
@@ -236,12 +247,11 @@
 
         $.ajax({
             method: "PUT",
-            url: OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/restore?fileId={fileId}&version={version}&shareToken={shareToken}",
-            {
+            url: OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/restore"),
+            data: {
                 fileId: OCA.Onlyoffice.fileId || 0,
                 version: version,
-                shareToken: OCA.Onlyoffice.shareToken || "",
-            }),
+            },
             success: function onSuccess(response) {
                 OCA.Onlyoffice.refreshHistory(response, version);
 

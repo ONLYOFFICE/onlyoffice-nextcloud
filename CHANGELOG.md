@@ -1,5 +1,17 @@
 # Change Log
 
+## Changed
+- Nextcloud v20 is no longer supported
+- fixed link in mention notifications
+- title for new file
+
+## 7.3.0
+## Added
+- support docxf and oform formats
+- create blank docxf from creation menu
+- create docxf from docx from creation menu
+- create oform from docxf from document manager
+
 ## 7.2.1
 ## Added
 - check document server version

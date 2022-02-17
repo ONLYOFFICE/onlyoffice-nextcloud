@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System SIA 2021
+ * (c) Copyright Ascensio System SIA 2022
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -294,8 +294,8 @@ class EditorApiController extends OCSController {
             ],
             "documentType" => $format["type"],
             "editorConfig" => [
-                "lang" => str_replace("_", "-", \OC::$server->getL10NFactory("")->get("")->getLanguageCode()),
-                "region" => str_replace("_", "-", \OC::$server->getL10NFactory("")->findLocale())
+                "lang" => str_replace("_", "-", \OC::$server->getL10NFactory()->get("onlyoffice")->getLanguageCode()),
+                "region" => str_replace("_", "-", \OC::$server->getL10NFactory()->get("onlyoffice")->getLocaleCode())
             ]
         ];
 
@@ -319,13 +319,14 @@ class EditorApiController extends OCSController {
         }
 
         $canEdit = isset($format["edit"]) && $format["edit"];
+        $canFillForms = isset($format["fillForms"]) && $format["fillForms"];
         $editable = $version < 1
                     && !$template
                     && $file->isUpdateable()
                     && !$isTempLock
                     && (empty($shareToken) || ($share->getPermissions() & Constants::PERMISSION_UPDATE) === Constants::PERMISSION_UPDATE);
         $params["document"]["permissions"]["edit"] = $editable;
-        if ($editable && $canEdit) {
+        if ($editable && ($canEdit || $canFillForms)) {
             $hashCallback = $this->crypt->GetHash(["userId" => $userId, "fileId" => $file->getId(), "filePath" => $filePath, "shareToken" => $shareToken, "action" => "track"]);
             $callback = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.track", ["doc" => $hashCallback]);
 
@@ -395,13 +396,13 @@ class EditorApiController extends OCSController {
 
             switch ($params["documentType"]) {
                 case "word":
-                    $createName = $this->trans->t("Document") . ".docx";
+                    $createName = $this->trans->t("New document") . ".docx";
                     break;
                 case "cell":
-                    $createName = $this->trans->t("Spreadsheet") . ".xlsx";
+                    $createName = $this->trans->t("New spreadsheet") . ".xlsx";
                     break;
                 case "slide":
-                    $createName = $this->trans->t("Presentation") . ".pptx";
+                    $createName = $this->trans->t("New presentation") . ".pptx";
                     break;
             }
 
