@@ -49,7 +49,7 @@ class RemoteInstance {
     private static $healthRemote = [];
 
     /**
-     * Get document identifier
+     * Get remote instance
      *
      * @param string $remote - remote instance
      *
@@ -90,7 +90,7 @@ class RemoteInstance {
     /**
      * Update remote instance
      *
-     * @param array $remote - remote instance
+     * @param string $remote - remote instance
      * @param bool $status - remote status
      *
      * @return bool
