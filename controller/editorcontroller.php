@@ -912,7 +912,6 @@ class EditorController extends Controller {
      * @return array
      *
      * @NoAdminRequired
-     * @PublicPage
      */
     public function restore($fileId, $version) {
         $this->logger->debug("Request restore version for: $fileId ($version)", ["app" => $this->appName]);
