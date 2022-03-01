@@ -4,6 +4,7 @@
 - Nextcloud v20 is no longer supported
 - fixed link in mention notifications
 - title for new file
+- fix editing after desktop sync
 
 ## 7.3.0
 ## Added
