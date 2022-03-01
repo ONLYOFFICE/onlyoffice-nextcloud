@@ -1,5 +1,8 @@
 # Change Log
 
+## Changed
+- Nextcloud v21 is no longer supported
+
 ## 7.3.2
 ## Changed
 - Nextcloud v20 is no longer supported
