@@ -278,6 +278,13 @@ class AppConfig {
     public $_customization_goback = "customization_goback";
 
     /**
+     * The config key for the macros
+     *
+     * @var string
+     */
+    public $_customizationMacros = "customization_macros";
+
+    /**
      * @param string $AppName - application name
      */
     public function __construct($AppName) {
@@ -1090,6 +1097,25 @@ class AppConfig {
         return $result;
     }
 
+    /**
+     * Save macros setting
+     *
+     * @param bool $value - enable macros
+     */
+    public function SetCustomizationMacros($value) {
+        $this->logger->info("Set macros enabled: " . json_encode($value), ["app" => $this->appName]);
+
+        $this->config->setAppValue($this->appName, $this->_customizationMacros, json_encode($value));
+    }
+
+    /**
+     * Get macros setting
+     *
+     * @return bool
+     */
+    public function GetCustomizationMacros() {
+        return $this->config->getAppValue($this->appName, $this->_customizationMacros, "true") === "true";
+    }
 
     /**
      * Additional data about formats

@@ -199,6 +199,12 @@
         <label for="onlyofficeToolbarNoTabs"><?php p($l->t("Display monochrome toolbar header")) ?></label>
     </p>
 
+    <p>
+        <input type="checkbox" class="checkbox" id="onlyofficeMacros"
+            <?php if ($_["macros"]) { ?>checked="checked"<?php } ?> />
+        <label for="onlyofficeMacros"><?php p($l->t("Run document macros")) ?></label>
+    </p>
+
     <p class="onlyoffice-header">
         <?php p($l->t("Review mode for viewing")) ?>
     </p>

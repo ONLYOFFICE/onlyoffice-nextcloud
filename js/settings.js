@@ -202,6 +202,7 @@
             var forcesave = $("#onlyofficeForcesave").is(":checked");
             var help = $("#onlyofficeHelp").is(":checked");
             var toolbarNoTabs = $("#onlyofficeToolbarNoTabs").is(":checked");
+            var macros = $("#onlyofficeMacros").is(":checked");
             var reviewDisplay = $("input[type='radio'][name='reviewDisplay']:checked").attr("id").replace("onlyofficeReviewDisplay_", "");
 
             $.ajax({
@@ -220,6 +221,7 @@
                     forcesave: forcesave,
                     help: help,
                     toolbarNoTabs: toolbarNoTabs,
+                    macros: macros,
                     reviewDisplay: reviewDisplay
                 },
                 success: function onSuccess(response) {

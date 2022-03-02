@@ -126,6 +126,7 @@ class SettingsController extends Controller {
             "toolbarNoTabs" => $this->config->GetCustomizationToolbarNoTabs(),
             "successful" => $this->config->SettingsAreSuccessful(),
             "watermark" => $this->config->GetWatermarkSettings(),
+            "macros" => $this->config->GetCustomizationMacros(),
             "tagsEnabled" => App::isEnabled("systemtags"),
             "reviewDisplay" => $this->config->GetCustomizationReviewDisplay(),
             "templates" => $this->GetGlobalTemplates()
@@ -200,6 +201,7 @@ class SettingsController extends Controller {
      * @param bool $forcesave - forcesave
      * @param bool $help - display help
      * @param bool $toolbarNoTabs - display toolbar tab
+     * @param bool $macros - run document macros
      * @param string $reviewDisplay - review viewing mode
      *
      * @return array
@@ -216,6 +218,7 @@ class SettingsController extends Controller {
                                     $forcesave,
                                     $help,
                                     $toolbarNoTabs,
+                                    $macros,
                                     $reviewDisplay
                                     ) {
 
@@ -231,6 +234,7 @@ class SettingsController extends Controller {
         $this->config->SetCustomizationForcesave($forcesave);
         $this->config->SetCustomizationHelp($help);
         $this->config->SetCustomizationToolbarNoTabs($toolbarNoTabs);
+        $this->config->SetCustomizationMacros($macros);
         $this->config->SetCustomizationReviewDisplay($reviewDisplay);
 
         return [
