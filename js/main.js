@@ -1,6 +1,6 @@
 /**
  *
- * (c) Copyright Ascensio System SIA 2021
+ * (c) Copyright Ascensio System SIA 2022
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -408,12 +408,11 @@
                 return;
             }
 
-            if ($("#isPublic").val() === "1" && !!$("#filestable").length
-                || OC.config.version.split(".")[0] < 21) {
+            if ($("#isPublic").val() === "1" && !!$("#filestable").length) {
                 menu.addMenuEntry({
                     id: "onlyofficeDocx",
-                    displayName: t(OCA.Onlyoffice.AppName, "Document"),
-                    templateName: t(OCA.Onlyoffice.AppName, "Document"),
+                    displayName: t(OCA.Onlyoffice.AppName, "New document"),
+                    templateName: t(OCA.Onlyoffice.AppName, "New document"),
                     iconClass: "icon-onlyoffice-new-docx",
                     fileType: "docx",
                     actionHandler: function (name) {
@@ -427,8 +426,8 @@
 
                 menu.addMenuEntry({
                     id: "onlyofficeXlsx",
-                    displayName: t(OCA.Onlyoffice.AppName, "Spreadsheet"),
-                    templateName: t(OCA.Onlyoffice.AppName, "Spreadsheet"),
+                    displayName: t(OCA.Onlyoffice.AppName, "New spreadsheet"),
+                    templateName: t(OCA.Onlyoffice.AppName, "New spreadsheet"),
                     iconClass: "icon-onlyoffice-new-xlsx",
                     fileType: "xlsx",
                     actionHandler: function (name) {
@@ -442,8 +441,8 @@
 
                 menu.addMenuEntry({
                     id: "onlyofficePpts",
-                    displayName: t(OCA.Onlyoffice.AppName, "Presentation"),
-                    templateName: t(OCA.Onlyoffice.AppName, "Presentation"),
+                    displayName: t(OCA.Onlyoffice.AppName, "New presentation"),
+                    templateName: t(OCA.Onlyoffice.AppName, "New presentation"),
                     iconClass: "icon-onlyoffice-new-pptx",
                     fileType: "pptx",
                     actionHandler: function (name) {
@@ -462,8 +461,8 @@
 
             menu.addMenuEntry({
                 id: "onlyofficeDocxf",
-                displayName: t(OCA.Onlyoffice.AppName, "Form template"),
-                templateName: t(OCA.Onlyoffice.AppName, "Form template"),
+                displayName: t(OCA.Onlyoffice.AppName, "New form template"),
+                templateName: t(OCA.Onlyoffice.AppName, "New form template"),
                 iconClass: "icon-onlyoffice-new-docxf",
                 fileType: "docxf",
                 actionHandler: function (name) {

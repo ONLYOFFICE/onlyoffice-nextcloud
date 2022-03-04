@@ -22,9 +22,9 @@
     "File created" : "Файл создан",
     "Open in ONLYOFFICE" : "Открыть в ONLYOFFICE",
     "Convert with ONLYOFFICE" : "Конвертировать в ONLYOFFICE",
-    "Document" : "Документ",
-    "Spreadsheet" : "Электронная таблица",
-    "Presentation" : "Презентация",
+    "New document" : "Новый документ",
+    "New spreadsheet" : "Новая электронная таблица",
+    "New presentation" : "Новая презентация",
     "Error when trying to connect" : "При попытке соединения возникла ошибка",
     "Settings have been successfully updated" : "Настройки были успешно обновлены",
     "Server can't read xml" : "Невозможно прочитать xml файл на сервере",
@@ -108,12 +108,12 @@
     "%1$s mentioned in the %2$s: \"%3$s\".": "%1$s упомянул в %2$s: \"%3$s\".",
     "{notifier} mentioned in the {file}: \"%1$s\".": "{notifier} упомянул в {file}: \"%1$s\".",
     "Choose a format to convert {fileName}": "Выберите формат для {fileName}",
-    "Form template": "Шаблон формы",
+    "New form template": "Новый шаблон формы",
     "Blank": "Пустой",
     "From text document": "Из текстового документа",
     "Create new Form template": "Создать новый Шаблон формы",
     "Create form": "Создать форму",
     "Fill in form in ONLYOFFICE": "Заполнить форму в ONLYOFFICE",
     "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online": "Обновите сервер ONLYOFFICE Docs до версии 7.0 для работы с формами онлайн"
-},"pluralForm" :"nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);"
+},"pluralForm" :"nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);"
 }

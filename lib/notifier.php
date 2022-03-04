@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System SIA 2021
+ * (c) Copyright Ascensio System SIA 2022
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -125,6 +125,11 @@ class Notifier implements INotifier {
         $notifierName = $notifier->getDisplayName();
         $trans = $this->l10nFactory->get($this->appName, $languageCode);
 
+        $editorLink = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".editor.index", [
+            "fileId" => $fileId,
+            "anchor" => $anchor
+        ]);
+
         $notification->setIcon($this->urlGenerator->getAbsoluteURL($this->urlGenerator->imagePath($this->appName, "app-dark.svg")))
             ->setParsedSubject($trans->t("%1\$s mentioned in the %2\$s: \"%3\$s\".", [$notifierName, $fileName, $notification->getObjectId()]))
             ->setRichSubject($trans->t("{notifier} mentioned in the {file}: \"%1\$s\".", [$notification->getObjectId()]), [
@@ -136,16 +141,10 @@ class Notifier implements INotifier {
                 "file" => [
                     "type" => "highlight",
                     "id" => $fileId,
-                    "name" => $fileName
+                    "name" => $fileName,
+                    "link" => $editorLink
                 ]
             ]);
-
-        $editorLink = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".editor.index", [
-            "fileId" => $fileId,
-            "anchor" => $anchor
-        ]);
-
-        $notification->setLink($editorLink);
 
         return $notification;
     }

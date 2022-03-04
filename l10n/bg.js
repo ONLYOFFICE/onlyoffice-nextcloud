@@ -24,9 +24,9 @@ OC.L10N.register(
     "File created" : "Файлът е създаден",
     "Open in ONLYOFFICE" : "Отвори в ONLYOFFICE",
     "Convert with ONLYOFFICE" : "Конвертирай с ONLYOFFICE",
-    "Document" : "Документ",
-    "Spreadsheet" : "Електронна таблица",
-    "Presentation" : "Презентация",
+    "New document" : "Нов документ",
+    "New spreadsheet" : "Нова електронна таблица",
+    "New presentation" : "Нова презентация",
     "Error when trying to connect" : "Грешка при опит за свързване",
     "Settings have been successfully updated" : "Настройките са успешно обновени",
     "Server can't read xml" : "Невъзможно прочитане на xml файла на сървъра",
@@ -110,7 +110,7 @@ OC.L10N.register(
     "%1\$s mentioned in the %2\$s: \"%3\$s\".": "%1\$s, споменат във %2\$s: \"%3\$s\".",
     "{notifier} mentioned in the {file}: \"%1\$s\".": "{notifier} споменат във {file}: \"%1\$s\".",
     "Choose a format to convert {fileName}": "Изберете формат за конвертиране {fileName}",
-    "Form template": "Шаблон на формуляр",
+    "New form template": "Нов шаблон на формуляр",
     "Blank": "Празно",
     "From text document": "От текстов документ",
     "Create new Form template": "Създайте нов шаблон на формуляр",
@@ -118,4 +118,4 @@ OC.L10N.register(
     "Fill in form in ONLYOFFICE": "Попълнете формуляр в ONLYOFFICE",
     "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online": "Молим да актуализирате ONLYOFFICE Docs към версия 7.0, за да работи с онлайн формуляри за попълване"
 },
-"nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);");
+"nplurals=2; plural=(n != 1);");
