@@ -364,6 +364,10 @@ class DocumentService {
             $opts["timeout"] = 60;
         }
 
+        $opts['nextcloud'] = [
+            'allow_local_address' => true,
+        ];
+
         if ($method === "post") {
             $response = $client->post($url, $opts);
         } else {
