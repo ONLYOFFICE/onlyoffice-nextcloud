@@ -83,12 +83,11 @@ class DocumentService {
      * @param string $from_extension - Document extension
      * @param string $to_extension - Extension to which to convert
      * @param string $document_revision_id - Key for caching on service
-     * @param string $region - Region
      *
      * @return string
      */
-    function GetConvertedUri($document_uri, $from_extension, $to_extension, $document_revision_id, $region = null) {
-        $responceFromConvertService = $this->SendRequestToConvertService($document_uri, $from_extension, $to_extension, $document_revision_id, false, $region);
+    function GetConvertedUri($document_uri, $from_extension, $to_extension, $document_revision_id) {
+        $responceFromConvertService = $this->SendRequestToConvertService($document_uri, $from_extension, $to_extension, $document_revision_id, false);
 
         $errorElement = $responceFromConvertService->Error;
         if ($errorElement->count() > 0) {
@@ -112,11 +111,10 @@ class DocumentService {
      * @param string $to_extension - Extension to which to convert
      * @param string $document_revision_id - Key for caching on service
      * @param bool - $is_async - Perform conversions asynchronously
-     * @param string $region - Region
      *
      * @return array
      */
-    function SendRequestToConvertService($document_uri, $from_extension, $to_extension, $document_revision_id, $is_async, $region = null) {
+    function SendRequestToConvertService($document_uri, $from_extension, $to_extension, $document_revision_id, $is_async) {
         $documentServerUrl = $this->config->GetDocumentServerInternalUrl();
 
         if (empty($documentServerUrl)) {
@@ -143,12 +141,9 @@ class DocumentService {
             "outputtype" => trim($to_extension, "."),
             "filetype" => $from_extension,
             "title" => $document_revision_id . "." . $from_extension,
-            "key" => $document_revision_id
+            "key" => $document_revision_id,
+            "region" => str_replace("_", "-", \OC::$server->getL10NFactory()->get("")->getLocaleCode())
         ];
-
-        if (!is_null($region)) {
-            $data["region"] = $region;
-        }
 
         if ($this->config->UseDemo()) {
             $data["tenant"] = $this->config->GetSystemValue("instanceid", true);

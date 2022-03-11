@@ -268,10 +268,9 @@ class EditorController extends Controller {
             $fileUrl = $this->getUrl($targetFile, $user, $shareToken);
 
             $ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
-            $region = str_replace("_", "-", \OC::$server->getL10NFactory()->get($this->appName)->getLocaleCode());
             $documentService = new DocumentService($this->trans, $this->config);
             try {
-                $newFileUri = $documentService->GetConvertedUri($fileUrl, $targetExt, $ext, $targetKey, $region);
+                $newFileUri = $documentService->GetConvertedUri($fileUrl, $targetExt, $ext, $targetKey);
             } catch (\Exception $e) {
                 $this->logger->logException($e, ["message" => "GetConvertedUri: " . $targetFile->getId(), "app" => $this->appName]);
                 return ["error" => $e->getMessage()];
@@ -592,9 +591,8 @@ class EditorController extends Controller {
         $documentService = new DocumentService($this->trans, $this->config);
         $key = $this->fileUtility->getKey($file);
         $fileUrl = $this->getUrl($file, $user, $shareToken);
-        $region = str_replace("_", "-", \OC::$server->getL10NFactory()->get($this->appName)->getLocaleCode());
         try {
-            $newFileUri = $documentService->GetConvertedUri($fileUrl, $ext, $internalExtension, $key, $region);
+            $newFileUri = $documentService->GetConvertedUri($fileUrl, $ext, $internalExtension, $key);
         } catch (\Exception $e) {
             $this->logger->logException($e, ["message" => "GetConvertedUri: " . $file->getId(), "app" => $this->appName]);
             return ["error" => $e->getMessage()];
