@@ -106,7 +106,7 @@
     "Failed to send notification": "Ошибка отправки оповещения",
     "Notification sent successfully": "Оповещение успешно отправлено",
     "%1$s mentioned in the %2$s: \"%3$s\".": "%1$s упомянул в %2$s: \"%3$s\".",
-    "{notifier} mentioned in the {file}: \"%1$s\".": "{notifier} упомянул в {file}: \"%1$s\".",
+    "{notifier} mentioned in the {file}: \"%1$s\".": "{notifier} упомянул вас в {file}: \"%1$s\".",
     "Choose a format to convert {fileName}": "Выберите формат для {fileName}",
     "New form template": "Новый шаблон формы",
     "Blank": "Пустой",
