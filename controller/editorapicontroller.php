@@ -396,7 +396,7 @@ class EditorApiController extends OCSController {
 
             switch ($params["documentType"]) {
                 case "word":
-                    $createName = $this->trans->t("New document") . ".docx";
+                    $createName = $this->trans->t("New text document") . ".docx";
                     break;
                 case "cell":
                     $createName = $this->trans->t("New spreadsheet") . ".xlsx";
