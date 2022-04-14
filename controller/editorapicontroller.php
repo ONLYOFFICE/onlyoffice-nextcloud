@@ -294,8 +294,8 @@ class EditorApiController extends OCSController {
             ],
             "documentType" => $format["type"],
             "editorConfig" => [
-                "lang" => str_replace("_", "-", \OC::$server->getL10NFactory()->get("onlyoffice")->getLanguageCode()),
-                "region" => str_replace("_", "-", \OC::$server->getL10NFactory()->get("onlyoffice")->getLocaleCode())
+                "lang" => str_replace("_", "-", \OC::$server->getL10NFactory()->get("")->getLanguageCode()),
+                "region" => str_replace("_", "-", \OC::$server->getL10NFactory()->get("")->getLocaleCode())
             ]
         ];
 
