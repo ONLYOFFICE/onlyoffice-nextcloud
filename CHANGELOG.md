@@ -1,5 +1,6 @@
 # Change Log
 
+## 7.3.4
 ## Added
 - Turkish and Galician empty file templates
 
