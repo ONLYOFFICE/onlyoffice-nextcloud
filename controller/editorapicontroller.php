@@ -310,7 +310,15 @@ class EditorApiController extends OCSController {
             try {
                 $lockService = \OC::$server->get(LockService::class);
                 $lock = $lockService->getLockFromFileId($file->getId());
-                $lockOwner = $lock->getUserId();
+
+                $lockOwner = null;
+                if (method_exists($lock, "getUserId")) {
+                    $lockOwner = $lock->getUserId();
+                }
+                else if(method_exists($lock, "getOwner")) {
+                    $lockOwner = $lock->getOwner();
+                }
+
                 if ($userId !== $lockOwner) {
                     $isTempLock = true;
                     $this->logger->debug("File" . $file->getId() . "is locked by $lockOwner", ["app" => $this->appName]);
