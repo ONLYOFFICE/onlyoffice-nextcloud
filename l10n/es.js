@@ -108,7 +108,7 @@ OC.L10N.register(
     "Failed to send notification": "Error al enviar la notificación",
     "Notification sent successfully": "Notificación enviada correctamente",
     "%1\$s mentioned in the %2\$s: \"%3\$s\".": "%1\$s ha mencionado en %2\$s: \"%3\$s\".",
-    "{notifier} mentioned in the {file}: \"%1\$s\".": "{notifier} ha mencionado en {file}: \"%1\$s\".",
+    "{notifier} mentioned in the {file}: \"%1\$s\".": "{notifier} le ha mencionado en {file}: \"%1\$s\".",
     "Choose a format to convert {fileName}": "Elija un formato para convertir {fileName}",
     "New form template": "Nueva plantilla de formulario",
     "Blank": "En blanco",

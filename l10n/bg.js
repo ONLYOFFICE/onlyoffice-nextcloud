@@ -108,7 +108,7 @@ OC.L10N.register(
     "Failed to send notification": "Неуспешно изпращане на известие",
     "Notification sent successfully": "Успешно изпратено известие",
     "%1\$s mentioned in the %2\$s: \"%3\$s\".": "%1\$s, споменат във %2\$s: \"%3\$s\".",
-    "{notifier} mentioned in the {file}: \"%1\$s\".": "{notifier} споменат във {file}: \"%1\$s\".",
+    "{notifier} mentioned in the {file}: \"%1\$s\".": "{notifier} Ви спомена във {file}: \"%1\$s\".",
     "Choose a format to convert {fileName}": "Изберете формат за конвертиране {fileName}",
     "New form template": "Нов шаблон на формуляр",
     "Blank": "Празно",

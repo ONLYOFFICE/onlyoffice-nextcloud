@@ -1,5 +1,13 @@
 # Change Log
 
+## 7.3.4
+## Added
+- Turkish and Galician empty file templates
+
+## Changed
+- Nextcloud v21 is no longer supported
+- compatible with Nextcloud 24
+
 ## 7.3.2
 ## Changed
 - Nextcloud v20 is no longer supported
