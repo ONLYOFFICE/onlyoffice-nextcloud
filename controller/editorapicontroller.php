@@ -471,6 +471,8 @@ class EditorApiController extends OCSController {
 
         if ($inframe === true) {
             $params["_files_sharing"] = \OC::$server->getAppManager()->isInstalled("files_sharing");
+            $params["editorConfig"]["customization"]["goback"]["requestClose"] = true;
+            $params["editorConfig"]["customization"]["goback"]["text"] = "Close";
         }
 
         $params = $this->setCustomization($params);
