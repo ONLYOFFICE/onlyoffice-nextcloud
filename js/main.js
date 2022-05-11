@@ -545,8 +545,8 @@
                     $("#app-content").append($iframe);
                 }
             };
-            
-            OCA.Onlyoffice.GetSettings(initSharedButton);  
+
+            OCA.Onlyoffice.GetSettings(initSharedButton);
         } else {
             OC.Plugins.register("OCA.Files.NewFileMenu", OCA.Onlyoffice.NewFileMenu);
 
