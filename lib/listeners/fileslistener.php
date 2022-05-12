@@ -58,6 +58,7 @@ class FilesListener implements IEventListener {
             Util::addScript("onlyoffice", "desktop");
             Util::addScript("onlyoffice", "main");
             Util::addScript("onlyoffice", "template");
+            Util::addScript("onlyoffice", "share");
 
             if ($this->appConfig->GetSameTab()) {
                 Util::addScript("onlyoffice", "listener");
@@ -65,6 +66,7 @@ class FilesListener implements IEventListener {
 
             Util::addStyle("onlyoffice", "main");
             Util::addStyle("onlyoffice", "template");
+            Util::addStyle("onlyoffice", "share");
         }
     }
 }

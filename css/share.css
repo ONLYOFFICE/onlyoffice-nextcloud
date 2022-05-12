@@ -20,5 +20,25 @@
     background-image: url("../img/app-dark.svg");
 }
 .onlyoffice-share-item {
-    display: inline-flex;
+    display: flex;
+    list-style-type: none;
+}
+.onlyoffice-share-popup {
+    margin-right: 14px;
+    margin-top: 44px;
+}
+.onlyoffice-share-item span {
+    margin-left: 10px;
+    margin-top: 5px;
+}
+#onlyoffice-share-menu {
+    margin-left: auto;
+}
+.onlyoffice-share-action {
+    line-height: 44px;
+}
+.onlyoffice-share-label {
+    padding-right: 14px !important;
+    padding-left: 14px !important;
+    opacity: .7;
 }
