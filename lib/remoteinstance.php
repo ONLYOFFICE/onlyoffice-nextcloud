@@ -19,8 +19,6 @@
 
 namespace OCA\Onlyoffice;
 
-use OCP\Files\File;
-
 /**
  * Remote instance manager
  *
@@ -55,7 +53,7 @@ class RemoteInstance {
      *
      * @return array
      */
-    public static function get($remote) {
+    private static function get($remote) {
         $connection = \OC::$server->getDatabaseConnection();
         $select = $connection->prepare("
             SELECT remote, expire, status
@@ -77,7 +75,7 @@ class RemoteInstance {
      *
      * @return bool
      */
-    public static function set($remote, $status) {
+    private static function set($remote, $status) {
         $connection = \OC::$server->getDatabaseConnection();
         $insert = $connection->prepare("
             INSERT INTO `*PREFIX*" . self::TableName_Key . "`
@@ -95,7 +93,7 @@ class RemoteInstance {
      *
      * @return bool
      */
-    public static function update($remote, $status) {
+    private static function update($remote, $status) {
         $connection = \OC::$server->getDatabaseConnection();
         $update = $connection->prepare("
             UPDATE `*PREFIX*" . self::TableName_Key . "`
@@ -123,7 +121,7 @@ class RemoteInstance {
 
         $dbremote = self::get($remote);
         if (!empty($dbremote) && $dbremote["expire"] + self::$ttl > time()) {
-            $logger->debug("Remote instance " . $remote . " from database", ["app" => self::App_Name]);
+            $logger->debug("Remote instance " . $remote . " from database status " . $dbremote["status"], ["app" => self::App_Name]);
             self::$healthRemote[$remote] = $dbremote["status"];
             return self::$healthRemote[$remote];
         }
@@ -131,15 +129,15 @@ class RemoteInstance {
         $httpClientService = \OC::$server->getHTTPClientService();
         $client = $httpClientService->newClient();
 
+        $status = false;
         try {
-            $status = false;
             $response = $client->get($remote . "ocs/v2.php/apps/" . self::App_Name . "/api/v1/healthcheck?format=json");
             $body = json_decode($response->getBody(), true);
 
             $data = $body["ocs"]["data"];
 
             if (isset($data["alive"])) {
-                $status = $data["alive"];
+                $status = $data["alive"] === true;
             }
 
         } catch (\Exception $e) {
@@ -152,7 +150,7 @@ class RemoteInstance {
             self::update($remote, $status);
         }
 
-        $logger->debug("Remote instance " . $remote . " was stored to database", ["app" => self::App_Name]);
+        $logger->debug("Remote instance " . $remote . " was stored to database status " . $dbremote["status"], ["app" => self::App_Name]);
 
         self::$healthRemote[$remote] = $status;
 

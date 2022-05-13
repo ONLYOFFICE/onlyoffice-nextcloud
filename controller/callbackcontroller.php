@@ -47,8 +47,8 @@ use OCA\Onlyoffice\Crypt;
 use OCA\Onlyoffice\DocumentService;
 use OCA\Onlyoffice\FileVersions;
 use OCA\Onlyoffice\KeyManager;
-use OCA\Onlyoffice\TemplateManager;
 use OCA\Onlyoffice\RemoteInstance;
+use OCA\Onlyoffice\TemplateManager;
 
 /**
  * Callback handler for the document server.
@@ -713,11 +713,12 @@ class CallbackController extends Controller {
 
         $alive = false;
         $isFederated = $storage->instanceOfStorage(SharingExternalStorage::class);
-        if ($isFederated) {
-            $alive = RemoteInstance::healthCheck($storage->getRemote());
+        if (!$isFederated) {
+            return false;
         }
 
-        return $isFederated && $alive;
+        $alive = RemoteInstance::healthCheck($storage->getRemote());
+        return $alive;
     }
 
     /**
