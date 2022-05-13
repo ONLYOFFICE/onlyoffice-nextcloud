@@ -21,6 +21,7 @@
     OCA.Onlyoffice = _.extend({
             AppName: "onlyoffice",
             inframe: false,
+            inviewer: false,
             fileId: null,
             shareToken: null,
             insertImageType: null
@@ -34,6 +35,7 @@
         var directToken = $("#iframeEditor").data("directtoken");
         OCA.Onlyoffice.template = $("#iframeEditor").data("template");
         OCA.Onlyoffice.inframe = !!$("#iframeEditor").data("inframe");
+        OCA.Onlyoffice.inviewer = !!$("#iframeEditor").data("inviewer");
         OCA.Onlyoffice.filePath = $("#iframeEditor").data("path");
         OCA.Onlyoffice.anchor = $("#iframeEditor").attr("data-anchor");
         var guestName = localStorage.getItem("nick");
@@ -88,6 +90,10 @@
 
         if (OCA.Onlyoffice.inframe || directToken) {
             params.push("inframe=true");
+        }
+
+        if (OCA.Onlyoffice.inviewer) {
+            params.push("inviewer=true");
         }
 
         if (OCA.Onlyoffice.Desktop) {

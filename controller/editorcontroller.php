@@ -1092,6 +1092,7 @@ class EditorController extends Controller {
      * @param string $shareToken - access token
      * @param integer $version - file version
      * @param bool $inframe - open in frame
+     * @param bool $inviewer - open in viewer
      * @param bool $template - file is template
      * @param string $anchor - anchor for file content
      *
@@ -1100,7 +1101,7 @@ class EditorController extends Controller {
      * @NoAdminRequired
      * @NoCSRFRequired
      */
-    public function index($fileId, $filePath = null, $shareToken = null, $version = 0, $inframe = false, $template = false, $anchor = null) {
+    public function index($fileId, $filePath = null, $shareToken = null, $version = 0, $inframe = false, $inviewer = false, $template = false, $anchor = null) {
         $this->logger->debug("Open: $fileId ($version) $filePath ", ["app" => $this->appName]);
 
         $isLoggedIn = $this->userSession->isLoggedIn();
@@ -1139,10 +1140,14 @@ class EditorController extends Controller {
             "version" => $version,
             "isTemplate" => $template,
             "inframe" => false,
+            "inviewer" => false,
             "anchor" => $anchor
         ];
 
         $response = null;
+
+        if ($inviewer === true) $params["inviewer"] = true;
+
         if ($inframe === true) {
             $params["inframe"] = true;
             $response = new TemplateResponse($this->appName, "editor", $params, "base");
