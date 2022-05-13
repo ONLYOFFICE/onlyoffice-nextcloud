@@ -268,7 +268,7 @@ class EditorController extends Controller {
             $fileUrl = $this->getUrl($targetFile, $user, $shareToken);
 
             $ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
-            $region = str_replace("_", "-", \OC::$server->getL10NFactory()->get($this->appName)->getLocaleCode());
+            $region = str_replace("_", "-", \OC::$server->getL10NFactory()->get("")->getLocaleCode());
             $documentService = new DocumentService($this->trans, $this->config);
             try {
                 $newFileUri = $documentService->GetConvertedUri($fileUrl, $targetExt, $ext, $targetKey, $region);
@@ -592,7 +592,7 @@ class EditorController extends Controller {
         $documentService = new DocumentService($this->trans, $this->config);
         $key = $this->fileUtility->getKey($file);
         $fileUrl = $this->getUrl($file, $user, $shareToken);
-        $region = str_replace("_", "-", \OC::$server->getL10NFactory()->get($this->appName)->getLocaleCode());
+        $region = str_replace("_", "-", \OC::$server->getL10NFactory()->get("")->getLocaleCode());
         try {
             $newFileUri = $documentService->GetConvertedUri($fileUrl, $ext, $internalExtension, $key, $region);
         } catch (\Exception $e) {
