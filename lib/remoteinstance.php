@@ -21,6 +21,8 @@ namespace OCA\Onlyoffice;
 
 use OCP\Files\File;
 
+use OCA\Files_Sharing\External\Storage as SharingExternalStorage;
+
 /**
  * Remote instance manager
  *
@@ -246,5 +248,25 @@ class RemoteInstance {
             $logger->logException($e, ["message" => "Failed to request federated " . $action . " for " . $file->getFileInfo()->getId(), "app" => self::App_Name]);
             return false;
         }
+    }
+
+    /**
+     * Check of federated capable
+     *
+     * @param File $file - file
+     *
+     * @return bool
+     */
+    public static function isRemoteFile($file) {
+        $storage = $file->getStorage();
+
+        $alive = false;
+        $isFederated = $storage->instanceOfStorage(SharingExternalStorage::class);
+        if (!$isFederated) {
+            return false;
+        }
+
+        $alive = RemoteInstance::healthCheck($storage->getRemote());
+        return $alive;
     }
 }

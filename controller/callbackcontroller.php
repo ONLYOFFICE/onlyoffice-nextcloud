@@ -39,7 +39,6 @@ use OCP\Lock\LockedException;
 use OCP\Share\Exceptions\ShareNotFound;
 use OCP\Share\IManager;
 
-use OCA\Files_Sharing\External\Storage as SharingExternalStorage;
 use OCA\Files_Versions\Versions\IVersionManager;
 
 use OCA\Onlyoffice\AppConfig;
@@ -519,7 +518,7 @@ class CallbackController extends Controller {
 
                     $prevIsForcesave = KeyManager::wasForcesave($fileId);
 
-                    if ($this->isFederatedOperation($file)) {
+                    if (RemoteInstance::isRemoteFile($file)) {
                         $isLock = RemoteInstance::lockRemoteKey($file, $isForcesave, null);
                         if ($isForcesave && !$isLock) {
                             break;
@@ -533,7 +532,7 @@ class CallbackController extends Controller {
                         return $file->putContent($newData);
                     });
 
-                    if ($this->isFederatedOperation($file)) {
+                    if (RemoteInstance::isRemoteFile($file)) {
                         if ($isForcesave) {
                             RemoteInstance::lockRemoteKey($file, false, $isForcesave);
                         }
@@ -699,26 +698,6 @@ class CallbackController extends Controller {
         }
 
         return [$file, null];
-    }
-
-    /**
-     * Check of federated capable
-     *
-     * @param File $file - file
-     *
-     * @return bool
-     */
-    private function isFederatedOperation($file) {
-        $storage = $file->getStorage();
-
-        $alive = false;
-        $isFederated = $storage->instanceOfStorage(SharingExternalStorage::class);
-        if (!$isFederated) {
-            return false;
-        }
-
-        $alive = RemoteInstance::healthCheck($storage->getRemote());
-        return $alive;
     }
 
     /**

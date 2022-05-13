@@ -27,8 +27,6 @@ use OCP\IRequest;
 use OCP\ISession;
 use OCP\Share\IManager;
 
-use OCA\Files_Sharing\External\Storage as SharingExternalStorage;
-
 use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\DocumentService;
 use OCA\Onlyoffice\FileUtility;
@@ -137,7 +135,7 @@ class FederationController extends OCSController {
 
         $fileId = $file->getId();
 
-        if ($file->getStorage()->instanceOfStorage(SharingExternalStorage::class)) {
+        if (RemoteInstance::isRemoteFile($file)) {
             $isLock = RemoteInstance::lockRemoteKey($file, $lock, $fs);
             if (!$isLock) {
                 return new DataResponse(["error" => "Failed request"]);
