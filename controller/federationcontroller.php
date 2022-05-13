@@ -33,6 +33,7 @@ use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\DocumentService;
 use OCA\Onlyoffice\FileUtility;
 use OCA\Onlyoffice\KeyManager;
+use OCA\Onlyoffice\RemoteInstance;
 
 /**
  * OCS handler
@@ -137,7 +138,7 @@ class FederationController extends OCSController {
         $fileId = $file->getId();
 
         if ($file->getStorage()->instanceOfStorage(SharingExternalStorage::class)) {
-            $isLock = KeyManager::lockFederatedKey($file, $lock, $fs);
+            $isLock = RemoteInstance::lockRemoteKey($file, $lock, $fs);
             if (!$isLock) {
                 return new DataResponse(["error" => "Failed request"]);
             }

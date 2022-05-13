@@ -520,7 +520,7 @@ class CallbackController extends Controller {
                     $prevIsForcesave = KeyManager::wasForcesave($fileId);
 
                     if ($this->isFederatedOperation($file)) {
-                        $isLock = KeyManager::lockFederatedKey($file, $isForcesave, null);
+                        $isLock = RemoteInstance::lockRemoteKey($file, $isForcesave, null);
                         if ($isForcesave && !$isLock) {
                             break;
                         }
@@ -535,7 +535,7 @@ class CallbackController extends Controller {
 
                     if ($this->isFederatedOperation($file)) {
                         if ($isForcesave) {
-                            KeyManager::lockFederatedKey($file, false, $isForcesave);
+                            RemoteInstance::lockRemoteKey($file, false, $isForcesave);
                         }
                     } else {
                         KeyManager::lock($fileId, false);
