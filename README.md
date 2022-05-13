@@ -145,13 +145,20 @@ If the connection is made using the same authorization keys (the _Username and p
 If different authorization keys are used (_Log-in credentials, save in database_ or _User entered, store in database_ authentication options), the co-editing is not available.
 When the _Log-in credentials, save in session_ authentication type is used, the files cannot be opened in the editor.
 
-* If you are using a self-signed certificate for your **Document Server**, Nextcloud will not validate such a certificate and will not allow connection to/from **Document Server**. This issue can be solved the following way: locate the Nextcloud config file (_/nextcloud/config/config.php_) and open it. Insert the following section to it:
+* If you are using a self-signed certificate for your **Document Server**, Nextcloud will not validate such a certificate and will not allow connection to/from **Document Server**. This issue can be solved in two ways. 
+
+    You can check the '**Disable certificate verification (insecure)**' box on the ONLYOFFICE administration page, Server settings section, within your Nextcloud.
+
+    Another option is to change the Nextcloud config file manually. Locate the Nextcloud config file (_/nextcloud/config/config.php_) and open it. Insert the following section to it:
+    
     ```php
     'onlyoffice' => array (
         'verify_peer_off' => true
     )
     ```
-    This will disable the certificate verification and allow Nextcloud to establish connection with **Document Server**, but you must remember that this is a temporary insecure solution and we strongly recommend that you replace the certificate with the one issued by some CA. Once you do that, do not forget to remove the above section from Nextcloud config file.
+    This will disable the certificate verification and allow Nextcloud to establish connection with **Document Server**.
+
+    Please remember that this is a temporary insecure solution and we strongly recommend that you replace the certificate with the one issued by some CA. Once you do that, do not forget to uncheck the corresponding setting box or remove the above section from the Nextcloud config file.  
     
 ## ONLYOFFICE Docs editions
 

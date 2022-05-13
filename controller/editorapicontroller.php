@@ -294,8 +294,8 @@ class EditorApiController extends OCSController {
             ],
             "documentType" => $format["type"],
             "editorConfig" => [
-                "lang" => str_replace("_", "-", \OC::$server->getL10NFactory()->get("onlyoffice")->getLanguageCode()),
-                "region" => str_replace("_", "-", \OC::$server->getL10NFactory()->get("onlyoffice")->getLocaleCode())
+                "lang" => str_replace("_", "-", \OC::$server->getL10NFactory()->get("")->getLanguageCode()),
+                "region" => str_replace("_", "-", \OC::$server->getL10NFactory()->get("")->getLocaleCode())
             ]
         ];
 
@@ -310,7 +310,15 @@ class EditorApiController extends OCSController {
             try {
                 $lockService = \OC::$server->get(LockService::class);
                 $lock = $lockService->getLockFromFileId($file->getId());
-                $lockOwner = $lock->getUserId();
+
+                $lockOwner = null;
+                if (method_exists($lock, "getUserId")) {
+                    $lockOwner = $lock->getUserId();
+                }
+                else if(method_exists($lock, "getOwner")) {
+                    $lockOwner = $lock->getOwner();
+                }
+
                 if ($userId !== $lockOwner) {
                     $isTempLock = true;
                     $this->logger->debug("File" . $file->getId() . "is locked by $lockOwner", ["app" => $this->appName]);

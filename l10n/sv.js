@@ -108,7 +108,7 @@ OC.L10N.register(
     "Failed to send notification": "Det gick inte att skicka aviseringen",
     "Notification sent successfully": "Aviseringen har skickats",
     "%1\$s mentioned in the %2\$s: \"%3\$s\".": "%1\$s har nämnt i %2\$s: \"%3\$s\".",
-    "{notifier} mentioned in the {file}: \"%1\$s\".": "{notifier} har nämnt i {file}: \"%1\$s\".",
+    "{notifier} mentioned in the {file}: \"%1\$s\".": "{notifier} nämnde dig i {file}: \"%1\$s\".",
     "Choose a format to convert {fileName}": "Välj det filformat som {fileName} ska konverteras till.",
     "New form template": "Ny formulärmall",
     "Blank": "Töm",

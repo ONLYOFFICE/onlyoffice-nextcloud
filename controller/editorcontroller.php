@@ -268,9 +268,10 @@ class EditorController extends Controller {
             $fileUrl = $this->getUrl($targetFile, $user, $shareToken);
 
             $ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
+            $region = str_replace("_", "-", \OC::$server->getL10NFactory()->get("")->getLocaleCode());
             $documentService = new DocumentService($this->trans, $this->config);
             try {
-                $newFileUri = $documentService->GetConvertedUri($fileUrl, $targetExt, $ext, $targetKey);
+                $newFileUri = $documentService->GetConvertedUri($fileUrl, $targetExt, $ext, $targetKey, $region);
             } catch (\Exception $e) {
                 $this->logger->logException($e, ["message" => "GetConvertedUri: " . $targetFile->getId(), "app" => $this->appName]);
                 return ["error" => $e->getMessage()];
@@ -591,8 +592,9 @@ class EditorController extends Controller {
         $documentService = new DocumentService($this->trans, $this->config);
         $key = $this->fileUtility->getKey($file);
         $fileUrl = $this->getUrl($file, $user, $shareToken);
+        $region = str_replace("_", "-", \OC::$server->getL10NFactory()->get("")->getLocaleCode());
         try {
-            $newFileUri = $documentService->GetConvertedUri($fileUrl, $ext, $internalExtension, $key);
+            $newFileUri = $documentService->GetConvertedUri($fileUrl, $ext, $internalExtension, $key, $region);
         } catch (\Exception $e) {
             $this->logger->logException($e, ["message" => "GetConvertedUri: " . $file->getId(), "app" => $this->appName]);
             return ["error" => $e->getMessage()];
@@ -912,7 +914,6 @@ class EditorController extends Controller {
      * @return array
      *
      * @NoAdminRequired
-     * @PublicPage
      */
     public function restore($fileId, $version) {
         $this->logger->debug("Request restore version for: $fileId ($version)", ["app" => $this->appName]);
