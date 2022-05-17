@@ -19,6 +19,7 @@
 
 namespace OCA\Onlyoffice\Controller;
 
+use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\OCSController;
 use OCP\IL10N;
@@ -31,6 +32,7 @@ use OCP\Files\IRootFolder;
 use OCP\IUserManager;
 use OCP\IUserSession;
 use OCP\Share\IShare;
+use OCP\Share\Exceptions\ShareNotFound;
 
 
 use OCA\Onlyoffice\AppConfig;
@@ -183,10 +185,50 @@ class SharingApiController extends OCSController {
 
             $extra["shareWith"] = $share->getSharedWith();
             $extra["shareWithName"] = $share->getSharedWithDisplayName();
+            $extra["basePermissions"] = $share->getPermissions();
 
             array_push($result, $extra);
         }
 
         return new DataResponse($result);
+    }
+
+    /**
+     * Set shares for file
+     *
+     * @param integer $extraId - extra permission identifier
+     * @param integer $shareId - share identifier
+     * @param integer $permissions - permissions value
+     *
+     * @return DataResponse
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     */
+    public function setShares($extraId, $shareId, $permissions) {
+        try {
+            $share = $this->shareManager->getShareById('ocinternal:' . $shareId);
+        } catch (ShareNotFound $e) {
+            $this->logger->logException($e, ["message" => "setShares error", "app" => $this->appName]);
+            return new DataResponse([], Http::STATUS_NOT_FOUND);
+        }
+
+        $success = false;
+        if ($extraId > 0) {
+            $success = ExtraPermissions::update($shareId, $permissions);
+        } else {
+            $success = ExtraPermissions::set($shareId, $permissions);
+        }
+
+        $extra = null;
+        if ($success) {
+            $extra = ExtraPermissions::get($shareId);
+        }
+
+        $extra["shareWith"] = $share->getSharedWith();
+        $extra["shareWithName"] = $share->getSharedWithDisplayName();
+        $extra["basePermissions"] = $share->getPermissions();
+
+        return new DataResponse($extra);
     }
 }

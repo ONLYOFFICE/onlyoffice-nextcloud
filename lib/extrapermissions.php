@@ -87,7 +87,7 @@ class ExtraPermissions {
      *
      * @return bool
      */
-    public static function set($shareId, $value) {
+    public static function set($shareId, $permissions) {
         $connection = \OC::$server->getDatabaseConnection();
         $insert = $connection->prepare("
             INSERT INTO `*PREFIX*" . self::TableName_Key . "`
