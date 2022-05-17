@@ -47,6 +47,7 @@ use OCA\Onlyoffice\Crypt;
 use OCA\Onlyoffice\DocumentService;
 use OCA\Onlyoffice\FileUtility;
 use OCA\Onlyoffice\TemplateManager;
+use OCA\Onlyoffice\ExtraPermissions;
 
 /**
  * Controller with the main functions
@@ -304,6 +305,39 @@ class EditorApiController extends OCSController {
             $params["document"]["permissions"]["modifyFilter"] = $permissions_modifyFilter;
         }
 
+        $restrictedEditing = false;
+        $fileStorage = $file->getStorage();
+        if (empty($shareToken) && $fileStorage->instanceOfStorage("\OCA\Files_Sharing\SharedStorage")) {
+            $shareId = $fileStorage->getShareId();
+
+            $extraPermissions = ExtraPermissions::get($shareId);
+            if (!empty($extraPermissions)) {
+                $reviewPermission = ($extraPermissions["permissions"] & ExtraPermissions::Review) === ExtraPermissions::Review;
+                if ($reviewPermission) {
+                    $restrictedEditing = true;
+                    $params["document"]["permissions"]["review"] = $reviewPermission;
+                }
+
+                $commentPermission = ($extraPermissions["permissions"] & ExtraPermissions::Comment) === ExtraPermissions::Comment;
+                if ($commentPermission) {
+                    $restrictedEditing = true;
+                    $params["document"]["permissions"]["comment"] = $commentPermission;
+                }
+
+                $fillFormsPermission = ($extraPermissions["permissions"] & ExtraPermissions::FillForms) === ExtraPermissions::FillForms;
+                if ($fillFormsPermission) {
+                    $restrictedEditing = true;
+                    $params["document"]["permissions"]["fillForms"] = $fillFormsPermission;
+                }
+
+                $modifyFilter = ($extraPermissions["permissions"] & ExtraPermissions::ModifyFilter) === ExtraPermissions::ModifyFilter;
+                if ($file->isUpdateable()) {
+                    $restrictedEditing = true;
+                    $params["document"]["permissions"]["modifyFilter"] = $modifyFilter;
+                }
+            }
+        }
+
         $isTempLock = false;
         if ($version < 1
             && \OC::$server->getAppManager()->isInstalled("files_lock")) {
@@ -334,7 +368,7 @@ class EditorApiController extends OCSController {
                     && !$isTempLock
                     && (empty($shareToken) || ($share->getPermissions() & Constants::PERMISSION_UPDATE) === Constants::PERMISSION_UPDATE);
         $params["document"]["permissions"]["edit"] = $editable;
-        if ($editable && ($canEdit || $canFillForms)) {
+        if (($editable || $restrictedEditing) && ($canEdit || $canFillForms)) {
             $hashCallback = $this->crypt->GetHash(["userId" => $userId, "fileId" => $file->getId(), "filePath" => $filePath, "shareToken" => $shareToken, "action" => "track"]);
             $callback = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.track", ["doc" => $hashCallback]);
 
