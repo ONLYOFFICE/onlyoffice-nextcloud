@@ -129,6 +129,7 @@
                 }
             });
 
+            this.permissionsMenu.block(true);
             OCA.Onlyoffice.SetShares(extra.id, shareId, permissions, (extra) => {
                 this.collection.forEach(item => {
                     if (item.share_id == extra.share_id) {
@@ -140,6 +141,7 @@
                 var attributes = this._getPermissionAttributes(extra);
 
                 this.permissionsMenu.refresh(attributes);
+                this.permissionsMenu.block(false);
             });
         },
 
@@ -264,6 +266,10 @@
                     attributes.forEach(attr => {
                         this.appendItem(attr.checked, attr.inputAttribute, attr.label);
                     });
+                },
+
+                block: function(value) {
+                    popup.find("input").prop("disabled", value);
                 },
 
                 appendItem: function(checked, checkboxId, name) {
