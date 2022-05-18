@@ -89,6 +89,13 @@ class SharingApiController extends OCSController {
     private $shareManager;
 
     /**
+     * Extra permissions
+     *
+     * @var ExtraPermissions
+    */
+    private $extraPermissions;
+
+    /**
      * @param string $AppName - application name
      * @param IRequest $request - request object
      * @param IRootFolder $root - root folder
@@ -115,6 +122,8 @@ class SharingApiController extends OCSController {
         $this->userManager = $userManager;
         $this->shareManager = $shareManager;
         $this->appConfig = $appConfig;
+
+        $this->extraPermissions = new ExtraPermissions($AppName, $logger, $shareManager, $appConfig);
     }
 
     /**
@@ -130,62 +139,30 @@ class SharingApiController extends OCSController {
     public function getShares($fileId) {
         $result = [];
 
-        $userId = null;
         $user = $this->userSession->getUser();
-        if (!empty($user)) {
-            $userId = $user->getUID();
+        $userId = $user->getUID();
+
+        try {
+            $folder = $this->root->getUserFolder($userId);
+            $files = $folder->getById($fileId);
+        } catch (\Exception $e) {
+            $this->logger->logException($e, ["message" => "getShares: $fileId", "app" => $this->appName]);
+            return new DataResponse([], Http::STATUS_BAD_REQUEST);
         }
 
-        $file = null;
-        $userFolder = $this->root->getUserFolder($userId);
-        if (!empty($userFolder)) {
-            $files = $userFolder->getById($fileId);
-            if (!empty($files)) {
-                $file = $files[0];
-            }
-        }
-
-        if (empty($file)) {
+        if (empty($files)) {
             $this->logger->error("getShares: file not found: " . $fileId, ["app" => $this->appName]);
-            return new DataResponse($result);
+            return new DataResponse([], Http::STATUS_BAD_REQUEST);
         }
 
-        $extension = pathinfo($file->getName())["extension"];
-
-        $formats = $this->appConfig->FormatsSetting();
-        $format = $formats[$extension];
+        $file = $files[0];
 
         $shares = $this->shareManager->getSharesBy($userId, IShare::TYPE_USER, $file);
         foreach ($shares as $share) {
-
-            $available = false;
-            if (($share->getPermissions() & Constants::PERMISSION_UPDATE) === Constants::PERMISSION_UPDATE) {
-                if (array_key_exists(ExtraPermissions::ModifyFilterName, $format)) {
-                    $available = true;
-                }
-            }
-            if (($share->getPermissions() & Constants::PERMISSION_UPDATE) !== Constants::PERMISSION_UPDATE) {
-                if (array_key_exists(ExtraPermissions::ReviewName, $format)
-                    || array_key_exists(ExtraPermissions::CommentName, $format)
-                    || array_key_exists(ExtraPermissions::FillFormsName, $format)) {
-                    $available = true;
-                }
-            }
-
-            if (!$available) {
+            $extra = $this->extraPermissions->getByShare($share);
+            if ($extra === null) {
                 continue;
             }
-
-            $extra = ExtraPermissions::get($share->getId());
-            if (empty($extra)) {
-                $extra["id"] = -1;
-                $extra["share_id"] = $share->getId();
-                $extra["permissions"] = 0;
-            }
-
-            $extra["shareWith"] = $share->getSharedWith();
-            $extra["shareWithName"] = $share->getSharedWithDisplayName();
-            $extra["basePermissions"] = $share->getPermissions();
 
             array_push($result, $extra);
         }
@@ -210,24 +187,14 @@ class SharingApiController extends OCSController {
             $share = $this->shareManager->getShareById('ocinternal:' . $shareId);
         } catch (ShareNotFound $e) {
             $this->logger->logException($e, ["message" => "setShares error", "app" => $this->appName]);
-            return new DataResponse([], Http::STATUS_NOT_FOUND);
+            return new DataResponse([], Http::STATUS_BAD_REQUEST);
         }
 
-        $success = false;
-        if ($extraId > 0) {
-            $success = ExtraPermissions::update($shareId, $permissions);
-        } else {
-            $success = ExtraPermissions::set($shareId, $permissions);
+        if (!$this->extraPermissions->setShare($share, $permissions, $extraId)) {
+            return new DataResponse([], Http::STATUS_BAD_REQUEST);
         }
 
-        $extra = null;
-        if ($success) {
-            $extra = ExtraPermissions::get($shareId);
-        }
-
-        $extra["shareWith"] = $share->getSharedWith();
-        $extra["shareWithName"] = $share->getSharedWithDisplayName();
-        $extra["basePermissions"] = $share->getPermissions();
+        $extra = $this->extraPermissions->getByShare($share);
 
         return new DataResponse($extra);
     }

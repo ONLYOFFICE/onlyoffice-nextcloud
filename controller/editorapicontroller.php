@@ -132,6 +132,13 @@ class EditorApiController extends OCSController {
     private $tagManager;
 
     /**
+     * Extra permissions
+     *
+     * @var ExtraPermissions
+    */
+    private $extraPermissions;
+
+    /**
      * Mobile regex from https://github.com/ONLYOFFICE/CommunityServer/blob/v9.1.1/web/studio/ASC.Web.Studio/web.appsettings.config#L35
      */
     const USER_AGENT_MOBILE = "/android|avantgo|playbook|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od|ad)|iris|kindle|lge |maemo|midp|mmp|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\\/|plucker|pocket|psp|symbian|treo|up\\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i";
@@ -186,6 +193,7 @@ class EditorApiController extends OCSController {
         }
 
         $this->fileUtility = new FileUtility($AppName, $trans, $logger, $config, $shareManager, $session);
+        $this->extraPermissions = new ExtraPermissions($AppName, $logger, $shareManager, $config);
     }
 
     /**
@@ -310,29 +318,34 @@ class EditorApiController extends OCSController {
         if (empty($shareToken) && $fileStorage->instanceOfStorage("\OCA\Files_Sharing\SharedStorage")) {
             $shareId = $fileStorage->getShareId();
 
-            $extraPermissions = ExtraPermissions::get($shareId);
+            $extraPermissions = $this->extraPermissions->getByShareId($shareId);
             if (!empty($extraPermissions)) {
-                $reviewPermission = ($extraPermissions["permissions"] & ExtraPermissions::Review) === ExtraPermissions::Review;
-                if ($reviewPermission) {
-                    $restrictedEditing = true;
-                    $params["document"]["permissions"]["review"] = $reviewPermission;
+                if (isset($format["review"]) && $format["review"]) {
+                    $reviewPermission = ($extraPermissions["permissions"] & ExtraPermissions::Review) === ExtraPermissions::Review;
+                    if ($reviewPermission) {
+                        $restrictedEditing = true;
+                        $params["document"]["permissions"]["review"] = true;
+                    }
                 }
 
-                $commentPermission = ($extraPermissions["permissions"] & ExtraPermissions::Comment) === ExtraPermissions::Comment;
-                if ($commentPermission) {
-                    $restrictedEditing = true;
-                    $params["document"]["permissions"]["comment"] = $commentPermission;
+                if (isset($format["comment"]) && $format["comment"]) {
+                    $commentPermission = ($extraPermissions["permissions"] & ExtraPermissions::Comment) === ExtraPermissions::Comment;
+                    if ($commentPermission) {
+                        $restrictedEditing = true;
+                        $params["document"]["permissions"]["comment"] = true;
+                    }
                 }
 
-                $fillFormsPermission = ($extraPermissions["permissions"] & ExtraPermissions::FillForms) === ExtraPermissions::FillForms;
-                if ($fillFormsPermission) {
-                    $restrictedEditing = true;
-                    $params["document"]["permissions"]["fillForms"] = $fillFormsPermission;
+                if (isset($format["fillForms"]) && $format["fillForms"]) {
+                    $fillFormsPermission = ($extraPermissions["permissions"] & ExtraPermissions::FillForms) === ExtraPermissions::FillForms;
+                    if ($fillFormsPermission) {
+                        $restrictedEditing = true;
+                        $params["document"]["permissions"]["fillForms"] = true;
+                    }
                 }
 
-                $modifyFilter = ($extraPermissions["permissions"] & ExtraPermissions::ModifyFilter) === ExtraPermissions::ModifyFilter;
-                if ($file->isUpdateable()) {
-                    $restrictedEditing = true;
+                if (isset($format["modifyFilter"]) && $format["modifyFilter"]) {
+                    $modifyFilter = ($extraPermissions["permissions"] & ExtraPermissions::ModifyFilter) === ExtraPermissions::ModifyFilter;
                     $params["document"]["permissions"]["modifyFilter"] = $modifyFilter;
                 }
             }

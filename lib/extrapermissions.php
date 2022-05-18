@@ -19,6 +19,14 @@
 
 namespace OCA\Onlyoffice;
 
+use OCP\Constants;
+use OCP\ILogger;
+use OCP\Share\IShare;
+use OCP\Share\IManager;
+use OCP\Share\Exceptions\ShareNotFound;
+
+use OCA\Onlyoffice\AppConfig;
+
 /**
  * Class expands base permissions
  *
@@ -31,7 +39,28 @@ class ExtraPermissions {
      *
      * @var string
      */
-    private const App_Name = "onlyoffice";
+    private $appName;
+
+    /**
+     * Logger
+     *
+     * @var ILogger
+     */
+    private $logger;
+
+    /**
+     * Share manager
+     *
+     * @var IManager
+     */
+    private $shareManager;
+
+    /**
+     * Application configuration
+     *
+     * @var AppConfig
+     */
+    private $config;
 
     /**
      * Table name
@@ -43,29 +72,139 @@ class ExtraPermissions {
      *
      * @var integer
      */
+    public const None = 0;
     public const Review = 1;
     public const Comment = 2;
     public const FillForms = 4;
     public const ModifyFilter = 8;
 
     /**
-     * Extra permission names
-     *
-     * @var string
+     * @param string $AppName - application name
+     * @param ILogger $logger - logger
+     * @param AppConfig $config - application configuration
+     * @param IManager $shareManager - Share manager
      */
-    public const ReviewName = "review";
-    public const CommentName = "comment";
-    public const FillFormsName = "fillForms";
-    public const ModifyFilterName = "modifyFilter";
+    public function __construct($AppName,
+                                ILogger $logger,
+                                IManager $shareManager,
+                                AppConfig $config) {
+        $this->appName = $AppName;
+        $this->logger = $logger;
+        $this->shareManager = $shareManager;
+        $this->config = $config;
+    }
+
+    /**
+     * Get extra permissions by shareId
+     *
+     * @param integer $shareId - share identifier
+     *
+     * @return array
+     */
+    public function getByShareId($shareId) {
+        try {
+            $share = $this->shareManager->getShareById("ocinternal:" . $shareId);
+        } catch (ShareNotFound $e) {
+            $this->logger->logException($e, ["message" => "getByShareId error", "app" => $this->appName]);
+            return null;
+        }
+
+        return $this->getByShare($share);
+    }
+
+    /**
+     * Get extra permissions by share
+     *
+     * @param IShare $shareId - share identifier
+     *
+     * @return array
+     */
+    public function getByShare($share) {
+        list($available, $defaultPermissions) = $this->validation($share);
+        if(!$available) {
+            $this->logger->debug("Share " . $shareId . " does not support extra permissions", ["app" => $this->appName]);
+            return null;
+        }
+
+        $shareId = $share->getId();
+        $extra = self::get($shareId);
+
+        if(empty($extra)) {
+            $extra["id"] = -1;
+            $extra["share_id"] = $share->getId();
+            $extra["permissions"] = $defaultPermissions;
+        }
+
+        $extra["shareWith"] = $share->getSharedWith();
+        $extra["shareWithName"] = $share->getSharedWithDisplayName();
+        $extra["basePermissions"] = $share->getPermissions();
+
+        return $extra;
+    }
+
+    /**
+     * Get extra permissions by share
+     *
+     * @param IShare $share - share
+     * @param integer $permissions - value extra permissions
+     * @param integer $extraId - extra permission identifier
+     *
+     * @return bool
+     */
+    public function setShare($share, $permissions, $extraId) {
+        $result = false;
+
+        if ($extraId > 0) {
+            $result = self::update($share->getId(), $permissions);
+        } else {
+            $result = self::insert($share->getId(), $permissions);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Validation share on extend capability by extra permissions
+     *
+     * @param IShare $share - share
+     *
+     * @return array
+     */
+    private function validation($share) {
+        $node = $share->getNode();
+        $fileInfo = $node->getFileInfo();
+
+        $pathinfo = pathinfo($fileInfo->getName());
+        $extension = $pathinfo["extension"];
+        $format = $this->config->FormatsSetting()[$extension];
+
+        $available = false;
+        $defaultPermissions = self::None;
+        if (($share->getPermissions() & Constants::PERMISSION_UPDATE) === Constants::PERMISSION_UPDATE) {
+            if (isset($format["modifyFilter"]) && $format["modifyFilter"]) {
+                $available = true;
+                $defaultPermissions |= self::ModifyFilter;
+            }
+        }
+        if (($share->getPermissions() & Constants::PERMISSION_UPDATE) !== Constants::PERMISSION_UPDATE) {
+            if (isset($format["review"]) && $format["review"]
+                || isset($format["comment"]) && $format["comment"]
+                || isset($format["fillForms"]) && $format["fillForms"]) {
+                $available = true;
+            }
+        }
+
+        return [$available, $defaultPermissions];
+    }
 
     /**
      * Get extra permissions for share
      *
      * @param integer $shareId - share identifier
      *
-     * @return integer
+     * @return array
      */
-    public static function get($shareId) {
+    private static function get($shareId) {
         $connection = \OC::$server->getDatabaseConnection();
         $select = $connection->prepare("
             SELECT id, share_id, permissions
@@ -87,7 +226,7 @@ class ExtraPermissions {
      *
      * @return bool
      */
-    public static function set($shareId, $permissions) {
+    private static function insert($shareId, $permissions) {
         $connection = \OC::$server->getDatabaseConnection();
         $insert = $connection->prepare("
             INSERT INTO `*PREFIX*" . self::TableName_Key . "`
@@ -105,7 +244,7 @@ class ExtraPermissions {
      *
      * @return bool
      */
-    public static function update($shareId, $permissions) {
+    private static function update($shareId, $permissions) {
         $connection = \OC::$server->getDatabaseConnection();
         $update = $connection->prepare("
             UPDATE `*PREFIX*" . self::TableName_Key . "`
