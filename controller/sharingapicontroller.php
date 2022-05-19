@@ -137,8 +137,6 @@ class SharingApiController extends OCSController {
      * @NoCSRFRequired
      */
     public function getShares($fileId) {
-        $result = [];
-
         $user = $this->userSession->getUser();
         $userId = $user->getUID();
 
@@ -158,16 +156,9 @@ class SharingApiController extends OCSController {
         $file = $files[0];
 
         $shares = $this->shareManager->getSharesBy($userId, IShare::TYPE_USER, $file);
-        foreach ($shares as $share) {
-            $extra = $this->extraPermissions->getByShare($share);
-            if ($extra === null) {
-                continue;
-            }
+        $extras = $this->extraPermissions->getShares($shares);
 
-            array_push($result, $extra);
-        }
-
-        return new DataResponse($result);
+        return new DataResponse($extras);
     }
 
     /**
