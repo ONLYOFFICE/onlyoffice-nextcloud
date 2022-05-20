@@ -33,6 +33,7 @@
         id: "onlyofficeSharingTabView",
         className: "tab onlyofficeSharingTabView",
 
+        fileInfo: null,
         templateItem: null,
         permissionsMenu: null,
         collection: null,
@@ -56,34 +57,35 @@
         },
 
         render() {
-            var that = this;
+            var self = this;
 
             this._getTemplate(() => {
-                var container = this.$el.find(".onlyoffice-share-container");
-
-                container.children().remove();
                 this.collection.forEach(extra => {
-                    var itemNode = that.templateItem.clone();
+                    var itemNode = self.templateItem.clone();
                     var descNode = itemNode.find("span");
                     var avatar = itemNode.find("img");
 
                     avatar[0].src = "/index.php/avatar/" + extra["shareWith"] + "/32?v=0";
                     itemNode[0].id = extra.share_id;
                     descNode[0].innerText = extra.shareWithName;
-                    
-                    container.append(itemNode);
+
+                    self._getContainer().append(itemNode);
                 });
             });
         },
 
         setFileInfo(fileInfo) {
             if(fileInfo) {
-                OCA.Onlyoffice.GetShares(fileInfo.id, (shares) => {
+                this.fileInfo = fileInfo;
+
+                this._getContainer().children().remove();
+
+                OCA.Onlyoffice.GetShares(this.fileInfo.id, (shares) => {
                     this.collection = shares;
-
-                    var ext = fileInfo.attributes.name.split(".").pop();
+    
+                    var ext = this.fileInfo.attributes.name.split(".").pop();
                     this.format = OCA.Onlyoffice.setting.formats[ext];
-
+    
                     this.render();
                 });
             }
@@ -97,21 +99,23 @@
             return true;
         },
 
+        _getContainer: function() {
+            return this.$el.find(".onlyoffice-share-container");
+        },
+
         _getTemplate: function(callback) {
             if (this.templateItem) {
                 callback();
                 return;
             }
 
-            var that = this;
+            var self = this;
             $.get(OC.filePath(OCA.Onlyoffice.AppName, "templates", "share.html"), 
                 function (tmpl) {
-                    that.templateItem = $(tmpl);
+                    self.templateItem = $(tmpl);
 
-                    $("<ul>", {class: "onlyoffice-share-container"}).appendTo(that.$el)
-                    $("<div>").html(t(OCA.Onlyoffice.AppName, "Share files with ONLYOFFICE")).prependTo(that.$el);
-
-                    that.$el.append(that.template);
+                    $("<ul>", {class: "onlyoffice-share-container"}).appendTo(self.$el)
+                    $("<div>").html(t(OCA.Onlyoffice.AppName, "Share files with ONLYOFFICE")).prependTo(self.$el);
 
                     callback();
                 });
@@ -180,7 +184,7 @@
             var update = (OC.PERMISSION_UPDATE & extra["basePermissions"]) === OC.PERMISSION_UPDATE;
 
             if (!update && read) {
-                if ("review" in this.format) {
+                if (this.format["review"]) {
                     review = (OCA.Onlyoffice.Permissions.Review & extra["permissions"]) === OCA.Onlyoffice.Permissions.Review;
                     attributes.push({
                         checked: review,
@@ -188,7 +192,7 @@
                         label: t(OCA.Onlyoffice.AppName, "Review")
                     });
                 }
-                if ("comment" in this.format && !review) {
+                if (this.format["comment"] && !review) {
                     comment = (OCA.Onlyoffice.Permissions.Comment & extra["permissions"]) === OCA.Onlyoffice.Permissions.Comment;
                     attributes.push({
                         checked: comment,
@@ -196,7 +200,7 @@
                         label: t(OCA.Onlyoffice.AppName, "Comment")
                     });
                 }
-                if ("fillForms" in this.format && !review) {
+                if (this.format["fillForms"] && !review) {
                     fillForms = (OCA.Onlyoffice.Permissions.FillForms & extra["permissions"]) === OCA.Onlyoffice.Permissions.FillForms;
                     attributes.push({
                         checked: fillForms,
@@ -207,7 +211,7 @@
             }
 
             if (update) {
-                if ("modifyFilter" in this.format) {
+                if (this.format["modifyFilter"]) {
                     modifyFilter = (OCA.Onlyoffice.Permissions.ModifyFilter & extra["permissions"]) === OCA.Onlyoffice.Permissions.ModifyFilter;
                     attributes.push({
                         checked: modifyFilter,
@@ -227,6 +231,27 @@
                 id: -1
             });
 
+            var appendItem = function(checked, inputAttribute, name) {
+                var item = $("<li>").append($("<span>", {
+                    class: "onlyoffice-share-action"
+                }).append($("<input>", {
+                    id: inputAttribute,
+                    type: "checkbox",
+                    class: "checkbox action-checkbox__checkbox focusable",
+                    checked: checked
+                })).append($("<label>", {
+                    for: inputAttribute,
+                    text: name,
+                    class: "onlyoffice-share-label"
+                })));
+
+                popup.find("ul").append(item);
+            };
+
+            var setTargetId = function(id) {
+                popup.find("ul").attr("id", id);
+            };
+
             this.$el.append(popup);
 
             return {
@@ -240,10 +265,10 @@
                     }
 
                     attributes.forEach(attr => {
-                        this.appendItem(attr.checked, attr.inputAttribute, attr.label);
+                        appendItem(attr.checked, attr.inputAttribute, attr.label);
                     });
 
-                    this.setTargetId(id);
+                    setTargetId(id);
                     popup.show();
                 },
 
@@ -253,7 +278,7 @@
                         items.remove();
                     }
 
-                    this.setTargetId(-1);
+                    setTargetId(-1);
                     popup.hide();
                 },
 
@@ -264,29 +289,12 @@
                     }
 
                     attributes.forEach(attr => {
-                        this.appendItem(attr.checked, attr.inputAttribute, attr.label);
+                        appendItem(attr.checked, attr.inputAttribute, attr.label);
                     });
                 },
 
                 block: function(value) {
                     popup.find("input").prop("disabled", value);
-                },
-
-                appendItem: function(checked, checkboxId, name) {
-                    var item = $("<li>").append($("<span>", {
-                        class: "onlyoffice-share-action"
-                    }).append($("<input>", {
-                        id: checkboxId,
-                        type: "checkbox",
-                        class: "checkbox action-checkbox__checkbox focusable",
-                        checked: checked
-                    })).append($("<label>", {
-                        for: checkboxId,
-                        text: name,
-                        class: "onlyoffice-share-label"
-                    })));
-
-                    popup.find("ul").append(item);
                 },
 
                 getValues: function() {
@@ -301,10 +309,6 @@
                     }
 
                     return values;
-                },
-
-                setTargetId: function(id) {
-                    popup.find("ul").attr("id", id);
                 },
 
                 getTargetId: function() {
