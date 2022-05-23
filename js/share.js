@@ -103,6 +103,12 @@
                     || format["modifyFilter"])) {
                     canDisplay = true;
                     tabcontext.format = format;
+
+                    if ($("#sharing").hasClass("active")
+                        && tabcontext.fileInfo
+                        && tabcontext.fileInfo.id == fileInfo.id) {
+                        this.update(fileInfo);
+                    }
                 }
             };
 
