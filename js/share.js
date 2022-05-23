@@ -29,6 +29,8 @@
         ModifyFilter: 8
     };
 
+    var tabcontext = null;
+
     OCA.Onlyoffice.SharingTabView = OCA.Files.DetailTabView.extend({
         id: "onlyofficeSharingTabView",
         className: "tab onlyofficeSharingTabView",
@@ -46,6 +48,7 @@
 
         initialize() {
             OCA.Files.DetailTabView.prototype.initialize.apply(this, arguments);
+            tabcontext = this;
         },
 
         getLabel() {
@@ -82,21 +85,28 @@
 
                 OCA.Onlyoffice.GetShares(this.fileInfo.id, (shares) => {
                     this.collection = shares;
-    
-                    var ext = this.fileInfo.attributes.name.split(".").pop();
-                    this.format = OCA.Onlyoffice.setting.formats[ext];
-    
+
                     this.render();
                 });
             }
         },
 
         canDisplay: function(fileInfo) {
-            if (fileInfo.isDirectory()) {
-                return false;
+            var canDisplay = false;
+
+            if (!fileInfo.isDirectory()) {
+                var ext = fileInfo.name.split(".").pop();
+                var format = OCA.Onlyoffice.setting.formats[ext];
+                if (format && (format["review"]
+                    || format["comment"]
+                    || format["fillForms"]
+                    || format["modifyFilter"])) {
+                    canDisplay = true;
+                    tabcontext.format = format;
+                }
             };
 
-            return true;
+            return canDisplay;
         },
 
         _getContainer: function() {
