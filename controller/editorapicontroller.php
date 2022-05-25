@@ -192,8 +192,11 @@ class EditorApiController extends OCSController {
             }
         }
 
+        if (\OC::$server->getAppManager()->isInstalled("files_sharing")) {
+            $this->extraPermissions = new ExtraPermissions($AppName, $logger, $shareManager, $config);
+        }
+
         $this->fileUtility = new FileUtility($AppName, $trans, $logger, $config, $shareManager, $session);
-        $this->extraPermissions = new ExtraPermissions($AppName, $logger, $shareManager, $config);
     }
 
     /**
@@ -318,7 +321,11 @@ class EditorApiController extends OCSController {
         if (empty($shareToken) && $fileStorage->instanceOfStorage("\OCA\Files_Sharing\SharedStorage")) {
             $shareId = $fileStorage->getShareId();
 
-            $extraPermissions = $this->extraPermissions->getExtra($shareId);
+            $extraPermissions = null;
+            if ($this->extraPermissions !== null) {
+                $extraPermissions = $this->extraPermissions->getExtra($shareId);
+            }
+
             if (!empty($extraPermissions)) {
                 if (isset($format["review"]) && $format["review"]) {
                     $reviewPermission = ($extraPermissions["permissions"] & ExtraPermissions::Review) === ExtraPermissions::Review;

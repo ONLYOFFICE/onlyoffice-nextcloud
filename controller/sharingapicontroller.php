@@ -123,7 +123,9 @@ class SharingApiController extends OCSController {
         $this->shareManager = $shareManager;
         $this->appConfig = $appConfig;
 
-        $this->extraPermissions = new ExtraPermissions($AppName, $logger, $shareManager, $appConfig);
+        if (\OC::$server->getAppManager()->isInstalled("files_sharing")) {
+            $this->extraPermissions = new ExtraPermissions($AppName, $logger, $shareManager, $appConfig);
+        }
     }
 
     /**
@@ -137,6 +139,11 @@ class SharingApiController extends OCSController {
      * @NoCSRFRequired
      */
     public function getShares($fileId) {
+        if ($this->extraPermissions === null) {
+            $this->logger->debug("extraPermissions isn't init", ["app" => $this->appName]);
+            return new DataResponse([], Http::STATUS_BAD_REQUEST);
+        }
+
         $user = $this->userSession->getUser();
         $userId = $user->getUID();
 
@@ -174,6 +181,11 @@ class SharingApiController extends OCSController {
      * @NoCSRFRequired
      */
     public function setShares($extraId, $shareId, $permissions) {
+        if ($this->extraPermissions === null) {
+            $this->logger->debug("extraPermissions isn't init", ["app" => $this->appName]);
+            return new DataResponse([], Http::STATUS_BAD_REQUEST);
+        }
+
         if (!$this->extraPermissions->setExtra($shareId, $permissions, $extraId)) {
             $this->logger->error("setShares: couldn't set extra permissions for: " . $shareId, ["app" => $this->appName]);
             return new DataResponse([], Http::STATUS_BAD_REQUEST);

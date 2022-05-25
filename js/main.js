@@ -474,7 +474,9 @@
 
     OCA.Onlyoffice.TabView = {
         attach(fileList) {
-            fileList.registerTabView(new OCA.Onlyoffice.SharingTabView())
+            if (OCA.Onlyoffice.SharingTabView) {
+                fileList.registerTabView(new OCA.Onlyoffice.SharingTabView())
+            }
         }
     }
 
