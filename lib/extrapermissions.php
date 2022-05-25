@@ -159,36 +159,44 @@ class ExtraPermissions {
 
         $shareIds = [];
         foreach ($shares as $share) {
-            list($available, $defaultPermissions) = $this->validation($share);
-            if (!$available) {
-                $this->logger->debug("Share " . $shareId . " does not support extra permissions", ["app" => $this->appName]);
-                continue;
-            }
-
-            array_push($result, [
-                "id" => -1,
-                "share_id" => $share->getId(),
-                "permissions" => $defaultPermissions,
-                "shareWith" => $share->getSharedWith(),
-                "shareWithName" => $share->getSharedWithDisplayName(),
-                "basePermissions" => $share->getPermissions()
-            ]);
-
             array_push($shareIds, $share->getId());
         }
 
-        if (empty($shareIds)) {
+        $extras = self::getList($shareIds);
+        if (empty($extras)) {
             return $result;
         }
 
-        $extras = self::getList($shareIds);
-        foreach ($extras as $extra) {
-            foreach ($result as &$changeExtra) {
-                if ($extra["share_id"] === $changeExtra["share_id"]) {
-                    $changeExtra["id"] = $extra["id"];
-                    $changeExtra["permissions"] = $extra["permissions"];
+        $noActualList = [];
+        foreach ($shares as $share) {
+            list($available, $defaultPermissions) = $this->validation($share);
+
+            $currentExtra = [];
+            foreach ($extras as $extra) {
+                if ($extra["share_id"] === $share->getId()) {
+                    $currentExtra = $extra;
                 }
             }
+
+            if ($available) {
+                if (empty($currentExtra)) {
+                    $currentExtra["id"] = -1;
+                    $currentExtra["share_id"] = $share->getId();
+                    $currentExtra["permissions"] = $defaultPermissions;
+                }
+
+                $currentExtra["shareWith"] = $share->getSharedWith();
+                $currentExtra["shareWithName"] = $share->getSharedWithDisplayName();
+                $currentExtra["basePermissions"] = $share->getPermissions();
+
+                array_push($result, $currentExtra);
+            } else if (!empty($currentExtra)) {
+                array_push($noActualList, $share->getId());
+            }
+        }
+
+        if (!empty($noActualList)) {
+            self::deleteList($noActualList);
         }
 
         return $result;
@@ -266,6 +274,30 @@ class ExtraPermissions {
     }
 
     /**
+     * Delete list extra permissions
+     *
+     * @param integer $shareIds - array of share identifiers
+     *
+     * @return bool
+     */
+    private static function deleteList($shareIds) {
+        $connection = \OC::$server->getDatabaseConnection();
+
+        $condition = "";
+        if (count($shareIds) > 1) {
+            for ($i = 1; $i < count($shareIds); $i++) {
+                $condition = $condition . " OR `share_id` = ?";
+            }
+        }
+
+        $delete = $connection->prepare("
+            DELETE FROM `*PREFIX*" . self::TableName_Key . "`
+            WHERE `share_id` = ?
+        " . $condition);
+        return (bool)$delete->execute($shareIds);
+    }
+
+    /**
      * Get extra permissions for share
      *
      * @param integer $shareId - share identifier
@@ -298,7 +330,7 @@ class ExtraPermissions {
 
         $condition = "";
         if (count($shareIds) > 1) {
-            for($i = 1; $i < count($shareIds); $i++) {
+            for ($i = 1; $i < count($shareIds); $i++) {
                 $condition = $condition . " OR `share_id` = ?";
             }
         }
