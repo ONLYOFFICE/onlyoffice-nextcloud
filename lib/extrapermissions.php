@@ -101,25 +101,12 @@ class ExtraPermissions {
      *
      * @return array
      */
-    public function getByShareId($shareId) {
-        try {
-            $share = $this->shareManager->getShareById("ocinternal:" . $shareId);
-        } catch (ShareNotFound $e) {
-            $this->logger->logException($e, ["message" => "getByShareId error", "app" => $this->appName]);
+    public function getExtra($shareId) {
+        $share = $this->getShare($shareId);
+        if (empty($share)) {
             return null;
         }
 
-        return $this->getByShare($share);
-    }
-
-    /**
-     * Get extra permissions by share
-     *
-     * @param IShare $shareId - share identifier
-     *
-     * @return array
-     */
-    public function getByShare($share) {
         list($available, $defaultPermissions) = $this->validation($share);
 
         $shareId = $share->getId();
@@ -154,7 +141,7 @@ class ExtraPermissions {
      *
      * @return array
      */
-    public function getShares($shares) {
+    public function getExtras($shares) {
         $result = [];
 
         $shareIds = [];
@@ -162,10 +149,11 @@ class ExtraPermissions {
             array_push($shareIds, $share->getId());
         }
 
-        $extras = self::getList($shareIds);
-        if (empty($extras)) {
+        if (empty($shareIds)) {
             return $result;
         }
+
+        $extras = self::getList($shareIds);
 
         $noActualList = [];
         foreach ($shares as $share) {
@@ -205,14 +193,19 @@ class ExtraPermissions {
     /**
      * Get extra permissions by share
      *
-     * @param IShare $share - share
+     * @param integer $shareId - share identifier
      * @param integer $permissions - value extra permissions
      * @param integer $extraId - extra permission identifier
      *
      * @return bool
      */
-    public function setShare($share, $permissions, $extraId) {
+    public function setExtra($shareId, $permissions, $extraId) {
         $result = false;
+
+        $share = $this->getShare($shareId);
+        if (empty($share)) {
+            return $result;
+        }
 
         if ($extraId > 0) {
             $result = self::update($share->getId(), $permissions);
@@ -221,40 +214,6 @@ class ExtraPermissions {
         }
 
         return $result;
-    }
-
-    /**
-     * Validation share on extend capability by extra permissions
-     *
-     * @param IShare $share - share
-     *
-     * @return array
-     */
-    private function validation($share) {
-        $node = $share->getNode();
-        $fileInfo = $node->getFileInfo();
-
-        $pathinfo = pathinfo($fileInfo->getName());
-        $extension = $pathinfo["extension"];
-        $format = $this->config->FormatsSetting()[$extension];
-
-        $available = false;
-        $defaultPermissions = self::None;
-        if (($share->getPermissions() & Constants::PERMISSION_UPDATE) === Constants::PERMISSION_UPDATE) {
-            if (isset($format["modifyFilter"]) && $format["modifyFilter"]) {
-                $available = true;
-                $defaultPermissions |= self::ModifyFilter;
-            }
-        }
-        if (($share->getPermissions() & Constants::PERMISSION_UPDATE) !== Constants::PERMISSION_UPDATE) {
-            if (isset($format["review"]) && $format["review"]
-                || isset($format["comment"]) && $format["comment"]
-                || isset($format["fillForms"]) && $format["fillForms"]) {
-                $available = true;
-            }
-        }
-
-        return [$available, $defaultPermissions];
     }
 
     /**
@@ -280,7 +239,7 @@ class ExtraPermissions {
      *
      * @return bool
      */
-    private static function deleteList($shareIds) {
+    public static function deleteList($shareIds) {
         $connection = \OC::$server->getDatabaseConnection();
 
         $condition = "";
@@ -382,5 +341,57 @@ class ExtraPermissions {
             WHERE `share_id` = ?
         ");
         return (bool)$update->execute([$permissions, $shareId]);
+    }
+
+    /**
+     * Validation share on extend capability by extra permissions
+     *
+     * @param IShare $share - share
+     *
+     * @return array
+     */
+    private function validation($share) {
+        $node = $share->getNode();
+        $fileInfo = $node->getFileInfo();
+
+        $pathinfo = pathinfo($fileInfo->getName());
+        $extension = $pathinfo["extension"];
+        $format = $this->config->FormatsSetting()[$extension];
+
+        $available = false;
+        $defaultPermissions = self::None;
+        if (($share->getPermissions() & Constants::PERMISSION_UPDATE) === Constants::PERMISSION_UPDATE) {
+            if (isset($format["modifyFilter"]) && $format["modifyFilter"]) {
+                $available = true;
+                $defaultPermissions |= self::ModifyFilter;
+            }
+        }
+        if (($share->getPermissions() & Constants::PERMISSION_UPDATE) !== Constants::PERMISSION_UPDATE) {
+            if (isset($format["review"]) && $format["review"]
+                || isset($format["comment"]) && $format["comment"]
+                || isset($format["fillForms"]) && $format["fillForms"]) {
+                $available = true;
+            }
+        }
+
+        return [$available, $defaultPermissions];
+    }
+
+    /**
+     * Get origin share
+     *
+     * @param integer $shareId - share identifier
+     *
+     * @return IShare
+     */
+    private function getShare($shareId) {
+        try {
+            $share = $this->shareManager->getShareById("ocinternal:" . $shareId);
+        } catch (ShareNotFound $e) {
+            $this->logger->logException($e, ["message" => "getShare error", "app" => $this->appName]);
+            return null;
+        }
+
+        return $share;
     }
 }

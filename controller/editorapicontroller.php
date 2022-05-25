@@ -318,7 +318,7 @@ class EditorApiController extends OCSController {
         if (empty($shareToken) && $fileStorage->instanceOfStorage("\OCA\Files_Sharing\SharedStorage")) {
             $shareId = $fileStorage->getShareId();
 
-            $extraPermissions = $this->extraPermissions->getByShareId($shareId);
+            $extraPermissions = $this->extraPermissions->getExtra($shareId);
             if (!empty($extraPermissions)) {
                 if (isset($format["review"]) && $format["review"]) {
                     $reviewPermission = ($extraPermissions["permissions"] & ExtraPermissions::Review) === ExtraPermissions::Review;

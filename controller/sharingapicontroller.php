@@ -156,7 +156,7 @@ class SharingApiController extends OCSController {
         $file = $files[0];
 
         $shares = $this->shareManager->getSharesBy($userId, IShare::TYPE_USER, $file);
-        $extras = $this->extraPermissions->getShares($shares);
+        $extras = $this->extraPermissions->getExtras($shares);
 
         return new DataResponse($extras);
     }
@@ -174,18 +174,12 @@ class SharingApiController extends OCSController {
      * @NoCSRFRequired
      */
     public function setShares($extraId, $shareId, $permissions) {
-        try {
-            $share = $this->shareManager->getShareById('ocinternal:' . $shareId);
-        } catch (ShareNotFound $e) {
-            $this->logger->logException($e, ["message" => "setShares error", "app" => $this->appName]);
+        if (!$this->extraPermissions->setExtra($shareId, $permissions, $extraId)) {
+            $this->logger->error("setShares: couldn't set extra permissions for: " . $shareId, ["app" => $this->appName]);
             return new DataResponse([], Http::STATUS_BAD_REQUEST);
         }
 
-        if (!$this->extraPermissions->setShare($share, $permissions, $extraId)) {
-            return new DataResponse([], Http::STATUS_BAD_REQUEST);
-        }
-
-        $extra = $this->extraPermissions->getByShare($share);
+        $extra = $this->extraPermissions->getExtra($shareId);
 
         return new DataResponse($extra);
     }
