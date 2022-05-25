@@ -121,15 +121,20 @@ class ExtraPermissions {
      */
     public function getByShare($share) {
         list($available, $defaultPermissions) = $this->validation($share);
-        if(!$available) {
-            $this->logger->debug("Share " . $shareId . " does not support extra permissions", ["app" => $this->appName]);
-            return null;
-        }
 
         $shareId = $share->getId();
         $extra = self::get($shareId);
 
-        if(empty($extra)) {
+        if (!$available) {
+            if (!empty($extra)) {
+                self::delete($shareId);
+            }
+
+            $this->logger->debug("Share " . $shareId . " does not support extra permissions", ["app" => $this->appName]);
+            return null;
+        }
+
+        if (empty($extra)) {
             $extra["id"] = -1;
             $extra["share_id"] = $share->getId();
             $extra["permissions"] = $defaultPermissions;
@@ -242,6 +247,22 @@ class ExtraPermissions {
         }
 
         return [$available, $defaultPermissions];
+    }
+
+    /**
+     * Delete extra permissions for share
+     *
+     * @param integer $shareId - file identifier
+     *
+     * @return bool
+     */
+    public static function delete($shareId) {
+        $connection = \OC::$server->getDatabaseConnection();
+        $delete = $connection->prepare("
+            DELETE FROM `*PREFIX*" . self::TableName_Key . "`
+            WHERE `share_id` = ?
+        ");
+        return (bool)$delete->execute([$shareId]);
     }
 
     /**
