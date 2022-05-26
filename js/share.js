@@ -35,6 +35,7 @@
         id: "onlyofficeSharingTabView",
         className: "tab onlyofficeSharingTabView",
 
+        customEvents: null,
         fileInfo: null,
         templateItem: null,
         permissionsMenu: null,
@@ -61,6 +62,11 @@
 
         render() {
             var self = this;
+
+            if (this.customEvents === null) {
+                this.customEvents = this._customEvents();
+                this.customEvents.on();
+            }
 
             this._getTemplate(() => {
                 this.collection.forEach(extra => {
@@ -91,7 +97,7 @@
             }
         },
 
-        canDisplay: function(fileInfo) {
+        canDisplay: function (fileInfo) {
             var canDisplay = false;
 
             if (!fileInfo.isDirectory()) {
@@ -115,11 +121,11 @@
             return canDisplay;
         },
 
-        _getContainer: function() {
+        _getContainer: function () {
             return this.$el.find(".onlyoffice-share-container");
         },
 
-        _getTemplate: function(callback) {
+        _getTemplate: function (callback) {
             if (this.templateItem) {
                 callback();
                 return;
@@ -137,7 +143,7 @@
                 });
         },
 
-        _onClickSetPermissions: function(e) {
+        _onClickSetPermissions: function (e) {
             var permissionValues = this.permissionsMenu.getValues();
             var shareId = this.permissionsMenu.getTargetId();
             var extra = this.collection.find(item => item.share_id == shareId);
@@ -165,7 +171,7 @@
             });
         },
 
-        _onClickPermissionMenu: function(e) {
+        _onClickPermissionMenu: function (e) {
             if (!this.permissionsMenu) {
                 this.permissionsMenu = this._permissionMenu();
             }
@@ -188,7 +194,7 @@
             this.permissionsMenu.open(extra.share_id, attributes, $(e.target).position());
         },
 
-        _getPermissionAttributes: function(extra) {
+        _getPermissionAttributes: function (extra) {
             var attributes = [];
 
             var review = false;
@@ -240,14 +246,40 @@
             return attributes;
         },
 
-        _permissionMenu: function() {
+        _customEvents: function () {
+            var init = false;
+            var self = this;
+
+            return {
+                on: function () {
+                    if (!init) {
+                        $("#content").on("click", function (e) {
+                            var target = $(e.target)[0];
+                            if (!self.permissionsMenu
+                                || !self.permissionsMenu.isOpen()
+                                || target.id == "onlyoffice-share-action"
+                                || target.className == "onlyoffice-share-label"
+                                || target.closest(".onlyoffice-share-action")) {
+                                return;
+                            }
+
+                            self.permissionsMenu.close();
+                        });
+
+                        init = true;
+                    }
+                }
+            }
+        },
+
+        _permissionMenu: function () {
             var popup = $("<div>", {
                 class: "popovermenu onlyoffice-share-popup"
             }).append($("<ul>"), {
                 id: -1
             });
 
-            var appendItem = function(checked, inputAttribute, name) {
+            var appendItem = function (checked, inputAttribute, name) {
                 var item = $("<li>").append($("<span>", {
                     class: "onlyoffice-share-action"
                 }).append($("<input>", {
@@ -264,18 +296,18 @@
                 popup.find("ul").append(item);
             };
 
-            var setTargetId = function(id) {
+            var setTargetId = function (id) {
                 popup.find("ul").attr("id", id);
             };
 
             this.$el.append(popup);
 
             return {
-                isOpen: function() {
+                isOpen: function () {
                     return popup.is(":visible");
                 },
 
-                open: function(id, attributes, position) {
+                open: function (id, attributes, position) {
                     if (position) {
                         popup.css({top: position.top});
                     }
@@ -288,7 +320,7 @@
                     popup.show();
                 },
 
-                close: function() {
+                close: function () {
                     var items = popup.find("li");
                     if (items) {
                         items.remove();
@@ -298,7 +330,7 @@
                     popup.hide();
                 },
 
-                refresh: function(attributes) {
+                refresh: function (attributes) {
                     var items = popup.find("li");
                     if (items) {
                         items.remove();
@@ -309,11 +341,11 @@
                     });
                 },
 
-                block: function(value) {
+                block: function (value) {
                     popup.find("input").prop("disabled", value);
                 },
 
-                getValues: function() {
+                getValues: function () {
                     var values = [];
 
                     var items = popup.find("input");
@@ -327,7 +359,7 @@
                     return values;
                 },
 
-                getTargetId: function() {
+                getTargetId: function () {
                     return popup.find("ul").attr("id");
                 },
             }
