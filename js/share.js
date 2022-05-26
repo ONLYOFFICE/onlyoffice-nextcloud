@@ -39,6 +39,7 @@
         fileInfo: null,
         templateItem: null,
         permissionsMenu: null,
+        colectionLoading: null,
         collection: null,
         format: null,
 
@@ -50,6 +51,8 @@
         initialize() {
             OCA.Files.DetailTabView.prototype.initialize.apply(this, arguments);
             tabcontext = this;
+
+            this.colectionLoading = false;
         },
 
         getLabel() {
@@ -87,11 +90,17 @@
             if(fileInfo) {
                 this.fileInfo = fileInfo;
 
+                if (this.colectionLoading) {
+                    return;
+                }
+
                 this._getContainer().children().remove();
 
+                this.colectionLoading = true;
                 OCA.Onlyoffice.GetShares(this.fileInfo.id, (shares) => {
                     this.collection = shares;
 
+                    this.colectionLoading = false;
                     this.render();
                 });
             }
