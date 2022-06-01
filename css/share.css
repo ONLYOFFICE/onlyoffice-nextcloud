@@ -23,7 +23,11 @@
     display: flex;
     list-style-type: none;
 }
-.onlyoffice-share-action {
+.onlyoffice-share-item img {
+    width: 32px;
+    height: 32px;
+}
+.onlyoffice-share-popup {
     margin-right: 14px;
     margin-top: 44px;
 }
