@@ -50,16 +50,13 @@ class TemplateManager {
      * @return Folder
      */
     public static function GetGlobalTemplateDir() {
-        $dirPath = "appdata_" . \OC::$server->getConfig()->GetSystemValue("instanceid", null)
-                                . "/" . self::$appName
-                                . "/" . self::$templateFolderName;
+        $appDataDir = \OC::$server->getAppDataDir('onlyoffice');
 
-        $rootFolder = \OC::$server->getRootFolder();
-        $templateDir = null;
         try {
-            $templateDir = $rootFolder->get($dirPath);
+            $templateDir = $appDataDir->getFolder('template');
         } catch (NotFoundException $e) {
-            $templateDir = $rootFolder->newFolder($dirPath);
+            // creating onlyoffice template appdata folder
+            $templateDir = $appDataDir->newFolder('template');
         }
 
         return $templateDir;
