@@ -1,5 +1,12 @@
 # Change Log
 
+##
+## Added
+- macro launch setting
+
+## Changed
+- fix editor lang
+
 ## 7.3.4
 ## Added
 - Turkish and Galician empty file templates
