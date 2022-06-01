@@ -1,9 +1,23 @@
 # Change Log
 
+##
+## Changed
+- fix editor lang
+
+## 7.3.4
+## Added
+- Turkish and Galician empty file templates
+
+## Changed
+- Nextcloud v21 is no longer supported
+- compatible with Nextcloud 24
+
+## 7.3.2
 ## Changed
 - Nextcloud v20 is no longer supported
 - fixed link in mention notifications
 - title for new file
+- fix editing after desktop sync
 
 ## 7.3.0
 ## Added
