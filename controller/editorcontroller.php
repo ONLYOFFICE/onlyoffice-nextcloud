@@ -1140,14 +1140,11 @@ class EditorController extends Controller {
             "version" => $version,
             "isTemplate" => $template,
             "inframe" => false,
-            "inviewer" => false,
+            "inviewer" => $inviewer === true,
             "anchor" => $anchor
         ];
 
         $response = null;
-
-        if ($inviewer === true) $params["inviewer"] = true;
-
         if ($inframe === true) {
             $params["inframe"] = true;
             $response = new TemplateResponse($this->appName, "editor", $params, "base");

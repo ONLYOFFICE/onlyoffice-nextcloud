@@ -242,6 +242,7 @@ class DirectEditor implements IEditor {
                 "version" => 0,
                 "isTemplate" => false,
                 "inframe" => false,
+                "inviewer" => false,
                 "anchor" => null
             ];
 
