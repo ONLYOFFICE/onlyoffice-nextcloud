@@ -294,8 +294,8 @@ class EditorApiController extends OCSController {
             ],
             "documentType" => $format["type"],
             "editorConfig" => [
-                "lang" => str_replace("_", "-", \OC::$server->getL10NFactory()->get("onlyoffice")->getLanguageCode()),
-                "region" => str_replace("_", "-", \OC::$server->getL10NFactory()->get("onlyoffice")->getLocaleCode())
+                "lang" => str_replace("_", "-", \OC::$server->getL10NFactory()->get("")->getLanguageCode()),
+                "region" => str_replace("_", "-", \OC::$server->getL10NFactory()->get("")->getLocaleCode())
             ]
         ];
 
@@ -589,8 +589,7 @@ class EditorApiController extends OCSController {
 
         $fileUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.download", ["doc" => $hashUrl]);
 
-        if (!empty($this->config->GetStorageUrl())
-            && !$changes) {
+        if (!empty($this->config->GetStorageUrl())) {
             $fileUrl = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->config->GetStorageUrl(), $fileUrl);
         }
 
@@ -652,6 +651,11 @@ class EditorApiController extends OCSController {
         //default is false
         if ($this->config->GetCustomizationToolbarNoTabs() === true) {
             $params["editorConfig"]["customization"]["toolbarNoTabs"] = true;
+        }
+
+        //default is true
+        if($this->config->GetCustomizationMacros() === false) {
+            $params["editorConfig"]["customization"]["macros"] = false;
         }
 
 

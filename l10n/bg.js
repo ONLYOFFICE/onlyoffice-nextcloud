@@ -62,7 +62,6 @@ OC.L10N.register(
     "This is a public test server, please do not use it for private sensitive data. The server will be available during a 30-day period." : "Това е обществен тестов сървър, моля, не използвайте за чувствителни частни данни. Сървърът ще е на разположение по време на 30-дневния период.",
     "The 30-day test period is over, you can no longer connect to demo ONLYOFFICE Docs server." : "30-дневният тестов период приключи, вече не можете да се свържете с демо ONLYOFFICE Docs сървър.",
     "You are using public demo ONLYOFFICE Docs server. Please do not store private sensitive data." : "Използвате обществения демо ONLYOFFICE Docs сървър. Моля, не съхранявайте чувствителни частни данни на него.",
-    "Secure view settings" : "Настройки за защитен изглед",
     "Secure view enables you to secure documents by embedding a watermark" : "Защитеният изглед активира вашите защитени документи, като вгражда в тях воден знак",
     "Enable watermarking" : "Активиране на воден знак",
     "Watermark text" : "Текст на водния знак",

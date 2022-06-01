@@ -251,8 +251,15 @@
 </div>
 
 <div class="section section-onlyoffice section-onlyoffice-watermark <?php if (empty($_["documentserver"]) && !$_["demo"]["enabled"] || !$_["successful"]) { ?>onlyoffice-hide<?php } ?>">
-    <h2><?php p($l->t("Secure view settings")) ?></h2>
+    <h2><?php p($l->t("Security")) ?></h2>
 
+    <p>
+        <input type="checkbox" class="checkbox" id="onlyofficeMacros"
+            <?php if ($_["macros"]) { ?>checked="checked"<?php } ?> />
+        <label for="onlyofficeMacros"><?php p($l->t("Run document macros")) ?></label>
+    </p>
+
+    <br />
     <p class="settings-hint"><?php p($l->t("Secure view enables you to secure documents by embedding a watermark")) ?></p>
 
     <p>
