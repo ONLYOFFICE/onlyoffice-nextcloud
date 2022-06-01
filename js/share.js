@@ -23,6 +23,7 @@
     }, OCA.Onlyoffice);
 
     OCA.Onlyoffice.Permissions = {
+        None: 0,
         Review: 1,
         Comment: 2,
         FillForms: 4,
@@ -157,7 +158,7 @@
             var shareId = this.permissionsMenu.getTargetId();
             var extra = this.collection.find(item => item.share_id == shareId);
 
-            var permissions = 0;
+            var permissions = OCA.Onlyoffice.Permissions.None;
             permissionValues.forEach(permission => {
                 if (permission.value) {
                     permissions |= permission.id;
@@ -188,7 +189,7 @@
             var shareNode = $(e.target).closest(".onlyoffice-share-item")[0];
             var shareId = shareNode.id;
 
-            
+
             if (this.permissionsMenu.isOpen()) {
                 var previousId = this.permissionsMenu.getTargetId();
                 this.permissionsMenu.close();
@@ -219,7 +220,7 @@
                     review = (OCA.Onlyoffice.Permissions.Review & extra["permissions"]) === OCA.Onlyoffice.Permissions.Review;
                     attributes.push({
                         checked: review,
-                        inputAttribute: OCA.Onlyoffice.Permissions.Review,
+                        extra: OCA.Onlyoffice.Permissions.Review,
                         label: t(OCA.Onlyoffice.AppName, "Review")
                     });
                 }
@@ -227,7 +228,7 @@
                     comment = (OCA.Onlyoffice.Permissions.Comment & extra["permissions"]) === OCA.Onlyoffice.Permissions.Comment;
                     attributes.push({
                         checked: comment,
-                        inputAttribute: OCA.Onlyoffice.Permissions.Comment,
+                        extra: OCA.Onlyoffice.Permissions.Comment,
                         label: t(OCA.Onlyoffice.AppName, "Comment")
                     });
                 }
@@ -235,7 +236,7 @@
                     fillForms = (OCA.Onlyoffice.Permissions.FillForms & extra["permissions"]) === OCA.Onlyoffice.Permissions.FillForms;
                     attributes.push({
                         checked: fillForms,
-                        inputAttribute: OCA.Onlyoffice.Permissions.FillForms,
+                        extra: OCA.Onlyoffice.Permissions.FillForms,
                         label: t(OCA.Onlyoffice.AppName, "FillForms")
                     });
                 }
@@ -246,7 +247,7 @@
                     modifyFilter = (OCA.Onlyoffice.Permissions.ModifyFilter & extra["permissions"]) === OCA.Onlyoffice.Permissions.ModifyFilter;
                     attributes.push({
                         checked: modifyFilter,
-                        inputAttribute: OCA.Onlyoffice.Permissions.ModifyFilter,
+                        extra: OCA.Onlyoffice.Permissions.ModifyFilter,
                         label: t(OCA.Onlyoffice.AppName, "ModifyFilter")
                     });
                 }
@@ -288,22 +289,29 @@
                 id: -1
             });
 
-            var appendItem = function (checked, inputAttribute, name) {
+            var appendItem = function (checked, extra, name) {
                 var item = $("<li>").append($("<span>", {
                     class: "onlyoffice-share-action"
                 }).append($("<input>", {
-                    id: inputAttribute,
+                    id: "extra-" + extra,
                     type: "checkbox",
                     class: "checkbox action-checkbox__checkbox focusable",
                     checked: checked
                 })).append($("<label>", {
-                    for: inputAttribute,
+                    for: "extra-" + extra,
                     text: name,
                     class: "onlyoffice-share-label"
                 })));
 
                 popup.find("ul").append(item);
             };
+
+            var removeItems = function () {
+                var items = popup.find("li");
+                if (items) {
+                    items.remove();
+                }
+            }
 
             var setTargetId = function (id) {
                 popup.find("ul").attr("id", id);
@@ -317,12 +325,14 @@
                 },
 
                 open: function (id, attributes, position) {
+                    removeItems();
+
                     if (position) {
                         popup.css({top: position.top});
                     }
 
                     attributes.forEach(attr => {
-                        appendItem(attr.checked, attr.inputAttribute, attr.label);
+                        appendItem(attr.checked, attr.extra, attr.label);
                     });
 
                     setTargetId(id);
@@ -330,23 +340,17 @@
                 },
 
                 close: function () {
-                    var items = popup.find("li");
-                    if (items) {
-                        items.remove();
-                    }
+                    removeItems();
 
                     setTargetId(-1);
                     popup.hide();
                 },
 
                 refresh: function (attributes) {
-                    var items = popup.find("li");
-                    if (items) {
-                        items.remove();
-                    }
+                    removeItems();
 
                     attributes.forEach(attr => {
-                        appendItem(attr.checked, attr.inputAttribute, attr.label);
+                        appendItem(attr.checked, attr.extra, attr.label);
                     });
                 },
 
@@ -360,7 +364,7 @@
                     var items = popup.find("input");
                     for (var i = 0; i < items.length; i++) {
                         values.push({
-                            id: items[i].id,
+                            id: items[i].id.split("extra-")[1],
                             value: items[i].checked
                         });
                     }
