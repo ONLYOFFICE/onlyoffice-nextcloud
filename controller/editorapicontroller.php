@@ -711,7 +711,7 @@ class EditorApiController extends OCSController {
 
         if ($watermarkTemplate !== false) {
             $replacements = [
-                "userId" => $userId,
+                "userId" => isset($userId) ? $userId : $this->trans->t('Anonymous'),
                 "date" => (new \DateTime())->format("Y-m-d H:i:s"),
                 "themingName" => \OC::$server->getThemingDefaults()->getName()
             ];

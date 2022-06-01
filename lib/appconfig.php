@@ -882,7 +882,7 @@ class AppConfig {
      */
     public function GetWatermarkSettings() {
         $result = [
-            "text" => $this->config->getAppValue(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_text", "{userId}"),
+            "text" => $this->config->getAppValue(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_text", "{userId}, {date}"),
         ];
 
         $watermarkLabels = [
