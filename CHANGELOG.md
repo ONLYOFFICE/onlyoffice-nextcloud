@@ -1,6 +1,9 @@
 # Change Log
 
 ##
+## Added
+- macro launch setting
+
 ## Changed
 - fix editor lang
 
