@@ -259,6 +259,7 @@
         <label for="onlyofficeMacros"><?php p($l->t("Run document macros")) ?></label>
     </p>
 
+    <br />
     <p class="settings-hint"><?php p($l->t("Secure view enables you to secure documents by embedding a watermark")) ?></p>
 
     <p>
