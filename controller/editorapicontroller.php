@@ -452,6 +452,12 @@ class EditorApiController extends OCSController {
             $params["_file_path"] = $userFolder->getRelativePath($file->getPath());
         }
 
+        if ($inframe === true) {
+            $params["_files_sharing"] = \OC::$server->getAppManager()->isInstalled("files_sharing");
+            $params["editorConfig"]["customization"]["goback"]["requestClose"] = true;
+            $params["editorConfig"]["customization"]["goback"]["text"] = "Close";
+        }
+
         if ($folderLink !== null
             && $this->config->GetSystemValue($this->config->_customization_goback) !== false) {
             $params["editorConfig"]["customization"]["goback"] = [
@@ -467,10 +473,6 @@ class EditorApiController extends OCSController {
                     $params["editorConfig"]["customization"]["goback"]["requestClose"] = true;
                 }
             }
-        }
-
-        if ($inframe === true) {
-            $params["_files_sharing"] = \OC::$server->getAppManager()->isInstalled("files_sharing");
         }
 
         $params = $this->setCustomization($params);

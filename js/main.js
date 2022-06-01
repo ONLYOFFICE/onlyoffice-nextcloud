@@ -536,21 +536,10 @@
 
                 var editorUrl = OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/s/" + encodeURIComponent($("#sharingToken").val()));
 
-                if (_oc_appswebroots.richdocuments
+                if (! (_oc_appswebroots.richdocuments
                     || _oc_appswebroots.files_pdfviewer && extension === "pdf"
-                    || _oc_appswebroots.text && extension === "txt") {
+                    || _oc_appswebroots.text && extension === "txt")) {
 
-                    var button = document.createElement("a");
-                    button.href = editorUrl;
-                    button.className = "onlyoffice-public-open button";
-                    button.innerText = t(OCA.Onlyoffice.AppName, "Open in ONLYOFFICE")
-
-                    if (!OCA.Onlyoffice.setting.sameTab) {
-                        button.target = "_blank";
-                    }
-
-                    $("#preview").prepend(button);
-                } else {
                     OCA.Onlyoffice.frameSelector = "#onlyofficeFrame";
                     var $iframe = $("<iframe id=\"onlyofficeFrame\" nonce=\"" + btoa(OC.requestToken) + "\" scrolling=\"no\" allowfullscreen src=\"" + editorUrl + "?inframe=true\" />");
                     $("#app-content").append($iframe);
