@@ -60,7 +60,6 @@
     "This is a public test server, please do not use it for private sensitive data. The server will be available during a 30-day period.": "这是公开的测试服务器，请勿用于隐私数据。服务器试用期限为30天。",
     "The 30-day test period is over, you can no longer connect to demo ONLYOFFICE Docs server." : "30天试用期已结束，无法连接ONLYOFFICE Docs 服务器的演示。",
     "You are using public demo ONLYOFFICE Docs server. Please do not store private sensitive data." : "您正在使用公开ONLYOFFICE Docs服务器的演示，请勿存储隐私数据。",
-    "Secure view settings" : "安全视图设置",
     "Secure view enables you to secure documents by embedding a watermark" : "启用安全视图可通过水印来保障文档安全",
     "Enable watermarking" : "启用水印",
     "Watermark text" : "水印文本",
