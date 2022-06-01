@@ -62,7 +62,6 @@ OC.L10N.register(
     "This is a public test server, please do not use it for private sensitive data. The server will be available during a 30-day period." : "Este é um servidor de teste público, não o use para dados confidenciais. O servidor estará disponível por um período de 30 dias.",
     "The 30-day test period is over, you can no longer connect to demo ONLYOFFICE Docs server." : "O período de teste de 30 dias acabou, você não pode mais se conectar ao Servidor de demonstração do ONLYOFFICE Docs",
     "You are using public demo ONLYOFFICE Docs server. Please do not store private sensitive data." : "Você está usando o Servidor de demonstração pública. Não armazene dados confidenciais.",
-    "Secure view settings" : "Configurações de visualização segura",
     "Secure view enables you to secure documents by embedding a watermark" : "A visualização segura permite proteger documentos incorporando uma marca d'água",
     "Enable watermarking" : "Ativar marca d'água",
     "Watermark text" : "Texto de marca d'água",

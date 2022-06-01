@@ -60,7 +60,6 @@
     "This is a public test server, please do not use it for private sensitive data. The server will be available during a 30-day period." : "Este es un servidor de pruebas público, por favor no lo uses para tus datos confidenciales. El servidor estará disponible durante un período de 30 días.",
     "The 30-day test period is over, you can no longer connect to demo ONLYOFFICE Docs server." : "El período de prueba de 30 días ha terminado, ya no puedes conectarte al servidor de ONLYOFFICE Docs de demostración",
     "You are using public demo ONLYOFFICE Docs server. Please do not store private sensitive data." : "Estás usando el servidor de ONLYOFFICE Docs de demostración. Por favor, no almacenes tus datos confidenciales aquí.",
-    "Secure view settings" : "Configuración de visualización segura",
     "Secure view enables you to secure documents by embedding a watermark" : "La vista segura permite asegurar documentos mediante la inserción de una marca de agua en ellos",
     "Enable watermarking" : "Habilitar marcas de agua",
     "Watermark text" : "Texto de marca de agua", 

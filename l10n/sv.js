@@ -62,7 +62,6 @@ OC.L10N.register(
     "This is a public test server, please do not use it for private sensitive data. The server will be available during a 30-day period." : "Detta är en offentlig testserver, använd den inte för privat känslig information. Servern kommer att finnas tillgänglig under en 30-dagarsperiod.",
     "The 30-day test period is over, you can no longer connect to demo ONLYOFFICE Docs server." : "När 30-dagars testperioden är över, kan du inte längre ansluta till demo ONLYOFFICE Docsserver.",
     "You are using public demo ONLYOFFICE Docs server. Please do not store private sensitive data." : "Du använder en offentlig demo ONLYOFFICE Docsserver. Lagra inte privat känslig information.",
-    "Secure view settings" : "Säkra vyinställningar",
     "Secure view enables you to secure documents by embedding a watermark" : "Med säker vy kan du säkra dokument genom att bädda in en vattenstämpel",
     "Enable watermarking" : "Aktivera vattenstämpel",
     "Watermark text" : "Text för vattenmärke",
