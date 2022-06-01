@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System SIA 2021
+ * (c) Copyright Ascensio System SIA 2022
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -75,11 +75,10 @@ class TemplateManager {
     public static function GetGlobalTemplates($mimetype = null) {
         $templateDir = self::GetGlobalTemplateDir();
 
-        if (!empty($mimetype)) {
+        $templatesList = $templateDir->getDirectoryListing();
+        if (!empty($mimetype)
+            && is_array($templatesList) && count($templatesList) > 0) {
             $templatesList = $templateDir->searchByMime($mimetype);
-
-        } else {
-            $templatesList = $templateDir->getDirectoryListing();
         }
 
         return $templatesList;
@@ -244,6 +243,7 @@ class TemplateManager {
         "en_GB" => "en-GB",
         "es" => "es-ES",
         "fr" => "fr-FR",
+        "gl" => "gl-ES",
         "it" => "it-IT",
         "ja" => "ja-JP",
         "ko" => "ko-KR",
@@ -255,6 +255,7 @@ class TemplateManager {
         "ru" => "ru-RU",
         "sk" => "sk-SK",
         "sv" => "sv-SE",
+        "tr" => "tr-TR",
         "uk" => "uk-UA",
         "vi" => "vi-VN",
         "zh_CN" => "zh-CN"

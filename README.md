@@ -13,7 +13,7 @@ The app allows to:
 
 Supported formats:
 
-* For viewing and editing: DOCX, XLSX, PPTX, CSV, TXT.
+* For viewing and editing: DOCX, XLSX, PPTX, CSV, TXT, DOCXF, OFORM.
 * For viewing only: PDF.
 * For converting to Office Open XML formats: DOC, DOCM, DOT, DOTX, EPUB, HTM, HTML, ODP, ODT, POT, POTM, POTX, PPS, PPSM, PPSX, PPT, PPTM, RTF, XLS, XLSM, XLT, XLTM, XLTX.
 
@@ -145,13 +145,20 @@ If the connection is made using the same authorization keys (the _Username and p
 If different authorization keys are used (_Log-in credentials, save in database_ or _User entered, store in database_ authentication options), the co-editing is not available.
 When the _Log-in credentials, save in session_ authentication type is used, the files cannot be opened in the editor.
 
-* If you are using a self-signed certificate for your **Document Server**, Nextcloud will not validate such a certificate and will not allow connection to/from **Document Server**. This issue can be solved the following way: locate the Nextcloud config file (_/nextcloud/config/config.php_) and open it. Insert the following section to it:
+* If you are using a self-signed certificate for your **Document Server**, Nextcloud will not validate such a certificate and will not allow connection to/from **Document Server**. This issue can be solved in two ways. 
+
+    You can check the '**Disable certificate verification (insecure)**' box on the ONLYOFFICE administration page, Server settings section, within your Nextcloud.
+
+    Another option is to change the Nextcloud config file manually. Locate the Nextcloud config file (_/nextcloud/config/config.php_) and open it. Insert the following section to it:
+    
     ```php
     'onlyoffice' => array (
         'verify_peer_off' => true
     )
     ```
-    This will disable the certificate verification and allow Nextcloud to establish connection with **Document Server**, but you must remember that this is a temporary insecure solution and we strongly recommend that you replace the certificate with the one issued by some CA. Once you do that, do not forget to remove the above section from Nextcloud config file.
+    This will disable the certificate verification and allow Nextcloud to establish connection with **Document Server**.
+
+    Please remember that this is a temporary insecure solution and we strongly recommend that you replace the certificate with the one issued by some CA. Once you do that, do not forget to uncheck the corresponding setting box or remove the above section from the Nextcloud config file.  
     
 ## ONLYOFFICE Docs editions
 
@@ -172,18 +179,17 @@ The table below will help you to make the right choice.
 | **Support** | **Community Edition** | **Enterprise Edition** |
 | Documentation | [Help Center](https://helpcenter.onlyoffice.com/installation/docs-community-index.aspx) | [Help Center](https://helpcenter.onlyoffice.com/installation/docs-enterprise-index.aspx) |
 | Standard support | [GitHub](https://github.com/ONLYOFFICE/DocumentServer/issues) or paid | One year support included |
-| Premium support | [Buy Now](https://www.onlyoffice.com/support.aspx?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud) | [Buy Now](https://www.onlyoffice.com/support.aspx?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud) |
+| Premium support | [Contact us](mailto:sales@onlyoffice.com) | [Contact us](mailto:sales@onlyoffice.com) |
 | **Services** | **Community Edition** | **Enterprise Edition** |
 | Conversion Service                | + | + |
 | Document Builder Service          | + | + |
 | **Interface** | **Community Edition** | **Enterprise Edition** |
 | Tabbed interface                       | + | + |
 | Dark theme                             | + | + |
-| 150% scaling                           | + | + |
+| 125%, 150%, 175%, 200% scaling         | + | + |
 | White Label                            | - | - |
-| Integrated test example (node.js)*     | - | + |
-| Mobile web editors | - | + |
-| Access to pro features via desktop     | - | + |
+| Integrated test example (node.js)      | + | + |
+| Mobile web editors                     | - | +* |
 | **Plugins & Macros** | **Community Edition** | **Enterprise Edition** |
 | Plugins                           | + | + |
 | Macros                            | + | + |
@@ -197,30 +203,34 @@ The table below will help you to make the right choice.
 | **Document Editor features** | **Community Edition** | **Enterprise Edition** |
 | Font and paragraph formatting   | + | + |
 | Object insertion                | + | + |
-| Adding Content control          | - | + | 
+| Adding Content control          | + | + | 
 | Editing Content control         | + | + | 
 | Layout tools                    | + | + |
 | Table of contents               | + | + |
 | Navigation panel                | + | + |
 | Mail Merge                      | + | + |
-| Comparing Documents             | - | +* |
+| Comparing Documents             | + | + |
 | **Spreadsheet Editor features** | **Community Edition** | **Enterprise Edition** |
 | Font and paragraph formatting   | + | + |
 | Object insertion                | + | + |
 | Functions, formulas, equations  | + | + |
 | Table templates                 | + | + |
 | Pivot tables                    | + | + |
-| Data validation                 | + | + |
-| Conditional formatting  for viewing | +** | +** |
+| Data validation	          | + | + |
+| Conditional formatting          | + | + |
+| Sparklines	                  | + | + |
+| Sheet Views                     | + | + |
 | **Presentation Editor features** | **Community Edition** | **Enterprise Edition** |
 | Font and paragraph formatting   | + | + |
 | Object insertion                | + | + |
 | Transitions                     | + | + |
 | Presenter mode                  | + | + |
 | Notes                           | + | + |
+| **Form creator features** | **Community Edition** | **Enterprise Edition** |
+| Adding form fields	          | + | + |
+| Form preview                    | + | + |
+| Saving as PDF	                  | + | + |
 | | [Get it now](https://www.onlyoffice.com/download-docs.aspx?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud#docs-community)  | [Start Free Trial](https://www.onlyoffice.com/download-docs.aspx?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud#docs-enterprise)  |
 
-\*  It's possible to add documents for comparison from your local drive, from URL and from Nextcloud storage.
-
-\** Support for all conditions and gradient. Adding/Editing capabilities are coming soon
+\* If supported by DMS.
 

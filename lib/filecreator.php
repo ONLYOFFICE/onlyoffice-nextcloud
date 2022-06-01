@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System SIA 2021
+ * (c) Copyright Ascensio System SIA 2022
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -94,11 +94,11 @@ class FileCreator extends ACreateEmpty {
     public function getName(): string {
         switch ($this->format) {
             case "xlsx":
-                return $this->trans->t("Spreadsheet");
+                return $this->trans->t("New spreadsheet");
             case "pptx":
-                return $this->trans->t("Presentation");
+                return $this->trans->t("New presentation");
         }
-        return $this->trans->t("Document");
+        return $this->trans->t("New document");
     }
 
     /**

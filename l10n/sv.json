@@ -22,9 +22,9 @@
     "File created" : "Filen skapad",
     "Open in ONLYOFFICE" : "Öppna i ONLYOFFICE",
     "Convert with ONLYOFFICE" : "Konvertera med ONLYOFFICE",
-    "Document" : "Dokument",
-    "Spreadsheet" : "Kalkylblad",
-    "Presentation" : "Presentation",
+    "New document" : "Nytt dokument",
+    "New spreadsheet" : "Nytt kalkylblad",
+    "New presentation" : "Ny presentation",
     "Error when trying to connect" : "Fel vid försök att ansluta",
     "Settings have been successfully updated" : "Inställningarna har uppdaterats",
     "Server can't read xml" : "Servern kan inte läsa XML",
@@ -106,7 +106,14 @@
     "Failed to send notification": "Det gick inte att skicka aviseringen",
     "Notification sent successfully": "Aviseringen har skickats",
     "%1$s mentioned in the %2$s: \"%3$s\".": "%1$s har nämnt i %2$s: \"%3$s\".",
-    "{notifier} mentioned in the {file}: \"%1$s\".": "{notifier} har nämnt i {file}: \"%1$s\".",
-    "Choose a format to convert {fileName}": "Välj det filformat som {fileName} ska konverteras till."
+    "{notifier} mentioned in the {file}: \"%1$s\".": "{notifier} nämnde dig i {file}: \"%1$s\".",
+    "Choose a format to convert {fileName}": "Välj det filformat som {fileName} ska konverteras till.",
+        "New form template": "Ny formulärmall",
+    "Blank": "Töm",
+    "From text document": "Formulärmall från textfil",
+    "Create new Form template": "Skapa ny formulärmall",
+    "Create form": "Skapa formulär",
+    "Fill in form in ONLYOFFICE": "Fylla i formulär i ONLYOFFICE",
+    "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online": "Uppdatera ONLYOFFICE Docs till version 7.0 för att arbeta med ifyllbart onlineformulär"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

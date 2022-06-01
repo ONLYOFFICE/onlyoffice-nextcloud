@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System SIA 2021
+ * (c) Copyright Ascensio System SIA 2022
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@
         <a target="_blank" class="icon-info svg" title="" href="https://api.onlyoffice.com/editors/nextcloud" data-original-title="<?php p($l->t("Documentation")) ?>"></a>
     </h2>
 
-    <h3><?php p($l->t("Server settings")) ?></h3>
+    <h2><?php p($l->t("Server settings")) ?></h2>
 
     <div id="onlyofficeAddrSettings">
         <p class="settings-hint"><?php p($l->t("ONLYOFFICE Docs Location specifies the address of the server with the document services installed. Please change the '<documentserver>' for the server address in the below line.")) ?></p>
@@ -92,7 +92,7 @@
 </div>
 
 <div class="section section-onlyoffice section-onlyoffice-common <?php if (empty($_["documentserver"]) && !$_["demo"]["enabled"] || !$_["successful"]) { ?>onlyoffice-hide<?php } ?>">
-    <h3><?php p($l->t("Common settings")) ?></h3>
+    <h2><?php p($l->t("Common settings")) ?></h2>
 
     <p>
         <input type="checkbox" class="checkbox" id="onlyofficeGroups"
@@ -154,10 +154,10 @@
     </div>
     <br />
 
-    <h3>
+    <h2>
         <?php p($l->t("Editor customization settings")) ?>
         <a target="_blank" class="icon-info svg" title="" href="https://api.onlyoffice.com/editors/config/editor/customization" data-original-title="<?php p($l->t("View details")) ?>"></a>
-    </h3>
+    </h2>
 
     <p>
         <input type="checkbox" class="checkbox" id="onlyofficeForcesave"
@@ -252,11 +252,11 @@
 
 <div class="section section-onlyoffice section-onlyoffice-templates <?php if (empty($_["documentserver"]) && !$_["demo"]["enabled"] || !$_["successful"]) { ?>onlyoffice-hide<?php } ?>">
 
-    <h3>
+    <h2>
         <?php p($l->t("Common templates")) ?>
         <input id="onlyofficeAddTemplate" type="file" class="hidden-visually" />
         <label for="onlyofficeAddTemplate" class="icon-add" title="<?php p($l->t("Add a new template")) ?>"></label>
-    </h3>
+    </h2>
     <ul class="onlyoffice-template-container">
         <?php foreach ($_["templates"] as $template) { ?>
             <li data-id=<?php p($template["id"]) ?> class="onlyoffice-template-item" >
@@ -271,7 +271,7 @@
 </div>
 
 <div class="section section-onlyoffice section-onlyoffice-watermark <?php if (empty($_["documentserver"]) && !$_["demo"]["enabled"] || !$_["successful"]) { ?>onlyoffice-hide<?php } ?>">
-    <h3><?php p($l->t("Secure view settings")) ?></h3>
+    <h2><?php p($l->t("Secure view settings")) ?></h2>
 
     <p class="settings-hint"><?php p($l->t("Secure view enables you to secure documents by embedding a watermark")) ?></p>
 

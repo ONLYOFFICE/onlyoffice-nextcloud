@@ -1,5 +1,40 @@
 # Change Log
 
+##
+## Changed
+- fix editor lang
+
+## 7.3.4
+## Added
+- Turkish and Galician empty file templates
+
+## Changed
+- Nextcloud v21 is no longer supported
+- compatible with Nextcloud 24
+
+## 7.3.2
+## Changed
+- Nextcloud v20 is no longer supported
+- fixed link in mention notifications
+- title for new file
+- fix editing after desktop sync
+
+## 7.3.0
+## Added
+- support docxf and oform formats
+- create blank docxf from creation menu
+- create docxf from docx from creation menu
+- create oform from docxf from document manager
+
+## 7.2.1
+## Added
+- check document server version
+
+## Changed
+- fix preview generation
+- compatible with Nextcloud 23
+
+## 7.2.0
 ## Added
 - set favicon on editor page
 - versions restore from editor

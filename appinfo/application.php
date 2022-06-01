@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System SIA 2021
+ * (c) Copyright Ascensio System SIA 2022
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,7 @@ use OCP\Files\Template\FileCreatedFromTemplateEvent;
 use OCP\Files\Template\ITemplateManager;
 use OCP\Files\Template\TemplateFileCreator;
 use OCA\Files\Event\LoadAdditionalScriptsEvent;
+use OCP\Files\IMimeTypeDetector;
 use OCP\IL10N;
 use OCP\IPreview;
 use OCP\ITagManager;
@@ -152,7 +153,8 @@ class Application extends App implements IBootstrap {
                 $this->appConfig,
                 $this->crypt,
                 $c->get("IManager"),
-                $c->get("Session")
+                $c->get("Session"),
+                $c->get("GroupManager")
             );
         });
 
@@ -209,13 +211,24 @@ class Application extends App implements IBootstrap {
             $context->registerTemplateProvider(TemplateProvider::class);
         }
 
+        $container = $this->getContainer();
+
+        $previewManager = $container->query(IPreview::class);
+        $previewManager->registerProvider(Preview::getMimeTypeRegex(), function() use ($container) {
+            return $container->query(Preview::class);
+        });
+
+        $detector = $container->query(IMimeTypeDetector::class);
+        $detector->getAllMappings();
+        $detector->registerType("docxf", "application/vnd.openxmlformats-officedocument.wordprocessingml.document.docxf");
+        $detector->registerType("oform", "application/vnd.openxmlformats-officedocument.wordprocessingml.document.oform");
+
+        Hooks::connectHooks();
     }
 
     public function boot(IBootContext $context): void {
 
         $context->injectFn(function (SymfonyAdapter $eventDispatcher) {
-
-            $container = $this->getContainer();
 
             if (class_exists("OCP\Files\Template\FileCreatedFromTemplateEvent")) {
                 $eventDispatcher->addListener(FileCreatedFromTemplateEvent::class,
@@ -230,12 +243,6 @@ class Application extends App implements IBootstrap {
                         }
                     });
             }
-
-            $previewManager = $container->query(IPreview::class);
-            $previewManager->registerProvider(Preview::getMimeTypeRegex(), function() use ($container) {
-                return $container->query(Preview::class);
-            });
-
         });
 
         $context->injectFn(function (IManager $notificationsManager) {
@@ -249,7 +256,7 @@ class Application extends App implements IBootstrap {
                     && $this->appConfig->isUserAllowedToUse()) {
 
                     $templateManager->registerTemplateFileCreator(function () use ($appName, $trans) {
-                        $wordTemplate = new TemplateFileCreator($appName, $trans->t("Document"), ".docx");
+                        $wordTemplate = new TemplateFileCreator($appName, $trans->t("New document"), ".docx");
                         $wordTemplate->addMimetype("application/vnd.openxmlformats-officedocument.wordprocessingml.document");
                         $wordTemplate->setIconClass("icon-onlyoffice-new-docx");
                         $wordTemplate->setRatio(21/29.7);
@@ -257,7 +264,7 @@ class Application extends App implements IBootstrap {
                     });
 
                     $templateManager->registerTemplateFileCreator(function () use ($appName, $trans) {
-                        $cellTemplate = new TemplateFileCreator($appName, $trans->t("Spreadsheet"), ".xlsx");
+                        $cellTemplate = new TemplateFileCreator($appName, $trans->t("New spreadsheet"), ".xlsx");
                         $cellTemplate->addMimetype("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
                         $cellTemplate->setIconClass("icon-onlyoffice-new-xlsx");
                         $cellTemplate->setRatio(21/29.7);
@@ -265,7 +272,7 @@ class Application extends App implements IBootstrap {
                     });
 
                     $templateManager->registerTemplateFileCreator(function () use ($appName, $trans) {
-                        $slideTemplate = new TemplateFileCreator($appName, $trans->t("Presentation"), ".pptx");
+                        $slideTemplate = new TemplateFileCreator($appName, $trans->t("New presentation"), ".pptx");
                         $slideTemplate->addMimetype("application/vnd.openxmlformats-officedocument.presentationml.presentation");
                         $slideTemplate->setIconClass("icon-onlyoffice-new-pptx");
                         $slideTemplate->setRatio(16/9);
@@ -274,7 +281,5 @@ class Application extends App implements IBootstrap {
                 }
             });
         }
-
-        Hooks::connectHooks();
     }
 }
