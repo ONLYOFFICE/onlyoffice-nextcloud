@@ -57,7 +57,7 @@
         },
 
         getLabel() {
-            return t(OCA.Onlyoffice.AppName, "Onlyoffice sharing")
+            return t(OCA.Onlyoffice.AppName, "Advanced")
         },
 
         getIcon() {
@@ -147,7 +147,7 @@
                     self.templateItem = $(tmpl);
 
                     $("<ul>", {class: "onlyoffice-share-container"}).appendTo(self.$el)
-                    $("<div>").html(t(OCA.Onlyoffice.AppName, "Share files with ONLYOFFICE")).prependTo(self.$el);
+                    $("<div>").html(t(OCA.Onlyoffice.AppName, "Provide advanced document permissions using ONLYOFFICE Docs")).prependTo(self.$el);
 
                     callback();
                 });
