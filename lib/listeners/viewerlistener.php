@@ -23,10 +23,13 @@ use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 use OCP\Util;
 use OCP\AppFramework\Http\ContentSecurityPolicy;
+use OCP\AppFramework\Services\IInitialState;
+use OCP\IServerContainer;
 
 use OCA\Viewer\Event\LoadViewer;
 
 use OCA\Onlyoffice\AppConfig;
+use OCA\Onlyoffice\SettingsData;
 
 /**
  * Viewer listener
@@ -41,10 +44,28 @@ class ViewerListener implements IEventListener {
     private $appConfig;
 
     /**
+     * Initial state
+     *
+     * @var IInitialState
+     */
+    private $initialState;
+
+    /**
+     * Server container
+     *
+     * @var IServerContainer
+     */
+    private $serverContainer;
+
+    /**
      * @param AppConfig $config - application configuration
      */
-    public function __construct(AppConfig $appConfig) {
+    public function __construct(AppConfig $appConfig,
+                                IInitialState $initialState,
+                                IServerContainer $serverContainer) {
         $this->appConfig = $appConfig;
+        $this->initialState = $initialState;
+        $this->serverContainer = $serverContainer;
     }
 
     public function handle(Event $event): void {
@@ -55,10 +76,15 @@ class ViewerListener implements IEventListener {
         if (!empty($this->appConfig->GetDocumentServerUrl())
             && $this->appConfig->SettingsAreSuccessful()
             && $this->appConfig->isUserAllowedToUse()) {
-            Util::addScript("onlyoffice", "viewer");
-            Util::addScript("onlyoffice", "listener");
+            Util::addScript("onlyoffice", "viewer", "viewer");
+            Util::addScript("onlyoffice", "listener", "viewer");
 
             Util::addStyle("onlyoffice", "viewer");
+
+            $container = $this->serverContainer;
+            $this->initialState->provideLazyInitialState("settings", function () use ($container) {
+                return $container->query(SettingsData::class);
+            });
 
             $csp = new ContentSecurityPolicy();
             $csp->addAllowedFrameDomain("'self'");
