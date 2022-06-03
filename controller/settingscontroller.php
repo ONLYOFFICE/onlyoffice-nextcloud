@@ -273,22 +273,6 @@ class SettingsController extends Controller {
     }
 
     /**
-     * Get app settings
-     *
-     * @return array
-     *
-     * @NoAdminRequired
-     * @PublicPage
-     */
-    public function GetSettings() {
-        $result = [
-            "formats" => $this->config->FormatsSetting(),
-            "sameTab" => $this->config->GetSameTab()
-        ];
-        return $result;
-    }
-
-    /**
      * Get global templates
      *
      * @return array
