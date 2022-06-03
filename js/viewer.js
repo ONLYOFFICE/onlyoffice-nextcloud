@@ -22,28 +22,12 @@
     }
 
     OCA.Onlyoffice = {
-            AppName: "onlyoffice",
-            frameSelector: null,
-            setting: {},
-        };
-
-    OCA.Onlyoffice.GetSettings = function (callbackSettings) {
-        if (OCA.Onlyoffice.setting.formats) {
-
-            callbackSettings();
-
-        } else {
-
-            $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/settings"),
-                function onSuccess(settings) {
-                    OCA.Onlyoffice.setting = settings;
-
-                    callbackSettings();
-                }
-            );
-
-        }
+        AppName: "onlyoffice",
+        frameSelector: null,
+        setting: {},
     };
+
+    OCA.Onlyoffice.setting = OCP.InitialState.loadState(OCA.Onlyoffice.AppName, "settings");
 
     var OnlyofficeViewerVue = {
         name: "OnlyofficeViewerVue",
@@ -88,21 +72,19 @@
         if (OCA.Viewer) {
             OCA.Onlyoffice.frameSelector = "#onlyofficeViewerFrame";
 
-            OCA.Onlyoffice.GetSettings(function () {
-
-                var mimes = $.map(OCA.Onlyoffice.setting.formats, function (format) {
-                    if (format.def) {
-                        return format.mime;
-                    }
-                });
-
-                OCA.Viewer.registerHandler({
-                    id: OCA.Onlyoffice.AppName,
-                    group: null,
-                    mimes: mimes,
-                    component: OnlyofficeViewerVue
-                })
+            var mimes = $.map(OCA.Onlyoffice.setting.formats, function (format) {
+                if (format.def) {
+                    return format.mime;
+                }
             });
+
+            OCA.Viewer.registerHandler({
+                id: OCA.Onlyoffice.AppName,
+                group: null,
+                mimes: mimes,
+                component: OnlyofficeViewerVue
+            })
+
         }
     };
 
