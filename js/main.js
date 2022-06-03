@@ -25,7 +25,7 @@
             frameSelector: null,
         }, OCA.Onlyoffice);
 
-    OCA.Onlyoffice.setting = {};
+    OCA.Onlyoffice.setting = OCP.InitialState.loadState(OCA.Onlyoffice.AppName, "settings");
     OCA.Onlyoffice.mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini|Macintosh/i.test(navigator.userAgent)
                             && navigator.maxTouchPoints && navigator.maxTouchPoints > 1;
 
@@ -312,92 +312,70 @@
         OCA.Onlyoffice.CreateFile(name, fileList, 0, targetId, false);
     };
 
-    OCA.Onlyoffice.GetSettings = function (callbackSettings) {
-        if (OCA.Onlyoffice.setting.formats) {
-
-            callbackSettings();
-
-        } else {
-
-            $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/settings"),
-                function onSuccess(settings) {
-                    OCA.Onlyoffice.setting = settings;
-
-                    callbackSettings();
-                }
-            );
-
-        }
-    };
-
     OCA.Onlyoffice.registerAction = function() {
-        var register = function () {
-            var formats = OCA.Onlyoffice.setting.formats;
+        var formats = OCA.Onlyoffice.setting.formats;
 
-            $.each(formats, function (ext, config) {
-                if (!config.mime) {
-                    return true;
-                }
+        $.each(formats, function (ext, config) {
+            if (!config.mime) {
+                return true;
+            }
+            OCA.Files.fileActions.registerAction({
+                name: "onlyofficeOpen",
+                displayName: t(OCA.Onlyoffice.AppName, "Open in ONLYOFFICE"),
+                mime: config.mime,
+                permissions: OC.PERMISSION_READ,
+                iconClass: "icon-onlyoffice-open",
+                actionHandler: OCA.Onlyoffice.FileClick
+            });
+
+            if (config.def) {
+                OCA.Files.fileActions.setDefault(config.mime, "onlyofficeOpen");
+            }
+
+            if (config.conv) {
                 OCA.Files.fileActions.registerAction({
-                    name: "onlyofficeOpen",
-                    displayName: t(OCA.Onlyoffice.AppName, "Open in ONLYOFFICE"),
+                    name: "onlyofficeConvert",
+                    displayName: t(OCA.Onlyoffice.AppName, "Convert with ONLYOFFICE"),
                     mime: config.mime,
-                    permissions: OC.PERMISSION_READ,
-                    iconClass: "icon-onlyoffice-open",
+                    permissions: ($("#isPublic").val() ? OC.PERMISSION_UPDATE : OC.PERMISSION_READ),
+                    iconClass: "icon-onlyoffice-convert",
+                    actionHandler: OCA.Onlyoffice.FileConvertClick
+                });
+            }
+
+            if (config.fillForms) {
+                OCA.Files.fileActions.registerAction({
+                    name: "onlyofficeFill",
+                    displayName: t(OCA.Onlyoffice.AppName, "Fill in form in ONLYOFFICE"),
+                    mime: config.mime,
+                    permissions: OC.PERMISSION_UPDATE,
+                    iconClass: "icon-onlyoffice-fill",
                     actionHandler: OCA.Onlyoffice.FileClick
                 });
+            }
 
-                if (config.def) {
-                    OCA.Files.fileActions.setDefault(config.mime, "onlyofficeOpen");
-                }
+            if (config.createForm) {
+                OCA.Files.fileActions.registerAction({
+                    name: "onlyofficeCreateForm",
+                    displayName: t(OCA.Onlyoffice.AppName, "Create form"),
+                    mime: config.mime,
+                    permissions: ($("#isPublic").val() ? OC.PERMISSION_UPDATE : OC.PERMISSION_READ),
+                    iconClass: "icon-onlyoffice-create",
+                    actionHandler: OCA.Onlyoffice.CreateFormClick
+                });
+            }
 
-                if (config.conv) {
-                    OCA.Files.fileActions.registerAction({
-                        name: "onlyofficeConvert",
-                        displayName: t(OCA.Onlyoffice.AppName, "Convert with ONLYOFFICE"),
-                        mime: config.mime,
-                        permissions: ($("#isPublic").val() ? OC.PERMISSION_UPDATE : OC.PERMISSION_READ),
-                        iconClass: "icon-onlyoffice-convert",
-                        actionHandler: OCA.Onlyoffice.FileConvertClick
-                    });
-                }
-
-                if (config.fillForms) {
-                    OCA.Files.fileActions.registerAction({
-                        name: "onlyofficeFill",
-                        displayName: t(OCA.Onlyoffice.AppName, "Fill in form in ONLYOFFICE"),
-                        mime: config.mime,
-                        permissions: OC.PERMISSION_UPDATE,
-                        iconClass: "icon-onlyoffice-fill",
-                        actionHandler: OCA.Onlyoffice.FileClick
-                    });
-                }
-
-                if (config.createForm) {
-                    OCA.Files.fileActions.registerAction({
-                        name: "onlyofficeCreateForm",
-                        displayName: t(OCA.Onlyoffice.AppName, "Create form"),
-                        mime: config.mime,
-                        permissions: ($("#isPublic").val() ? OC.PERMISSION_UPDATE : OC.PERMISSION_READ),
-                        iconClass: "icon-onlyoffice-create",
-                        actionHandler: OCA.Onlyoffice.CreateFormClick
-                    });
-                }
-
-                if (config.saveas && !$("#isPublic").val()) {
-                    OCA.Files.fileActions.registerAction({
-                        name: "onlyofficeDownload",
-                        displayName: t(OCA.Onlyoffice.AppName, "Download as"),
-                        mime: config.mime,
-                        permissions: OC.PERMISSION_READ,
-                        iconClass: "icon-onlyoffice-download",
-                        actionHandler: OCA.Onlyoffice.DownloadClick
-                    });
-                }
-            });
-        }
-
-        OCA.Onlyoffice.GetSettings(register);
+            if (config.saveas && !$("#isPublic").val()) {
+                OCA.Files.fileActions.registerAction({
+                    name: "onlyofficeDownload",
+                    displayName: t(OCA.Onlyoffice.AppName, "Download as"),
+                    mime: config.mime,
+                    permissions: OC.PERMISSION_READ,
+                    iconClass: "icon-onlyoffice-download",
+                    actionHandler: OCA.Onlyoffice.DownloadClick
+                });
+            }
+        });
     };
 
     OCA.Onlyoffice.NewFileMenu = {
@@ -526,38 +504,34 @@
             var fileName = $("#filename").val();
             var extension = getFileExtension(fileName);
 
-            var initSharedButton = function () {
-                var formats = OCA.Onlyoffice.setting.formats;
+            var formats = OCA.Onlyoffice.setting.formats;
 
-                var config = formats[extension];
-                if (!config) {
-                    return;
+            var config = formats[extension];
+            if (!config) {
+                return;
+            }
+
+            var editorUrl = OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/s/" + encodeURIComponent($("#sharingToken").val()));
+
+            if (_oc_appswebroots.richdocuments
+                || _oc_appswebroots.files_pdfviewer && extension === "pdf"
+                || _oc_appswebroots.text && extension === "txt") {
+
+                var button = document.createElement("a");
+                button.href = editorUrl;
+                button.className = "onlyoffice-public-open button";
+                button.innerText = t(OCA.Onlyoffice.AppName, "Open in ONLYOFFICE")
+
+                if (!OCA.Onlyoffice.setting.sameTab) {
+                    button.target = "_blank";
                 }
 
-                var editorUrl = OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/s/" + encodeURIComponent($("#sharingToken").val()));
-
-                if (_oc_appswebroots.richdocuments
-                    || _oc_appswebroots.files_pdfviewer && extension === "pdf"
-                    || _oc_appswebroots.text && extension === "txt") {
-
-                    var button = document.createElement("a");
-                    button.href = editorUrl;
-                    button.className = "onlyoffice-public-open button";
-                    button.innerText = t(OCA.Onlyoffice.AppName, "Open in ONLYOFFICE")
-
-                    if (!OCA.Onlyoffice.setting.sameTab) {
-                        button.target = "_blank";
-                    }
-
-                    $("#preview").prepend(button);
-                } else {
-                    OCA.Onlyoffice.frameSelector = "#onlyofficeFrame";
-                    var $iframe = $("<iframe id=\"onlyofficeFrame\" nonce=\"" + btoa(OC.requestToken) + "\" scrolling=\"no\" allowfullscreen src=\"" + editorUrl + "?inframe=true\" />");
-                    $("#app-content").append($iframe);
-                }
-            };
-
-            OCA.Onlyoffice.GetSettings(initSharedButton);
+                $("#preview").prepend(button);
+            } else {
+                OCA.Onlyoffice.frameSelector = "#onlyofficeFrame";
+                var $iframe = $("<iframe id=\"onlyofficeFrame\" nonce=\"" + btoa(OC.requestToken) + "\" scrolling=\"no\" allowfullscreen src=\"" + editorUrl + "?inframe=true\" />");
+                $("#app-content").append($iframe);
+            }
         } else {
             OC.Plugins.register("OCA.Files.NewFileMenu", OCA.Onlyoffice.NewFileMenu);
 
