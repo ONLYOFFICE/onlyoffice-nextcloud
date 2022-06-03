@@ -59,6 +59,8 @@ class ViewerListener implements IEventListener {
 
     /**
      * @param AppConfig $config - application configuration
+     * @param IInitialState $initialState - initial state
+     * @param IServerContainer $serverContainer - server container
      */
     public function __construct(AppConfig $appConfig,
                                 IInitialState $initialState,
