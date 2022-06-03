@@ -21,6 +21,7 @@ namespace OCA\Onlyoffice;
 
 use OCP\Constants;
 use OCP\ILogger;
+use OCP\Files\File;
 use OCP\Share\IShare;
 use OCP\Share\IManager;
 use OCP\Share\Exceptions\ShareNotFound;
@@ -98,21 +99,23 @@ class ExtraPermissions {
      * Get extra permissions by shareId
      *
      * @param integer $shareId - share identifier
+     * @param File $file - source file
      *
      * @return array
      */
-    public function getExtra($shareId) {
+    public function getExtra($shareId, $file = null) {
         $share = $this->getShare($shareId);
         if (empty($share)) {
             return null;
         }
 
-        list($available, $defaultPermissions) = $this->validation($share);
-
         $shareId = $share->getId();
         $extra = self::get($shareId);
 
-        if (!$available) {
+        $checkExtra = isset($extra["permissions"]) ? (int)$extra["permissions"] : self::None;
+        list($availableExtra, $defaultPermissions) = $this->validation($share, $checkExtra, $file);
+
+        if ($availableExtra === 0) {
             if (!empty($extra)) {
                 self::delete($shareId);
             }
@@ -129,7 +132,7 @@ class ExtraPermissions {
 
         $extra["shareWith"] = $share->getSharedWith();
         $extra["shareWithName"] = $share->getSharedWithDisplayName();
-        $extra["basePermissions"] = $share->getPermissions();
+        $extra["available"] = $availableExtra;
 
         return $extra;
     }
@@ -138,10 +141,11 @@ class ExtraPermissions {
      * Get list extra permissions by shares
      *
      * @param array $shares - array of shares
+     * @param File $file - source file
      *
      * @return array
      */
-    public function getExtras($shares) {
+    public function getExtras($shares, $file) {
         $result = [];
 
         $shareIds = [];
@@ -157,7 +161,6 @@ class ExtraPermissions {
 
         $noActualList = [];
         foreach ($shares as $share) {
-            list($available, $defaultPermissions) = $this->validation($share);
 
             $currentExtra = [];
             foreach ($extras as $extra) {
@@ -166,7 +169,10 @@ class ExtraPermissions {
                 }
             }
 
-            if ($available) {
+            $checkExtra = isset($currentExtra["permissions"]) ? (int)$currentExtra["permissions"] : self::None;
+            list($availableExtra, $defaultPermissions) = $this->validation($share, $checkExtra, $file);
+
+            if ($availableExtra > 0) {
                 if (empty($currentExtra)) {
                     $currentExtra["id"] = -1;
                     $currentExtra["share_id"] = $share->getId();
@@ -175,7 +181,7 @@ class ExtraPermissions {
 
                 $currentExtra["shareWith"] = $share->getSharedWith();
                 $currentExtra["shareWithName"] = $share->getSharedWithDisplayName();
-                $currentExtra["basePermissions"] = $share->getPermissions();
+                $currentExtra["available"] = $availableExtra;
 
                 array_push($result, $currentExtra);
             } else if (!empty($currentExtra)) {
@@ -196,14 +202,21 @@ class ExtraPermissions {
      * @param integer $shareId - share identifier
      * @param integer $permissions - value extra permissions
      * @param integer $extraId - extra permission identifier
+     * @param File $file - source file
      *
      * @return bool
      */
-    public function setExtra($shareId, $permissions, $extraId) {
+    public function setExtra($shareId, $permissions, $extraId, $file) {
         $result = false;
 
         $share = $this->getShare($shareId);
         if (empty($share)) {
+            return $result;
+        }
+        
+        list($availableExtra, $defaultPermissions) = $this->validation($share, $permissions, $file);
+        if (($availableExtra & $permissions) !== $permissions) {
+            $this->logger->debug("Share " . $shareId . " does not available to extend permissions", ["app" => $this->appName]);
             return $result;
         }
 
@@ -347,34 +360,45 @@ class ExtraPermissions {
      * Validation share on extend capability by extra permissions
      *
      * @param IShare $share - share
+     * @param int $checkExtra - checkable extra permissions
+     * @param File $file - file
      *
      * @return array
      */
-    private function validation($share) {
-        $node = $share->getNode();
-        $fileInfo = $node->getFileInfo();
+    private function validation($share, $checkExtra, $file) {
+        $availableExtra = self::None;
+        $defaultExtra = self::None;
 
-        $pathinfo = pathinfo($fileInfo->getName());
+        if (isset($file) && !$file->isUpdateable()) {
+            return [$availableExtra, $defaultExtra];
+        }
+
+        $node = $share->getNode();
+        $pathinfo = pathinfo($node->getName());
         $extension = $pathinfo["extension"];
         $format = $this->config->FormatsSetting()[$extension];
 
-        $available = false;
-        $defaultPermissions = self::None;
         if (($share->getPermissions() & Constants::PERMISSION_UPDATE) === Constants::PERMISSION_UPDATE) {
             if (isset($format["modifyFilter"]) && $format["modifyFilter"]) {
-                $available = true;
-                $defaultPermissions |= self::ModifyFilter;
+                $availableExtra |= self::ModifyFilter;
+                $defaultExtra |= self::ModifyFilter;
             }
         }
         if (($share->getPermissions() & Constants::PERMISSION_UPDATE) !== Constants::PERMISSION_UPDATE) {
-            if (isset($format["review"]) && $format["review"]
-                || isset($format["comment"]) && $format["comment"]
-                || isset($format["fillForms"]) && $format["fillForms"]) {
-                $available = true;
+            if (isset($format["review"]) && $format["review"]) {
+                $availableExtra |= self::Review;
+            }
+            if (isset($format["comment"]) && $format["comment"]
+                && ($checkExtra & self::Review) !== self::Review) {
+                $availableExtra |= self::Comment;
+            }
+            if (isset($format["fillForms"]) && $format["fillForms"]
+                && ($checkExtra & self::Review) !== self::Review) {
+                $availableExtra |= self::FillForms;
             }
         }
 
-        return [$available, $defaultPermissions];
+        return [$availableExtra, $defaultExtra];
     }
 
     /**

@@ -31,6 +31,7 @@ use OCP\Share\IManager;
 use OCP\Files\IRootFolder;
 use OCP\IUserManager;
 use OCP\IUserSession;
+use OCP\Files\File;
 use OCP\Share\IShare;
 use OCP\Share\Exceptions\ShareNotFound;
 
@@ -147,23 +148,10 @@ class SharingApiController extends OCSController {
         $user = $this->userSession->getUser();
         $userId = $user->getUID();
 
-        try {
-            $folder = $this->root->getUserFolder($userId);
-            $files = $folder->getById($fileId);
-        } catch (\Exception $e) {
-            $this->logger->logException($e, ["message" => "getShares: $fileId", "app" => $this->appName]);
-            return new DataResponse([], Http::STATUS_BAD_REQUEST);
-        }
+        $sourceFile = $this->getFile($fileId, $userId);
 
-        if (empty($files)) {
-            $this->logger->error("getShares: file not found: " . $fileId, ["app" => $this->appName]);
-            return new DataResponse([], Http::STATUS_BAD_REQUEST);
-        }
-
-        $file = $files[0];
-
-        $shares = $this->shareManager->getSharesBy($userId, IShare::TYPE_USER, $file);
-        $extras = $this->extraPermissions->getExtras($shares);
+        $shares = $this->shareManager->getSharesBy($userId, IShare::TYPE_USER, $sourceFile);
+        $extras = $this->extraPermissions->getExtras($shares, $sourceFile);
 
         return new DataResponse($extras);
     }
@@ -173,6 +161,7 @@ class SharingApiController extends OCSController {
      *
      * @param integer $extraId - extra permission identifier
      * @param integer $shareId - share identifier
+     * @param integer $fileId - file identifier
      * @param integer $permissions - permissions value
      *
      * @return DataResponse
@@ -180,13 +169,18 @@ class SharingApiController extends OCSController {
      * @NoAdminRequired
      * @NoCSRFRequired
      */
-    public function setShares($extraId, $shareId, $permissions) {
+    public function setShares($extraId, $shareId, $fileId, $permissions) {
         if ($this->extraPermissions === null) {
             $this->logger->debug("extraPermissions isn't init", ["app" => $this->appName]);
             return new DataResponse([], Http::STATUS_BAD_REQUEST);
         }
 
-        if (!$this->extraPermissions->setExtra($shareId, $permissions, $extraId)) {
+        $user = $this->userSession->getUser();
+        $userId = $user->getUID();
+
+        $sourceFile = $this->getFile($fileId, $userId);
+
+        if (!$this->extraPermissions->setExtra($shareId, $permissions, $extraId, $sourceFile)) {
             $this->logger->error("setShares: couldn't set extra permissions for: " . $shareId, ["app" => $this->appName]);
             return new DataResponse([], Http::STATUS_BAD_REQUEST);
         }
@@ -194,5 +188,30 @@ class SharingApiController extends OCSController {
         $extra = $this->extraPermissions->getExtra($shareId);
 
         return new DataResponse($extra);
+    }
+
+    /**
+     * Get source file
+     *
+     * @param integer $fileId - file identifier
+     * @param string $userId - user identifier
+     *
+     * @return File
+     */
+    private function getFile($fileId, $userId) {
+        try {
+            $folder = $this->root->getUserFolder($userId);
+            $files = $folder->getById($fileId);
+        } catch (\Exception $e) {
+            $this->logger->logException($e, ["message" => "getFile: $fileId", "app" => $this->appName]);
+            return null;
+        }
+
+        if (empty($files)) {
+            $this->logger->error("getFile: file not found: " . $fileId, ["app" => $this->appName]);
+            return null;
+        }
+
+        return $files[0];
     }
 }
