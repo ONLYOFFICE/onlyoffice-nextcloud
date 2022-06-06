@@ -337,6 +337,6 @@
     </div>
 
     <br />
-    <p><button id="onlyofficeWatermarkSave" class="button"><?php p($l->t("Save")) ?></button></p>
+    <p><button id="onlyofficeSecuritySave" class="button"><?php p($l->t("Save")) ?></button></p>
 
 </div>
