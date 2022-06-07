@@ -1,6 +1,9 @@
 # Change Log
 
 ##
+## Added
+- theme setting
+
 ## Changed
 - fix editor lang
 
