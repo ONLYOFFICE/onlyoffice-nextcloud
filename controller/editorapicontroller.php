@@ -589,8 +589,7 @@ class EditorApiController extends OCSController {
 
         $fileUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.download", ["doc" => $hashUrl]);
 
-        if (!empty($this->config->GetStorageUrl())
-            && !$changes) {
+        if (!empty($this->config->GetStorageUrl())) {
             $fileUrl = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->config->GetStorageUrl(), $fileUrl);
         }
 
@@ -654,6 +653,11 @@ class EditorApiController extends OCSController {
             $params["editorConfig"]["customization"]["toolbarNoTabs"] = true;
         }
 
+        //default is true
+        if($this->config->GetCustomizationMacros() === false) {
+            $params["editorConfig"]["customization"]["macros"] = false;
+        }
+
 
         /* from system config */
 
@@ -707,7 +711,7 @@ class EditorApiController extends OCSController {
 
         if ($watermarkTemplate !== false) {
             $replacements = [
-                "userId" => $userId,
+                "userId" => isset($userId) ? $userId : $this->trans->t('Anonymous'),
                 "date" => (new \DateTime())->format("Y-m-d H:i:s"),
                 "themingName" => \OC::$server->getThemingDefaults()->getName()
             ];

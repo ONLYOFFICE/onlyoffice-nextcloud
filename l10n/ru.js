@@ -62,7 +62,6 @@ OC.L10N.register(
     "This is a public test server, please do not use it for private sensitive data. The server will be available during a 30-day period." : "Это публичный тестовый сервер, пожалуйста, не используйте его для личных конфиденциальных данных. Сервер будет доступен в течение 30 дней.",
     "The 30-day test period is over, you can no longer connect to demo ONLYOFFICE Docs server." : "30-дневный тестовый период закончен, вы больше не можете подключаться к демонстрационному серверу ONLYOFFICE Docs",
     "You are using public demo ONLYOFFICE Docs server. Please do not store private sensitive data." : "Вы используете публичный демонстрационный сервер ONLYOFFICE Docs. Пожалуйста, не храните конфиденциальные данные.",
-    "Secure view settings" : "Настройки безопасного просмотра",
     "Secure view enables you to secure documents by embedding a watermark" : "Безопасный просмотр позволяет защищать ваши документы путем встраивания водяного знака",
     "Enable watermarking" : "Включить водяной знак",
     "Watermark text" : "Текст водяного знака",
@@ -116,6 +115,8 @@ OC.L10N.register(
     "Create new Form template": "Создать новый Шаблон формы",
     "Create form": "Создать форму",
     "Fill in form in ONLYOFFICE": "Заполнить форму в ONLYOFFICE",
-    "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online": "Обновите сервер ONLYOFFICE Docs до версии 7.0 для работы с формами онлайн"
+    "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online": "Обновите сервер ONLYOFFICE Docs до версии 7.0 для работы с формами онлайн",
+    "Security": "Безопасность",
+    "Anonymous": "Аноним"
 },
 "nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);");
