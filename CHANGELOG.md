@@ -6,6 +6,7 @@
 
 ## Changed
 - fix editor lang
+- fix viewer app
 
 ## 7.3.4
 ## Added
