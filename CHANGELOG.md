@@ -1,5 +1,9 @@
 # Change Log
 
+##
+## Added
+- Catalan translation
+
 ## 7.3.4
 ## Added
 - Turkish and Galician empty file templates
