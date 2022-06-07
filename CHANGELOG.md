@@ -3,6 +3,7 @@
 ##
 ## Added
 - macro launch setting
+- opening file location from viewer
 
 ## Changed
 - fix editor lang
