@@ -22,10 +22,13 @@ namespace OCA\Onlyoffice\Listeners;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 use OCP\Util;
+use OCP\AppFramework\Services\IInitialState;
+use OCP\IServerContainer;
 
 use OCA\Files_Sharing\Event\BeforeTemplateRenderedEvent;
 
 use OCA\Onlyoffice\AppConfig;
+use OCA\Onlyoffice\SettingsData;
 
 /**
  * File Sharing listener
@@ -40,10 +43,30 @@ class FileSharingListener implements IEventListener {
     private $appConfig;
 
     /**
-     * @param AppConfig $config - application configuration
+     * Initial state
+     *
+     * @var IInitialState
      */
-    public function __construct(AppConfig $appConfig) {
+    private $initialState;
+
+    /**
+     * Server container
+     *
+     * @var IServerContainer
+     */
+    private $serverContainer;
+
+    /**
+     * @param AppConfig $config - application configuration
+     * @param IInitialState $initialState - initial state
+     * @param IServerContainer $serverContainer - server container
+     */
+    public function __construct(AppConfig $appConfig,
+                                IInitialState $initialState,
+                                IServerContainer $serverContainer) {
         $this->appConfig = $appConfig;
+        $this->initialState = $initialState;
+        $this->serverContainer = $serverContainer;
     }
 
     public function handle(Event $event): void {
@@ -58,6 +81,11 @@ class FileSharingListener implements IEventListener {
             if ($this->appConfig->GetSameTab()) {
                 Util::addScript("onlyoffice", "listener");
             }
+
+            $container = $this->serverContainer;
+            $this->initialState->provideLazyInitialState("settings", function () use ($container) {
+                return $container->query(SettingsData::class);
+            });
 
             Util::addStyle("onlyoffice", "main");
         }
