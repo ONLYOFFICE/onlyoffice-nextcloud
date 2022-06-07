@@ -650,7 +650,7 @@ class EditorApiController extends OCSController {
         }
 
         $theme = $this->config->GetCustomizationTheme();
-        if (isset($theme)) {
+        if ($theme !== "automatic") {
             $params["editorConfig"]["customization"]["uiTheme"] = $theme;
         }
 

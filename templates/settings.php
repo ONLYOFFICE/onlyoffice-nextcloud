@@ -232,17 +232,31 @@
     <div class="onlyoffice-tables">
         <div>
             <input type="radio" class="radio"
-                id="onlyofficeTheme_default-light"
+                id="onlyofficeTheme_theme-light"
                 name="theme"
-                <?php if ($_["theme"] === "default-light") { ?>checked="checked"<?php } ?> />
-            <label for="onlyofficeTheme_default-light"><?php p($l->t("Light")) ?></label>
+                <?php if ($_["theme"] === "theme-light") { ?>checked="checked"<?php } ?> />
+            <label for="onlyofficeTheme_theme-light"><?php p($l->t("Light")) ?></label>
         </div>
         <div>
             <input type="radio" class="radio"
-                id="onlyofficeTheme_default-dark"
+                id="onlyofficeTheme_theme-classic-light"
                 name="theme"
-                <?php if ($_["theme"] === "default-dark") { ?>checked="checked"<?php } ?> />
-            <label for="onlyofficeTheme_default-dark"><?php p($l->t("Dark")) ?></label>
+                <?php if ($_["theme"] === "theme-classic-light") { ?>checked="checked"<?php } ?> />
+            <label for="onlyofficeTheme_theme-classic-light"><?php p($l->t("Classic Light")) ?></label>
+        </div>
+        <div>
+            <input type="radio" class="radio"
+                id="onlyofficeTheme_theme-dark"
+                name="theme"
+                <?php if ($_["theme"] === "theme-dark") { ?>checked="checked"<?php } ?> />
+            <label for="onlyofficeTheme_theme-dark"><?php p($l->t("Dark")) ?></label>
+        </div>
+        <div>
+            <input type="radio" class="radio"
+                id="onlyofficeTheme_automatic"
+                name="theme"
+                <?php if ($_["theme"] === "automatic") { ?>checked="checked"<?php } ?> />
+            <label for="onlyofficeTheme_automatic"><?php p($l->t("Automatic")) ?></label>
         </div>
     </div>
 
