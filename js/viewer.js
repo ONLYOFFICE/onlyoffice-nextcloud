@@ -38,7 +38,7 @@
                 attrs: {
                     id: "onlyofficeViewerFrame",
                     scrolling: "no",
-                    src: self.url + "&inframe=true",
+                    src: self.url + "&inframe=true&inviewer=true",
                 },
                 on: {
                     load: function () {
