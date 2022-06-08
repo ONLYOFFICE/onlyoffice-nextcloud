@@ -4,6 +4,7 @@
 ## Added
 - macro launch setting
 - opening file location from viewer
+- Catalan translation
 
 ## Changed
 - fix editor lang
