@@ -78,9 +78,17 @@
                     var descNode = itemNode.find("span");
                     var avatar = itemNode.find("img");
 
-                    avatar[0].src = "/index.php/avatar/" + extra["shareWith"] + "/32?v=0";
+                    var avatarSrc = "/index.php/avatar/" + extra.shareWith + "/32?v=0";
+                    var label = extra.shareWithName;
+                    if (extra.type == OC.Share.SHARE_TYPE_GROUP) {
+                        avatarSrc = "/index.php/avatar/guest/" + extra.shareWith + "/32?v=0";
+                        label = extra.shareWith + " (" + t(OCA.Onlyoffice.AppName, "group") + ")";
+                    }
+
+                    avatar[0].src = avatarSrc;
+                    descNode[0].innerText = label;
+
                     itemNode[0].id = extra.share_id;
-                    descNode[0].innerText = extra.shareWithName;
 
                     self._getContainer().append(itemNode);
                 });

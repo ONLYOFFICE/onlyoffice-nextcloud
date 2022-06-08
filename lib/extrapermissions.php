@@ -131,6 +131,7 @@ class ExtraPermissions {
             $extra["permissions"] = $defaultPermissions;
         }
 
+        $extra["type"] = $share->getShareType();
         $extra["shareWith"] = $share->getSharedWith();
         $extra["shareWithName"] = $share->getSharedWithDisplayName();
         $extra["available"] = $availableExtra;
@@ -188,6 +189,7 @@ class ExtraPermissions {
                     $currentExtra["permissions"] = $defaultPermissions;
                 }
 
+                $currentExtra["type"] = $share->getShareType();
                 $currentExtra["shareWith"] = $share->getSharedWith();
                 $currentExtra["shareWithName"] = $share->getSharedWithDisplayName();
                 $currentExtra["available"] = $availableExtra;
