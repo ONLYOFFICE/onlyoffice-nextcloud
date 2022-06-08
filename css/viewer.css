@@ -21,7 +21,7 @@
     width: 100%;
     height: calc(100vh - 50px);
     display: block;
-    position: absolute;
+    position: fixed;
     top: 50px;
     z-index: 110;
 }
