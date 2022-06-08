@@ -251,13 +251,6 @@
                 <?php if ($_["theme"] === "theme-dark") { ?>checked="checked"<?php } ?> />
             <label for="onlyofficeTheme_theme-dark"><?php p($l->t("Dark")) ?></label>
         </div>
-        <div>
-            <input type="radio" class="radio"
-                id="onlyofficeTheme_automatic"
-                name="theme"
-                <?php if ($_["theme"] === "automatic") { ?>checked="checked"<?php } ?> />
-            <label for="onlyofficeTheme_automatic"><?php p($l->t("Automatic")) ?></label>
-        </div>
     </div>
 
     <br />
