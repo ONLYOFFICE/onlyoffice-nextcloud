@@ -115,7 +115,8 @@ class ExtraPermissions {
         $checkExtra = isset($extra["permissions"]) ? (int)$extra["permissions"] : self::None;
         list($availableExtra, $defaultPermissions) = $this->validation($share, $checkExtra, $file);
 
-        if ($availableExtra === 0) {
+        if ($availableExtra === 0
+            || ($availableExtra & $checkExtra) !== $checkExtra) {
             if (!empty($extra)) {
                 self::delete($shareId);
             }
@@ -172,6 +173,14 @@ class ExtraPermissions {
             $checkExtra = isset($currentExtra["permissions"]) ? (int)$currentExtra["permissions"] : self::None;
             list($availableExtra, $defaultPermissions) = $this->validation($share, $checkExtra, $file);
 
+            if ($availableExtra === 0
+                || ($availableExtra & $checkExtra) !== $checkExtra) {
+                if (!empty($currentExtra)) {
+                    array_push($noActualList, $share->getId());
+                    $currentExtra = [];
+                }
+            }
+
             if ($availableExtra > 0) {
                 if (empty($currentExtra)) {
                     $currentExtra["id"] = -1;
@@ -184,8 +193,6 @@ class ExtraPermissions {
                 $currentExtra["available"] = $availableExtra;
 
                 array_push($result, $currentExtra);
-            } else if (!empty($currentExtra)) {
-                array_push($noActualList, $share->getId());
             }
         }
 
