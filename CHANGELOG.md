@@ -5,6 +5,7 @@
 - macro launch setting
 - opening file location from viewer
 - Catalan translation
+- theme setting
 
 ## Changed
 - fix editor lang
