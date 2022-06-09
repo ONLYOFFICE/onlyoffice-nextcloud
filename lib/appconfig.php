@@ -180,6 +180,13 @@ class AppConfig {
     private $_customizationReviewDisplay = "customizationReviewDisplay";
 
     /**
+     * The config key for the theme setting
+     *
+     * @var string
+     */
+    private $_customizationTheme = "customizationTheme";
+
+    /**
      * The config key for the setting limit groups
      *
      * @var string
@@ -852,6 +859,33 @@ class AppConfig {
             return "final";
         }
         return "original";
+    }
+
+    /**
+     * Save theme setting
+     *
+     * @param string $value - theme
+     */
+    public function SetCustomizationTheme($value) {
+        $this->logger->info("Set theme: " . $value, array("app" => $this->appName));
+
+        $this->config->setAppValue($this->appName, $this->_customizationTheme, $value);
+    }
+
+    /**
+     * Get theme setting
+     *
+     * @return string
+     */
+    public function GetCustomizationTheme() {
+        $value = $this->config->getAppValue($this->appName, $this->_customizationTheme, "theme-classic-light");
+        if ($value === "theme-light") {
+            return "theme-light";
+        }
+        if ($value === "theme-dark") {
+            return "theme-dark";
+        }
+        return "theme-classic-light";
     }
 
     /**

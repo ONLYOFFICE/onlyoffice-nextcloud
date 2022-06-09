@@ -232,6 +232,33 @@
         </div>
     </div>
 
+    <p class="onlyoffice-header">
+        <?php p($l->t("Default editor theme")) ?>
+    </p>
+    <div class="onlyoffice-tables">
+        <div>
+            <input type="radio" class="radio"
+                id="onlyofficeTheme_theme-light"
+                name="theme"
+                <?php if ($_["theme"] === "theme-light") { ?>checked="checked"<?php } ?> />
+            <label for="onlyofficeTheme_theme-light"><?php p($l->t("Light")) ?></label>
+        </div>
+        <div>
+            <input type="radio" class="radio"
+                id="onlyofficeTheme_theme-classic-light"
+                name="theme"
+                <?php if ($_["theme"] === "theme-classic-light") { ?>checked="checked"<?php } ?> />
+            <label for="onlyofficeTheme_theme-classic-light"><?php p($l->t("Classic Light")) ?></label>
+        </div>
+        <div>
+            <input type="radio" class="radio"
+                id="onlyofficeTheme_theme-dark"
+                name="theme"
+                <?php if ($_["theme"] === "theme-dark") { ?>checked="checked"<?php } ?> />
+            <label for="onlyofficeTheme_theme-dark"><?php p($l->t("Dark")) ?></label>
+        </div>
+    </div>
+
     <br />
     <p><button id="onlyofficeSave" class="button"><?php p($l->t("Save")) ?></button></p>
 </div>
