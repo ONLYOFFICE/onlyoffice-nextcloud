@@ -233,8 +233,10 @@
             });
         });
 
-        $("#onlyofficeWatermarkSave").click(function () {
+        $("#onlyofficeSecuritySave").click(function () {
             $(".section-onlyoffice").addClass("icon-loading");
+
+            var macros = $("#onlyofficeMacros").is(":checked");
 
             var watermarkSettings = {
                 enabled: $("#onlyofficeWatermark_enabled").is(":checked")
@@ -265,9 +267,10 @@
 
             $.ajax({
                 method: "PUT",
-                url: OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/settings/watermark"),
+                url: OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/settings/security"),
                 data: {
-                    settings: watermarkSettings
+                    watermarks: watermarkSettings,
+                    macros: macros
                 },
                 success: function onSuccess(response) {
                     $(".section-onlyoffice").removeClass("icon-loading");

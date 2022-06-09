@@ -60,7 +60,6 @@
     "This is a public test server, please do not use it for private sensitive data. The server will be available during a 30-day period." : "C’est un serveur public proposé à des fins de tests, veuillez ne pas l’utiliser pour vos données personnelles sensibles. Le serveur est disponible pendant 30 jours.",
     "The 30-day test period is over, you can no longer connect to demo ONLYOFFICE Docs server." : "La période d’essai de 30 jours est expirée, vous n’êtes plus en mesure de vous connecter à la version démo de ONLYOFFICE Docs.",
     "You are using public demo ONLYOFFICE Docs server. Please do not store private sensitive data." : "Vous utilisez la version démo de ONLYOFFICE Docs, proposée à des fins de tests. Veuillez ne pas stocker vos données confidentielles.",
-    "Secure view settings" : "Paramètres d’affichage sécurisé",
     "Secure view enables you to secure documents by embedding a watermark" : "L’affichage sécurisé permet de protéger vos documents à l’aide d’un filigrane.",
     "Enable watermarking" : "Activer un filigrane",
     "Watermark text" : "Texte du filigrane",

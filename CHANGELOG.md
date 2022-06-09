@@ -1,5 +1,14 @@
 # Change Log
 
+##
+## Added
+- macro launch setting
+- opening file location from viewer
+- Catalan translation
+
+## Changed
+- fix editor lang
+
 ## 7.3.4
 ## Added
 - Turkish and Galician empty file templates

@@ -127,6 +127,7 @@ class SettingsController extends Controller {
             "toolbarNoTabs" => $this->config->GetCustomizationToolbarNoTabs(),
             "successful" => $this->config->SettingsAreSuccessful(),
             "watermark" => $this->config->GetWatermarkSettings(),
+            "macros" => $this->config->GetCustomizationMacros(),
             "tagsEnabled" => App::isEnabled("systemtags"),
             "reviewDisplay" => $this->config->GetCustomizationReviewDisplay(),
             "templates" => $this->GetGlobalTemplates()
@@ -242,22 +243,26 @@ class SettingsController extends Controller {
     }
 
     /**
-     * Save watermark settings
+     * Save security settings
      *
-     * @param array $settings - watermark settings
+     * @param array $watermarks - watermark settings
+     * @param bool $macros - run document macros
      *
      * @return array
      */
-    public function SaveWatermark($settings) {
+    public function SaveSecurity($watermarks,
+                                    $macros
+                                    ) {
 
-        if ($settings["enabled"] === "true") {
-            $settings["text"] = trim($settings["text"]);
-            if (empty($settings["text"])) {
-                $settings["text"] = $this->trans->t("DO NOT SHARE THIS") . " {userId} {date}";
+        if ($watermarks["enabled"] === "true") {
+            $watermarks["text"] = trim($watermarks["text"]);
+            if (empty($watermarks["text"])) {
+                $watermarks["text"] = $this->trans->t("DO NOT SHARE THIS") . " {userId} {date}";
             }
         }
 
-        $this->config->SetWatermarkSettings($settings);
+        $this->config->SetWatermarkSettings($watermarks);
+        $this->config->SetCustomizationMacros($macros);
 
         return [
             ];
