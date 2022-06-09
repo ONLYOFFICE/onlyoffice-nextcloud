@@ -99,11 +99,10 @@ class ExtraPermissions {
      * Get extra permissions by shareId
      *
      * @param integer $shareId - share identifier
-     * @param File $file - source file
      *
      * @return array
      */
-    public function getExtra($shareId, $file = null) {
+    public function getExtra($shareId) {
         $share = $this->getShare($shareId);
         if (empty($share)) {
             return null;
@@ -113,7 +112,7 @@ class ExtraPermissions {
         $extra = self::get($shareId);
 
         $checkExtra = isset($extra["permissions"]) ? (int)$extra["permissions"] : self::None;
-        list($availableExtra, $defaultPermissions) = $this->validation($share, $checkExtra, $file);
+        list($availableExtra, $defaultPermissions) = $this->validation($share, $checkExtra);
 
         if ($availableExtra === 0
             || ($availableExtra & $checkExtra) !== $checkExtra) {
@@ -159,6 +158,14 @@ class ExtraPermissions {
             return $result;
         }
 
+        $selfShare = null;
+        $selfExtra = null;
+        $fileStorage = $file->getStorage();
+        if ($fileStorage->instanceOfStorage("\OCA\Files_Sharing\SharedStorage")) {
+            $selfShare = $fileStorage->getShare();
+            $selfExtra = $this->getExtra($fileStorage->getShareId());
+        }
+
         $extras = self::getList($shareIds);
 
         $noActualList = [];
@@ -172,7 +179,7 @@ class ExtraPermissions {
             }
 
             $checkExtra = isset($currentExtra["permissions"]) ? (int)$currentExtra["permissions"] : self::None;
-            list($availableExtra, $defaultPermissions) = $this->validation($share, $checkExtra, $file);
+            list($availableExtra, $defaultPermissions) = $this->validation($share, $checkExtra, $selfShare, $selfExtra);
 
             if ($availableExtra === 0
                 || ($availableExtra & $checkExtra) !== $checkExtra) {
@@ -222,8 +229,16 @@ class ExtraPermissions {
         if (empty($share)) {
             return $result;
         }
-        
-        list($availableExtra, $defaultPermissions) = $this->validation($share, $permissions, $file);
+
+        $selfShare = null;
+        $selfExtra = null;
+        $fileStorage = $file->getStorage();
+        if ($fileStorage->instanceOfStorage("\OCA\Files_Sharing\SharedStorage")) {
+            $selfShare = $fileStorage->getShare();
+            $selfExtra = $this->getExtra($fileStorage->getShareId());
+        }
+
+        list($availableExtra, $defaultPermissions) = $this->validation($share, $permissions, $selfShare, $selfExtra);
         if (($availableExtra & $permissions) !== $permissions) {
             $this->logger->debug("Share " . $shareId . " does not available to extend permissions", ["app" => $this->appName]);
             return $result;
@@ -370,15 +385,17 @@ class ExtraPermissions {
      *
      * @param IShare $share - share
      * @param int $checkExtra - checkable extra permissions
-     * @param File $file - file
+     * @param int $selfShare - source share if file was shared
+     * @param int $selfExtra - source extra if file was shared
      *
      * @return array
      */
-    private function validation($share, $checkExtra, $file) {
+    private function validation($share, $checkExtra, $selfShare = null, $selfExtra = null) {
         $availableExtra = self::None;
         $defaultExtra = self::None;
 
-        if (isset($file) && !$file->isUpdateable()) {
+        if (isset($selfShare)
+            && ($selfShare->getPermissions() & Constants::PERMISSION_UPDATE) !== Constants::PERMISSION_UPDATE) {
             return [$availableExtra, $defaultExtra];
         }
 
@@ -389,8 +406,11 @@ class ExtraPermissions {
 
         if (($share->getPermissions() & Constants::PERMISSION_UPDATE) === Constants::PERMISSION_UPDATE) {
             if (isset($format["modifyFilter"]) && $format["modifyFilter"]) {
-                $availableExtra |= self::ModifyFilter;
-                $defaultExtra |= self::ModifyFilter;
+                if (!isset($selfExtra)
+                    || (isset($selfExtra) && ($selfExtra["permissions"] & self::ModifyFilter) === self::ModifyFilter)) {
+                    $availableExtra |= self::ModifyFilter;
+                    $defaultExtra |= self::ModifyFilter;
+                }
             }
         }
         if (($share->getPermissions() & Constants::PERMISSION_UPDATE) !== Constants::PERMISSION_UPDATE) {
