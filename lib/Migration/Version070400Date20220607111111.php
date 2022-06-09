@@ -12,7 +12,7 @@ use OCP\Migration\SimpleMigrationStep;
 /**
  * Auto-generated migration step: Please modify to your needs!
  */
-class Version070000Date20220516111111 extends SimpleMigrationStep {
+class Version070400Date20220607111111 extends SimpleMigrationStep {
 
 	/**
 	 * @param IOutput $output
