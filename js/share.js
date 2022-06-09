@@ -250,7 +250,7 @@
                 attributes.push({
                     checked: fillForms,
                     extra: OCA.Onlyoffice.Permissions.FillForms,
-                    label: t(OCA.Onlyoffice.AppName, "FillForms")
+                    label: t(OCA.Onlyoffice.AppName, "Form filling")
                 });
             }
 
@@ -260,7 +260,7 @@
                 attributes.push({
                     checked: modifyFilter,
                     extra: OCA.Onlyoffice.Permissions.ModifyFilter,
-                    label: t(OCA.Onlyoffice.AppName, "ModifyFilter")
+                    label: t(OCA.Onlyoffice.AppName, "Custom filter")
                 });
             }
 
