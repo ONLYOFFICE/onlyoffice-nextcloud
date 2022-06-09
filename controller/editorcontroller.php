@@ -1092,6 +1092,7 @@ class EditorController extends Controller {
      * @param string $shareToken - access token
      * @param integer $version - file version
      * @param bool $inframe - open in frame
+     * @param bool $inviewer - open in viewer
      * @param bool $template - file is template
      * @param string $anchor - anchor for file content
      *
@@ -1100,7 +1101,7 @@ class EditorController extends Controller {
      * @NoAdminRequired
      * @NoCSRFRequired
      */
-    public function index($fileId, $filePath = null, $shareToken = null, $version = 0, $inframe = false, $template = false, $anchor = null) {
+    public function index($fileId, $filePath = null, $shareToken = null, $version = 0, $inframe = false, $inviewer = false, $template = false, $anchor = null) {
         $this->logger->debug("Open: $fileId ($version) $filePath ", ["app" => $this->appName]);
 
         $isLoggedIn = $this->userSession->isLoggedIn();
@@ -1139,6 +1140,7 @@ class EditorController extends Controller {
             "version" => $version,
             "isTemplate" => $template,
             "inframe" => false,
+            "inviewer" => $inviewer === true,
             "anchor" => $anchor
         ];
 
@@ -1279,8 +1281,7 @@ class EditorController extends Controller {
 
         $fileUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.download", ["doc" => $hashUrl]);
 
-        if (!empty($this->config->GetStorageUrl())
-            && !$changes) {
+        if (!empty($this->config->GetStorageUrl())) {
             $fileUrl = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->config->GetStorageUrl(), $fileUrl);
         }
 
