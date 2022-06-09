@@ -114,6 +114,12 @@
     </p>
 
     <p>
+        <input type="checkbox" class="checkbox" id="onlyofficeAdvanced"
+            <?php if ($_["advanced"]) { ?>checked="checked"<?php } ?> />
+        <label for="onlyofficeAdvanced"><?php p($l->t("Provide advanced document permissions using ONLYOFFICE Docs")) ?></label>
+    </p>
+
+    <p>
         <input type="checkbox" class="checkbox" id="onlyofficeVersionHistory"
             <?php if ($_["versionHistory"]) { ?>checked="checked"<?php } ?> />
         <label for="onlyofficeVersionHistory"><?php p($l->t("Keep metadata for each version once the document is edited (it will take up disk space)")) ?></label>

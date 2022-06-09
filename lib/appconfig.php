@@ -117,6 +117,13 @@ class AppConfig {
     private $_preview = "preview";
 
     /**
+     * The config key for the advanced
+     *
+     * @var string
+     */
+    private $_advanced = "advanced";
+
+    /**
      * The config key for the keep versions history
      *
      * @var string
@@ -642,6 +649,26 @@ class AppConfig {
         $this->logger->info("Set generate preview: " . json_encode($value), ["app" => $this->appName]);
 
         $this->config->setAppValue($this->appName, $this->_preview, json_encode($value));
+    }
+
+    /**
+     * Get advanced setting
+     *
+     * @return bool
+     */
+    public function GetAdvanced() {
+        return $this->config->getAppValue($this->appName, $this->_advanced, "false") === "true";
+    }
+
+    /**
+     * Save advanced setting
+     *
+     * @param bool $value - advanced
+     */
+    public function SetAdvanced($value) {
+        $this->logger->info("Set advanced: " . json_encode($value), ["app" => $this->appName]);
+
+        $this->config->setAppValue($this->appName, $this->_advanced, json_encode($value));
     }
 
     /**

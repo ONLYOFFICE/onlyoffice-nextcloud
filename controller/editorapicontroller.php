@@ -192,7 +192,8 @@ class EditorApiController extends OCSController {
             }
         }
 
-        if (\OC::$server->getAppManager()->isInstalled("files_sharing")) {
+        if ($this->config->GetAdvanced()
+            && \OC::$server->getAppManager()->isInstalled("files_sharing")) {
             $this->extraPermissions = new ExtraPermissions($AppName, $logger, $shareManager, $config);
         }
 
