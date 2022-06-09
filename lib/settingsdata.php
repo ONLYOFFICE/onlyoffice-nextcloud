@@ -1,3 +1,4 @@
+<?php
 /**
  *
  * (c) Copyright Ascensio System SIA 2022
@@ -16,12 +17,29 @@
  *
  */
 
-#onlyofficeViewerFrame {
-    background-color: #fff;
-    width: 100%;
-    height: calc(100vh - 50px);
-    display: block;
-    position: fixed;
-    top: 50px;
-    z-index: 110;
+namespace OCA\Onlyoffice;
+
+use OCA\Onlyoffice\AppConfig;
+
+class SettingsData implements \JsonSerializable {
+
+    /**
+     * Application configuration
+     *
+     * @var AppConfig
+     */
+    private $appConfig;
+
+    public function __construct(AppConfig $appConfig) {
+        $this->appConfig = $appConfig;
+    }
+
+    public function jsonSerialize(): array {
+        $data = [
+            "formats" => $this->appConfig->FormatsSetting(),
+            "sameTab" => $this->appConfig->GetSameTab()
+        ];
+
+        return $data;
+    }
 }
