@@ -142,11 +142,10 @@ class ExtraPermissions {
      * Get list extra permissions by shares
      *
      * @param array $shares - array of shares
-     * @param File $file - source file
      *
      * @return array
      */
-    public function getExtras($shares, $file) {
+    public function getExtras($shares) {
         $result = [];
 
         $shareIds = [];
@@ -156,14 +155,6 @@ class ExtraPermissions {
 
         if (empty($shareIds)) {
             return $result;
-        }
-
-        $selfShare = null;
-        $selfExtra = null;
-        $fileStorage = $file->getStorage();
-        if ($fileStorage->instanceOfStorage("\OCA\Files_Sharing\SharedStorage")) {
-            $selfShare = $fileStorage->getShare();
-            $selfExtra = $this->getExtra($fileStorage->getShareId());
         }
 
         $extras = self::getList($shareIds);
@@ -179,7 +170,7 @@ class ExtraPermissions {
             }
 
             $checkExtra = isset($currentExtra["permissions"]) ? (int)$currentExtra["permissions"] : self::None;
-            list($availableExtra, $defaultPermissions) = $this->validation($share, $checkExtra, $selfShare, $selfExtra);
+            list($availableExtra, $defaultPermissions) = $this->validation($share, $checkExtra);
 
             if ($availableExtra === 0
                 || ($availableExtra & $checkExtra) !== $checkExtra) {
@@ -218,11 +209,10 @@ class ExtraPermissions {
      * @param integer $shareId - share identifier
      * @param integer $permissions - value extra permissions
      * @param integer $extraId - extra permission identifier
-     * @param File $file - source file
      *
      * @return bool
      */
-    public function setExtra($shareId, $permissions, $extraId, $file) {
+    public function setExtra($shareId, $permissions, $extraId) {
         $result = false;
 
         $share = $this->getShare($shareId);
@@ -230,15 +220,7 @@ class ExtraPermissions {
             return $result;
         }
 
-        $selfShare = null;
-        $selfExtra = null;
-        $fileStorage = $file->getStorage();
-        if ($fileStorage->instanceOfStorage("\OCA\Files_Sharing\SharedStorage")) {
-            $selfShare = $fileStorage->getShare();
-            $selfExtra = $this->getExtra($fileStorage->getShareId());
-        }
-
-        list($availableExtra, $defaultPermissions) = $this->validation($share, $permissions, $selfShare, $selfExtra);
+        list($availableExtra, $defaultPermissions) = $this->validation($share, $permissions);
         if (($availableExtra & $permissions) !== $permissions) {
             $this->logger->debug("Share " . $shareId . " does not available to extend permissions", ["app" => $this->appName]);
             return $result;
@@ -385,17 +367,15 @@ class ExtraPermissions {
      *
      * @param IShare $share - share
      * @param int $checkExtra - checkable extra permissions
-     * @param int $selfShare - source share if file was shared
-     * @param int $selfExtra - source extra if file was shared
      *
      * @return array
      */
-    private function validation($share, $checkExtra, $selfShare = null, $selfExtra = null) {
+    private function validation($share, $checkExtra) {
         $availableExtra = self::None;
         $defaultExtra = self::None;
 
-        if (isset($selfShare) && ($selfShare->getPermissions() & Constants::PERMISSION_UPDATE) !== Constants::PERMISSION_UPDATE
-            || ($share->getPermissions() & Constants::PERMISSION_UPDATE) !== Constants::PERMISSION_UPDATE) {
+        if (($share->getPermissions() & Constants::PERMISSION_UPDATE) !== Constants::PERMISSION_UPDATE
+            || ($share->getPermissions() & Constants::PERMISSION_SHARE) === Constants::PERMISSION_SHARE) {
             return [$availableExtra, $defaultExtra];
         }
 
@@ -404,8 +384,7 @@ class ExtraPermissions {
         $extension = $pathinfo["extension"];
         $format = $this->config->FormatsSetting()[$extension];
 
-        $canModifyFilter = !isset($selfExtra) || ($selfExtra["permissions"] & self::ModifyFilter) === self::ModifyFilter;
-        if (isset($format["modifyFilter"]) && $format["modifyFilter"] && $canModifyFilter) {
+        if (isset($format["modifyFilter"]) && $format["modifyFilter"]) {
             $availableExtra |= self::ModifyFilter;
             $defaultExtra |= self::ModifyFilter;
         }
