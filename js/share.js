@@ -168,19 +168,23 @@
             var extra = this.collection.find(item => item.share_id == shareId);
 
             var permissions = OCA.Onlyoffice.Permissions.None;
+            if (permissionValues[OCA.Onlyoffice.Permissions.ModifyFilter]) {
+                permissions |= OCA.Onlyoffice.Permissions.ModifyFilter;
+            }
             if (permissionValues[OCA.Onlyoffice.Permissions.Review]) {
                 permissions |= OCA.Onlyoffice.Permissions.Review;
             }
             if (permissionValues[OCA.Onlyoffice.Permissions.Comment]
                 && (permissions & OCA.Onlyoffice.Permissions.Review) != OCA.Onlyoffice.Permissions.Review) {
                 permissions |= OCA.Onlyoffice.Permissions.Comment;
+
+                if ((permissions & OCA.Onlyoffice.Permissions.ModifyFilter) == OCA.Onlyoffice.Permissions.ModifyFilter) {
+                    permissions &= ~OCA.Onlyoffice.Permissions.ModifyFilter;
+                }
             }
             if (permissionValues[OCA.Onlyoffice.Permissions.FillForms]
                 && (permissions & OCA.Onlyoffice.Permissions.Review) != OCA.Onlyoffice.Permissions.Review) {
                 permissions |= OCA.Onlyoffice.Permissions.FillForms;
-            }
-            if (permissionValues[OCA.Onlyoffice.Permissions.ModifyFilter]) {
-                permissions |= OCA.Onlyoffice.Permissions.ModifyFilter;
             }
 
             this.permissionsMenu.block(true);
@@ -226,13 +230,22 @@
         _getPermissionAttributes: function (extra) {
             var attributes = [];
 
+            if (this.format["modifyFilter"]
+                && (OCA.Onlyoffice.Permissions.ModifyFilter & extra["available"]) === OCA.Onlyoffice.Permissions.ModifyFilter) {
+                var modifyFilter = (OCA.Onlyoffice.Permissions.ModifyFilter & extra["permissions"]) === OCA.Onlyoffice.Permissions.ModifyFilter;
+                attributes.push({
+                    checked: modifyFilter,
+                    extra: OCA.Onlyoffice.Permissions.ModifyFilter,
+                    label: t(OCA.Onlyoffice.AppName, "Custom filter")
+                });
+            }
             if (this.format["review"]
                 && (OCA.Onlyoffice.Permissions.Review & extra["available"]) === OCA.Onlyoffice.Permissions.Review) {
                 var review = (OCA.Onlyoffice.Permissions.Review & extra["permissions"]) === OCA.Onlyoffice.Permissions.Review;
                 attributes.push({
                     checked: review,
                     extra: OCA.Onlyoffice.Permissions.Review,
-                    label: t(OCA.Onlyoffice.AppName, "Review")
+                    label: t(OCA.Onlyoffice.AppName, "Review only")
                 });
             }
             if (this.format["comment"]
@@ -241,7 +254,7 @@
                 attributes.push({
                     checked: comment,
                     extra: OCA.Onlyoffice.Permissions.Comment,
-                    label: t(OCA.Onlyoffice.AppName, "Comment")
+                    label: t(OCA.Onlyoffice.AppName, "Comment only")
                 });
             }
             if (this.format["fillForms"]
@@ -250,17 +263,7 @@
                 attributes.push({
                     checked: fillForms,
                     extra: OCA.Onlyoffice.Permissions.FillForms,
-                    label: t(OCA.Onlyoffice.AppName, "Form filling")
-                });
-            }
-
-            if (this.format["modifyFilter"]
-                && (OCA.Onlyoffice.Permissions.ModifyFilter & extra["available"]) === OCA.Onlyoffice.Permissions.ModifyFilter) {
-                var modifyFilter = (OCA.Onlyoffice.Permissions.ModifyFilter & extra["permissions"]) === OCA.Onlyoffice.Permissions.ModifyFilter;
-                attributes.push({
-                    checked: modifyFilter,
-                    extra: OCA.Onlyoffice.Permissions.ModifyFilter,
-                    label: t(OCA.Onlyoffice.AppName, "Custom filter")
+                    label: t(OCA.Onlyoffice.AppName, "Form filling only")
                 });
             }
 

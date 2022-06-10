@@ -394,8 +394,8 @@ class ExtraPermissions {
         $availableExtra = self::None;
         $defaultExtra = self::None;
 
-        if (isset($selfShare)
-            && ($selfShare->getPermissions() & Constants::PERMISSION_UPDATE) !== Constants::PERMISSION_UPDATE) {
+        if (isset($selfShare) && ($selfShare->getPermissions() & Constants::PERMISSION_UPDATE) !== Constants::PERMISSION_UPDATE
+            || ($share->getPermissions() & Constants::PERMISSION_UPDATE) !== Constants::PERMISSION_UPDATE) {
             return [$availableExtra, $defaultExtra];
         }
 
@@ -404,27 +404,28 @@ class ExtraPermissions {
         $extension = $pathinfo["extension"];
         $format = $this->config->FormatsSetting()[$extension];
 
-        if (($share->getPermissions() & Constants::PERMISSION_UPDATE) === Constants::PERMISSION_UPDATE) {
-            if (isset($format["modifyFilter"]) && $format["modifyFilter"]) {
-                if (!isset($selfExtra)
-                    || (isset($selfExtra) && ($selfExtra["permissions"] & self::ModifyFilter) === self::ModifyFilter)) {
-                    $availableExtra |= self::ModifyFilter;
-                    $defaultExtra |= self::ModifyFilter;
-                }
-            }
+        $canModifyFilter = !isset($selfExtra) || ($selfExtra["permissions"] & self::ModifyFilter) === self::ModifyFilter;
+        if (isset($format["modifyFilter"]) && $format["modifyFilter"] && $canModifyFilter) {
+            $availableExtra |= self::ModifyFilter;
+            $defaultExtra |= self::ModifyFilter;
         }
-        if (($share->getPermissions() & Constants::PERMISSION_UPDATE) !== Constants::PERMISSION_UPDATE) {
-            if (isset($format["review"]) && $format["review"]) {
-                $availableExtra |= self::Review;
-            }
-            if (isset($format["comment"]) && $format["comment"]
-                && ($checkExtra & self::Review) !== self::Review) {
-                $availableExtra |= self::Comment;
-            }
-            if (isset($format["fillForms"]) && $format["fillForms"]
-                && ($checkExtra & self::Review) !== self::Review) {
-                $availableExtra |= self::FillForms;
-            }
+
+        if (isset($format["review"]) && $format["review"]) {
+            $availableExtra |= self::Review;
+        }
+
+        if (isset($format["comment"]) && $format["comment"]
+            && (($checkExtra & self::Review) !== self::Review)) {
+            $availableExtra |= self::Comment;
+        }
+
+        if (isset($format["fillForms"]) && $format["fillForms"]
+            && ($checkExtra & self::Review) !== self::Review) {
+            $availableExtra |= self::FillForms;
+        }
+
+        if (($checkExtra & self::Comment) === self::Comment) {
+            $availableExtra &= ~self::ModifyFilter;
         }
 
         return [$availableExtra, $defaultExtra];
