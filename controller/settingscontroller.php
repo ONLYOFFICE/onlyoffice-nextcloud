@@ -116,6 +116,7 @@ class SettingsController extends Controller {
             "formats" => $this->config->FormatsSetting(),
             "sameTab" => $this->config->GetSameTab(),
             "preview" => $this->config->GetPreview(),
+            "advanced" => $this->config->GetAdvanced(),
             "versionHistory" => $this->config->GetVersionHistory(),
             "limitGroups" => $this->config->GetLimitGroups(),
             "chat" => $this->config->GetCustomizationChat(),
@@ -194,6 +195,7 @@ class SettingsController extends Controller {
      * @param array $editFormats - editable formats array
      * @param bool $sameTab - open in the same tab
      * @param bool $preview - generate preview files
+     * @param bool $advanced - use advanced tab
      * @param bool $versionHistory - keep version history
      * @param array $limitGroups - list of groups
      * @param bool $chat - display chat
@@ -210,6 +212,7 @@ class SettingsController extends Controller {
                                     $editFormats,
                                     $sameTab,
                                     $preview,
+                                    $advanced,
                                     $versionHistory,
                                     $limitGroups,
                                     $chat,
@@ -226,6 +229,7 @@ class SettingsController extends Controller {
         $this->config->SetEditableFormats($editFormats);
         $this->config->SetSameTab($sameTab);
         $this->config->SetPreview($preview);
+        $this->config->SetAdvanced($advanced);
         $this->config->SetVersionHistory($versionHistory);
         $this->config->SetLimitGroups($limitGroups);
         $this->config->SetCustomizationChat($chat);

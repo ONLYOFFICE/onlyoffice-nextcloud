@@ -115,6 +115,17 @@ OC.L10N.register(
     "Create new Form template": "Създайте нов шаблон на формуляр",
     "Create form": "Създайте формуляр",
     "Fill in form in ONLYOFFICE": "Попълнете формуляр в ONLYOFFICE",
-    "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online": "Молим да актуализирате ONLYOFFICE Docs към версия 7.0, за да работи с онлайн формуляри за попълване"
+    "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online": "Молим да актуализирате ONLYOFFICE Docs към версия 7.0, за да работи с онлайн формуляри за попълване",
+    "Security": "Сигурност",
+    "Anonymous": "Анонимен",
+    "Light": "Светла",
+    "Classic Light": "Класически светла",
+    "Dark": "Тъмна",
+    "Review": "Преглед",
+    "Comment": "Коментар",
+    "Form filling": "Попълване на формуляр",
+    "Custom filter": "Персонализиран филтър",
+    "group": "група",
+    "Advanced": "Допълнително"
 },
 "nplurals=2; plural=(n != 1);");

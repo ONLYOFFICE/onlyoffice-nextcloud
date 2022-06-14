@@ -2,6 +2,7 @@
 
 ##
 ## Added
+- advanced access rights
 - macro launch setting
 - opening file location from viewer
 - Catalan translation

@@ -60,7 +60,6 @@
     "This is a public test server, please do not use it for private sensitive data. The server will be available during a 30-day period.": "Aquest és un servidor de proves públic, si us plau no l'usis per a les teves dades confidencials. El servidor estarà disponible durant un període de 30 dies.",
     "The 30-day test period is over, you can no longer connect to demo ONLYOFFICE Docs server.": "El període de prova de 30 dies ha acabat, ja no pots connectar-te al servidor d'ONLYOFFICE Docs de demostració",
     "You are using public demo ONLYOFFICE Docs server. Please do not store private sensitive data.": "Estàs fent servir el servidor d'ONLYOFFICE Docs de demostració. Si us plau, no emmagatzemis les teves dades confidencials aquí.",
-    "Secure view settings": "Configuració de visualització segura",
     "Secure view enables you to secure documents by embedding a watermark": "La vista segura permet assegurar documents mitjançant la inserció d'una marca d'aigua en ells",
     "Enable watermarking": "Habilitar marques d'aigua",
     "Watermark text": "Text de marca d'aigua",
@@ -115,5 +114,16 @@
     "Create form": "Crear formulari",
     "Fill in form in ONLYOFFICE": "Omplir el formulari en ONLYOFFICE",
     "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online": "Si us plau, actualitzi ONLYOFFICE Docs a la versió 7.0 per a poder treballar amb formularis emplenables en línia"
+    "Security": "Seguretat",
+    "Anonymous": "Anònim",
+    "Light": "Llum",
+    "Classic Light": "Llum clàssica",
+    "Dark": "Fosc",
+    "Review": "Visualització prèvia",
+    "Comment": "Comentari",
+    "Form filling": "Emplenament de formularis",
+    "Custom filter": "Filtre personalitzat",
+    "group": "agrupa",
+    "Advanced": "Avançat"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

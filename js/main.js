@@ -447,6 +447,14 @@
         }
     };
 
+    OCA.Onlyoffice.TabView = {
+        attach(fileList) {
+            if (OCA.Onlyoffice.SharingTabView) {
+                fileList.registerTabView(new OCA.Onlyoffice.SharingTabView())
+            }
+        }
+    }
+
     var getFileExtension = function (fileName) {
         var extension = fileName.substr(fileName.lastIndexOf(".") + 1).toLowerCase();
         return extension;
@@ -531,6 +539,8 @@
             }
         } else {
             OC.Plugins.register("OCA.Files.NewFileMenu", OCA.Onlyoffice.NewFileMenu);
+
+            OC.Plugins.register("OCA.Files.FileList", OCA.Onlyoffice.TabView);
 
             OCA.Onlyoffice.registerAction();
 
