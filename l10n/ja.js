@@ -115,6 +115,19 @@ OC.L10N.register(
     "Create new Form template": "新しいフォームテンプレートの作成",
     "Create form": "フォームの作成",
     "Fill in form in ONLYOFFICE": "ONLYOFFICEでフォームを記入する",
-    "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online": "オンラインで入力可能なフォームを作成するには、ONLYOFFICE Docs 7.0版まで更新してください"
+    "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online": "オンラインで入力可能なフォームを作成するには、ONLYOFFICE Docs 7.0版まで更新してください",
+    "Security": "セキュリティ",
+    "Anonymous": "匿名",
+    "Default editor theme": "デフォルトのエディタテーマ",
+    "Light": "明るい",
+    "Classic Light": "明るい(クラシック)",
+    "Dark": "ダーク",
+    "Review": "レビュー",
+    "Comment": "コメント",
+    "Form filling": "フォーム入力",
+    "Custom filter": "ユーザー設定フィルター",
+    "group": "グループ",
+    "Advanced": "詳細",
+    "Provide advanced document permissions using ONLYOFFICE Docs": "ONLYOFFICE Docsを利用した高度なドキュメント権限の提供"
     },
 "nplurals=1; plural=0;");

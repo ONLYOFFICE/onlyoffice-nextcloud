@@ -115,6 +115,19 @@ OC.L10N.register(
     "Create new Form template": "Crear nueva plantilla de formulario",
     "Create form": "Crear formulario",
     "Fill in form in ONLYOFFICE": "Rellenar el formulario en ONLYOFFICE",
-    "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online": "Por favor, actualice ONLYOFFICE Docs a la versión 7.0 para poder trabajar con formularios rellenables en línea"
+    "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online": "Por favor, actualice ONLYOFFICE Docs a la versión 7.0 para poder trabajar con formularios rellenables en línea",
+    "Security": "Seguridad",
+    "Anonymous": "Anónimo",
+    "Default editor theme": "Tema del editor predeterminado",
+    "Light": "Claro",
+    "Classic Light": "Clásico claro",
+    "Dark": "Oscuro",
+    "Review": "Revista",
+    "Comment": "Comentarios",
+    "Form filling": "Relleno de formulario",
+    "Custom filter": "Filtro personalizado",
+    "group": "grupo",
+    "Advanced": "Avanzado",
+    "Provide advanced document permissions using ONLYOFFICE Docs": "Proporcione permisos avanzados para los documentos utilizando ONLYOFFICE Docs"
 },
 "nplurals=2; plural=(n != 1);");
