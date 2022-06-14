@@ -21,7 +21,10 @@
     width: 100%;
     height: calc(100vh - 50px);
     display: block;
-    position: fixed;
+    position: absolute;
     top: 50px;
     z-index: 110;
+}
+.modal-wrapper--full #onlyofficeViewerFrame {
+    top: 0;
 }
