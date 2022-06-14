@@ -150,6 +150,10 @@ class SharingApiController extends OCSController {
         $userId = $user->getUID();
 
         $sourceFile = $this->getFile($fileId, $userId);
+        $fileStorage = $sourceFile->getStorage();
+        if ($fileStorage->instanceOfStorage("\OCA\Files_Sharing\SharedStorage")) {
+            return new DataResponse([]);
+        }
 
         $sharesUser = $this->shareManager->getSharesBy($userId, IShare::TYPE_USER, $sourceFile);
         $sharesGroup = $this->shareManager->getSharesBy($userId, IShare::TYPE_GROUP, $sourceFile);
@@ -182,8 +186,12 @@ class SharingApiController extends OCSController {
         $userId = $user->getUID();
 
         $sourceFile = $this->getFile($fileId, $userId);
+        $fileStorage = $sourceFile->getStorage();
+        if ($fileStorage->instanceOfStorage("\OCA\Files_Sharing\SharedStorage")) {
+            return new DataResponse([], Http::STATUS_BAD_REQUEST);
+        }
 
-        if (!$this->extraPermissions->setExtra($shareId, $permissions, $extraId, $sourceFile)) {
+        if (!$this->extraPermissions->setExtra($shareId, $permissions, $extraId)) {
             $this->logger->error("setShares: couldn't set extra permissions for: " . $shareId, ["app" => $this->appName]);
             return new DataResponse([], Http::STATUS_BAD_REQUEST);
         }
