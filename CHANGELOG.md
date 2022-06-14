@@ -1,5 +1,11 @@
 # Change Log
 
+## 7.5.0
+## Changed
+- fix viewer app
+- Nextcloud v22 is no longer supported
+- Nextcloud v23 is no longer supported
+
 ## 7.4.0
 ## Added
 - advanced access rights
@@ -10,7 +16,6 @@
 
 ## Changed
 - fix editor lang
-- fix viewer app
 
 ## 7.3.4
 ## Added
