@@ -117,6 +117,13 @@ class AppConfig {
     private $_preview = "preview";
 
     /**
+     * The config key for the advanced
+     *
+     * @var string
+     */
+    private $_advanced = "advanced";
+
+    /**
      * The config key for the keep versions history
      *
      * @var string
@@ -659,6 +666,26 @@ class AppConfig {
     }
 
     /**
+     * Get advanced setting
+     *
+     * @return bool
+     */
+    public function GetAdvanced() {
+        return $this->config->getAppValue($this->appName, $this->_advanced, "false") === "true";
+    }
+
+    /**
+     * Save advanced setting
+     *
+     * @param bool $value - advanced
+     */
+    public function SetAdvanced($value) {
+        $this->logger->info("Set advanced: " . json_encode($value), ["app" => $this->appName]);
+
+        $this->config->setAppValue($this->appName, $this->_advanced, json_encode($value));
+    }
+
+    /**
      * Get generate preview setting
      *
      * @return bool
@@ -1160,8 +1187,8 @@ class AppConfig {
         "csv" => [ "mime" => "text/csv", "type" => "cell", "edit" => true, "editable" => true, "saveas" => ["ods", "pdf", "xlsx"] ],
         "doc" => [ "mime" => "application/msword", "type" => "word", "conv" => true, "saveas" => ["docx", "odt", "pdf", "rtf", "txt"] ],
         "docm" => [ "mime" => "application/vnd.ms-word.document.macroEnabled.12", "type" => "word", "conv" => true, "saveas" => ["docx", "odt", "pdf", "rtf", "txt"] ],
-        "docx" => [ "mime" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "type" => "word", "edit" => true, "def" => true, "saveas" => ["odt", "pdf", "rtf", "txt", "docxf"] ],
-        "docxf" => [ "mime" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document.docxf", "type" => "word", "edit" => true, "def" => true, "saveas" => ["odt", "pdf", "rtf", "txt"], "createForm" => true ],
+        "docx" => [ "mime" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "type" => "word", "edit" => true, "def" => true, "review" => true, "comment" => true, "saveas" => ["odt", "pdf", "rtf", "txt", "docxf"] ],
+        "docxf" => [ "mime" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document.docxf", "type" => "word", "edit" => true, "def" => true, "review" => true, "comment" => true, "saveas" => ["odt", "pdf", "rtf", "txt"], "createForm" => true ],
         "oform" => [ "mime" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document.oform", "type" => "word", "fillForms" => true, "def" => true ],
         "dot" => [ "type" => "word", "conv" => true, "saveas" => ["docx", "odt", "pdf", "rtf", "txt"] ],
         "dotx" => [ "mime" => "application/vnd.openxmlformats-officedocument.wordprocessingml.template", "type" => "word", "conv" => true, "saveas" => ["docx", "odt", "pdf", "rtf", "txt"] ],
@@ -1183,12 +1210,12 @@ class AppConfig {
         "ppsx" => [ "mime" => "application/vnd.openxmlformats-officedocument.presentationml.slideshow", "type" => "slide", "conv" => true, "saveas" => ["pdf", "pptx", "odp"] ],
         "ppt" => [ "mime" => "application/vnd.ms-powerpoint", "type" => "slide", "conv" => true, "saveas" => ["pdf", "pptx", "odp"] ],
         "pptm" => [ "mime" => "application/vnd.ms-powerpoint.presentation.macroEnabled.12", "type" => "slide", "conv" => true, "saveas" => ["pdf", "pptx", "odp"] ],
-        "pptx" => [ "mime" => "application/vnd.openxmlformats-officedocument.presentationml.presentation", "type" => "slide", "edit" => true, "def" => true, "saveas" => ["pdf", "odp"] ],
+        "pptx" => [ "mime" => "application/vnd.openxmlformats-officedocument.presentationml.presentation", "type" => "slide", "edit" => true, "def" => true, "comment" => true, "saveas" => ["pdf", "odp"] ],
         "rtf" => [ "mime" => "text/rtf", "type" => "word", "conv" => true, "editable" => true, "saveas" => ["docx", "odt", "pdf", "txt"] ],
         "txt" => [ "mime" => "text/plain", "type" => "word", "edit" => true, "editable" => true, "saveas" => ["docx", "odt", "pdf", "rtf"] ],
         "xls" => [ "mime" => "application/vnd.ms-excel", "type" => "cell", "conv" => true, "saveas" => ["csv", "ods", "pdf", "xlsx"] ],
         "xlsm" => [ "mime" => "application/vnd.ms-excel.sheet.macroEnabled.12", "type" => "cell", "conv" => true, "saveas" => ["csv", "ods", "pdf", "xlsx"] ],
-        "xlsx" => [ "mime" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "type" => "cell", "edit" => true, "def" => true, "saveas" => ["csv", "ods", "pdf"] ],
+        "xlsx" => [ "mime" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "type" => "cell", "edit" => true, "def" => true, "comment" => true, "modifyFilter" => true, "saveas" => ["csv", "ods", "pdf"] ],
         "xlt" => [ "type" => "cell", "conv" => true, "saveas" => ["csv", "ods", "pdf", "xlsx"] ],
         "xltm" => [ "mime" => "application/vnd.ms-excel.template.macroEnabled.12", "type" => "cell", "conv" => true, "saveas" => ["csv", "ods", "pdf", "xlsx"] ],
         "xltx" => [ "mime" => "application/vnd.openxmlformats-officedocument.spreadsheetml.template", "type" => "cell", "conv" => true, "saveas" => ["csv", "ods", "pdf", "xlsx"] ]

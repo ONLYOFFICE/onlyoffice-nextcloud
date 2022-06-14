@@ -115,6 +115,19 @@ OC.L10N.register(
     "Create new Form template": "创建新的表单模板",
     "Create form": "创建表单",
     "Fill in form in ONLYOFFICE": "在ONLYOFFICE上填写表单",
-    "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online": "请将ONLYOFFICE Docs更新到7.0版本，以便在线编辑可填写的表单"
+    "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online": "请将ONLYOFFICE Docs更新到7.0版本，以便在线编辑可填写的表单",
+      "Security": "安全",
+    "Anonymous": "匿名",
+    "Default editor theme": "编辑器默认的主题",
+    "Light": "光",
+    "Classic Light": "经典浅色",
+    "Dark": "黑暗的",
+    "Review": "审阅",
+    "Comment": "评论",
+    "Form filling": "表单填报",
+    "Custom filter": "自定义筛选器",
+    "group": "分组",
+    "Advanced": "进阶",
+    "Provide advanced document permissions using ONLYOFFICE Docs": "使用ONLYOFFICE Docs 提供高级文档权限"
 },
 "nplurals=1; plural=0;");

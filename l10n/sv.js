@@ -115,6 +115,17 @@ OC.L10N.register(
     "Create new Form template": "Skapa ny formulärmall",
     "Create form": "Skapa formulär",
     "Fill in form in ONLYOFFICE": "Fylla i formulär i ONLYOFFICE",
-    "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online": "Uppdatera ONLYOFFICE Docs till version 7.0 för att arbeta med ifyllbart onlineformulär"
+    "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online": "Uppdatera ONLYOFFICE Docs till version 7.0 för att arbeta med ifyllbart onlineformulär",
+    "Security": "Säkerhet",
+    "Anonymous": "Anonym",
+    "Light": "Ljus",
+    "Classic Light": "Klassiskt ljus",
+    "Dark": "Mörk",
+    "Review": "Granska",
+    "Comment": "Kommentar",
+    "Form filling": "Formulärfyllning",
+    "Custom filter": "Anpassat filter",
+    "group": "grupp",
+    "Advanced": "Avancerad"
 },
 "nplurals=2; plural=(n != 1);");

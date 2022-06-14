@@ -121,6 +121,13 @@ OC.L10N.register(
     "Default editor theme": "Тема редактора по умолчанию",
     "Light": "Светлая",
     "Classic Light": "Светлая классическая",
-    "Dark": "Темная"
+    "Dark": "Темная",
+    "Review": "Рецензирование",
+    "Comment": "Комментирование",
+    "Form filling": "Заполнение форм",
+    "Custom filter": "Пользовательский фильтр",
+    "group": "группа",
+    "Advanced": "Дополнительно",
+    "Provide advanced document permissions using ONLYOFFICE Docs": "Предоставление расширенных прав доступа к документам с помощью ONLYOFFICE Docs"
 },
 "nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);");

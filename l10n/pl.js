@@ -115,6 +115,17 @@ OC.L10N.register(
     "Create new Form template": "Utwórz nowy szablon formularza",
     "Create form": "Utwórz formularz",
     "Fill in form in ONLYOFFICE": "Wypełnić formularz w ONLYOFFICE",
-    "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online": "Zaktualizuj ONLYOFFICE Docs do wersji 7.0, aby działały w formularzach do wypełniania online"
+    "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online": "Zaktualizuj ONLYOFFICE Docs do wersji 7.0, aby działały w formularzach do wypełniania online",
+    "Security": "Bezpieczeństwo",
+    "Anonymous": "Anonimowy",
+    "Light": "Jasny",
+    "Classic Light": "Klasyczny jasny",
+    "Dark": "Ciemny",
+    "Review": "Recenzja",
+    "Comment": "Komentarz",
+    "Form filling": "Wypełnianie formularza",
+    "Custom filter": "Niestandardowy filtr",
+    "group": "grupa",
+    "Advanced": "Zaawansowane"
 },
 "nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);");

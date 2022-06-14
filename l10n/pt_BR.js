@@ -115,6 +115,17 @@ OC.L10N.register(
     "Create new Form template": "Criar novo modelo de formulário",
     "Create form": "Criar formulário",
     "Fill in form in ONLYOFFICE": "Preencher formulário no ONLYOFFICE",
-    "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online": "Atualize o ONLYOFFICE Docs para a versão 7.0 para trabalhar em formulários preenchíveis online"
+    "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online": "Atualize o ONLYOFFICE Docs para a versão 7.0 para trabalhar em formulários preenchíveis online",
+    "Security": "Segurança",
+    "Anonymous": "Anônimo",
+    "Light": "Claro",
+    "Classic Light": "Clássico claro",
+    "Dark": "Escuro",
+    "Review": "Revisar",
+    "Comment": "Comente",
+    "Form filling": "Preenchimento de formularios",
+    "Custom filter": "Filtro personalizado",
+    "group": "grupo",
+    "Advanced": "Avançado"
 },
 "nplurals=2; plural=(n > 1);");
