@@ -43,7 +43,8 @@ body.onlyoffice-inline {
 }
 body.onlyoffice-inline #app-navigation,
 body.onlyoffice-inline .searchbox,
-body.onlyoffice-inline #app-content #controls {
+body.onlyoffice-inline #app-content #controls,
+body.onlyoffice-inline #filestable {
     display: none;
 }
 body.onlyoffice-inline #app-navigation-toggle {
