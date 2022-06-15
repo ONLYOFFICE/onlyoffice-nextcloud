@@ -163,7 +163,9 @@
 
     OCA.Onlyoffice.FileClick = function (fileName, context) {
         var fileInfoModel = context.fileInfoModel || context.fileList.getModelForFile(fileName);
-        OCA.Onlyoffice.OpenEditor(fileInfoModel.id, context.dir, fileName);
+        var fileId = context.fileId || fileInfoModel.id;
+
+        OCA.Onlyoffice.OpenEditor(fileId, context.dir, fileName);
 
         OCA.Onlyoffice.context = context;
         OCA.Onlyoffice.context.fileName = fileName;
