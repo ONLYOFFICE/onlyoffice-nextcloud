@@ -155,8 +155,8 @@ class SharingApiController extends OCSController {
             return new DataResponse([]);
         }
 
-        $sharesUser = $this->shareManager->getSharesBy($userId, IShare::TYPE_USER, $sourceFile);
-        $sharesGroup = $this->shareManager->getSharesBy($userId, IShare::TYPE_GROUP, $sourceFile);
+        $sharesUser = $this->shareManager->getSharesBy($userId, IShare::TYPE_USER, $sourceFile, null, true);
+        $sharesGroup = $this->shareManager->getSharesBy($userId, IShare::TYPE_GROUP, $sourceFile, null, true);
         $shares = array_merge($sharesUser, $sharesGroup);
         $extras = $this->extraPermissions->getExtras($shares, $sourceFile);
 
