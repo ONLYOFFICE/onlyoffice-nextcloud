@@ -1,5 +1,22 @@
 # Change Log
 
+## 7.5.0
+## Changed
+- fix viewer app
+- Nextcloud v22 is no longer supported
+- Nextcloud v23 is no longer supported
+
+## 7.4.0
+## Added
+- advanced access rights
+- macro launch setting
+- opening file location from viewer
+- Catalan translation
+- theme setting
+
+## Changed
+- fix editor lang
+
 ## 7.3.4
 ## Added
 - Turkish and Galician empty file templates

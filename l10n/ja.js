@@ -62,7 +62,6 @@ OC.L10N.register(
     "This is a public test server, please do not use it for private sensitive data. The server will be available during a 30-day period.": "これはパブリックテストサーバーです。プライベートな機密データには使用しないでください。サーバーを30日間、利用できます。",
     "The 30-day test period is over, you can no longer connect to demo ONLYOFFICE Docs server." : "30日間のテスト期間が終了したら、ONLYOFFICE Docs デモサーバーには繋がらなくなります。",
     "You are using public demo ONLYOFFICE Docs server. Please do not store private sensitive data." : "パブリック ONLYOFFICE Docs サーバーを使っているので、プライベートな機密データを利用しないようにしてください。",
-    "Secure view settings" : "セキュアビュー設定",
     "Secure view enables you to secure documents by embedding a watermark" : "セキュアビューでドキュメント透かしを埋め込んでドキュメントを保護します",
     "Enable watermarking" : "透かしを有効",
     "Watermark text" : "透かしテキスト",
@@ -116,6 +115,19 @@ OC.L10N.register(
     "Create new Form template": "新しいフォームテンプレートの作成",
     "Create form": "フォームの作成",
     "Fill in form in ONLYOFFICE": "ONLYOFFICEでフォームを記入する",
-    "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online": "オンラインで入力可能なフォームを作成するには、ONLYOFFICE Docs 7.0版まで更新してください"
+    "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online": "オンラインで入力可能なフォームを作成するには、ONLYOFFICE Docs 7.0版まで更新してください",
+    "Security": "セキュリティ",
+    "Anonymous": "匿名",
+    "Default editor theme": "デフォルトのエディタテーマ",
+    "Light": "明るい",
+    "Classic Light": "明るい(クラシック)",
+    "Dark": "ダーク",
+    "Review": "レビュー",
+    "Comment": "コメント",
+    "Form filling": "フォーム入力",
+    "Custom filter": "ユーザー設定フィルター",
+    "group": "グループ",
+    "Advanced": "詳細",
+    "Provide advanced document permissions using ONLYOFFICE Docs": "ONLYOFFICE Docsを利用した高度なドキュメント権限の提供"
     },
 "nplurals=1; plural=0;");

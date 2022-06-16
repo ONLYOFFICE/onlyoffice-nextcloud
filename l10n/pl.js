@@ -62,7 +62,6 @@ OC.L10N.register(
     "This is a public test server, please do not use it for private sensitive data. The server will be available during a 30-day period." : "To jest publiczny testowy serwer, proszę nie używać go do prywatnych danych. Serwer będzie dostępny przez 30 dni.",
     "The 30-day test period is over, you can no longer connect to demo ONLYOFFICE Docs server." : "Upłyneło 30 dni, nie możesz się już łączyć z serwerem demo.",
     "You are using public demo ONLYOFFICE Docs server. Please do not store private sensitive data." : "Używasz publicznego serwera demo. Nie przechowuj tu prywatnych danych.",
-    "Secure view settings" : "Ustawienia bezpiecznego widoku",
     "Secure view enables you to secure documents by embedding a watermark" : "Bezpieczny widok pozwala na zabezpieczenie dokumentów poprzez dodanie znaku wodnego",
     "Enable watermarking" : "Włącz znaki wodne",
     "Watermark text" : "Tekst znaku wodnego",
@@ -116,6 +115,17 @@ OC.L10N.register(
     "Create new Form template": "Utwórz nowy szablon formularza",
     "Create form": "Utwórz formularz",
     "Fill in form in ONLYOFFICE": "Wypełnić formularz w ONLYOFFICE",
-    "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online": "Zaktualizuj ONLYOFFICE Docs do wersji 7.0, aby działały w formularzach do wypełniania online"
+    "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online": "Zaktualizuj ONLYOFFICE Docs do wersji 7.0, aby działały w formularzach do wypełniania online",
+    "Security": "Bezpieczeństwo",
+    "Anonymous": "Anonimowy",
+    "Light": "Jasny",
+    "Classic Light": "Klasyczny jasny",
+    "Dark": "Ciemny",
+    "Review": "Recenzja",
+    "Comment": "Komentarz",
+    "Form filling": "Wypełnianie formularza",
+    "Custom filter": "Niestandardowy filtr",
+    "group": "grupa",
+    "Advanced": "Zaawansowane"
 },
 "nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);");

@@ -38,8 +38,7 @@ return [
        ["name" => "editor#restore", "url" => "/ajax/restore", "verb" => "PUT"],
        ["name" => "settings#save_address", "url" => "/ajax/settings/address", "verb" => "PUT"],
        ["name" => "settings#save_common", "url" => "/ajax/settings/common", "verb" => "PUT"],
-       ["name" => "settings#save_watermark", "url" => "/ajax/settings/watermark", "verb" => "PUT"],
-       ["name" => "settings#get_settings", "url" => "/ajax/settings", "verb" => "GET"],
+       ["name" => "settings#save_security", "url" => "/ajax/settings/security", "verb" => "PUT"],
        ["name" => "settings#clear_history", "url" => "/ajax/settings/history", "verb" => "DELETE"],
        ["name" => "template#add_template", "url" => "/ajax/template", "verb" => "POST"],
        ["name" => "template#delete_template", "url" => "/ajax/template", "verb" => "DELETE"],
@@ -48,6 +47,8 @@ return [
     "ocs" => [
         ["name" => "federation#key", "url" => "/api/v1/key", "verb" => "POST"],
         ["name" => "federation#keylock", "url" => "/api/v1/keylock", "verb" => "POST"],
-        ["name" => "editorapi#config", "url" => "/api/v1/config/{fileId}", "verb" => "GET"]
+        ["name" => "editorapi#config", "url" => "/api/v1/config/{fileId}", "verb" => "GET"],
+        ["name" => "sharingapi#get_shares", "url" => "/api/v1/shares/{fileId}", "verb" => "GET"],
+        ["name" => "sharingapi#set_shares", "url" => "/api/v1/shares", "verb" => "PUT"]
     ]
 ];

@@ -62,7 +62,6 @@ OC.L10N.register(
     "This is a public test server, please do not use it for private sensitive data. The server will be available during a 30-day period.": "Questo è un server di prova pubblico, non utilizzarlo per dati sensibili privati. Il server sarà disponibile per un periodo di 30 giorni.",
     "The 30-day test period is over, you can no longer connect to demo ONLYOFFICE Docs server." : "Il periodo di prova di 30 giorni è terminato; non è più possibile connettersi alla versione demo di ONLYOFFICE Docs.",
     "You are using public demo ONLYOFFICE Docs server. Please do not store private sensitive data." : "Stai utilizzando la versione demo pubblica di ONLYOFFICE Docs. Non memorizzare dati sensibili privati.",
-    "Secure view settings" : "Impostazioni di visualizzazione sicura",
     "Secure view enables you to secure documents by embedding a watermark" : "La visualizzazione sicura consente di proteggere i documenti inserendo una filigrana",
     "Enable watermarking" : "Abilita la filigrana",
     "Watermark text" : "Testo della filigrana",
@@ -116,6 +115,19 @@ OC.L10N.register(
     "Create new Form template": "Creare un nuovo modello di modulo",
     "Create form": "Creare modulo",
     "Fill in form in ONLYOFFICE": "Compilare il modulo in ONLYOFFICE",
-    "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online": "Si prega di aggiornare ONLYOFFICE Docs alla versione 7.0 per lavorare su moduli compilabili online"
+    "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online": "Si prega di aggiornare ONLYOFFICE Docs alla versione 7.0 per lavorare su moduli compilabili online",
+    "Security": "Sicurezza",
+    "Anonymous": "Anonimo",
+    "Default editor theme": "Tema dell'editor predefinito",
+    "Light": "Chiaro",
+    "Classic Light": "Classico chiaro",
+    "Dark": "Scuro",
+    "Review": "Revisione",
+    "Comment": "Commento",
+    "Form filling": "Compilare un modulo",
+    "Custom filter": "Filtro personalizzato",
+    "group": "gruppo",
+    "Advanced": "Avanzate",
+    "Provide advanced document permissions using ONLYOFFICE Docs": "Fornisci autorizzazioni avanzate per i documenti utilizzando ONLYOFFICE Docs"
 },
 "nplurals=2; plural=(n != 1);");

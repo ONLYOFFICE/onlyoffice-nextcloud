@@ -116,6 +116,7 @@ class SettingsController extends Controller {
             "formats" => $this->config->FormatsSetting(),
             "sameTab" => $this->config->GetSameTab(),
             "preview" => $this->config->GetPreview(),
+            "advanced" => $this->config->GetAdvanced(),
             "versionHistory" => $this->config->GetVersionHistory(),
             "limitGroups" => $this->config->GetLimitGroups(),
             "chat" => $this->config->GetCustomizationChat(),
@@ -126,8 +127,10 @@ class SettingsController extends Controller {
             "toolbarNoTabs" => $this->config->GetCustomizationToolbarNoTabs(),
             "successful" => $this->config->SettingsAreSuccessful(),
             "watermark" => $this->config->GetWatermarkSettings(),
+            "macros" => $this->config->GetCustomizationMacros(),
             "tagsEnabled" => App::isEnabled("systemtags"),
             "reviewDisplay" => $this->config->GetCustomizationReviewDisplay(),
+            "theme" => $this->config->GetCustomizationTheme(),
             "templates" => $this->GetGlobalTemplates()
         ];
         return new TemplateResponse($this->appName, "settings", $data, "blank");
@@ -192,6 +195,7 @@ class SettingsController extends Controller {
      * @param array $editFormats - editable formats array
      * @param bool $sameTab - open in the same tab
      * @param bool $preview - generate preview files
+     * @param bool $advanced - use advanced tab
      * @param bool $versionHistory - keep version history
      * @param array $limitGroups - list of groups
      * @param bool $chat - display chat
@@ -208,6 +212,7 @@ class SettingsController extends Controller {
                                     $editFormats,
                                     $sameTab,
                                     $preview,
+                                    $advanced,
                                     $versionHistory,
                                     $limitGroups,
                                     $chat,
@@ -216,13 +221,15 @@ class SettingsController extends Controller {
                                     $forcesave,
                                     $help,
                                     $toolbarNoTabs,
-                                    $reviewDisplay
+                                    $reviewDisplay,
+                                    $theme
                                     ) {
 
         $this->config->SetDefaultFormats($defFormats);
         $this->config->SetEditableFormats($editFormats);
         $this->config->SetSameTab($sameTab);
         $this->config->SetPreview($preview);
+        $this->config->SetAdvanced($advanced);
         $this->config->SetVersionHistory($versionHistory);
         $this->config->SetLimitGroups($limitGroups);
         $this->config->SetCustomizationChat($chat);
@@ -232,28 +239,33 @@ class SettingsController extends Controller {
         $this->config->SetCustomizationHelp($help);
         $this->config->SetCustomizationToolbarNoTabs($toolbarNoTabs);
         $this->config->SetCustomizationReviewDisplay($reviewDisplay);
+        $this->config->SetCustomizationTheme($theme);
 
         return [
             ];
     }
 
     /**
-     * Save watermark settings
+     * Save security settings
      *
-     * @param array $settings - watermark settings
+     * @param array $watermarks - watermark settings
+     * @param bool $macros - run document macros
      *
      * @return array
      */
-    public function SaveWatermark($settings) {
+    public function SaveSecurity($watermarks,
+                                    $macros
+                                    ) {
 
-        if ($settings["enabled"] === "true") {
-            $settings["text"] = trim($settings["text"]);
-            if (empty($settings["text"])) {
-                $settings["text"] = $this->trans->t("DO NOT SHARE THIS") . " {userId} {date}";
+        if ($watermarks["enabled"] === "true") {
+            $watermarks["text"] = trim($watermarks["text"]);
+            if (empty($watermarks["text"])) {
+                $watermarks["text"] = $this->trans->t("DO NOT SHARE THIS") . " {userId} {date}";
             }
         }
 
-        $this->config->SetWatermarkSettings($settings);
+        $this->config->SetWatermarkSettings($watermarks);
+        $this->config->SetCustomizationMacros($macros);
 
         return [
             ];
@@ -270,22 +282,6 @@ class SettingsController extends Controller {
 
         return [
             ];
-    }
-
-    /**
-     * Get app settings
-     *
-     * @return array
-     *
-     * @NoAdminRequired
-     * @PublicPage
-     */
-    public function GetSettings() {
-        $result = [
-            "formats" => $this->config->FormatsSetting(),
-            "sameTab" => $this->config->GetSameTab()
-        ];
-        return $result;
     }
 
     /**

@@ -62,7 +62,6 @@ OC.L10N.register(
     "This is a public test server, please do not use it for private sensitive data. The server will be available during a 30-day period." : "Dies ist ein öffentlicher Testserver. Bitte verwende beim Testen keine privaten sensiblen Daten. Der Server ist 30 Tage lang verfügbar.",
     "The 30-day test period is over, you can no longer connect to demo ONLYOFFICE Docs server." : "Der 30-tägige Testzeitraum ist abgelaufen. Du kannst keine Verbindung mehr zu Demo ONLYOFFICE Docs Server herstellen.",
     "You are using public demo ONLYOFFICE Docs server. Please do not store private sensitive data." : "Du verwendest den öffentlichen Demo ONLYOFFICE Docs Server. Bitte benutze ihn nicht zum Speichern von Deinen privaten sensiblen Daten.",
-    "Secure view settings" : "Einstellungen für Sichere Ansicht",
     "Secure view enables you to secure documents by embedding a watermark" : "Sichere Ansicht ermöglicht Dir Dokumente durch Einbettung eines Wasserzeichens abzusichern",
     "Enable watermarking" : "Wasserzeichenmarkierung aktivieren",
     "Watermark text" : "Wasserzeichen-Text",
@@ -116,6 +115,19 @@ OC.L10N.register(
     "Create new Form template": "Neue Formularvorlage erstellen",
     "Create form": "Formular erstellen",
     "Fill in form in ONLYOFFICE": "Formular in ONLYOFFICE ausfüllen",
-    "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online": "Für Online-Arbeit mit Formularen ist Version 7.0 von ONLYOFFICE Docs erforderlich"
+    "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online": "Für Online-Arbeit mit Formularen ist Version 7.0 von ONLYOFFICE Docs erforderlich",
+    "Security": "Sicherheit",
+    "Anonymous": "Anonym",
+    "Default editor theme": "Standardmäßiges Thema des Editors",
+    "Light": "Hell",
+    "Classic Light": "Klassisch Hell",
+    "Dark": "Dunkel",
+    "Review": "Review",
+    "Comment": "Kommentar",
+    "Form filling": "Ausfüllen von formularen",
+    "Custom filter": "Benutzerdefinierter filter",
+    "group": "gruppe",
+    "Advanced": "Erweitert",
+    "Provide advanced document permissions using ONLYOFFICE Docs": "Erweiterte Zugriffsrechte in ONLYOFFICE Docs vergeben"
 },
 "nplurals=2; plural=(n != 1);");

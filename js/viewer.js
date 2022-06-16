@@ -22,28 +22,12 @@
     }
 
     OCA.Onlyoffice = {
-            AppName: "onlyoffice",
-            frameSelector: null,
-            setting: {},
-        };
-
-    OCA.Onlyoffice.GetSettings = function (callbackSettings) {
-        if (OCA.Onlyoffice.setting.formats) {
-
-            callbackSettings();
-
-        } else {
-
-            $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/settings"),
-                function onSuccess(settings) {
-                    OCA.Onlyoffice.setting = settings;
-
-                    callbackSettings();
-                }
-            );
-
-        }
+        AppName: "onlyoffice",
+        frameSelector: null,
+        setting: {},
     };
+
+    OCA.Onlyoffice.setting = OCP.InitialState.loadState(OCA.Onlyoffice.AppName, "settings");
 
     var OnlyofficeViewerVue = {
         name: "OnlyofficeViewerVue",
@@ -54,7 +38,7 @@
                 attrs: {
                     id: "onlyofficeViewerFrame",
                     scrolling: "no",
-                    src: self.url + "&inframe=true",
+                    src: self.url + "&inframe=true&inviewer=true",
                 },
                 on: {
                     load: function () {
@@ -84,30 +68,21 @@
         }
     };
 
-    var initPage = function () {
-        if (OCA.Viewer) {
-            OCA.Onlyoffice.frameSelector = "#onlyofficeViewerFrame";
+    if (OCA.Viewer) {
+        OCA.Onlyoffice.frameSelector = "#onlyofficeViewerFrame";
 
-            OCA.Onlyoffice.GetSettings(function () {
+        var mimes = $.map(OCA.Onlyoffice.setting.formats, function (format) {
+            if (format.def) {
+                return format.mime;
+            }
+        });
 
-                var mimes = $.map(OCA.Onlyoffice.setting.formats, function (format) {
-                    if (format.def) {
-                        return format.mime;
-                    }
-                });
-
-                OCA.Viewer.registerHandler({
-                    id: OCA.Onlyoffice.AppName,
-                    group: null,
-                    mimes: mimes,
-                    component: OnlyofficeViewerVue
-                })
-            });
-        }
-    };
-
-    $(document).ready(function() {
-        initPage();
-    });
+        OCA.Viewer.registerHandler({
+            id: OCA.Onlyoffice.AppName,
+            group: null,
+            mimes: mimes,
+            component: OnlyofficeViewerVue
+        })
+    }
 
 })(OCA);

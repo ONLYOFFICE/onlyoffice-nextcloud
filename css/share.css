@@ -16,15 +16,33 @@
  *
  */
 
-#onlyofficeViewerFrame {
-    background-color: #fff;
-    width: 100%;
-    height: calc(100vh - 50px);
-    display: block;
-    position: absolute;
-    top: 50px;
-    z-index: 110;
+.icon-onlyoffice-sharing {
+    background-image: url("../img/app-dark.svg");
 }
-.modal-wrapper--full #onlyofficeViewerFrame {
-    top: 0;
+.onlyoffice-share-item {
+    display: flex;
+    list-style-type: none;
+}
+.onlyoffice-share-item img {
+    width: 32px;
+    height: 32px;
+}
+.onlyoffice-share-popup {
+    margin-right: 14px;
+    margin-top: 44px;
+}
+.onlyoffice-share-item span {
+    margin-left: 10px;
+    margin-top: 5px;
+}
+#onlyoffice-share-menu {
+    margin-left: auto;
+}
+.onlyoffice-share-action {
+    line-height: 44px;
+}
+.onlyoffice-share-label {
+    padding-right: 14px !important;
+    padding-left: 14px !important;
+    opacity: .7;
 }

@@ -44,6 +44,7 @@ use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\Controller\CallbackController;
 use OCA\Onlyoffice\Controller\EditorController;
 use OCA\Onlyoffice\Controller\EditorApiController;
+use OCA\Onlyoffice\Controller\SharingApiController;
 use OCA\Onlyoffice\Controller\SettingsController;
 use OCA\Onlyoffice\Controller\TemplateController;
 use OCA\Onlyoffice\Listeners\FilesListener;
@@ -58,6 +59,7 @@ use OCA\Onlyoffice\Notifier;
 use OCA\Onlyoffice\Preview;
 use OCA\Onlyoffice\TemplateManager;
 use OCA\Onlyoffice\TemplateProvider;
+use OCA\Onlyoffice\SettingsData;
 
 use Psr\Container\ContainerInterface;
 
@@ -127,6 +129,10 @@ class Application extends App implements IBootstrap {
             );
         });
 
+        $context->registerService("SettingsData", function (ContainerInterface $c) {
+            return new SettingsData($this->appConfig);
+        });
+
         // Controllers
         $context->registerService("SettingsController", function (ContainerInterface $c) {
             return new SettingsController(
@@ -155,6 +161,19 @@ class Application extends App implements IBootstrap {
                 $c->get("IManager"),
                 $c->get("Session"),
                 $c->get("GroupManager")
+            );
+        });
+
+        $context->registerService("SharingApiController", function (ContainerInterface $c) {
+            return new SharingApiController(
+                $c->get("AppName"),
+                $c->get("Request"),
+                $c->get("RootStorage"),
+                $c->get("Logger"),
+                $c->get("UserSession"),
+                $c->get("UserManager"),
+                $c->get("IManager"),
+                $this->appConfig
             );
         });
 

@@ -62,7 +62,6 @@ OC.L10N.register(
     "This is a public test server, please do not use it for private sensitive data. The server will be available during a 30-day period." : "C’est un serveur public proposé à des fins de tests, veuillez ne pas l’utiliser pour vos données personnelles sensibles. Le serveur est disponible pendant 30 jours.",
     "The 30-day test period is over, you can no longer connect to demo ONLYOFFICE Docs server." : "La période d’essai de 30 jours est expirée, vous n’êtes plus en mesure de vous connecter à la version démo de ONLYOFFICE Docs.",
     "You are using public demo ONLYOFFICE Docs server. Please do not store private sensitive data." : "Vous utilisez la version démo de ONLYOFFICE Docs, proposée à des fins de tests. Veuillez ne pas stocker vos données confidentielles.",
-    "Secure view settings" : "Paramètres d’affichage sécurisé",
     "Secure view enables you to secure documents by embedding a watermark" : "L’affichage sécurisé permet de protéger vos documents à l’aide d’un filigrane.",
     "Enable watermarking" : "Activer un filigrane",
     "Watermark text" : "Texte du filigrane",
@@ -116,6 +115,19 @@ OC.L10N.register(
     "Create new Form template": "Créer un nouveau modèle de formulaire",
     "Create form": "Créer un formulaire",
     "Fill in form in ONLYOFFICE": "Remplir le formulaire dans ONLYOFFICE",
-    "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online": "Veuillez mettre à jour ONLYOFFICE Docs vers la version 7.0 pour travailler sur les formulaires à remplir en ligne"
+    "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online": "Veuillez mettre à jour ONLYOFFICE Docs vers la version 7.0 pour travailler sur les formulaires à remplir en ligne",
+    "Security": "Sécurité",
+    "Anonymous": "Anonyme",
+    "Default editor theme": "Thème d'éditeur par défaut",
+    "Light": "Clair",
+    "Classic Light": "Classique clair",
+    "Dark": "Sombre",
+    "Review": "Révision",
+    "Comment": "Commentaire",
+    "Form filling": "Remplissage de formulaire",
+    "Custom filter": "Filtre personnalisé",
+    "group": "groupe",
+    "Advanced": "Avancé",
+    "Provide advanced document permissions using ONLYOFFICE Docs": "Fournir des autorisations avancées pour les documents en utilisant ONLYOFFICE Docs"
 },
 "nplurals=2; plural=(n > 1);");
