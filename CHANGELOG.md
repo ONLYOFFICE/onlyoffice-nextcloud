@@ -6,6 +6,10 @@
 - Nextcloud v22 is no longer supported
 - Nextcloud v23 is no longer supported
 
+## 7.4.2
+## Changed
+- fix translation
+
 ## 7.4.0
 ## Added
 - advanced access rights
