@@ -1,5 +1,9 @@
 # Change Log
 
+## 7.5.2
+## Changed
+- fix translation for v24
+
 ## 7.5.0
 ## Changed
 - fix viewer app
