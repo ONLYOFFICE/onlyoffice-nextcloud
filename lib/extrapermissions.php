@@ -254,7 +254,7 @@ class ExtraPermissions {
     /**
      * Delete list extra permissions
      *
-     * @param integer $shareIds - array of share identifiers
+     * @param array $shareIds - array of share identifiers
      *
      * @return bool
      */
@@ -293,7 +293,9 @@ class ExtraPermissions {
 
         $values = $result ? $select->fetch() : [];
 
-        return $values;
+        $value = is_array($values) ? $values : [];
+
+        return $value;
     }
 
     /**
@@ -323,7 +325,9 @@ class ExtraPermissions {
 
         $values = $result ? $select->fetchAll() : [];
 
-        return $values;
+        $value = is_array($values) ? $values : [];
+
+        return $value;
     }
 
     /**
