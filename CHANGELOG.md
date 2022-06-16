@@ -1,10 +1,18 @@
 # Change Log
 
+## 7.5.2
+## Changed
+- fix translation for v24
+
 ## 7.5.0
 ## Changed
 - fix viewer app
 - Nextcloud v22 is no longer supported
 - Nextcloud v23 is no longer supported
+
+## 7.4.2
+## Changed
+- fix translation
 
 ## 7.4.0
 ## Added
