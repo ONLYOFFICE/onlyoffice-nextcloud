@@ -1,5 +1,8 @@
 # Change Log
 
+## Added
+- Chinese (Traditional, Taiwan), Basque (Spain) empty file templates
+
 ## 7.4.4
 ## Changed
 - fix opening editor in new tab
