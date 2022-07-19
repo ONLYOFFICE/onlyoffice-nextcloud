@@ -1,5 +1,8 @@
 # Change Log
 
+## ADded
+- Dutch translation
+
 ## 7.4.2
 ## Changed
 - fix translation
