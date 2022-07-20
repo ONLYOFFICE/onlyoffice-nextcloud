@@ -50,6 +50,7 @@ return [
         ["name" => "federation#keylock", "url" => "/api/v1/keylock", "verb" => "POST"],
         ["name" => "editorapi#config", "url" => "/api/v1/config/{fileId}", "verb" => "GET"],
         ["name" => "sharingapi#get_shares", "url" => "/api/v1/shares/{fileId}", "verb" => "GET"],
-        ["name" => "sharingapi#set_shares", "url" => "/api/v1/shares", "verb" => "PUT"]
+        ["name" => "sharingapi#set_shares", "url" => "/api/v1/shares", "verb" => "PUT"],
+        ["name" => "desktopapi#upload", "url" => "/api/v1/upload", "verb" => "POST"]
     ]
 ];

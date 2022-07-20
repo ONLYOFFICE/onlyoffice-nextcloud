@@ -42,6 +42,7 @@ use OCA\Viewer\Event\LoadViewer;
 
 use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\Controller\CallbackController;
+use OCA\Onlyoffice\Controller\DesktopApiController;
 use OCA\Onlyoffice\Controller\EditorController;
 use OCA\Onlyoffice\Controller\EditorApiController;
 use OCA\Onlyoffice\Controller\SharingApiController;
@@ -220,6 +221,16 @@ class Application extends App implements IBootstrap {
                 $c->get("L10N"),
                 $c->get("Logger"),
                 $c->get(IPreview::class)
+            );
+        });
+
+        $context->registerService("DesktopApiController", function (ContainerInterface $c) {
+            return new DesktopApiController(
+                $c->get("AppName"),
+                $c->get("Request"),
+                $c->get("RootStorage"),
+                $c->get("Logger"),
+                $c->get("UserSession")
             );
         });
 
