@@ -1,5 +1,9 @@
 # Change Log
 
+## Changed
+- fix opening editor in new tab
+- fix download as on MacOS
+
 ## 7.4.2
 ## Changed
 - fix translation
