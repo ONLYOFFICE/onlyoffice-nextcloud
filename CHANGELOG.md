@@ -1,5 +1,6 @@
 # Change Log
 
+## 7.5.4
 ## Changed
 - fix opening editor in new tab
 - fix download as on MacOS
