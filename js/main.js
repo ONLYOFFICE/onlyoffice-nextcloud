@@ -218,7 +218,7 @@
                 $(optionNodeOrigin).text(t(OCA.Onlyoffice.AppName, "Origin format"));
 
                 dialog[0].dataset.format = extension;
-                selectNode.onclick = function() {
+                selectNode.onchange = function() {
                     dialog[0].dataset.format = $("#onlyoffice-download-select option:selected").attr("data-value");
                 }
 
