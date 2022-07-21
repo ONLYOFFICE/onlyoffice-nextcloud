@@ -1,5 +1,9 @@
 # Change Log
 
+## Changed
+- fix opening editor in new tab
+- fix download as on MacOS
+
 ## 7.5.2
 ## Changed
 - fix translation for v24

@@ -264,7 +264,7 @@ class EditorController extends Controller {
             $targetName = $targetFile->getName();
             $targetExt = strtolower(pathinfo($targetName, PATHINFO_EXTENSION));
             $targetKey = $this->fileUtility->getKey($targetFile);
-            
+
             $fileUrl = $this->getUrl($targetFile, $user, $shareToken);
 
             $ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
