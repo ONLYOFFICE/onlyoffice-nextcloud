@@ -164,8 +164,9 @@
     OCA.Onlyoffice.FileClick = function (fileName, context) {
         var fileInfoModel = context.fileInfoModel || context.fileList.getModelForFile(fileName);
         var fileId = context.fileId || fileInfoModel.id;
+        var winEditor = !fileInfoModel && !OCA.Onlyoffice.setting.sameTab ? document : null;
 
-        OCA.Onlyoffice.OpenEditor(fileId, context.dir, fileName, 0, (OCA.Onlyoffice.setting.sameTab ? null : document));
+        OCA.Onlyoffice.OpenEditor(fileId, context.dir, fileName, 0, winEditor);
 
         OCA.Onlyoffice.context = context;
         OCA.Onlyoffice.context.fileName = fileName;
@@ -217,7 +218,7 @@
                 $(optionNodeOrigin).text(t(OCA.Onlyoffice.AppName, "Origin format"));
 
                 dialog[0].dataset.format = extension;
-                selectNode.onclick = function() {
+                selectNode.onchange = function() {
                     dialog[0].dataset.format = $("#onlyoffice-download-select option:selected").attr("data-value");
                 }
 
