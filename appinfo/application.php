@@ -216,7 +216,8 @@ class Application extends App implements IBootstrap {
                 $c->get("Logger"),
                 $this->appConfig,
                 $this->crypt,
-                $c->get("IManager")
+                $c->get("IManager"),
+                $c->get(ILockManager::class)
             );
         });
 
