@@ -73,7 +73,7 @@ class Version070400Date20220607111111 extends SimpleMigrationStep {
 				'default' => 0,
 			]);
 			$table->setPrimaryKey(['id']);
-			$table->addUniqueIndex(['share_id'], 'share_id_index');
+			$table->addUniqueIndex(['share_id'], 'op_share_id_index');
 		}
 
 		return $schema;
