@@ -700,6 +700,11 @@ class EditorApiController extends OCSController {
         }
 
         //default is true
+        if ($this->config->GetCustomizationMentionShare() === false) {
+            $params["editorConfig"]["customization"]["mentionShare"] = false;
+        }
+
+        //default is true
         if ($this->config->GetCustomizationHelp() === false) {
             $params["editorConfig"]["customization"]["help"] = false;
         }

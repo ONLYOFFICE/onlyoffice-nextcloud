@@ -491,34 +491,34 @@ class EditorController extends Controller {
 
         $shareMemberGroups = $this->shareManager->shareWithGroupMembersOnly();
         $canShare = (($file->getPermissions() & Constants::PERMISSION_SHARE) === Constants::PERMISSION_SHARE)
-                    && !$isMemberExcludedGroups;
+            && !$isMemberExcludedGroups
+            && $this->config->GetCustomizationMentionShare();
 
         $accessList = $this->shareManager->getAccessList($file);
 
         foreach ($recipientIds as $recipientId) {
             if (!in_array($recipientId, $accessList["users"])) {
-                if (!$canShare) {
-                    continue;
-                }
-                if ($shareMemberGroups) {
-                    $recipient = $this->userManager->get($recipientId);
-                    $recipientGroups = $this->groupManager->getUserGroupIds($recipient);
-                    if (empty(array_intersect($currentUserGroups, $recipientGroups))) {
-                        continue;
+                if ($canShare) {
+                    if ($shareMemberGroups) {
+                        $recipient = $this->userManager->get($recipientId);
+                        $recipientGroups = $this->groupManager->getUserGroupIds($recipient);
+                        if (empty(array_intersect($currentUserGroups, $recipientGroups))) {
+                            continue;
+                        }
                     }
+
+                    $share = $this->shareManager->newShare();
+                    $share->setNode($file)
+                        ->setShareType(IShare::TYPE_USER)
+                        ->setSharedBy($userId)
+                        ->setSharedWith($recipientId)
+                        ->setShareOwner($userId)
+                        ->setPermissions(Constants::PERMISSION_READ);
+
+                    $this->shareManager->createShare($share);
+
+                    $this->logger->debug("mention: share $fileId to $recipientId", ["app" => $this->appName]);
                 }
-
-                $share = $this->shareManager->newShare();
-                $share->setNode($file)
-                    ->setShareType(IShare::TYPE_USER)
-                    ->setSharedBy($userId)
-                    ->setSharedWith($recipientId)
-                    ->setShareOwner($userId)
-                    ->setPermissions(Constants::PERMISSION_READ);
-
-                $this->shareManager->createShare($share);
-
-                $this->logger->debug("mention: share $fileId to $recipientId", ["app" => $this->appName]);
             }
 
             $notification->setUser($recipientId);

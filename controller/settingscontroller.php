@@ -123,6 +123,7 @@ class SettingsController extends Controller {
             "compactHeader" => $this->config->GetCustomizationCompactHeader(),
             "feedback" => $this->config->GetCustomizationFeedback(),
             "forcesave" => $this->config->GetCustomizationForcesave(),
+            "mentionShare" => $this->config->GetCustomizationMentionShare(),
             "help" => $this->config->GetCustomizationHelp(),
             "toolbarNoTabs" => $this->config->GetCustomizationToolbarNoTabs(),
             "successful" => $this->config->SettingsAreSuccessful(),
@@ -202,6 +203,7 @@ class SettingsController extends Controller {
      * @param bool $compactHeader - display compact header
      * @param bool $feedback - display feedback
      * @param bool $forcesave - forcesave
+     * @param bool $mentionShare - mentionShare
      * @param bool $help - display help
      * @param bool $toolbarNoTabs - display toolbar tab
      * @param string $reviewDisplay - review viewing mode
@@ -219,6 +221,7 @@ class SettingsController extends Controller {
                                     $compactHeader,
                                     $feedback,
                                     $forcesave,
+                                    $mentionShare,
                                     $help,
                                     $toolbarNoTabs,
                                     $reviewDisplay,
@@ -236,6 +239,7 @@ class SettingsController extends Controller {
         $this->config->SetCustomizationCompactHeader($compactHeader);
         $this->config->SetCustomizationFeedback($feedback);
         $this->config->SetCustomizationForcesave($forcesave);
+        $this->config->SetCustomizationMentionShare($mentionShare);
         $this->config->SetCustomizationHelp($help);
         $this->config->SetCustomizationToolbarNoTabs($toolbarNoTabs);
         $this->config->SetCustomizationReviewDisplay($reviewDisplay);

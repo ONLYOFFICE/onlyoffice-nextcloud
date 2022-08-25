@@ -201,6 +201,7 @@
             var compactHeader = $("#onlyofficeCompactHeader").is(":checked");
             var feedback = $("#onlyofficeFeedback").is(":checked");
             var forcesave = $("#onlyofficeForcesave").is(":checked");
+            var mentionShare = $("#onlyofficeMentionShare").is(":checked");
             var help = $("#onlyofficeHelp").is(":checked");
             var toolbarNoTabs = $("#onlyofficeToolbarNoTabs").is(":checked");
             var reviewDisplay = $("input[type='radio'][name='reviewDisplay']:checked").attr("id").replace("onlyofficeReviewDisplay_", "");
@@ -221,6 +222,7 @@
                     compactHeader: compactHeader,
                     feedback: feedback,
                     forcesave: forcesave,
+                    mentionShare: mentionShare,
                     help: help,
                     toolbarNoTabs: toolbarNoTabs,
                     reviewDisplay: reviewDisplay,

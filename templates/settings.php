@@ -171,6 +171,12 @@
         <label for="onlyofficeForcesave"><?php p($l->t("Keep intermediate versions when editing (forcesave)")) ?></label>
     </p>
 
+    <p>
+        <input type="checkbox" class="checkbox" id="onlyofficeMentionShare"
+               <?php if ($_["mentionShare"]) { ?>checked="checked"<?php } ?> />
+        <label for="onlyofficeMentionShare"><?php p($l->t("Editor config customization: mention share")) ?></label>
+    </p>
+
     <p class="onlyoffice-header">
         <?php p($l->t("The customization section allows personalizing the editor interface")) ?>
     </p>

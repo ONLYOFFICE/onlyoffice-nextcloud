@@ -159,6 +159,13 @@ class AppConfig {
     private $_customizationForcesave = "customizationForcesave";
 
     /**
+     * The config key for the mentionShare setting
+     *
+     * @var string
+     */
+    private $_customizationMentionShare = "customizationMentionShare";
+
+    /**
      * The config key for the help display setting
      *
      * @var string
@@ -792,6 +799,25 @@ class AppConfig {
      */
     public function GetCustomizationForcesave() {
         return $this->config->getAppValue($this->appName, $this->_customizationForcesave, "false") === "true";
+    }
+
+    /**
+     * Save mentionShare setting
+     *
+     * @param bool $value - mentionShare
+     */
+    public function SetCustomizationMentionShare($value) {
+        $this->logger->info("Set mentionShare: " . json_encode($value), ["app" => $this->appName]);
+        $this->config->setAppValue($this->appName, $this->_customizationMentionShare, json_encode($value));
+    }
+
+    /**
+     * Get mentionShare setting
+     *
+     * @return bool
+     */
+    public function GetCustomizationMentionShare() {
+        return $this->config->getAppValue($this->appName, $this->_customizationMentionShare, "true") === "true";
     }
 
     /**
