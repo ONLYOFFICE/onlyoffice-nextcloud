@@ -205,6 +205,7 @@
             var toolbarNoTabs = $("#onlyofficeToolbarNoTabs").is(":checked");
             var reviewDisplay = $("input[type='radio'][name='reviewDisplay']:checked").attr("id").replace("onlyofficeReviewDisplay_", "");
             var theme = $("input[type='radio'][name='theme']:checked").attr("id").replace("onlyofficeTheme_", "");
+            var plugins = $("#onlyofficePlugins").is(":checked");
 
             $.ajax({
                 method: "PUT",
@@ -224,7 +225,8 @@
                     help: help,
                     toolbarNoTabs: toolbarNoTabs,
                     reviewDisplay: reviewDisplay,
-                    theme: theme
+                    theme: theme,
+                    plugins: plugins
                 },
                 success: function onSuccess(response) {
                     $(".section-onlyoffice").removeClass("icon-loading");

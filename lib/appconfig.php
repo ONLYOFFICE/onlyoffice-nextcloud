@@ -299,6 +299,13 @@ class AppConfig {
     public $_customizationMacros = "customization_macros";
 
     /**
+     * The config key for the plugins
+     *
+     * @var string
+     */
+    public $_customizationPlugins = "customization_plugins";
+
+    /**
      * @param string $AppName - application name
      */
     public function __construct($AppName) {
@@ -1176,6 +1183,26 @@ class AppConfig {
      */
     public function GetCustomizationMacros() {
         return $this->config->getAppValue($this->appName, $this->_customizationMacros, "true") === "true";
+    }
+
+    /**
+     * Save plugins setting
+     *
+     * @param bool $value - enable macros
+     */
+    public function SetCustomizationPlugins($value) {
+        $this->logger->info("Set plugins enabled: " . json_encode($value), ["app" => $this->appName]);
+
+        $this->config->setAppValue($this->appName, $this->_customizationPlugins, json_encode($value));
+    }
+
+    /**
+     * Get plugins setting
+     *
+     * @return bool
+     */
+    public function GetCustomizationPlugins() {
+        return $this->config->getAppValue($this->appName, $this->_customizationPlugins, "true") === "true";
     }
 
     /**
