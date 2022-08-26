@@ -85,6 +85,7 @@ OC.L10N.register(
     "version": "version",
     "Disable certificate verification (insecure)": "Zertifikatsüberprüfung deaktivieren (unsicher)",
     "Keep intermediate versions when editing (forcesave)": "Zwischenversionen bei der Bearbeitung aufbewahren (force save)",
+    "Share document with user when mentioning him (mentionShare)": "Dokument mit dem Benutzer teilen, wenn er ihn erwähnt (mentionShare)",
     "Use ONLYOFFICE to generate a document preview (it will take up disk space)": "ONLYOFFICE verwenden, um eine Dokumentvorschau zu erstellen (Speicherplatz erforderlich)",
     "Keep metadata for each version once the document is edited (it will take up disk space)": "Metadaten für jede Version beim Bearbeiten des Dokuments aufbewahren (Speicherplatz erforderlich)",
     "All history successfully deleted": "Gesamtverlauf wurde erfolgreich gelöscht",

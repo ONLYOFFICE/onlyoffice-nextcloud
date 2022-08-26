@@ -174,7 +174,7 @@
     <p>
         <input type="checkbox" class="checkbox" id="onlyofficeMentionShare"
                <?php if ($_["mentionShare"]) { ?>checked="checked"<?php } ?> />
-        <label for="onlyofficeMentionShare"><?php p($l->t("Editor config customization: mention share")) ?></label>
+        <label for="onlyofficeMentionShare"><?php p($l->t("Share document with user when mentioning him (mentionShare)")) ?></label>
     </p>
 
     <p class="onlyoffice-header">

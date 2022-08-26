@@ -85,6 +85,7 @@ OC.L10N.register(
     "version": "версия",
     "Disable certificate verification (insecure)": "Деактивиране на проверката на сертификата (несигурно)",
     "Keep intermediate versions when editing (forcesave)": "Съхранявайте междинни версии при редактиране (force save)",
+    "Share document with user when mentioning him (mentionShare)": "Споделяне на документ с потребителя, когато го споменава (mentionShare)",
     "Use ONLYOFFICE to generate a document preview (it will take up disk space)": "Използвайте ONLYOFFICE, за да генерирате преглед на документа (ще заеме дисково пространство)",
     "Keep metadata for each version once the document is edited (it will take up disk space)": "Запазете метаданните за всяка версия, щом документът бъде редактиран (ще заеме дисково пространство)",
     "All history successfully deleted": "Цялата история е успешно изтрита",
