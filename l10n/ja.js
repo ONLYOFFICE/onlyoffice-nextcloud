@@ -78,7 +78,7 @@ OC.L10N.register(
     "Show watermark on link shares with specific system tags" : "特定のシステムタグが付いていてリンク共有されたものに透かしを入れる",
     "Select tag" : "タグを選択",
     "Select file to compare" : "比較するファイルを選択",
-    "Review mode for viewing": "レビューモード時の表示方式",
+    "Review mode for viewing": "レビューモード時のデフォルトの表示方式",
     "Markup": "マークアップ",
     "Final": "最終版",
     "Original": "オリジナル",
