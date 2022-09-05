@@ -30,7 +30,7 @@
     "Server can't read xml" : "サーバーでxmlを読み込ませんでした",
     "Bad Response. Errors: " : "不正なレスポンス エラー: ",
     "Documentation" : "ドキュメンテーション",
-    "ONLYOFFICE Docs Location specifies the address of the server with the document services installed. Please change the '<documentserver>' for the server address in the below line." : "ONLYOFFICE Docs の位置は、ドキュメントサービスがインストールされているサーバーのアドレスを指定します。以下の行の'<documentserver>'をサーバーアドレスに変更してください。",
+    "ONLYOFFICE Docs Location specifies the address of the server with the document services installed. Please change the '<documentserver>' for the server address in the below line." : "ONLYOFFICE Docsアドレスにはドキュメントサービスがインストールされているサーバーのアドレスを指定します。以下の行の'<documentserver>'をサーバーアドレスに変更してください。",
     "ONLYOFFICE Docs address" : "ONLYOFFICE Docs アドレス",
     "Advanced server settings" : "サーバー詳細設定",
     "ONLYOFFICE Docs address for internal requests from the server" : "サーバーから内部リクエストに利用されるONLYOFFICE Docs アドレス",
