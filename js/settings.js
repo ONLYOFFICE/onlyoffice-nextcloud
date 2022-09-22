@@ -202,6 +202,7 @@
             var feedback = $("#onlyofficeFeedback").is(":checked");
             var forcesave = $("#onlyofficeForcesave").is(":checked");
             var mentionShare = $("#onlyofficeMentionShare").is(":checked");
+            var floatingVersion = $("#onlyofficeFloatingVersion").is(":checked");
             var help = $("#onlyofficeHelp").is(":checked");
             var toolbarNoTabs = $("#onlyofficeToolbarNoTabs").is(":checked");
             var reviewDisplay = $("input[type='radio'][name='reviewDisplay']:checked").attr("id").replace("onlyofficeReviewDisplay_", "");
@@ -226,7 +227,8 @@
                     help: help,
                     toolbarNoTabs: toolbarNoTabs,
                     reviewDisplay: reviewDisplay,
-                    theme: theme
+                    theme: theme,
+                    floatingVersion: floatingVersion
                 },
                 success: function onSuccess(response) {
                     $(".section-onlyoffice").removeClass("icon-loading");
@@ -326,7 +328,7 @@
 
                 $(".section-onlyoffice").removeClass("icon-loading");
                 var message = error ? t(OCA.Onlyoffice.AppName, "Error") + ": " + error
-                                    : t(OCA.Onlyoffice.AppName, "Template successfully added");
+                    : t(OCA.Onlyoffice.AppName, "Template successfully added");
 
                 if (error) {
                     OCP.Toast.error(message);
@@ -349,7 +351,7 @@
                 $(".section-onlyoffice").removeClass("icon-loading");
 
                 var message = response.error ? t(OCA.Onlyoffice.AppName, "Error") + ": " + response.error
-                                             : t(OCA.Onlyoffice.AppName, "Template successfully deleted");
+                    : t(OCA.Onlyoffice.AppName, "Template successfully deleted");
                 if (response.error) {
                     OCP.Toast.error(message);
                     return;
@@ -365,10 +367,10 @@
             var templateId = $(item).attr("data-id");
 
             var url = OC.generateUrl("/apps/" + OCA.Onlyoffice.AppName + "/{fileId}?template={template}",
-            {
-                fileId: templateId,
-                template: "true"
-            });
+                {
+                    fileId: templateId,
+                    template: "true"
+                });
 
             window.open(url);
         });

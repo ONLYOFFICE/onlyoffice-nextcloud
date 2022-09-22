@@ -83,13 +83,13 @@ class SettingsController extends Controller {
      * @param Crypt $crypt - hash generator
      */
     public function __construct($AppName,
-                                    IRequest $request,
-                                    IURLGenerator $urlGenerator,
-                                    IL10N $trans,
-                                    ILogger $logger,
-                                    AppConfig $config,
-                                    Crypt $crypt
-                                    ) {
+                                IRequest $request,
+                                IURLGenerator $urlGenerator,
+                                IL10N $trans,
+                                ILogger $logger,
+                                AppConfig $config,
+                                Crypt $crypt
+    ) {
         parent::__construct($AppName, $request);
 
         $this->urlGenerator = $urlGenerator;
@@ -132,7 +132,8 @@ class SettingsController extends Controller {
             "tagsEnabled" => App::isEnabled("systemtags"),
             "reviewDisplay" => $this->config->GetCustomizationReviewDisplay(),
             "theme" => $this->config->GetCustomizationTheme(),
-            "templates" => $this->GetGlobalTemplates()
+            "templates" => $this->GetGlobalTemplates(),
+            "floatingVersion" => $this->config->GetFloatingVersion()
         ];
         return new TemplateResponse($this->appName, "settings", $data, "blank");
     }
@@ -150,12 +151,12 @@ class SettingsController extends Controller {
      * @return array
      */
     public function SaveAddress($documentserver,
-                                    $documentserverInternal,
-                                    $storageUrl,
-                                    $verifyPeerOff,
-                                    $secret,
-                                    $demo
-                                    ) {
+                                $documentserverInternal,
+                                $storageUrl,
+                                $verifyPeerOff,
+                                $secret,
+                                $demo
+    ) {
         $error = null;
         if (!$this->config->SelectDemo($demo === true)) {
             $error = $this->trans->t("The 30-day test period is over, you can no longer connect to demo ONLYOFFICE Docs server.");
@@ -186,7 +187,7 @@ class SettingsController extends Controller {
             "secret" => $this->config->GetDocumentServerSecret(true),
             "error" => $error,
             "version" => $version,
-            ];
+        ];
     }
 
     /**
@@ -207,26 +208,28 @@ class SettingsController extends Controller {
      * @param bool $help - display help
      * @param bool $toolbarNoTabs - display toolbar tab
      * @param string $reviewDisplay - review viewing mode
+     * @param bool $floatingVersion - floatingVersion
      *
      * @return array
      */
     public function SaveCommon($defFormats,
-                                    $editFormats,
-                                    $sameTab,
-                                    $preview,
-                                    $advanced,
-                                    $versionHistory,
-                                    $limitGroups,
-                                    $chat,
-                                    $compactHeader,
-                                    $feedback,
-                                    $forcesave,
-                                    $mentionShare,
-                                    $help,
-                                    $toolbarNoTabs,
-                                    $reviewDisplay,
-                                    $theme
-                                    ) {
+                               $editFormats,
+                               $sameTab,
+                               $preview,
+                               $advanced,
+                               $versionHistory,
+                               $limitGroups,
+                               $chat,
+                               $compactHeader,
+                               $feedback,
+                               $forcesave,
+                               $mentionShare,
+                               $help,
+                               $toolbarNoTabs,
+                               $reviewDisplay,
+                               $theme,
+                               $floatingVersion
+    ) {
 
         $this->config->SetDefaultFormats($defFormats);
         $this->config->SetEditableFormats($editFormats);
@@ -244,9 +247,10 @@ class SettingsController extends Controller {
         $this->config->SetCustomizationToolbarNoTabs($toolbarNoTabs);
         $this->config->SetCustomizationReviewDisplay($reviewDisplay);
         $this->config->SetCustomizationTheme($theme);
+        $this->config->SetFloatingVersion($floatingVersion);
 
         return [
-            ];
+        ];
     }
 
     /**
@@ -258,8 +262,8 @@ class SettingsController extends Controller {
      * @return array
      */
     public function SaveSecurity($watermarks,
-                                    $macros
-                                    ) {
+                                 $macros
+    ) {
 
         if ($watermarks["enabled"] === "true") {
             $watermarks["text"] = trim($watermarks["text"]);
@@ -272,7 +276,7 @@ class SettingsController extends Controller {
         $this->config->SetCustomizationMacros($macros);
 
         return [
-            ];
+        ];
     }
 
     /**
@@ -285,7 +289,7 @@ class SettingsController extends Controller {
         FileVersions::clearHistory();
 
         return [
-            ];
+        ];
     }
 
     /**

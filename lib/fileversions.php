@@ -23,6 +23,7 @@ use OC\Files\Node\File;
 use OC\Files\View;
 use OC\User\Database;
 
+use OCA\GroupFolders\Mount\GroupMountPoint;
 use OCP\Files\FileInfo;
 use OCP\IUser;
 
@@ -127,6 +128,83 @@ class FileVersions {
         }
 
         return [$view, $path];
+    }
+
+    /**
+     * Delete Nextcloud version of file
+     *
+     * @param string $dataDirectory - data directory
+     * @param string $ownerId - file owner id
+     * @param string $fileName - file name
+     * @param string $versionId - version id
+     * @param FileInfo $fileInfo - fileInfo
+     */
+    private static function deleteNextcloudVersion ($dataDirectory, $ownerId, $fileName, $versionId, $fileInfo) {
+        $logger = \OC::$server->getLogger();
+
+        $path = $dataDirectory . "/" . $ownerId . "/files_versions/" . $fileName . ".v" . $versionId;
+
+        try {
+            unlink($path);
+        } catch (\Exception $e) {
+            $logger->logException($e, ["message" => "deleteNextcloudVersion: delete $fileId Nextcloud version error", "app" => self::$appName]);
+        }
+
+
+        $logger->debug("deleteNextcloudVersion $ownerId $fileName version: $versionId", ["app" => self::$appName]);
+    }
+
+    /**
+     * Check if previous version is floating
+     *
+     * @param string $ownerId - file owner id
+     * @param string $fileId - file id
+     * @param string $prevVersionId - previous version id
+     * @param string $newVersionId - new version id
+     */
+    private static function isPrevFloatVersion($ownerId, $fileId, $prevVersionId, $newVersionId) {
+        if ($ownerId === null || $fileId === null) {
+            return null;
+        }
+
+        $prevFirstChangeTime = self::getFirstChangeTime($ownerId, $fileId, $prevVersionId);
+        $newFirstChangeTime = self::getFirstChangeTime($ownerId, $fileId, $newVersionId);
+
+        if ($prevFirstChangeTime === null || $newFirstChangeTime === null) {
+            return null;
+        }
+
+        return strcasecmp($prevFirstChangeTime, $newFirstChangeTime) == 0;
+    }
+
+    /**
+     * Get time (string) of first change in history
+     *
+     * @param string $ownerId - file owner id
+     * @param string $fileId - file id
+     * @param string $versionId - version id
+     */
+    private static function getFirstChangeTime($ownerId, $fileId, $versionId) {
+        if ($ownerId === null || $fileId === null) {
+            return null;
+        }
+
+        list ($view, $path) = self::getView($ownerId, $fileId);
+        if ($view === null) {
+            return null;
+        }
+
+        $historyPath = $path . "/" . $versionId . self::$historyExt;
+        if (!$view->file_exists($historyPath)) {
+            return null;
+        }
+
+        $historyDataString = $view->file_get_contents($historyPath);
+        $historyData = json_decode($historyDataString, true);
+        $changes = $historyData["changes"];
+        $firstChange = $changes[0];
+
+        return $firstChange["created"];
     }
 
     /**
@@ -288,6 +366,84 @@ class FileVersions {
     }
 
     /**
+     * Save floating version after force save
+     *
+     * @param FileInfo $fileInfo - file info
+     * @param array $history - file history
+     * @param string $changes - file changes
+     * @param string $prevVersion - previous version for check
+     */
+    public static function saveFloatHistory($fileInfo, $history, $changes, $prevVersion, $fileName, $dataDirectory) {
+        $logger = \OC::$server->getLogger();
+
+        if ($fileInfo === null) {
+            return;
+        }
+
+        $owner = $fileInfo->getOwner();
+        if ($owner === null) {
+            return;
+        }
+
+        if (empty($history) || empty($changes)) {
+            return;
+        }
+
+        if ($fileInfo->getStorage()->instanceOfStorage(SharingExternalStorage::class)) {
+            return;
+        }
+
+        if ($fileInfo->getMountPoint() instanceof GroupMountPoint) {
+            $ownerId = substr($fileInfo->getMountPoint()->getOnlyofficePath(), 1);
+        } else {
+            $ownerId = $owner->getUID();
+        }
+        $fileId = $fileInfo->getId();
+        $versionId = $fileInfo->getMtime();
+
+        list ($view, $path) = self::getView($ownerId, $fileId, true);
+
+        $prevHistoryPath = $path . "/" . $prevVersion . self::$historyExt;
+        if (!$view->file_exists($prevHistoryPath)) {
+            self::saveHistory($fileInfo, $history, $changes, $prevVersion);
+            return;
+        }
+        $prevHistoryDataString = $view->file_get_contents($prevHistoryPath);
+        $prevHistoryData = json_decode($prevHistoryDataString, true);
+
+        $newPrevVersion = $prevHistoryData["prev"];
+
+        try {
+            $changesPath = $path . "/" . $versionId . self::$changesExt;
+            $view->touch($changesPath);
+            $view->file_put_contents($changesPath, $changes);
+
+            $history["prev"] = $newPrevVersion;
+            $historyPath = $path . "/" . $versionId . self::$historyExt;
+            $view->touch($historyPath);
+            $view->file_put_contents($historyPath, json_encode($history));
+
+            if (!self::isPrevFloatVersion($ownerId, $fileId, $prevVersion, $versionId)) {
+                $history["prev"] = $prevVersion;
+                unlink($historyPath);
+                $view->touch($historyPath);
+                $view->file_put_contents($historyPath, json_encode($history));
+                $logger->debug("saveFloatHistory: $prevVersion is not float for $versionId", ["app" => self::$appName]);
+                return;
+            }
+
+            self::deleteVersion($ownerId, $fileId, $prevVersion);
+            self::deleteAuthor($ownerId, $fileId, $prevVersion);
+
+            $logger->debug("saveFloatHistory: $fileId for $ownerId stored changes $changesPath history $historyPath", ["app" => self::$appName]);
+        } catch (\Exception $e) {
+            $logger->logException($e, ["message" => "saveFloatHistory: save $fileId history error", "app" => self::$appName]);
+        }
+
+        self::deleteNextcloudVersion($dataDirectory, $ownerId, $fileName, $prevVersion, $fileInfo);
+    }
+
+    /**
      * Delete all versions of file
      *
      * @param string $ownerId - file owner id
@@ -316,7 +472,7 @@ class FileVersions {
      * @param string $ownerId - file owner id
      * @param string $fileId - file id
      * @param string $versionId - file version
-    */
+     */
     public static function deleteVersion($ownerId, $fileId, $versionId) {
         $logger = \OC::$server->getLogger();
 
@@ -391,7 +547,11 @@ class FileVersions {
             return;
         }
 
-        $ownerId = $owner->getUID();
+        if ($fileInfo->getMountPoint() instanceof GroupMountPoint) {
+            $ownerId = substr($fileInfo->getMountPoint()->getOnlyofficePath(), 1);
+        } else {
+            $ownerId = $owner->getUID();
+        }
         $fileId = $fileInfo->getId();
         $versionId = $fileInfo->getMtime();
 
@@ -451,7 +611,7 @@ class FileVersions {
      * @param string $ownerId - file owner id
      * @param string $fileId - file id
      * @param string $versionId - file version
-    */
+     */
     public static function deleteAuthor($ownerId, $fileId, $versionId) {
         $logger = \OC::$server->getLogger();
 
