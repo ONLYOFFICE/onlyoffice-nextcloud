@@ -41,6 +41,7 @@ use OCP\Share\IManager;
 
 use OCA\Files_Sharing\External\Storage as SharingExternalStorage;
 use OCA\Files_Versions\Versions\IVersionManager;
+use OCA\GroupFolders\Mount\GroupMountPoint;
 
 use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\Crypt;
@@ -142,16 +143,16 @@ class CallbackController extends Controller {
      * @param IManager $shareManager - Share manager
      */
     public function __construct($AppName,
-                                    IRequest $request,
-                                    IRootFolder $root,
-                                    IUserSession $userSession,
-                                    IUserManager $userManager,
-                                    IL10N $trans,
-                                    ILogger $logger,
-                                    AppConfig $config,
-                                    Crypt $crypt,
-                                    IManager $shareManager
-                                    ) {
+                                IRequest $request,
+                                IRootFolder $root,
+                                IUserSession $userSession,
+                                IUserManager $userManager,
+                                IL10N $trans,
+                                ILogger $logger,
+                                AppConfig $config,
+                                Crypt $crypt,
+                                IManager $shareManager
+    ) {
         parent::__construct($AppName, $request);
 
         $this->root = $root;
@@ -285,7 +286,13 @@ class CallbackController extends Controller {
                 $versionId = $fileVersion->getRevisionId();
             }
 
-            $changesFile = FileVersions::getChangesFile($owner->getUID(), $fileId, $versionId);
+            if ($file->getFileInfo()->getMountPoint() instanceof GroupMountPoint) {
+                $ownerId = substr($file->getFileInfo()->getMountPoint()->getSourcePath(), 1);
+            } else {
+                $ownerId = $owner->getUID();
+            }
+
+            $changesFile = FileVersions::getChangesFile($ownerId, $fileId, $versionId);
             if ($changesFile === null) {
                 $this->logger->error("Download: changes $fileId ($version) was not found", ["app" => $this->appName]);
                 return new JSONResponse(["message" => $this->trans->t("Files not found")], Http::STATUS_NOT_FOUND);
@@ -501,7 +508,7 @@ class CallbackController extends Controller {
                     list ($file, $error) = empty($shareToken) ? $this->getFile($userId, $fileId, $filePath) : $this->getFileByToken($fileId, $shareToken);
 
                     if (isset($error)) {
-                        $this->logger->error("track error $fileId " . json_encode($error->getData()),  ["app" => $this->appName]);
+                        $this->logger->error("track error $fileId " . json_encode($error->getData()), ["app" => $this->appName]);
                         return $error;
                     }
 
@@ -514,7 +521,7 @@ class CallbackController extends Controller {
 
                     $documentService = new DocumentService($this->trans, $this->config);
                     if ($downloadExt !== $curExt) {
-                        $key =  DocumentService::GenerateRevisionId($fileId . $url);
+                        $key = DocumentService::GenerateRevisionId($fileId . $url);
 
                         try {
                             $this->logger->debug("Converted from $downloadExt to $curExt", ["app" => $this->appName]);
@@ -552,16 +559,21 @@ class CallbackController extends Controller {
                         KeyManager::setForcesave($fileId, $isForcesave);
                     }
 
-                    if (!$isForcesave
-                        && !$prevIsForcesave
-                        && $this->versionManager !== null
+                    $floatingVersionSetting = $this->config->GetFloatingVersion();
+
+                    if ($this->versionManager !== null
                         && $this->config->GetVersionHistory()) {
                         $changes = null;
                         if (!empty($changesurl)) {
                             $changesurl = $this->config->ReplaceDocumentServerUrlToInternal($changesurl);
                             $changes = $documentService->Request($changesurl);
                         }
-                        FileVersions::saveHistory($file->getFileInfo(), $history, $changes, $prevVersion);
+                        if (!$isForcesave && !$prevIsForcesave && !($file->getFileInfo()->getMountPoint() instanceof GroupMountPoint)) {
+                            FileVersions::saveHistory($file->getFileInfo(), $history, $changes, $prevVersion);
+                        } elseif ($floatingVersionSetting && !($file->getFileInfo()->getMountPoint() instanceof GroupMountPoint)) {
+                            $dataDirectory = $this->config->GetSystemValue('datadirectory', true);
+                            FileVersions::saveFloatHistory($file->getFileInfo(), $history, $changes, $prevVersion, $fileName, $dataDirectory);
+                        }
                     }
 
                     if (!empty($user) && $this->config->GetVersionHistory()) {

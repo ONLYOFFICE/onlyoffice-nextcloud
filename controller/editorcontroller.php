@@ -44,6 +44,7 @@ use OCP\Share\IShare;
 
 use OCA\Files\Helper;
 use OCA\Files_Versions\Versions\IVersionManager;
+use OCA\GroupFolders\Mount\GroupMountPoint;
 
 use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\Crypt;
@@ -124,7 +125,7 @@ class EditorController extends Controller {
      * File version manager
      *
      * @var IVersionManager
-    */
+     */
     private $versionManager;
 
     /**
@@ -157,19 +158,19 @@ class EditorController extends Controller {
      * @param IGroupManager $groupManager - group Manager
      */
     public function __construct($AppName,
-                                    IRequest $request,
-                                    IRootFolder $root,
-                                    IUserSession $userSession,
-                                    IUserManager $userManager,
-                                    IURLGenerator $urlGenerator,
-                                    IL10N $trans,
-                                    ILogger $logger,
-                                    AppConfig $config,
-                                    Crypt $crypt,
-                                    IManager $shareManager,
-                                    ISession $session,
-                                    IGroupManager $groupManager
-                                    ) {
+                                IRequest $request,
+                                IRootFolder $root,
+                                IUserSession $userSession,
+                                IUserManager $userManager,
+                                IURLGenerator $urlGenerator,
+                                IL10N $trans,
+                                ILogger $logger,
+                                AppConfig $config,
+                                Crypt $crypt,
+                                IManager $shareManager,
+                                ISession $session,
+                                IGroupManager $groupManager
+    ) {
         parent::__construct($AppName, $request);
 
         $this->userSession = $userSession;
@@ -377,7 +378,7 @@ class EditorController extends Controller {
         }
 
         $canShare = (($file->getPermissions() & Constants::PERMISSION_SHARE) === Constants::PERMISSION_SHARE)
-                    && !$isMemberExcludedGroups;
+            && !$isMemberExcludedGroups;
 
         $shareMemberGroups = $this->shareManager->shareWithGroupMembersOnly();
 
@@ -450,7 +451,7 @@ class EditorController extends Controller {
         foreach ($emails as $email) {
             $recipients = $this->userManager->getByEmail($email);
             foreach ($recipients as $recipient) {
-                $recipientId = $recipient->getUID(); 
+                $recipientId = $recipient->getUID();
                 if (!in_array($recipientId, $recipientIds)) {
                     array_push($recipientIds, $recipientId);
                 }
@@ -727,7 +728,11 @@ class EditorController extends Controller {
         $ownerId = null;
         $owner = $file->getFileInfo()->getOwner();
         if ($owner !== null) {
-            $ownerId = $owner->getUID();
+            if ($file->getFileInfo()->getMountPoint() instanceof GroupMountPoint) {
+                $ownerId = substr($file->getFileInfo()->getMountPoint()->getOnlyofficePath(), 1);
+            } else {
+                $ownerId = $owner->getUID();
+            }
         }
 
         $versions = array();
@@ -760,6 +765,8 @@ class EditorController extends Controller {
                 "id" => $this->buildUserId($authorId),
                 "name" => $authorName
             ];
+
+            $this->logger->debug("history: fileId $fileId, ownerId $ownerId version $versionId, previous version $prevVersion", ["app" => $this->appName]);
 
             $historyData = FileVersions::getHistoryData($ownerId, $fileId, $versionId, $prevVersion);
             if ($historyData !== null) {
@@ -1326,12 +1333,12 @@ class EditorController extends Controller {
      */
     private function renderError($error, $hint = "") {
         return new TemplateResponse("", "error", [
-                "errors" => [
-                    [
-                        "error" => $error,
-                        "hint" => $hint
-                    ]
+            "errors" => [
+                [
+                    "error" => $error,
+                    "hint" => $hint
                 ]
-            ], "error");
+            ]
+        ], "error");
     }
 }

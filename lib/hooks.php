@@ -23,6 +23,7 @@ use OC\Files\Filesystem;
 
 use OCP\Util;
 
+use OCA\GroupFolders\Mount\GroupMountPoint;
 use OCA\Onlyoffice\FileVersions;
 use OCA\Onlyoffice\KeyManager;
 use OCA\Onlyoffice\ExtraPermissions;
@@ -116,7 +117,11 @@ class Hooks {
             if (empty($owner)) {
                 return;
             }
-            $ownerId = $owner->getUID();
+            if ($fileInfo->getMountPoint() instanceof GroupMountPoint) {
+                $ownerId = substr($fileInfo->getMountPoint()->getOnlyofficePath(), 1);
+            } else {
+                $ownerId = $owner->getUID();
+            }
 
             $fileId = $fileInfo->getId();
 
@@ -153,7 +158,11 @@ class Hooks {
             if (empty($owner)) {
                 return;
             }
-            $ownerId = $owner->getUID();
+            if ($fileInfo->getMountPoint() instanceof GroupMountPoint) {
+                $ownerId = substr($fileInfo->getMountPoint()->getOnlyofficePath(), 1);
+            } else {
+                $ownerId = $owner->getUID();
+            }
 
             $fileId = $fileInfo->getId();
 
@@ -187,7 +196,11 @@ class Hooks {
             if (empty($owner)) {
                 return;
             }
-            $ownerId = $owner->getUID();
+            if ($fileInfo->getMountPoint() instanceof GroupMountPoint) {
+                $ownerId = substr($fileInfo->getMountPoint()->getOnlyofficePath(), 1);
+            } else {
+                $ownerId = $owner->getUID();
+            }
 
             $fileId = $fileInfo->getId();
 

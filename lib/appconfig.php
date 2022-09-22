@@ -306,6 +306,13 @@ class AppConfig {
     public $_customizationMacros = "customization_macros";
 
     /**
+     * The config key for the floating version
+     *
+     * @var string
+     */
+    private $_floatingVersion = "floatingVersion";
+
+    /**
      * @param string $AppName - application name
      */
     public function __construct($AppName) {
@@ -1120,6 +1127,25 @@ class AppConfig {
         }
 
         return 100*1024*1024;
+    }
+
+    /**
+     * Save floatingVersion setting
+     *
+     * @param bool $value - floatingVersion
+     */
+    public function SetFloatingVersion($value) {
+        $this->logger->info("Set floatingVersion: " . json_encode($value), ["app" => $this->appName]);
+        $this->config->setAppValue($this->appName, $this->_floatingVersion, json_encode($value));
+    }
+
+    /**
+     * Get floatingVersion setting
+     *
+     * @return bool
+     */
+    public function GetFloatingVersion() {
+        return $this->config->getAppValue($this->appName, $this->_floatingVersion, "true") === "true";
     }
 
     /**
