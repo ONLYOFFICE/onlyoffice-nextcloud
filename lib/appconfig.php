@@ -131,6 +131,13 @@ class AppConfig {
     private $_versionHistory = "versionHistory";
 
     /**
+     * Display name of the unknown author
+     *
+     * @var string
+     */
+    private $_unknownAuthor = "unknownAuthor";
+
+    /**
      * The config key for the chat display setting
      *
      * @var string
@@ -1146,6 +1153,25 @@ class AppConfig {
      */
     public function GetFloatingVersion() {
         return $this->config->getAppValue($this->appName, $this->_floatingVersion, "true") === "true";
+    }
+
+    /**
+     * Save unknownAuthor setting
+     *
+     * @param string $value - unknownAuthor
+     */
+    public function SetUnknownAuthor($value) {
+        $this->logger->info("Set unknownAuthor: " . trim($value), ["app" => $this->appName]);
+        $this->config->setAppValue($this->appName, $this->_unknownAuthor, trim($value));
+    }
+
+    /**
+     * Get unknownAuthor setting
+     *
+     * @return bool
+     */
+    public function GetUnknownAuthor() {
+        return $this->config->getAppValue($this->appName, $this->_unknownAuthor, "< no-data >");
     }
 
     /**

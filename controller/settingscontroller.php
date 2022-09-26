@@ -203,6 +203,7 @@ class SettingsController extends Controller {
      * @param bool $chat - display chat
      * @param bool $compactHeader - display compact header
      * @param bool $feedback - display feedback
+     * @param string $unknownAuthor - unknownAuthor display name
      * @param bool $forcesave - forcesave
      * @param bool $mentionShare - mentionShare
      * @param bool $help - display help
@@ -222,6 +223,7 @@ class SettingsController extends Controller {
                                $chat,
                                $compactHeader,
                                $feedback,
+                               $unknownAuthor,
                                $forcesave,
                                $mentionShare,
                                $help,
@@ -241,6 +243,7 @@ class SettingsController extends Controller {
         $this->config->SetCustomizationChat($chat);
         $this->config->SetCustomizationCompactHeader($compactHeader);
         $this->config->SetCustomizationFeedback($feedback);
+        $this->config->SetUnknownAuthor($unknownAuthor);
         $this->config->SetCustomizationForcesave($forcesave);
         $this->config->SetCustomizationMentionShare($mentionShare);
         $this->config->SetCustomizationHelp($help);
