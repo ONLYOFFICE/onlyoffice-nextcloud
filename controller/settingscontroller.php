@@ -223,7 +223,10 @@ class SettingsController extends Controller {
                                $chat,
                                $compactHeader,
                                $feedback,
+<<<<<<< HEAD
                                $unknownAuthor,
+=======
+>>>>>>> 9b2012e467c843e53d9fee28c0d01919756185a4
                                $forcesave,
                                $mentionShare,
                                $help,

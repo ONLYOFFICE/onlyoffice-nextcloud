@@ -1156,6 +1156,7 @@ class AppConfig {
     }
 
     /**
+<<<<<<< HEAD
      * Save unknownAuthor setting
      *
      * @param string $value - unknownAuthor
@@ -1175,6 +1176,8 @@ class AppConfig {
     }
 
     /**
+=======
+>>>>>>> 9b2012e467c843e53d9fee28c0d01919756185a4
      * Get the jwt header setting
      *
      * @return string
