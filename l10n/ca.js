@@ -87,6 +87,7 @@ OC.L10N.register(
     "Keep intermediate versions when editing (forcesave)": "Mantenir les versions intermèdies durant l'edició (forçar guardar)",
     "Use ONLYOFFICE to generate a document preview (it will take up disk space)": "Usar ONLYOFFICE per a generar una vista prèvia del document (ocuparà espai en el disc)",
     "Keep metadata for each version once the document is edited (it will take up disk space)": "Guardar les metadades de cada versió en editar el document (ocuparà espai en el disc)",
+    "Clear": "Suprimeix",
     "All history successfully deleted": "Tot l'historial s'ha eliminat correctament",
     "Create": "Crear",
     "Select template": "Seleccionar plantilla",
