@@ -200,7 +200,7 @@
             var chat = $("#onlyofficeChat").is(":checked");
             var compactHeader = $("#onlyofficeCompactHeader").is(":checked");
             var feedback = $("#onlyofficeFeedback").is(":checked");
-            var unknownAuthor = ($("#onlyofficeUnknownAuthor:visible").val() || "< no-data >").trim();
+            var onlyofficeUnknownAuthor = ($("#onlyofficeUnknownAuthor:visible").val()).trim();
             var forcesave = $("#onlyofficeForcesave").is(":checked");
             var mentionShare = $("#onlyofficeMentionShare").is(":checked");
             var floatingVersion = $("#onlyofficeFloatingVersion").is(":checked");
@@ -223,7 +223,7 @@
                     chat: chat,
                     compactHeader: compactHeader,
                     feedback: feedback,
-                    unknownAuthor: unknownAuthor,
+                    unknownAuthor: onlyofficeUnknownAuthor,
                     forcesave: forcesave,
                     mentionShare: mentionShare,
                     help: help,

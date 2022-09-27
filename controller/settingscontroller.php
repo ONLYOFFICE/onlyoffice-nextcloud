@@ -122,6 +122,7 @@ class SettingsController extends Controller {
             "chat" => $this->config->GetCustomizationChat(),
             "compactHeader" => $this->config->GetCustomizationCompactHeader(),
             "feedback" => $this->config->GetCustomizationFeedback(),
+            "unknownAuthor" => $this->config->GetUnknownAuthor(),
             "forcesave" => $this->config->GetCustomizationForcesave(),
             "mentionShare" => $this->config->GetCustomizationMentionShare(),
             "help" => $this->config->GetCustomizationHelp(),
