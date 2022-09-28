@@ -1,5 +1,8 @@
 # Change Log
 
+## Added
+- disable plugins setting
+
 ## 7.4.4
 ## Changed
 - fix opening editor in new tab
