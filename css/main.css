@@ -37,14 +37,10 @@
 }
 
 /* onlyoffice-inline */
-body.onlyoffice-inline {
-    overscroll-behavior-y: none;
-    overflow: hidden;
-}
 body.onlyoffice-inline #app-navigation,
 body.onlyoffice-inline .searchbox,
-body.onlyoffice-inline #app-content #controls,
-body.onlyoffice-inline #filestable {
+body.onlyoffice-inline #app-content .files-controls,
+body.onlyoffice-inline .files-filestable {
     display: none;
 }
 body.onlyoffice-inline #app-navigation-toggle {
@@ -52,11 +48,14 @@ body.onlyoffice-inline #app-navigation-toggle {
 }
 body.onlyoffice-inline #content #app-content {
     margin-left: 0;
+    position: relative;
+    overflow: hidden;
+    overscroll-behavior-y: none;
 }
 #onlyofficeFrame {
     background-color: #fff;
     width: 100%;
-    height: calc(100vh - 50px);
+    height: 100vh;
     display: block;
     position: absolute;
     top: 0;
