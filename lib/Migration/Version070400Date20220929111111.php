@@ -55,7 +55,7 @@ class Version070400Date20220929111111 extends SimpleMigrationStep {
 				'default' => 0,
 			]);
 			$table->setPrimaryKey(['id']);
-			$table->addUniqueIndex(['file_id'], 'file_id_index');
+			$table->addUniqueIndex(['file_id'], 'onlyoffice_file_id_index');
 		}
 
 		if (!$schema->hasTable('onlyoffice_permissions')) {
