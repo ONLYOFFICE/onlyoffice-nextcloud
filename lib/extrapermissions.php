@@ -383,9 +383,11 @@ class ExtraPermissions {
         }
 
         $node = $share->getNode();
-        $pathinfo = pathinfo($node->getName());
-        $extension = $pathinfo["extension"];
-        $format = $this->config->FormatsSetting()[$extension];
+        $ext = strtolower(pathinfo($node->getName(), PATHINFO_EXTENSION));
+        $format = !empty($ext) && array_key_exists($ext, $this->config->FormatsSetting()) ? $this->config->FormatsSetting()[$ext] : null;
+        if (!isset($format)) {
+            return [$availableExtra, $defaultExtra];
+        }
 
         if (($share->getPermissions() & Constants::PERMISSION_UPDATE) === Constants::PERMISSION_UPDATE) {
             if (isset($format["modifyFilter"]) && $format["modifyFilter"]) {

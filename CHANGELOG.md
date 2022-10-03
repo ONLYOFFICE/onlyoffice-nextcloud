@@ -1,5 +1,12 @@
 # Change Log
 
+## Added
+- Dutch translation
+- Chinese (Traditional, Taiwan), Basque (Spain) empty file templates
+
+## Changed
+- generate preview by default
+
 ## 7.5.4
 ## Changed
 - fix opening editor in new tab
