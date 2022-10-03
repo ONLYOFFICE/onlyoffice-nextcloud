@@ -76,6 +76,28 @@ class Version070400Date20220929111111 extends SimpleMigrationStep {
 			$table->addUniqueIndex(['share_id'], 'onlyoffice_share_id_index');
 		}
 
+		if (!$schema->hasTable('onlyoffice_instance')) {
+			$table = $schema->createTable('onlyoffice_instance');
+			$table->addColumn('id', 'integer', [
+				'autoincrement' => true,
+				'notnull' => true,
+			]);
+			$table->addColumn('remote', 'string', [
+				'notnull' => true,
+				'length' => 128,
+			]);
+			$table->addColumn('expire', 'bigint', [
+				'notnull' => true,
+				'default' => 0,
+			]);
+			$table->addColumn('status', 'integer', [
+				'notnull' => true,
+				'default' => 0,
+			]);
+			$table->setPrimaryKey(['id']);
+			$table->addUniqueIndex(['remote'], 'onlyoffice_remote_index');
+		}
+
 		return $schema;
 	}
 
