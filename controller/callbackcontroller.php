@@ -39,7 +39,6 @@ use OCP\Lock\LockedException;
 use OCP\Share\Exceptions\ShareNotFound;
 use OCP\Share\IManager;
 
-use OCA\Files_Sharing\External\Storage as SharingExternalStorage;
 use OCA\Files_Versions\Versions\IVersionManager;
 
 use OCA\Onlyoffice\AppConfig;
@@ -47,6 +46,7 @@ use OCA\Onlyoffice\Crypt;
 use OCA\Onlyoffice\DocumentService;
 use OCA\Onlyoffice\FileVersions;
 use OCA\Onlyoffice\KeyManager;
+use OCA\Onlyoffice\RemoteInstance;
 use OCA\Onlyoffice\TemplateManager;
 
 /**
@@ -529,8 +529,8 @@ class CallbackController extends Controller {
 
                     $prevIsForcesave = KeyManager::wasForcesave($fileId);
 
-                    if ($file->getStorage()->instanceOfStorage(SharingExternalStorage::class)) {
-                        $isLock = KeyManager::lockFederatedKey($file, $isForcesave, null);
+                    if (RemoteInstance::isRemoteFile($file)) {
+                        $isLock = RemoteInstance::lockRemoteKey($file, $isForcesave, null);
                         if ($isForcesave && !$isLock) {
                             break;
                         }
@@ -543,9 +543,9 @@ class CallbackController extends Controller {
                         return $file->putContent($newData);
                     });
 
-                    if ($file->getStorage()->instanceOfStorage(SharingExternalStorage::class)) {
+                    if (RemoteInstance::isRemoteFile($file)) {
                         if ($isForcesave) {
-                            KeyManager::lockFederatedKey($file, false, $isForcesave);
+                            RemoteInstance::lockRemoteKey($file, false, $isForcesave);
                         }
                     } else {
                         KeyManager::lock($fileId, false);
