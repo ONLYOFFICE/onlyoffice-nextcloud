@@ -856,7 +856,8 @@ class EditorApiController extends OCSController {
                 return $watermarkText;
             }
         }
-        if ($watermarkSettings["allGroups"]) {
+        if ($watermarkSettings["allGroups"]
+            && $userId !== null) {
             $groups = $watermarkSettings["allGroupsList"];
             foreach ($groups as $group) {
                 if (\OC::$server->getGroupManager()->isInGroup($userId, $group)) {
