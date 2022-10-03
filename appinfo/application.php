@@ -59,6 +59,7 @@ use OCA\Onlyoffice\Notifier;
 use OCA\Onlyoffice\Preview;
 use OCA\Onlyoffice\TemplateManager;
 use OCA\Onlyoffice\TemplateProvider;
+use OCA\Onlyoffice\SettingsData;
 
 use Psr\Container\ContainerInterface;
 
@@ -134,6 +135,10 @@ class Application extends App implements IBootstrap {
                 $this->appConfig,
                 $this->crypt
             );
+        });
+
+        $context->registerService("SettingsData", function (ContainerInterface $c) {
+            return new SettingsData($this->appConfig);
         });
 
         // Controllers
