@@ -63,6 +63,12 @@ class FilesListener implements IEventListener {
                 Util::addScript("onlyoffice", "listener");
             }
 
+            if ($this->appConfig->GetAdvanced()
+                && \OC::$server->getAppManager()->isInstalled("files_sharing")) {
+                Util::addScript("onlyoffice", "share");
+                Util::addStyle("onlyoffice", "share");
+            }
+
             Util::addStyle("onlyoffice", "main");
             Util::addStyle("onlyoffice", "template");
         }

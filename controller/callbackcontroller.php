@@ -466,11 +466,6 @@ class CallbackController extends Controller {
                     $user = $this->userManager->get($userId);
                     if (!empty($user)) {
                         \OC_User::setUserId($userId);
-                        \OC_Util::setupFS($userId);
-
-                        if ($userId === $hashData->userId) {
-                            $filePath = $hashData->filePath;
-                        }
                     } else {
                         if (empty($shareToken)) {
                             $this->logger->error("Track without token: $fileId status $status", ["app" => $this->appName]);
@@ -480,18 +475,34 @@ class CallbackController extends Controller {
                         $this->logger->debug("Track $fileId by token for $userId", ["app" => $this->appName]);
                     }
 
+                    // owner of file from the callback link
+                    $ownerId = $hashData->ownerId;
+                    $owner = $this->userManager->get($ownerId);
+
+                    if (!empty($owner)) {
+                        $userId = $ownerId;
+                    } else {
+                        $callbackUserId = $hashData->userId;
+                        $callbackUser = $this->userManager->get($callbackUserId);
+
+                        if (!empty($callbackUser)) {
+                            // author of the callback link
+                            $userId = $callbackUserId;
+
+                            // path for author of the callback link
+                            $filePath = $hashData->filePath;
+                        }
+                    }
+
+                    if (!empty($userId)) {
+                        \OC_Util::setupFS($userId);
+                    }
+
                     list ($file, $error) = empty($shareToken) ? $this->getFile($userId, $fileId, $filePath) : $this->getFileByToken($fileId, $shareToken);
 
                     if (isset($error)) {
                         $this->logger->error("track error $fileId " . json_encode($error->getData()),  ["app" => $this->appName]);
                         return $error;
-                    }
-
-                    if (empty($user)) {
-                        $owner = $file->getFileInfo()->getOwner();
-                        if ($owner !== null) {
-                            \OC_Util::setupFS($owner->getUID());
-                        }
                     }
 
                     $url = $this->config->ReplaceDocumentServerUrlToInternal($url);

@@ -60,7 +60,6 @@
     "This is a public test server, please do not use it for private sensitive data. The server will be available during a 30-day period.": "Това е обществен тестов сървър, моля, не използвайте за чувствителни частни данни. Сървърът ще е на разположение по време на 30-дневния период.",
     "The 30-day test period is over, you can no longer connect to demo ONLYOFFICE Docs server.": "30-дневният тестов период приключи, вече не можете да се свържете с демо ONLYOFFICE Docs сървър.",
     "You are using public demo ONLYOFFICE Docs server. Please do not store private sensitive data.": "Използвате обществения демо ONLYOFFICE Docs сървър. Моля, не съхранявайте чувствителни частни данни на него.",
-    "Secure view settings": "Настройки за защитен изглед",
     "Secure view enables you to secure documents by embedding a watermark": "Защитеният изглед активира вашите защитени документи, като вгражда в тях воден знак",
     "Enable watermarking": "Активиране на воден знак",
     "Watermark text": "Текст на водния знак",
@@ -86,6 +85,7 @@
     "Keep intermediate versions when editing (forcesave)": "Съхранявайте междинни версии при редактиране (force save)",
     "Use ONLYOFFICE to generate a document preview (it will take up disk space)": "Използвайте ONLYOFFICE, за да генерирате преглед на документа (ще заеме дисково пространство)",
     "Keep metadata for each version once the document is edited (it will take up disk space)": "Запазете метаданните за всяка версия, щом документът бъде редактиран (ще заеме дисково пространство)",
+    "Clear": "Изчисти",
     "All history successfully deleted": "Цялата история е успешно изтрита",
     "Create": "Създай",
     "Select template": "Избор на шаблон",
@@ -114,6 +114,17 @@
     "Create new Form template": "Създайте нов шаблон на формуляр",
     "Create form": "Създайте формуляр",
     "Fill in form in ONLYOFFICE": "Попълнете формуляр в ONLYOFFICE",
-    "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online": "Молим да актуализирате ONLYOFFICE Docs към версия 7.0, за да работи с онлайн формуляри за попълване"
+    "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online": "Молим да актуализирате ONLYOFFICE Docs към версия 7.0, за да работи с онлайн формуляри за попълване",
+    "Security": "Сигурност",
+    "Anonymous": "Анонимен",
+    "Light": "Светла",
+    "Classic Light": "Класически светла",
+    "Dark": "Тъмна",
+    "Review": "Преглед",
+    "Comment": "Коментар",
+    "Form filling": "Попълване на формуляр",
+    "Custom filter": "Персонализиран филтър",
+    "group": "група",
+    "Advanced": "Допълнително"
 },"pluralForm": "nplurals=2; plural=(n != 1);"
 }

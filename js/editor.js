@@ -21,6 +21,7 @@
     OCA.Onlyoffice = _.extend({
             AppName: "onlyoffice",
             inframe: false,
+            inviewer: false,
             fileId: null,
             shareToken: null,
             insertImageType: null
@@ -34,6 +35,7 @@
         var directToken = $("#iframeEditor").data("directtoken");
         OCA.Onlyoffice.template = $("#iframeEditor").data("template");
         OCA.Onlyoffice.inframe = !!$("#iframeEditor").data("inframe");
+        OCA.Onlyoffice.inviewer = !!$("#iframeEditor").data("inviewer");
         OCA.Onlyoffice.filePath = $("#iframeEditor").data("path");
         OCA.Onlyoffice.anchor = $("#iframeEditor").attr("data-anchor");
         var guestName = localStorage.getItem("nick");
@@ -90,6 +92,10 @@
             params.push("inframe=true");
         }
 
+        if (OCA.Onlyoffice.inviewer) {
+            params.push("inviewer=true");
+        }
+
         if (OCA.Onlyoffice.Desktop) {
             params.push("desktop=true");
         }
@@ -101,6 +107,11 @@
             url: configUrl,
             success: function onSuccess(config) {
                 if (config) {
+                    if (config.redirectUrl) {
+                        location.href = config.redirectUrl;
+                        return;
+                    }
+
                     if (config.error != null) {
                         OCA.Onlyoffice.showMessage(config.error, "error", {timeout: -1});
                         return;
@@ -109,11 +120,6 @@
                     if ((config.document.fileType === "docxf" || config.document.fileType === "oform")
                         && docsVersion[0] < 7) {
                         OCA.Onlyoffice.showMessage(t(OCA.Onlyoffice.AppName, "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online"), "error", {timeout: -1});
-                        return;
-                    }
-
-                    if (config.redirectUrl) {
-                        location.href = config.redirectUrl;
                         return;
                     }
 

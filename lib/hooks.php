@@ -25,6 +25,7 @@ use OCP\Util;
 
 use OCA\Onlyoffice\FileVersions;
 use OCA\Onlyoffice\KeyManager;
+use OCA\Onlyoffice\ExtraPermissions;
 
 /**
  * The class to handle the filesystem hooks
@@ -55,6 +56,9 @@ class Hooks {
 
         // Listen file version restore
         Util::connectHook("\OCP\Versions", "rollback", Hooks::class, "fileVersionRestore");
+
+        // Listen share deletion
+        Util::connectHook("OCP\Share", "post_unshare", Hooks::class, "extraPermissionsDelete");
     }
 
     /**
@@ -192,6 +196,29 @@ class Hooks {
             FileVersions::deleteVersion($ownerId, $fileId, $versionId);
         } catch (\Exception $e) {
             \OC::$server->getLogger()->logException($e, ["message" => "Hook: fileVersionRestore " . json_encode($params), "app" => self::$appName]);
+        }
+    }
+
+    /**
+     * Erase extra permissions of deleted share
+     *
+     * @param array $params - hook param
+     */
+    public static function extraPermissionsDelete($params) {
+        $shares = $params["deletedShares"];
+        if (empty($shares)) {
+            return;
+        }
+
+        try {
+            $shareIds = [];
+            foreach ($shares as $share) {
+                array_push($shareIds, $share["id"]);
+            }
+
+            ExtraPermissions::deleteList($shareIds);
+        } catch (\Exception $e) {
+            \OC::$server->getLogger()->logException($e, ["message" => "Hook: extraPermissionsDelete " . json_encode($params), "app" => self::$appName]);
         }
     }
 }

@@ -1,6 +1,29 @@
 # Change Log
 
-##
+## Added
+- Dutch translation
+- Chinese (Traditional, Taiwan), Basque (Spain) empty file templates
+
+## Changed
+- generate preview by default
+
+## 7.4.4
+## Changed
+- fix opening editor in new tab
+- fix download as on MacOS
+
+## 7.4.2
+## Changed
+- fix translation
+
+## 7.4.0
+## Added
+- advanced access rights
+- macro launch setting
+- opening file location from viewer
+- Catalan translation
+- theme setting
+
 ## Changed
 - fix editor lang
 

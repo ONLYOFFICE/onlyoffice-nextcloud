@@ -191,6 +191,7 @@
 
             var sameTab = $("#onlyofficeSameTab").is(":checked");
             var preview = $("#onlyofficePreview").is(":checked");
+            var advanced = $("#onlyofficeAdvanced").is(":checked");
             var versionHistory = $("#onlyofficeVersionHistory").is(":checked");
 
             var limitGroupsString = $("#onlyofficeGroups").prop("checked") ? $("#onlyofficeLimitGroups").val() : "";
@@ -203,6 +204,7 @@
             var help = $("#onlyofficeHelp").is(":checked");
             var toolbarNoTabs = $("#onlyofficeToolbarNoTabs").is(":checked");
             var reviewDisplay = $("input[type='radio'][name='reviewDisplay']:checked").attr("id").replace("onlyofficeReviewDisplay_", "");
+            var theme = $("input[type='radio'][name='theme']:checked").attr("id").replace("onlyofficeTheme_", "");
 
             $.ajax({
                 method: "PUT",
@@ -212,6 +214,7 @@
                     editFormats: editFormats,
                     sameTab: sameTab,
                     preview: preview,
+                    advanced: advanced,
                     versionHistory: versionHistory,
                     limitGroups: limitGroups,
                     chat: chat,
@@ -220,7 +223,8 @@
                     forcesave: forcesave,
                     help: help,
                     toolbarNoTabs: toolbarNoTabs,
-                    reviewDisplay: reviewDisplay
+                    reviewDisplay: reviewDisplay,
+                    theme: theme
                 },
                 success: function onSuccess(response) {
                     $(".section-onlyoffice").removeClass("icon-loading");
@@ -231,8 +235,10 @@
             });
         });
 
-        $("#onlyofficeWatermarkSave").click(function () {
+        $("#onlyofficeSecuritySave").click(function () {
             $(".section-onlyoffice").addClass("icon-loading");
+
+            var macros = $("#onlyofficeMacros").is(":checked");
 
             var watermarkSettings = {
                 enabled: $("#onlyofficeWatermark_enabled").is(":checked")
@@ -263,9 +269,10 @@
 
             $.ajax({
                 method: "PUT",
-                url: OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/settings/watermark"),
+                url: OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/settings/security"),
                 data: {
-                    settings: watermarkSettings
+                    watermarks: watermarkSettings,
+                    macros: macros
                 },
                 success: function onSuccess(response) {
                     $(".section-onlyoffice").removeClass("icon-loading");

@@ -114,6 +114,12 @@
     </p>
 
     <p>
+        <input type="checkbox" class="checkbox" id="onlyofficeAdvanced"
+            <?php if ($_["advanced"]) { ?>checked="checked"<?php } ?> />
+        <label for="onlyofficeAdvanced"><?php p($l->t("Provide advanced document permissions using ONLYOFFICE Docs")) ?></label>
+    </p>
+
+    <p>
         <input type="checkbox" class="checkbox" id="onlyofficeVersionHistory"
             <?php if ($_["versionHistory"]) { ?>checked="checked"<?php } ?> />
         <label for="onlyofficeVersionHistory"><?php p($l->t("Keep metadata for each version once the document is edited (it will take up disk space)")) ?></label>
@@ -226,6 +232,33 @@
         </div>
     </div>
 
+    <p class="onlyoffice-header">
+        <?php p($l->t("Default editor theme")) ?>
+    </p>
+    <div class="onlyoffice-tables">
+        <div>
+            <input type="radio" class="radio"
+                id="onlyofficeTheme_theme-light"
+                name="theme"
+                <?php if ($_["theme"] === "theme-light") { ?>checked="checked"<?php } ?> />
+            <label for="onlyofficeTheme_theme-light"><?php p($l->t("Light")) ?></label>
+        </div>
+        <div>
+            <input type="radio" class="radio"
+                id="onlyofficeTheme_theme-classic-light"
+                name="theme"
+                <?php if ($_["theme"] === "theme-classic-light") { ?>checked="checked"<?php } ?> />
+            <label for="onlyofficeTheme_theme-classic-light"><?php p($l->t("Classic Light")) ?></label>
+        </div>
+        <div>
+            <input type="radio" class="radio"
+                id="onlyofficeTheme_theme-dark"
+                name="theme"
+                <?php if ($_["theme"] === "theme-dark") { ?>checked="checked"<?php } ?> />
+            <label for="onlyofficeTheme_theme-dark"><?php p($l->t("Dark")) ?></label>
+        </div>
+    </div>
+
     <br />
     <p><button id="onlyofficeSave" class="button"><?php p($l->t("Save")) ?></button></p>
 </div>
@@ -251,8 +284,15 @@
 </div>
 
 <div class="section section-onlyoffice section-onlyoffice-watermark <?php if (empty($_["documentserver"]) && !$_["demo"]["enabled"] || !$_["successful"]) { ?>onlyoffice-hide<?php } ?>">
-    <h2><?php p($l->t("Secure view settings")) ?></h2>
+    <h2><?php p($l->t("Security")) ?></h2>
 
+    <p>
+        <input type="checkbox" class="checkbox" id="onlyofficeMacros"
+            <?php if ($_["macros"]) { ?>checked="checked"<?php } ?> />
+        <label for="onlyofficeMacros"><?php p($l->t("Run document macros")) ?></label>
+    </p>
+
+    <br />
     <p class="settings-hint"><?php p($l->t("Secure view enables you to secure documents by embedding a watermark")) ?></p>
 
     <p>
@@ -330,6 +370,6 @@
     </div>
 
     <br />
-    <p><button id="onlyofficeWatermarkSave" class="button"><?php p($l->t("Save")) ?></button></p>
+    <p><button id="onlyofficeSecuritySave" class="button"><?php p($l->t("Save")) ?></button></p>
 
 </div>

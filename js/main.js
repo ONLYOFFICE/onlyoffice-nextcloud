@@ -119,9 +119,6 @@
                 OCA.Files.Sidebar.close();
             }
 
-            var scrollTop = $(window).scrollTop();
-            $(OCA.Onlyoffice.frameSelector).css("top", scrollTop);
-
             OCA.Onlyoffice.folderUrl = location.href;
             window.history.pushState(null, null, url);
         }
@@ -166,7 +163,10 @@
 
     OCA.Onlyoffice.FileClick = function (fileName, context) {
         var fileInfoModel = context.fileInfoModel || context.fileList.getModelForFile(fileName);
-        OCA.Onlyoffice.OpenEditor(fileInfoModel.id, context.dir, fileName);
+        var fileId = context.fileId || fileInfoModel.id;
+        var winEditor = !fileInfoModel && !OCA.Onlyoffice.setting.sameTab ? document : null;
+
+        OCA.Onlyoffice.OpenEditor(fileId, context.dir, fileName, 0, winEditor);
 
         OCA.Onlyoffice.context = context;
         OCA.Onlyoffice.context.fileName = fileName;
@@ -218,7 +218,7 @@
                 $(optionNodeOrigin).text(t(OCA.Onlyoffice.AppName, "Origin format"));
 
                 dialog[0].dataset.format = extension;
-                selectNode.onclick = function() {
+                selectNode.onchange = function() {
                     dialog[0].dataset.format = $("#onlyoffice-download-select option:selected").attr("data-value");
                 }
 
@@ -472,6 +472,14 @@
         }
     };
 
+    OCA.Onlyoffice.TabView = {
+        attach(fileList) {
+            if (OCA.Onlyoffice.SharingTabView) {
+                fileList.registerTabView(new OCA.Onlyoffice.SharingTabView())
+            }
+        }
+    }
+
     var getFileExtension = function (fileName) {
         var extension = fileName.substr(fileName.lastIndexOf(".") + 1).toLowerCase();
         return extension;
@@ -560,6 +568,8 @@
             OCA.Onlyoffice.GetSettings(initSharedButton);
         } else {
             OC.Plugins.register("OCA.Files.NewFileMenu", OCA.Onlyoffice.NewFileMenu);
+
+            OC.Plugins.register("OCA.Files.FileList", OCA.Onlyoffice.TabView);
 
             OCA.Onlyoffice.registerAction();
 

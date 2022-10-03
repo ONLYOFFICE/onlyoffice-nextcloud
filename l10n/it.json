@@ -60,7 +60,6 @@
     "This is a public test server, please do not use it for private sensitive data. The server will be available during a 30-day period.": "Questo è un server di prova pubblico, non utilizzarlo per dati sensibili privati. Il server sarà disponibile per un periodo di 30 giorni.",
     "The 30-day test period is over, you can no longer connect to demo ONLYOFFICE Docs server." : "Il periodo di prova di 30 giorni è terminato; non è più possibile connettersi alla versione demo di ONLYOFFICE Docs.",
     "You are using public demo ONLYOFFICE Docs server. Please do not store private sensitive data." : "Stai utilizzando la versione demo pubblica di ONLYOFFICE Docs. Non memorizzare dati sensibili privati.",
-    "Secure view settings" : "Impostazioni di visualizzazione sicura",
     "Secure view enables you to secure documents by embedding a watermark" : "La visualizzazione sicura consente di proteggere i documenti inserendo una filigrana",
     "Enable watermarking" : "Abilita la filigrana",
     "Watermark text" : "Testo della filigrana",
@@ -86,6 +85,7 @@
     "Keep intermediate versions when editing (forcesave)": "Mantieni le versioni intermedie durante la modifica (forzare salvataggio)",
     "Use ONLYOFFICE to generate a document preview (it will take up disk space)": "Usare ONLYOFFICE per generare anteprima documenti (occuperà spazio su disco)",
     "Keep metadata for each version once the document is edited (it will take up disk space)": "Salvare metadati per ogni versione una volta modificato il documento (occuperà spazio su disco)",
+    "Clear": "Svuota",
     "All history successfully deleted": "Cronologia eliminata con successo",
     "Create": "Crea",
     "Select template" : "Seleziona modello",
@@ -114,6 +114,20 @@
     "Create new Form template": "Creare un nuovo modello di modulo",
     "Create form": "Creare modulo",
     "Fill in form in ONLYOFFICE": "Compilare il modulo in ONLYOFFICE",
-    "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online": "Si prega di aggiornare ONLYOFFICE Docs alla versione 7.0 per lavorare su moduli compilabili online"
+    "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online": "Si prega di aggiornare ONLYOFFICE Docs alla versione 7.0 per lavorare su moduli compilabili online",
+    "Security": "Sicurezza",
+    "Run document macros": "Esegui le macro del documento",
+    "Anonymous": "Anonimo",
+    "Default editor theme": "Tema dell'editor predefinito",
+    "Light": "Chiaro",
+    "Classic Light": "Classico chiaro",
+    "Dark": "Scuro",
+    "Review": "Revisione",
+    "Comment": "Commento",
+    "Form filling": "Compilare un modulo",
+    "Custom filter": "Filtro personalizzato",
+    "group": "gruppo",
+    "Advanced": "Avanzate",
+    "Provide advanced document permissions using ONLYOFFICE Docs": "Fornisci autorizzazioni avanzate per i documenti utilizzando ONLYOFFICE Docs"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

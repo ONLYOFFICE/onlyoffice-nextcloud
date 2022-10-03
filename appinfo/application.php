@@ -44,6 +44,7 @@ use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\Controller\CallbackController;
 use OCA\Onlyoffice\Controller\EditorController;
 use OCA\Onlyoffice\Controller\EditorApiController;
+use OCA\Onlyoffice\Controller\SharingApiController;
 use OCA\Onlyoffice\Controller\SettingsController;
 use OCA\Onlyoffice\Controller\TemplateController;
 use OCA\Onlyoffice\Listeners\FilesListener;
@@ -87,10 +88,18 @@ class Application extends App implements IBootstrap {
     }
 
     public function register(IRegistrationContext $context): void {
-        require_once __DIR__ . "/../3rdparty/jwt/BeforeValidException.php";
-        require_once __DIR__ . "/../3rdparty/jwt/ExpiredException.php";
-        require_once __DIR__ . "/../3rdparty/jwt/SignatureInvalidException.php";
-        require_once __DIR__ . "/../3rdparty/jwt/JWT.php";
+        if (!class_exists('\\Firebase\\JWT\\BeforeValidException')) {
+            require_once __DIR__ . "/../3rdparty/jwt/BeforeValidException.php";
+        }
+        if (!class_exists('\\Firebase\\JWT\\ExpiredException')) {
+            require_once __DIR__ . "/../3rdparty/jwt/ExpiredException.php";
+        }
+        if (!class_exists('\\Firebase\\JWT\\SignatureInvalidException')) {
+            require_once __DIR__ . "/../3rdparty/jwt/SignatureInvalidException.php";
+        }
+        if (!class_exists('\\Firebase\\JWT\\JWT')) {
+            require_once __DIR__ . "/../3rdparty/jwt/JWT.php";
+        }
 
         $context->registerService("L10N", function (ContainerInterface $c) {
             return $c->get("ServerContainer")->getL10N($c->get("AppName"));
@@ -155,6 +164,19 @@ class Application extends App implements IBootstrap {
                 $c->get("IManager"),
                 $c->get("Session"),
                 $c->get("GroupManager")
+            );
+        });
+
+        $context->registerService("SharingApiController", function (ContainerInterface $c) {
+            return new SharingApiController(
+                $c->get("AppName"),
+                $c->get("Request"),
+                $c->get("RootStorage"),
+                $c->get("Logger"),
+                $c->get("UserSession"),
+                $c->get("UserManager"),
+                $c->get("IManager"),
+                $this->appConfig
             );
         });
 
