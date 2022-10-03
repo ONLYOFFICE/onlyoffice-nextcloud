@@ -119,6 +119,7 @@ OC.L10N.register(
     "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online": "Atualize o ONLYOFFICE Docs para a versão 7.0 para trabalhar em formulários preenchíveis online",
     "Security": "Segurança",
     "Anonymous": "Anônimo",
+    "Default editor theme": "Tema do editor padrão",
     "Light": "Claro",
     "Classic Light": "Clássico claro",
     "Dark": "Escuro",
@@ -127,6 +128,7 @@ OC.L10N.register(
     "Form filling": "Preenchimento de formularios",
     "Custom filter": "Filtro personalizado",
     "group": "grupo",
-    "Advanced": "Avançado"
+    "Advanced": "Avançado",
+    "Provide advanced document permissions using ONLYOFFICE Docs": "Forneça permissões avançadas de documentos usando o ONLYOFFICE Docs"
 },
 "nplurals=2; plural=(n > 1);");
