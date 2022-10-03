@@ -691,7 +691,7 @@ class AppConfig {
      * @return bool
      */
     public function GetPreview() {
-        return $this->config->getAppValue($this->appName, $this->_preview, "false") === "true";
+        return $this->config->getAppValue($this->appName, $this->_preview, "true") === "true";
     }
 
     /**

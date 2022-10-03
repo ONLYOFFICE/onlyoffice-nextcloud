@@ -4,6 +4,9 @@
 - Dutch translation
 - Chinese (Traditional, Taiwan), Basque (Spain) empty file templates
 
+## Changed
+- generate preview by default
+
 ## 7.4.4
 ## Changed
 - fix opening editor in new tab
