@@ -48,4 +48,5 @@
 .AscDesktopEditor #body-user #content {
     min-height: 100%;
     padding-top: 0;
+    margin-top: 0px;
 }

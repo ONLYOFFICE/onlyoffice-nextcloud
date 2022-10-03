@@ -73,6 +73,8 @@ body.onlyoffice-inline #content #app-content {
 }
 .AscDesktopEditor #body-user #content {
     padding-top: 0;
+    margin-top: 0px;
+    height: 100%;
 }
 .AscDesktopEditor #body-user #app-navigation,
 .AscDesktopEditor #body-user #controls,
