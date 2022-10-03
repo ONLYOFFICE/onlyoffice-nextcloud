@@ -119,6 +119,9 @@
                 OCA.Files.Sidebar.close();
             }
 
+            var scrollTop = $("#app-content").scrollTop();
+            $(OCA.Onlyoffice.frameSelector).css("top", scrollTop);
+
             OCA.Onlyoffice.folderUrl = location.href;
             window.history.pushState(null, null, url);
         }
