@@ -542,6 +542,7 @@
                 OCA.Onlyoffice.frameSelector = "#onlyofficeFrame";
                 var $iframe = $("<iframe id=\"onlyofficeFrame\" nonce=\"" + btoa(OC.requestToken) + "\" scrolling=\"no\" allowfullscreen src=\"" + editorUrl + "?inframe=true\" />");
                 $("#app-content").append($iframe);
+                $("body").addClass("onlyoffice-inline");
             }
         } else {
             OC.Plugins.register("OCA.Files.NewFileMenu", OCA.Onlyoffice.NewFileMenu);
