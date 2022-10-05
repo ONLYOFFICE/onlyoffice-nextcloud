@@ -572,12 +572,13 @@ class CallbackController extends Controller {
                     try {
                         $lockContext = new LockContext($file, ILock::TYPE_APP, $this->appName);
                         $this->lockManager->runInScope($lockContext, $retryOperation);
-                        $this->lockManager->unlock($lockContext);
-
-                        $this->logger->debug("$this->appName has unlocked file $fileId", ["app" => $this->appName]);
                     } catch (NoLockProviderException $e) {
                         $retryOperation();
-                    } catch (PreConditionNotMetException $e) {}
+                    }
+
+                    if (!$isForcesave) {
+                        $this->unlock($file);
+                    }
 
                     if (RemoteInstance::isRemoteFile($file)) {
                         if ($isForcesave) {
@@ -611,20 +612,12 @@ class CallbackController extends Controller {
                 break;
 
             case self::TrackerStatus_Editing:
-                try {
-                    $this->lockManager->lock(new LockContext($file, ILock::TYPE_APP, $this->appName));
-
-                    $this->logger->debug("$this->appName has locked file $fileId", ["app" => $this->appName]);
-                } catch (PreConditionNotMetException | OwnerLockedException | NoLockProviderException $e) {}
+                $this->lock($file);
 
                 $result = 0;
                 break;
             case self::TrackerStatus_Closed:
-                try {
-                    $this->lockManager->unlock(new LockContext($file, ILock::TYPE_APP, $this->appName));
-
-                    $this->logger->debug("$this->appName has unlocked file $fileId", ["app" => $this->appName]);
-                } catch (PreConditionNotMetException | NoLockProviderException $e) {}
+                $this->unlock($file);
 
                 $result = 0;
                 break;
@@ -804,6 +797,46 @@ class CallbackController extends Controller {
         }
 
         return $userId;
+    }
+
+    /**
+     * Lock file by lock provider if exists
+     *
+     * @param File $file - file
+     */
+    private function lock($file) {
+        if (!$this->lockManager->isLockProviderAvailable()) {
+            return;
+        }
+
+        $fileId = $file->getId();
+
+        try {
+            if (empty($this->lockManager->getLocks($fileId))) {
+                $this->lockManager->lock(new LockContext($file, ILock::TYPE_APP, $this->appName));
+
+                $this->logger->debug("$this->appName has locked file $fileId", ["app" => $this->appName]);
+            }
+        } catch (PreConditionNotMetException | OwnerLockedException | NoLockProviderException $e) {}
+    }
+
+    /**
+     * Unlock file by lock provider if exists
+     *
+     * @param File $file - file
+     */
+    private function unlock($file) {
+        if (!$this->lockManager->isLockProviderAvailable()) {
+            return;
+        }
+
+        $fileId = $file->getId();
+
+        try {
+            $this->lockManager->unlock(new LockContext($file, ILock::TYPE_APP, $this->appName));
+
+            $this->logger->debug("$this->appName has unlocked file $fileId", ["app" => $this->appName]);
+        } catch (PreConditionNotMetException | NoLockProviderException $e) {}
     }
 
     /**
