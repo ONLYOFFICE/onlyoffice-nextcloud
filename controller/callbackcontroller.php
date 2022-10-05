@@ -613,9 +613,11 @@ class CallbackController extends Controller {
 
             case self::TrackerStatus_Editing:
                 try {
-                    $this->lockManager->lock(new LockContext($file, ILock::TYPE_APP, $this->appName));
+                    if (empty($this->lockManager->getLocks($file->getId()))) {
+                        $this->lockManager->lock(new LockContext($file, ILock::TYPE_APP, $this->appName));
 
-                    $this->logger->debug("$this->appName has locked file $fileId", ["app" => $this->appName]);
+                        $this->logger->debug("$this->appName has locked file $fileId", ["app" => $this->appName]);
+                    }
                 } catch (PreConditionNotMetException | OwnerLockedException | NoLockProviderException $e) {}
 
                 $result = 0;
