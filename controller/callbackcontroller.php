@@ -571,7 +571,9 @@ class CallbackController extends Controller {
                     try {
                         $lockContext = new LockContext($file, ILock::TYPE_APP, $this->appName);
                         $this->lockManager->runInScope($lockContext, $retryOperation);
-                        $this->lockManager->unlock($lockContext);
+                        if (!$isForcesave) {
+                            $this->lockManager->unlock($lockContext);
+                        }
 
                         $this->logger->debug("$this->appName has unlocked file $fileId", ["app" => $this->appName]);
                     } catch (NoLockProviderException $e) {
