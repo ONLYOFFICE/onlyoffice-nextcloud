@@ -460,7 +460,8 @@ class CallbackController extends Controller {
         $callbackUserId = $hashData->userId;
 
         $userId = null;
-        if (!empty($users)) {
+        if (!empty($users)
+            && $status !== self::TrackerStatus_Editing) {
             // author of the latest changes
             $userId = $this->parseUserId($users[0]);
         } else {
