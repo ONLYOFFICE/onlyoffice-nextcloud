@@ -79,7 +79,7 @@ class FileVersions {
         $versionId = substr($pathVersion, 2 + $pos - strlen($pathVersion));
         if (ctype_digit($versionId)) {
             return [$filePath, $versionId];
-         }
+        }
         return false;
     }
 
