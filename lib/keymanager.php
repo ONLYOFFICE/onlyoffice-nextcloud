@@ -151,7 +151,7 @@ class KeyManager {
         $rows = $result ? $select->fetch() : [];
         $fs = is_array($rows) && isset($rows["fs"]) ? $rows["fs"] : "";
 
-        return $fs === 1;
+        return $fs == 1;
     }
 
     /**
