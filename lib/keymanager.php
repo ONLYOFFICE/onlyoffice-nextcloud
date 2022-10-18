@@ -149,7 +149,7 @@ class KeyManager {
         $result = $select->execute([$fileId]);
 
         $rows = $result ? $select->fetch() : [];
-        $fs = is_array($rows) && isset($rows["fs"]) ? $rows["fs"] : "";
+        $fs = is_array($rows) && isset($rows["fs"]) ? $rows["fs"] : 0;
 
         return $fs == 1;
     }
