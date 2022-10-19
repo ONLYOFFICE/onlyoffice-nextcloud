@@ -5,11 +5,13 @@
 - Chinese (Traditional, Taiwan), Basque (Spain) empty file templates
 
 ## Changed
+- compatible with Nextcloud 25
 - generate preview by default
 - fix editing with federated share
 - fix opening file in new tab
 - fix watermark for shared file by link
 - fix update application
+- Nextcloud v24 is no longer supported
 
 ## 7.5.4
 ## Changed
