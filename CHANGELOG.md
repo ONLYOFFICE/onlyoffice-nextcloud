@@ -1,5 +1,6 @@
 # Change Log
 
+## 7.6.6
 ## Added
 - Dutch translation
 - Chinese (Traditional, Taiwan), Basque (Spain) empty file templates
