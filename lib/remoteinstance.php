@@ -43,7 +43,7 @@ class RemoteInstance {
     /**
      * Time to live of remote instance (12 hours)
      */
-    private static $ttl = 60 * 60 * 12;
+    private static $ttl = 60 * 60 * 1;
 
     /**
      * Health remote list
