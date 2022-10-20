@@ -32,6 +32,7 @@ use OCP\Files\Template\ITemplateManager;
 use OCP\Files\Template\TemplateFileCreator;
 use OCA\Files\Event\LoadAdditionalScriptsEvent;
 use OCP\Files\IMimeTypeDetector;
+use OCP\Files\Lock\ILockManager;
 use OCP\IL10N;
 use OCP\IPreview;
 use OCP\ITagManager;
@@ -199,7 +200,8 @@ class Application extends App implements IBootstrap {
                 $this->crypt,
                 $c->get("IManager"),
                 $c->get("Session"),
-                $c->get(ITagManager::class)
+                $c->get(ITagManager::class),
+                $c->get(ILockManager::class)
             );
         });
 
@@ -214,7 +216,8 @@ class Application extends App implements IBootstrap {
                 $c->get("Logger"),
                 $this->appConfig,
                 $this->crypt,
-                $c->get("IManager")
+                $c->get("IManager"),
+                $c->get(ILockManager::class)
             );
         });
 

@@ -87,6 +87,7 @@ OC.L10N.register(
     "Keep intermediate versions when editing (forcesave)": "Zachowuj wersje pośrednie w trakcie edycji (zapisuj automatycznie)",
     "Use ONLYOFFICE to generate a document preview (it will take up disk space)": "Skorzystaj z ONLYOFFICE, aby wygenerować podgląd dokumentu (zajmie to miejsce na dysku)",
     "Keep metadata for each version once the document is edited (it will take up disk space)": "Zachowaj metadane dla każdej wersji, gdy dokument jest edytowany (zajmie to miejsce na dysku)",
+    "Clear": "Wyczyść",
     "All history successfully deleted": "Cała historia została pomyślnie usunięta",
     "Create": "Utwórz",
     "Select template" : "Wybierz szablon",
@@ -118,6 +119,7 @@ OC.L10N.register(
     "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online": "Zaktualizuj ONLYOFFICE Docs do wersji 7.0, aby działały w formularzach do wypełniania online",
     "Security": "Bezpieczeństwo",
     "Anonymous": "Anonimowy",
+    "Default editor theme": "Domyślny motyw edytora",
     "Light": "Jasny",
     "Classic Light": "Klasyczny jasny",
     "Dark": "Ciemny",
@@ -126,6 +128,7 @@ OC.L10N.register(
     "Form filling": "Wypełnianie formularza",
     "Custom filter": "Niestandardowy filtr",
     "group": "grupa",
-    "Advanced": "Zaawansowane"
+    "Advanced": "Zaawansowane",
+    "Provide advanced document permissions using ONLYOFFICE Docs": "Udziel zaawansowanych uprawnień do edycji dokumentów w ONLYOFFICE Docs"
 },
 "nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);");

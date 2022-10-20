@@ -30,6 +30,12 @@ use OCP\Files\Folder;
 use OCP\Files\IRootFolder;
 use OCP\Files\NotFoundException;
 use OCP\Files\NotPermittedException;
+use OCP\Files\Lock\ILock;
+use OCP\Files\Lock\ILockManager;
+use OCP\Files\Lock\LockContext;
+use OCP\Files\Lock\NoLockProviderException;
+use OCP\Files\Lock\OwnerLockedException;
+use OCP\PreConditionNotMetException;
 use OCP\IL10N;
 use OCP\ILogger;
 use OCP\IRequest;
@@ -39,7 +45,6 @@ use OCP\Lock\LockedException;
 use OCP\Share\Exceptions\ShareNotFound;
 use OCP\Share\IManager;
 
-use OCA\Files_Sharing\External\Storage as SharingExternalStorage;
 use OCA\Files_Versions\Versions\IVersionManager;
 
 use OCA\Onlyoffice\AppConfig;
@@ -47,6 +52,7 @@ use OCA\Onlyoffice\Crypt;
 use OCA\Onlyoffice\DocumentService;
 use OCA\Onlyoffice\FileVersions;
 use OCA\Onlyoffice\KeyManager;
+use OCA\Onlyoffice\RemoteInstance;
 use OCA\Onlyoffice\TemplateManager;
 
 /**
@@ -120,6 +126,13 @@ class CallbackController extends Controller {
     private $versionManager;
 
     /**
+     * Lock manager
+     *
+     * @var ILockManager
+    */
+    private $lockManager;
+
+    /**
      * Status of the document
      */
     private const TrackerStatus_Editing = 1;
@@ -140,6 +153,7 @@ class CallbackController extends Controller {
      * @param AppConfig $config - application configuration
      * @param Crypt $crypt - hash generator
      * @param IManager $shareManager - Share manager
+     * @param ILockManager $lockManager - Lock manager
      */
     public function __construct($AppName,
                                     IRequest $request,
@@ -150,7 +164,8 @@ class CallbackController extends Controller {
                                     ILogger $logger,
                                     AppConfig $config,
                                     Crypt $crypt,
-                                    IManager $shareManager
+                                    IManager $shareManager,
+                                    ILockManager $lockManager
                                     ) {
         parent::__construct($AppName, $request);
 
@@ -162,6 +177,7 @@ class CallbackController extends Controller {
         $this->config = $config;
         $this->crypt = $crypt;
         $this->shareManager = $shareManager;
+        $this->lockManager = $lockManager;
 
         if (\OC::$server->getAppManager()->isInstalled("files_versions")) {
             try {
@@ -434,6 +450,72 @@ class CallbackController extends Controller {
             $url = isset($payload->url) ? $payload->url : null;
         }
 
+        $shareToken = isset($hashData->shareToken) ? $hashData->shareToken : null;
+        $filePath = null;
+
+        \OC_Util::tearDownFS();
+
+        $isForcesave = $status === self::TrackerStatus_ForceSave || $status === self::TrackerStatus_CorruptedForceSave;
+
+        $callbackUserId = $hashData->userId;
+
+        $userId = null;
+        if (!empty($users)
+            && $status !== self::TrackerStatus_Editing) {
+            // author of the latest changes
+            $userId = $this->parseUserId($users[0]);
+        } else {
+            $userId = $callbackUserId;
+        }
+
+        if ($isForcesave
+            && $forcesavetype === 1
+            && !empty($actions)) {
+            // the user who clicked Save
+            $userId = $this->parseUserId($actions[0]["userid"]);
+        }
+
+        $user = $this->userManager->get($userId);
+        if (!empty($user)) {
+            \OC_User::setUserId($userId);
+        } else {
+            if (empty($shareToken)) {
+                $this->logger->error("Track without token: $fileId status $status", ["app" => $this->appName]);
+                return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
+            }
+
+            $this->logger->debug("Track $fileId by token for $userId", ["app" => $this->appName]);
+        }
+
+        // owner of file from the callback link
+        $ownerId = $hashData->ownerId;
+        $owner = $this->userManager->get($ownerId);
+
+        if (!empty($owner)) {
+            $userId = $ownerId;
+        } else {
+            $callbackUser = $this->userManager->get($callbackUserId);
+
+            if (!empty($callbackUser)) {
+                // author of the callback link
+                $userId = $callbackUserId;
+
+                // path for author of the callback link
+                $filePath = $hashData->filePath;
+            }
+        }
+
+        if (!empty($userId)) {
+            \OC_Util::setupFS($userId);
+        }
+
+        list ($file, $error) = empty($shareToken) ? $this->getFile($userId, $fileId, $filePath) : $this->getFileByToken($fileId, $shareToken);
+
+        if (isset($error)) {
+            $this->logger->error("track error $fileId " . json_encode($error->getData()),  ["app" => $this->appName]);
+            return $error;
+        }
+
         $result = 1;
         switch ($status) {
             case self::TrackerStatus_MustSave:
@@ -446,65 +528,6 @@ class CallbackController extends Controller {
                 }
 
                 try {
-                    $shareToken = isset($hashData->shareToken) ? $hashData->shareToken : null;
-                    $filePath = null;
-
-                    \OC_Util::tearDownFS();
-
-                    $isForcesave = $status === self::TrackerStatus_ForceSave || $status === self::TrackerStatus_CorruptedForceSave;
-
-                    // author of the latest changes
-                    $userId = $this->parseUserId($users[0]);
-
-                    if ($isForcesave
-                        && $forcesavetype === 1
-                        && !empty($actions)) {
-                        // the user who clicked Save
-                        $userId = $this->parseUserId($actions[0]["userid"]);
-                    }
-
-                    $user = $this->userManager->get($userId);
-                    if (!empty($user)) {
-                        \OC_User::setUserId($userId);
-                    } else {
-                        if (empty($shareToken)) {
-                            $this->logger->error("Track without token: $fileId status $status", ["app" => $this->appName]);
-                            return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
-                        }
-
-                        $this->logger->debug("Track $fileId by token for $userId", ["app" => $this->appName]);
-                    }
-
-                    // owner of file from the callback link
-                    $ownerId = $hashData->ownerId;
-                    $owner = $this->userManager->get($ownerId);
-
-                    if (!empty($owner)) {
-                        $userId = $ownerId;
-                    } else {
-                        $callbackUserId = $hashData->userId;
-                        $callbackUser = $this->userManager->get($callbackUserId);
-
-                        if (!empty($callbackUser)) {
-                            // author of the callback link
-                            $userId = $callbackUserId;
-
-                            // path for author of the callback link
-                            $filePath = $hashData->filePath;
-                        }
-                    }
-
-                    if (!empty($userId)) {
-                        \OC_Util::setupFS($userId);
-                    }
-
-                    list ($file, $error) = empty($shareToken) ? $this->getFile($userId, $fileId, $filePath) : $this->getFileByToken($fileId, $shareToken);
-
-                    if (isset($error)) {
-                        $this->logger->error("track error $fileId " . json_encode($error->getData()),  ["app" => $this->appName]);
-                        return $error;
-                    }
-
                     $url = $this->config->ReplaceDocumentServerUrlToInternal($url);
 
                     $prevVersion = $file->getFileInfo()->getMtime();
@@ -529,8 +552,8 @@ class CallbackController extends Controller {
 
                     $prevIsForcesave = KeyManager::wasForcesave($fileId);
 
-                    if ($file->getStorage()->instanceOfStorage(SharingExternalStorage::class)) {
-                        $isLock = KeyManager::lockFederatedKey($file, $isForcesave, null);
+                    if (RemoteInstance::isRemoteFile($file)) {
+                        $isLock = RemoteInstance::lockRemoteKey($file, $isForcesave, null);
                         if ($isForcesave && !$isLock) {
                             break;
                         }
@@ -539,13 +562,27 @@ class CallbackController extends Controller {
                     }
 
                     $this->logger->debug("Track put content " . $file->getPath(), ["app" => $this->appName]);
-                    $this->retryOperation(function () use ($file, $newData) {
-                        return $file->putContent($newData);
-                    });
 
-                    if ($file->getStorage()->instanceOfStorage(SharingExternalStorage::class)) {
+                    $retryOperation = function () use ($file, $newData) {
+                        $this->retryOperation(function () use ($file, $newData) {
+                            return $file->putContent($newData);
+                        });
+                    };
+
+                    try {
+                        $lockContext = new LockContext($file, ILock::TYPE_APP, $this->appName);
+                        $this->lockManager->runInScope($lockContext, $retryOperation);
+                    } catch (NoLockProviderException $e) {
+                        $retryOperation();
+                    }
+
+                    if (!$isForcesave) {
+                        $this->unlock($file);
+                    }
+
+                    if (RemoteInstance::isRemoteFile($file)) {
                         if ($isForcesave) {
-                            KeyManager::lockFederatedKey($file, false, $isForcesave);
+                            RemoteInstance::lockRemoteKey($file, false, $isForcesave);
                         }
                     } else {
                         KeyManager::lock($fileId, false);
@@ -575,7 +612,13 @@ class CallbackController extends Controller {
                 break;
 
             case self::TrackerStatus_Editing:
+                $this->lock($file);
+
+                $result = 0;
+                break;
             case self::TrackerStatus_Closed:
+                $this->unlock($file);
+
                 $result = 0;
                 break;
         }
@@ -754,6 +797,46 @@ class CallbackController extends Controller {
         }
 
         return $userId;
+    }
+
+    /**
+     * Lock file by lock provider if exists
+     *
+     * @param File $file - file
+     */
+    private function lock($file) {
+        if (!$this->lockManager->isLockProviderAvailable()) {
+            return;
+        }
+
+        $fileId = $file->getId();
+
+        try {
+            if (empty($this->lockManager->getLocks($fileId))) {
+                $this->lockManager->lock(new LockContext($file, ILock::TYPE_APP, $this->appName));
+
+                $this->logger->debug("$this->appName has locked file $fileId", ["app" => $this->appName]);
+            }
+        } catch (PreConditionNotMetException | OwnerLockedException | NoLockProviderException $e) {}
+    }
+
+    /**
+     * Unlock file by lock provider if exists
+     *
+     * @param File $file - file
+     */
+    private function unlock($file) {
+        if (!$this->lockManager->isLockProviderAvailable()) {
+            return;
+        }
+
+        $fileId = $file->getId();
+
+        try {
+            $this->lockManager->unlock(new LockContext($file, ILock::TYPE_APP, $this->appName));
+
+            $this->logger->debug("$this->appName has unlocked file $fileId", ["app" => $this->appName]);
+        } catch (PreConditionNotMetException | NoLockProviderException $e) {}
     }
 
     /**

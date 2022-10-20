@@ -25,7 +25,10 @@
     }
 ?>
 
-<div id="app">
+<div id="app"
+    <?php if (!empty($_["inviewer"])) { ?>
+        class="onlyoffice-inviewer"
+    <?php } ?>>
 
     <div id="iframeEditor"
         data-id="<?php p($_["fileId"]) ?>"

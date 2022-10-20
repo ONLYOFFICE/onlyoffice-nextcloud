@@ -26,6 +26,11 @@ use OCP\Constants;
 use OCP\Files\File;
 use OCP\Files\Folder;
 use OCP\Files\IRootFolder;
+use OCP\Files\Lock\ILock;
+use OCP\Files\Lock\ILockManager;
+use OCP\Files\Lock\NoLockProviderException;
+use OCP\Files\Lock\OwnerLockedException;
+use OCP\PreConditionNotMetException;
 use OCP\IL10N;
 use OCP\ILogger;
 use OCP\IRequest;
@@ -37,10 +42,9 @@ use OCP\IUser;
 use OCP\IUserManager;
 use OCP\IUserSession;
 use OCP\Share\IManager;
+use OCP\Share\IShare;
 
 use OCA\Files_Versions\Versions\IVersionManager;
-use OCA\FilesLock\Service\LockService;
-use OCA\FilesLock\Exceptions\LockNotFoundException;
 
 use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\Crypt;
@@ -139,6 +143,13 @@ class EditorApiController extends OCSController {
     private $extraPermissions;
 
     /**
+     * Lock manager
+     *
+     * @var ILockManager
+    */
+    private $lockManager;
+
+    /**
      * Mobile regex from https://github.com/ONLYOFFICE/CommunityServer/blob/v9.1.1/web/studio/ASC.Web.Studio/web.appsettings.config#L35
      */
     const USER_AGENT_MOBILE = "/android|avantgo|playbook|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od|ad)|iris|kindle|lge |maemo|midp|mmp|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\\/|plucker|pocket|psp|symbian|treo|up\\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i";
@@ -157,6 +168,7 @@ class EditorApiController extends OCSController {
      * @param IManager $shareManager - Share manager
      * @param ISession $ISession - Session
      * @param ITagManager $tagManager - Tag manager
+     * @param ILockManager $lockManager - Lock manager
      */
     public function __construct($AppName,
                                     IRequest $request,
@@ -170,7 +182,8 @@ class EditorApiController extends OCSController {
                                     Crypt $crypt,
                                     IManager $shareManager,
                                     ISession $session,
-                                    ITagManager $tagManager
+                                    ITagManager $tagManager,
+                                    ILockManager $lockManager
                                     ) {
         parent::__construct($AppName, $request);
 
@@ -183,6 +196,7 @@ class EditorApiController extends OCSController {
         $this->config = $config;
         $this->crypt = $crypt;
         $this->tagManager = $tagManager;
+        $this->lockManager = $lockManager;
 
         if (\OC::$server->getAppManager()->isInstalled("files_versions")) {
             try {
@@ -318,6 +332,7 @@ class EditorApiController extends OCSController {
             $params["document"]["permissions"]["modifyFilter"] = $permissions_modifyFilter;
         }
 
+        $canDownload = true;
         $restrictedEditing = false;
         $fileStorage = $file->getStorage();
         if (empty($shareToken) && $fileStorage->instanceOfStorage("\OCA\Files_Sharing\SharedStorage")) {
@@ -358,28 +373,33 @@ class EditorApiController extends OCSController {
                     $params["document"]["permissions"]["modifyFilter"] = $modifyFilter;
                 }
             }
+
+            if (method_exists(IShare::class, "getAttributes")) {
+                $share = empty($share) ? $fileStorage->getShare() : $share;
+                $attributes = $share->getAttributes();
+                if ($attributes !== null && !$attributes->getAttribute("permissions", "download")) {
+                    $canDownload = false;
+                }
+            }
         }
 
         $isTempLock = false;
         if ($version < 1
-            && \OC::$server->getAppManager()->isInstalled("files_lock")) {
+            && $this->lockManager->isLockProviderAvailable()) {
             try {
-                $lockService = \OC::$server->get(LockService::class);
-                $lock = $lockService->getLockFromFileId($file->getId());
+                $locks = $this->lockManager->getLocks($file->getId());
+                $lock = !empty($locks) ? $locks[0] : null;
 
-                $lockOwner = null;
-                if (method_exists($lock, "getUserId")) {
-                    $lockOwner = $lock->getUserId();
-                }
-                else if(method_exists($lock, "getOwner")) {
+                if ($lock !== null) {
+                    $lockType = $lock->getType();
                     $lockOwner = $lock->getOwner();
+                    if (($lockType === ILock::TYPE_APP) && $lockOwner !== $this->appName
+                        || ($lockType === ILock::TYPE_USER || $lockType === ILock::TYPE_TOKEN) && $lockOwner !== $userId) {
+                        $isTempLock = true;
+                        $this->logger->debug("File" . $file->getId() . "is locked by $lockOwner", ["app" => $this->appName]);
+                    }
                 }
-
-                if ($userId !== $lockOwner) {
-                    $isTempLock = true;
-                    $this->logger->debug("File" . $file->getId() . "is locked by $lockOwner", ["app" => $this->appName]);
-                }
-            } catch (LockNotFoundException $e) {}
+            } catch (PreConditionNotMetException | NoLockProviderException $e) {}
         }
 
         $canEdit = isset($format["edit"]) && $format["edit"];
@@ -435,9 +455,7 @@ class EditorApiController extends OCSController {
 
         if (!empty($shareToken)) {
             if (method_exists($share, "getHideDownload") && $share->getHideDownload()) {
-                $params["document"]["permissions"]["download"] = false;
-                $params["document"]["permissions"]["print"] = false;
-                $params["document"]["permissions"]["copy"] = false;
+                $canDownload = false;
             }
 
             $node = $share->getNode();
@@ -529,6 +547,12 @@ class EditorApiController extends OCSController {
                     $params["editorConfig"]["customization"]["goback"]["requestClose"] = true;
                 }
             }
+        }
+
+        if (!$canDownload) {
+            $params["document"]["permissions"]["download"] = false;
+            $params["document"]["permissions"]["print"] = false;
+            $params["document"]["permissions"]["copy"] = false;
         }
 
         if ($inframe === true) {
@@ -856,7 +880,8 @@ class EditorApiController extends OCSController {
                 return $watermarkText;
             }
         }
-        if ($watermarkSettings["allGroups"]) {
+        if ($watermarkSettings["allGroups"]
+            && $userId !== null) {
             $groups = $watermarkSettings["allGroupsList"];
             foreach ($groups as $group) {
                 if (\OC::$server->getGroupManager()->isInGroup($userId, $group)) {

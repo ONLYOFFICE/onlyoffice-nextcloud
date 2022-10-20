@@ -119,6 +119,9 @@
                 OCA.Files.Sidebar.close();
             }
 
+            var scrollTop = $("#app-content").scrollTop();
+            $(OCA.Onlyoffice.frameSelector).css("top", scrollTop);
+
             OCA.Onlyoffice.folderUrl = location.href;
             window.history.pushState(null, null, url);
         }
@@ -539,6 +542,7 @@
                 OCA.Onlyoffice.frameSelector = "#onlyofficeFrame";
                 var $iframe = $("<iframe id=\"onlyofficeFrame\" nonce=\"" + btoa(OC.requestToken) + "\" scrolling=\"no\" allowfullscreen src=\"" + editorUrl + "?inframe=true\" />");
                 $("#app-content").append($iframe);
+                $("body").addClass("onlyoffice-inline");
             }
         } else {
             OC.Plugins.register("OCA.Files.NewFileMenu", OCA.Onlyoffice.NewFileMenu);

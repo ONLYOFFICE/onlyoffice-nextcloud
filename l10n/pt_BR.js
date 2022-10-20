@@ -86,7 +86,8 @@ OC.L10N.register(
     "Disable certificate verification (insecure)": "Desativar a verificação do certificado (inseguro)",
     "Keep intermediate versions when editing (forcesave)": "Manter versões intermediárias ao editar (forçar salvar)",
     "Use ONLYOFFICE to generate a document preview (it will take up disk space)": "Usar ONLYOFFICE para gerar uma visualização do documento (ocupará espaço em disco)",
-    "Keep metadata for each version once the document is edited (it will take up disk space)": "Manter os metadados para cada versão após a edição (ocupará espaço em disco)  (ocupará espaço em disco)",
+    "Keep metadata for each version once the document is edited (it will take up disk space)": "Manter os metadados para cada versão após a edição (ocupará espaço em disco) (ocupará espaço em disco)",
+    "Clear": "Limpar",
     "All history successfully deleted": "O histórico foi excluído com sucesso",
     "Create": "Criar",
     "Select template" : "Selecionar um modelo",
@@ -101,8 +102,8 @@ OC.L10N.register(
     "Common templates": "Modelos comuns",
     "Failed to delete template": "Falha ao excluir modelo",
     "File has been converted. Its content might look different.": "O arquivo foi convertido. Seu conteúdo pode ser diferente.",
-    "Download as": "Baixar",
-    "Download": "Baixar como",
+    "Download as": "Baixar como",
+    "Download": "Baixar",
     "Origin format": "Formato de origem",
     "Failed to send notification": "Falha ao enviar notificação",
     "Notification sent successfully": "Notificação enviada com sucesso",
@@ -118,6 +119,7 @@ OC.L10N.register(
     "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online": "Atualize o ONLYOFFICE Docs para a versão 7.0 para trabalhar em formulários preenchíveis online",
     "Security": "Segurança",
     "Anonymous": "Anônimo",
+    "Default editor theme": "Tema do editor padrão",
     "Light": "Claro",
     "Classic Light": "Clássico claro",
     "Dark": "Escuro",
@@ -126,6 +128,7 @@ OC.L10N.register(
     "Form filling": "Preenchimento de formularios",
     "Custom filter": "Filtro personalizado",
     "group": "grupo",
-    "Advanced": "Avançado"
+    "Advanced": "Avançado",
+    "Provide advanced document permissions using ONLYOFFICE Docs": "Forneça permissões avançadas de documentos usando o ONLYOFFICE Docs"
 },
 "nplurals=2; plural=(n > 1);");

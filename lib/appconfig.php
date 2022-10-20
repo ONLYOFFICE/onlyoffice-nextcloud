@@ -427,7 +427,7 @@ class AppConfig {
         if (empty($url)) {
             $url = $this->GetSystemValue($this->_documentserver);
         }
-        if ($url !== "/") {
+        if ($url !== null && $url !== "/") {
             $url = rtrim($url, "/");
             if (strlen($url) > 0) {
                 $url = $url . "/";
@@ -691,7 +691,7 @@ class AppConfig {
      * @return bool
      */
     public function GetPreview() {
-        return $this->config->getAppValue($this->appName, $this->_preview, "false") === "true";
+        return $this->config->getAppValue($this->appName, $this->_preview, "true") === "true";
     }
 
     /**

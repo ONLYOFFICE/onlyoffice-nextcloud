@@ -37,26 +37,29 @@
 }
 
 /* onlyoffice-inline */
-body.onlyoffice-inline {
-    overscroll-behavior-y: none;
-    overflow: hidden;
-}
-body.onlyoffice-inline #app-navigation,
-body.onlyoffice-inline .searchbox,
-body.onlyoffice-inline #app-content #controls,
-body.onlyoffice-inline #filestable {
+#body-user.onlyoffice-inline #app-navigation,
+#body-user.onlyoffice-inline .searchbox,
+#body-user.onlyoffice-inline #app-content .files-controls,
+#body-user.onlyoffice-inline .files-filestable {
     display: none;
 }
-body.onlyoffice-inline #app-navigation-toggle {
+#body-user.onlyoffice-inline #app-navigation-toggle {
     display: none !important;
 }
-body.onlyoffice-inline #content #app-content {
+#body-user.onlyoffice-inline #content #app-content {
     margin-left: 0;
+    position: relative;
+    overflow: hidden;
+    overscroll-behavior-y: none;
 }
+#body-public.onlyoffice-inline footer {
+    display: none !important;
+}
+
 #onlyofficeFrame {
     background-color: #fff;
     width: 100%;
-    height: calc(100vh - 50px);
+    height: 100vh;
     display: block;
     position: absolute;
     top: 0;
@@ -74,6 +77,8 @@ body.onlyoffice-inline #content #app-content {
 }
 .AscDesktopEditor #body-user #content {
     padding-top: 0;
+    margin-top: 0px;
+    height: 100%;
 }
 .AscDesktopEditor #body-user #app-navigation,
 .AscDesktopEditor #body-user #controls,
