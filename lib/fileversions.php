@@ -71,13 +71,13 @@ class FileVersions {
      * @return array
      */
     public static function splitPathVersion($pathVersion) {
-        $pos = strrpos($pathVersion, ".v");
-        if ($pos === false) {
+        if (empty($pathVersion)) {
             return false;
         }
-        $filePath = substr($pathVersion, 0, $pos);
-        $versionId = substr($pathVersion, 2 + $pos - strlen($pathVersion));
-        return [$filePath, $versionId];
+        if (preg_match("/(.+)\.v(\d+)$/", $pathVersion, $matches)) {
+            return [$matches[1], $matches[2]];
+        }
+        return false;
     }
 
     /**

@@ -360,6 +360,9 @@ class Preview extends Provider {
             $relativePath = $versionFolder->getRelativePath($absolutePath);
 
             list ($filePath, $fileVersion) = FileVersions::splitPathVersion($relativePath);
+            if ($filePath === null) {
+                return [null, null, null];
+            }
 
             $sourceFile = $this->root->getUserFolder($owner->getUID())->get($filePath);
 
