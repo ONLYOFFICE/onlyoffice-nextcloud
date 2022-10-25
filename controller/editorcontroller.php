@@ -448,6 +448,8 @@ class EditorController extends Controller {
 
         $recipientIds = [];
         foreach ($emails as $email) {
+            $substrToDelete = "+" . $email . " ";
+            $comment = str_replace($substrToDelete, "", $comment);
             $recipients = $this->userManager->getByEmail($email);
             foreach ($recipients as $recipient) {
                 $recipientId = $recipient->getUID(); 
@@ -475,6 +477,10 @@ class EditorController extends Controller {
         if (isset($error)) {
             $this->logger->error("Mention: $fileId $error", ["app" => $this->appName]);
             return ["error" => $this->trans->t("Failed to send notification")];
+        }
+
+        if (strlen($comment) > 64) {
+            $comment = substr($comment, 0, 61) . "...";
         }
 
         $notificationManager = \OC::$server->getNotificationManager();
