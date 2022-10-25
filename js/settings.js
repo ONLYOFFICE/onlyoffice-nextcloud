@@ -141,6 +141,7 @@
             var onlyofficeStorageUrl = ($("#onlyofficeStorageUrl:visible").val() || "").trim();
             var onlyofficeVerifyPeerOff = $("#onlyofficeVerifyPeerOff").prop("checked");
             var onlyofficeSecret = ($("#onlyofficeSecret:visible").val() || "").trim();
+            var onlyofficeJwtLeeway = ($("#onlyofficeJwtLeeway").val() || "0").trim();
             var demo = $("#onlyofficeDemo").prop("checked");
 
             $.ajax({
@@ -152,6 +153,7 @@
                     storageUrl: onlyofficeStorageUrl,
                     verifyPeerOff: onlyofficeVerifyPeerOff,
                     secret: onlyofficeSecret,
+                    jwtLeeway: onlyofficeJwtLeeway,
                     demo: demo
                 },
                 success: function onSuccess(response) {
@@ -161,6 +163,7 @@
                         $("#onlyofficeInternalUrl").val(response.documentserverInternal);
                         $("#onlyofficeStorageUrl").val(response.storageUrl);
                         $("#onlyofficeSecret").val(response.secret);
+                        $("#onlyofficeJwtLeeway").val(response.jwtLeeway);
 
                         $(".section-onlyoffice-common, .section-onlyoffice-templates, .section-onlyoffice-watermark").toggleClass("onlyoffice-hide", (!response.documentserver.length && !demo) || !!response.error.length);
 

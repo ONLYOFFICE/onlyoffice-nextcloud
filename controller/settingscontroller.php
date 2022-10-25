@@ -132,7 +132,8 @@ class SettingsController extends Controller {
             "tagsEnabled" => \OC::$server->getAppManager()->isEnabledForUser("systemtags"),
             "reviewDisplay" => $this->config->GetCustomizationReviewDisplay(),
             "theme" => $this->config->GetCustomizationTheme(),
-            "templates" => $this->GetGlobalTemplates()
+            "templates" => $this->GetGlobalTemplates(),
+            "jwtLeeway" => $this->config->GetJwtLeeway()
         ];
         return new TemplateResponse($this->appName, "settings", $data, "blank");
     }
@@ -154,7 +155,8 @@ class SettingsController extends Controller {
                                     $storageUrl,
                                     $verifyPeerOff,
                                     $secret,
-                                    $demo
+                                    $demo,
+                                    $jwtLeeway
                                     ) {
         $error = null;
         if (!$this->config->SelectDemo($demo === true)) {
@@ -165,6 +167,7 @@ class SettingsController extends Controller {
             $this->config->SetVerifyPeerOff($verifyPeerOff);
             $this->config->SetDocumentServerInternalUrl($documentserverInternal);
             $this->config->SetDocumentServerSecret($secret);
+            $this->config->SetJwtLeeway($jwtLeeway);
         }
         $this->config->SetStorageUrl($storageUrl);
 
@@ -184,6 +187,7 @@ class SettingsController extends Controller {
             "documentserverInternal" => $this->config->GetDocumentServerInternalUrl(true),
             "storageUrl" => $this->config->GetStorageUrl(),
             "secret" => $this->config->GetDocumentServerSecret(true),
+            "jwtLeeway" => $this->config->GetJwtLeeway(),
             "error" => $error,
             "version" => $version,
             ];
