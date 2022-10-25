@@ -102,6 +102,8 @@ class Application extends App implements IBootstrap {
         if (!class_exists('\\Firebase\\JWT\\JWT')) {
             require_once __DIR__ . "/../3rdparty/jwt/JWT.php";
         }
+	// Set the leeway for the JWT library in case the system clock is a second off
+        \Firebase\JWT\JWT::$leeway = $this->appConfig->GetJwtLeeway();
 
         $context->registerService("L10N", function (ContainerInterface $c) {
             return $c->get("ServerContainer")->getL10N($c->get("AppName"));

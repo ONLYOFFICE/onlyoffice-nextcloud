@@ -89,6 +89,13 @@ class AppConfig {
     private $_cryptSecret = "secret";
 
     /**
+     * The config key for the allowable leeway in Jwt checks
+     *
+     * @var string
+     */
+    private $_jwtLeeway = "JwtLeeway";
+
+    /**
      * The config key for the default formats
      *
      * @var string
@@ -569,6 +576,27 @@ class AppConfig {
             $secret = $this->GetSystemValue($this->_jwtSecret);
         }
         return $secret;
+    }
+
+    /**
+     * Save the Jwt Leeway to the application configuration
+     *
+     * @param string $jwtLeeway - number of seconds the docs/nextcloud clock can be off
+     */
+    public function SetJwtLeeway($jwtLeeway) {
+        $this->logger->debug("Setting JwtLeeway to: " . json_encode($jwtLeeway), ["app" => $this->appName]);
+        $this->config->setAppValue($this->appName, $this->_jwtLeeway, $jwtLeeway);
+    }
+
+    /**
+     * Get the Jwt Leeway
+     *
+     * @return string
+     */
+    public function GetJwtLeeway() {
+        $jwtLeeway = $this->config->getAppValue($this->appName, $this->_jwtLeeway, "0");
+        $this->logger->debug("JwtLeeqy: " . json_encode($jwtLeeway), ["app" => $this->appName]);
+        return $jwtLeeway;
     }
 
     /**
