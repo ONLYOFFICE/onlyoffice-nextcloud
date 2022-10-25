@@ -165,6 +165,9 @@
         <a target="_blank" class="icon-info svg" title="" href="https://api.onlyoffice.com/editors/config/editor/customization" data-original-title="<?php p($l->t("View details")) ?>"></a>
     </h2>
 
+    <p><?php p($l->t("Unknown author display name")) ?></p>
+    <p><input id="onlyofficeUnknownAuthor" value="<?php p($_["unknownAuthor"]) ?>" placeholder="<no-data>" type="text"></p>
+
     <p>
         <input type="checkbox" class="checkbox" id="onlyofficeForcesave"
             <?php if ($_["forcesave"]) { ?>checked="checked"<?php } ?> />
