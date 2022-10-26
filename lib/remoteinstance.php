@@ -202,8 +202,10 @@ class RemoteInstance {
         } catch (\Exception $e) {
             $logger->logException($e, ["message" => "Failed to request federated key " . $file->getId(), "app" => self::App_Name]);
 
-            self::update($remote, false);
-            $logger->debug("Changed status for remote instance $remote to false", ["app" => self::App_Name]);
+            if ($e->getResponse()->getStatusCode() === 404) {
+                self::update($remote, false);
+                $logger->debug("Changed status for remote instance $remote to false", ["app" => self::App_Name]);
+            }
 
             return null;
         }
