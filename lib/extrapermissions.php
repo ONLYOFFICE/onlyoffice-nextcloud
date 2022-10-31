@@ -295,7 +295,11 @@ class ExtraPermissions {
 
         $value = is_array($values) ? $values : [];
 
-        return $value;
+        return [
+            "id" => (int)$value["id"],
+            "share_id" => (string)$value["share_id"],
+            "permissions" => (int)$value["permissions"]
+        ];
     }
 
     /**
@@ -325,9 +329,18 @@ class ExtraPermissions {
 
         $values = $result ? $select->fetchAll() : [];
 
-        $value = is_array($values) ? $values : [];
+        $result = [];
+        if (is_array($values)) {
+            foreach ($values as $value) {
+                array_push($result, [
+                    "id" => (int)$value["id"],
+                    "share_id" => (string)$value["share_id"],
+                    "permissions" => (int)$value["permissions"]
+                ]);
+            }
+        }
 
-        return $value;
+        return $result;
     }
 
     /**
