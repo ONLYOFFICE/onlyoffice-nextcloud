@@ -1,5 +1,8 @@
 # Change Log
 
+## Changed
+- fix download permission
+
 ## 7.4.6
 ## Added
 - Dutch translation
