@@ -1053,7 +1053,8 @@ class EditorController extends Controller {
             if (method_exists(IShare::class, "getAttributes")) {
                 $share = empty($share) ? $fileStorage->getShare() : $share;
                 $attributes = $share->getAttributes();
-                if ($attributes !== null && !$attributes->getAttribute("permissions", "download")) {
+                $downloadAttr = isset($attributes) ? $attributes->getAttribute("permissions", "download") : null;
+                if (isset($downloadAttr) && !$downloadAttr) {
                     return $this->renderError($this->trans->t("Not permitted"));
                 }
             }
