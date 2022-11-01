@@ -1,5 +1,8 @@
 # Change Log
 
+## Changed
+- fix download permission
+
 ## Added
 - Dutch translation
 - Chinese (Traditional, Taiwan), Basque (Spain) empty file templates
