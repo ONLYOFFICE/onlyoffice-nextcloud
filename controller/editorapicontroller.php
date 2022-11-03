@@ -740,6 +740,10 @@ class EditorApiController extends OCSController {
             $params["editorConfig"]["customization"]["macros"] = false;
         }
 
+        //default is true
+        if($this->config->GetCustomizationPlugins() === false) {
+            $params["editorConfig"]["customization"]["plugins"] = false;
+        }
 
         /* from system config */
 

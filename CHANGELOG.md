@@ -1,5 +1,8 @@
 # Change Log
 
+## Added
+- disable plugins setting
+
 ## Changed
 - fix download permission
 
