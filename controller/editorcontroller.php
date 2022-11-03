@@ -1048,6 +1048,18 @@ class EditorController extends Controller {
             }
         }
 
+        $fileStorage = $file->getStorage();
+        if ($fileStorage->instanceOfStorage("\OCA\Files_Sharing\SharedStorage")) {
+            if (method_exists(IShare::class, "getAttributes")) {
+                $share = empty($share) ? $fileStorage->getShare() : $share;
+                $attributes = $share->getAttributes();
+                $downloadAttr = isset($attributes) ? $attributes->getAttribute("permissions", "download") : null;
+                if (isset($downloadAttr) && !$downloadAttr) {
+                    return $this->renderError($this->trans->t("Not permitted"));
+                }
+            }
+        }
+
         $fileName = $file->getName();
         $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
         $toExtension = strtolower($toExtension);

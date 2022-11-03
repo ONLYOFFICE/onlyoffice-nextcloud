@@ -19,19 +19,12 @@
 
 namespace OCA\Onlyoffice;
 
-use OCP\Files\File;
-
 /**
  * Key manager
  *
  * @package OCA\Onlyoffice
  */
 class KeyManager {
-
-    /**
-     * App name
-     */
-    private const App_Name = "onlyoffice";
 
     /**
      * Table name
@@ -149,60 +142,8 @@ class KeyManager {
         $result = $select->execute([$fileId]);
 
         $rows = $result ? $select->fetch() : [];
-        $fs = is_array($rows) && isset($rows["fs"]) ? $rows["fs"] : "";
+        $fs = is_array($rows) && isset($rows["fs"]) ? $rows["fs"] : 0;
 
-        return $fs === "1";
-    }
-
-    /**
-     * Change lock status in the federated share
-     *
-     * @param File $file - file
-     * @param bool $lock - status
-     * @param bool $fs - status
-     *
-     * @return bool
-     */
-    public static function lockFederatedKey($file, $lock, $fs) {
-        $logger = \OC::$server->getLogger();
-        $action = $lock ? "lock" : "unlock";
-
-        $remote = rtrim($file->getStorage()->getRemote(), "/") . "/";
-        $shareToken = $file->getStorage()->getToken();
-        $internalPath = $file->getInternalPath();
-
-        $httpClientService = \OC::$server->getHTTPClientService();
-        $client = $httpClientService->newClient();
-        $data = [
-            "timeout" => 5,
-            "body" => [
-                "shareToken" => $shareToken,
-                "path" => $internalPath,
-                "lock" => $lock
-            ]
-        ];
-        if (!empty($fs)) {
-            $data["body"]["fs"] = $fs;
-        }
-
-        try {
-            $response = $client->post($remote . "ocs/v2.php/apps/" . self::App_Name . "/api/v1/keylock?format=json", $data);
-            $body = \json_decode($response->getBody(), true);
-
-            $data = $body["ocs"]["data"];
-
-            if (empty($data)) {
-                $logger->debug("Federated request " . $action . " for " . $file->getFileInfo()->getId() . " is successful", ["app" => self::App_Name]);
-                return true;
-            }
-
-            if (!empty($data["error"])) {
-                $logger->error("Error " . $action . " federated key for " . $file->getFileInfo()->getId() . ": " . $data["error"], ["app" => self::App_Name]);
-                return false;
-            }
-        } catch (\Exception $e) {
-            $logger->logException($e, ["message" => "Failed to request federated " . $action . " for " . $file->getFileInfo()->getId(), "app" => self::App_Name]);
-            return false;
-        }
+        return $fs === 1 || $fs === "1";
     }
 }

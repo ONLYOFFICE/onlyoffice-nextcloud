@@ -37,6 +37,7 @@ use OCP\IUser;
 use OCP\IUserManager;
 use OCP\IUserSession;
 use OCP\Share\IManager;
+use OCP\Share\IShare;
 
 use OCA\Files_Versions\Versions\IVersionManager;
 use OCA\FilesLock\Service\LockService;
@@ -318,6 +319,7 @@ class EditorApiController extends OCSController {
             $params["document"]["permissions"]["modifyFilter"] = $permissions_modifyFilter;
         }
 
+        $canDownload = true;
         $restrictedEditing = false;
         $fileStorage = $file->getStorage();
         if (empty($shareToken) && $fileStorage->instanceOfStorage("\OCA\Files_Sharing\SharedStorage")) {
@@ -356,6 +358,15 @@ class EditorApiController extends OCSController {
                 if (isset($format["modifyFilter"]) && $format["modifyFilter"]) {
                     $modifyFilter = ($extraPermissions["permissions"] & ExtraPermissions::ModifyFilter) === ExtraPermissions::ModifyFilter;
                     $params["document"]["permissions"]["modifyFilter"] = $modifyFilter;
+                }
+            }
+
+            if (method_exists(IShare::class, "getAttributes")) {
+                $share = empty($share) ? $fileStorage->getShare() : $share;
+                $attributes = $share->getAttributes();
+                $downloadAttr = isset($attributes) ? $attributes->getAttribute("permissions", "download") : null;
+                if (isset($downloadAttr) && !$downloadAttr) {
+                    $canDownload = false;
                 }
             }
         }
@@ -435,9 +446,7 @@ class EditorApiController extends OCSController {
 
         if (!empty($shareToken)) {
             if (method_exists($share, "getHideDownload") && $share->getHideDownload()) {
-                $params["document"]["permissions"]["download"] = false;
-                $params["document"]["permissions"]["print"] = false;
-                $params["document"]["permissions"]["copy"] = false;
+                $canDownload = false;
             }
 
             $node = $share->getNode();
@@ -529,6 +538,12 @@ class EditorApiController extends OCSController {
                     $params["editorConfig"]["customization"]["goback"]["requestClose"] = true;
                 }
             }
+        }
+
+        if (!$canDownload) {
+            $params["document"]["permissions"]["download"] = false;
+            $params["document"]["permissions"]["print"] = false;
+            $params["document"]["permissions"]["copy"] = false;
         }
 
         if ($inframe === true) {
@@ -860,7 +875,8 @@ class EditorApiController extends OCSController {
                 return $watermarkText;
             }
         }
-        if ($watermarkSettings["allGroups"]) {
+        if ($watermarkSettings["allGroups"]
+            && $userId !== null) {
             $groups = $watermarkSettings["allGroupsList"];
             foreach ($groups as $group) {
                 if (\OC::$server->getGroupManager()->isInGroup($userId, $group)) {

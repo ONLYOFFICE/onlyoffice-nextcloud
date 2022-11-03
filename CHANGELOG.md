@@ -3,6 +3,20 @@
 ## Added
 - disable plugins setting
 
+## Changed
+- fix download permission
+
+## Added
+- Dutch translation
+- Chinese (Traditional, Taiwan), Basque (Spain) empty file templates
+
+## Changed
+- generate preview by default
+- fix editing with federated share
+- fix opening file in new tab
+- fix watermark for shared file by link
+- fix update application
+
 ## 7.4.4
 ## Changed
 - fix opening editor in new tab
