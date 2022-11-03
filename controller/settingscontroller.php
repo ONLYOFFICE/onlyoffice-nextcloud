@@ -127,6 +127,7 @@ class SettingsController extends Controller {
             "successful" => $this->config->SettingsAreSuccessful(),
             "watermark" => $this->config->GetWatermarkSettings(),
             "macros" => $this->config->GetCustomizationMacros(),
+            "plugins" => $this->config->GetCustomizationPlugins(),
             "tagsEnabled" => \OC::$server->getAppManager()->isEnabledForUser("systemtags"),
             "reviewDisplay" => $this->config->GetCustomizationReviewDisplay(),
             "theme" => $this->config->GetCustomizationTheme(),
@@ -204,6 +205,7 @@ class SettingsController extends Controller {
      * @param bool $help - display help
      * @param bool $toolbarNoTabs - display toolbar tab
      * @param string $reviewDisplay - review viewing mode
+     * @param bool $plugins - enable plugins
      *
      * @return array
      */
@@ -221,7 +223,8 @@ class SettingsController extends Controller {
                                     $help,
                                     $toolbarNoTabs,
                                     $reviewDisplay,
-                                    $theme
+                                    $theme,
+                                    $plugins
                                     ) {
 
         $this->config->SetDefaultFormats($defFormats);
@@ -239,6 +242,7 @@ class SettingsController extends Controller {
         $this->config->SetCustomizationToolbarNoTabs($toolbarNoTabs);
         $this->config->SetCustomizationReviewDisplay($reviewDisplay);
         $this->config->SetCustomizationTheme($theme);
+        $this->config->SetCustomizationPlugins($plugins);
 
         return [
             ];
