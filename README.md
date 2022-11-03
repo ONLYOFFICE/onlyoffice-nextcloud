@@ -86,9 +86,9 @@ Sometimes your network configuration might not allow the requests between instal
 The _Advanced server settings_ allows to set the ONLYOFFICE Document Server address for internal requests from Nextcloud server and the returning Nextcloud address for the internal requests from ONLYOFFICE Document Server.
 You need to enter them in the appropriate fields.
 
-To restrict the access to ONLYOFFICE Document Server and for security reasons and data integrity the encrypted signature is used.
-Specify the _Secret key_ in the Nextcloud administrative configuration.
-In the ONLYOFFICE Document Server [config file](https://api.onlyoffice.com/editors/signature/) specify the same secret key and enable the validation.
+Starting from version 7.2, JWT is enabled by default and the secret key is generated automatically to restrict the access to ONLYOFFICE Docs and for security reasons and data integrity. 
+Specify your own **Secret key** in the Nextcloud administrative configuration. 
+In the ONLYOFFICE Docs [config file](https://api.onlyoffice.com/editors/signature/), specify the same secret key and enable the validation.
 
 Enable or disable the _Open file in the same tab_ setting.
 

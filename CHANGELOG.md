@@ -1,5 +1,8 @@
 # Change Log
 
+## Added
+- disable plugins setting
+
 ## 7.5.8
 ## Changed
 - fix download permission
