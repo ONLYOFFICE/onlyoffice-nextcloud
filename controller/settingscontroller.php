@@ -121,6 +121,7 @@ class SettingsController extends Controller {
             "chat" => $this->config->GetCustomizationChat(),
             "compactHeader" => $this->config->GetCustomizationCompactHeader(),
             "feedback" => $this->config->GetCustomizationFeedback(),
+            "unknownAuthor" => $this->config->GetUnknownAuthor(),
             "forcesave" => $this->config->GetCustomizationForcesave(),
             "help" => $this->config->GetCustomizationHelp(),
             "toolbarNoTabs" => $this->config->GetCustomizationToolbarNoTabs(),
@@ -200,6 +201,7 @@ class SettingsController extends Controller {
      * @param bool $chat - display chat
      * @param bool $compactHeader - display compact header
      * @param bool $feedback - display feedback
+     * @param string $unknownAuthor - unknownAuthor display name
      * @param bool $forcesave - forcesave
      * @param bool $help - display help
      * @param bool $toolbarNoTabs - display toolbar tab
@@ -217,6 +219,7 @@ class SettingsController extends Controller {
                                     $chat,
                                     $compactHeader,
                                     $feedback,
+                                    $unknownAuthor,
                                     $forcesave,
                                     $help,
                                     $toolbarNoTabs,
@@ -234,6 +237,7 @@ class SettingsController extends Controller {
         $this->config->SetCustomizationChat($chat);
         $this->config->SetCustomizationCompactHeader($compactHeader);
         $this->config->SetCustomizationFeedback($feedback);
+        $this->config->SetUnknownAuthor($unknownAuthor);
         $this->config->SetCustomizationForcesave($forcesave);
         $this->config->SetCustomizationHelp($help);
         $this->config->SetCustomizationToolbarNoTabs($toolbarNoTabs);

@@ -200,6 +200,7 @@
             var chat = $("#onlyofficeChat").is(":checked");
             var compactHeader = $("#onlyofficeCompactHeader").is(":checked");
             var feedback = $("#onlyofficeFeedback").is(":checked");
+            var onlyofficeUnknownAuthor = ($("#onlyofficeUnknownAuthor:visible").val()).trim();
             var forcesave = $("#onlyofficeForcesave").is(":checked");
             var help = $("#onlyofficeHelp").is(":checked");
             var toolbarNoTabs = $("#onlyofficeToolbarNoTabs").is(":checked");
@@ -220,6 +221,7 @@
                     chat: chat,
                     compactHeader: compactHeader,
                     feedback: feedback,
+                    unknownAuthor: onlyofficeUnknownAuthor,
                     forcesave: forcesave,
                     help: help,
                     toolbarNoTabs: toolbarNoTabs,
