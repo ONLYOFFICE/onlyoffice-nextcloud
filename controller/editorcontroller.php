@@ -448,8 +448,6 @@ class EditorController extends Controller {
 
         $recipientIds = [];
         foreach ($emails as $email) {
-            $substrToDelete = "+" . $email . " ";
-            $comment = str_replace($substrToDelete, "", $comment);
             $recipients = $this->userManager->getByEmail($email);
             foreach ($recipients as $recipient) {
                 $recipientId = $recipient->getUID(); 
@@ -479,6 +477,12 @@ class EditorController extends Controller {
             return ["error" => $this->trans->t("Failed to send notification")];
         }
 
+        foreach ($emails as $email) {
+            $substrToDelete = "+" . $email . " ";
+            $comment = str_replace($substrToDelete, "", $comment);
+        }
+
+        // change to mb_strlen and mb_substr when Notification.php fixed in #35016 nextcloud/server
         if (strlen($comment) > 64) {
             $comment = substr($comment, 0, 61) . "...";
         }
