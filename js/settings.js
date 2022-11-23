@@ -193,6 +193,7 @@
             var preview = $("#onlyofficePreview").is(":checked");
             var advanced = $("#onlyofficeAdvanced").is(":checked");
             var versionHistory = $("#onlyofficeVersionHistory").is(":checked");
+            var protection = $("input[type='radio'][name='protection']:checked").attr("id").replace("onlyofficeProtection_", "");
 
             var limitGroupsString = $("#onlyofficeGroups").prop("checked") ? $("#onlyofficeLimitGroups").val() : "";
             var limitGroups = limitGroupsString ? limitGroupsString.split("|") : [];
@@ -217,6 +218,7 @@
                     preview: preview,
                     advanced: advanced,
                     versionHistory: versionHistory,
+                    protection: protection,
                     limitGroups: limitGroups,
                     chat: chat,
                     compactHeader: compactHeader,

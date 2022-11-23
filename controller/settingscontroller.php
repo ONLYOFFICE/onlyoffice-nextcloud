@@ -117,6 +117,7 @@ class SettingsController extends Controller {
             "preview" => $this->config->GetPreview(),
             "advanced" => $this->config->GetAdvanced(),
             "versionHistory" => $this->config->GetVersionHistory(),
+            "protection" => $this->config->GetProtection(),
             "limitGroups" => $this->config->GetLimitGroups(),
             "chat" => $this->config->GetCustomizationChat(),
             "compactHeader" => $this->config->GetCustomizationCompactHeader(),
@@ -197,6 +198,7 @@ class SettingsController extends Controller {
      * @param bool $preview - generate preview files
      * @param bool $advanced - use advanced tab
      * @param bool $versionHistory - keep version history
+     * @param string $protection - protection
      * @param array $limitGroups - list of groups
      * @param bool $chat - display chat
      * @param bool $compactHeader - display compact header
@@ -215,6 +217,7 @@ class SettingsController extends Controller {
                                     $preview,
                                     $advanced,
                                     $versionHistory,
+                                    $protection,
                                     $limitGroups,
                                     $chat,
                                     $compactHeader,
@@ -233,6 +236,7 @@ class SettingsController extends Controller {
         $this->config->SetPreview($preview);
         $this->config->SetAdvanced($advanced);
         $this->config->SetVersionHistory($versionHistory);
+        $this->config->SetProtection($protection);
         $this->config->SetLimitGroups($limitGroups);
         $this->config->SetCustomizationChat($chat);
         $this->config->SetCustomizationCompactHeader($compactHeader);
