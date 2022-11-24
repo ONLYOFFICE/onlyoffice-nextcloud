@@ -2,6 +2,7 @@
 
 ## Added
 - disable plugins setting
+- document protection setting
 
 ##
 ## Changed
