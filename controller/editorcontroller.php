@@ -496,7 +496,18 @@ class EditorController extends Controller {
         $accessList = $this->shareManager->getAccessList($file);
 
         foreach ($recipientIds as $recipientId) {
-            if (!in_array($recipientId, $accessList["users"])) {
+            $isAvailable = in_array($recipientId, $accessList["users"]);
+
+            if (!$isAvailable
+                && $file->getFileInfo()->getStorage()->instanceOfStorage("\OCA\GroupFolders\Mount\GroupFolderStorage")) {
+
+                $recipientFolder = $this->root->getUserFolder($recipientId);
+                $recipientFile = $recipientFolder->getById($file->getId());
+
+                $isAvailable = !empty($recipientFile);
+            }
+
+            if (!$isAvailable) {
                 if (!$canShare) {
                     continue;
                 }
