@@ -499,7 +499,8 @@ class EditorController extends Controller {
             $isAvailable = in_array($recipientId, $accessList["users"]);
 
             if (!$isAvailable
-                && $file->getFileInfo()->getStorage()->instanceOfStorage("\OCA\GroupFolders\Mount\GroupFolderStorage")) {
+                && ($file->getFileInfo()->getStorage()->instanceOfStorage("\OCA\GroupFolders\Mount\GroupFolderStorage")
+                || $file->getFileInfo()->getMountPoint() instanceof \OCA\Files_External\Config\ExternalMountPoint)) {
 
                 $recipientFolder = $this->root->getUserFolder($recipientId);
                 $recipientFile = $recipientFolder->getById($file->getId());
