@@ -498,6 +498,10 @@ class AppConfig {
             {
                 $this->logger->debug("Replace url from $from to $documentServerUrl", ["app" => $this->appName]);
                 $url = str_replace($from, $documentServerUrl, $url);
+                $parsedUrl = parse_url($from);
+                $fromNoPort = $parsedUrl["scheme"] . "://" . $parsedUrl["host"];
+                $this->logger->debug("Replace url from $fromNoPort to $documentServerUrl", ["app" => $this->appName]);
+                $url = str_replace($fromNoPort, $documentServerUrl, $url);
             }
         }
 
