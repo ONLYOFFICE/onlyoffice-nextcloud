@@ -126,12 +126,6 @@
         <button id="onlyofficeClearVersionHistory" class="button"><?php p($l->t("Clear")) ?></button>
     </p>
 
-    <p>
-        <input type="checkbox" class="checkbox" id="onlyofficePlugins"
-            <?php if ($_["plugins"]) { ?>checked="checked"<?php } ?> />
-        <label for="onlyofficePlugins"><?php p($l->t("Enable plugins")) ?></label>
-    </p>
-
     <p class="onlyoffice-header"><?php p($l->t("The default application for opening the format")) ?></p>
     <div class="onlyoffice-exts">
         <?php foreach ($_["formats"] as $format => $setting) { ?>
@@ -291,6 +285,12 @@
 
 <div class="section section-onlyoffice section-onlyoffice-watermark <?php if (empty($_["documentserver"]) && !$_["demo"]["enabled"] || !$_["successful"]) { ?>onlyoffice-hide<?php } ?>">
     <h2><?php p($l->t("Security")) ?></h2>
+
+    <p>
+        <input type="checkbox" class="checkbox" id="onlyofficePlugins"
+            <?php if ($_["plugins"]) { ?>checked="checked"<?php } ?> />
+        <label for="onlyofficePlugins"><?php p($l->t("Enable plugins")) ?></label>
+    </p>
 
     <p>
         <input type="checkbox" class="checkbox" id="onlyofficeMacros"
