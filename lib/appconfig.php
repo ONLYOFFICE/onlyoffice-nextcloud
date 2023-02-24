@@ -131,6 +131,13 @@ class AppConfig {
     private $_versionHistory = "versionHistory";
 
     /**
+     * The config key for the protection
+     *
+     * @var string
+     */
+    private $_protection = "protection";
+
+    /**
      * The config key for the chat display setting
      *
      * @var string
@@ -719,6 +726,30 @@ class AppConfig {
      */
     public function GetVersionHistory() {
         return $this->config->getAppValue($this->appName, $this->_versionHistory, "true") === "true";
+    }
+
+    /**
+     * Save protection
+     *
+     * @param bool $value - version history
+     */
+    public function SetProtection($value) {
+        $this->logger->info("Set protection: " . $value, ["app" => $this->appName]);
+
+        $this->config->setAppValue($this->appName, $this->_protection, $value);
+    }
+
+    /**
+     * Get protection
+     *
+     * @return bool
+     */
+    public function GetProtection() {
+        $value = $this->config->getAppValue($this->appName, $this->_protection, "owner");
+        if ($value === "all") {
+            return "all";
+        }
+        return "owner";
     }
 
     /**

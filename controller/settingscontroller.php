@@ -117,6 +117,7 @@ class SettingsController extends Controller {
             "preview" => $this->config->GetPreview(),
             "advanced" => $this->config->GetAdvanced(),
             "versionHistory" => $this->config->GetVersionHistory(),
+            "protection" => $this->config->GetProtection(),
             "limitGroups" => $this->config->GetLimitGroups(),
             "chat" => $this->config->GetCustomizationChat(),
             "compactHeader" => $this->config->GetCustomizationCompactHeader(),
@@ -251,12 +252,14 @@ class SettingsController extends Controller {
      * @param array $watermarks - watermark settings
      * @param bool $plugins - enable plugins
      * @param bool $macros - run document macros
+     * @param string $protection - protection
      *
      * @return array
      */
     public function SaveSecurity($watermarks,
                                     $plugins,
-                                    $macros
+                                    $macros,
+                                    $protection
                                     ) {
 
         if ($watermarks["enabled"] === "true") {
@@ -269,6 +272,7 @@ class SettingsController extends Controller {
         $this->config->SetWatermarkSettings($watermarks);
         $this->config->SetCustomizationPlugins($plugins);
         $this->config->SetCustomizationMacros($macros);
+        $this->config->SetProtection($protection);
 
         return [
             ];
