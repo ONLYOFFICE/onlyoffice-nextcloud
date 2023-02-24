@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System SIA 2022
+ * (c) Copyright Ascensio System SIA 2023
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -127,8 +127,8 @@ class SettingsController extends Controller {
             "toolbarNoTabs" => $this->config->GetCustomizationToolbarNoTabs(),
             "successful" => $this->config->SettingsAreSuccessful(),
             "watermark" => $this->config->GetWatermarkSettings(),
-            "macros" => $this->config->GetCustomizationMacros(),
             "plugins" => $this->config->GetCustomizationPlugins(),
+            "macros" => $this->config->GetCustomizationMacros(),
             "tagsEnabled" => \OC::$server->getAppManager()->isEnabledForUser("systemtags"),
             "reviewDisplay" => $this->config->GetCustomizationReviewDisplay(),
             "theme" => $this->config->GetCustomizationTheme(),
@@ -207,7 +207,6 @@ class SettingsController extends Controller {
      * @param bool $help - display help
      * @param bool $toolbarNoTabs - display toolbar tab
      * @param string $reviewDisplay - review viewing mode
-     * @param bool $plugins - enable plugins
      *
      * @return array
      */
@@ -226,8 +225,7 @@ class SettingsController extends Controller {
                                     $help,
                                     $toolbarNoTabs,
                                     $reviewDisplay,
-                                    $theme,
-                                    $plugins
+                                    $theme
                                     ) {
 
         $this->config->SetDefaultFormats($defFormats);
@@ -246,7 +244,6 @@ class SettingsController extends Controller {
         $this->config->SetCustomizationToolbarNoTabs($toolbarNoTabs);
         $this->config->SetCustomizationReviewDisplay($reviewDisplay);
         $this->config->SetCustomizationTheme($theme);
-        $this->config->SetCustomizationPlugins($plugins);
 
         return [
             ];
@@ -256,11 +253,13 @@ class SettingsController extends Controller {
      * Save security settings
      *
      * @param array $watermarks - watermark settings
+     * @param bool $plugins - enable plugins
      * @param bool $macros - run document macros
      *
      * @return array
      */
     public function SaveSecurity($watermarks,
+                                    $plugins,
                                     $macros
                                     ) {
 
@@ -272,6 +271,7 @@ class SettingsController extends Controller {
         }
 
         $this->config->SetWatermarkSettings($watermarks);
+        $this->config->SetCustomizationPlugins($plugins);
         $this->config->SetCustomizationMacros($macros);
 
         return [

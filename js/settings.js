@@ -1,6 +1,6 @@
 /**
  *
- * (c) Copyright Ascensio System SIA 2022
+ * (c) Copyright Ascensio System SIA 2023
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -206,7 +206,6 @@
             var toolbarNoTabs = $("#onlyofficeToolbarNoTabs").is(":checked");
             var reviewDisplay = $("input[type='radio'][name='reviewDisplay']:checked").attr("id").replace("onlyofficeReviewDisplay_", "");
             var theme = $("input[type='radio'][name='theme']:checked").attr("id").replace("onlyofficeTheme_", "");
-            var plugins = $("#onlyofficePlugins").is(":checked");
 
             $.ajax({
                 method: "PUT",
@@ -227,8 +226,7 @@
                     help: help,
                     toolbarNoTabs: toolbarNoTabs,
                     reviewDisplay: reviewDisplay,
-                    theme: theme,
-                    plugins: plugins
+                    theme: theme
                 },
                 success: function onSuccess(response) {
                     $(".section-onlyoffice").removeClass("icon-loading");
@@ -242,6 +240,7 @@
         $("#onlyofficeSecuritySave").click(function () {
             $(".section-onlyoffice").addClass("icon-loading");
 
+            var plugins = $("#onlyofficePlugins").is(":checked");
             var macros = $("#onlyofficeMacros").is(":checked");
 
             var watermarkSettings = {
@@ -276,6 +275,7 @@
                 url: OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/settings/security"),
                 data: {
                     watermarks: watermarkSettings,
+                    plugins: plugins,
                     macros: macros
                 },
                 success: function onSuccess(response) {
