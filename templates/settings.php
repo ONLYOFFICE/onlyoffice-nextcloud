@@ -126,26 +126,6 @@
         <button id="onlyofficeClearVersionHistory" class="button"><?php p($l->t("Clear")) ?></button>
     </p>
 
-    <p class="onlyoffice-header">
-        <?php p($l->t("Enable document protection for")) ?>
-    </p>
-    <div class="onlyoffice-tables">
-        <div>
-            <input type="radio" class="radio"
-                id="onlyofficeProtection_all"
-                name="protection"
-                <?php if ($_["protection"] === "all") { ?>checked="checked"<?php } ?> />
-            <label for="onlyofficeProtection_all"><?php p($l->t("All users")) ?></label>
-        </div>
-        <div>
-            <input type="radio" class="radio"
-                id="onlyofficeProtection_owner"
-                name="protection"
-                <?php if ($_["protection"] === "owner") { ?>checked="checked"<?php } ?> />
-            <label for="onlyofficeProtection_owner"><?php p($l->t("Owner only")) ?></label>
-        </div>
-    </div>
-
     <p class="onlyoffice-header"><?php p($l->t("The default application for opening the format")) ?></p>
     <div class="onlyoffice-exts">
         <?php foreach ($_["formats"] as $format => $setting) { ?>
@@ -317,6 +297,26 @@
             <?php if ($_["macros"]) { ?>checked="checked"<?php } ?> />
         <label for="onlyofficeMacros"><?php p($l->t("Run document macros")) ?></label>
     </p>
+
+    <p class="onlyoffice-header">
+        <?php p($l->t("Enable document protection for")) ?>
+    </p>
+    <div class="onlyoffice-tables">
+        <div>
+            <input type="radio" class="radio"
+                id="onlyofficeProtection_all"
+                name="protection"
+                <?php if ($_["protection"] === "all") { ?>checked="checked"<?php } ?> />
+            <label for="onlyofficeProtection_all"><?php p($l->t("All users")) ?></label>
+        </div>
+        <div>
+            <input type="radio" class="radio"
+                id="onlyofficeProtection_owner"
+                name="protection"
+                <?php if ($_["protection"] === "owner") { ?>checked="checked"<?php } ?> />
+            <label for="onlyofficeProtection_owner"><?php p($l->t("Owner only")) ?></label>
+        </div>
+    </div>
 
     <br />
     <p class="settings-hint"><?php p($l->t("Secure view enables you to secure documents by embedding a watermark")) ?></p>

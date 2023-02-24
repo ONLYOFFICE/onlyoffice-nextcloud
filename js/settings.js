@@ -193,7 +193,6 @@
             var preview = $("#onlyofficePreview").is(":checked");
             var advanced = $("#onlyofficeAdvanced").is(":checked");
             var versionHistory = $("#onlyofficeVersionHistory").is(":checked");
-            var protection = $("input[type='radio'][name='protection']:checked").attr("id").replace("onlyofficeProtection_", "");
 
             var limitGroupsString = $("#onlyofficeGroups").prop("checked") ? $("#onlyofficeLimitGroups").val() : "";
             var limitGroups = limitGroupsString ? limitGroupsString.split("|") : [];
@@ -217,7 +216,6 @@
                     preview: preview,
                     advanced: advanced,
                     versionHistory: versionHistory,
-                    protection: protection,
                     limitGroups: limitGroups,
                     chat: chat,
                     compactHeader: compactHeader,
@@ -242,6 +240,7 @@
 
             var plugins = $("#onlyofficePlugins").is(":checked");
             var macros = $("#onlyofficeMacros").is(":checked");
+            var protection = $("input[type='radio'][name='protection']:checked").attr("id").replace("onlyofficeProtection_", "");
 
             var watermarkSettings = {
                 enabled: $("#onlyofficeWatermark_enabled").is(":checked")
@@ -276,7 +275,8 @@
                 data: {
                     watermarks: watermarkSettings,
                     plugins: plugins,
-                    macros: macros
+                    macros: macros,
+                    protection: protection
                 },
                 success: function onSuccess(response) {
                     $(".section-onlyoffice").removeClass("icon-loading");
