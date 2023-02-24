@@ -4,6 +4,9 @@
 - disable plugins setting
 - document protection setting
 
+## Changed
+- fix thumbnails for version files
+
 ##
 ## Changed
 - fix download permission
