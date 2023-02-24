@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System SIA 2022
+ * (c) Copyright Ascensio System SIA 2023
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -129,6 +129,13 @@ class AppConfig {
      * @var string
      */
     private $_versionHistory = "versionHistory";
+
+    /**
+     * The config key for the protection
+     *
+     * @var string
+     */
+    private $_protection = "protection";
 
     /**
      * The config key for the chat display setting
@@ -297,6 +304,13 @@ class AppConfig {
      * @var string
      */
     public $_customizationMacros = "customization_macros";
+
+    /**
+     * The config key for the plugins
+     *
+     * @var string
+     */
+    public $_customizationPlugins = "customization_plugins";
 
     /**
      * @param string $AppName - application name
@@ -712,6 +726,30 @@ class AppConfig {
      */
     public function GetVersionHistory() {
         return $this->config->getAppValue($this->appName, $this->_versionHistory, "true") === "true";
+    }
+
+    /**
+     * Save protection
+     *
+     * @param bool $value - version history
+     */
+    public function SetProtection($value) {
+        $this->logger->info("Set protection: " . $value, ["app" => $this->appName]);
+
+        $this->config->setAppValue($this->appName, $this->_protection, $value);
+    }
+
+    /**
+     * Get protection
+     *
+     * @return bool
+     */
+    public function GetProtection() {
+        $value = $this->config->getAppValue($this->appName, $this->_protection, "owner");
+        if ($value === "all") {
+            return "all";
+        }
+        return "owner";
     }
 
     /**
@@ -1176,6 +1214,26 @@ class AppConfig {
      */
     public function GetCustomizationMacros() {
         return $this->config->getAppValue($this->appName, $this->_customizationMacros, "true") === "true";
+    }
+
+    /**
+     * Save plugins setting
+     *
+     * @param bool $value - enable macros
+     */
+    public function SetCustomizationPlugins($value) {
+        $this->logger->info("Set plugins enabled: " . json_encode($value), ["app" => $this->appName]);
+
+        $this->config->setAppValue($this->appName, $this->_customizationPlugins, json_encode($value));
+    }
+
+    /**
+     * Get plugins setting
+     *
+     * @return bool
+     */
+    public function GetCustomizationPlugins() {
+        return $this->config->getAppValue($this->appName, $this->_customizationPlugins, "true") === "true";
     }
 
     /**

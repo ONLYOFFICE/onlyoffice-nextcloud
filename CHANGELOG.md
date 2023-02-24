@@ -1,6 +1,15 @@
 # Change Log
 
 ## Added
+- disable plugins setting
+- document protection setting
+
+##
+## Changed
+- fix download permission
+
+##
+## Added
 - Dutch translation
 - Chinese (Traditional, Taiwan), Basque (Spain) empty file templates
 

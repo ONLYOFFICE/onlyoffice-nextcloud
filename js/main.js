@@ -1,6 +1,6 @@
 /**
  *
- * (c) Copyright Ascensio System SIA 2022
+ * (c) Copyright Ascensio System SIA 2023
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -106,7 +106,7 @@
             winEditor.location.href = url;
         } else if (!OCA.Onlyoffice.setting.sameTab || OCA.Onlyoffice.mobile || OCA.Onlyoffice.Desktop) {
             winEditor = window.open(url, "_blank");
-        } else if ($("#isPublic").val() === "1" && !$("#filestable").length) {
+        } else if ($("#isPublic").val() === "1" && $("#mimetype").val() !== "httpd/unix-directory") {
             location.href = url;
         } else {
             OCA.Onlyoffice.frameSelector = "#onlyofficeFrame";
@@ -408,7 +408,7 @@
                 return;
             }
 
-            if ($("#isPublic").val() === "1" && !!$("#filestable").length) {
+            if ($("#isPublic").val() === "1" && $("#mimetype").val() === "httpd/unix-directory") {
                 menu.addMenuEntry({
                     id: "onlyofficeDocx",
                     displayName: t(OCA.Onlyoffice.AppName, "New document"),
@@ -529,7 +529,7 @@
     }
 
     var initPage = function () {
-        if ($("#isPublic").val() === "1" && !$("#filestable").length) {
+        if ($("#isPublic").val() === "1" && $("#mimetype").val() !== "httpd/unix-directory") {
             //file by shared link
             var fileName = $("#filename").val();
             var extension = getFileExtension(fileName);

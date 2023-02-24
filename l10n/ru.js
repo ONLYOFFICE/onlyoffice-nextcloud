@@ -130,6 +130,10 @@ OC.L10N.register(
     "Custom filter": "Пользовательский фильтр",
     "group": "группа",
     "Advanced": "Дополнительно",
-    "Provide advanced document permissions using ONLYOFFICE Docs": "Предоставление расширенных прав доступа к документам с помощью ONLYOFFICE Docs"
+    "Provide advanced document permissions using ONLYOFFICE Docs": "Предоставление расширенных прав доступа к документам с помощью ONLYOFFICE Docs",
+    "Enable plugins": "Включить работу с плагинами",
+    "Enable document protection for": "Включить возможность задавать пароль на документ для",
+    "All users": "Всех пользователей",
+    "Owner only": "Только владельцу"
 },
 "nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);");
