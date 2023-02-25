@@ -3,6 +3,7 @@
 ## Added
 - disable plugins setting
 - document protection setting
+- jwt leeway setting
 
 ## Changed
 - fix thumbnails for version files
