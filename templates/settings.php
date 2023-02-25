@@ -67,9 +67,6 @@
 
             <p class="onlyoffice-header"><?php p($l->t("Server address for internal requests from ONLYOFFICE Docs")) ?></p>
             <p><input id="onlyofficeStorageUrl" value="<?php p($_["storageUrl"]) ?>" placeholder="<?php p($_["currentServer"]) ?>" type="text"></p>
-
-            <p class="onlyoffice-header"><?php p($l->t("Amount of leeway in system clocks between nextcloud and ONLYOFFICE Docs (in seconds)")) ?></p>
-            <p><input id="onlyofficeJwtLeeway" value="<?php p($_["jwtLeeway"]) ?>" placeholder="0" type="text"></p>
         </div>
     </div>
 
