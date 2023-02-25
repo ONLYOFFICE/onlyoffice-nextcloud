@@ -222,6 +222,13 @@ class AppConfig {
     private $_jwtHeader = "jwt_header";
 
     /**
+     * The config key for the allowable leeway in Jwt checks
+     *
+     * @var string
+     */
+    private $_jwtLeeway = "jwt_leeway";
+
+    /**
      * The config key for the settings error
      *
      * @var string
@@ -1149,6 +1156,17 @@ class AppConfig {
             $header = "Authorization";
         }
         return $header;
+    }
+
+    /**
+     * Get the Jwt Leeway
+     *
+     * @return int
+     */
+    public function GetJwtLeeway() {
+        $jwtLeeway = (integer)$this->GetSystemValue($this->_jwtLeeway);
+
+        return $jwtLeeway;
     }
 
     /**
