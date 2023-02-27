@@ -119,7 +119,7 @@
             var canDisplay = false;
 
             if (!fileInfo.isDirectory()) {
-                var ext = fileInfo.name.split(".").pop();
+                var ext = OCA.Onlyoffice.getFileExtension(fileInfo.name);
                 var format = OCA.Onlyoffice.setting.formats[ext];
                 if (format && (format["review"]
                     || format["comment"]
