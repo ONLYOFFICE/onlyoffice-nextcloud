@@ -482,9 +482,12 @@ class EditorController extends Controller {
             $comment = str_replace($substrToDelete, "", $comment);
         }
 
-        // change to mb_strlen and mb_substr when Notification.php fixed in #35016 nextcloud/server
-        if (strlen($comment) > 64) {
-            $comment = substr($comment, 0, 61) . "...";
+        //Length from Nextcloud:
+        //https://github.com/natoponen/server/blob/0f3fdced4f214558fd3240bfaf868b661a8de8a2/lib/private/Notification/Notification.php#L205
+        $maxLen = 64;
+        if (strlen($comment) > $maxLen) {
+            $ending = "...";
+            $comment = substr($comment, 0, ($maxLen - strlen($ending))) . $ending;
         }
 
         $notificationManager = \OC::$server->getNotificationManager();
