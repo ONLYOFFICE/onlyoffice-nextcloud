@@ -477,6 +477,19 @@ class EditorController extends Controller {
             return ["error" => $this->trans->t("Failed to send notification")];
         }
 
+        foreach ($emails as $email) {
+            $substrToDelete = "+" . $email . " ";
+            $comment = str_replace($substrToDelete, "", $comment);
+        }
+
+        //Length from Nextcloud:
+        //https://github.com/natoponen/server/blob/0f3fdced4f214558fd3240bfaf868b661a8de8a2/lib/private/Notification/Notification.php#L205
+        $maxLen = 64;
+        if (strlen($comment) > $maxLen) {
+            $ending = "...";
+            $comment = substr($comment, 0, ($maxLen - strlen($ending))) . $ending;
+        }
+
         $notificationManager = \OC::$server->getNotificationManager();
         $notification = $notificationManager->createNotification();
         $notification->setApp($this->appName)

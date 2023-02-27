@@ -7,6 +7,7 @@
 
 ## Changed
 - fix thumbnails for version files
+- fix notification length
 
 ##
 ## Changed
