@@ -4,6 +4,7 @@
 - disable plugins setting
 - document protection setting
 - jwt leeway setting
+- Danish translation
 
 ## Changed
 - fix thumbnails for version files
