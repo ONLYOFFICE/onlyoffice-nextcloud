@@ -25,3 +25,6 @@
     top: 50px;
     z-index: 110;
 }
+.modal-wrapper--full #onlyofficeViewerFrame {
+    top: 0;
+}

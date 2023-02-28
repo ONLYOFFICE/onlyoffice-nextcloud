@@ -10,11 +10,11 @@
 - fix thumbnails for version files
 - fix notification length
 
-##
+## 7.5.8
 ## Changed
 - fix download permission
 
-##
+## 7.5.6
 ## Added
 - Dutch translation
 - Chinese (Traditional, Taiwan), Basque (Spain) empty file templates
@@ -26,10 +26,20 @@
 - fix watermark for shared file by link
 - fix update application
 
-## 7.4.4
+## 7.5.4
 ## Changed
 - fix opening editor in new tab
 - fix download as on MacOS
+
+## 7.5.2
+## Changed
+- fix translation for v24
+
+## 7.5.0
+## Changed
+- fix viewer app
+- Nextcloud v22 is no longer supported
+- Nextcloud v23 is no longer supported
 
 ## 7.4.2
 ## Changed
