@@ -2,6 +2,13 @@
 
 ## Added
 - disable plugins setting
+- document protection setting
+- jwt leeway setting
+- Danish translation
+
+## Changed
+- fix thumbnails for version files
+- fix notification length
 
 ## 7.5.8
 ## Changed

@@ -1,6 +1,6 @@
 /**
  *
- * (c) Copyright Ascensio System SIA 2022
+ * (c) Copyright Ascensio System SIA 2023
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -106,7 +106,7 @@
             winEditor.location.href = url;
         } else if (!OCA.Onlyoffice.setting.sameTab || OCA.Onlyoffice.mobile || OCA.Onlyoffice.Desktop) {
             winEditor = window.open(url, "_blank");
-        } else if ($("#isPublic").val() === "1" && !$("#filestable").length) {
+        } else if ($("#isPublic").val() === "1" && $("#mimetype").val() !== "httpd/unix-directory") {
             location.href = url;
         } else {
             OCA.Onlyoffice.frameSelector = "#onlyofficeFrame";
@@ -210,7 +210,7 @@
 
                 $(dialog[0].querySelectorAll("p")).text(t(OCA.Onlyoffice.AppName, "Choose a format to convert {fileName}", {fileName: fileName}));
 
-                var extension = getFileExtension(fileName);
+                var extension = OCA.Onlyoffice.getFileExtension(fileName);
                 var selectNode = dialog[0].querySelectorAll("select")[0];
                 var optionNodeOrigin = selectNode.querySelectorAll("option")[0];
 
@@ -386,7 +386,7 @@
                 return;
             }
 
-            if ($("#isPublic").val() === "1" && !!$("#filestable").length) {
+            if ($("#isPublic").val() === "1" && $("#mimetype").val() === "httpd/unix-directory") {
                 menu.addMenuEntry({
                     id: "onlyofficeDocx",
                     displayName: t(OCA.Onlyoffice.AppName, "New document"),
@@ -458,7 +458,7 @@
         }
     }
 
-    var getFileExtension = function (fileName) {
+    OCA.Onlyoffice.getFileExtension = function (fileName) {
         var extension = fileName.substr(fileName.lastIndexOf(".") + 1).toLowerCase();
         return extension;
     }
@@ -507,10 +507,10 @@
     }
 
     var initPage = function () {
-        if ($("#isPublic").val() === "1" && !$("#filestable").length) {
+        if ($("#isPublic").val() === "1" && $("#mimetype").val() !== "httpd/unix-directory") {
             //file by shared link
             var fileName = $("#filename").val();
-            var extension = getFileExtension(fileName);
+            var extension = OCA.Onlyoffice.getFileExtension(fileName);
 
             var formats = OCA.Onlyoffice.setting.formats;
 

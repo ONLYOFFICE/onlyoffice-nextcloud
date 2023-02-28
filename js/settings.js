@@ -1,6 +1,6 @@
 /**
  *
- * (c) Copyright Ascensio System SIA 2022
+ * (c) Copyright Ascensio System SIA 2023
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -205,7 +205,6 @@
             var toolbarNoTabs = $("#onlyofficeToolbarNoTabs").is(":checked");
             var reviewDisplay = $("input[type='radio'][name='reviewDisplay']:checked").attr("id").replace("onlyofficeReviewDisplay_", "");
             var theme = $("input[type='radio'][name='theme']:checked").attr("id").replace("onlyofficeTheme_", "");
-            var plugins = $("#onlyofficePlugins").is(":checked");
 
             $.ajax({
                 method: "PUT",
@@ -225,8 +224,7 @@
                     help: help,
                     toolbarNoTabs: toolbarNoTabs,
                     reviewDisplay: reviewDisplay,
-                    theme: theme,
-                    plugins: plugins
+                    theme: theme
                 },
                 success: function onSuccess(response) {
                     $(".section-onlyoffice").removeClass("icon-loading");
@@ -240,7 +238,9 @@
         $("#onlyofficeSecuritySave").click(function () {
             $(".section-onlyoffice").addClass("icon-loading");
 
+            var plugins = $("#onlyofficePlugins").is(":checked");
             var macros = $("#onlyofficeMacros").is(":checked");
+            var protection = $("input[type='radio'][name='protection']:checked").attr("id").replace("onlyofficeProtection_", "");
 
             var watermarkSettings = {
                 enabled: $("#onlyofficeWatermark_enabled").is(":checked")
@@ -274,7 +274,9 @@
                 url: OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/settings/security"),
                 data: {
                     watermarks: watermarkSettings,
-                    macros: macros
+                    plugins: plugins,
+                    macros: macros,
+                    protection: protection
                 },
                 success: function onSuccess(response) {
                     $(".section-onlyoffice").removeClass("icon-loading");

@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System SIA 2022
+ * (c) Copyright Ascensio System SIA 2023
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,13 +71,13 @@ class FileVersions {
      * @return array
      */
     public static function splitPathVersion($pathVersion) {
-        $pos = strrpos($pathVersion, ".v");
-        if ($pos === false) {
+        if (empty($pathVersion)) {
             return false;
         }
-        $filePath = substr($pathVersion, 0, $pos);
-        $versionId = substr($pathVersion, 2 + $pos - strlen($pathVersion));
-        return [$filePath, $versionId];
+        if (preg_match("/(.+)\.v(\d+)$/", $pathVersion, $matches)) {
+            return [$matches[1], $matches[2]];
+        }
+        return false;
     }
 
     /**

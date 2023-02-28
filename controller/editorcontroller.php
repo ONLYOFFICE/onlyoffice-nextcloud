@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System SIA 2022
+ * (c) Copyright Ascensio System SIA 2023
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -477,6 +477,19 @@ class EditorController extends Controller {
             return ["error" => $this->trans->t("Failed to send notification")];
         }
 
+        foreach ($emails as $email) {
+            $substrToDelete = "+" . $email . " ";
+            $comment = str_replace($substrToDelete, "", $comment);
+        }
+
+        //Length from Nextcloud:
+        //https://github.com/natoponen/server/blob/0f3fdced4f214558fd3240bfaf868b661a8de8a2/lib/private/Notification/Notification.php#L205
+        $maxLen = 64;
+        if (strlen($comment) > $maxLen) {
+            $ending = "...";
+            $comment = substr($comment, 0, ($maxLen - strlen($ending))) . $ending;
+        }
+
         $notificationManager = \OC::$server->getNotificationManager();
         $notification = $notificationManager->createNotification();
         $notification->setApp($this->appName)
@@ -496,7 +509,19 @@ class EditorController extends Controller {
         $accessList = $this->shareManager->getAccessList($file);
 
         foreach ($recipientIds as $recipientId) {
-            if (!in_array($recipientId, $accessList["users"])) {
+            $isAvailable = in_array($recipientId, $accessList["users"]);
+
+            if (!$isAvailable
+                && ($file->getFileInfo()->getStorage()->instanceOfStorage("\OCA\GroupFolders\Mount\GroupFolderStorage")
+                || $file->getFileInfo()->getMountPoint() instanceof \OCA\Files_External\Config\ExternalMountPoint)) {
+
+                $recipientFolder = $this->root->getUserFolder($recipientId);
+                $recipientFile = $recipientFolder->getById($file->getId());
+
+                $isAvailable = !empty($recipientFile);
+            }
+
+            if (!$isAvailable) {
                 if (!$canShare) {
                     continue;
                 }
