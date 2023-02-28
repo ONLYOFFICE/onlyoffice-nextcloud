@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System SIA 2022
+ * (c) Copyright Ascensio System SIA 2023
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -222,14 +222,9 @@ class FileUtility {
         if ($origin
             && RemoteInstance::isRemoteFile($file)) {
 
-            try {
-                $key = RemoteInstance::getRemoteKey($file);
-
-                if (!empty($key)) {
-                    return $key;
-                }
-            } catch (\Exception $e) {
-                $this->logger->logException($e, ["message" => "Failed to request federated key $fileId", "app" => $this->appName]);
+            $key = RemoteInstance::getRemoteKey($file);
+            if (!empty($key)) {
+                return $key;
             }
         }
 

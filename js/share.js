@@ -1,6 +1,6 @@
 /**
  *
- * (c) Copyright Ascensio System SIA 2022
+ * (c) Copyright Ascensio System SIA 2023
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -119,7 +119,7 @@
             var canDisplay = false;
 
             if (!fileInfo.isDirectory()) {
-                var ext = fileInfo.name.split(".").pop();
+                var ext = OCA.Onlyoffice.getFileExtension(fileInfo.name);
                 var format = OCA.Onlyoffice.setting.formats[ext];
                 if (format && (format["review"]
                     || format["comment"]
