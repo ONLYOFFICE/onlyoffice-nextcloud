@@ -6,7 +6,7 @@ OC.L10N.register(
     "Files not found" : "Filer ikke fundet",
     "File not found" : "Fil ikke fundet",
     "Not permitted" : "Ikke tilladt",
-    "Download failed": "Download fejlede",
+    "Download failed" : "Download fejlede",
     "The required folder was not found" : "Den nødvendige mappe blev ikke fundet",
     "You don't have enough permission to create" : "Du har ikke tilladelse nok til at oprette",
     "Template not found" : "Skabelonen blev ikke fundet",
