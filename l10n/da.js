@@ -6,7 +6,7 @@ OC.L10N.register(
     "Files not found" : "Filer ikke fundet",
     "File not found" : "Fil ikke fundet",
     "Not permitted" : "Ikke tilladt",
-    "Download failed" : "Download failed",
+    "Download failed": "Download fejlede",
     "The required folder was not found" : "Den nødvendige mappe blev ikke fundet",
     "You don't have enough permission to create" : "Du har ikke tilladelse nok til at oprette",
     "Template not found" : "Skabelonen blev ikke fundet",
@@ -118,7 +118,9 @@ OC.L10N.register(
     "Fill in form in ONLYOFFICE": "Udfyld formularen i ONLYOFFICE",
     "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online": "Opdater venligst ONLYOFFICE Docs til version 7.0 for at arbejde på udfyldelige formularer online",
     "Security": "Sikkerhed",
+    "Run document macros": "Kør dokumentmakroer",
     "Anonymous": "Anonym",
+    "Default editor theme": "Standard editortema",
     "Light": "Lys",
     "Classic Light": "Klassisk lys",
     "Dark": "Mørk",
@@ -127,6 +129,7 @@ OC.L10N.register(
     "Form filling": "Formular udfyldning",
     "Custom filter": "Brugerdefineret filter",
     "group": "gruppe",
-    "Advanced": "Avanceret "
+    "Advanced": "Avanceret",
+    "Provide advanced document permissions using ONLYOFFICE Docs": "Giv avancerede dokumenttilladelser ved brug af ONLYOFFICE"
 },
 "nplurals=2; plural=(n != 1);");
