@@ -129,6 +129,10 @@ OC.L10N.register(
     "Custom filter": "自定义筛选器",
     "group": "分组",
     "Advanced": "进阶",
-    "Provide advanced document permissions using ONLYOFFICE Docs": "使用ONLYOFFICE Docs 提供高级文档权限"
+    "Provide advanced document permissions using ONLYOFFICE Docs": "使用ONLYOFFICE Docs 提供高级文档权限",
+    "Enable plugins": "启用插件",
+    "Enable document protection for": "为以下用户启用文档保护",
+    "All users": "所有用户",
+    "Owner only": "仅限所有者"
 },
 "nplurals=1; plural=0;");
