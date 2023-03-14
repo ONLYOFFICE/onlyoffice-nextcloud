@@ -130,6 +130,10 @@ OC.L10N.register(
     "Custom filter": "ユーザー設定フィルター",
     "group": "グループ",
     "Advanced": "詳細",
-    "Provide advanced document permissions using ONLYOFFICE Docs": "ONLYOFFICE Docsを利用した高度なドキュメント権限の提供"
-    },
+    "Provide advanced document permissions using ONLYOFFICE Docs": "ONLYOFFICE Docsを利用した高度なドキュメント権限の提供",
+    "Enable plugins": "プラグインを有効にする",
+    "Enable document protection for": "次のユーザーに対して文書の保護機能を有効にする",
+    "All users": "すべてのユーザー",
+    "Owner only": "所有者のみ"
+},
 "nplurals=1; plural=0;");
