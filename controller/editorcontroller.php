@@ -483,7 +483,7 @@ class EditorController extends Controller {
         }
 
         //Length from Nextcloud:
-        //https://github.com/natoponen/server/blob/0f3fdced4f214558fd3240bfaf868b661a8de8a2/lib/private/Notification/Notification.php#L205
+        //https://github.com/nextcloud/server/blob/88b03d69cedab6f210178e9dcb04bc512beeb9be/lib/private/Notification/Notification.php#L204
         $maxLen = 64;
         if (strlen($comment) > $maxLen) {
             $ending = "...";

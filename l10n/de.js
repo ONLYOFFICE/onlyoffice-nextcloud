@@ -130,6 +130,10 @@ OC.L10N.register(
     "Custom filter": "Benutzerdefinierter filter",
     "group": "gruppe",
     "Advanced": "Erweitert",
-    "Provide advanced document permissions using ONLYOFFICE Docs": "Erweiterte Zugriffsrechte in ONLYOFFICE Docs vergeben"
+    "Provide advanced document permissions using ONLYOFFICE Docs": "Erweiterte Zugriffsrechte in ONLYOFFICE Docs vergeben",
+    "Enable plugins": "Arbeit mit Plugins aktivieren",
+    "Enable document protection for": "Hinzufügen von Passwörtern in Dokumenten aktivieren für",
+    "All users": "Alle Benutzer",
+    "Owner only": "Nur Besitzer"
 },
 "nplurals=2; plural=(n != 1);");
