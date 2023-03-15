@@ -46,6 +46,7 @@
 #body-user.onlyoffice-inline #app-navigation-toggle {
     display: none !important;
 }
+#body-public.onlyoffice-inline #content #app-content,
 #body-user.onlyoffice-inline #content #app-content {
     margin-left: 0;
     position: relative;
