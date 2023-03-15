@@ -134,6 +134,7 @@ OC.L10N.register(
     "Enable plugins": "Abilitare plugin",
     "Enable document protection for": "Abilitare la protezione del documento per",
     "All users": "Tutti gli utenti",
-    "Owner only": "Solo proprietario"
+    "Owner only": "Solo proprietario",
+    "Authorization header (leave blank to use default header)" : "Intestazione di autorizzazione (lascia vuoto per utilizzare l'intestazione predefinita)"
 },
 "nplurals=2; plural=(n != 1);");

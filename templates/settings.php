@@ -62,8 +62,8 @@
             </a>
         </p>
         <div id="onlyofficeSecretPanel" class="onlyoffice-hide">
-            <p class="onlyoffice-header"><?php p($l->t("Authorization header")) ?></p>
-            <p><input id="onlyofficeJwtHeader" value="<?php p($_["jwtHeader"]) ?>" placeholder="<?php p($l->t("Leave blank to use default header")) ?>" type="text"></p>
+            <p class="onlyoffice-header"><?php p($l->t("Authorization header (leave blank to use default header)")) ?></p>
+            <p><input id="onlyofficeJwtHeader" value="<?php p($_["jwtHeader"]) ?>" placeholder="Authorization" type="text"></p>
 
             <p class="onlyoffice-header"><?php p($l->t("ONLYOFFICE Docs address for internal requests from the server")) ?></p>
             <p><input id="onlyofficeInternalUrl" value="<?php p($_["documentserverInternal"]) ?>" placeholder="https://<documentserver>/" type="text"></p>
