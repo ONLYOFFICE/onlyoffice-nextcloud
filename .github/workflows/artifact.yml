@@ -21,15 +21,15 @@ jobs:
           cd ${{ github.workspace }}
           cwd=$(pwd)
           git submodule update --init --recursive
-          mkdir -p ./onlyoffice
-          rsync -av --exclude='onlyoffice' ./ ./onlyoffice
-          cd ./onlyoffice
+          mkdir -p onlyoffice
+          rsync -av --exclude='onlyoffice' . onlyoffice
+          cd onlyoffice
           rm -rf ./.github/
           rm -rf ./.git/
           rm ./.gitmodules
           rm -rf ./assets/.git
           cd $cwd
-          tar -czvf onlyoffice.tar.gz ./onlyoffice
+          tar -czvf onlyoffice.tar.gz onlyoffice
       - name: Upload Artifact
         uses: actions/upload-artifact@v3
         with:
