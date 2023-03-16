@@ -9,6 +9,7 @@
 ## Changed
 - fix thumbnails for version files
 - fix notification length
+- compatible with Nextcloud 26
 
 ## 7.6.8
 ## Changed
