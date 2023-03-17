@@ -10,6 +10,7 @@
 - fix thumbnails for version files
 - fix notification length
 - compatible with Nextcloud 26
+- additional check availability for group and external files when mention
 
 ## 7.6.8
 ## Changed
