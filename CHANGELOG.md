@@ -9,6 +9,7 @@
 ## Changed
 - fix thumbnails for version files
 - fix notification length
+- additional check availability for group and external files when mention
 
 ## 7.5.8
 ## Changed
