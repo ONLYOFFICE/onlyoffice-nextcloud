@@ -1,5 +1,6 @@
 # Change Log
 
+## 7.7.0
 ## Added
 - disable plugins setting
 - document protection setting
