@@ -295,11 +295,16 @@ class ExtraPermissions {
 
         $value = is_array($values) ? $values : [];
 
-        return [
-            "id" => (int)$value["id"],
-            "share_id" => (string)$value["share_id"],
-            "permissions" => (int)$value["permissions"]
-        ];
+        $result = [];
+        if (!empty($value)) {
+            $result = [
+                "id" => (int)$value["id"],
+                "share_id" => (string)$value["share_id"],
+                "permissions" => (int)$value["permissions"]
+            ];
+        }
+
+        return $result;
     }
 
     /**
