@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System SIA 2022
+ * (c) Copyright Ascensio System SIA 2023
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -131,6 +131,13 @@ class AppConfig {
     private $_versionHistory = "versionHistory";
 
     /**
+     * The config key for the protection
+     *
+     * @var string
+     */
+    private $_protection = "protection";
+
+    /**
      * The config key for the chat display setting
      *
      * @var string
@@ -215,6 +222,13 @@ class AppConfig {
     private $_jwtHeader = "jwt_header";
 
     /**
+     * The config key for the allowable leeway in Jwt checks
+     *
+     * @var string
+     */
+    private $_jwtLeeway = "jwt_leeway";
+
+    /**
      * The config key for the settings error
      *
      * @var string
@@ -297,6 +311,13 @@ class AppConfig {
      * @var string
      */
     public $_customizationMacros = "customization_macros";
+
+    /**
+     * The config key for the plugins
+     *
+     * @var string
+     */
+    public $_customizationPlugins = "customization_plugins";
 
     /**
      * @param string $AppName - application name
@@ -715,6 +736,30 @@ class AppConfig {
     }
 
     /**
+     * Save protection
+     *
+     * @param bool $value - version history
+     */
+    public function SetProtection($value) {
+        $this->logger->info("Set protection: " . $value, ["app" => $this->appName]);
+
+        $this->config->setAppValue($this->appName, $this->_protection, $value);
+    }
+
+    /**
+     * Get protection
+     *
+     * @return bool
+     */
+    public function GetProtection() {
+        $value = $this->config->getAppValue($this->appName, $this->_protection, "owner");
+        if ($value === "all") {
+            return "all";
+        }
+        return "owner";
+    }
+
+    /**
      * Save chat display setting
      *
      * @param bool $value - display chat
@@ -1114,6 +1159,17 @@ class AppConfig {
     }
 
     /**
+     * Get the Jwt Leeway
+     *
+     * @return int
+     */
+    public function GetJwtLeeway() {
+        $jwtLeeway = (integer)$this->GetSystemValue($this->_jwtLeeway);
+
+        return $jwtLeeway;
+    }
+
+    /**
      * Save the status settings
      *
      * @param string $value - error
@@ -1176,6 +1232,26 @@ class AppConfig {
      */
     public function GetCustomizationMacros() {
         return $this->config->getAppValue($this->appName, $this->_customizationMacros, "true") === "true";
+    }
+
+    /**
+     * Save plugins setting
+     *
+     * @param bool $value - enable macros
+     */
+    public function SetCustomizationPlugins($value) {
+        $this->logger->info("Set plugins enabled: " . json_encode($value), ["app" => $this->appName]);
+
+        $this->config->setAppValue($this->appName, $this->_customizationPlugins, json_encode($value));
+    }
+
+    /**
+     * Get plugins setting
+     *
+     * @return bool
+     */
+    public function GetCustomizationPlugins() {
+        return $this->config->getAppValue($this->appName, $this->_customizationPlugins, "true") === "true";
     }
 
     /**

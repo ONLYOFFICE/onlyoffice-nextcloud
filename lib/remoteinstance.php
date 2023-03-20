@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System SIA 2021
+ * (c) Copyright Ascensio System SIA 2023
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -177,25 +177,38 @@ class RemoteInstance {
 
         $httpClientService = \OC::$server->getHTTPClientService();
         $client = $httpClientService->newClient();
-        $response = $client->post($remote . "ocs/v2.php/apps/" . self::App_Name . "/api/v1/key?format=json", [
-            "timeout" => 5,
-            "body" => [
-                "shareToken" => $shareToken,
-                "path" => $internalPath
-            ]
-        ]);
-        $body = \json_decode($response->getBody(), true);
 
-        $data = $body["ocs"]["data"];
-        if (!empty($data["error"])) {
-            $logger->error("Error federated key " . $data["error"], ["app" => self::App_Name]);
+        try {
+            $response = $client->post($remote . "ocs/v2.php/apps/" . self::App_Name . "/api/v1/key?format=json", [
+                "timeout" => 5,
+                "body" => [
+                    "shareToken" => $shareToken,
+                    "path" => $internalPath
+                ]
+            ]);
+
+            $body = \json_decode($response->getBody(), true);
+
+            $data = $body["ocs"]["data"];
+            if (!empty($data["error"])) {
+                $logger->error("Error federated key " . $data["error"], ["app" => self::App_Name]);
+                return null;
+            }
+
+            $key = $data["key"];
+            $logger->debug("Federated key: $key", ["app" => self::App_Name]);
+
+            return $key;
+        } catch (\Exception $e) {
+            $logger->logException($e, ["message" => "Failed to request federated key " . $file->getId(), "app" => self::App_Name]);
+
+            if ($e->getResponse()->getStatusCode() === 404) {
+                self::update($remote, false);
+                $logger->debug("Changed status for remote instance $remote to false", ["app" => self::App_Name]);
+            }
+
             return null;
         }
-
-        $key = $data["key"];
-        $logger->debug("Federated key: $key", ["app" => self::App_Name]);
-
-        return $key;
     }
 
     /**

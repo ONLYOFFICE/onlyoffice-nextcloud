@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System SIA 2022
+ * (c) Copyright Ascensio System SIA 2023
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -117,6 +117,7 @@ class SettingsController extends Controller {
             "preview" => $this->config->GetPreview(),
             "advanced" => $this->config->GetAdvanced(),
             "versionHistory" => $this->config->GetVersionHistory(),
+            "protection" => $this->config->GetProtection(),
             "limitGroups" => $this->config->GetLimitGroups(),
             "chat" => $this->config->GetCustomizationChat(),
             "compactHeader" => $this->config->GetCustomizationCompactHeader(),
@@ -126,6 +127,7 @@ class SettingsController extends Controller {
             "toolbarNoTabs" => $this->config->GetCustomizationToolbarNoTabs(),
             "successful" => $this->config->SettingsAreSuccessful(),
             "watermark" => $this->config->GetWatermarkSettings(),
+            "plugins" => $this->config->GetCustomizationPlugins(),
             "macros" => $this->config->GetCustomizationMacros(),
             "tagsEnabled" => \OC::$server->getAppManager()->isEnabledForUser("systemtags"),
             "reviewDisplay" => $this->config->GetCustomizationReviewDisplay(),
@@ -248,12 +250,16 @@ class SettingsController extends Controller {
      * Save security settings
      *
      * @param array $watermarks - watermark settings
+     * @param bool $plugins - enable plugins
      * @param bool $macros - run document macros
+     * @param string $protection - protection
      *
      * @return array
      */
     public function SaveSecurity($watermarks,
-                                    $macros
+                                    $plugins,
+                                    $macros,
+                                    $protection
                                     ) {
 
         if ($watermarks["enabled"] === "true") {
@@ -264,7 +270,9 @@ class SettingsController extends Controller {
         }
 
         $this->config->SetWatermarkSettings($watermarks);
+        $this->config->SetCustomizationPlugins($plugins);
         $this->config->SetCustomizationMacros($macros);
+        $this->config->SetProtection($protection);
 
         return [
             ];

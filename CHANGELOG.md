@@ -1,5 +1,18 @@
 # Change Log
 
+## 7.8.0
+## Added
+- disable plugins setting
+- document protection setting
+- jwt leeway setting
+- Danish translation
+
+## Changed
+- fix thumbnails for version files
+- fix notification length
+- compatible with Nextcloud 26
+- additional check availability for group and external files when mention
+
 ## 7.6.8
 ## Changed
 - fix download permission

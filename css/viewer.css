@@ -1,6 +1,6 @@
 /**
  *
- * (c) Copyright Ascensio System SIA 2022
+ * (c) Copyright Ascensio System SIA 2023
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@
 #onlyofficeViewerFrame {
     background-color: #fff;
     width: 100%;
-    height: calc(100vh - 50px);
+    height: calc(var(--body-height) + var(--body-container-margin) + 100px);
     display: block;
     position: absolute;
     top: 50px;

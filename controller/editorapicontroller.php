@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System SIA 2022
+ * (c) Copyright Ascensio System SIA 2023
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -418,6 +418,12 @@ class EditorApiController extends OCSController {
                 $ownerId = $owner->getUID();
             }
 
+            $canProtect = true;
+            if ($this->config->GetProtection() === "owner") {
+                $canProtect = $ownerId === $userId;
+            }
+            $params["document"]["permissions"]["protect"] = $canProtect;
+
             $hashCallback = $this->crypt->GetHash(["userId" => $userId, "ownerId" => $ownerId, "fileId" => $file->getId(), "filePath" => $filePath, "shareToken" => $shareToken, "action" => "track"]);
             $callback = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.track", ["doc" => $hashCallback]);
 
@@ -750,6 +756,10 @@ class EditorApiController extends OCSController {
             $params["editorConfig"]["customization"]["macros"] = false;
         }
 
+        //default is true
+        if($this->config->GetCustomizationPlugins() === false) {
+            $params["editorConfig"]["customization"]["plugins"] = false;
+        }
 
         /* from system config */
 

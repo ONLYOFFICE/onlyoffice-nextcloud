@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System SIA 2022
+ * (c) Copyright Ascensio System SIA 2023
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@
         </p>
 
         <p class="onlyoffice-header"><?php p($l->t("Secret key (leave blank to disable)")) ?></p>
-        <p>
+        <p class="groupbottom">
             <input id="onlyofficeSecret" value="<?php p($_["secret"]) ?>" placeholder="secret" type="password" />
             <input type="checkbox" id="personal-show" class="hidden-visually" name="show" />
             <label id="onlyofficeSecret-show" for="personal-show" class="personal-show-label"></label>
@@ -287,10 +287,36 @@
     <h2><?php p($l->t("Security")) ?></h2>
 
     <p>
+        <input type="checkbox" class="checkbox" id="onlyofficePlugins"
+            <?php if ($_["plugins"]) { ?>checked="checked"<?php } ?> />
+        <label for="onlyofficePlugins"><?php p($l->t("Enable plugins")) ?></label>
+    </p>
+
+    <p>
         <input type="checkbox" class="checkbox" id="onlyofficeMacros"
             <?php if ($_["macros"]) { ?>checked="checked"<?php } ?> />
         <label for="onlyofficeMacros"><?php p($l->t("Run document macros")) ?></label>
     </p>
+
+    <p class="onlyoffice-header">
+        <?php p($l->t("Enable document protection for")) ?>
+    </p>
+    <div class="onlyoffice-tables">
+        <div>
+            <input type="radio" class="radio"
+                id="onlyofficeProtection_all"
+                name="protection"
+                <?php if ($_["protection"] === "all") { ?>checked="checked"<?php } ?> />
+            <label for="onlyofficeProtection_all"><?php p($l->t("All users")) ?></label>
+        </div>
+        <div>
+            <input type="radio" class="radio"
+                id="onlyofficeProtection_owner"
+                name="protection"
+                <?php if ($_["protection"] === "owner") { ?>checked="checked"<?php } ?> />
+            <label for="onlyofficeProtection_owner"><?php p($l->t("Owner only")) ?></label>
+        </div>
+    </div>
 
     <br />
     <p class="settings-hint"><?php p($l->t("Secure view enables you to secure documents by embedding a watermark")) ?></p>

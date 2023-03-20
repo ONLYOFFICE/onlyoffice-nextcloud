@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System SIA 2022
+ * (c) Copyright Ascensio System SIA 2023
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -360,6 +360,9 @@ class Preview extends Provider {
             $relativePath = $versionFolder->getRelativePath($absolutePath);
 
             list ($filePath, $fileVersion) = FileVersions::splitPathVersion($relativePath);
+            if ($filePath === null) {
+                return [null, null, null];
+            }
 
             $sourceFile = $this->root->getUserFolder($owner->getUID())->get($filePath);
 

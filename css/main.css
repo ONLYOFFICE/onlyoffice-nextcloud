@@ -1,6 +1,6 @@
 /**
  *
- * (c) Copyright Ascensio System SIA 2022
+ * (c) Copyright Ascensio System SIA 2023
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,14 +38,17 @@
 
 /* onlyoffice-inline */
 #body-user.onlyoffice-inline #app-navigation,
+#body-user.onlyoffice-inline #app-navigation-vue,
 #body-user.onlyoffice-inline .searchbox,
 #body-user.onlyoffice-inline #app-content .files-controls,
+#body-user.onlyoffice-inline #app-content-vue .files-controls,
 #body-user.onlyoffice-inline .files-filestable {
     display: none;
 }
 #body-user.onlyoffice-inline #app-navigation-toggle {
     display: none !important;
 }
+#body-public.onlyoffice-inline #content #app-content,
 #body-user.onlyoffice-inline #content #app-content {
     margin-left: 0;
     position: relative;
