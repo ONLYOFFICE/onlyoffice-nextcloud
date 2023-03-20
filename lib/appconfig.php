@@ -1291,18 +1291,9 @@ class AppConfig {
         $interval = (integer)$this->GetSystemValue($this->_editors_check_interval);
 
         if (empty($interval)) {
-            $interval = 86400; // 1 day - default value
+            $interval = 60*60*24;
         }
         return $interval;
-    }
-
-    /**
-     * Save the editors check interval setting
-     *
-     * @param int $value - editors check interval (in seconds)
-     */
-    public function SetEditorsCheckInterval($value) {
-        $this->config->setAppValue($this->appName, $this->_editorsCheck_interval, $value);
     }
 
     /**
