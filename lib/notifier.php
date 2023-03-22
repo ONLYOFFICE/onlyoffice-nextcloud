@@ -117,7 +117,7 @@ class Notifier implements INotifier {
         $trans = $this->l10nFactory->get($this->appName, $languageCode);
         switch ($notification->getSubject()) {
             case "editorsCheck_info":
-                $message = $trans->t("Please check settings to resolve the problem.");
+                $message = $trans->t("Please check the settings to resolve the problem.");
                 $appSettingsLink = $this->urlGenerator->getAbsoluteURL("/settings/admin/".$this->appName);
                 $action = $notification->createAction();
                 $action->setLabel('View settings')
