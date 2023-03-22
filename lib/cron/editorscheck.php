@@ -31,6 +31,10 @@ use OCP\IURLGenerator;
 use OCP\IGroup;
 use OCP\IGroupManager;
 
+/**
+ * Editors availability check background job
+ *
+ */
 class EditorsCheck extends TimedJob {
 
     /**
@@ -164,6 +168,10 @@ class EditorsCheck extends TimedJob {
         return array_keys($this->notifyUsers);
     }
 
+    /**
+     * Send notification to admins
+     * @return void
+     */
     private function notifyAdmins($error) {
         $notificationManager = \OC::$server->getNotificationManager();
         $notification = $notificationManager->createNotification();
