@@ -128,7 +128,7 @@ class EditorsCheck extends TimedJob {
 
         if (!empty($error)) {
             $this->logger->info($this->trans->t("OnlyOffice server is not available"), array("app" => $this->appName));
-            $this->notifyAdmins($error);
+            $this->notifyAdmins();
         }
     }
 
@@ -172,15 +172,13 @@ class EditorsCheck extends TimedJob {
      * Send notification to admins
      * @return void
      */
-    private function notifyAdmins($error) {
+    private function notifyAdmins() {
         $notificationManager = \OC::$server->getNotificationManager();
         $notification = $notificationManager->createNotification();
         $notification->setApp($this->appName)
             ->setDateTime(new \DateTime())
-            ->setObject("editorsCheck", "OnlyOffice server is not available")
-            ->setSubject("editorsCheck_info", [
-                "error" => $error
-            ]);
+            ->setObject("editorsCheck", "ONLYOFFICE server is not available")
+            ->setSubject("editorsCheck_info");
         foreach ($this->getUsersToNotify() as $uid) {
             $notification->setUser($uid);
             $notificationManager->notify($notification);

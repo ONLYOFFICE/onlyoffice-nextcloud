@@ -25,6 +25,7 @@ use OCP\IUserManager;
 use OCP\L10N\IFactory;
 use OCP\Notification\INotification;
 use OCP\Notification\INotifier;
+use OCP\Notification\IAction;
 
 class Notifier implements INotifier {
 
@@ -116,8 +117,15 @@ class Notifier implements INotifier {
         $trans = $this->l10nFactory->get($this->appName, $languageCode);
         switch ($notification->getSubject()) {
             case "editorsCheck_info":
-                $message = $parameters["error"];
-                $notification->setParsedSubject($trans->t('OnlyOffice server is not available'))
+                $message = $trans->t("Please check settings to resolve the problem.");
+                $appSettingsLink = $this->urlGenerator->getAbsoluteURL("/settings/admin/".$this->appName);
+                $action = $notification->createAction();
+                $action->setLabel('View settings')
+                    ->setParsedLabel($trans->t('View settings'))
+                    ->setLink($appSettingsLink, IAction::TYPE_WEB)
+                    ->setPrimary(false);
+                $notification->addParsedAction($action);
+                $notification->setParsedSubject($trans->t('ONLYOFFICE server is not available'))
                     ->setIcon($this->urlGenerator->getAbsoluteURL($this->urlGenerator->imagePath($this->appName, 'app-dark.svg')));
                 $notification->setParsedMessage($message);
                 break;
