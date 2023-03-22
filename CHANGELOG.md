@@ -2,6 +2,7 @@
 
 ## Added
 - jwt header setting
+- background job for checking editors availability
 
 ## 7.7.0
 ## Added
