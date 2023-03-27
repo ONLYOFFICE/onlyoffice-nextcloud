@@ -1,5 +1,8 @@
 # Change Log
 
+## Added
+- content visibility for Firefox
+
 ## 7.7.0
 ## Added
 - disable plugins setting
