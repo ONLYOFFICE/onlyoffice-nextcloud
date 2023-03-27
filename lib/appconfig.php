@@ -1144,18 +1144,39 @@ class AppConfig {
     /**
      * Get the jwt header setting
      *
+     * @param bool $origin - take origin
+     *
      * @return string
      */
-    public function JwtHeader() {
-        if ($this->UseDemo()) {
+    public function JwtHeader($origin = false) {
+        if (!$origin && $this->UseDemo()) {
             return $this->DEMO_PARAM["HEADER"];
         }
 
-        $header = $this->GetSystemValue($this->_jwtHeader);
+        $header = $this->config->getAppValue($this->appName, $this->_jwtHeader, "");
         if (empty($header)) {
+            $header = $this->GetSystemValue($this->_jwtHeader);
+        }
+        if (!$origin && empty($header)) {
             $header = "Authorization";
         }
         return $header;
+    }
+
+    /**
+     * Save the jwtHeader setting
+     *
+     * @param string $value - jwtHeader
+     */
+    public function SetJwtHeader($value) {
+        $value = trim($value);
+        if (empty($value)) {
+            $this->logger->info("Clear header key", ["app" => $this->appName]);
+        } else {
+            $this->logger->info("Set header key " . $value, ["app" => $this->appName]);
+        }
+
+        $this->config->setAppValue($this->appName, $this->_jwtHeader, $value);
     }
 
     /**
