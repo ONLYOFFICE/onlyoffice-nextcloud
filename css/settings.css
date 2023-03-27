@@ -69,3 +69,8 @@
 #onlyofficeSecret-show {
     left: 240px;
 }
+@-moz-document url-prefix() {
+    #content:not(.with-sidebar--full) {
+        position: unset;
+      }
+}
