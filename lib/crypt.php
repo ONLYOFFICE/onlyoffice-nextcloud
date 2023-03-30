@@ -50,7 +50,7 @@ class Crypt {
      * @return string
      */
     public function GetHash($object) {
-        return \Firebase\JWT\JWT::encode($object, $this->config->GetSKey());
+        return \Firebase\JWT\JWT::encode($object, $this->config->GetSKey(), "HS256");
     }
 
     /**
@@ -67,7 +67,7 @@ class Crypt {
             return [$result, "token is empty"];
         }
         try {
-            $result = \Firebase\JWT\JWT::decode($token, $this->config->GetSKey(), array("HS256"));
+            $result = \Firebase\JWT\JWT::decode($token, new \Firebase\JWT\Key($this->config->GetSKey(), "HS256"));
         } catch (\UnexpectedValueException $e) {
             $error = $e->getMessage();
         }
