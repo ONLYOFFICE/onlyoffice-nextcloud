@@ -87,13 +87,6 @@ class EditorsCheck extends TimedJob {
     private $groupManager;
 
     /**
-     * Users group to notify
-     *
-     * @var array <array-key, bool>
-     */
-    private $notifyUsers;
-
-    /**
      * @param string $AppName - application name
      * @param IURLGenerator $urlGenerator - url generator service
      * @param ITimeFactory $time - time
@@ -115,7 +108,6 @@ class EditorsCheck extends TimedJob {
         $this->logger = \OC::$server->getLogger();
         $this->config = $config;
         $this->trans = $trans;
-        $this->notifyUsers = [];
         $this->crypt = $crypt;
         $this->groupManager = $groupManager;
         $this->setInterval($this->config->GetEditorsCheckInterval());
@@ -137,11 +129,9 @@ class EditorsCheck extends TimedJob {
      * @return string[]
      */
     protected function getUsersToNotify($needleGroup = '["admin"]') {
-        if (!empty($this->notifyUsers)) {
-            return array_keys($this->notifyUsers);
-        }
+        $notifyUsers = [];
 
-        $groups = \OC::$server->getConfig()->getAppValue($this->appName, "notification_groups", $needleGroup);
+        $groups = \OC::$server->getConfig()->getAppValue('updatenotification', 'notify_groups', $needleGroup);
         $groups = json_decode($groups, true);
 
         if ($groups === null) {
@@ -156,16 +146,11 @@ class EditorsCheck extends TimedJob {
 
             $users = $group->getUsers();
             foreach ($users as $user) {
-                $uid = $user->getUID();
-                if (isset($this->notifyUsers[$uid])) {
-                    continue;
-                }
-
-                $this->notifyUsers[$uid] = true;
+                $notifyUsers[] = $user->getUID();
             }
         }
 
-        return array_keys($this->notifyUsers);
+        return $notifyUsers;
     }
 
     /**
@@ -178,7 +163,7 @@ class EditorsCheck extends TimedJob {
         $notification->setApp($this->appName)
             ->setDateTime(new \DateTime())
             ->setObject("editorsCheck", "ONLYOFFICE server is not available")
-            ->setSubject("editorsCheck_info");
+            ->setSubject("editorscheck_info");
         foreach ($this->getUsersToNotify() as $uid) {
             $notification->setUser($uid);
             $notificationManager->notify($notification);
