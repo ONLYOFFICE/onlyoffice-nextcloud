@@ -555,6 +555,86 @@ class EditorController extends Controller {
     }
 
     /**
+     * Reference data
+     *
+     * @param array $referenceData - reference data
+     * @param string $path - file path
+     *
+     * @return array
+     *
+     * @NoAdminRequired
+     * @PublicPage
+     */
+    public function reference($referenceData, $path = null) {
+        if (!$this->config->isUserAllowedToUse()) {
+            return ["error" => $this->trans->t("Not permitted")];
+        }
+
+        $user = $this->userSession->getUser();
+
+        if (empty($user)) {
+            return ["error" => $this->trans->t("Not permitted")];
+        }
+
+        $file = null;
+        $userId = $user->getUID();
+        $fileKey = (integer)$referenceData["fileKey"] ?? null;
+        $userFolder = $this->root->getUserFolder($userId);
+
+        if ($fileKey !== null) {
+            $file = $userFolder->getById($fileKey)[0];
+        }
+
+        if ($file === null) {
+            if ($path !== null) {
+                $file = $userFolder->get($path);
+            }
+            if ($file === null) {
+                $this->logger->error("File for generate presigned url was not found: $path", ["app" => $this->appName]);
+                return ["error" => $this->trans->t("File not found")];
+            }
+            if (!$file->isReadable()) {
+                $this->logger->error("Folder for saving file without permission: $path", ["app" => $this->appName]);
+                return ["error" => $this->trans->t("You do not have enough permissions to view the file")];
+            }
+        }
+
+        $fileName = $file->getName();
+        $instanceId = $referenceData["instanceId"] ?? null;
+
+        if ($instanceId !== $this->urlGenerator->getAbsoluteURL("/")) {
+            return ["error" => $this->trans->t("Data inserted from another system")];
+        }
+
+        if ($fileKey === null) {
+            $fileKey = $file->getId();
+        }
+
+        if (!$fileKey || !$fileName) {
+            return ["error" => $this->trans->t("File not found")];
+        }
+
+        $fileUrl = $this->getUrl($file, $user);
+        $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+        $response = [
+            "fileType" => $ext,
+            "url" => $fileUrl,
+            "referenceData" => [
+                "fileKey" => $fileKey,
+                "instanceId" => $this->urlGenerator->getAbsoluteURL("/"),
+            ],
+            "path" => $fileName
+        ];
+
+        if (!empty($this->config->GetDocumentServerSecret())) {
+            $token = \Firebase\JWT\JWT::encode($response, $this->config->GetDocumentServerSecret());
+            $response["token"] = $token;
+        }
+
+        return $response;
+    }
+
+    /**
      * Conversion file to Office Open XML format
      *
      * @param integer $fileId - file identifier
