@@ -2,6 +2,7 @@
 
 ## Added
 - jwt header setting
+- reference data
 
 ## 7.7.0
 ## Added
