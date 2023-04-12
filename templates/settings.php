@@ -39,21 +39,41 @@
     <div id="onlyofficeAddrSettings">
         <p class="settings-hint"><?php p($l->t("ONLYOFFICE Docs Location specifies the address of the server with the document services installed. Please change the '<documentserver>' for the server address in the below line.")) ?></p>
 
-        <p><?php p($l->t("ONLYOFFICE Docs address")) ?></p>
-        <p><input id="onlyofficeUrl" value="<?php p($_["documentserver"]) ?>" placeholder="https://<documentserver>/" type="text"></p>
+        <div id="onlyoffice-main-settings-panel">
+            <div id="onlyoffice-main-settings-fields">
+                <p><?php p($l->t("ONLYOFFICE Docs address")) ?></p>
+                <p><input id="onlyofficeUrl" value="<?php p($_["documentserver"]) ?>" placeholder="https://<documentserver>/" type="text"></p>
 
-        <p>
-            <input type="checkbox" class="checkbox" id="onlyofficeVerifyPeerOff"
-                <?php if ($_["verifyPeerOff"]) { ?>checked="checked"<?php } ?> />
-            <label for="onlyofficeVerifyPeerOff"><?php p($l->t("Disable certificate verification (insecure)")) ?></label>
-        </p>
+                <p>
+                    <input type="checkbox" class="checkbox" id="onlyofficeVerifyPeerOff"
+                        <?php if ($_["verifyPeerOff"]) { ?>checked="checked"<?php } ?> />
+                    <label for="onlyofficeVerifyPeerOff"><?php p($l->t("Disable certificate verification (insecure)")) ?></label>
+                </p>
 
-        <p class="onlyoffice-header"><?php p($l->t("Secret key (leave blank to disable)")) ?></p>
-        <p>
-            <input id="onlyofficeSecret" value="<?php p($_["secret"]) ?>" placeholder="secret" type="password" />
-            <input type="checkbox" id="personal-show" class="hidden-visually" name="show" />
-            <label id="onlyofficeSecret-show" for="personal-show" class="personal-show-label"></label>
-        </p>
+                <p class="onlyoffice-header"><?php p($l->t("Secret key (leave blank to disable)")) ?></p>
+                <p>
+                    <input id="onlyofficeSecret" value="<?php p($_["secret"]) ?>" placeholder="secret" type="password" />
+                    <input type="checkbox" id="personal-show" class="hidden-visually" name="show" />
+                    <label id="onlyofficeSecret-show" for="personal-show" class="personal-show-label"></label>
+                </p>
+            </div>
+            <div id="onlyoffice-main-settings-banner">
+                <div id="onlyoffice-main-settings-banner-get-editors-wrapper">
+                    <div id="onlyoffice-main-settings-banner-get-editors">
+                        <div id="onlyoffice-main-settings-banner-pic">
+
+                        </div>
+                        <div id="onlyoffice-main-settings-banner-text">
+                            <p><h2>ONLYOFFICE Docs Cloud</h2></p>
+                            <p><?php p($l->t("Easily launch the editors in the cloud without downloading and installation")) ?></p>
+                        </div>
+                        <div id="onlyoffice-main-settings-banner-button-wrapper">
+                            <button id="onlyoffice-main-settings-banner-button" class="button"><?php p($l->t("Get Now")) ?></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <p>
             <a id="onlyofficeAdv" class="onlyoffice-header">
