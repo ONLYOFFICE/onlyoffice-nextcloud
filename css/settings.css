@@ -69,3 +69,155 @@
 #onlyofficeSecret-show {
     left: 240px;
 }
+#onlyoffice-main-settings-panel {
+    display: flex;
+    width: 100%;
+}
+#onlyoffice-main-settings-fields {
+    width: 50%;
+}
+#onlyoffice-main-settings-banner {
+    width: 50%;
+    padding-top: 20px;
+}
+#onlyoffice-main-settings-banner-get-editors-wrapper {
+    width: 542px;
+    max-width: 100%;
+    height: 109px;
+    text-align: center;
+    background-image: url("../img/get_editors_background.svg");
+    background-repeat: no-repeat;
+    background-color: #FFFFFF;
+    border: 1px solid #EFEFEF;
+    border-radius: 3px;
+}
+#onlyoffice-main-settings-banner-get-editors {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    position: relative;
+    width: 100%;
+    height: 79px;
+    top: 15px;
+}
+#onlyoffice-main-settings-banner-pic {
+    background-image: url("../img/get_editors_pic.svg");
+    height: 100%;
+    width: 20%;
+    margin-left: 20px;
+    background-repeat: no-repeat;
+}
+#onlyoffice-main-settings-banner-text {
+    width: 55%;
+    margin-left: 36px;
+    color: #000;
+    font-size: 14px;
+    text-align: justify;
+}
+#onlyoffice-main-settings-banner-text h2 {
+    margin: 0;
+    color: #000;
+}
+#onlyoffice-main-settings-banner-button-wrapper {
+    margin-left: 41px;
+    width: 25%;
+}
+#onlyoffice-main-settings-banner-button {
+    background-color: #EDEDED;
+    color: #000;
+    border: 1px solid #DBDBDB;
+}
+@media (max-width: 1437px) {
+    #onlyoffice-main-settings-banner-pic {
+        margin-left: 4px;
+    }
+    #onlyoffice-main-settings-banner-text {
+        margin-left: 20px;
+    }
+}
+@media (max-width: 1372px) {
+    #onlyoffice-main-settings-banner-text {
+        margin-left: 0;
+    }
+    #onlyoffice-main-settings-banner-text h2 {
+        font-size: 16px;
+    }
+    #onlyoffice-main-settings-banner-button-wrapper {
+        margin-left: 7px;
+    }
+}
+@media (max-width: 1264px) {
+    #onlyoffice-main-settings-banner-pic {
+        display: none;
+    }
+    #onlyoffice-main-settings-banner-text {
+        margin-left: 8px;
+        width: 65%;
+    }
+    #onlyoffice-main-settings-banner-text h2 {
+        font-size: 16px;
+    }
+    #onlyoffice-main-settings-banner-button-wrapper {
+        width: 35%;
+    }
+}
+/*@media (max-width: 1097px) {
+    #onlyoffice-main-settings-banner-text h2 {
+        font-size: 16px;
+    }
+}*/
+@media (max-width: 1025px) {
+    #onlyoffice-main-settings-banner-pic {
+        display: block;
+    }
+    #onlyoffice-main-settings-banner-text {
+        margin-left: 2px;
+        width: 55%;
+    }
+}
+@media (max-width: 927px) {
+    #onlyoffice-main-settings-banner-pic {
+        display: none;
+    }
+    #onlyoffice-main-settings-banner-text {
+        margin-left: 8px;
+        width: 70%;
+    }
+    #onlyoffice-main-settings-banner-text h2 {
+        font-size: 16px;
+    }
+}
+@media (max-width: 727px) {
+    #onlyoffice-main-settings-fields {
+        width: 100%;
+    }
+    #onlyoffice-main-settings-banner {
+        width: 100%;
+    }
+    #onlyoffice-main-settings-panel {
+        display: flex;
+        width: 100%;
+        flex-direction: column;
+    }
+    #onlyoffice-main-settings-banner-get-editors {
+        width: 100%;
+    }
+    #onlyoffice-main-settings-banner-get-editors-wrapper {
+        width: 100%;
+    }
+    #onlyoffice-main-settings-banner-pic {
+        display: block;
+    }
+    #onlyoffice-main-settings-banner-text {
+        margin-left: 8px;
+        width: 55%;
+    }
+    #onlyoffice-main-settings-banner-text h2 {
+        font-size: 20px;
+    }
+}
+@media (max-width: 570px) {
+    #onlyoffice-main-settings-banner-text h2 {
+        font-size: 16px;
+    }
+}
