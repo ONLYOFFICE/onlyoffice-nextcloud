@@ -66,8 +66,9 @@
     -moz-column-width: 140px;
     -webkit-column-width: 140px;
 }
-#onlyofficeSecret-show {
-    left: 240px;
+#onlyoffice-main-settings-fields p #onlyofficeSecret-show {
+    position: relative !important;
+    left: 207px;
 }
 #onlyoffice-main-settings-panel {
     display: flex;
