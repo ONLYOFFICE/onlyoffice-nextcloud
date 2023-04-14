@@ -3,6 +3,9 @@
 ## Added
 - jwt header setting
 
+## Changed
+- restricts for anonymous
+
 ## 7.7.0
 ## Added
 - disable plugins setting
