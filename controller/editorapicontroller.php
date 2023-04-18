@@ -426,7 +426,6 @@ class EditorApiController extends OCSController {
 
             if (!isset($userId)) {
                 $params["document"]["permissions"]["chat"] = false;
-                $params["document"]["permissions"]["comment"] = false;
                 $params["document"]["permissions"]["protect"] = false;
             }
 

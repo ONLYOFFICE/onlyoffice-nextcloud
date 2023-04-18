@@ -164,9 +164,12 @@
                         config.events.onRequestInsertImage = OCA.Onlyoffice.onRequestInsertImage;
                         config.events.onRequestMailMergeRecipients = OCA.Onlyoffice.onRequestMailMergeRecipients;
                         config.events.onRequestCompareFile = OCA.Onlyoffice.onRequestCompareFile;
-                        config.events.onRequestUsers = OCA.Onlyoffice.onRequestUsers;
                         config.events.onRequestSendNotify = OCA.Onlyoffice.onRequestSendNotify;
                         config.events.onMetaChange = OCA.Onlyoffice.onMetaChange;
+
+                        if (OC.currentUser) {
+                            config.events.onRequestUsers = OCA.Onlyoffice.onRequestUsers;
+                        }
 
                         if (!OCA.Onlyoffice.filePath) {
                             OCA.Onlyoffice.filePath = config._file_path;
