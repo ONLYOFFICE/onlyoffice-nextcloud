@@ -110,6 +110,7 @@ class SettingsController extends Controller {
             "storageUrl" => $this->config->GetStorageUrl(),
             "verifyPeerOff" => $this->config->GetVerifyPeerOff(),
             "secret" => $this->config->GetDocumentServerSecret(true),
+            "jwtHeader" => $this->config->JwtHeader(true),
             "demo" => $this->config->GetDemoData(),
             "currentServer" => $this->urlGenerator->getAbsoluteURL("/"),
             "formats" => $this->config->FormatsSetting(),
@@ -154,6 +155,7 @@ class SettingsController extends Controller {
                                     $storageUrl,
                                     $verifyPeerOff,
                                     $secret,
+                                    $jwtHeader,
                                     $demo
                                     ) {
         $error = null;
@@ -165,6 +167,7 @@ class SettingsController extends Controller {
             $this->config->SetVerifyPeerOff($verifyPeerOff);
             $this->config->SetDocumentServerInternalUrl($documentserverInternal);
             $this->config->SetDocumentServerSecret($secret);
+            $this->config->SetJwtHeader($jwtHeader);
         }
         $this->config->SetStorageUrl($storageUrl);
 

@@ -1,5 +1,8 @@
 # Change Log
 
+## Added
+- jwt header setting
+
 ## 7.8.0
 ## Added
 - disable plugins setting
