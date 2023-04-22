@@ -566,64 +566,53 @@ class EditorController extends Controller {
      * @PublicPage
      */
     public function reference($referenceData, $path = null) {
+        $this->logger->debug("reference: " . json_encode($referenceData) . " $path", ["app" => $this->appName]);
+
         if (!$this->config->isUserAllowedToUse()) {
             return ["error" => $this->trans->t("Not permitted")];
         }
 
         $user = $this->userSession->getUser();
-
         if (empty($user)) {
             return ["error" => $this->trans->t("Not permitted")];
         }
 
-        $file = null;
         $userId = $user->getUID();
-        $fileKey = (integer)$referenceData["fileKey"] ?? null;
-        $userFolder = $this->root->getUserFolder($userId);
 
-        if ($fileKey !== null) {
-            $file = $userFolder->getById($fileKey)[0];
+        $file = null;
+        $fileId = (integer)($referenceData["fileKey"] ?? 0);
+        if (!empty($fileId)
+            && $referenceData["instanceId"] === $this->config->GetSystemValue("instanceid", true)) {
+            list ($file, $error, $share) = $this->getFile($userId, $fileId);
+        }
+
+        $userFolder = $this->root->getUserFolder($userId);
+        if ($file === null
+            && $path !== null
+            && $userFolder->nodeExists($path)) {
+            $node = $userFolder->get($path);
+            if ($node instanceof File
+                && $node->isReadable()) {
+                $file = $node;
+            }
         }
 
         if ($file === null) {
-            if ($path !== null) {
-                $file = $userFolder->get($path);
-            }
-            if ($file === null) {
-                $this->logger->error("File for generate presigned url was not found: $path", ["app" => $this->appName]);
-                return ["error" => $this->trans->t("File not found")];
-            }
-            if (!$file->isReadable()) {
-                $this->logger->error("Folder for saving file without permission: $path", ["app" => $this->appName]);
-                return ["error" => $this->trans->t("You do not have enough permissions to view the file")];
-            }
-        }
-
-        $fileName = $file->getName();
-        $instanceId = $referenceData["instanceId"] ?? null;
-
-        if ($instanceId !== $this->config->GetSystemValue("instanceid", true)) {
-            return ["error" => $this->trans->t("Data inserted from another system")];
-        }
-
-        if ($fileKey === null) {
-            $fileKey = $file->getId();
-        }
-
-        if (!$fileKey || !$fileName) {
+            $this->logger->error("Reference not found: $fileId $path", ["app" => $this->appName]);
             return ["error" => $this->trans->t("File not found")];
         }
 
-        $fileUrl = $this->getUrl($file, $user);
+        $fileName = $file->getName();
         $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+
         $response = [
             "fileType" => $ext,
-            "url" => $fileUrl,
+            "path" => $userFolder->getRelativePath($file->getPath()),
             "referenceData" => [
                 "fileKey" => $file->getId(),
                 "instanceId" => $this->config->GetSystemValue("instanceid", true),
             ],
-            "path" => $fileName
+            "url" => $this->getUrl($file, $user),
         ];
 
         if (!empty($this->config->GetDocumentServerSecret())) {

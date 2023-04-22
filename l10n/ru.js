@@ -135,7 +135,6 @@ OC.L10N.register(
     "Enable document protection for": "Включить возможность задавать пароль на документ для",
     "All users": "Всех пользователей",
     "Owner only": "Только владельцу",
-    "Authorization header (leave blank to use default header)": "Заголовок авторизации (оставьте пустым, чтобы использовать заголовок по умолчанию)",
-    "Data inserted from another system": "Данные вставлены из другой системы"
+    "Authorization header (leave blank to use default header)": "Заголовок авторизации (оставьте пустым, чтобы использовать заголовок по умолчанию)"
 },
 "nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);");
