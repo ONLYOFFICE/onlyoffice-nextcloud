@@ -553,7 +553,6 @@
                 }
 
                 OCA.Onlyoffice.docEditor.setReferenceData(response);
-                OCA.Onlyoffice.showMessage(t(OCA.Onlyoffice.AppName, "Data updated successfully"));
             });
     };
 
