@@ -120,7 +120,7 @@ class EditorsCheck extends TimedJob {
         list ($error, $version) = $documentService->checkDocServiceUrl($this->urlGenerator, $this->crypt);
 
         if (!empty($error)) {
-            $this->logger->info($this->trans->t("ONLYOFFICE server is not available"), array("app" => $this->appName));
+            $this->logger->info("ONLYOFFICE server is not available", ["app" => $this->appName]);
             $this->notifyAdmins();
         }
     }
