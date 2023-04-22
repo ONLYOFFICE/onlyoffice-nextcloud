@@ -320,8 +320,8 @@ class EditorApiController extends OCSController {
                 "title" => $fileName,
                 "url" => $fileUrl,
                 "referenceData" => [
-                    "fileKey" => isset($userId) ? $fileId : null,
-                    "instanceId" => $this->urlGenerator->getAbsoluteURL("/"),
+                    "fileKey" => $file->getId(),
+                    "instanceId" => $this->config->GetSystemValue("instanceid", true),
                 ],
             ],
             "documentType" => $format["type"],

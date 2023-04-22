@@ -602,7 +602,7 @@ class EditorController extends Controller {
         $fileName = $file->getName();
         $instanceId = $referenceData["instanceId"] ?? null;
 
-        if ($instanceId !== $this->urlGenerator->getAbsoluteURL("/")) {
+        if ($instanceId !== $this->config->GetSystemValue("instanceid", true)) {
             return ["error" => $this->trans->t("Data inserted from another system")];
         }
 
@@ -620,8 +620,8 @@ class EditorController extends Controller {
             "fileType" => $ext,
             "url" => $fileUrl,
             "referenceData" => [
-                "fileKey" => $fileKey,
-                "instanceId" => $this->urlGenerator->getAbsoluteURL("/"),
+                "fileKey" => $file->getId(),
+                "instanceId" => $this->config->GetSystemValue("instanceid", true),
             ],
             "path" => $fileName
         ];
