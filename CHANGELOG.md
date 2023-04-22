@@ -2,6 +2,7 @@
 
 ## Added
 - jwt header setting
+- link to docs cloud
 
 ## 7.7.0
 ## Added
