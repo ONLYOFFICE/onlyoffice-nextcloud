@@ -2,7 +2,7 @@
 
 ## Added
 - jwt header setting
-- reference data
+- Paste Special to add a link between files
 
 ## 7.7.0
 ## Added
