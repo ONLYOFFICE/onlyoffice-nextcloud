@@ -116,12 +116,20 @@ class EditorsCheck extends TimedJob {
     }
 
     protected function run($argument) {
-        $documentService = new DocumentService($this->trans, $this->config);
-        list ($error, $version) = $documentService->checkDocServiceUrl($this->urlGenerator, $this->crypt);
 
-        if (!empty($error)) {
-            $this->logger->info("ONLYOFFICE server is not available", ["app" => $this->appName]);
-            $this->notifyAdmins();
+        if (!empty($this->config->GetDocumentServerUrl())) {
+
+            $documentService = new DocumentService($this->trans, $this->config);
+            list ($error, $version) = $documentService->checkDocServiceUrl($this->urlGenerator, $this->crypt);
+
+            if (!empty($error)) {
+                $this->logger->info("ONLYOFFICE server is not available", ["app" => $this->appName]);
+                $this->notifyAdmins();
+            } else {
+                $this->logger->debug("ONLYOFFICE server availability check is finished successfully", ["app" => $this->appName]);
+            }
+        } else {
+            $this->logger->debug("Settings are empty", ["app" => $this->appName]);
         }
     }
 
