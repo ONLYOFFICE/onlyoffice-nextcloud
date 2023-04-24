@@ -4,7 +4,7 @@
 - jwt header setting
 - link to docs cloud
 
-## 7.7.0
+## 7.8.0
 ## Added
 - disable plugins setting
 - document protection setting
@@ -14,23 +14,26 @@
 ## Changed
 - fix thumbnails for version files
 - fix notification length
+- compatible with Nextcloud 26
 - additional check availability for group and external files when mention
 
-## 7.5.8
+## 7.6.8
 ## Changed
 - fix download permission
 
-## 7.5.6
+## 7.6.6
 ## Added
 - Dutch translation
 - Chinese (Traditional, Taiwan), Basque (Spain) empty file templates
 
 ## Changed
+- compatible with Nextcloud 25
 - generate preview by default
 - fix editing with federated share
 - fix opening file in new tab
 - fix watermark for shared file by link
 - fix update application
+- Nextcloud v24 is no longer supported
 
 ## 7.5.4
 ## Changed
