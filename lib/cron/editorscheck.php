@@ -135,30 +135,24 @@ class EditorsCheck extends TimedJob {
 
     /**
      * Get the list of users to notify
+     *
+     * @param string[] $needleGroups - array of groups to notify
+     *
      * @return string[]
      */
-    protected function getUsersToNotify($needleGroup = '["admin"]') {
+    protected function getUsersToNotify($needleGroups = ["admin"]) {
         $notifyUsers = [];
 
-        $groups = \OC::$server->getConfig()->getAppValue('updatenotification', 'notify_groups', $needleGroup);
-        $groups = json_decode($groups, true);
-
-        if ($groups === null) {
-            return [];
-        }
-
-        foreach ($groups as $gid) {
-            $group = $this->groupManager->get($gid);
-            if (!($group instanceof IGroup)) {
+        foreach ($needleGroups as $needleGroup) {
+            $group = $this->groupManager->get($needleGroup);
+            if ($group === null || !($group instanceof IGroup)) {
                 continue;
             }
-
             $users = $group->getUsers();
             foreach ($users as $user) {
                 $notifyUsers[] = $user->getUID();
             }
         }
-
         return $notifyUsers;
     }
 
