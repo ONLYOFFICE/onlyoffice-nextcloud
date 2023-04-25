@@ -4,6 +4,9 @@
 - jwt header setting
 - Paste Special to add a link between files
 
+## Changed
+- anonymous without configuring file protection, chat and without the possibility of mentioning
+
 ## 7.8.0
 ## Added
 - disable plugins setting
