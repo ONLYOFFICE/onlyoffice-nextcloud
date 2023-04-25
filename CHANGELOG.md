@@ -4,7 +4,7 @@
 - jwt header setting
 
 ## Changed
-- restricts for anonymous
+- anonymous without configuring file protection, chat and without the possibility of mentioning
 
 ## 7.7.0
 ## Added
