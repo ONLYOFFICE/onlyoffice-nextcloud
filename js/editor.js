@@ -165,6 +165,7 @@
                         config.events.onRequestMailMergeRecipients = OCA.Onlyoffice.onRequestMailMergeRecipients;
                         config.events.onRequestCompareFile = OCA.Onlyoffice.onRequestCompareFile;
                         config.events.onRequestSendNotify = OCA.Onlyoffice.onRequestSendNotify;
+                        config.events.onRequestReferenceData = OCA.Onlyoffice.onRequestReferenceData;
                         config.events.onMetaChange = OCA.Onlyoffice.onMetaChange;
 
                         if (OC.currentUser) {
@@ -504,7 +505,7 @@
     };
 
     OCA.Onlyoffice.onRequestUsers = function (event) {
-        $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/users?fileId={fileId}", 
+        $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/users?fileId={fileId}",
         {
             fileId: OCA.Onlyoffice.fileId || 0
         }),
@@ -536,6 +537,25 @@
                 }
 
                 OCA.Onlyoffice.showMessage(response.message);
+            });
+    };
+
+    OCA.Onlyoffice.onRequestReferenceData = function (event) {
+        let referenceData = event.data.referenceData;
+        let path = event.data.path;
+
+        $.post(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/reference"),
+            {
+                referenceData: referenceData,
+                path: path
+            },
+            function onSuccess(response) {
+                if (response.error) {
+                    OCA.Onlyoffice.showMessage(response.error, "error");
+                    return;
+                }
+
+                OCA.Onlyoffice.docEditor.setReferenceData(response);
             });
     };
 

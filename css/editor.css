@@ -21,17 +21,25 @@
     min-height: calc(100% - 50px);
 }
 
-#body-public #content.app-public {
-    height: 100%;
-}
-
 #body-public footer {
     display: none;
 }
 
 #app > iframe {
-    position: absolute;
+    position: fixed;
     vertical-align: top;
+    left: 0px;
+    height: calc(100vh - 58px);
+    margin-top: -50px;
+}
+
+#content.app-onlyoffice #app > iframe {
+    height: calc(100vh - 50px);
+    margin-top: 0px;
+}
+
+.onlyoffice-inviewer > iframe {
+    height: 100vh !important;
 }
 
 .AscDesktopEditor #body-user #header {
@@ -40,4 +48,8 @@
 .AscDesktopEditor #body-user #content {
     min-height: 100%;
     padding-top: 0;
+    margin-top: 0px;
+}
+.AscDesktopEditor #app > iframe {
+    height: 100% !important;
 }
