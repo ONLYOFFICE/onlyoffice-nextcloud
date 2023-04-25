@@ -965,8 +965,11 @@ class EditorController extends Controller {
             $fileUrl = $this->getUrl($file, $user, null, $version);
         }
         $key = DocumentService::GenerateRevisionId($key);
+        $fileName = $file->getName();
+        $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
 
         $result = [
+            "fileType" => $ext,
             "url" => $fileUrl,
             "version" => $version,
             "key" => $key
@@ -986,6 +989,7 @@ class EditorController extends Controller {
             $prevVersionUrl = $this->getUrl($file, $user, null, $version - 1);
 
             $result["previous"] = [
+                "fileType" => $ext,
                 "key" => $prevVersionKey,
                 "url" => $prevVersionUrl
             ];
