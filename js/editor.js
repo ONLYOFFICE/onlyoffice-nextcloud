@@ -39,9 +39,12 @@
         OCA.Onlyoffice.filePath = $("#iframeEditor").data("path");
         OCA.Onlyoffice.anchor = $("#iframeEditor").attr("data-anchor");
         var guestName = localStorage.getItem("nick");
+        OCA.Onlyoffice.currentWindow = window;
 
         if (OCA.Onlyoffice.inframe) {
             OCA.Onlyoffice.faviconBase = $('link[rel="icon"]').attr("href");
+            OCA.Onlyoffice.currentWindow = window.parent;
+            OCA.Onlyoffice.titleBase = OCA.Onlyoffice.currentWindow.document.title;
         }
 
         if (!OCA.Onlyoffice.fileId && !OCA.Onlyoffice.shareToken && !directToken) {
@@ -131,7 +134,7 @@
 
                         if (docIsChanged !== event.data) {
                             var titleChange = function () {
-                                window.document.title = config.document.title + (event.data ? " *" : "") + " - " + oc_defaults.title;
+                                OCA.Onlyoffice.currentWindow.document.title = config.document.title + (event.data ? " *" : "") + " - " + oc_defaults.title;
                                 docIsChanged = event.data;
                             };
 
