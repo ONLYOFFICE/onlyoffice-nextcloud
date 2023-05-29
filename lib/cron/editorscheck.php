@@ -142,15 +142,14 @@ class EditorsCheck extends TimedJob {
     /**
      * Get the list of users to notify
      *
-     * @param string[] $needleGroups - array of groups to notify
-     *
      * @return string[]
      */
-    protected function getUsersToNotify($needleGroups = ["admin"]) {
+    private function getUsersToNotify() {
+        $notifyGroups = ["admin"];
         $notifyUsers = [];
 
-        foreach ($needleGroups as $needleGroup) {
-            $group = $this->groupManager->get($needleGroup);
+        foreach ($notifyGroups as $notifyGroup) {
+            $group = $this->groupManager->get($notifyGroup);
             if ($group === null || !($group instanceof IGroup)) {
                 continue;
             }
