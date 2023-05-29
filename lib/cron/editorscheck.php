@@ -115,21 +115,27 @@ class EditorsCheck extends TimedJob {
         $this->setTimeSensitivity(IJob::TIME_SENSITIVE);
     }
 
+    /**
+     * Makes the background check
+     *
+     * @param array $argument unused argument
+     */
     protected function run($argument) {
-
-        if (!empty($this->config->GetDocumentServerUrl())) {
-
-            $documentService = new DocumentService($this->trans, $this->config);
-            list ($error, $version) = $documentService->checkDocServiceUrl($this->urlGenerator, $this->crypt);
-
-            if (!empty($error)) {
-                $this->logger->info("ONLYOFFICE server is not available", ["app" => $this->appName]);
-                $this->notifyAdmins();
-            } else {
-                $this->logger->debug("ONLYOFFICE server availability check is finished successfully", ["app" => $this->appName]);
-            }
-        } else {
+        if (empty($this->config->GetDocumentServerUrl())) {
             $this->logger->debug("Settings are empty", ["app" => $this->appName]);
+            return;
+        }
+
+        $this->logger->debug("ONLYOFFICE check started by cron", ["app" => $this->appName]);
+
+        $documentService = new DocumentService($this->trans, $this->config);
+        list ($error, $version) = $documentService->checkDocServiceUrl($this->urlGenerator, $this->crypt);
+
+        if (!empty($error)) {
+            $this->logger->info("ONLYOFFICE server is not available", ["app" => $this->appName]);
+            $this->notifyAdmins();
+        } else {
+            $this->logger->debug("ONLYOFFICE server availability check is finished successfully", ["app" => $this->appName]);
         }
     }
 
