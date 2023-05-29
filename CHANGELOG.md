@@ -7,6 +7,7 @@
 ## Changed
 - anonymous without configuring file protection, chat and without the possibility of mentioning
 - fileType to history data
+- change page title when editing a file
 
 ## 7.8.0
 ## Added
