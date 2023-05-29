@@ -146,6 +146,7 @@ class SettingsController extends Controller {
      * @param string $storageUrl - Nextcloud address available from document server
      * @param bool $verifyPeerOff - parameter verification setting
      * @param string $secret - secret key for signature
+     * @param string $jwtHeader - jwt header
      * @param bool $demo - use demo server
      *
      * @return array
