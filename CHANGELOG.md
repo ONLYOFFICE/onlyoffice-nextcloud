@@ -1,5 +1,8 @@
 # Change Log
 
+## Added
+- Basque translation
+
 ## 7.8.0
 ## Added
 - disable plugins setting
