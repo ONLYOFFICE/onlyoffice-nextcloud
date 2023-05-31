@@ -1,0 +1,33 @@
+name: Lint
+
+on:
+  push:
+  pull_request:
+    branches: [master]
+
+permissions:
+  contents: read
+
+jobs:
+  php-lint:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php-versions: [ "8.0", "8.1", "8.2" ]
+    name: php-lint
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up php ${{ matrix.php-versions }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+          coverage: none
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Lint
+        run: |
+          cd ${{ github.workspace }}
+          find . -name \\*.php -not -path './lib/composer/*' -not -path './build/stubs/*' -print0 | xargs -0 -n1 php -l
