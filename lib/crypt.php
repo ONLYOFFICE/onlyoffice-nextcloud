@@ -50,7 +50,7 @@ class Crypt {
      * @return string
      */
     public function GetHash($object) {
-        return \Firebase\JWT\JWT::encode($object, $this->config->GetSKey());
+        return \Firebase\JWT\JWT::encode($object, $this->config->GetSKey(), 'HS256');
     }
 
     /**
