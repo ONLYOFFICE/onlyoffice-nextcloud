@@ -91,16 +91,16 @@ class Application extends App implements IBootstrap {
 
     public function register(IRegistrationContext $context): void {
         if (!class_exists('\\Firebase\\JWT\\BeforeValidException')) {
-            require_once __DIR__ . "/../3rdparty/jwt/BeforeValidException.php";
+            require_once __DIR__ . "/../../3rdparty/jwt/BeforeValidException.php";
         }
         if (!class_exists('\\Firebase\\JWT\\ExpiredException')) {
-            require_once __DIR__ . "/../3rdparty/jwt/ExpiredException.php";
+            require_once __DIR__ . "/../../3rdparty/jwt/ExpiredException.php";
         }
         if (!class_exists('\\Firebase\\JWT\\SignatureInvalidException')) {
-            require_once __DIR__ . "/../3rdparty/jwt/SignatureInvalidException.php";
+            require_once __DIR__ . "/../../3rdparty/jwt/SignatureInvalidException.php";
         }
         if (!class_exists('\\Firebase\\JWT\\JWT')) {
-            require_once __DIR__ . "/../3rdparty/jwt/JWT.php";
+            require_once __DIR__ . "/../../3rdparty/jwt/JWT.php";
         }
 
         // Set the leeway for the JWT library in case the system clock is a second off
