@@ -488,7 +488,7 @@ class CallbackController extends Controller {
         }
 
         // owner of file from the callback link
-        $ownerId = $hashData->ownerId;
+        $ownerId = $hashData->userId;
         $owner = $this->userManager->get($ownerId);
 
         if (!empty($owner)) {
