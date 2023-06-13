@@ -114,9 +114,11 @@
     </p>
 
     <p>
-        <input type="checkbox" class="checkbox" id="onlyofficeAdvanced"
+        <input type="checkbox" class="checkbox" id="onlyofficeAdvanced" disabled="disabled"
             <?php if ($_["advanced"]) { ?>checked="checked"<?php } ?> />
         <label for="onlyofficeAdvanced"><?php p($l->t("Provide advanced document permissions using ONLYOFFICE Docs")) ?></label>
+        </br>
+        <em><?php p($l->t("Not yet available in Nextcloud 27")) ?></em>
     </p>
 
     <p>
