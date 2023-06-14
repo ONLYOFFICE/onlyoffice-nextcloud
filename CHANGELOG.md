@@ -1,5 +1,9 @@
 # Change Log
 
+## 8.0.0
+## Changed
+- compatible with Nextcloud 27
+
 ## 7.8.0
 ## Added
 - disable plugins setting
