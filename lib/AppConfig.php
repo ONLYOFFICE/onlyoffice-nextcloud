@@ -692,7 +692,9 @@ class AppConfig {
      * @return bool
      */
     public function GetAdvanced() {
-        return $this->config->getAppValue($this->appName, $this->_advanced, "false") === "true";
+        //todo: save not working in v27
+        return false;
+            //$this->config->getAppValue($this->appName, $this->_advanced, "false") === "true";
     }
 
     /**
