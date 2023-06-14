@@ -172,14 +172,16 @@
                 permissions |= OCA.Onlyoffice.Permissions.Review;
             }
             if (permissionValues[OCA.Onlyoffice.Permissions.Comment]
-                && (permissions & OCA.Onlyoffice.Permissions.Review) != OCA.Onlyoffice.Permissions.Review) {
+                && (permissions & OCA.Onlyoffice.Permissions.Review) != OCA.Onlyoffice.Permissions.Review
+                && (permissions & OCA.Onlyoffice.Permissions.ModifyFilter) != OCA.Onlyoffice.Permissions.ModifyFilter) {
                 permissions |= OCA.Onlyoffice.Permissions.Comment;
             }
             if (permissionValues[OCA.Onlyoffice.Permissions.FillForms]
                 && (permissions & OCA.Onlyoffice.Permissions.Review) != OCA.Onlyoffice.Permissions.Review) {
                 permissions |= OCA.Onlyoffice.Permissions.FillForms;
             }
-            if (permissionValues[OCA.Onlyoffice.Permissions.ModifyFilter]) {
+            if (permissionValues[OCA.Onlyoffice.Permissions.ModifyFilter]
+                && (permissions & OCA.Onlyoffice.Permissions.Comment) != OCA.Onlyoffice.Permissions.Comment) {
                 permissions |= OCA.Onlyoffice.Permissions.ModifyFilter;
             }
 
