@@ -339,9 +339,7 @@ class EditorApiController extends OCSController {
             $shareId = $fileStorage->getShareId();
 
             $extraPermissions = null;
-            //todo: save not working in v27
-            if (false
-                && $this->extraPermissions !== null) {
+            if ($this->extraPermissions !== null) {
                 $extraPermissions = $this->extraPermissions->getExtra($shareId);
             }
 
