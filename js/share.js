@@ -234,7 +234,7 @@
                 attributes.push({
                     checked: review,
                     extra: OCA.Onlyoffice.Permissions.Review,
-                    label: t(OCA.Onlyoffice.AppName, "Review")
+                    label: t(OCA.Onlyoffice.AppName, "Review only")
                 });
             }
             if (tabcontext.format["comment"]
@@ -243,7 +243,7 @@
                 attributes.push({
                     checked: comment,
                     extra: OCA.Onlyoffice.Permissions.Comment,
-                    label: t(OCA.Onlyoffice.AppName, "Comment")
+                    label: t(OCA.Onlyoffice.AppName, "Comment only")
                 });
             }
             if (tabcontext.format["fillForms"]
