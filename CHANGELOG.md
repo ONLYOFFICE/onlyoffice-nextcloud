@@ -1,5 +1,9 @@
 # Change Log
 
+## 8.1.0
+## Changed
+- advanced permissions are only available with full access
+
 ## 8.0.0
 ## Changed
 - compatible with Nextcloud 27

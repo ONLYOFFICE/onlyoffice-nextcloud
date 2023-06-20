@@ -111,8 +111,9 @@ class ExtraPermissions {
         $shareId = $share->getId();
         $extra = self::get($shareId);
 
-        $checkExtra = isset($extra["permissions"]) ? (int)$extra["permissions"] : self::None;
-        list($availableExtra, $defaultPermissions) = $this->validation($share, $checkExtra);
+        $wasInit = isset($extra["permissions"]);
+        $checkExtra = $wasInit ? (int)$extra["permissions"] : self::None;
+        list($availableExtra, $defaultPermissions) = $this->validation($share, $checkExtra, $wasInit);
 
         if ($availableExtra === 0
             || ($availableExtra & $checkExtra) !== $checkExtra) {
@@ -169,8 +170,9 @@ class ExtraPermissions {
                 }
             }
 
-            $checkExtra = isset($currentExtra["permissions"]) ? (int)$currentExtra["permissions"] : self::None;
-            list($availableExtra, $defaultPermissions) = $this->validation($share, $checkExtra);
+            $wasInit = isset($currentExtra["permissions"]);
+            $checkExtra = $wasInit ? (int)$currentExtra["permissions"] : self::None;
+            list($availableExtra, $defaultPermissions) = $this->validation($share, $checkExtra, $wasInit);
 
             if ($availableExtra === 0
                 || ($availableExtra & $checkExtra) !== $checkExtra) {
@@ -389,10 +391,11 @@ class ExtraPermissions {
      *
      * @param IShare $share - share
      * @param int $checkExtra - checkable extra permissions
+     * @param bool $wasInit - was initialization extra
      *
      * @return array
      */
-    private function validation($share, $checkExtra) {
+    private function validation($share, $checkExtra, $wasInit = true) {
         $availableExtra = self::None;
         $defaultExtra = self::None;
 
@@ -408,22 +411,28 @@ class ExtraPermissions {
         }
 
         if (($share->getPermissions() & Constants::PERMISSION_UPDATE) === Constants::PERMISSION_UPDATE) {
-            if (isset($format["modifyFilter"]) && $format["modifyFilter"]) {
+            if (isset($format["modifyFilter"]) && $format["modifyFilter"]
+                && ($checkExtra & self::Comment) !== self::Comment) {
                 $availableExtra |= self::ModifyFilter;
                 $defaultExtra |= self::ModifyFilter;
             }
-        }
-        if (($share->getPermissions() & Constants::PERMISSION_UPDATE) !== Constants::PERMISSION_UPDATE) {
             if (isset($format["review"]) && $format["review"]) {
                 $availableExtra |= self::Review;
             }
             if (isset($format["comment"]) && $format["comment"]
-                && ($checkExtra & self::Review) !== self::Review) {
+                && ($checkExtra & self::Review) !== self::Review
+                && (($checkExtra & self::ModifyFilter) !== self::ModifyFilter)) {
                 $availableExtra |= self::Comment;
             }
             if (isset($format["fillForms"]) && $format["fillForms"]
                 && ($checkExtra & self::Review) !== self::Review) {
                 $availableExtra |= self::FillForms;
+            }
+
+            if (!$wasInit) {
+                if (($defaultExtra & self::ModifyFilter) === self::ModifyFilter) {
+                    $availableExtra ^= self::Comment;
+                }
             }
         }
 

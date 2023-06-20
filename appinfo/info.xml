@@ -6,7 +6,7 @@
     <description>ONLYOFFICE connector allows you to view, edit and collaborate on text documents, spreadsheets and presentations within Nextcloud using ONLYOFFICE Docs. This will create a new Edit in ONLYOFFICE action within the document library for Office documents. This allows multiple users to co-author documents in real time from the familiar web interface and save the changes back to your file storage.</description>
     <licence>apache</licence>
     <author mail="dev@onlyoffice.com" homepage="https://www.onlyoffice.com/">Ascensio System SIA</author>
-    <version>8.0.0</version>
+    <version>8.1.0</version>
     <namespace>Onlyoffice</namespace>
     <types>
         <prevent_group_restriction/>
