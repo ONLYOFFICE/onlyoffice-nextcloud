@@ -339,9 +339,7 @@ class EditorApiController extends OCSController {
             $shareId = $fileStorage->getShareId();
 
             $extraPermissions = null;
-            //todo: save not working in v27
-            if (false
-                && $this->extraPermissions !== null) {
+            if ($this->extraPermissions !== null) {
                 $extraPermissions = $this->extraPermissions->getExtra($shareId);
             }
 
@@ -411,7 +409,8 @@ class EditorApiController extends OCSController {
                     && !$template
                     && $file->isUpdateable()
                     && !$isTempLock
-                    && (empty($shareToken) || ($share->getPermissions() & Constants::PERMISSION_UPDATE) === Constants::PERMISSION_UPDATE);
+                    && (empty($shareToken) || ($share->getPermissions() & Constants::PERMISSION_UPDATE) === Constants::PERMISSION_UPDATE)
+                    && !$restrictedEditing;
         $params["document"]["permissions"]["edit"] = $editable;
         if (($editable || $restrictedEditing) && ($canEdit || $canFillForms)) {
             $ownerId = null;
