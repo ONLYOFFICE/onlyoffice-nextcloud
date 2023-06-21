@@ -319,6 +319,10 @@ class EditorApiController extends OCSController {
                 "permissions" => [],
                 "title" => $fileName,
                 "url" => $fileUrl,
+                "referenceData" => [
+                    "fileKey" => $file->getId(),
+                    "instanceId" => $this->config->GetSystemValue("instanceid", true),
+                ],
             ],
             "documentType" => $format["type"],
             "editorConfig" => [
@@ -424,6 +428,11 @@ class EditorApiController extends OCSController {
                 $canProtect = $ownerId === $userId;
             }
             $params["document"]["permissions"]["protect"] = $canProtect;
+
+            if (!isset($userId)) {
+                $params["document"]["permissions"]["chat"] = false;
+                $params["document"]["permissions"]["protect"] = false;
+            }
 
             $hashCallback = $this->crypt->GetHash(["userId" => $userId, "ownerId" => $ownerId, "fileId" => $file->getId(), "filePath" => $filePath, "shareToken" => $shareToken, "action" => "track"]);
             $callback = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.track", ["doc" => $hashCallback]);

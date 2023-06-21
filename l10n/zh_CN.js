@@ -133,6 +133,7 @@ OC.L10N.register(
     "Enable plugins": "启用插件",
     "Enable document protection for": "为以下用户启用文档保护",
     "All users": "所有用户",
-    "Owner only": "仅限所有者"
+    "Owner only": "仅限所有者",
+    "Authorization header (leave blank to use default header)" : "授权标头 (留空以使用默认的标头)"
 },
 "nplurals=1; plural=0;");

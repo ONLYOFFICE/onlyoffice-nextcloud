@@ -1,5 +1,15 @@
 # Change Log
 
+## Added
+- jwt header setting
+- Paste Special to add a link between files
+- Basque translation
+
+## Changed
+- anonymous without configuring file protection, chat and without the possibility of mentioning
+- fileType to history data
+- change page title when editing a file
+
 ## 8.1.0
 ## Changed
 - advanced permissions are only available with full access

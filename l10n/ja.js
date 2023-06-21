@@ -134,6 +134,7 @@ OC.L10N.register(
     "Enable plugins": "プラグインを有効にする",
     "Enable document protection for": "次のユーザーに対して文書の保護機能を有効にする",
     "All users": "すべてのユーザー",
-    "Owner only": "所有者のみ"
+    "Owner only": "所有者のみ",
+    "Authorization header (leave blank to use default header)" : "認証ヘッダー (デフォルトのヘッダーを使用したい場合は空白にしてください)"
 },
 "nplurals=1; plural=0;");
