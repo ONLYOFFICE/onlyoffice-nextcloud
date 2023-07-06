@@ -104,7 +104,7 @@
                 <p><?php p($l->t("Easily launch the editors in the cloud without downloading and installation")) ?></p>
             </div>
             <div id="onlyofficeDocsCloudBannerContentButtonWrapper">
-                <a id="onlyofficeDocsCloudBannerContentButton" class="button" href="https://www.onlyoffice.com/docs-registration.aspx?referer=nextcloud" target="_blank">
+                <a id="onlyofficeDocsCloudBannerContentButton" class="button" href="<?php p($_["linkToDocs"]) ?>" target="_blank">
                     <?php p($l->t("Get Now")) ?>
                 </a>
             </div>
