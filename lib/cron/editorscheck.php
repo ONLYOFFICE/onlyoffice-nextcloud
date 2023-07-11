@@ -125,6 +125,10 @@ class EditorsCheck extends TimedJob {
             $this->logger->debug("Settings are empty", ["app" => $this->appName]);
             return;
         }
+        if (!$this->config->SettingsAreSuccessful()) {
+            $this->logger->debug("Settings are not correct", ["app" => $this->appName]);
+            return;
+        }
 
         $this->logger->debug("ONLYOFFICE check started by cron", ["app" => $this->appName]);
 
