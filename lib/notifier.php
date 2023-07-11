@@ -125,7 +125,7 @@ class Notifier implements INotifier {
                     ->setLink($appSettingsLink, IAction::TYPE_WEB)
                     ->setPrimary(false);
                 $notification->addParsedAction($action);
-                $notification->setParsedSubject($trans->t('ONLYOFFICE server is not available'))
+                $notification->setParsedSubject($notification->getObjectId())
                     ->setIcon($this->urlGenerator->getAbsoluteURL($this->urlGenerator->imagePath($this->appName, 'app-dark.svg')));
                 $notification->setParsedMessage($message);
                 break;
