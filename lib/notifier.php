@@ -19,10 +19,11 @@
 
 namespace OCA\Onlyoffice;
 
-use OCP\IURLGenerator;
 use OCP\ILogger;
+use OCP\IURLGenerator;
 use OCP\IUserManager;
 use OCP\L10N\IFactory;
+use OCP\Notification\IAction;
 use OCP\Notification\INotification;
 use OCP\Notification\INotifier;
 
@@ -113,39 +114,55 @@ class Notifier implements INotifier {
         }
 
         $parameters = $notification->getSubjectParameters();
-
-        $notifierId = $parameters["notifierId"];
-        $fileId = $parameters["fileId"];
-        $fileName = $parameters["fileName"];
-        $anchor = $parameters["anchor"];
-
-        $this->logger->info("Notify prepare: from $notifierId about $fileId ", ["app" => $this->appName]);
-
-        $notifier = $this->userManager->get($notifierId);
-        $notifierName = $notifier->getDisplayName();
         $trans = $this->l10nFactory->get($this->appName, $languageCode);
+        switch ($notification->getObjectType()) {
+            case "editorsCheck":
+                $message = $trans->t("Please check the settings to resolve the problem.");
+                $appSettingsLink = $this->urlGenerator->getAbsoluteURL("/settings/admin/".$this->appName);
+                $action = $notification->createAction();
+                $action->setLabel('View settings')
+                    ->setParsedLabel($trans->t('View settings'))
+                    ->setLink($appSettingsLink, IAction::TYPE_WEB)
+                    ->setPrimary(false);
+                $notification->addParsedAction($action);
+                $notification->setParsedSubject($notification->getObjectId())
+                    ->setIcon($this->urlGenerator->getAbsoluteURL($this->urlGenerator->imagePath($this->appName, 'app-dark.svg')));
+                $notification->setParsedMessage($message);
+                break;
+            case "mention":
+                $notifierId = $parameters["notifierId"];
+                $fileId = $parameters["fileId"];
+                $fileName = $parameters["fileName"];
+                $anchor = $parameters["anchor"];
 
-        $editorLink = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".editor.index", [
-            "fileId" => $fileId,
-            "anchor" => $anchor
-        ]);
+                $this->logger->info("Notify prepare: from $notifierId about $fileId ", ["app" => $this->appName]);
 
-        $notification->setIcon($this->urlGenerator->getAbsoluteURL($this->urlGenerator->imagePath($this->appName, "app-dark.svg")))
-            ->setParsedSubject($trans->t("%1\$s mentioned in the %2\$s: \"%3\$s\".", [$notifierName, $fileName, $notification->getObjectId()]))
-            ->setRichSubject($trans->t("{notifier} mentioned in the {file}: \"%1\$s\".", [$notification->getObjectId()]), [
-                "notifier" => [
-                    "type" => "user",
-                    "id" => $notifierId,
-                    "name" => $notifierName
-                ],
-                "file" => [
-                    "type" => "highlight",
-                    "id" => $fileId,
-                    "name" => $fileName,
-                    "link" => $editorLink
-                ]
-            ]);
+                $notifier = $this->userManager->get($notifierId);
+                $notifierName = $notifier->getDisplayName();
 
+                $editorLink = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".editor.index", [
+                    "fileId" => $fileId,
+                    "anchor" => $anchor
+                ]);
+
+                $notification->setIcon($this->urlGenerator->getAbsoluteURL($this->urlGenerator->imagePath($this->appName, "app-dark.svg")))
+                ->setParsedSubject($trans->t("%1\$s mentioned in the %2\$s: \"%3\$s\".", [$notifierName, $fileName, $notification->getObjectId()]))
+                ->setRichSubject($trans->t("{notifier} mentioned in the {file}: \"%1\$s\".", [$notification->getObjectId()]), [
+                    "notifier" => [
+                        "type" => "user",
+                        "id" => $notifierId,
+                        "name" => $notifierName
+                    ],
+                    "file" => [
+                        "type" => "highlight",
+                        "id" => $fileId,
+                        "name" => $fileName,
+                        "link" => $editorLink
+                    ]
+                    ]);
+            default:
+                $this->logger->info("Unsupported notification object: ".$notification->getObjectType(), ["app" => $this->appName]);
+        }
         return $notification;
     }
 }

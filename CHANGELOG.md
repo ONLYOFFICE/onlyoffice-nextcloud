@@ -5,6 +5,7 @@
 - Paste Special to add a link between files
 - Basque translation
 - Link to docs cloud
+- background job for checking editors availability
 
 ## Changed
 - anonymous without configuring file protection, chat and without the possibility of mentioning
