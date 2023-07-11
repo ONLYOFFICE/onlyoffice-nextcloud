@@ -133,7 +133,8 @@ class SettingsController extends Controller {
             "tagsEnabled" => \OC::$server->getAppManager()->isEnabledForUser("systemtags"),
             "reviewDisplay" => $this->config->GetCustomizationReviewDisplay(),
             "theme" => $this->config->GetCustomizationTheme(),
-            "templates" => $this->GetGlobalTemplates()
+            "templates" => $this->GetGlobalTemplates(),
+            "linkToDocs" => $this->config->GetLinkToDocs()
         ];
         return new TemplateResponse($this->appName, "settings", $data, "blank");
     }
@@ -146,6 +147,7 @@ class SettingsController extends Controller {
      * @param string $storageUrl - Nextcloud address available from document server
      * @param bool $verifyPeerOff - parameter verification setting
      * @param string $secret - secret key for signature
+     * @param string $jwtHeader - jwt header
      * @param bool $demo - use demo server
      *
      * @return array

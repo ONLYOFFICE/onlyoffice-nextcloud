@@ -49,7 +49,7 @@
         </p>
 
         <p class="onlyoffice-header"><?php p($l->t("Secret key (leave blank to disable)")) ?></p>
-        <p>
+        <p class="groupbottom">
             <input id="onlyofficeSecret" value="<?php p($_["secret"]) ?>" placeholder="secret" type="password" />
             <input type="checkbox" id="personal-show" class="hidden-visually" name="show" />
             <label id="onlyofficeSecret-show" for="personal-show" class="personal-show-label"></label>
@@ -89,6 +89,25 @@
             <?php } else { ?>
             <em><?php p($l->t("The 30-day test period is over, you can no longer connect to demo ONLYOFFICE Docs server.")) ?></em>
             <?php } ?>
+        </div>
+    </div>
+
+    <div id="onlyofficeDocsCloudBannerWrapper">
+        <div id="onlyofficeDocsCloudBannerPicWrapper">
+            <div id="onlyofficeDocsCloudBannerPic">
+
+            </div>
+        </div>
+        <div id="onlyofficeDocsCloudBannerContent">
+            <div id="onlyofficeDocsCloudBannerContentText">
+                <p><h2>ONLYOFFICE Docs Cloud</h2></p>
+                <p><?php p($l->t("Easily launch the editors in the cloud without downloading and installation")) ?></p>
+            </div>
+            <div id="onlyofficeDocsCloudBannerContentButtonWrapper">
+                <a id="onlyofficeDocsCloudBannerContentButton" class="button" href="<?php p($_["linkToDocs"]) ?>" target="_blank">
+                    <?php p($l->t("Get Now")) ?>
+                </a>
+            </div>
         </div>
     </div>
 

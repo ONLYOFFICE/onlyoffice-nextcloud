@@ -19,7 +19,7 @@
 #onlyofficeViewerFrame {
     background-color: #fff;
     width: 100%;
-    height: calc(100vh - 50px);
+    height: calc(var(--body-height) + var(--body-container-margin) + 100px);
     display: block;
     position: absolute;
     top: 50px;

@@ -1,0 +1,26 @@
+name: Lint
+
+on:
+  push:
+  pull_request:
+    branches: [master]
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    name: php-cs
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.0'
+          coverage: none
+          tools: composer, cs2pr, phpcs
+      - name: Run phpcs
+        run: |
+          phpcs --standard=PSR2 --extensions=php,module,inc,install --ignore=node_modules,bower_components,vendor,3rdparty,Migration --warning-severity=0 ./
