@@ -92,6 +92,25 @@
         </div>
     </div>
 
+    <div id="onlyofficeDocsCloudBannerWrapper">
+        <div id="onlyofficeDocsCloudBannerPicWrapper">
+            <div id="onlyofficeDocsCloudBannerPic">
+
+            </div>
+        </div>
+        <div id="onlyofficeDocsCloudBannerContent">
+            <div id="onlyofficeDocsCloudBannerContentText">
+                <p><h2>ONLYOFFICE Docs Cloud</h2></p>
+                <p><?php p($l->t("Easily launch the editors in the cloud without downloading and installation")) ?></p>
+            </div>
+            <div id="onlyofficeDocsCloudBannerContentButtonWrapper">
+                <a id="onlyofficeDocsCloudBannerContentButton" class="button" href="<?php p($_["linkToDocs"]) ?>" target="_blank">
+                    <?php p($l->t("Get Now")) ?>
+                </a>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 <div class="section section-onlyoffice section-onlyoffice-common <?php if (empty($_["documentserver"]) && !$_["demo"]["enabled"] || !$_["successful"]) { ?>onlyoffice-hide<?php } ?>">

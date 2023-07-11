@@ -320,6 +320,13 @@ class AppConfig {
     public $_customizationPlugins = "customization_plugins";
 
     /**
+     * The config key for the interval of editors availability check by cron
+     *
+     * @var string
+     */
+    private $_editors_check_interval = "editors_check_interval";
+
+    /**
      * @param string $AppName - application name
      */
     public function __construct($AppName) {
@@ -1276,6 +1283,20 @@ class AppConfig {
     }
 
     /**
+     * Get the editors check interval
+     *
+     * @return int
+     */
+    public function GetEditorsCheckInterval() {
+        $interval = (integer)$this->GetSystemValue($this->_editors_check_interval);
+
+        if (empty($interval)) {
+            $interval = 60*60*24;
+        }
+        return $interval;
+    }
+
+    /**
      * Additional data about formats
      *
      * @var array
@@ -1327,4 +1348,15 @@ class AppConfig {
         "SECRET" => "sn2puSUF7muF5Jas",
         "TRIAL" => 30
     ];
+
+    private $linkToDocs = "https://www.onlyoffice.com/docs-registration.aspx?referer=nextcloud";
+
+    /**
+     * Get link to Docs Cloud
+     *
+     * @return string
+     */
+    public function GetLinkToDocs() {
+        return $this->linkToDocs;
+    }
 }
