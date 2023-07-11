@@ -133,6 +133,7 @@ class EditorsCheck extends TimedJob {
 
         if (!empty($error)) {
             $this->logger->info("ONLYOFFICE server is not available", ["app" => $this->appName]);
+            $this->config->SetSettingsError($error);
             $this->notifyAdmins();
         } else {
             $this->logger->debug("ONLYOFFICE server availability check is finished successfully", ["app" => $this->appName]);
