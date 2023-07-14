@@ -594,7 +594,7 @@ class EditorApiController extends OCSController {
         }
 
         if (!empty($this->config->GetDocumentServerSecret())) {
-            $token = \Firebase\JWT\JWT::encode($params, $this->config->GetDocumentServerSecret());
+            $token = \Firebase\JWT\JWT::encode($params, $this->config->GetDocumentServerSecret(), "HS256");
             $params["token"] = $token;
         }
 
