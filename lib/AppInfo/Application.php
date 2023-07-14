@@ -99,8 +99,17 @@ class Application extends App implements IBootstrap {
         if (!class_exists('\\Firebase\\JWT\\SignatureInvalidException')) {
             require_once __DIR__ . "/../../3rdparty/jwt/SignatureInvalidException.php";
         }
+        if (!class_exists('\\Firebase\\JWT\\CachedKeySet')) {
+            require_once __DIR__ . "/../3rdparty/jwt/CachedKeySet.php";
+        }
         if (!class_exists('\\Firebase\\JWT\\JWT')) {
             require_once __DIR__ . "/../../3rdparty/jwt/JWT.php";
+        }
+        if (!class_exists('\\Firebase\\JWT\\JWK')) {
+            require_once __DIR__ . "/../3rdparty/jwt/JWK.php";
+        }
+        if (!class_exists('\\Firebase\\JWT\\Key')) {
+            require_once __DIR__ . "/../3rdparty/jwt/Key.php";
         }
 
         // Set the leeway for the JWT library in case the system clock is a second off
