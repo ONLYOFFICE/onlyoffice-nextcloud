@@ -13,6 +13,7 @@
 - fileType to history data
 - change page title when editing a file
 - jwt library update
+- fileType parameter used in callback instead of extension from url
 
 ## 7.8.0
 ## Added
