@@ -163,6 +163,7 @@
                         $("#onlyofficeInternalUrl").val(response.documentserverInternal);
                         $("#onlyofficeStorageUrl").val(response.storageUrl);
                         $("#onlyofficeSecret").val(response.secret);
+                        $("#onlyofficeJwtHeader").val(response.jwtHeader);
 
                         $(".section-onlyoffice-common, .section-onlyoffice-templates, .section-onlyoffice-watermark").toggleClass("onlyoffice-hide", (!response.documentserver.length && !demo) || !!response.error.length);
 

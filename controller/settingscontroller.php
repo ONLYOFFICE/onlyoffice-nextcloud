@@ -189,6 +189,7 @@ class SettingsController extends Controller {
             "documentserverInternal" => $this->config->GetDocumentServerInternalUrl(true),
             "storageUrl" => $this->config->GetStorageUrl(),
             "secret" => $this->config->GetDocumentServerSecret(true),
+            "jwtHeader" => $this->config->JwtHeader(true),
             "error" => $error,
             "version" => $version,
             ];
