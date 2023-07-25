@@ -163,8 +163,9 @@
                         $("#onlyofficeInternalUrl").val(response.documentserverInternal);
                         $("#onlyofficeStorageUrl").val(response.storageUrl);
                         $("#onlyofficeSecret").val(response.secret);
+                        $("#onlyofficeJwtHeader").val(response.jwtHeader);
 
-                        $(".section-onlyoffice-common, .section-onlyoffice-templates, .section-onlyoffice-watermark").toggleClass("onlyoffice-hide", (!response.documentserver.length && !demo) || !!response.error.length);
+                        $(".section-onlyoffice-common, .section-onlyoffice-templates, .section-onlyoffice-watermark").toggleClass("onlyoffice-hide", (response.documentserver == null && !demo) || !!response.error.length);
 
                         var versionMessage = response.version ? (" (" + t(OCA.Onlyoffice.AppName, "version") + " " + response.version + ")") : "";
 
@@ -173,6 +174,8 @@
                         } else {
                             OCP.Toast.success(t(OCA.Onlyoffice.AppName, "Settings have been successfully updated") + versionMessage);
                         }
+                    } else {
+                        $(".section-onlyoffice-common, .section-onlyoffice-templates, .section-onlyoffice-watermark").addClass("onlyoffice-hide")
                     }
                 }
             });

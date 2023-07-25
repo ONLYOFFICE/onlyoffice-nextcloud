@@ -129,6 +129,14 @@ class EditorsCheck extends TimedJob {
             $this->logger->debug("Settings are not correct", ["app" => $this->appName]);
             return;
         }
+        $fileUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.emptyfile");
+        if (!empty($this->config->GetStorageUrl())) {
+            $fileUrl = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->config->GetStorageUrl(), $fileUrl);
+        }
+        if (parse_url($fileUrl)["host"] === "localhost") {
+            $this->logger->debug("Localhost is not alowed for cron editors availability check.", ["app" => $this->appName]);
+            return; 
+        }
 
         $this->logger->debug("ONLYOFFICE check started by cron", ["app" => $this->appName]);
 

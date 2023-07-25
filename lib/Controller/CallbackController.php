@@ -394,6 +394,7 @@ class CallbackController extends Controller {
      * @param string $changesurl - link to file changes
      * @param integer $forcesavetype - the type of force save action
      * @param array $actions - the array of action
+     * @param string $filetype - extension of the document that is downloaded from the link specified with the url parameter
      *
      * @return array
      *
@@ -402,7 +403,7 @@ class CallbackController extends Controller {
      * @PublicPage
      * @CORS
      */
-    public function track($doc, $users, $key, $status, $url, $token, $history, $changesurl, $forcesavetype, $actions) {
+    public function track($doc, $users, $key, $status, $url, $token, $history, $changesurl, $forcesavetype, $actions, $filetype) {
 
         list ($hashData, $error) = $this->crypt->ReadHash($doc);
         if ($hashData === null) {
@@ -533,7 +534,7 @@ class CallbackController extends Controller {
                     $prevVersion = $file->getFileInfo()->getMtime();
                     $fileName = $file->getName();
                     $curExt = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-                    $downloadExt = strtolower(pathinfo($url, PATHINFO_EXTENSION));
+                    $downloadExt = $filetype;
 
                     $documentService = new DocumentService($this->trans, $this->config);
                     if ($downloadExt !== $curExt) {

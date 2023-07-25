@@ -439,7 +439,7 @@ class DocumentService {
 
             $hashUrl = $crypt->GetHash(["action" => "empty"]);
             $fileUrl = $urlGenerator->linkToRouteAbsolute(self::$appName . ".callback.emptyfile", ["doc" => $hashUrl]);
-            if (!empty($this->config->GetStorageUrl())) {
+            if (!$this->config->UseDemo() && !empty($this->config->GetStorageUrl())) {
                 $fileUrl = str_replace($urlGenerator->getAbsoluteURL("/"), $this->config->GetStorageUrl(), $fileUrl);
             }
 
