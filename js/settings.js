@@ -173,6 +173,8 @@
                         } else {
                             OCP.Toast.success(t(OCA.Onlyoffice.AppName, "Settings have been successfully updated") + versionMessage);
                         }
+                    } else {
+                        $(".section-onlyoffice-common, .section-onlyoffice-templates, .section-onlyoffice-watermark").addClass("onlyoffice-hide")
                     }
                 }
             });
