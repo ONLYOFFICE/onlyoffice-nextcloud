@@ -270,7 +270,6 @@ class Application extends App implements IBootstrap {
         $checkBackgroundJobs = new JobListController(
             $container->query("AppName"),
             $container->query("Request"),
-            $container->query("Logger"),
             $this->appConfig,
             $container->query(IJobList::class)
         );

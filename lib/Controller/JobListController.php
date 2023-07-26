@@ -27,7 +27,6 @@ use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Http\Response;
 use OCP\BackgroundJob\IJob;
 use OCP\BackgroundJob\IJobList;
-use OCP\ILogger;
 use OCP\IRequest;
 
 use OCA\Onlyoffice\Cron\EditorsCheck;
@@ -39,13 +38,6 @@ use OCA\Onlyoffice\AppConfig;
  * @package OCA\Onlyoffice\Controller
  */
 class JobListController extends Controller {
-
-    /**
-     * Logger
-     * 
-     * @var ILogger
-     */
-    private $logger;
 
     /**
      * Job list
@@ -66,44 +58,42 @@ class JobListController extends Controller {
      *
      * @param string $AppName - application name
      * @param IRequest $request - request object
-     * @param ILogger $logger
      * @param AppConfig $config - application configuration
      * @param IJobList $jobList - job list
      */
-    public function __construct($AppName, IRequest $request, ILogger $logger, AppConfig $config, IJobList $jobList) {
+    public function __construct($AppName, IRequest $request, AppConfig $config, IJobList $jobList) {
         parent::__construct($AppName, $request);
-        $this->logger = $logger;
         $this->config = $config;
         $this->jobList = $jobList;
     }
 
     /**
      * Add a job to list
-     * 
+     *
      * @param IJob|string $job
      */
     private function addJob($job) {
         if (!$this->jobList->has($job, null)) {
             $this->jobList->add($job);
-            $this->logger->debug("Job '".$job."' added to JobList.", ["app" => $this->appName]);
+            \OC::$server->getLogger()->debug("Job '".$job."' added to JobList.", ["app" => $this->appName]);
         }
     }
 
     /**
      * Remove a job from list
-     * 
+     *
      * @param IJob|string $job
      */
     private function removeJob($job) {
         if ($this->jobList->has($job, null)) {
             $this->jobList->remove($job);
-            $this->logger->debug("Job '".$job."' removed from JobList.", ["app" => $this->appName]);
+            \OC::$server->getLogger()->debug("Job '".$job."' removed from JobList.", ["app" => $this->appName]);
         }
     }
 
     /**
      * Add or remove EditorsCheck job depending on the value of _editors_check_interval
-     * 
+     *
      */
     private function checkEditorsCheckJob() {
         if ($this->config->GetEditorsCheckInterval() > 0) {
@@ -115,7 +105,7 @@ class JobListController extends Controller {
 
     /**
      * Method for sequentially calling checks of all jobs
-     * 
+     *
      */
     public function checkAllJobs() {
         $this->checkEditorsCheckJob();
