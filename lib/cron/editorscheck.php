@@ -130,7 +130,7 @@ class EditorsCheck extends TimedJob {
             return;
         }
         $fileUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.emptyfile");
-        if (!empty($this->config->GetStorageUrl())) {
+        if (!$this->config->UseDemo() && !empty($this->config->GetStorageUrl())) {
             $fileUrl = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->config->GetStorageUrl(), $fileUrl);
         }
         if (parse_url($fileUrl)["host"] === "localhost") {
