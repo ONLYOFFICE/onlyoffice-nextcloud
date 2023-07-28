@@ -238,6 +238,10 @@ class CallbackController extends Controller {
 
         $userId = null;
         $user = null;
+        if ($this->userSession->isLoggedIn()) {
+            $this->logger->debug("Download: by $userId instead of " . $hashData->userId, ["app" => $this->appName]);
+        }
+
         \OC_Util::tearDownFS();
 
         if (isset($hashData->userId)) {
@@ -258,6 +262,9 @@ class CallbackController extends Controller {
         }
 
         if (!empty($user) && !$file->isReadable()) {
+            if ($this->userSession->getUID() != $userId) {
+                $this->logger->error("Download error: expected $userId instead of " . $this->userSession->getUID(), ["app" => $this->appName]);
+            }
             $this->logger->error("Download without access right", ["app" => $this->appName]);
             return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
         }
