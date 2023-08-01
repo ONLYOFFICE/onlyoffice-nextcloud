@@ -827,7 +827,7 @@ class EditorController extends Controller {
         $versions = array();
         if ($this->versionManager !== null
             && $owner !== null) {
-            $versions = array_reverse($this->versionManager->getVersionsForFile($owner, $file->getFileInfo()));
+            $versions = $this->versionManager->getVersionsForFile($owner, $file->getFileInfo());
         }
 
         $prevVersion = "";
@@ -895,8 +895,8 @@ class EditorController extends Controller {
             $historyItem["changes"] = $historyData["changes"];
             $historyItem["serverVersion"] = $historyData["serverVersion"];
         }
-
-        array_push($history, $historyItem);
+        //array_push($history, $historyItem);
+        //it's temporary. this code is needed for the next commit
 
         return $history;
     }
@@ -944,14 +944,14 @@ class EditorController extends Controller {
             $owner = $file->getFileInfo()->getOwner();
             if ($owner !== null) {
                 $ownerId = $owner->getUID();
-                $versions = array_reverse($this->versionManager->getVersionsForFile($owner, $file->getFileInfo()));
+                $versions = $this->versionManager->getVersionsForFile($owner, $file->getFileInfo());
             }
         }
 
         $key = null;
         $fileUrl = null;
         $versionId = null;
-        if ($version > count($versions)) {
+        if ($version >= count($versions)) {
             $key = $this->fileUtility->getKey($file, true);
             $versionId = $file->getFileInfo()->getMtime();
 
@@ -1044,7 +1044,7 @@ class EditorController extends Controller {
         if ($this->versionManager !== null) {
             $owner = $file->getFileInfo()->getOwner();
             if ($owner !== null) {
-                $versions = array_reverse($this->versionManager->getVersionsForFile($owner, $file->getFileInfo()));
+                $versions = $this->versionManager->getVersionsForFile($owner, $file->getFileInfo());
             }
 
             if (count($versions) >= $version) {

@@ -368,7 +368,7 @@ class Preview extends Provider {
 
             $fileInfo = $sourceFile->getFileInfo();
 
-            $versions = array_reverse($this->versionManager->getVersionsForFile($owner, $fileInfo));
+            $versions = $this->versionManager->getVersionsForFile($owner, $fileInfo);
 
             foreach ($versions as $version) {
                 $versionNum = $versionNum + 1;
