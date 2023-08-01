@@ -825,9 +825,14 @@ class EditorController extends Controller {
         }
 
         $versions = array();
+        $filesVersionAppInfo = \OC::$server->getAppManager()->getAppInfo("files_versions");
+        $versionCompare = \version_compare($filesVersionAppInfo["version"], "1.19");
         if ($this->versionManager !== null
             && $owner !== null) {
             $versions = $this->versionManager->getVersionsForFile($owner, $file->getFileInfo());
+            if ($versionCompare === -1) {
+                $versions = array_reverse($versions);
+            }
         }
 
         $prevVersion = "";
@@ -866,37 +871,38 @@ class EditorController extends Controller {
             array_push($history, $historyItem);
         }
 
-        $key = $this->fileUtility->getKey($file, true);
-        $key = DocumentService::GenerateRevisionId($key);
+        if ($versionCompare === -1) {
+            $key = $this->fileUtility->getKey($file, true);
+            $key = DocumentService::GenerateRevisionId($key);
 
-        $historyItem = [
-            "created" => $file->getMTime(),
-            "key" => $key,
-            "version" => $versionNum + 1
-        ];
-
-        $versionId = $file->getFileInfo()->getMtime();
-
-        $author = FileVersions::getAuthor($ownerId, $fileId, $versionId);
-        if ($author !== null) {
-            $historyItem["user"] = [
-                "id" => $this->buildUserId($author["id"]),
-                "name" => $author["name"]
+            $historyItem = [
+                "created" => $file->getMTime(),
+                "key" => $key,
+                "version" => $versionNum + 1
             ];
-        } else if ($owner !== null) {
-            $historyItem["user"] = [
-                "id" => $this->buildUserId($ownerId),
-                "name" => $owner->getDisplayName()
-            ];
-        }
 
-        $historyData = FileVersions::getHistoryData($ownerId, $fileId, $versionId, $prevVersion);
-        if ($historyData !== null) {
-            $historyItem["changes"] = $historyData["changes"];
-            $historyItem["serverVersion"] = $historyData["serverVersion"];
+            $versionId = $file->getFileInfo()->getMtime();
+
+            $author = FileVersions::getAuthor($ownerId, $fileId, $versionId);
+            if ($author !== null) {
+                $historyItem["user"] = [
+                    "id" => $this->buildUserId($author["id"]),
+                    "name" => $author["name"]
+                ];
+            } else if ($owner !== null) {
+                $historyItem["user"] = [
+                    "id" => $this->buildUserId($ownerId),
+                    "name" => $owner->getDisplayName()
+                ];
+            }
+
+            $historyData = FileVersions::getHistoryData($ownerId, $fileId, $versionId, $prevVersion);
+            if ($historyData !== null) {
+                $historyItem["changes"] = $historyData["changes"];
+                $historyItem["serverVersion"] = $historyData["serverVersion"];
+            }
+            array_push($history, $historyItem);
         }
-        //array_push($history, $historyItem);
-        //it's temporary. this code is needed for the next commit
 
         return $history;
     }
@@ -940,18 +946,25 @@ class EditorController extends Controller {
         $owner = null;
         $ownerId = null;
         $versions = array();
+        $filesVersionAppInfo = \OC::$server->getAppManager()->getAppInfo("files_versions");
+        $versionCompare = \version_compare($filesVersionAppInfo["version"], "1.19");
         if ($this->versionManager !== null) {
             $owner = $file->getFileInfo()->getOwner();
             if ($owner !== null) {
                 $ownerId = $owner->getUID();
                 $versions = $this->versionManager->getVersionsForFile($owner, $file->getFileInfo());
+                if ($versionCompare === -1) {
+                    $versions = array_reverse($versions);
+                }
             }
         }
 
         $key = null;
         $fileUrl = null;
         $versionId = null;
-        if ($version >= count($versions)) {
+        if ($version >= count($versions) && $versionCompare >= 0 ||
+            $version > count($versions) && $versionCompare === -1
+            ) {
             $key = $this->fileUtility->getKey($file, true);
             $versionId = $file->getFileInfo()->getMtime();
 
@@ -1041,10 +1054,15 @@ class EditorController extends Controller {
 
         $owner = null;
         $versions = array();
+        $filesVersionAppInfo = \OC::$server->getAppManager()->getAppInfo("files_versions");
+        $versionCompare = \version_compare($filesVersionAppInfo["version"], "1.19");
         if ($this->versionManager !== null) {
             $owner = $file->getFileInfo()->getOwner();
             if ($owner !== null) {
                 $versions = $this->versionManager->getVersionsForFile($owner, $file->getFileInfo());
+                if ($versionCompare === -1) {
+                    $versions = array_reverse($versions);
+                }
             }
 
             if (count($versions) >= $version) {

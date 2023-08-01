@@ -367,8 +367,12 @@ class Preview extends Provider {
             $sourceFile = $this->root->getUserFolder($owner->getUID())->get($filePath);
 
             $fileInfo = $sourceFile->getFileInfo();
-
+            $filesVersionAppInfo = \OC::$server->getAppManager()->getAppInfo("files_versions");
+            $versionCompare = \version_compare($filesVersionAppInfo["version"], "1.19");
             $versions = $this->versionManager->getVersionsForFile($owner, $fileInfo);
+            if ($versionCompare === -1) {
+                $versions = array_reverse($versions);
+            }
 
             foreach ($versions as $version) {
                 $versionNum = $versionNum + 1;

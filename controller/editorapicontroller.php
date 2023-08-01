@@ -298,7 +298,12 @@ class EditorApiController extends OCSController {
             && $this->versionManager !== null) {
             $owner = $file->getFileInfo()->getOwner();
             if ($owner !== null) {
+                $filesVersionAppInfo = \OC::$server->getAppManager()->getAppInfo("files_versions");
+                $versionCompare = \version_compare($filesVersionAppInfo["version"], "1.19");
                 $versions = $this->versionManager->getVersionsForFile($owner, $file->getFileInfo());
+                if ($versionCompare === -1) {
+                    $versions = array_reverse($versions);
+                }
 
                 if ($version <= count($versions)) {
                     $fileVersion = array_values($versions)[$version - 1];
