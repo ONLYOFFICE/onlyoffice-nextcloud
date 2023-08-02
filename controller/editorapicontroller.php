@@ -913,7 +913,7 @@ class EditorApiController extends OCSController {
             $tags = $watermarkSettings["allTagsList"];
             $fileTags = \OC::$server->getSystemTagObjectMapper()->getTagIdsForObjects([$fileId], "files")[$fileId];
             foreach ($fileTags as $tagId) {
-                if (in_array($tagId, $tags, true)) {
+                if (in_array($tagId, $tags)) {
                     return $watermarkText;
                 }
             }
