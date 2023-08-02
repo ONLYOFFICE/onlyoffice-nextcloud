@@ -281,12 +281,7 @@ class CallbackController extends Controller {
                 return new JSONResponse(["message" => $this->trans->t("Files not found")], Http::STATUS_NOT_FOUND);
             }
 
-            $filesVersionAppInfo = \OC::$server->getAppManager()->getAppInfo("files_versions");
-            $versionCompare = \version_compare($filesVersionAppInfo["version"], "1.19");
-            $versions = $this->versionManager->getVersionsForFile($owner, $file->getFileInfo());
-            if ($versionCompare === -1) {
-                $versions = array_reverse($versions);
-            }
+            $versions = FileVersions::processVersionsArray($this->versionManager->getVersionsForFile($owner, $file->getFileInfo()));
 
             $versionId = null;
             if ($version > count($versions)) {
@@ -684,13 +679,7 @@ class CallbackController extends Controller {
                     }
                 }
 
-                $filesVersionAppInfo = \OC::$server->getAppManager()->getAppInfo("files_versions");
-                $versionCompare = \version_compare($filesVersionAppInfo["version"], "1.19");
-                $versions = $this->versionManager->getVersionsForFile($owner, $file->getFileInfo());
-                if ($versionCompare === -1) {
-                    $versions = array_reverse($versions);
-                }
-
+                $versions = FileVersions::processVersionsArray($this->versionManager->getVersionsForFile($owner, $file->getFileInfo()));
                 if ($version <= count($versions)) {
                     $fileVersion = array_values($versions)[$version - 1];
                     $file = $this->versionManager->getVersionFile($owner, $file->getFileInfo(), $fileVersion->getRevisionId());
@@ -744,13 +733,7 @@ class CallbackController extends Controller {
             $owner = $file->getFileInfo()->getOwner();
 
             if ($owner !== null) {
-                $filesVersionAppInfo = \OC::$server->getAppManager()->getAppInfo("files_versions");
-                $versionCompare = \version_compare($filesVersionAppInfo["version"], "1.19");
-                $versions = $this->versionManager->getVersionsForFile($owner, $file->getFileInfo());
-                if ($versionCompare === -1) {
-                    $versions = array_reverse($versions);
-                }
-
+                $versions = FileVersions::processVersionsArray($this->versionManager->getVersionsForFile($owner, $file->getFileInfo()));
                 if ($version <= count($versions)) {
                     $fileVersion = array_values($versions)[$version - 1];
                     $file = $this->versionManager->getVersionFile($owner, $file->getFileInfo(), $fileVersion->getRevisionId());
