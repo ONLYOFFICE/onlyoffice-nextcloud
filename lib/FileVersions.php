@@ -24,6 +24,7 @@ use OC\Files\View;
 use OC\User\Database;
 
 use OCP\Files\FileInfo;
+use OCP\Files\IRootFolder;
 use OCP\IUser;
 
 use OCA\Files_Sharing\External\Storage as SharingExternalStorage;
@@ -230,8 +231,10 @@ class FileVersions {
         }
 
         $changesInfo = $view->getFileInfo($changesPath);
-        $changes = new File($view->getRoot(), $view, $changesPath, $changesInfo);
+        $rootView = \OC::$server->get(View::class);
+        $root = \OC::$server->get(IRootFolder::class);
 
+        $changes = new File($root, $rootView, $view->getAbsolutePath($changesPath), $changesInfo);
         \OC::$server->getLogger()->debug("getChangesFile: $fileId for $ownerId get changes $changesPath", ["app" => self::$appName]);
 
         return $changes;
@@ -473,6 +476,27 @@ class FileVersions {
         if ($view->file_exists($authorPath)) {
             $view->unlink($authorPath);
             $logger->debug("deleteAuthor $authorPath", ["app" => self::$appName]);
+        }
+    }
+
+    /**
+     * Get version compare with files_versions
+     */
+    public static function getFilesVersionAppInfoCompareResult () {
+        $filesVersionAppInfo = \OC::$server->getAppManager()->getAppInfo("files_versions");
+        return \version_compare($filesVersionAppInfo["version"], "1.19");
+    }
+
+    /**
+     * Reverese or not versions array
+     *
+     * @param array $versions - versions array
+    */
+    public static function processVersionsArray($versions) {
+        if (self::getFilesVersionAppInfoCompareResult() === -1) {
+            return array_reverse($versions);
+        } else {
+            return $versions;
         }
     }
 }

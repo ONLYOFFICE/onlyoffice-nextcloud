@@ -49,6 +49,7 @@ use OCA\Files_Versions\Versions\IVersionManager;
 use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\Crypt;
 use OCA\Onlyoffice\DocumentService;
+use OCA\Onlyoffice\FileVersions;
 use OCA\Onlyoffice\FileUtility;
 use OCA\Onlyoffice\TemplateManager;
 use OCA\Onlyoffice\ExtraPermissions;
@@ -298,8 +299,7 @@ class EditorApiController extends OCSController {
             && $this->versionManager !== null) {
             $owner = $file->getFileInfo()->getOwner();
             if ($owner !== null) {
-                $versions = array_reverse($this->versionManager->getVersionsForFile($owner, $file->getFileInfo()));
-
+                $versions = FileVersions::processVersionsArray($this->versionManager->getVersionsForFile($owner, $file->getFileInfo()));
                 if ($version <= count($versions)) {
                     $fileVersion = array_values($versions)[$version - 1];
 
@@ -914,7 +914,7 @@ class EditorApiController extends OCSController {
             $tags = $watermarkSettings["allTagsList"];
             $fileTags = \OC::$server->getSystemTagObjectMapper()->getTagIdsForObjects([$fileId], "files")[$fileId];
             foreach ($fileTags as $tagId) {
-                if (in_array($tagId, $tags, true)) {
+                if (in_array($tagId, $tags)) {
                     return $watermarkText;
                 }
             }

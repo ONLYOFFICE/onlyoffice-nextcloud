@@ -135,6 +135,9 @@ OC.L10N.register(
     "Enable document protection for": "次のユーザーに対して文書の保護機能を有効にする",
     "All users": "すべてのユーザー",
     "Owner only": "所有者のみ",
-    "Authorization header (leave blank to use default header)" : "認証ヘッダー (デフォルトのヘッダーを使用したい場合は空白にしてください)"
+    "Authorization header (leave blank to use default header)" : "認証ヘッダー (デフォルトのヘッダーを使用したい場合は空白にしてください)",
+    "ONLYOFFICE Docs Cloud": "ONLYOFFICE Docs Cloud",
+    "Easily launch the editors in the cloud without downloading and installation": "ダウンロードやインストールをすることなく、クラウド上で簡単にエディタを起動することができます",
+    "Get Now": "今すぐ使ってみる"
 },
 "nplurals=1; plural=0;");

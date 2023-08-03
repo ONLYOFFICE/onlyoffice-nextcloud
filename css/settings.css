@@ -131,14 +131,10 @@
 @media (max-width: 580px) {
     #onlyofficeDocsCloudBannerPicWrapper {
         padding: 20px 0 0 5px;
-    }
-}
-
-@media (max-width: 485px) {
-    #onlyofficeDocsCloudBannerPicWrapper {
         width: 30%;
     }
     #onlyofficeDocsCloudBannerContent {
+        flex-direction: column;
         width: 70%;
     }
     #onlyofficeDocsCloudBannerContentText {
@@ -149,9 +145,6 @@
         width: 100%;
         padding: 15px 0 15px 15px;
         text-align: left;
-    }
-    #onlyofficeDocsCloudBannerContent {
-        flex-direction: column;
     }
 }
 
