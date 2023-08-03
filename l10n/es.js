@@ -135,6 +135,9 @@ OC.L10N.register(
     "Enable document protection for": "Habilitar la protección de documentos para",
     "All users": "Todos los usuarios",
     "Owner only": "Solo propietario",
-    "Authorization header (leave blank to use default header)" : "Encabezado de autenticación (dejar en blanco para utilizar el encabezado predeterminado)"
+    "Authorization header (leave blank to use default header)" : "Encabezado de autenticación (dejar en blanco para utilizar el encabezado predeterminado)",
+    "ONLYOFFICE Docs Cloud": "ONLYOFFICE Docs Cloud",
+    "Easily launch the editors in the cloud without downloading and installation": "Inicie fácilmente los editores en la nube sin tener que descargarlos ni instalarlos",
+    "Get Now": "Obtener ahora"
 },
 "nplurals=2; plural=(n != 1);");
