@@ -135,6 +135,9 @@ OC.L10N.register(
     "Enable document protection for": "Hinzufügen von Passwörtern in Dokumenten aktivieren für",
     "All users": "Alle Benutzer",
     "Owner only": "Nur Besitzer",
-    "Authorization header (leave blank to use default header)" : "Authorization-Header (leer lassen, um die standardmäßige Kopfzeile zu verwenden)"
+    "Authorization header (leave blank to use default header)" : "Authorization-Header (leer lassen, um die standardmäßige Kopfzeile zu verwenden)",
+    "ONLYOFFICE Docs Cloud": "ONLYOFFICE Docs Cloud",
+    "Easily launch the editors in the cloud without downloading and installation": "Öffnen Sie die Editoren in der Cloud einfach ohne Herunterladen und Installation",
+    "Get Now": "Jetzt erhalten"
 },
 "nplurals=2; plural=(n != 1);");
