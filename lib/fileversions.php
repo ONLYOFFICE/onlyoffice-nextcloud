@@ -478,4 +478,25 @@ class FileVersions {
             $logger->debug("deleteAuthor $authorPath", ["app" => self::$appName]);
         }
     }
+
+    /**
+     * Get version compare with files_versions
+     */
+    public static function getFilesVersionAppInfoCompareResult () {
+        $filesVersionAppInfo = \OC::$server->getAppManager()->getAppInfo("files_versions");
+        return \version_compare($filesVersionAppInfo["version"], "1.19");
+    }
+
+    /**
+     * Reverese or not versions array
+     *
+     * @param array $versions - versions array
+    */
+    public static function processVersionsArray($versions) {
+        if (self::getFilesVersionAppInfoCompareResult() === -1) {
+            return array_reverse($versions);
+        } else {
+            return $versions;
+        }
+    }
 }
