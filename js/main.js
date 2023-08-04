@@ -166,7 +166,7 @@
 
     OCA.Onlyoffice.FileClick = function (fileName, context) {
         var fileInfoModel = context.fileInfoModel || context.fileList.getModelForFile(fileName);
-        var fileId = context.fileId || fileInfoModel.id;
+        var fileId = context.$file[0].dataset.id || fileInfoModel.id;
         var winEditor = !fileInfoModel && !OCA.Onlyoffice.setting.sameTab ? document : null;
 
         OCA.Onlyoffice.OpenEditor(fileId, context.dir, fileName, 0, winEditor);
@@ -180,7 +180,7 @@
         var fileList = context.fileList;
 
         var convertData = {
-            fileId: fileInfoModel.id
+            fileId: context.$file[0].dataset.id || fileInfoModel.id
         };
 
         if ($("#isPublic").val()) {
