@@ -9,7 +9,7 @@
 - background job for checking editors availability
 
 ## Changed
-- anonymous without configuring file protection, chat and without the possibility of mentioning
+- editing by shared link without configuring file protection, chat and without the possibility of mentioning
 - fileType to history data
 - change page title when editing a file
 - jwt library update
