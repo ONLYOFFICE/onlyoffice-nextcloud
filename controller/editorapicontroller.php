@@ -428,7 +428,7 @@ class EditorApiController extends OCSController {
             }
             $params["document"]["permissions"]["protect"] = $canProtect;
 
-            if (!isset($userId)) {
+            if (isset($shareToken)) {
                 $params["document"]["permissions"]["chat"] = false;
                 $params["document"]["permissions"]["protect"] = false;
             }
