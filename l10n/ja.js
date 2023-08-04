@@ -136,6 +136,9 @@ OC.L10N.register(
     "All users": "すべてのユーザー",
     "Owner only": "所有者のみ",
     "Authorization header (leave blank to use default header)" : "認証ヘッダー (デフォルトのヘッダーを使用したい場合は空白にしてください)",
+    "ONLYOFFICE server is not available": "ONLYOFFICEサーバーは只今利用できません",
+    "Please check the settings to resolve the problem.": "問題を解決するために設定をご確認ください。",
+    "View settings": "設定を見る",
     "ONLYOFFICE Docs Cloud": "ONLYOFFICE Docs Cloud",
     "Easily launch the editors in the cloud without downloading and installation": "ダウンロードやインストールをすることなく、クラウド上で簡単にエディタを起動することができます",
     "Get Now": "今すぐ使ってみる"
