@@ -496,6 +496,13 @@ class FileVersions {
         if (self::getFilesVersionAppInfoCompareResult() === -1) {
             return array_reverse($versions);
         } else {
+            foreach ($versions as $key => $version) {
+                if ($version->getRevisionId() === $version->getSourceFile()->getMTime()) {
+                    array_splice($versions, $key, 1);
+                    break;
+                }
+            }
+
             return $versions;
         }
     }
