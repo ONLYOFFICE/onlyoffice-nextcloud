@@ -166,7 +166,7 @@ When the _Log-in credentials, save in session_ authentication type is used, the 
  
     If any issue is detected, the ONLYOFFICE integration connector (consequently, the ability to create and open files) will be disabled. As a Nextcloud admin, you will get the corresponding notification. 
 
-    This internal option lets avoid issues when the server settings become incorrect and require changes.
+    This option allows you to avoid issues when the server settings become incorrect and require changes.
 
     By default, this background task runs once a day. If necessary, you can change the frequency. To do so, open the Nextcloud config file (_/nextcloud/config/config.php_). Insert the following section and enter the required value in minutes:
 
