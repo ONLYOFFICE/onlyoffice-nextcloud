@@ -159,6 +159,23 @@ When the _Log-in credentials, save in session_ authentication type is used, the 
     This will disable the certificate verification and allow Nextcloud to establish connection with **Document Server**.
 
     Please remember that this is a temporary insecure solution and we strongly recommend that you replace the certificate with the one issued by some CA. Once you do that, do not forget to uncheck the corresponding setting box or remove the above section from the Nextcloud config file.  
+
+* If the editors don't open or save documents after a period of proper functioning, the reason can be a problem in changing network settings or disabling any relevant services, or issues with the SSL certificate.
+    
+    To solve this, we added an asynchronous background task which runs on the server to check availability of the editors. It allows testing the connection between your **Nextcloud instance** and **ONLYOFFICE Document Server**, namely availability of server addresses and the validity of the JWT secret are being checked.
+ 
+    If any issue is detected, the ONLYOFFICE integration connector (consequently, the ability to create and open files) will be disabled. As a Nextcloud admin, you will get the corresponding notification. 
+
+    This internal option lets avoid issues when the server settings become incorrect and require changes.
+
+    By default, this background task runs once a day. If necessary, you can change the frequency. To do so, open the Nextcloud config file (_/nextcloud/config/config.php_). Insert the following section and enter the required value in minutes:
+
+    ```php
+    'onlyoffice' => array (
+        'editors_check_interval' => 3624
+    )
+    ```
+    To disable this check running, enter 0 value. 
     
 ## ONLYOFFICE Docs editions
 
