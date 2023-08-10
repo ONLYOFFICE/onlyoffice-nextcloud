@@ -242,6 +242,7 @@ class TemplateManager {
         "en" => "en-US",
         "en_GB" => "en-GB",
         "es" => "es-ES",
+        "eu" => "eu-ES",
         "fr" => "fr-FR",
         "gl" => "gl-ES",
         "it" => "it-IT",
@@ -259,6 +260,7 @@ class TemplateManager {
         "tr" => "tr-TR",
         "uk" => "uk-UA",
         "vi" => "vi-VN",
-        "zh_CN" => "zh-CN"
+        "zh_CN" => "zh-CN",
+        "zh_TW" => "zh-TW"
     ];
 }
