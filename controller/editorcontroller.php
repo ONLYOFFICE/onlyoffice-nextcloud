@@ -1380,6 +1380,10 @@ class EditorController extends Controller {
      * @return array
      */
     private function getFile($userId, $fileId, $filePath = null, $template = false) {
+        if (empty($userId)) {
+            return [null, $this->trans->t("UserId is empty"), null];
+        }
+
         if (empty($fileId)) {
             return [null, $this->trans->t("FileId is empty"), null];
         }
