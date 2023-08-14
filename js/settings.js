@@ -134,13 +134,14 @@
             var onlyofficeUrl = $("#onlyofficeUrl").val().trim();
 
             if (!onlyofficeUrl.length) {
-                $("#onlyofficeInternalUrl, #onlyofficeStorageUrl, #onlyofficeSecret").val("");
+                $("#onlyofficeInternalUrl, #onlyofficeStorageUrl, #onlyofficeSecret, #onlyofficeJwtHeader").val("");
             }
 
             var onlyofficeInternalUrl = ($("#onlyofficeInternalUrl:visible").val() || "").trim();
             var onlyofficeStorageUrl = ($("#onlyofficeStorageUrl:visible").val() || "").trim();
             var onlyofficeVerifyPeerOff = $("#onlyofficeVerifyPeerOff").prop("checked");
             var onlyofficeSecret = ($("#onlyofficeSecret:visible").val() || "").trim();
+            var jwtHeader = ($("#onlyofficeJwtHeader:visible").val() || "").trim();
             var demo = $("#onlyofficeDemo").prop("checked");
 
             $.ajax({
@@ -152,6 +153,7 @@
                     storageUrl: onlyofficeStorageUrl,
                     verifyPeerOff: onlyofficeVerifyPeerOff,
                     secret: onlyofficeSecret,
+                    jwtHeader: jwtHeader,
                     demo: demo
                 },
                 success: function onSuccess(response) {
@@ -161,8 +163,9 @@
                         $("#onlyofficeInternalUrl").val(response.documentserverInternal);
                         $("#onlyofficeStorageUrl").val(response.storageUrl);
                         $("#onlyofficeSecret").val(response.secret);
+                        $("#onlyofficeJwtHeader").val(response.jwtHeader);
 
-                        $(".section-onlyoffice-common, .section-onlyoffice-templates, .section-onlyoffice-watermark").toggleClass("onlyoffice-hide", (!response.documentserver.length && !demo) || !!response.error.length);
+                        $(".section-onlyoffice-common, .section-onlyoffice-templates, .section-onlyoffice-watermark").toggleClass("onlyoffice-hide", (response.documentserver == null && !demo) || !!response.error.length);
 
                         var versionMessage = response.version ? (" (" + t(OCA.Onlyoffice.AppName, "version") + " " + response.version + ")") : "";
 
@@ -171,6 +174,8 @@
                         } else {
                             OCP.Toast.success(t(OCA.Onlyoffice.AppName, "Settings have been successfully updated") + versionMessage);
                         }
+                    } else {
+                        $(".section-onlyoffice-common, .section-onlyoffice-templates, .section-onlyoffice-watermark").addClass("onlyoffice-hide")
                     }
                 }
             });

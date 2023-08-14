@@ -134,6 +134,13 @@ OC.L10N.register(
     "Enable plugins": "Включить работу с плагинами",
     "Enable document protection for": "Включить возможность задавать пароль на документ для",
     "All users": "Всех пользователей",
-    "Owner only": "Только владельцу"
+    "Owner only": "Только владельцу",
+    "Authorization header (leave blank to use default header)": "Заголовок авторизации (оставьте пустым, чтобы использовать заголовок по умолчанию)",
+    "ONLYOFFICE server is not available": "Сервер ONLYOFFICE недоступен",
+    "Please check the settings to resolve the problem.": "Пожалуйста, проверьте настройки, чтобы решить проблему.",
+    "View settings": "Посмотреть настройки",
+    "ONLYOFFICE Docs Cloud": "ONLYOFFICE Docs Cloud",
+    "Easily launch the editors in the cloud without downloading and installation": "Легко запускайте редакторы в облаке без скачивания и установки",
+    "Get Now": "Получить сейчас"
 },
 "nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);");

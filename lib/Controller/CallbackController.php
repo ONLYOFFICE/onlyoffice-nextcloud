@@ -219,43 +219,34 @@ class CallbackController extends Controller {
         $template = isset($hashData->template) ? $hashData->template : false;
         $this->logger->debug("Download: $fileId ($version)" . ($changes ? " changes" : ""), ["app" => $this->appName]);
 
-        if (!$this->userSession->isLoggedIn()
-            && !$changes) {
-            if (!empty($this->config->GetDocumentServerSecret())) {
-                $header = \OC::$server->getRequest()->getHeader($this->config->JwtHeader());
-                if (empty($header)) {
-                    $this->logger->error("Download without jwt", ["app" => $this->appName]);
-                    return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
-                }
+        if (!empty($this->config->GetDocumentServerSecret())) {
+            $header = \OC::$server->getRequest()->getHeader($this->config->JwtHeader());
+            if (empty($header)) {
+                $this->logger->error("Download without jwt", ["app" => $this->appName]);
+                return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
+            }
 
-                $header = substr($header, strlen("Bearer "));
+            $header = substr($header, strlen("Bearer "));
 
-                try {
-                    $decodedHeader = \Firebase\JWT\JWT::decode($header, $this->config->GetDocumentServerSecret(), array("HS256"));
-                } catch (\UnexpectedValueException $e) {
-                    $this->logger->logException($e, ["message" => "Download with invalid jwt", "app" => $this->appName]);
-                    return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
-                }
+            try {
+                $decodedHeader = \Firebase\JWT\JWT::decode($header, new \Firebase\JWT\Key($this->config->GetDocumentServerSecret(), "HS256"));
+            } catch (\UnexpectedValueException $e) {
+                $this->logger->logException($e, ["message" => "Download with invalid jwt", "app" => $this->appName]);
+                return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
             }
         }
 
         $userId = null;
-
         $user = null;
-        if ($this->userSession->isLoggedIn()) {
-            $user = $this->userSession->getUser();
-            $userId = $user->getUID();
-        } else {
-            \OC_Util::tearDownFS();
+        \OC_Util::tearDownFS();
 
-            if (isset($hashData->userId)) {
-                $userId = $hashData->userId;
+        if (isset($hashData->userId)) {
+            $userId = $hashData->userId;
 
-                $user = $this->userManager->get($userId);
-                if (!empty($user)) {
-                    \OC_User::setUserId($userId);
-                    \OC_Util::setupFS($userId);
-                }
+            $user = $this->userManager->get($userId);
+            if (!empty($user)) {
+                \OC_User::setUserId($userId);
+                \OC_Util::setupFS($userId);
             }
         }
 
@@ -266,7 +257,7 @@ class CallbackController extends Controller {
             return $error;
         }
 
-        if ($this->userSession->isLoggedIn() && !$file->isReadable()) {
+        if (!empty($user) && !$file->isReadable()) {
             $this->logger->error("Download without access right", ["app" => $this->appName]);
             return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
         }
@@ -290,7 +281,7 @@ class CallbackController extends Controller {
                 return new JSONResponse(["message" => $this->trans->t("Files not found")], Http::STATUS_NOT_FOUND);
             }
 
-            $versions = array_reverse($this->versionManager->getVersionsForFile($owner, $file->getFileInfo()));
+            $versions = FileVersions::processVersionsArray($this->versionManager->getVersionsForFile($owner, $file));
 
             $versionId = null;
             if ($version > count($versions)) {
@@ -357,7 +348,7 @@ class CallbackController extends Controller {
             $header = substr($header, strlen("Bearer "));
 
             try {
-                $decodedHeader = \Firebase\JWT\JWT::decode($header, $this->config->GetDocumentServerSecret(), array("HS256"));
+                $decodedHeader = \Firebase\JWT\JWT::decode($header, new \Firebase\JWT\Key($this->config->GetDocumentServerSecret(), "HS256"));
             } catch (\UnexpectedValueException $e) {
                 $this->logger->logException($e, ["message" => "Download empty with invalid jwt", "app" => $this->appName]);
                 return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
@@ -394,6 +385,7 @@ class CallbackController extends Controller {
      * @param string $changesurl - link to file changes
      * @param integer $forcesavetype - the type of force save action
      * @param array $actions - the array of action
+     * @param string $filetype - extension of the document that is downloaded from the link specified with the url parameter
      *
      * @return array
      *
@@ -402,7 +394,7 @@ class CallbackController extends Controller {
      * @PublicPage
      * @CORS
      */
-    public function track($doc, $users, $key, $status, $url, $token, $history, $changesurl, $forcesavetype, $actions) {
+    public function track($doc, $users, $key, $status, $url, $token, $history, $changesurl, $forcesavetype, $actions, $filetype) {
 
         list ($hashData, $error) = $this->crypt->ReadHash($doc);
         if ($hashData === null) {
@@ -420,7 +412,7 @@ class CallbackController extends Controller {
         if (!empty($this->config->GetDocumentServerSecret())) {
             if (!empty($token)) {
                 try {
-                    $payload = \Firebase\JWT\JWT::decode($token, $this->config->GetDocumentServerSecret(), array("HS256"));
+                    $payload = \Firebase\JWT\JWT::decode($token, new \Firebase\JWT\Key($this->config->GetDocumentServerSecret(), "HS256"));
                 } catch (\UnexpectedValueException $e) {
                     $this->logger->logException($e, ["message" => "Track with invalid jwt in body", "app" => $this->appName]);
                     return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
@@ -435,7 +427,7 @@ class CallbackController extends Controller {
                 $header = substr($header, strlen("Bearer "));
 
                 try {
-                    $decodedHeader = \Firebase\JWT\JWT::decode($header, $this->config->GetDocumentServerSecret(), array("HS256"));
+                    $decodedHeader = \Firebase\JWT\JWT::decode($header, new \Firebase\JWT\Key($this->config->GetDocumentServerSecret(), "HS256"));
 
                     $payload = $decodedHeader->payload;
                 } catch (\UnexpectedValueException $e) {
@@ -533,7 +525,7 @@ class CallbackController extends Controller {
                     $prevVersion = $file->getFileInfo()->getMtime();
                     $fileName = $file->getName();
                     $curExt = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-                    $downloadExt = strtolower(pathinfo($url, PATHINFO_EXTENSION));
+                    $downloadExt = $filetype;
 
                     $documentService = new DocumentService($this->trans, $this->config);
                     if ($downloadExt !== $curExt) {
@@ -687,8 +679,7 @@ class CallbackController extends Controller {
                     }
                 }
 
-                $versions = array_reverse($this->versionManager->getVersionsForFile($owner, $file->getFileInfo()));
-
+                $versions = FileVersions::processVersionsArray($this->versionManager->getVersionsForFile($owner, $file));
                 if ($version <= count($versions)) {
                     $fileVersion = array_values($versions)[$version - 1];
                     $file = $this->versionManager->getVersionFile($owner, $file->getFileInfo(), $fileVersion->getRevisionId());
@@ -742,8 +733,7 @@ class CallbackController extends Controller {
             $owner = $file->getFileInfo()->getOwner();
 
             if ($owner !== null) {
-                $versions = array_reverse($this->versionManager->getVersionsForFile($owner, $file->getFileInfo()));
-
+                $versions = FileVersions::processVersionsArray($this->versionManager->getVersionsForFile($owner, $file));
                 if ($version <= count($versions)) {
                     $fileVersion = array_values($versions)[$version - 1];
                     $file = $this->versionManager->getVersionFile($owner, $file->getFileInfo(), $fileVersion->getRevisionId());

@@ -80,7 +80,7 @@ class SharingApiController extends OCSController {
      *
      * @var AppConfig
      */
-    private $config;
+    private $appConfig;
 
     /**
      * Share manager
@@ -104,7 +104,7 @@ class SharingApiController extends OCSController {
      * @param IUserSession $userSession - current user session
      * @param IUserManager $userManager - user manager
      * @param IManager $shareManager - Share manager
-     * @param AppConfig $config - application configuration
+     * @param AppConfig $appConfig - application configuration
      */
     public function __construct($AppName,
                                     IRequest $request,

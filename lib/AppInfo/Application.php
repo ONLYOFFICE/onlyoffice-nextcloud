@@ -25,6 +25,7 @@ use OCP\AppFramework\App;
 use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
+use OCP\BackgroundJob\IJobList;
 use OCP\Dashboard\RegisterWidgetEvent;
 use OCP\DirectEditing\RegisterDirectEditorEvent;
 use OCP\Files\Template\FileCreatedFromTemplateEvent;
@@ -45,6 +46,7 @@ use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\Controller\CallbackController;
 use OCA\Onlyoffice\Controller\EditorController;
 use OCA\Onlyoffice\Controller\EditorApiController;
+use OCA\Onlyoffice\Controller\JobListController;
 use OCA\Onlyoffice\Controller\SharingApiController;
 use OCA\Onlyoffice\Controller\SettingsController;
 use OCA\Onlyoffice\Controller\TemplateController;
@@ -99,8 +101,17 @@ class Application extends App implements IBootstrap {
         if (!class_exists('\\Firebase\\JWT\\SignatureInvalidException')) {
             require_once __DIR__ . "/../../3rdparty/jwt/SignatureInvalidException.php";
         }
+        if (!class_exists('\\Firebase\\JWT\\CachedKeySet')) {
+            require_once __DIR__ . "/../../3rdparty/jwt/CachedKeySet.php";
+        }
         if (!class_exists('\\Firebase\\JWT\\JWT')) {
             require_once __DIR__ . "/../../3rdparty/jwt/JWT.php";
+        }
+        if (!class_exists('\\Firebase\\JWT\\JWK')) {
+            require_once __DIR__ . "/../../3rdparty/jwt/JWK.php";
+        }
+        if (!class_exists('\\Firebase\\JWT\\Key')) {
+            require_once __DIR__ . "/../../3rdparty/jwt/Key.php";
         }
 
         // Set the leeway for the JWT library in case the system clock is a second off
@@ -255,6 +266,14 @@ class Application extends App implements IBootstrap {
         $detector->getAllMappings();
         $detector->registerType("docxf", "application/vnd.openxmlformats-officedocument.wordprocessingml.document.docxf");
         $detector->registerType("oform", "application/vnd.openxmlformats-officedocument.wordprocessingml.document.oform");
+
+        $checkBackgroundJobs = new JobListController(
+            $container->query("AppName"),
+            $container->query("Request"),
+            $this->appConfig,
+            $container->query(IJobList::class)
+        );
+        $checkBackgroundJobs->checkAllJobs();
 
         Hooks::connectHooks();
     }

@@ -555,6 +555,75 @@ class EditorController extends Controller {
     }
 
     /**
+     * Reference data
+     *
+     * @param array $referenceData - reference data
+     * @param string $path - file path
+     *
+     * @return array
+     *
+     * @NoAdminRequired
+     * @PublicPage
+     */
+    public function reference($referenceData, $path = null) {
+        $this->logger->debug("reference: " . json_encode($referenceData) . " $path", ["app" => $this->appName]);
+
+        if (!$this->config->isUserAllowedToUse()) {
+            return ["error" => $this->trans->t("Not permitted")];
+        }
+
+        $user = $this->userSession->getUser();
+        if (empty($user)) {
+            return ["error" => $this->trans->t("Not permitted")];
+        }
+
+        $userId = $user->getUID();
+
+        $file = null;
+        $fileId = (integer)($referenceData["fileKey"] ?? 0);
+        if (!empty($fileId)
+            && $referenceData["instanceId"] === $this->config->GetSystemValue("instanceid", true)) {
+            list ($file, $error, $share) = $this->getFile($userId, $fileId);
+        }
+
+        $userFolder = $this->root->getUserFolder($userId);
+        if ($file === null
+            && $path !== null
+            && $userFolder->nodeExists($path)) {
+            $node = $userFolder->get($path);
+            if ($node instanceof File
+                && $node->isReadable()) {
+                $file = $node;
+            }
+        }
+
+        if ($file === null) {
+            $this->logger->error("Reference not found: $fileId $path", ["app" => $this->appName]);
+            return ["error" => $this->trans->t("File not found")];
+        }
+
+        $fileName = $file->getName();
+        $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+
+        $response = [
+            "fileType" => $ext,
+            "path" => $userFolder->getRelativePath($file->getPath()),
+            "referenceData" => [
+                "fileKey" => $file->getId(),
+                "instanceId" => $this->config->GetSystemValue("instanceid", true),
+            ],
+            "url" => $this->getUrl($file, $user),
+        ];
+
+        if (!empty($this->config->GetDocumentServerSecret())) {
+            $token = \Firebase\JWT\JWT::encode($response, $this->config->GetDocumentServerSecret(), "HS256");
+            $response["token"] = $token;
+        }
+
+        return $response;
+    }
+
+    /**
      * Conversion file to Office Open XML format
      *
      * @param integer $fileId - file identifier
@@ -758,7 +827,7 @@ class EditorController extends Controller {
         $versions = array();
         if ($this->versionManager !== null
             && $owner !== null) {
-            $versions = array_reverse($this->versionManager->getVersionsForFile($owner, $file->getFileInfo()));
+            $versions = FileVersions::processVersionsArray($this->versionManager->getVersionsForFile($owner, $file));
         }
 
         $prevVersion = "";
@@ -826,7 +895,6 @@ class EditorController extends Controller {
             $historyItem["changes"] = $historyData["changes"];
             $historyItem["serverVersion"] = $historyData["serverVersion"];
         }
-
         array_push($history, $historyItem);
 
         return $history;
@@ -875,7 +943,7 @@ class EditorController extends Controller {
             $owner = $file->getFileInfo()->getOwner();
             if ($owner !== null) {
                 $ownerId = $owner->getUID();
-                $versions = array_reverse($this->versionManager->getVersionsForFile($owner, $file->getFileInfo()));
+                $versions = FileVersions::processVersionsArray($this->versionManager->getVersionsForFile($owner, $file));
             }
         }
 
@@ -896,8 +964,11 @@ class EditorController extends Controller {
             $fileUrl = $this->getUrl($file, $user, null, $version);
         }
         $key = DocumentService::GenerateRevisionId($key);
+        $fileName = $file->getName();
+        $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
 
         $result = [
+            "fileType" => $ext,
             "url" => $fileUrl,
             "version" => $version,
             "key" => $key
@@ -917,13 +988,14 @@ class EditorController extends Controller {
             $prevVersionUrl = $this->getUrl($file, $user, null, $version - 1);
 
             $result["previous"] = [
+                "fileType" => $ext,
                 "key" => $prevVersionKey,
                 "url" => $prevVersionUrl
             ];
         }
 
         if (!empty($this->config->GetDocumentServerSecret())) {
-            $token = \Firebase\JWT\JWT::encode($result, $this->config->GetDocumentServerSecret());
+            $token = \Firebase\JWT\JWT::encode($result, $this->config->GetDocumentServerSecret(), "HS256");
             $result["token"] = $token;
         }
 
@@ -971,7 +1043,7 @@ class EditorController extends Controller {
         if ($this->versionManager !== null) {
             $owner = $file->getFileInfo()->getOwner();
             if ($owner !== null) {
-                $versions = array_reverse($this->versionManager->getVersionsForFile($owner, $file->getFileInfo()));
+                $versions = FileVersions::processVersionsArray($this->versionManager->getVersionsForFile($owner, $file));
             }
 
             if (count($versions) >= $version) {
@@ -1024,7 +1096,7 @@ class EditorController extends Controller {
         ];
 
         if (!empty($this->config->GetDocumentServerSecret())) {
-            $token = \Firebase\JWT\JWT::encode($result, $this->config->GetDocumentServerSecret());
+            $token = \Firebase\JWT\JWT::encode($result, $this->config->GetDocumentServerSecret(), "HS256");
             $result["token"] = $token;
         }
 
@@ -1318,7 +1390,7 @@ class EditorController extends Controller {
 
         $fileUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.download", ["doc" => $hashUrl]);
 
-        if (!empty($this->config->GetStorageUrl())) {
+        if (!$this->config->UseDemo() && !empty($this->config->GetStorageUrl())) {
             $fileUrl = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->config->GetStorageUrl(), $fileUrl);
         }
 

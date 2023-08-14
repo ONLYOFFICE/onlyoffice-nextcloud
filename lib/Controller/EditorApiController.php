@@ -49,6 +49,7 @@ use OCA\Files_Versions\Versions\IVersionManager;
 use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\Crypt;
 use OCA\Onlyoffice\DocumentService;
+use OCA\Onlyoffice\FileVersions;
 use OCA\Onlyoffice\FileUtility;
 use OCA\Onlyoffice\TemplateManager;
 use OCA\Onlyoffice\ExtraPermissions;
@@ -298,8 +299,7 @@ class EditorApiController extends OCSController {
             && $this->versionManager !== null) {
             $owner = $file->getFileInfo()->getOwner();
             if ($owner !== null) {
-                $versions = array_reverse($this->versionManager->getVersionsForFile($owner, $file->getFileInfo()));
-
+                $versions = FileVersions::processVersionsArray($this->versionManager->getVersionsForFile($owner, $file->getFileInfo()));
                 if ($version <= count($versions)) {
                     $fileVersion = array_values($versions)[$version - 1];
 
@@ -319,6 +319,10 @@ class EditorApiController extends OCSController {
                 "permissions" => [],
                 "title" => $fileName,
                 "url" => $fileUrl,
+                "referenceData" => [
+                    "fileKey" => $file->getId(),
+                    "instanceId" => $this->config->GetSystemValue("instanceid", true),
+                ],
             ],
             "documentType" => $format["type"],
             "editorConfig" => [
@@ -425,10 +429,15 @@ class EditorApiController extends OCSController {
             }
             $params["document"]["permissions"]["protect"] = $canProtect;
 
+            if (isset($shareToken)) {
+                $params["document"]["permissions"]["chat"] = false;
+                $params["document"]["permissions"]["protect"] = false;
+            }
+
             $hashCallback = $this->crypt->GetHash(["userId" => $userId, "ownerId" => $ownerId, "fileId" => $file->getId(), "filePath" => $filePath, "shareToken" => $shareToken, "action" => "track"]);
             $callback = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.track", ["doc" => $hashCallback]);
 
-            if (!empty($this->config->GetStorageUrl())) {
+            if (!$this->config->UseDemo() && !empty($this->config->GetStorageUrl())) {
                 $callback = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->config->GetStorageUrl(), $callback);
             }
 
@@ -586,7 +595,7 @@ class EditorApiController extends OCSController {
         }
 
         if (!empty($this->config->GetDocumentServerSecret())) {
-            $token = \Firebase\JWT\JWT::encode($params, $this->config->GetDocumentServerSecret());
+            $token = \Firebase\JWT\JWT::encode($params, $this->config->GetDocumentServerSecret(), "HS256");
             $params["token"] = $token;
         }
 
@@ -683,7 +692,7 @@ class EditorApiController extends OCSController {
 
         $fileUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.download", ["doc" => $hashUrl]);
 
-        if (!empty($this->config->GetStorageUrl())) {
+        if (!$this->config->UseDemo() && !empty($this->config->GetStorageUrl())) {
             $fileUrl = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->config->GetStorageUrl(), $fileUrl);
         }
 
@@ -905,7 +914,7 @@ class EditorApiController extends OCSController {
             $tags = $watermarkSettings["allTagsList"];
             $fileTags = \OC::$server->getSystemTagObjectMapper()->getTagIdsForObjects([$fileId], "files")[$fileId];
             foreach ($fileTags as $tagId) {
-                if (in_array($tagId, $tags, true)) {
+                if (in_array($tagId, $tags)) {
                     return $watermarkText;
                 }
             }

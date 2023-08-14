@@ -323,7 +323,7 @@ class Preview extends Provider {
 
         $fileUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.download", ["doc" => $hashUrl]);
 
-        if (!empty($this->config->GetStorageUrl())) {
+        if (!$this->config->UseDemo() && !empty($this->config->GetStorageUrl())) {
             $fileUrl = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->config->GetStorageUrl(), $fileUrl);
         }
 
@@ -367,8 +367,7 @@ class Preview extends Provider {
             $sourceFile = $this->root->getUserFolder($owner->getUID())->get($filePath);
 
             $fileInfo = $sourceFile->getFileInfo();
-
-            $versions = array_reverse($this->versionManager->getVersionsForFile($owner, $fileInfo));
+            $versions = FileVersions::processVersionsArray($this->versionManager->getVersionsForFile($owner, $fileInfo));
 
             foreach ($versions as $version) {
                 $versionNum = $versionNum + 1;
