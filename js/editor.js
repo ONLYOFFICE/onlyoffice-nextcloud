@@ -514,6 +514,7 @@
         }),
         function onSuccess(response) {
             OCA.Onlyoffice.docEditor.setUsers({
+                "c": typeof(event.data.c) !== "undefined" ? event.data.c : null,
                 "users": response
             });
         });

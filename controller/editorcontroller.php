@@ -414,7 +414,8 @@ class EditorController extends Controller {
             if ($user->getUID() != $currentUserId && !empty($email)) {
                 array_push($result, [
                     "email" => $email,
-                    "name" => $user->getDisplayName()
+                    "name" => $user->getDisplayName(),
+                    "id" => $user->getUID()
                 ]);
             }
         }
