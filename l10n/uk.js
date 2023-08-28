@@ -96,7 +96,7 @@ OC.L10N.register(
     "Error" : "Помилка",
     "Add a new template": "Додати новий шаблон",
     "Template already exists": "Шаблон вже присутній",
-    "Template must be in OOXML format": "Файл шаблону має бути збережено у форматі OOXML (DOCX)",
+    "Template must be in OOXML format": "Файл шаблону має бути збережено у форматі OOXML",
     "Template successfully added": "Шаблон успішно додано",
     "Template successfully deleted": "Шаблон успішно вилучено",
     "Common templates": "Загальні шаблони",
@@ -130,7 +130,7 @@ OC.L10N.register(
     "Custom filter": "Користувацький фільтр",
     "group": "група",
     "Advanced": "Додатково",
-    "Provide advanced document permissions using ONLYOFFICE Docs": "Увімкнути розширені права доступу до документів у  ONLYOFFICE Docs",
+    "Provide advanced document permissions using ONLYOFFICE Docs": "Увімкнути розширені права доступу до документів у ONLYOFFICE Docs",
     "Enable plugins": "Увімкнути роботу з розширеннями",
     "Enable document protection for": "Увімкнути захист документів",
     "All users": "Для всіх користувачів",
@@ -141,6 +141,6 @@ OC.L10N.register(
     "View settings": "Переглянути налаштування",
     "ONLYOFFICE Docs Cloud": "ONLYOFFICE Docs Cloud",
     "Easily launch the editors in the cloud without downloading and installation": "Легко використовуйте редактори у хмарі без звантажень та налаштувань",
-    "Get Now": "Отримати прямо зараз"
+    "Get Now": "Отримати зараз"
 },
-"nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);");3
+"nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != 11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || (n % 100 >=11 && n % 100 <=14 )) ? 2: 3);");
