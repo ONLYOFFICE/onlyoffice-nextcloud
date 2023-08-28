@@ -1,5 +1,8 @@
 # Change Log
 
+## Added
+- Ukrainian translation
+
 ## 8.2.0
 ## Added
 - jwt header setting
