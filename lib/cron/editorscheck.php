@@ -135,7 +135,7 @@ class EditorsCheck extends TimedJob {
         }
         $host = parse_url($fileUrl)["host"];
         if ($host === "localhost" || $host === "127.0.0.1") {
-            $this->logger->debug("Localhost is not alowed for cron editors availability check.", ["app" => $this->appName]);
+            $this->logger->debug("Localhost is not alowed for cron editors availability check. Please provide server address for internal requests from ONLYOFFICE Docs", ["app" => $this->appName]);
             return; 
         }
 
