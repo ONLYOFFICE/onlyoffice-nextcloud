@@ -3,6 +3,10 @@
 ## Added
 - Ukrainian translation
 
+## Changed
+- fix disabling background job
+- fix opening direct link
+
 ## 8.2.0
 ## Added
 - jwt header setting
