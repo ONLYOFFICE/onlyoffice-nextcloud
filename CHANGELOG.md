@@ -5,6 +5,7 @@
 
 ## Changed
 - fix disabling background job
+- fix opening direct link
 
 ## 7.9.0
 ## Added
