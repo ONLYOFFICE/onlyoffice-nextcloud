@@ -125,7 +125,7 @@ class EditorController extends Controller
      * File version manager
      *
      * @var IVersionManager
-    */
+     */
     private $versionManager;
 
     /**

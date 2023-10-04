@@ -130,7 +130,7 @@ class CallbackController extends Controller
      * Lock manager
      *
      * @var ILockManager
-    */
+     */
     private $lockManager;
 
     /**

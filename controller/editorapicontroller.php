@@ -127,28 +127,28 @@ class EditorApiController extends OCSController
      * File version manager
      *
      * @var IVersionManager
-    */
+     */
     private $versionManager;
 
     /**
      * Tag manager
      *
      * @var ITagManager
-    */
+     */
     private $tagManager;
 
     /**
      * Extra permissions
      *
      * @var ExtraPermissions
-    */
+     */
     private $extraPermissions;
 
     /**
      * Lock manager
      *
      * @var ILockManager
-    */
+     */
     private $lockManager;
 
     /**

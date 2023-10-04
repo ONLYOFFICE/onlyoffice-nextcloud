@@ -87,14 +87,14 @@ class SharingApiController extends OCSController
      * Share manager
      *
      * @var IManager
-    */
+     */
     private $shareManager;
 
     /**
      * Extra permissions
      *
      * @var ExtraPermissions
-    */
+     */
     private $extraPermissions;
 
     /**

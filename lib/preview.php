@@ -103,7 +103,7 @@ class Preview extends Provider
      * File version manager
      *
      * @var IVersionManager
-    */
+     */
     private $versionManager;
 
     /**

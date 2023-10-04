@@ -328,7 +328,7 @@ class FileVersions
      * @param string $ownerId - file owner id
      * @param string $fileId - file id
      * @param string $versionId - file version
-    */
+     */
     public static function deleteVersion($ownerId, $fileId, $versionId)
     {
         $logger = \OC::$server->getLogger();
@@ -467,7 +467,7 @@ class FileVersions
      * @param string $ownerId - file owner id
      * @param string $fileId - file id
      * @param string $versionId - file version
-    */
+     */
     public static function deleteAuthor($ownerId, $fileId, $versionId)
     {
         $logger = \OC::$server->getLogger();
@@ -506,7 +506,7 @@ class FileVersions
      * Reverese or not versions array
      *
      * @param array $versions - versions array
-    */
+     */
     public static function processVersionsArray($versions)
     {
         if (self::getFilesVersionAppInfoCompareResult() === -1) {
