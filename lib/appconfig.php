@@ -1198,7 +1198,7 @@ class AppConfig
             return $limitSize;
         }
 
-        return 100*1024*1024;
+        return 100 * 1024 * 1024;
     }
 
     /**
@@ -1355,7 +1355,7 @@ class AppConfig
         $interval = $this->GetSystemValue($this->_editors_check_interval);
 
         if (empty($interval) && $interval !== 0) {
-            $interval = 60*60*24;
+            $interval = 60 * 60 * 24;
         }
         return (integer)$interval;
     }

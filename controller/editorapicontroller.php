@@ -557,7 +557,7 @@ class EditorApiController extends OCSController
         if ($folderLink !== null
             && $this->config->GetSystemValue($this->config->_customization_goback) !== false) {
             $params["editorConfig"]["customization"]["goback"] = [
-                "url"  => $folderLink
+                "url" => $folderLink
             ];
 
             if (!$desktop && !$inviewer) {

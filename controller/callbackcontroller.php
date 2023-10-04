@@ -534,7 +534,7 @@ class CallbackController extends Controller
 
                     $documentService = new DocumentService($this->trans, $this->config);
                     if ($downloadExt !== $curExt) {
-                        $key =  DocumentService::GenerateRevisionId($fileId . $url);
+                        $key = DocumentService::GenerateRevisionId($fileId . $url);
 
                         try {
                             $this->logger->debug("Converted from $downloadExt to $curExt", ["app" => $this->appName]);
