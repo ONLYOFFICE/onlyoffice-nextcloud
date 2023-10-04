@@ -27,10 +27,6 @@ use OCP\ILogger;
 use OCP\ISession;
 use OCP\Share\IManager;
 
-use OCA\Onlyoffice\AppConfig;
-use OCA\Onlyoffice\KeyManager;
-use OCA\Onlyoffice\RemoteInstance;
-
 /**
  * File utility
  *

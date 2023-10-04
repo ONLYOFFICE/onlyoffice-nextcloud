@@ -25,7 +25,6 @@ use OCP\BackgroundJob\TimedJob;
 use OCP\IGroup;
 use OCP\IGroupManager;
 use OCP\IL10N;
-use OCP\ILogger;
 use OCP\IURLGenerator;
 
 use OCA\Onlyoffice\AppConfig;

@@ -23,10 +23,6 @@ use OC\Files\Filesystem;
 
 use OCP\Util;
 
-use OCA\Onlyoffice\FileVersions;
-use OCA\Onlyoffice\KeyManager;
-use OCA\Onlyoffice\ExtraPermissions;
-
 /**
  * The class to handle the filesystem hooks
  *

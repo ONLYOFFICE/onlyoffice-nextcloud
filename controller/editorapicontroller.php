@@ -29,7 +29,6 @@ use OCP\Files\IRootFolder;
 use OCP\Files\Lock\ILock;
 use OCP\Files\Lock\ILockManager;
 use OCP\Files\Lock\NoLockProviderException;
-use OCP\Files\Lock\OwnerLockedException;
 use OCP\PreConditionNotMetException;
 use OCP\IL10N;
 use OCP\ILogger;

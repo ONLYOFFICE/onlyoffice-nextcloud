@@ -22,24 +22,17 @@ namespace OCA\Onlyoffice\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\OCSController;
-use OCP\IL10N;
 use OCP\ILogger;
 use OCP\IRequest;
-use OCP\ISession;
-use OCP\Constants;
 use OCP\Share\IManager;
 use OCP\Files\IRootFolder;
 use OCP\IUserManager;
 use OCP\IUserSession;
 use OCP\Files\File;
 use OCP\Share\IShare;
-use OCP\Share\Exceptions\ShareNotFound;
 
 
 use OCA\Onlyoffice\AppConfig;
-use OCA\Onlyoffice\DocumentService;
-use OCA\Onlyoffice\FileUtility;
-use OCA\Onlyoffice\KeyManager;
 use OCA\Onlyoffice\ExtraPermissions;
 
 /**

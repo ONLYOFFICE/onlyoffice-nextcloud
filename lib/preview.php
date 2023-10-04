@@ -35,13 +35,6 @@ use OCP\Share\IManager;
 use OCA\Files_Sharing\External\Storage as SharingExternalStorage;
 use OCA\Files_Versions\Versions\IVersionManager;
 
-use OCA\Onlyoffice\AppConfig;
-use OCA\Onlyoffice\Crypt;
-use OCA\Onlyoffice\DocumentService;
-use OCA\Onlyoffice\FileUtility;
-use OCA\Onlyoffice\FileVersions;
-use OCA\Onlyoffice\TemplateManager;
-
 /**
  * Preview provider
  *

@@ -24,8 +24,6 @@ use OCP\Files\Template\ICustomTemplateProvider;
 use OCP\Files\Template\Template;
 use OCP\IURLGenerator;
 
-use OCA\Onlyoffice\TemplateManager;
-
 class TemplateProvider implements ICustomTemplateProvider {
 
     /**

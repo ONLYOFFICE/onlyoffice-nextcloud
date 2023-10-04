@@ -19,12 +19,7 @@
 
 namespace OCA\Onlyoffice\Controller;
 
-use OC\AppFramework\Http;
-use OC\BackgroundJob\TimedJob;
 use OCP\AppFramework\Controller;
-use OCP\AppFramework\Http\DataDisplayResponse;
-use OCP\AppFramework\Http\DataResponse;
-use OCP\AppFramework\Http\Response;
 use OCP\BackgroundJob\IJob;
 use OCP\BackgroundJob\IJobList;
 use OCP\IRequest;

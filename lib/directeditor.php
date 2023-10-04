@@ -28,10 +28,6 @@ use OCP\IL10N;
 use OCP\ILogger;
 use OCP\IURLGenerator;
 
-use OCA\Onlyoffice\AppConfig;
-use OCA\Onlyoffice\Crypt;
-use OCA\Onlyoffice\FileCreator;
-
 /**
  * Direct Editor
  *

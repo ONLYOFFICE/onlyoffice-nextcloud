@@ -26,8 +26,6 @@ use OCP\Share\IShare;
 use OCP\Share\IManager;
 use OCP\Share\Exceptions\ShareNotFound;
 
-use OCA\Onlyoffice\AppConfig;
-
 /**
  * Class expands base permissions
  *

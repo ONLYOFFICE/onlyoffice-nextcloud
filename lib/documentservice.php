@@ -21,8 +21,6 @@ namespace OCA\Onlyoffice;
 
 use OCP\IL10N;
 
-use OCA\Onlyoffice\AppConfig;
-
 /**
  * Class service connector to Document Service
  *

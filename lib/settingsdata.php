@@ -19,8 +19,6 @@
 
 namespace OCA\Onlyoffice;
 
-use OCA\Onlyoffice\AppConfig;
-
 class SettingsData implements \JsonSerializable {
 
     /**

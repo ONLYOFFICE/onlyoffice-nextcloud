@@ -24,8 +24,6 @@ use OCP\Files\File;
 use OCP\IL10N;
 use OCP\ILogger;
 
-use OCA\Onlyoffice\TemplateManager;
-
 /**
  * File creator
  *
