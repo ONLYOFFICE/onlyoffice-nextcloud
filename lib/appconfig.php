@@ -240,7 +240,7 @@ class AppConfig {
      *
      * @var string
      */
-    const WATERMARK_APP_NAMESPACE = "files";
+    public const WATERMARK_APP_NAMESPACE = "files";
 
     /**
      * The config key for limit thumbnail size
