@@ -196,7 +196,7 @@ class SettingsController extends Controller
             "jwtHeader" => $this->config->JwtHeader(true),
             "error" => $error,
             "version" => $version,
-            ];
+        ];
     }
 
     /**
@@ -254,7 +254,7 @@ class SettingsController extends Controller
         $this->config->SetCustomizationTheme($theme);
 
         return [
-            ];
+        ];
     }
 
     /**
@@ -287,7 +287,7 @@ class SettingsController extends Controller
         $this->config->SetProtection($protection);
 
         return [
-            ];
+        ];
     }
 
     /**
@@ -301,7 +301,7 @@ class SettingsController extends Controller
         FileVersions::clearHistory();
 
         return [
-            ];
+        ];
     }
 
     /**

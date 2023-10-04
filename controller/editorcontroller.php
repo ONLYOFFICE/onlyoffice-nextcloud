@@ -1458,12 +1458,12 @@ class EditorController extends Controller
     private function renderError($error, $hint = "")
     {
         return new TemplateResponse("", "error", [
-                "errors" => [
-                    [
-                        "error" => $error,
-                        "hint" => $hint
-                    ]
+            "errors" => [
+                [
+                    "error" => $error,
+                    "hint" => $hint
                 ]
-            ], "error");
+            ]
+        ], "error");
     }
 }

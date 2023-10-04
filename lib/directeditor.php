@@ -287,12 +287,12 @@ class DirectEditor implements IEditor
     private function renderError($error, $hint = "")
     {
         return new TemplateResponse("", "error", [
-                "errors" => [
-                    [
-                        "error" => $error,
-                        "hint" => $hint
-                    ]
+            "errors" => [
+                [
+                    "error" => $error,
+                    "hint" => $hint
                 ]
-            ], "error");
+            ]
+        ], "error");
     }
 }
