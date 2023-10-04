@@ -31,7 +31,8 @@ use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\DocumentService;
 use OCA\Onlyoffice\Crypt;
 
-class DocumentServer extends Command {
+class DocumentServer extends Command
+{
 
     /**
      * Application configuration
@@ -67,10 +68,12 @@ class DocumentServer extends Command {
      * @param IURLGenerator $urlGenerator - url generator service
      * @param Crypt $crypt - hash generator
      */
-    public function __construct(AppConfig $config,
-                                IL10N $trans,
-                                IURLGenerator $urlGenerator,
-                                Crypt $crypt) {
+    public function __construct(
+        AppConfig $config,
+        IL10N $trans,
+        IURLGenerator $urlGenerator,
+        Crypt $crypt
+    ) {
         parent::__construct();
         $this->config = $config;
         $this->trans = $trans;
@@ -81,14 +84,17 @@ class DocumentServer extends Command {
     /**
      * Configures the current command.
      */
-    protected function configure() {
+    protected function configure()
+    {
         $this
             ->setName("onlyoffice:documentserver")
             ->setDescription("Manage document server")
-            ->addOption("check",
-                         null,
-                         InputOption::VALUE_NONE,
-                         "Check connection document server");
+            ->addOption(
+                "check",
+                null,
+                InputOption::VALUE_NONE,
+                "Check connection document server"
+            );
     }
 
     /**
@@ -99,7 +105,8 @@ class DocumentServer extends Command {
      *
      * @return int 0 if everything went fine, or an exit code
      */
-    protected function execute(InputInterface $input, OutputInterface $output) {
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
         $check = $input->getOption("check");
 
         $documentserver = $this->config->GetDocumentServerUrl(true);
@@ -111,7 +118,7 @@ class DocumentServer extends Command {
         if ($check) {
             $documentService = new DocumentService($this->trans, $this->config);
 
-            list ($error, $version) = $documentService->checkDocServiceUrl($this->urlGenerator, $this->crypt);
+            list($error, $version) = $documentService->checkDocServiceUrl($this->urlGenerator, $this->crypt);
             $this->config->SetSettingsError($error);
 
             if (!empty($error)) {

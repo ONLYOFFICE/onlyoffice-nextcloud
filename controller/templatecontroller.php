@@ -34,7 +34,8 @@ use OCA\Onlyoffice\TemplateManager;
 /**
  * OCS handler
  */
-class TemplateController extends Controller {
+class TemplateController extends Controller
+{
 
     /**
      * l10n service
@@ -62,12 +63,13 @@ class TemplateController extends Controller {
      * @param ILogger $logger - logger
      * @param IL10N $trans - l10n service
      */
-    public function __construct($AppName,
-                                    IRequest $request,
-                                    IL10N $trans,
-                                    ILogger $logger,
-                                    IPreview $preview
-                                    ) {
+    public function __construct(
+        $AppName,
+        IRequest $request,
+        IL10N $trans,
+        ILogger $logger,
+        IPreview $preview
+    ) {
         parent::__construct($AppName, $request);
 
         $this->trans = $trans;
@@ -82,7 +84,8 @@ class TemplateController extends Controller {
      *
      * @NoAdminRequired
      */
-    public function GetTemplates() {
+    public function GetTemplates()
+    {
         $templatesList = TemplateManager::GetGlobalTemplates();
 
         $templates = [];
@@ -103,7 +106,8 @@ class TemplateController extends Controller {
      *
      * @return array
      */
-    public function AddTemplate() {
+    public function AddTemplate()
+    {
 
         $file = $this->request->getUploadedFile("file");
 
@@ -150,7 +154,8 @@ class TemplateController extends Controller {
      *
      * @return array
      */
-    public function DeleteTemplate($templateId) {
+    public function DeleteTemplate($templateId)
+    {
         $templateDir = TemplateManager::GetGlobalTemplateDir();
 
         try {
@@ -189,7 +194,8 @@ class TemplateController extends Controller {
      * @NoAdminRequired
      * @NoCSRFRequired
      */
-    public function preview($fileId, $x = 256, $y = 256, $crop = false, $mode = IPreview::MODE_FILL) {
+    public function preview($fileId, $x = 256, $y = 256, $crop = false, $mode = IPreview::MODE_FILL)
+    {
         if (empty($fileId) || $x === 0 || $y === 0) {
             return new DataResponse([], Http::STATUS_BAD_REQUEST);
         }

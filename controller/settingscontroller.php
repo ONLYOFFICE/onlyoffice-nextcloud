@@ -35,7 +35,8 @@ use OCA\Onlyoffice\TemplateManager;
 /**
  * Settings controller for the administration page
  */
-class SettingsController extends Controller {
+class SettingsController extends Controller
+{
 
     /**
      * l10n service
@@ -81,14 +82,15 @@ class SettingsController extends Controller {
      * @param AppConfig $config - application configuration
      * @param Crypt $crypt - hash generator
      */
-    public function __construct($AppName,
-                                    IRequest $request,
-                                    IURLGenerator $urlGenerator,
-                                    IL10N $trans,
-                                    ILogger $logger,
-                                    AppConfig $config,
-                                    Crypt $crypt
-                                    ) {
+    public function __construct(
+        $AppName,
+        IRequest $request,
+        IURLGenerator $urlGenerator,
+        IL10N $trans,
+        ILogger $logger,
+        AppConfig $config,
+        Crypt $crypt
+    ) {
         parent::__construct($AppName, $request);
 
         $this->urlGenerator = $urlGenerator;
@@ -103,7 +105,8 @@ class SettingsController extends Controller {
      *
      * @return TemplateResponse
      */
-    public function index() {
+    public function index()
+    {
         $data = [
             "documentserver" => $this->config->GetDocumentServerUrl(true),
             "documentserverInternal" => $this->config->GetDocumentServerInternalUrl(true),
@@ -152,14 +155,15 @@ class SettingsController extends Controller {
      *
      * @return array
      */
-    public function SaveAddress($documentserver,
-                                    $documentserverInternal,
-                                    $storageUrl,
-                                    $verifyPeerOff,
-                                    $secret,
-                                    $jwtHeader,
-                                    $demo
-                                    ) {
+    public function SaveAddress(
+        $documentserver,
+        $documentserverInternal,
+        $storageUrl,
+        $verifyPeerOff,
+        $secret,
+        $jwtHeader,
+        $demo
+    ) {
         $error = null;
         if (!$this->config->SelectDemo($demo === true)) {
             $error = $this->trans->t("The 30-day test period is over, you can no longer connect to demo ONLYOFFICE Docs server.");
@@ -178,7 +182,7 @@ class SettingsController extends Controller {
             $documentserver = $this->config->GetDocumentServerUrl();
             if (!empty($documentserver)) {
                 $documentService = new DocumentService($this->trans, $this->config);
-                list ($error, $version) = $documentService->checkDocServiceUrl($this->urlGenerator, $this->crypt);
+                list($error, $version) = $documentService->checkDocServiceUrl($this->urlGenerator, $this->crypt);
                 $this->config->SetSettingsError($error);
             }
         }
@@ -215,22 +219,23 @@ class SettingsController extends Controller {
      *
      * @return array
      */
-    public function SaveCommon($defFormats,
-                                    $editFormats,
-                                    $sameTab,
-                                    $preview,
-                                    $advanced,
-                                    $versionHistory,
-                                    $limitGroups,
-                                    $chat,
-                                    $compactHeader,
-                                    $feedback,
-                                    $forcesave,
-                                    $help,
-                                    $toolbarNoTabs,
-                                    $reviewDisplay,
-                                    $theme
-                                    ) {
+    public function SaveCommon(
+        $defFormats,
+        $editFormats,
+        $sameTab,
+        $preview,
+        $advanced,
+        $versionHistory,
+        $limitGroups,
+        $chat,
+        $compactHeader,
+        $feedback,
+        $forcesave,
+        $help,
+        $toolbarNoTabs,
+        $reviewDisplay,
+        $theme
+    ) {
 
         $this->config->SetDefaultFormats($defFormats);
         $this->config->SetEditableFormats($editFormats);
@@ -262,11 +267,12 @@ class SettingsController extends Controller {
      *
      * @return array
      */
-    public function SaveSecurity($watermarks,
-                                    $plugins,
-                                    $macros,
-                                    $protection
-                                    ) {
+    public function SaveSecurity(
+        $watermarks,
+        $plugins,
+        $macros,
+        $protection
+    ) {
 
         if ($watermarks["enabled"] === "true") {
             $watermarks["text"] = trim($watermarks["text"]);
@@ -289,7 +295,8 @@ class SettingsController extends Controller {
      *
      * @return array
      */
-    public function ClearHistory() {
+    public function ClearHistory()
+    {
 
         FileVersions::clearHistory();
 
@@ -302,7 +309,8 @@ class SettingsController extends Controller {
      *
      * @return array
      */
-    private function GetGlobalTemplates() {
+    private function GetGlobalTemplates()
+    {
         $templates = [];
         $templatesList = TemplateManager::GetGlobalTemplates();
 

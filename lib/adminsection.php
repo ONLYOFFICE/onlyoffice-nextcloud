@@ -25,7 +25,8 @@ use OCP\Settings\IIconSection;
 /**
  * Settings section for the administration page
  */
-class AdminSection implements IIconSection {
+class AdminSection implements IIconSection
+{
 
     /** @var IURLGenerator */
     private $urlGenerator;
@@ -33,7 +34,8 @@ class AdminSection implements IIconSection {
     /**
      * @param IURLGenerator $urlGenerator - url generator service
      */
-    public function __construct(IURLGenerator $urlGenerator) {
+    public function __construct(IURLGenerator $urlGenerator)
+    {
         $this->urlGenerator = $urlGenerator;
     }
 
@@ -43,7 +45,8 @@ class AdminSection implements IIconSection {
      *
      * @return strings
      */
-    public function getIcon() {
+    public function getIcon()
+    {
         return $this->urlGenerator->imagePath("onlyoffice", "app-dark.svg");
     }
 
@@ -52,7 +55,8 @@ class AdminSection implements IIconSection {
      *
      * @returns string
      */
-    public function getID() {
+    public function getID()
+    {
         return "onlyoffice";
     }
 
@@ -61,7 +65,8 @@ class AdminSection implements IIconSection {
      *
      * @return string
      */
-    public function getName() {
+    public function getName()
+    {
         return "ONLYOFFICE";
     }
 
@@ -70,7 +75,8 @@ class AdminSection implements IIconSection {
      *
      * @return int
      */
-    public function getPriority() {
+    public function getPriority()
+    {
         return 50;
     }
 }

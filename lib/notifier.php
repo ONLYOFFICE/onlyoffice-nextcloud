@@ -27,7 +27,8 @@ use OCP\Notification\IAction;
 use OCP\Notification\INotification;
 use OCP\Notification\INotifier;
 
-class Notifier implements INotifier {
+class Notifier implements INotifier
+{
 
     /**
      * Application name
@@ -71,12 +72,13 @@ class Notifier implements INotifier {
      * @param ILogger $logger - logger
      * @param IUserManager $userManager - user manager
      */
-    public function __construct(string $appName,
-                                    IFactory $l10nFactory,
-                                    IURLGenerator $urlGenerator,
-                                    ILogger $logger,
-                                    IUserManager $userManager
-                                    ) {
+    public function __construct(
+        string $appName,
+        IFactory $l10nFactory,
+        IURLGenerator $urlGenerator,
+        ILogger $logger,
+        IUserManager $userManager
+    ) {
         $this->appName = $appName;
         $this->l10nFactory = $l10nFactory;
         $this->urlGenerator = $urlGenerator;
@@ -89,7 +91,8 @@ class Notifier implements INotifier {
      *
      * @return string
      */
-    public function getID(): string {
+    public function getID(): string
+    {
         return $this->appName;
     }
 
@@ -98,7 +101,8 @@ class Notifier implements INotifier {
      *
      * @return string
      */
-    public function getName(): string {
+    public function getName(): string
+    {
         return $this->appName;
     }
 
@@ -108,7 +112,8 @@ class Notifier implements INotifier {
      *
      * @return INotification
      */
-    public function prepare(INotification $notification, string $languageCode): INotification {
+    public function prepare(INotification $notification, string $languageCode): INotification
+    {
         if ($notification->getApp() !== $this->appName) {
             throw new \InvalidArgumentException("Notification not from " . $this->appName);
         }
@@ -160,6 +165,7 @@ class Notifier implements INotifier {
                         "link" => $editorLink
                     ]
                     ]);
+                // no break
             default:
                 $this->logger->info("Unsupported notification object: ".$notification->getObjectType(), ["app" => $this->appName]);
         }

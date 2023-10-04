@@ -27,9 +27,11 @@ use OCA\Onlyoffice\Controller\SettingsController;
 /**
  * Settings controller for the administration page
  */
-class AdminSettings implements ISettings {
+class AdminSettings implements ISettings
+{
 
-    public function __construct() {
+    public function __construct()
+    {
     }
 
     /**
@@ -37,7 +39,8 @@ class AdminSettings implements ISettings {
      *
      * @return TemplateResponse
      */
-    public function getForm() {
+    public function getForm()
+    {
         $app = \OC::$server->query(Application::class);
         $container = $app->getContainer();
         $response = $container->query(SettingsController::class)->index();
@@ -49,7 +52,8 @@ class AdminSettings implements ISettings {
      *
      * @return string
      */
-    public function getSection() {
+    public function getSection()
+    {
         return "onlyoffice";
     }
 
@@ -58,7 +62,8 @@ class AdminSettings implements ISettings {
      *
      * @return int
      */
-    public function getPriority() {
+    public function getPriority()
+    {
         return 50;
     }
 }

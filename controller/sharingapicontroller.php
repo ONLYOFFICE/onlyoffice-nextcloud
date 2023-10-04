@@ -45,7 +45,8 @@ use OCA\Onlyoffice\ExtraPermissions;
 /**
  * OCS handler
  */
-class SharingApiController extends OCSController {
+class SharingApiController extends OCSController
+{
 
     /**
      * Current user session
@@ -106,15 +107,16 @@ class SharingApiController extends OCSController {
      * @param IManager $shareManager - Share manager
      * @param AppConfig $appConfig - application configuration
      */
-    public function __construct($AppName,
-                                    IRequest $request,
-                                    IRootFolder $root,
-                                    ILogger $logger,
-                                    IUserSession $userSession,
-                                    IUserManager $userManager,
-                                    IManager $shareManager,
-                                    AppConfig $appConfig
-                                    ) {
+    public function __construct(
+        $AppName,
+        IRequest $request,
+        IRootFolder $root,
+        ILogger $logger,
+        IUserSession $userSession,
+        IUserManager $userManager,
+        IManager $shareManager,
+        AppConfig $appConfig
+    ) {
         parent::__construct($AppName, $request);
 
         $this->root = $root;
@@ -140,7 +142,8 @@ class SharingApiController extends OCSController {
      * @NoAdminRequired
      * @NoCSRFRequired
      */
-    public function getShares($fileId) {
+    public function getShares($fileId)
+    {
         if ($this->extraPermissions === null) {
             $this->logger->debug("extraPermissions isn't init", ["app" => $this->appName]);
             return new DataResponse([], Http::STATUS_BAD_REQUEST);
@@ -176,7 +179,8 @@ class SharingApiController extends OCSController {
      * @NoAdminRequired
      * @NoCSRFRequired
      */
-    public function setShares($extraId, $shareId, $fileId, $permissions) {
+    public function setShares($extraId, $shareId, $fileId, $permissions)
+    {
         if ($this->extraPermissions === null) {
             $this->logger->debug("extraPermissions isn't init", ["app" => $this->appName]);
             return new DataResponse([], Http::STATUS_BAD_REQUEST);
@@ -209,7 +213,8 @@ class SharingApiController extends OCSController {
      *
      * @return File
      */
-    private function getFile($fileId, $userId) {
+    private function getFile($fileId, $userId)
+    {
         try {
             $folder = $this->root->getUserFolder($userId);
             $files = $folder->getById($fileId);

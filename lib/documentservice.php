@@ -28,7 +28,8 @@ use OCA\Onlyoffice\AppConfig;
  *
  * @package OCA\Onlyoffice
  */
-class DocumentService {
+class DocumentService
+{
 
     /**
      * Application name
@@ -55,7 +56,8 @@ class DocumentService {
      * @param IL10N $trans - l10n service
      * @param AppConfig $config - application configutarion
      */
-    public function __construct(IL10N $trans, AppConfig $appConfig) {
+    public function __construct(IL10N $trans, AppConfig $appConfig)
+    {
         $this->trans = $trans;
         $this->config = $appConfig;
     }
@@ -67,9 +69,10 @@ class DocumentService {
      *
      * @return string
      */
-    public static function GenerateRevisionId($expected_key) {
+    public static function GenerateRevisionId($expected_key)
+    {
         if (strlen($expected_key) > 20) {
-            $expected_key = crc32( $expected_key);
+            $expected_key = crc32($expected_key);
         }
         $key = preg_replace("[^0-9-.a-zA-Z_=]", "_", $expected_key);
         $key = substr($key, 0, min(array(strlen($key), 20)));
@@ -87,7 +90,8 @@ class DocumentService {
      *
      * @return string
      */
-    function GetConvertedUri($document_uri, $from_extension, $to_extension, $document_revision_id, $region = null) {
+    public function GetConvertedUri($document_uri, $from_extension, $to_extension, $document_revision_id, $region = null)
+    {
         $responceFromConvertService = $this->SendRequestToConvertService($document_uri, $from_extension, $to_extension, $document_revision_id, false, $region);
 
         $errorElement = $responceFromConvertService->Error;
@@ -116,7 +120,8 @@ class DocumentService {
      *
      * @return array
      */
-    function SendRequestToConvertService($document_uri, $from_extension, $to_extension, $document_revision_id, $is_async, $region = null) {
+    public function SendRequestToConvertService($document_uri, $from_extension, $to_extension, $document_revision_id, $is_async, $region = null)
+    {
         $documentServerUrl = $this->config->GetDocumentServerInternalUrl();
 
         if (empty($documentServerUrl)) {
@@ -178,7 +183,7 @@ class DocumentService {
 
         libxml_use_internal_errors(true);
         if (!function_exists("simplexml_load_file")) {
-             throw new \Exception($this->trans->t("Server can't read xml"));
+            throw new \Exception($this->trans->t("Server can't read xml"));
         }
         $response_data = simplexml_load_string($response_xml_data);
         if (!$response_data) {
@@ -186,7 +191,7 @@ class DocumentService {
             foreach(libxml_get_errors() as $error) {
                 $exc = $exc . "\t" . $error->message;
             }
-            throw new \Exception ($exc);
+            throw new \Exception($exc);
         }
 
         return $response_data;
@@ -199,7 +204,8 @@ class DocumentService {
      *
      * @return null
      */
-    function ProcessConvServResponceError($errorCode) {
+    public function ProcessConvServResponceError($errorCode)
+    {
         $errorMessageTemplate = $this->trans->t("Error occurred in the document service");
         $errorMessage = "";
 
@@ -246,7 +252,8 @@ class DocumentService {
      *
      * @return bool
      */
-    function HealthcheckRequest() {
+    public function HealthcheckRequest()
+    {
 
         $documentServerUrl = $this->config->GetDocumentServerInternalUrl();
 
@@ -268,7 +275,8 @@ class DocumentService {
      *
      * @return array
      */
-    function CommandRequest($method) {
+    public function CommandRequest($method)
+    {
 
         $documentServerUrl = $this->config->GetDocumentServerInternalUrl();
 
@@ -317,7 +325,8 @@ class DocumentService {
      *
      * @return null
      */
-    function ProcessCommandServResponceError($errorCode) {
+    public function ProcessCommandServResponceError($errorCode)
+    {
         $errorMessageTemplate = $this->trans->t("Error occurred in the document service");
         $errorMessage = "";
 
@@ -350,7 +359,8 @@ class DocumentService {
      *
      * @return string
      */
-    public function Request($url, $method = "get", $opts = null) {
+    public function Request($url, $method = "get", $opts = null)
+    {
         $httpClientService = \OC::$server->getHTTPClientService();
         $client = $httpClientService->newClient();
 
@@ -385,7 +395,8 @@ class DocumentService {
      *
      * @return array
      */
-    public function checkDocServiceUrl($urlGenerator, $crypt) {
+    public function checkDocServiceUrl($urlGenerator, $crypt)
+    {
         $logger = \OC::$server->getLogger();
         $version = null;
 

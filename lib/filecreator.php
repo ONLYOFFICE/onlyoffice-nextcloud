@@ -31,7 +31,8 @@ use OCA\Onlyoffice\TemplateManager;
  *
  * @package OCA\Onlyoffice
  */
-class FileCreator extends ACreateEmpty {
+class FileCreator extends ACreateEmpty
+{
 
     /**
      * Application name
@@ -65,12 +66,14 @@ class FileCreator extends ACreateEmpty {
      * @param string $AppName - application name
      * @param IL10N $trans - l10n service
      * @param ILogger $logger - logger
-     * @param string $format - format for creation 
+     * @param string $format - format for creation
      */
-    public function __construct($AppName,
-                                IL10N $trans,
-                                ILogger $logger,
-                                $format) {
+    public function __construct(
+        $AppName,
+        IL10N $trans,
+        ILogger $logger,
+        $format
+    ) {
         $this->appName = $AppName;
         $this->trans = $trans;
         $this->logger = $logger;
@@ -82,7 +85,8 @@ class FileCreator extends ACreateEmpty {
      *
      * @return string
      */
-    public function getId(): string {
+    public function getId(): string
+    {
         return $this->appName . "_" . $this->format;
     }
 
@@ -91,7 +95,8 @@ class FileCreator extends ACreateEmpty {
      *
      * @return string
      */
-    public function getName(): string {
+    public function getName(): string
+    {
         switch ($this->format) {
             case "xlsx":
                 return $this->trans->t("New spreadsheet");
@@ -106,7 +111,8 @@ class FileCreator extends ACreateEmpty {
      *
      * @return string
      */
-    public function getExtension(): string {
+    public function getExtension(): string
+    {
         return $this->format;
     }
 
@@ -115,7 +121,8 @@ class FileCreator extends ACreateEmpty {
      *
      * @return array
      */
-    public function getMimetype(): string {
+    public function getMimetype(): string
+    {
         switch ($this->format) {
             case "xlsx":
                 return "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
@@ -132,7 +139,8 @@ class FileCreator extends ACreateEmpty {
      * @param string $creatorId - creator id
      * @param string $templateId - teamplate id
      */
-    public function create(File $file, string $creatorId = null, string $templateId = null): void {
+    public function create(File $file, string $creatorId = null, string $templateId = null): void
+    {
         $this->logger->debug("FileCreator: " . $file->getId() . " " . $file->getName() . " $creatorId $templateId", ["app" => $this->appName]);
 
         $fileName = $file->getName();

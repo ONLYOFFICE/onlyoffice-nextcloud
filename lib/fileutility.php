@@ -36,7 +36,8 @@ use OCA\Onlyoffice\RemoteInstance;
  *
  * @package OCA\Onlyoffice
  */
-class FileUtility {
+class FileUtility
+{
 
     /**
      * Application name
@@ -88,12 +89,14 @@ class FileUtility {
      * @param IManager $shareManager - Share manager
      * @param IManager $ISession - Session
      */
-    public function __construct($AppName,
-                                IL10N $trans,
-                                ILogger $logger,
-                                AppConfig $config,
-                                IManager $shareManager,
-                                ISession $session) {
+    public function __construct(
+        $AppName,
+        IL10N $trans,
+        ILogger $logger,
+        AppConfig $config,
+        IManager $shareManager,
+        ISession $session
+    ) {
         $this->appName = $AppName;
         $this->trans = $trans;
         $this->logger = $logger;
@@ -111,8 +114,9 @@ class FileUtility {
      *
      * @return array
      */
-    public function getFileByToken($fileId, $shareToken, $path = null) {
-        list ($node, $error, $share) = $this->getNodeByToken($shareToken);
+    public function getFileByToken($fileId, $shareToken, $path = null)
+    {
+        list($node, $error, $share) = $this->getNodeByToken($shareToken);
 
         if (isset($error)) {
             return [null, $error, null];
@@ -154,8 +158,9 @@ class FileUtility {
      *
      * @return array
      */
-    public function getNodeByToken($shareToken) {
-        list ($share, $error) = $this->getShare($shareToken);
+    public function getNodeByToken($shareToken)
+    {
+        list($share, $error) = $this->getShare($shareToken);
 
         if (isset($error)) {
             return [null, $error, null];
@@ -182,7 +187,8 @@ class FileUtility {
      *
      * @return array
      */
-    public function getShare($shareToken) {
+    public function getShare($shareToken)
+    {
         if (empty($shareToken)) {
             return [null, $this->trans->t("FileId is empty")];
         }
@@ -216,7 +222,8 @@ class FileUtility {
      *
      * @return string
      */
-    public function getKey($file, $origin = false) {
+    public function getKey($file, $origin = false)
+    {
         $fileId = $file->getId();
 
         if ($origin
@@ -230,7 +237,7 @@ class FileUtility {
 
         $key = KeyManager::get($fileId);
 
-        if (empty($key) ) {
+        if (empty($key)) {
             $instanceId = $this->config->GetSystemValue("instanceid", true);
 
             $key = $instanceId . "_" . $this->GUID();
@@ -248,8 +255,7 @@ class FileUtility {
      */
     private function GUID()
     {
-        if (function_exists("com_create_guid") === true)
-        {
+        if (function_exists("com_create_guid") === true) {
             return trim(com_create_guid(), "{}");
         }
 
@@ -263,7 +269,8 @@ class FileUtility {
      *
      * @return string
      */
-    public function getVersionKey($version) {
+    public function getVersionKey($version)
+    {
         $instanceId = $this->config->GetSystemValue("instanceid", true);
 
         $key = $instanceId . "_" . $version->getSourceFile()->getEtag() . "_" . $version->getRevisionId();

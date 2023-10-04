@@ -26,7 +26,8 @@ use OCA\Onlyoffice\AppConfig;
  *
  * @package OCA\Onlyoffice
  */
-class Crypt {
+class Crypt
+{
 
     /**
      * Application configuration
@@ -38,7 +39,8 @@ class Crypt {
     /**
      * @param AppConfig $config - application configutarion
      */
-    public function __construct(AppConfig $appConfig) {
+    public function __construct(AppConfig $appConfig)
+    {
         $this->config = $appConfig;
     }
 
@@ -49,7 +51,8 @@ class Crypt {
      *
      * @return string
      */
-    public function GetHash($object) {
+    public function GetHash($object)
+    {
         return \Firebase\JWT\JWT::encode($object, $this->config->GetSKey(), "HS256");
     }
 
@@ -60,7 +63,8 @@ class Crypt {
      *
      * @return array
      */
-    public function ReadHash($token) {
+    public function ReadHash($token)
+    {
         $result = null;
         $error = null;
         if ($token === null) {

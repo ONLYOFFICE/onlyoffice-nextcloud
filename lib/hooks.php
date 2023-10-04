@@ -32,7 +32,8 @@ use OCA\Onlyoffice\ExtraPermissions;
  *
  * @package OCA\Onlyoffice
  */
-class Hooks {
+class Hooks
+{
 
     /**
      * Application name
@@ -41,7 +42,8 @@ class Hooks {
      */
     private static $appName = "onlyoffice";
 
-    public static function connectHooks() {
+    public static function connectHooks()
+    {
         // Listen user deletion
         Util::connectHook("OC_User", "pre_deleteUser", Hooks::class, "userDelete");
 
@@ -66,7 +68,8 @@ class Hooks {
      *
      * @param array $params - hook params
      */
-    public static function userDelete($params) {
+    public static function userDelete($params)
+    {
         $userId = $params["uid"];
 
         FileVersions::deleteAllVersions($userId);
@@ -77,7 +80,8 @@ class Hooks {
      *
      * @param array $params - hook params
      */
-    public static function fileUpdate($params) {
+    public static function fileUpdate($params)
+    {
         $filePath = $params[Filesystem::signal_param_path];
         if (empty($filePath)) {
             return;
@@ -100,7 +104,8 @@ class Hooks {
      *
      * @param array $params - hook params
      */
-    public static function fileDelete($params) {
+    public static function fileDelete($params)
+    {
         $filePath = $params[Filesystem::signal_param_path];
         if (empty($filePath)) {
             return;
@@ -133,14 +138,15 @@ class Hooks {
      *
      * @param array $params - hook param
      */
-    public static function fileVersionDelete($params) {
+    public static function fileVersionDelete($params)
+    {
         $pathVersion = $params["path"];
         if (empty($pathVersion)) {
             return;
         }
 
         try {
-            list ($filePath, $versionId) = FileVersions::splitPathVersion($pathVersion);
+            list($filePath, $versionId) = FileVersions::splitPathVersion($pathVersion);
             if (empty($filePath)) {
                 return;
             }
@@ -169,7 +175,8 @@ class Hooks {
      *
      * @param array $params - hook param
      */
-    public static function fileVersionRestore($params) {
+    public static function fileVersionRestore($params)
+    {
         $filePath = $params["path"];
         if (empty($filePath)) {
             return;
@@ -204,7 +211,8 @@ class Hooks {
      *
      * @param array $params - hook param
      */
-    public static function extraPermissionsDelete($params) {
+    public static function extraPermissionsDelete($params)
+    {
         $shares = $params["deletedShares"];
         if (empty($shares)) {
             return;

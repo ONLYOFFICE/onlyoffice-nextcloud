@@ -60,7 +60,8 @@ use OCA\Onlyoffice\TemplateManager;
  * Download the file without authentication.
  * Save the file without authentication.
  */
-class CallbackController extends Controller {
+class CallbackController extends Controller
+{
 
     /**
      * Root folder
@@ -155,18 +156,19 @@ class CallbackController extends Controller {
      * @param IManager $shareManager - Share manager
      * @param ILockManager $lockManager - Lock manager
      */
-    public function __construct($AppName,
-                                    IRequest $request,
-                                    IRootFolder $root,
-                                    IUserSession $userSession,
-                                    IUserManager $userManager,
-                                    IL10N $trans,
-                                    ILogger $logger,
-                                    AppConfig $config,
-                                    Crypt $crypt,
-                                    IManager $shareManager,
-                                    ILockManager $lockManager
-                                    ) {
+    public function __construct(
+        $AppName,
+        IRequest $request,
+        IRootFolder $root,
+        IUserSession $userSession,
+        IUserManager $userManager,
+        IL10N $trans,
+        ILogger $logger,
+        AppConfig $config,
+        Crypt $crypt,
+        IManager $shareManager,
+        ILockManager $lockManager
+    ) {
         parent::__construct($AppName, $request);
 
         $this->root = $root;
@@ -201,9 +203,10 @@ class CallbackController extends Controller {
      * @PublicPage
      * @CORS
      */
-    public function download($doc) {
+    public function download($doc)
+    {
 
-        list ($hashData, $error) = $this->crypt->ReadHash($doc);
+        list($hashData, $error) = $this->crypt->ReadHash($doc);
         if ($hashData === null) {
             $this->logger->error("Download with empty or not correct hash: $error", ["app" => $this->appName]);
             return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
@@ -251,7 +254,7 @@ class CallbackController extends Controller {
         }
 
         $shareToken = isset($hashData->shareToken) ? $hashData->shareToken : null;
-        list ($file, $error) = empty($shareToken) ? $this->getFile($userId, $fileId, null, $changes ? null : $version, $template) : $this->getFileByToken($fileId, $shareToken, $changes ? null : $version);
+        list($file, $error) = empty($shareToken) ? $this->getFile($userId, $fileId, null, $changes ? null : $version, $template) : $this->getFileByToken($fileId, $shareToken, $changes ? null : $version);
 
         if (isset($error)) {
             return $error;
@@ -325,10 +328,11 @@ class CallbackController extends Controller {
      * @PublicPage
      * @CORS
      */
-    public function emptyfile($doc) {
+    public function emptyfile($doc)
+    {
         $this->logger->debug("Download empty", ["app" => $this->appName]);
 
-        list ($hashData, $error) = $this->crypt->ReadHash($doc);
+        list($hashData, $error) = $this->crypt->ReadHash($doc);
         if ($hashData === null) {
             $this->logger->error("Download empty with empty or not correct hash: $error", ["app" => $this->appName]);
             return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
@@ -394,9 +398,10 @@ class CallbackController extends Controller {
      * @PublicPage
      * @CORS
      */
-    public function track($doc, $users, $key, $status, $url, $token, $history, $changesurl, $forcesavetype, $actions, $filetype) {
+    public function track($doc, $users, $key, $status, $url, $token, $history, $changesurl, $forcesavetype, $actions, $filetype)
+    {
 
-        list ($hashData, $error) = $this->crypt->ReadHash($doc);
+        list($hashData, $error) = $this->crypt->ReadHash($doc);
         if ($hashData === null) {
             $this->logger->error("Track with empty or not correct hash: $error", ["app" => $this->appName]);
             return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
@@ -501,10 +506,10 @@ class CallbackController extends Controller {
             \OC_Util::setupFS($userId);
         }
 
-        list ($file, $error) = empty($shareToken) ? $this->getFile($userId, $fileId, $filePath) : $this->getFileByToken($fileId, $shareToken);
+        list($file, $error) = empty($shareToken) ? $this->getFile($userId, $fileId, $filePath) : $this->getFileByToken($fileId, $shareToken);
 
         if (isset($error)) {
-            $this->logger->error("track error $fileId " . json_encode($error->getData()),  ["app" => $this->appName]);
+            $this->logger->error("track error $fileId " . json_encode($error->getData()), ["app" => $this->appName]);
             return $error;
         }
 
@@ -632,7 +637,8 @@ class CallbackController extends Controller {
      *
      * @return array
      */
-    private function getFile($userId, $fileId, $filePath = null, $version = 0, $template = false) {
+    private function getFile($userId, $fileId, $filePath = null, $version = 0, $template = false)
+    {
         if (empty($fileId)) {
             return [null, new JSONResponse(["message" => $this->trans->t("FileId is empty")], Http::STATUS_BAD_REQUEST)];
         }
@@ -672,7 +678,7 @@ class CallbackController extends Controller {
 
             if ($owner !== null) {
                 if ($owner->getUID() !== $userId) {
-                    list ($file, $error) = $this->getFile($owner->getUID(), $file->getId());
+                    list($file, $error) = $this->getFile($owner->getUID(), $file->getId());
 
                     if (isset($error)) {
                         return [null, $error];
@@ -699,8 +705,9 @@ class CallbackController extends Controller {
      *
      * @return array
      */
-    private function getFileByToken($fileId, $shareToken, $version = 0) {
-        list ($share, $error) = $this->getShare($shareToken);
+    private function getFileByToken($fileId, $shareToken, $version = 0)
+    {
+        list($share, $error) = $this->getShare($shareToken);
 
         if (isset($error)) {
             return [null, $error];
@@ -751,7 +758,8 @@ class CallbackController extends Controller {
      *
      * @return array
      */
-    private function getShare($shareToken) {
+    private function getShare($shareToken)
+    {
         if (empty($shareToken)) {
             return [null, new JSONResponse(["message" => $this->trans->t("FileId is empty")], Http::STATUS_BAD_REQUEST)];
         }
@@ -778,7 +786,8 @@ class CallbackController extends Controller {
      *
      * @return string
      */
-    private function parseUserId($userId) {
+    private function parseUserId($userId)
+    {
         $instanceId = $this->config->GetSystemValue("instanceid", true);
         $instanceId = $instanceId . "_";
 
@@ -794,7 +803,8 @@ class CallbackController extends Controller {
      *
      * @param File $file - file
      */
-    private function lock($file) {
+    private function lock($file)
+    {
         if (!$this->lockManager->isLockProviderAvailable()) {
             return;
         }
@@ -807,7 +817,8 @@ class CallbackController extends Controller {
 
                 $this->logger->debug("$this->appName has locked file $fileId", ["app" => $this->appName]);
             }
-        } catch (PreConditionNotMetException | OwnerLockedException | NoLockProviderException $e) {}
+        } catch (PreConditionNotMetException | OwnerLockedException | NoLockProviderException $e) {
+        }
     }
 
     /**
@@ -815,7 +826,8 @@ class CallbackController extends Controller {
      *
      * @param File $file - file
      */
-    private function unlock($file) {
+    private function unlock($file)
+    {
         if (!$this->lockManager->isLockProviderAvailable()) {
             return;
         }
@@ -826,7 +838,8 @@ class CallbackController extends Controller {
             $this->lockManager->unlock(new LockContext($file, ILock::TYPE_APP, $this->appName));
 
             $this->logger->debug("$this->appName has unlocked file $fileId", ["app" => $this->appName]);
-        } catch (PreConditionNotMetException | NoLockProviderException $e) {}
+        } catch (PreConditionNotMetException | NoLockProviderException $e) {
+        }
     }
 
     /**
@@ -837,7 +850,8 @@ class CallbackController extends Controller {
      *
      * @throws LockedException
      */
-    private function retryOperation(callable $operation) {
+    private function retryOperation(callable $operation)
+    {
         $i = 0;
         while (true) {
             try {

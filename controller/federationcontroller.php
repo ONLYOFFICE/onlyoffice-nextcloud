@@ -36,7 +36,8 @@ use OCA\Onlyoffice\RemoteInstance;
 /**
  * OCS handler
  */
-class FederationController extends OCSController {
+class FederationController extends OCSController
+{
 
     /**
      * Logger
@@ -67,13 +68,14 @@ class FederationController extends OCSController {
      * @param IManager $shareManager - Share manager
      * @param IManager $ISession - Session
      */
-    public function __construct($AppName,
-                                    IRequest $request,
-                                    IL10N $trans,
-                                    ILogger $logger,
-                                    IManager $shareManager,
-                                    ISession $session
-                                    ) {
+    public function __construct(
+        $AppName,
+        IRequest $request,
+        IL10N $trans,
+        ILogger $logger,
+        IManager $shareManager,
+        ISession $session
+    ) {
         parent::__construct($AppName, $request);
 
         $this->logger = $logger;
@@ -94,8 +96,9 @@ class FederationController extends OCSController {
      * @NoCSRFRequired
      * @PublicPage
      */
-    public function key($shareToken, $path) {
-        list ($file, $error, $share) = $this->fileUtility->getFileByToken(null, $shareToken, $path);
+    public function key($shareToken, $path)
+    {
+        list($file, $error, $share) = $this->fileUtility->getFileByToken(null, $shareToken, $path);
 
         if (isset($error)) {
             $this->logger->error("Federated getFileByToken: $error", ["app" => $this->appName]);
@@ -125,8 +128,9 @@ class FederationController extends OCSController {
      * @NoCSRFRequired
      * @PublicPage
      */
-    public function keylock($shareToken, $path, $lock, $fs) {
-        list ($file, $error, $share) = $this->fileUtility->getFileByToken(null, $shareToken, $path);
+    public function keylock($shareToken, $path, $lock, $fs)
+    {
+        list($file, $error, $share) = $this->fileUtility->getFileByToken(null, $shareToken, $path);
 
         if (isset($error)) {
             $this->logger->error("Federated getFileByToken: $error", ["app" => $this->appName]);
@@ -160,7 +164,8 @@ class FederationController extends OCSController {
      * @NoCSRFRequired
      * @PublicPage
      */
-    public function healthcheck() {
+    public function healthcheck()
+    {
         $this->logger->debug("Federated healthcheck", ["app" => $this->appName]);
 
         return new DataResponse(["alive" => true]);

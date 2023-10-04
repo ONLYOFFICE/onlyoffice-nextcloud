@@ -29,7 +29,8 @@ use OCA\Onlyoffice\DirectEditor;
 /**
  * DirectEditor listener
  */
-class DirectEditorListener implements IEventListener {
+class DirectEditorListener implements IEventListener
+{
 
     /**
      * Application configuration
@@ -49,13 +50,16 @@ class DirectEditorListener implements IEventListener {
      * @param AppConfig $config - application configuration
      * @param DirectEditor $editor - direct editor
      */
-    public function __construct(AppConfig $appConfig,
-                                    DirectEditor $editor) {
+    public function __construct(
+        AppConfig $appConfig,
+        DirectEditor $editor
+    ) {
         $this->appConfig = $appConfig;
         $this->editor = $editor;
     }
 
-    public function handle(Event $event): void {
+    public function handle(Event $event): void
+    {
         if (!$event instanceof RegisterDirectEditorEvent) {
             return;
         }

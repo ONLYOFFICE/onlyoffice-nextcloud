@@ -36,7 +36,8 @@ use OCA\Onlyoffice\DocumentService;
  * Editors availability check background job
  *
  */
-class EditorsCheck extends TimedJob {
+class EditorsCheck extends TimedJob
+{
 
     /**
      * Application name
@@ -95,13 +96,15 @@ class EditorsCheck extends TimedJob {
      * @param IL10N $trans - l10n service
      * @param Crypt $crypt - crypt service
      */
-    public function __construct(string $AppName,
-                            IURLGenerator $urlGenerator,
-                            ITimeFactory $time,
-                            AppConfig $config,
-                            IL10N $trans,
-                            Crypt $crypt,
-                            IGroupManager $groupManager) {
+    public function __construct(
+        string $AppName,
+        IURLGenerator $urlGenerator,
+        ITimeFactory $time,
+        AppConfig $config,
+        IL10N $trans,
+        Crypt $crypt,
+        IGroupManager $groupManager
+    ) {
         parent::__construct($time);
         $this->appName = $AppName;
         $this->urlGenerator = $urlGenerator;
@@ -120,7 +123,8 @@ class EditorsCheck extends TimedJob {
      *
      * @param array $argument unused argument
      */
-    protected function run($argument) {
+    protected function run($argument)
+    {
         if (empty($this->config->GetDocumentServerUrl())) {
             $this->logger->debug("Settings are empty", ["app" => $this->appName]);
             return;
@@ -136,13 +140,13 @@ class EditorsCheck extends TimedJob {
         $host = parse_url($fileUrl)["host"];
         if ($host === "localhost" || $host === "127.0.0.1") {
             $this->logger->debug("Localhost is not alowed for cron editors availability check. Please provide server address for internal requests from ONLYOFFICE Docs", ["app" => $this->appName]);
-            return; 
+            return;
         }
 
         $this->logger->debug("ONLYOFFICE check started by cron", ["app" => $this->appName]);
 
         $documentService = new DocumentService($this->trans, $this->config);
-        list ($error, $version) = $documentService->checkDocServiceUrl($this->urlGenerator, $this->crypt);
+        list($error, $version) = $documentService->checkDocServiceUrl($this->urlGenerator, $this->crypt);
 
         if (!empty($error)) {
             $this->logger->info("ONLYOFFICE server is not available", ["app" => $this->appName]);
@@ -158,7 +162,8 @@ class EditorsCheck extends TimedJob {
      *
      * @return string[]
      */
-    private function getUsersToNotify() {
+    private function getUsersToNotify()
+    {
         $notifyGroups = ["admin"];
         $notifyUsers = [];
 
@@ -179,7 +184,8 @@ class EditorsCheck extends TimedJob {
      * Send notification to admins
      * @return void
      */
-    private function notifyAdmins() {
+    private function notifyAdmins()
+    {
         $notificationManager = \OC::$server->getNotificationManager();
         $notification = $notificationManager->createNotification();
         $notification->setApp($this->appName)
