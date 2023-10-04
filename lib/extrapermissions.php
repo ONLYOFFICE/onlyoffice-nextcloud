@@ -33,8 +33,7 @@ use OCA\Onlyoffice\AppConfig;
  *
  * @package OCA\Onlyoffice
  */
-class ExtraPermissions
-{
+class ExtraPermissions {
 
     /**
      * Application name
@@ -105,8 +104,7 @@ class ExtraPermissions
      *
      * @return array
      */
-    public function getExtra($shareId)
-    {
+    public function getExtra($shareId) {
         $share = $this->getShare($shareId);
         if (empty($share)) {
             return null;
@@ -149,8 +147,7 @@ class ExtraPermissions
      *
      * @return array
      */
-    public function getExtras($shares)
-    {
+    public function getExtras($shares) {
         $result = [];
 
         $shareIds = [];
@@ -217,8 +214,7 @@ class ExtraPermissions
      *
      * @return bool
      */
-    public function setExtra($shareId, $permissions, $extraId)
-    {
+    public function setExtra($shareId, $permissions, $extraId) {
         $result = false;
 
         $share = $this->getShare($shareId);
@@ -248,8 +244,7 @@ class ExtraPermissions
      *
      * @return bool
      */
-    public static function delete($shareId)
-    {
+    public static function delete($shareId) {
         $connection = \OC::$server->getDatabaseConnection();
         $delete = $connection->prepare("
             DELETE FROM `*PREFIX*" . self::TableName_Key . "`
@@ -265,8 +260,7 @@ class ExtraPermissions
      *
      * @return bool
      */
-    public static function deleteList($shareIds)
-    {
+    public static function deleteList($shareIds) {
         $connection = \OC::$server->getDatabaseConnection();
 
         $condition = "";
@@ -290,8 +284,7 @@ class ExtraPermissions
      *
      * @return array
      */
-    private static function get($shareId)
-    {
+    private static function get($shareId) {
         $connection = \OC::$server->getDatabaseConnection();
         $select = $connection->prepare("
             SELECT id, share_id, permissions
@@ -323,8 +316,7 @@ class ExtraPermissions
      *
      * @return array
      */
-    private static function getList($shareIds)
-    {
+    private static function getList($shareIds) {
         $connection = \OC::$server->getDatabaseConnection();
 
         $condition = "";
@@ -366,8 +358,7 @@ class ExtraPermissions
      *
      * @return bool
      */
-    private static function insert($shareId, $permissions)
-    {
+    private static function insert($shareId, $permissions) {
         $connection = \OC::$server->getDatabaseConnection();
         $insert = $connection->prepare("
             INSERT INTO `*PREFIX*" . self::TableName_Key . "`
@@ -385,8 +376,7 @@ class ExtraPermissions
      *
      * @return bool
      */
-    private static function update($shareId, $permissions)
-    {
+    private static function update($shareId, $permissions) {
         $connection = \OC::$server->getDatabaseConnection();
         $update = $connection->prepare("
             UPDATE `*PREFIX*" . self::TableName_Key . "`
@@ -404,8 +394,7 @@ class ExtraPermissions
      *
      * @return array
      */
-    private function validation($share, $checkExtra)
-    {
+    private function validation($share, $checkExtra) {
         $availableExtra = self::None;
         $defaultExtra = self::None;
 
@@ -450,8 +439,7 @@ class ExtraPermissions
      *
      * @return IShare
      */
-    private function getShare($shareId)
-    {
+    private function getShare($shareId) {
         try {
             $share = $this->shareManager->getShareById("ocinternal:" . $shareId);
         } catch (ShareNotFound $e) {

@@ -29,8 +29,7 @@ use OCA\Onlyoffice\AppConfig;
 /**
  * Widget listener
  */
-class WidgetListener implements IEventListener
-{
+class WidgetListener implements IEventListener {
 
     /**
      * Application configuration
@@ -42,13 +41,11 @@ class WidgetListener implements IEventListener
     /**
      * @param AppConfig $config - application configuration
      */
-    public function __construct(AppConfig $appConfig)
-    {
+    public function __construct(AppConfig $appConfig) {
         $this->appConfig = $appConfig;
     }
 
-    public function handle(Event $event): void
-    {
+    public function handle(Event $event): void {
         if (!$event instanceof RegisterWidgetEvent) {
             return;
         }

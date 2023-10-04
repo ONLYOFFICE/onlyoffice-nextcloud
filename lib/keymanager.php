@@ -24,8 +24,7 @@ namespace OCA\Onlyoffice;
  *
  * @package OCA\Onlyoffice
  */
-class KeyManager
-{
+class KeyManager {
 
     /**
      * Table name
@@ -39,8 +38,7 @@ class KeyManager
      *
      * @return string
      */
-    public static function get($fileId)
-    {
+    public static function get($fileId) {
         $connection = \OC::$server->getDatabaseConnection();
         $select = $connection->prepare("
             SELECT `key`
@@ -63,8 +61,7 @@ class KeyManager
      *
      * @return bool
      */
-    public static function set($fileId, $key)
-    {
+    public static function set($fileId, $key) {
         $connection = \OC::$server->getDatabaseConnection();
         $insert = $connection->prepare("
             INSERT INTO `*PREFIX*" . self::TableName_Key . "`
@@ -82,8 +79,7 @@ class KeyManager
      *
      * @return bool
      */
-    public static function delete($fileId, $unlock = false)
-    {
+    public static function delete($fileId, $unlock = false) {
         $connection = \OC::$server->getDatabaseConnection();
         $delete = $connection->prepare(
             "
@@ -102,8 +98,7 @@ class KeyManager
      *
      * @return bool
      */
-    public static function lock($fileId, $lock = true)
-    {
+    public static function lock($fileId, $lock = true) {
         $connection = \OC::$server->getDatabaseConnection();
         $update = $connection->prepare("
             UPDATE `*PREFIX*" . self::TableName_Key . "`
@@ -121,8 +116,7 @@ class KeyManager
      *
      * @return bool
      */
-    public static function setForcesave($fileId, $fs = true)
-    {
+    public static function setForcesave($fileId, $fs = true) {
         $connection = \OC::$server->getDatabaseConnection();
         $update = $connection->prepare("
             UPDATE `*PREFIX*" . self::TableName_Key . "`
@@ -139,8 +133,7 @@ class KeyManager
      *
      * @return bool
      */
-    public static function wasForcesave($fileId)
-    {
+    public static function wasForcesave($fileId) {
         $connection = \OC::$server->getDatabaseConnection();
         $select = $connection->prepare("
             SELECT `fs`

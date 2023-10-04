@@ -27,8 +27,7 @@ use OCP\Notification\IAction;
 use OCP\Notification\INotification;
 use OCP\Notification\INotifier;
 
-class Notifier implements INotifier
-{
+class Notifier implements INotifier {
 
     /**
      * Application name
@@ -91,8 +90,7 @@ class Notifier implements INotifier
      *
      * @return string
      */
-    public function getID(): string
-    {
+    public function getID(): string {
         return $this->appName;
     }
 
@@ -101,8 +99,7 @@ class Notifier implements INotifier
      *
      * @return string
      */
-    public function getName(): string
-    {
+    public function getName(): string {
         return $this->appName;
     }
 
@@ -112,8 +109,7 @@ class Notifier implements INotifier
      *
      * @return INotification
      */
-    public function prepare(INotification $notification, string $languageCode): INotification
-    {
+    public function prepare(INotification $notification, string $languageCode): INotification {
         if ($notification->getApp() !== $this->appName) {
             throw new \InvalidArgumentException("Notification not from " . $this->appName);
         }

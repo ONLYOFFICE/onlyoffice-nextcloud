@@ -36,8 +36,7 @@ use OCA\Onlyoffice\RemoteInstance;
  *
  * @package OCA\Onlyoffice
  */
-class FileUtility
-{
+class FileUtility {
 
     /**
      * Application name
@@ -114,8 +113,7 @@ class FileUtility
      *
      * @return array
      */
-    public function getFileByToken($fileId, $shareToken, $path = null)
-    {
+    public function getFileByToken($fileId, $shareToken, $path = null) {
         list($node, $error, $share) = $this->getNodeByToken($shareToken);
 
         if (isset($error)) {
@@ -158,8 +156,7 @@ class FileUtility
      *
      * @return array
      */
-    public function getNodeByToken($shareToken)
-    {
+    public function getNodeByToken($shareToken) {
         list($share, $error) = $this->getShare($shareToken);
 
         if (isset($error)) {
@@ -187,8 +184,7 @@ class FileUtility
      *
      * @return array
      */
-    public function getShare($shareToken)
-    {
+    public function getShare($shareToken) {
         if (empty($shareToken)) {
             return [null, $this->trans->t("FileId is empty")];
         }
@@ -222,8 +218,7 @@ class FileUtility
      *
      * @return string
      */
-    public function getKey($file, $origin = false)
-    {
+    public function getKey($file, $origin = false) {
         $fileId = $file->getId();
 
         if ($origin
@@ -253,8 +248,7 @@ class FileUtility
      *
      * @return string
      */
-    private function GUID()
-    {
+    private function GUID() {
         if (function_exists("com_create_guid") === true) {
             return trim(com_create_guid(), "{}");
         }
@@ -269,8 +263,7 @@ class FileUtility
      *
      * @return string
      */
-    public function getVersionKey($version)
-    {
+    public function getVersionKey($version) {
         $instanceId = $this->config->GetSystemValue("instanceid", true);
 
         $key = $instanceId . "_" . $version->getSourceFile()->getEtag() . "_" . $version->getRevisionId();

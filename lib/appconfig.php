@@ -30,8 +30,7 @@ use OCP\ILogger;
  *
  * @package OCA\Onlyoffice
  */
-class AppConfig
-{
+class AppConfig {
 
     /**
      * Application name
@@ -330,8 +329,7 @@ class AppConfig
     /**
      * @param string $AppName - application name
      */
-    public function __construct($AppName)
-    {
+    public function __construct($AppName) {
 
         $this->appName = $AppName;
 
@@ -347,8 +345,7 @@ class AppConfig
      *
      * @return string
      */
-    public function GetSystemValue($key, $system = false)
-    {
+    public function GetSystemValue($key, $system = false) {
         if ($system) {
             return $this->config->getSystemValue($key);
         }
@@ -366,8 +363,7 @@ class AppConfig
      *
      * @return bool
      */
-    public function SelectDemo($value)
-    {
+    public function SelectDemo($value) {
         $this->logger->info("Select demo: " . json_encode($value), ["app" => $this->appName]);
 
         $data = $this->GetDemoData();
@@ -391,8 +387,7 @@ class AppConfig
      *
      * @return array
      */
-    public function GetDemoData()
-    {
+    public function GetDemoData() {
         $data = $this->config->getAppValue($this->appName, $this->_demo, "");
 
         if (empty($data)) {
@@ -421,8 +416,7 @@ class AppConfig
      *
      * @return bool
      */
-    public function UseDemo()
-    {
+    public function UseDemo() {
         return $this->GetDemoData()["enabled"] === true;
     }
 
@@ -431,8 +425,7 @@ class AppConfig
      *
      * @param string $documentServer - document service address
      */
-    public function SetDocumentServerUrl($documentServer)
-    {
+    public function SetDocumentServerUrl($documentServer) {
         $documentServer = trim($documentServer);
         if (strlen($documentServer) > 0) {
             $documentServer = rtrim($documentServer, "/") . "/";
@@ -453,8 +446,7 @@ class AppConfig
      *
      * @return string
      */
-    public function GetDocumentServerUrl($origin = false)
-    {
+    public function GetDocumentServerUrl($origin = false) {
         if (!$origin && $this->UseDemo()) {
             return $this->DEMO_PARAM["ADDR"];
         }
@@ -477,8 +469,7 @@ class AppConfig
      *
      * @param string $documentServerInternal - document service address
      */
-    public function SetDocumentServerInternalUrl($documentServerInternal)
-    {
+    public function SetDocumentServerInternalUrl($documentServerInternal) {
         $documentServerInternal = rtrim(trim($documentServerInternal), "/");
         if (strlen($documentServerInternal) > 0) {
             $documentServerInternal = $documentServerInternal . "/";
@@ -499,8 +490,7 @@ class AppConfig
      *
      * @return string
      */
-    public function GetDocumentServerInternalUrl($origin = false)
-    {
+    public function GetDocumentServerInternalUrl($origin = false) {
         if (!$origin && $this->UseDemo()) {
             return $this->GetDocumentServerUrl();
         }
@@ -522,8 +512,7 @@ class AppConfig
      *
      * @return string
      */
-    public function ReplaceDocumentServerUrlToInternal($url)
-    {
+    public function ReplaceDocumentServerUrlToInternal($url) {
         $documentServerUrl = $this->GetDocumentServerInternalUrl();
         if (!empty($documentServerUrl)) {
             $from = $this->GetDocumentServerUrl();
@@ -547,8 +536,7 @@ class AppConfig
      *
      * @param string $documentServer - document service address
      */
-    public function SetStorageUrl($storageUrl)
-    {
+    public function SetStorageUrl($storageUrl) {
         $storageUrl = rtrim(trim($storageUrl), "/");
         if (strlen($storageUrl) > 0) {
             $storageUrl = $storageUrl . "/";
@@ -567,8 +555,7 @@ class AppConfig
      *
      * @return string
      */
-    public function GetStorageUrl()
-    {
+    public function GetStorageUrl() {
         $url = $this->config->getAppValue($this->appName, $this->_storageUrl, "");
         if (empty($url)) {
             $url = $this->GetSystemValue($this->_storageUrl);
@@ -581,8 +568,7 @@ class AppConfig
      *
      * @param string $secret - secret key
      */
-    public function SetDocumentServerSecret($secret)
-    {
+    public function SetDocumentServerSecret($secret) {
         $secret = trim($secret);
         if (empty($secret)) {
             $this->logger->info("Clear secret key", ["app" => $this->appName]);
@@ -600,8 +586,7 @@ class AppConfig
      *
      * @return string
      */
-    public function GetDocumentServerSecret($origin = false)
-    {
+    public function GetDocumentServerSecret($origin = false) {
         if (!$origin && $this->UseDemo()) {
             return $this->DEMO_PARAM["SECRET"];
         }
@@ -618,8 +603,7 @@ class AppConfig
      *
      * @return string
      */
-    public function GetSKey()
-    {
+    public function GetSKey() {
         $secret = $this->GetDocumentServerSecret();
         if (empty($secret)) {
             $secret = $this->GetSystemValue($this->_cryptSecret, true);
@@ -632,8 +616,7 @@ class AppConfig
      *
      * @param array $formats - formats with status
      */
-    public function SetDefaultFormats($formats)
-    {
+    public function SetDefaultFormats($formats) {
         $value = json_encode($formats);
         $this->logger->info("Set default formats: $value", ["app" => $this->appName]);
 
@@ -645,8 +628,7 @@ class AppConfig
      *
      * @return array
      */
-    private function GetDefaultFormats()
-    {
+    private function GetDefaultFormats() {
         $value = $this->config->getAppValue($this->appName, $this->_defFormats, "");
         if (empty($value)) {
             return array();
@@ -659,8 +641,7 @@ class AppConfig
      *
      * @param array $formats - formats with status
      */
-    public function SetEditableFormats($formats)
-    {
+    public function SetEditableFormats($formats) {
         $value = json_encode($formats);
         $this->logger->info("Set editing formats: $value", ["app" => $this->appName]);
 
@@ -672,8 +653,7 @@ class AppConfig
      *
      * @return array
      */
-    private function GetEditableFormats()
-    {
+    private function GetEditableFormats() {
         $value = $this->config->getAppValue($this->appName, $this->_editFormats, "");
         if (empty($value)) {
             return array();
@@ -686,8 +666,7 @@ class AppConfig
      *
      * @param bool $value - same tab
      */
-    public function SetSameTab($value)
-    {
+    public function SetSameTab($value) {
         $this->logger->info("Set opening in a same tab: " . json_encode($value), ["app" => $this->appName]);
 
         $this->config->setAppValue($this->appName, $this->_sameTab, json_encode($value));
@@ -698,8 +677,7 @@ class AppConfig
      *
      * @return bool
      */
-    public function GetSameTab()
-    {
+    public function GetSameTab() {
         return $this->config->getAppValue($this->appName, $this->_sameTab, "true") === "true";
     }
 
@@ -708,8 +686,7 @@ class AppConfig
      *
      * @param bool $value - preview
      */
-    public function SetPreview($value)
-    {
+    public function SetPreview($value) {
         $this->logger->info("Set generate preview: " . json_encode($value), ["app" => $this->appName]);
 
         $this->config->setAppValue($this->appName, $this->_preview, json_encode($value));
@@ -720,8 +697,7 @@ class AppConfig
      *
      * @return bool
      */
-    public function GetAdvanced()
-    {
+    public function GetAdvanced() {
         return $this->config->getAppValue($this->appName, $this->_advanced, "false") === "true";
     }
 
@@ -730,8 +706,7 @@ class AppConfig
      *
      * @param bool $value - advanced
      */
-    public function SetAdvanced($value)
-    {
+    public function SetAdvanced($value) {
         $this->logger->info("Set advanced: " . json_encode($value), ["app" => $this->appName]);
 
         $this->config->setAppValue($this->appName, $this->_advanced, json_encode($value));
@@ -742,8 +717,7 @@ class AppConfig
      *
      * @return bool
      */
-    public function GetPreview()
-    {
+    public function GetPreview() {
         return $this->config->getAppValue($this->appName, $this->_preview, "true") === "true";
     }
 
@@ -752,8 +726,7 @@ class AppConfig
      *
      * @param bool $value - version history
      */
-    public function SetVersionHistory($value)
-    {
+    public function SetVersionHistory($value) {
         $this->logger->info("Set keep versions history: " . json_encode($value), ["app" => $this->appName]);
 
         $this->config->setAppValue($this->appName, $this->_versionHistory, json_encode($value));
@@ -764,8 +737,7 @@ class AppConfig
      *
      * @return bool
      */
-    public function GetVersionHistory()
-    {
+    public function GetVersionHistory() {
         return $this->config->getAppValue($this->appName, $this->_versionHistory, "true") === "true";
     }
 
@@ -774,8 +746,7 @@ class AppConfig
      *
      * @param bool $value - version history
      */
-    public function SetProtection($value)
-    {
+    public function SetProtection($value) {
         $this->logger->info("Set protection: " . $value, ["app" => $this->appName]);
 
         $this->config->setAppValue($this->appName, $this->_protection, $value);
@@ -786,8 +757,7 @@ class AppConfig
      *
      * @return bool
      */
-    public function GetProtection()
-    {
+    public function GetProtection() {
         $value = $this->config->getAppValue($this->appName, $this->_protection, "owner");
         if ($value === "all") {
             return "all";
@@ -800,8 +770,7 @@ class AppConfig
      *
      * @param bool $value - display chat
      */
-    public function SetCustomizationChat($value)
-    {
+    public function SetCustomizationChat($value) {
         $this->logger->info("Set chat display: " . json_encode($value), ["app" => $this->appName]);
 
         $this->config->setAppValue($this->appName, $this->_customizationChat, json_encode($value));
@@ -812,8 +781,7 @@ class AppConfig
      *
      * @return bool
      */
-    public function GetCustomizationChat()
-    {
+    public function GetCustomizationChat() {
         return $this->config->getAppValue($this->appName, $this->_customizationChat, "true") === "true";
     }
 
@@ -822,8 +790,7 @@ class AppConfig
      *
      * @param bool $value - display compact header
      */
-    public function SetCustomizationCompactHeader($value)
-    {
+    public function SetCustomizationCompactHeader($value) {
         $this->logger->info("Set compact header display: " . json_encode($value), ["app" => $this->appName]);
 
         $this->config->setAppValue($this->appName, $this->_customizationCompactHeader, json_encode($value));
@@ -834,8 +801,7 @@ class AppConfig
      *
      * @return bool
      */
-    public function GetCustomizationCompactHeader()
-    {
+    public function GetCustomizationCompactHeader() {
         return $this->config->getAppValue($this->appName, $this->_customizationCompactHeader, "true") === "true";
     }
 
@@ -844,8 +810,7 @@ class AppConfig
      *
      * @param bool $value - display feedback
      */
-    public function SetCustomizationFeedback($value)
-    {
+    public function SetCustomizationFeedback($value) {
         $this->logger->info("Set feedback display: " . json_encode($value), ["app" => $this->appName]);
 
         $this->config->setAppValue($this->appName, $this->_customizationFeedback, json_encode($value));
@@ -856,8 +821,7 @@ class AppConfig
      *
      * @return bool
      */
-    public function GetCustomizationFeedback()
-    {
+    public function GetCustomizationFeedback() {
         return $this->config->getAppValue($this->appName, $this->_customizationFeedback, "true") === "true";
     }
 
@@ -866,8 +830,7 @@ class AppConfig
      *
      * @param bool $value - forcesave
      */
-    public function SetCustomizationForcesave($value)
-    {
+    public function SetCustomizationForcesave($value) {
         $this->logger->info("Set forcesave: " . json_encode($value), ["app" => $this->appName]);
 
         $this->config->setAppValue($this->appName, $this->_customizationForcesave, json_encode($value));
@@ -878,8 +841,7 @@ class AppConfig
      *
      * @return bool
      */
-    public function GetCustomizationForcesave()
-    {
+    public function GetCustomizationForcesave() {
         return $this->config->getAppValue($this->appName, $this->_customizationForcesave, "false") === "true";
     }
 
@@ -888,8 +850,7 @@ class AppConfig
      *
      * @param bool $value - display help
      */
-    public function SetCustomizationHelp($value)
-    {
+    public function SetCustomizationHelp($value) {
         $this->logger->info("Set help display: " . json_encode($value), ["app" => $this->appName]);
 
         $this->config->setAppValue($this->appName, $this->_customizationHelp, json_encode($value));
@@ -900,8 +861,7 @@ class AppConfig
      *
      * @return bool
      */
-    public function GetCustomizationHelp()
-    {
+    public function GetCustomizationHelp() {
         return $this->config->getAppValue($this->appName, $this->_customizationHelp, "true") === "true";
     }
 
@@ -910,8 +870,7 @@ class AppConfig
      *
      * @param bool $value - without tabs
      */
-    public function SetCustomizationToolbarNoTabs($value)
-    {
+    public function SetCustomizationToolbarNoTabs($value) {
         $this->logger->info("Set without tabs: " . json_encode($value), ["app" => $this->appName]);
 
         $this->config->setAppValue($this->appName, $this->_customizationToolbarNoTabs, json_encode($value));
@@ -922,8 +881,7 @@ class AppConfig
      *
      * @return bool
      */
-    public function GetCustomizationToolbarNoTabs()
-    {
+    public function GetCustomizationToolbarNoTabs() {
         return $this->config->getAppValue($this->appName, $this->_customizationToolbarNoTabs, "true") === "true";
     }
 
@@ -932,8 +890,7 @@ class AppConfig
      *
      * @param string $value - review mode
      */
-    public function SetCustomizationReviewDisplay($value)
-    {
+    public function SetCustomizationReviewDisplay($value) {
         $this->logger->info("Set review mode: " . $value, array("app" => $this->appName));
 
         $this->config->setAppValue($this->appName, $this->_customizationReviewDisplay, $value);
@@ -944,8 +901,7 @@ class AppConfig
      *
      * @return string
      */
-    public function GetCustomizationReviewDisplay()
-    {
+    public function GetCustomizationReviewDisplay() {
         $value = $this->config->getAppValue($this->appName, $this->_customizationReviewDisplay, "original");
         if ($value === "markup") {
             return "markup";
@@ -961,8 +917,7 @@ class AppConfig
      *
      * @param string $value - theme
      */
-    public function SetCustomizationTheme($value)
-    {
+    public function SetCustomizationTheme($value) {
         $this->logger->info("Set theme: " . $value, array("app" => $this->appName));
 
         $this->config->setAppValue($this->appName, $this->_customizationTheme, $value);
@@ -973,8 +928,7 @@ class AppConfig
      *
      * @return string
      */
-    public function GetCustomizationTheme()
-    {
+    public function GetCustomizationTheme() {
         $value = $this->config->getAppValue($this->appName, $this->_customizationTheme, "theme-classic-light");
         if ($value === "theme-light") {
             return "theme-light";
@@ -990,8 +944,7 @@ class AppConfig
      *
      * @param array $settings - watermark settings
      */
-    public function SetWatermarkSettings($settings)
-    {
+    public function SetWatermarkSettings($settings) {
         $this->logger->info("Set watermark enabled: " . $settings["enabled"], ["app" => $this->appName]);
 
         if ($settings["enabled"] !== "true") {
@@ -1039,8 +992,7 @@ class AppConfig
      *
      * @return bool|array
      */
-    public function GetWatermarkSettings()
-    {
+    public function GetWatermarkSettings() {
         $result = [
             "text" => $this->config->getAppValue(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_text", "{userId}, {date}"),
         ];
@@ -1082,8 +1034,7 @@ class AppConfig
      *
      * @param array $groups - the list of groups
      */
-    public function SetLimitGroups($groups)
-    {
+    public function SetLimitGroups($groups) {
         if (!is_array($groups)) {
             $groups = array();
         }
@@ -1098,8 +1049,7 @@ class AppConfig
      *
      * @return array
      */
-    public function GetLimitGroups()
-    {
+    public function GetLimitGroups() {
         $value = $this->config->getAppValue($this->appName, $this->_groups, "");
         if (empty($value)) {
             return array();
@@ -1118,8 +1068,7 @@ class AppConfig
      *
      * @return bool
      */
-    public function isUserAllowedToUse($userId = null)
-    {
+    public function isUserAllowedToUse($userId = null) {
         // no user -> no
         $userSession = \OC::$server->getUserSession();
         if (is_null($userId) && ($userSession === null || !$userSession->isLoggedIn())) {
@@ -1162,8 +1111,7 @@ class AppConfig
      *
      * @param bool $verifyPeerOff - parameter verification setting
      */
-    public function SetVerifyPeerOff($verifyPeerOff)
-    {
+    public function SetVerifyPeerOff($verifyPeerOff) {
         $this->logger->info("SetVerifyPeerOff " . json_encode($verifyPeerOff), ["app" => $this->appName]);
 
         $this->config->setAppValue($this->appName, $this->_verification, json_encode($verifyPeerOff));
@@ -1174,8 +1122,7 @@ class AppConfig
      *
      * @return bool
      */
-    public function GetVerifyPeerOff()
-    {
+    public function GetVerifyPeerOff() {
         $turnOff = $this->config->getAppValue($this->appName, $this->_verification, "");
 
         if (!empty($turnOff)) {
@@ -1190,8 +1137,7 @@ class AppConfig
      *
      * @return int
      */
-    public function GetLimitThumbSize()
-    {
+    public function GetLimitThumbSize() {
         $limitSize = (integer)$this->GetSystemValue($this->_limitThumbSize);
 
         if (!empty($limitSize)) {
@@ -1208,8 +1154,7 @@ class AppConfig
      *
      * @return string
      */
-    public function JwtHeader($origin = false)
-    {
+    public function JwtHeader($origin = false) {
         if (!$origin && $this->UseDemo()) {
             return $this->DEMO_PARAM["HEADER"];
         }
@@ -1229,8 +1174,7 @@ class AppConfig
      *
      * @param string $value - jwtHeader
      */
-    public function SetJwtHeader($value)
-    {
+    public function SetJwtHeader($value) {
         $value = trim($value);
         if (empty($value)) {
             $this->logger->info("Clear header key", ["app" => $this->appName]);
@@ -1246,8 +1190,7 @@ class AppConfig
      *
      * @return int
      */
-    public function GetJwtLeeway()
-    {
+    public function GetJwtLeeway() {
         $jwtLeeway = (integer)$this->GetSystemValue($this->_jwtLeeway);
 
         return $jwtLeeway;
@@ -1258,8 +1201,7 @@ class AppConfig
      *
      * @param string $value - error
      */
-    public function SetSettingsError($value)
-    {
+    public function SetSettingsError($value) {
         $this->config->setAppValue($this->appName, $this->_settingsError, $value);
     }
 
@@ -1268,8 +1210,7 @@ class AppConfig
      *
      * @return bool
      */
-    public function SettingsAreSuccessful()
-    {
+    public function SettingsAreSuccessful() {
         return empty($this->config->getAppValue($this->appName, $this->_settingsError, ""));
     }
 
@@ -1280,8 +1221,7 @@ class AppConfig
      *
      * @NoAdminRequired
      */
-    public function FormatsSetting()
-    {
+    public function FormatsSetting() {
         $result = $this->formats;
 
         $defFormats = $this->GetDefaultFormats();
@@ -1306,8 +1246,7 @@ class AppConfig
      *
      * @param bool $value - enable macros
      */
-    public function SetCustomizationMacros($value)
-    {
+    public function SetCustomizationMacros($value) {
         $this->logger->info("Set macros enabled: " . json_encode($value), ["app" => $this->appName]);
 
         $this->config->setAppValue($this->appName, $this->_customizationMacros, json_encode($value));
@@ -1318,8 +1257,7 @@ class AppConfig
      *
      * @return bool
      */
-    public function GetCustomizationMacros()
-    {
+    public function GetCustomizationMacros() {
         return $this->config->getAppValue($this->appName, $this->_customizationMacros, "true") === "true";
     }
 
@@ -1328,8 +1266,7 @@ class AppConfig
      *
      * @param bool $value - enable macros
      */
-    public function SetCustomizationPlugins($value)
-    {
+    public function SetCustomizationPlugins($value) {
         $this->logger->info("Set plugins enabled: " . json_encode($value), ["app" => $this->appName]);
 
         $this->config->setAppValue($this->appName, $this->_customizationPlugins, json_encode($value));
@@ -1340,8 +1277,7 @@ class AppConfig
      *
      * @return bool
      */
-    public function GetCustomizationPlugins()
-    {
+    public function GetCustomizationPlugins() {
         return $this->config->getAppValue($this->appName, $this->_customizationPlugins, "true") === "true";
     }
 
@@ -1350,8 +1286,7 @@ class AppConfig
      *
      * @return int
      */
-    public function GetEditorsCheckInterval()
-    {
+    public function GetEditorsCheckInterval() {
         $interval = $this->GetSystemValue($this->_editors_check_interval);
 
         if (empty($interval) && $interval !== 0) {
@@ -1420,8 +1355,7 @@ class AppConfig
      *
      * @return string
      */
-    public function GetLinkToDocs()
-    {
+    public function GetLinkToDocs() {
         return $this->linkToDocs;
     }
 }

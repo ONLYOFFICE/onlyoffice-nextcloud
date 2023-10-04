@@ -36,8 +36,7 @@ use OCA\Onlyoffice\DocumentService;
  * Editors availability check background job
  *
  */
-class EditorsCheck extends TimedJob
-{
+class EditorsCheck extends TimedJob {
 
     /**
      * Application name
@@ -123,8 +122,7 @@ class EditorsCheck extends TimedJob
      *
      * @param array $argument unused argument
      */
-    protected function run($argument)
-    {
+    protected function run($argument) {
         if (empty($this->config->GetDocumentServerUrl())) {
             $this->logger->debug("Settings are empty", ["app" => $this->appName]);
             return;
@@ -162,8 +160,7 @@ class EditorsCheck extends TimedJob
      *
      * @return string[]
      */
-    private function getUsersToNotify()
-    {
+    private function getUsersToNotify() {
         $notifyGroups = ["admin"];
         $notifyUsers = [];
 
@@ -184,8 +181,7 @@ class EditorsCheck extends TimedJob
      * Send notification to admins
      * @return void
      */
-    private function notifyAdmins()
-    {
+    private function notifyAdmins() {
         $notificationManager = \OC::$server->getNotificationManager();
         $notification = $notificationManager->createNotification();
         $notification->setApp($this->appName)

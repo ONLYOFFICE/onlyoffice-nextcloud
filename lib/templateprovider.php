@@ -26,8 +26,7 @@ use OCP\IURLGenerator;
 
 use OCA\Onlyoffice\TemplateManager;
 
-class TemplateProvider implements ICustomTemplateProvider
-{
+class TemplateProvider implements ICustomTemplateProvider {
 
     /**
      * Application name
@@ -47,8 +46,7 @@ class TemplateProvider implements ICustomTemplateProvider
      * @param string $AppName - application name
      * @param IURLGenerator $urlGenerator - url generator service
      */
-    public function __construct($AppName, IURLGenerator $urlGenerator)
-    {
+    public function __construct($AppName, IURLGenerator $urlGenerator) {
         $this->appName = $AppName;
         $this->urlGenerator = $urlGenerator;
     }
@@ -60,8 +58,7 @@ class TemplateProvider implements ICustomTemplateProvider
      *
      * @return array
      */
-    public function getCustomTemplates($mimetype) : array
-    {
+    public function getCustomTemplates($mimetype) : array {
         $templates = [];
 
         $templateFiles = TemplateManager::GetGlobalTemplates($mimetype);
@@ -88,8 +85,7 @@ class TemplateProvider implements ICustomTemplateProvider
      *
      * @return File
      */
-    public function getCustomTemplate($templateId) : File
-    {
+    public function getCustomTemplate($templateId) : File {
         return TemplateManager::GetTemplate($templateId);
     }
 }

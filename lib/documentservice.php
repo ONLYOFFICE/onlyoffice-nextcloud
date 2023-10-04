@@ -28,8 +28,7 @@ use OCA\Onlyoffice\AppConfig;
  *
  * @package OCA\Onlyoffice
  */
-class DocumentService
-{
+class DocumentService {
 
     /**
      * Application name
@@ -56,8 +55,7 @@ class DocumentService
      * @param IL10N $trans - l10n service
      * @param AppConfig $config - application configutarion
      */
-    public function __construct(IL10N $trans, AppConfig $appConfig)
-    {
+    public function __construct(IL10N $trans, AppConfig $appConfig) {
         $this->trans = $trans;
         $this->config = $appConfig;
     }
@@ -69,8 +67,7 @@ class DocumentService
      *
      * @return string
      */
-    public static function GenerateRevisionId($expected_key)
-    {
+    public static function GenerateRevisionId($expected_key) {
         if (strlen($expected_key) > 20) {
             $expected_key = crc32($expected_key);
         }
@@ -90,8 +87,7 @@ class DocumentService
      *
      * @return string
      */
-    public function GetConvertedUri($document_uri, $from_extension, $to_extension, $document_revision_id, $region = null)
-    {
+    public function GetConvertedUri($document_uri, $from_extension, $to_extension, $document_revision_id, $region = null) {
         $responceFromConvertService = $this->SendRequestToConvertService($document_uri, $from_extension, $to_extension, $document_revision_id, false, $region);
 
         $errorElement = $responceFromConvertService->Error;
@@ -120,8 +116,7 @@ class DocumentService
      *
      * @return array
      */
-    public function SendRequestToConvertService($document_uri, $from_extension, $to_extension, $document_revision_id, $is_async, $region = null)
-    {
+    public function SendRequestToConvertService($document_uri, $from_extension, $to_extension, $document_revision_id, $is_async, $region = null) {
         $documentServerUrl = $this->config->GetDocumentServerInternalUrl();
 
         if (empty($documentServerUrl)) {
@@ -204,8 +199,7 @@ class DocumentService
      *
      * @return null
      */
-    public function ProcessConvServResponceError($errorCode)
-    {
+    public function ProcessConvServResponceError($errorCode) {
         $errorMessageTemplate = $this->trans->t("Error occurred in the document service");
         $errorMessage = "";
 
@@ -252,8 +246,7 @@ class DocumentService
      *
      * @return bool
      */
-    public function HealthcheckRequest()
-    {
+    public function HealthcheckRequest() {
 
         $documentServerUrl = $this->config->GetDocumentServerInternalUrl();
 
@@ -275,8 +268,7 @@ class DocumentService
      *
      * @return array
      */
-    public function CommandRequest($method)
-    {
+    public function CommandRequest($method) {
 
         $documentServerUrl = $this->config->GetDocumentServerInternalUrl();
 
@@ -325,8 +317,7 @@ class DocumentService
      *
      * @return null
      */
-    public function ProcessCommandServResponceError($errorCode)
-    {
+    public function ProcessCommandServResponceError($errorCode) {
         $errorMessageTemplate = $this->trans->t("Error occurred in the document service");
         $errorMessage = "";
 
@@ -359,8 +350,7 @@ class DocumentService
      *
      * @return string
      */
-    public function Request($url, $method = "get", $opts = null)
-    {
+    public function Request($url, $method = "get", $opts = null) {
         $httpClientService = \OC::$server->getHTTPClientService();
         $client = $httpClientService->newClient();
 
@@ -395,8 +385,7 @@ class DocumentService
      *
      * @return array
      */
-    public function checkDocServiceUrl($urlGenerator, $crypt)
-    {
+    public function checkDocServiceUrl($urlGenerator, $crypt) {
         $logger = \OC::$server->getLogger();
         $version = null;
 

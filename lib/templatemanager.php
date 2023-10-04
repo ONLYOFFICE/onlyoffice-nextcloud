@@ -28,8 +28,7 @@ use OCP\Files\File;
  *
  * @package OCA\Onlyoffice
  */
-class TemplateManager
-{
+class TemplateManager {
 
     /**
      * Application name
@@ -50,8 +49,7 @@ class TemplateManager
      *
      * @return Folder
      */
-    public static function GetGlobalTemplateDir()
-    {
+    public static function GetGlobalTemplateDir() {
         $dirPath = "appdata_" . \OC::$server->getConfig()->GetSystemValue("instanceid", null)
                                 . "/" . self::$appName
                                 . "/" . self::$templateFolderName;
@@ -74,8 +72,7 @@ class TemplateManager
      *
      * @return array
      */
-    public static function GetGlobalTemplates($mimetype = null)
-    {
+    public static function GetGlobalTemplates($mimetype = null) {
         $templateDir = self::GetGlobalTemplateDir();
 
         $templatesList = $templateDir->getDirectoryListing();
@@ -94,8 +91,7 @@ class TemplateManager
      *
      * @return File
      */
-    public static function GetTemplate($templateId)
-    {
+    public static function GetTemplate($templateId) {
         $logger = \OC::$server->getLogger();
 
         if (empty($templateId)) {
@@ -125,8 +121,7 @@ class TemplateManager
      *
      * @return string
      */
-    public static function GetTypeTemplate($mime)
-    {
+    public static function GetTypeTemplate($mime) {
         switch($mime) {
             case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
                 return "document";
@@ -146,8 +141,7 @@ class TemplateManager
      *
      * @return string
      */
-    public static function GetMimeTemplate($type)
-    {
+    public static function GetMimeTemplate($type) {
         switch($type) {
             case "document":
                 return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
@@ -167,8 +161,7 @@ class TemplateManager
      *
      * @return bool
      */
-    public static function IsTemplateType($name)
-    {
+    public static function IsTemplateType($name) {
         $ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
         switch($ext) {
             case "docx":
@@ -187,8 +180,7 @@ class TemplateManager
      *
      * @return bool
      */
-    public static function IsTemplate($fileId)
-    {
+    public static function IsTemplate($fileId) {
         $template = self::GetTemplate($fileId);
 
         if (empty($template)) {
@@ -205,8 +197,7 @@ class TemplateManager
      *
      * @return string
      */
-    public static function GetEmptyTemplate($name)
-    {
+    public static function GetEmptyTemplate($name) {
         $ext = strtolower("." . pathinfo($name, PATHINFO_EXTENSION));
 
         $lang = \OC::$server->getL10NFactory("")->get("")->getLanguageCode();
@@ -228,8 +219,7 @@ class TemplateManager
      *
      * @return string
      */
-    public static function GetEmptyTemplatePath($lang, $ext)
-    {
+    public static function GetEmptyTemplatePath($lang, $ext) {
         if (!array_key_exists($lang, self::$localPath)) {
             $lang = "en";
         }

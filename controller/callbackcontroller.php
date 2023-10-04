@@ -60,8 +60,7 @@ use OCA\Onlyoffice\TemplateManager;
  * Download the file without authentication.
  * Save the file without authentication.
  */
-class CallbackController extends Controller
-{
+class CallbackController extends Controller {
 
     /**
      * Root folder
@@ -203,8 +202,7 @@ class CallbackController extends Controller
      * @PublicPage
      * @CORS
      */
-    public function download($doc)
-    {
+    public function download($doc) {
 
         list($hashData, $error) = $this->crypt->ReadHash($doc);
         if ($hashData === null) {
@@ -328,8 +326,7 @@ class CallbackController extends Controller
      * @PublicPage
      * @CORS
      */
-    public function emptyfile($doc)
-    {
+    public function emptyfile($doc) {
         $this->logger->debug("Download empty", ["app" => $this->appName]);
 
         list($hashData, $error) = $this->crypt->ReadHash($doc);
@@ -398,8 +395,7 @@ class CallbackController extends Controller
      * @PublicPage
      * @CORS
      */
-    public function track($doc, $users, $key, $status, $url, $token, $history, $changesurl, $forcesavetype, $actions, $filetype)
-    {
+    public function track($doc, $users, $key, $status, $url, $token, $history, $changesurl, $forcesavetype, $actions, $filetype) {
 
         list($hashData, $error) = $this->crypt->ReadHash($doc);
         if ($hashData === null) {
@@ -637,8 +633,7 @@ class CallbackController extends Controller
      *
      * @return array
      */
-    private function getFile($userId, $fileId, $filePath = null, $version = 0, $template = false)
-    {
+    private function getFile($userId, $fileId, $filePath = null, $version = 0, $template = false) {
         if (empty($fileId)) {
             return [null, new JSONResponse(["message" => $this->trans->t("FileId is empty")], Http::STATUS_BAD_REQUEST)];
         }
@@ -705,8 +700,7 @@ class CallbackController extends Controller
      *
      * @return array
      */
-    private function getFileByToken($fileId, $shareToken, $version = 0)
-    {
+    private function getFileByToken($fileId, $shareToken, $version = 0) {
         list($share, $error) = $this->getShare($shareToken);
 
         if (isset($error)) {
@@ -758,8 +752,7 @@ class CallbackController extends Controller
      *
      * @return array
      */
-    private function getShare($shareToken)
-    {
+    private function getShare($shareToken) {
         if (empty($shareToken)) {
             return [null, new JSONResponse(["message" => $this->trans->t("FileId is empty")], Http::STATUS_BAD_REQUEST)];
         }
@@ -786,8 +779,7 @@ class CallbackController extends Controller
      *
      * @return string
      */
-    private function parseUserId($userId)
-    {
+    private function parseUserId($userId) {
         $instanceId = $this->config->GetSystemValue("instanceid", true);
         $instanceId = $instanceId . "_";
 
@@ -803,8 +795,7 @@ class CallbackController extends Controller
      *
      * @param File $file - file
      */
-    private function lock($file)
-    {
+    private function lock($file) {
         if (!$this->lockManager->isLockProviderAvailable()) {
             return;
         }
@@ -826,8 +817,7 @@ class CallbackController extends Controller
      *
      * @param File $file - file
      */
-    private function unlock($file)
-    {
+    private function unlock($file) {
         if (!$this->lockManager->isLockProviderAvailable()) {
             return;
         }
@@ -850,8 +840,7 @@ class CallbackController extends Controller
      *
      * @throws LockedException
      */
-    private function retryOperation(callable $operation)
-    {
+    private function retryOperation(callable $operation) {
         $i = 0;
         while (true) {
             try {

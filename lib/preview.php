@@ -47,8 +47,7 @@ use OCA\Onlyoffice\TemplateManager;
  *
  * @package OCA\Onlyoffice
  */
-class Preview extends Provider
-{
+class Preview extends Provider {
 
     /**
      * Application name
@@ -200,8 +199,7 @@ class Preview extends Provider
     /**
      * Return mime type
      */
-    public static function getMimeTypeRegex()
-    {
+    public static function getMimeTypeRegex() {
         $mimeTypeRegex = "";
         foreach (self::$capabilities as $format) {
             if (!empty($mimeTypeRegex)) {
@@ -217,8 +215,7 @@ class Preview extends Provider
     /**
      * Return mime type
      */
-    public function getMimeType()
-    {
+    public function getMimeType() {
         $m = self::getMimeTypeRegex();
         return $m;
     }
@@ -230,8 +227,7 @@ class Preview extends Provider
      *
      * @return bool
      */
-    public function isAvailable(FileInfo $fileInfo)
-    {
+    public function isAvailable(FileInfo $fileInfo) {
         if ($this->config->GetPreview() !== true) {
             return false;
         }
@@ -260,8 +256,7 @@ class Preview extends Provider
      *
      * @return Image|bool false if no preview was generated
      */
-    public function getThumbnail($path, $maxX, $maxY, $scalingup, $view)
-    {
+    public function getThumbnail($path, $maxX, $maxY, $scalingup, $view) {
         $this->logger->debug("getThumbnail $path $maxX $maxY", ["app" => $this->appName]);
 
         list($fileUrl, $extension, $key) = $this->getFileParam($path, $view);
@@ -306,8 +301,7 @@ class Preview extends Provider
      *
      * @return string
      */
-    private function getUrl($file, $user = null, $version = 0, $template = false)
-    {
+    private function getUrl($file, $user = null, $version = 0, $template = false) {
 
         $data = [
             "action" => "download",
@@ -345,8 +339,7 @@ class Preview extends Provider
      *
      * @return array
      */
-    private function getFileParam($path, $view)
-    {
+    private function getFileParam($path, $view) {
         $fileInfo = $view->getFileInfo($path);
 
         if (!$fileInfo || $fileInfo->getSize() === 0) {

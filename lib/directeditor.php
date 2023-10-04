@@ -37,8 +37,7 @@ use OCA\Onlyoffice\FileCreator;
  *
  * @package OCA\Onlyoffice
  */
-class DirectEditor implements IEditor
-{
+class DirectEditor implements IEditor {
 
     /**
      * Application name
@@ -111,8 +110,7 @@ class DirectEditor implements IEditor
      *
      * @return string
      */
-    public function getId(): string
-    {
+    public function getId(): string {
         return $this->appName;
     }
 
@@ -121,8 +119,7 @@ class DirectEditor implements IEditor
      *
      * @return string
      */
-    public function getName(): string
-    {
+    public function getName(): string {
         return "ONLYOFFICE";
     }
 
@@ -131,8 +128,7 @@ class DirectEditor implements IEditor
      *
      * @return array
      */
-    public function getMimetypes(): array
-    {
+    public function getMimetypes(): array {
         $mimes = array();
         if (!$this->config->isUserAllowedToUse()) {
             return $mimes;
@@ -154,8 +150,7 @@ class DirectEditor implements IEditor
      *
      * @return array
      */
-    public function getMimetypesOptional(): array
-    {
+    public function getMimetypesOptional(): array {
         $mimes = array();
         if (!$this->config->isUserAllowedToUse()) {
             return $mimes;
@@ -177,8 +172,7 @@ class DirectEditor implements IEditor
      *
      * @return array of ACreateFromTemplate|ACreateEmpty
      */
-    public function getCreators(): array
-    {
+    public function getCreators(): array {
         if (!$this->config->isUserAllowedToUse()) {
             return array();
         }
@@ -195,8 +189,7 @@ class DirectEditor implements IEditor
      *
      * @return bool
      */
-    public function isSecure(): bool
-    {
+    public function isSecure(): bool {
         return true;
     }
 
@@ -211,8 +204,7 @@ class DirectEditor implements IEditor
      *
      * @return Response
      */
-    public function open(IToken $token): Response
-    {
+    public function open(IToken $token): Response {
         try {
             $token->useTokenScope();
             $file = $token->getFile();
@@ -284,8 +276,7 @@ class DirectEditor implements IEditor
      *
      * @return TemplateResponse
      */
-    private function renderError($error, $hint = "")
-    {
+    private function renderError($error, $hint = "") {
         return new TemplateResponse("", "error", [
             "errors" => [
                 [

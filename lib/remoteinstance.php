@@ -28,8 +28,7 @@ use OCA\Files_Sharing\External\Storage as SharingExternalStorage;
  *
  * @package OCA\Onlyoffice
  */
-class RemoteInstance
-{
+class RemoteInstance {
 
     /**
      * App name
@@ -58,8 +57,7 @@ class RemoteInstance
      *
      * @return array
      */
-    private static function get($remote)
-    {
+    private static function get($remote) {
         $connection = \OC::$server->getDatabaseConnection();
         $select = $connection->prepare("
             SELECT remote, expire, status
@@ -81,8 +79,7 @@ class RemoteInstance
      *
      * @return bool
      */
-    private static function set($remote, $status)
-    {
+    private static function set($remote, $status) {
         $connection = \OC::$server->getDatabaseConnection();
         $insert = $connection->prepare("
             INSERT INTO `*PREFIX*" . self::TableName_Key . "`
@@ -100,8 +97,7 @@ class RemoteInstance
      *
      * @return bool
      */
-    private static function update($remote, $status)
-    {
+    private static function update($remote, $status) {
         $connection = \OC::$server->getDatabaseConnection();
         $update = $connection->prepare("
             UPDATE `*PREFIX*" . self::TableName_Key . "`
@@ -118,8 +114,7 @@ class RemoteInstance
      *
      * @return bool
      */
-    public static function healthCheck($remote)
-    {
+    public static function healthCheck($remote) {
         $logger = \OC::$server->getLogger();
         $remote = rtrim($remote, "/") . "/";
 
@@ -173,8 +168,7 @@ class RemoteInstance
      *
      * @return string
      */
-    public static function getRemoteKey($file)
-    {
+    public static function getRemoteKey($file) {
         $logger = \OC::$server->getLogger();
 
         $remote = rtrim($file->getStorage()->getRemote(), "/") . "/";
@@ -226,8 +220,7 @@ class RemoteInstance
      *
      * @return bool
      */
-    public static function lockRemoteKey($file, $lock, $fs)
-    {
+    public static function lockRemoteKey($file, $lock, $fs) {
         $logger = \OC::$server->getLogger();
         $action = $lock ? "lock" : "unlock";
 
@@ -277,8 +270,7 @@ class RemoteInstance
      *
      * @return bool
      */
-    public static function isRemoteFile($file)
-    {
+    public static function isRemoteFile($file) {
         $storage = $file->getStorage();
 
         $alive = false;

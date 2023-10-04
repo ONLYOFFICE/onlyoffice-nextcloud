@@ -34,8 +34,7 @@ use OCA\Onlyoffice\SettingsData;
 /**
  * Viewer listener
  */
-class ViewerListener implements IEventListener
-{
+class ViewerListener implements IEventListener {
 
     /**
      * Application configuration
@@ -73,8 +72,7 @@ class ViewerListener implements IEventListener
         $this->serverContainer = $serverContainer;
     }
 
-    public function handle(Event $event): void
-    {
+    public function handle(Event $event): void {
         if (!$event instanceof LoadViewer) {
             return;
         }

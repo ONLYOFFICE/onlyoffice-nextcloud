@@ -35,8 +35,7 @@ use OCA\Onlyoffice\TemplateManager;
 /**
  * Settings controller for the administration page
  */
-class SettingsController extends Controller
-{
+class SettingsController extends Controller {
 
     /**
      * l10n service
@@ -105,8 +104,7 @@ class SettingsController extends Controller
      *
      * @return TemplateResponse
      */
-    public function index()
-    {
+    public function index() {
         $data = [
             "documentserver" => $this->config->GetDocumentServerUrl(true),
             "documentserverInternal" => $this->config->GetDocumentServerInternalUrl(true),
@@ -295,8 +293,7 @@ class SettingsController extends Controller
      *
      * @return array
      */
-    public function ClearHistory()
-    {
+    public function ClearHistory() {
 
         FileVersions::clearHistory();
 
@@ -309,8 +306,7 @@ class SettingsController extends Controller
      *
      * @return array
      */
-    private function GetGlobalTemplates()
-    {
+    private function GetGlobalTemplates() {
         $templates = [];
         $templatesList = TemplateManager::GetGlobalTemplates();
 

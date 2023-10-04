@@ -36,8 +36,7 @@ use OCA\Onlyoffice\RemoteInstance;
 /**
  * OCS handler
  */
-class FederationController extends OCSController
-{
+class FederationController extends OCSController {
 
     /**
      * Logger
@@ -96,8 +95,7 @@ class FederationController extends OCSController
      * @NoCSRFRequired
      * @PublicPage
      */
-    public function key($shareToken, $path)
-    {
+    public function key($shareToken, $path) {
         list($file, $error, $share) = $this->fileUtility->getFileByToken(null, $shareToken, $path);
 
         if (isset($error)) {
@@ -128,8 +126,7 @@ class FederationController extends OCSController
      * @NoCSRFRequired
      * @PublicPage
      */
-    public function keylock($shareToken, $path, $lock, $fs)
-    {
+    public function keylock($shareToken, $path, $lock, $fs) {
         list($file, $error, $share) = $this->fileUtility->getFileByToken(null, $shareToken, $path);
 
         if (isset($error)) {
@@ -164,8 +161,7 @@ class FederationController extends OCSController
      * @NoCSRFRequired
      * @PublicPage
      */
-    public function healthcheck()
-    {
+    public function healthcheck() {
         $this->logger->debug("Federated healthcheck", ["app" => $this->appName]);
 
         return new DataResponse(["alive" => true]);

@@ -37,8 +37,7 @@ use OCA\Onlyoffice\AppConfig;
  *
  * @package OCA\Onlyoffice\Controller
  */
-class JobListController extends Controller
-{
+class JobListController extends Controller {
 
     /**
      * Job list
@@ -62,8 +61,7 @@ class JobListController extends Controller
      * @param AppConfig $config - application configuration
      * @param IJobList $jobList - job list
      */
-    public function __construct($AppName, IRequest $request, AppConfig $config, IJobList $jobList)
-    {
+    public function __construct($AppName, IRequest $request, AppConfig $config, IJobList $jobList) {
         parent::__construct($AppName, $request);
         $this->config = $config;
         $this->jobList = $jobList;
@@ -74,8 +72,7 @@ class JobListController extends Controller
      *
      * @param IJob|string $job
      */
-    private function addJob($job)
-    {
+    private function addJob($job) {
         if (!$this->jobList->has($job, null)) {
             $this->jobList->add($job);
             \OC::$server->getLogger()->debug("Job '".$job."' added to JobList.", ["app" => $this->appName]);
@@ -87,8 +84,7 @@ class JobListController extends Controller
      *
      * @param IJob|string $job
      */
-    private function removeJob($job)
-    {
+    private function removeJob($job) {
         if ($this->jobList->has($job, null)) {
             $this->jobList->remove($job);
             \OC::$server->getLogger()->debug("Job '".$job."' removed from JobList.", ["app" => $this->appName]);
@@ -99,8 +95,7 @@ class JobListController extends Controller
      * Add or remove EditorsCheck job depending on the value of _editors_check_interval
      *
      */
-    private function checkEditorsCheckJob()
-    {
+    private function checkEditorsCheckJob() {
         if ($this->config->GetEditorsCheckInterval() > 0) {
             $this->addJob(EditorsCheck::class);
         } else {
@@ -112,8 +107,7 @@ class JobListController extends Controller
      * Method for sequentially calling checks of all jobs
      *
      */
-    public function checkAllJobs()
-    {
+    public function checkAllJobs() {
         $this->checkEditorsCheckJob();
     }
 }

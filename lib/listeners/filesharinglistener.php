@@ -33,8 +33,7 @@ use OCA\Onlyoffice\SettingsData;
 /**
  * File Sharing listener
  */
-class FileSharingListener implements IEventListener
-{
+class FileSharingListener implements IEventListener {
 
     /**
      * Application configuration
@@ -72,8 +71,7 @@ class FileSharingListener implements IEventListener
         $this->serverContainer = $serverContainer;
     }
 
-    public function handle(Event $event): void
-    {
+    public function handle(Event $event): void {
         if (!$event instanceof BeforeTemplateRenderedEvent) {
             return;
         }

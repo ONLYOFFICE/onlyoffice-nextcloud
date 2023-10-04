@@ -31,8 +31,7 @@ use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\DocumentService;
 use OCA\Onlyoffice\Crypt;
 
-class DocumentServer extends Command
-{
+class DocumentServer extends Command {
 
     /**
      * Application configuration
@@ -84,8 +83,7 @@ class DocumentServer extends Command
     /**
      * Configures the current command.
      */
-    protected function configure()
-    {
+    protected function configure() {
         $this
             ->setName("onlyoffice:documentserver")
             ->setDescription("Manage document server")
@@ -105,8 +103,7 @@ class DocumentServer extends Command
      *
      * @return int 0 if everything went fine, or an exit code
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
+    protected function execute(InputInterface $input, OutputInterface $output) {
         $check = $input->getOption("check");
 
         $documentserver = $this->config->GetDocumentServerUrl(true);

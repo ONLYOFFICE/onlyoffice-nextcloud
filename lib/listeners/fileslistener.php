@@ -33,8 +33,7 @@ use OCA\Onlyoffice\SettingsData;
 /**
  * File listener
  */
-class FilesListener implements IEventListener
-{
+class FilesListener implements IEventListener {
 
     /**
      * Application configuration
@@ -72,8 +71,7 @@ class FilesListener implements IEventListener
         $this->serverContainer = $serverContainer;
     }
 
-    public function handle(Event $event): void
-    {
+    public function handle(Event $event): void {
         if (!$event instanceof LoadAdditionalScriptsEvent) {
             return;
         }

@@ -57,8 +57,7 @@ use OCA\Onlyoffice\ExtraPermissions;
 /**
  * Controller with the main functions
  */
-class EditorApiController extends OCSController
-{
+class EditorApiController extends OCSController {
 
     /**
      * Current user session
@@ -237,8 +236,7 @@ class EditorApiController extends OCSController
      * @NoAdminRequired
      * @PublicPage
      */
-    public function config($fileId, $filePath = null, $shareToken = null, $directToken = null, $version = 0, $inframe = false, $inviewer = false, $desktop = false, $guestName = null, $template = false, $anchor = null)
-    {
+    public function config($fileId, $filePath = null, $shareToken = null, $directToken = null, $version = 0, $inframe = false, $inviewer = false, $desktop = false, $guestName = null, $template = false, $anchor = null) {
 
         if (!empty($directToken)) {
             list($directData, $error) = $this->crypt->ReadHash($directToken);
@@ -619,8 +617,7 @@ class EditorApiController extends OCSController
      *
      * @return array
      */
-    private function getFile($userId, $fileId, $filePath = null, $template = false)
-    {
+    private function getFile($userId, $fileId, $filePath = null, $template = false) {
         if (empty($fileId)) {
             return [null, $this->trans->t("FileId is empty"), null];
         }
@@ -669,8 +666,7 @@ class EditorApiController extends OCSController
      *
      * @return string
      */
-    private function getUrl($file, $user = null, $shareToken = null, $version = 0, $changes = false, $template = false)
-    {
+    private function getUrl($file, $user = null, $shareToken = null, $version = 0, $changes = false, $template = false) {
 
         $data = [
             "action" => "download",
@@ -713,8 +709,7 @@ class EditorApiController extends OCSController
      *
      * @return string
      */
-    private function buildUserId($userId)
-    {
+    private function buildUserId($userId) {
         $instanceId = $this->config->GetSystemValue("instanceid", true);
         $userId = $instanceId . "_" . $userId;
         return $userId;
@@ -727,8 +722,7 @@ class EditorApiController extends OCSController
      *
      * @return array
      */
-    private function setCustomization($params)
-    {
+    private function setCustomization($params) {
         //default is true
         if ($this->config->GetCustomizationChat() === false) {
             $params["editorConfig"]["customization"]["chat"] = false;
@@ -825,8 +819,7 @@ class EditorApiController extends OCSController
      *
      * @return array
      */
-    private function setWatermark($params, $isPublic, $userId, $file)
-    {
+    private function setWatermark($params, $isPublic, $userId, $file) {
         $watermarkTemplate = $this->getWatermarkText(
             $isPublic,
             $userId,
@@ -877,8 +870,7 @@ class EditorApiController extends OCSController
      *
      * @return bool|string
      */
-    private function getWatermarkText($isPublic, $userId, $file, $canEdit, $canDownload)
-    {
+    private function getWatermarkText($isPublic, $userId, $file, $canEdit, $canDownload) {
         $watermarkSettings = $this->config->GetWatermarkSettings();
         if (!$watermarkSettings["enabled"]) {
             return false;
@@ -945,8 +937,7 @@ class EditorApiController extends OCSController
      *
      * @return bool
      */
-    private function isFavorite($fileId, $userId = null)
-    {
+    private function isFavorite($fileId, $userId = null) {
         $currentTags = $this->tagManager->load("files", [], false, $userId)->getTagsForObjects([$fileId]);
         if ($currentTags) {
             return in_array(ITags::TAG_FAVORITE, $currentTags[$fileId]);
