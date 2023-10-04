@@ -20,11 +20,11 @@
 namespace OCA\Onlyoffice;
 
 use OCP\Constants;
-use OCP\ILogger;
 use OCP\Files\File;
-use OCP\Share\IShare;
-use OCP\Share\IManager;
+use OCP\ILogger;
 use OCP\Share\Exceptions\ShareNotFound;
+use OCP\Share\IManager;
+use OCP\Share\IShare;
 
 /**
  * Class expands base permissions

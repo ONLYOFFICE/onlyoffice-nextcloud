@@ -19,16 +19,16 @@
 
 namespace OCA\Onlyoffice\Listeners;
 
-use OCP\EventDispatcher\Event;
-use OCP\EventDispatcher\IEventListener;
-use OCP\Util;
-use OCP\AppFramework\Services\IInitialState;
-use OCP\IServerContainer;
-
 use OCA\Files\Event\LoadAdditionalScriptsEvent;
-
 use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\SettingsData;
+use OCP\AppFramework\Services\IInitialState;
+use OCP\EventDispatcher\Event;
+
+use OCP\EventDispatcher\IEventListener;
+
+use OCP\IServerContainer;
+use OCP\Util;
 
 /**
  * File listener

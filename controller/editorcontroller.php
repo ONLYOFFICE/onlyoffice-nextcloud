@@ -19,38 +19,38 @@
 
 namespace OCA\Onlyoffice\Controller;
 
+use OCA\Files\Helper;
+use OCA\Files_Versions\Versions\IVersionManager;
+use OCA\Onlyoffice\AppConfig;
+use OCA\Onlyoffice\Crypt;
+use OCA\Onlyoffice\DocumentService;
+use OCA\Onlyoffice\FileUtility;
+use OCA\Onlyoffice\FileVersions;
+use OCA\Onlyoffice\TemplateManager;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\ContentSecurityPolicy;
 use OCP\AppFramework\Http\DataDownloadResponse;
 use OCP\AppFramework\Http\RedirectResponse;
-use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Http\Template\PublicTemplateResponse;
+use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\QueryException;
 use OCP\Constants;
 use OCP\Files\File;
 use OCP\Files\IRootFolder;
 use OCP\Files\NotPermittedException;
+use OCP\IGroupManager;
 use OCP\IL10N;
 use OCP\ILogger;
+
 use OCP\IRequest;
 use OCP\ISession;
+
 use OCP\IURLGenerator;
 use OCP\IUser;
 use OCP\IUserManager;
 use OCP\IUserSession;
-use OCP\IGroupManager;
 use OCP\Share\IManager;
 use OCP\Share\IShare;
-
-use OCA\Files\Helper;
-use OCA\Files_Versions\Versions\IVersionManager;
-
-use OCA\Onlyoffice\AppConfig;
-use OCA\Onlyoffice\Crypt;
-use OCA\Onlyoffice\DocumentService;
-use OCA\Onlyoffice\FileUtility;
-use OCA\Onlyoffice\TemplateManager;
-use OCA\Onlyoffice\FileVersions;
 
 /**
  * Controller with the main functions

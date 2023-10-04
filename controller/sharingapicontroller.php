@@ -19,21 +19,21 @@
 
 namespace OCA\Onlyoffice\Controller;
 
+use OCA\Onlyoffice\AppConfig;
+use OCA\Onlyoffice\ExtraPermissions;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\OCSController;
+use OCP\Files\File;
+use OCP\Files\IRootFolder;
 use OCP\ILogger;
 use OCP\IRequest;
-use OCP\Share\IManager;
-use OCP\Files\IRootFolder;
 use OCP\IUserManager;
 use OCP\IUserSession;
-use OCP\Files\File;
+
+
+use OCP\Share\IManager;
 use OCP\Share\IShare;
-
-
-use OCA\Onlyoffice\AppConfig;
-use OCA\Onlyoffice\ExtraPermissions;
 
 /**
  * OCS handler

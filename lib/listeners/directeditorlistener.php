@@ -19,12 +19,12 @@
 
 namespace OCA\Onlyoffice\Listeners;
 
-use OCP\EventDispatcher\Event;
-use OCP\EventDispatcher\IEventListener;
-use OCP\DirectEditing\RegisterDirectEditorEvent;
-
 use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\DirectEditor;
+use OCP\DirectEditing\RegisterDirectEditorEvent;
+
+use OCP\EventDispatcher\Event;
+use OCP\EventDispatcher\IEventListener;
 
 /**
  * DirectEditor listener

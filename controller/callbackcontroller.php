@@ -19,6 +19,14 @@
 
 namespace OCA\Onlyoffice\Controller;
 
+use OCA\Files_Versions\Versions\IVersionManager;
+use OCA\Onlyoffice\AppConfig;
+use OCA\Onlyoffice\Crypt;
+use OCA\Onlyoffice\DocumentService;
+use OCA\Onlyoffice\FileVersions;
+use OCA\Onlyoffice\KeyManager;
+use OCA\Onlyoffice\RemoteInstance;
+use OCA\Onlyoffice\TemplateManager;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataDownloadResponse;
@@ -28,32 +36,24 @@ use OCP\AppFramework\QueryException;
 use OCP\Files\File;
 use OCP\Files\Folder;
 use OCP\Files\IRootFolder;
-use OCP\Files\NotFoundException;
-use OCP\Files\NotPermittedException;
 use OCP\Files\Lock\ILock;
 use OCP\Files\Lock\ILockManager;
 use OCP\Files\Lock\LockContext;
 use OCP\Files\Lock\NoLockProviderException;
 use OCP\Files\Lock\OwnerLockedException;
-use OCP\PreConditionNotMetException;
+use OCP\Files\NotFoundException;
+use OCP\Files\NotPermittedException;
 use OCP\IL10N;
+
 use OCP\ILogger;
+
 use OCP\IRequest;
 use OCP\IUserManager;
 use OCP\IUserSession;
 use OCP\Lock\LockedException;
+use OCP\PreConditionNotMetException;
 use OCP\Share\Exceptions\ShareNotFound;
 use OCP\Share\IManager;
-
-use OCA\Files_Versions\Versions\IVersionManager;
-
-use OCA\Onlyoffice\AppConfig;
-use OCA\Onlyoffice\Crypt;
-use OCA\Onlyoffice\DocumentService;
-use OCA\Onlyoffice\FileVersions;
-use OCA\Onlyoffice\KeyManager;
-use OCA\Onlyoffice\RemoteInstance;
-use OCA\Onlyoffice\TemplateManager;
 
 /**
  * Callback handler for the document server.

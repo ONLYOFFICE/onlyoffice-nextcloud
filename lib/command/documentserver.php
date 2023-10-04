@@ -19,17 +19,17 @@
 
 namespace OCA\Onlyoffice\Command;
 
+use OCA\Onlyoffice\AppConfig;
+use OCA\Onlyoffice\Crypt;
+use OCA\Onlyoffice\DocumentService;
+use OCP\IL10N;
+
+use OCP\IURLGenerator;
 use Symfony\Component\Console\Command\Command;
+
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-
-use OCP\IURLGenerator;
-use OCP\IL10N;
-
-use OCA\Onlyoffice\AppConfig;
-use OCA\Onlyoffice\DocumentService;
-use OCA\Onlyoffice\Crypt;
 
 class DocumentServer extends Command {
 

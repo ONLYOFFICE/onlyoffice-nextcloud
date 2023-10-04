@@ -19,6 +19,7 @@
 
 namespace OCA\Onlyoffice\Controller;
 
+use OCA\Onlyoffice\TemplateManager;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataResponse;
@@ -27,9 +28,8 @@ use OCP\Files\NotFoundException;
 use OCP\IL10N;
 use OCP\ILogger;
 use OCP\IPreview;
-use OCP\IRequest;
 
-use OCA\Onlyoffice\TemplateManager;
+use OCP\IRequest;
 
 /**
  * OCS handler

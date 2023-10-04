@@ -19,8 +19,16 @@
 
 namespace OCA\Onlyoffice\Controller;
 
-use OCP\AppFramework\OCSController;
+use OCA\Files_Versions\Versions\IVersionManager;
+use OCA\Onlyoffice\AppConfig;
+use OCA\Onlyoffice\Crypt;
+use OCA\Onlyoffice\DocumentService;
+use OCA\Onlyoffice\ExtraPermissions;
+use OCA\Onlyoffice\FileUtility;
+use OCA\Onlyoffice\FileVersions;
+use OCA\Onlyoffice\TemplateManager;
 use OCP\AppFramework\Http\JSONResponse;
+use OCP\AppFramework\OCSController;
 use OCP\AppFramework\QueryException;
 use OCP\Constants;
 use OCP\Files\File;
@@ -29,29 +37,21 @@ use OCP\Files\IRootFolder;
 use OCP\Files\Lock\ILock;
 use OCP\Files\Lock\ILockManager;
 use OCP\Files\Lock\NoLockProviderException;
-use OCP\PreConditionNotMetException;
 use OCP\IL10N;
 use OCP\ILogger;
 use OCP\IRequest;
 use OCP\ISession;
-use OCP\ITags;
 use OCP\ITagManager;
+
+use OCP\ITags;
+
 use OCP\IURLGenerator;
 use OCP\IUser;
 use OCP\IUserManager;
 use OCP\IUserSession;
+use OCP\PreConditionNotMetException;
 use OCP\Share\IManager;
 use OCP\Share\IShare;
-
-use OCA\Files_Versions\Versions\IVersionManager;
-
-use OCA\Onlyoffice\AppConfig;
-use OCA\Onlyoffice\Crypt;
-use OCA\Onlyoffice\DocumentService;
-use OCA\Onlyoffice\FileVersions;
-use OCA\Onlyoffice\FileUtility;
-use OCA\Onlyoffice\TemplateManager;
-use OCA\Onlyoffice\ExtraPermissions;
 
 /**
  * Controller with the main functions

@@ -19,9 +19,9 @@
 
 namespace OCA\Onlyoffice;
 
-use OCP\Files\NotFoundException;
-
 use OCP\Files\File;
+
+use OCP\Files\NotFoundException;
 
 /**
  * Template manager

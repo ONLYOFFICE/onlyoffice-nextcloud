@@ -19,17 +19,17 @@
 
 namespace OCA\Onlyoffice\Listeners;
 
-use OCP\EventDispatcher\Event;
-use OCP\EventDispatcher\IEventListener;
-use OCP\Util;
-use OCP\AppFramework\Http\ContentSecurityPolicy;
-use OCP\AppFramework\Services\IInitialState;
-use OCP\IServerContainer;
-
-use OCA\Viewer\Event\LoadViewer;
-
 use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\SettingsData;
+use OCA\Viewer\Event\LoadViewer;
+use OCP\AppFramework\Http\ContentSecurityPolicy;
+use OCP\AppFramework\Services\IInitialState;
+use OCP\EventDispatcher\Event;
+
+use OCP\EventDispatcher\IEventListener;
+
+use OCP\IServerContainer;
+use OCP\Util;
 
 /**
  * Viewer listener

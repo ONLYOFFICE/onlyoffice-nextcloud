@@ -19,9 +19,9 @@
 
 namespace OCA\Onlyoffice;
 
-use OCP\Files\File;
-
 use OCA\Files_Sharing\External\Storage as SharingExternalStorage;
+
+use OCP\Files\File;
 
 /**
  * Remote instance manager
