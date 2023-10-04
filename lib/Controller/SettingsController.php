@@ -134,7 +134,8 @@ class SettingsController extends Controller {
             "reviewDisplay" => $this->config->GetCustomizationReviewDisplay(),
             "theme" => $this->config->GetCustomizationTheme(),
             "templates" => $this->GetGlobalTemplates(),
-            "linkToDocs" => $this->config->GetLinkToDocs()
+            "linkToDocs" => $this->config->GetLinkToDocs(),
+            "defaultOdf" => $this->config->GetDefaultOdf()
         ];
         return new TemplateResponse($this->appName, "settings", $data, "blank");
     }
@@ -212,6 +213,7 @@ class SettingsController extends Controller {
      * @param bool $help - display help
      * @param bool $toolbarNoTabs - display toolbar tab
      * @param string $reviewDisplay - review viewing mode
+     * @param bool $defaultOdf - use ODF formats as default
      *
      * @return array
      */
@@ -229,7 +231,8 @@ class SettingsController extends Controller {
                                     $help,
                                     $toolbarNoTabs,
                                     $reviewDisplay,
-                                    $theme
+                                    $theme,
+                                    $defaultOdf
                                     ) {
 
         $this->config->SetDefaultFormats($defFormats);
@@ -247,6 +250,7 @@ class SettingsController extends Controller {
         $this->config->SetCustomizationToolbarNoTabs($toolbarNoTabs);
         $this->config->SetCustomizationReviewDisplay($reviewDisplay);
         $this->config->SetCustomizationTheme($theme);
+        $this->config->SetDefaultOdf($defaultOdf);
 
         return [
             ];

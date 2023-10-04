@@ -308,24 +308,42 @@ class Application extends App implements IBootstrap {
                     && $this->appConfig->isUserAllowedToUse()) {
 
                     $templateManager->registerTemplateFileCreator(function () use ($appName, $trans) {
-                        $wordTemplate = new TemplateFileCreator($appName, $trans->t("New document"), ".docx");
-                        $wordTemplate->addMimetype("application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+                        $wordTemplate;
+                        if ($this->appConfig->GetDefaultOdf()){
+                            $wordTemplate = new TemplateFileCreator($appName, $trans->t("New document"), ".odt");
+                            $wordTemplate->addMimetype("application/vnd.oasis.opendocument.text");
+                        } else {
+                            $wordTemplate = new TemplateFileCreator($appName, $trans->t("New document"), ".docx");
+                            $wordTemplate->addMimetype("application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+                        }
                         $wordTemplate->setIconClass("icon-onlyoffice-new-docx");
                         $wordTemplate->setRatio(21/29.7);
                         return $wordTemplate;
                     });
 
                     $templateManager->registerTemplateFileCreator(function () use ($appName, $trans) {
-                        $cellTemplate = new TemplateFileCreator($appName, $trans->t("New spreadsheet"), ".xlsx");
-                        $cellTemplate->addMimetype("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+                        $cellTemplate;
+                        if ($this->appConfig->GetDefaultOdf()){
+                            $cellTemplate = new TemplateFileCreator($appName, $trans->t("New spreadsheet"), ".ods");
+                            $cellTemplate->addMimetype("application/vnd.oasis.opendocument.spreadsheet");
+                        } else {
+                            $cellTemplate = new TemplateFileCreator($appName, $trans->t("New spreadsheet"), ".xlsx");
+                            $cellTemplate->addMimetype("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+                        }
                         $cellTemplate->setIconClass("icon-onlyoffice-new-xlsx");
                         $cellTemplate->setRatio(21/29.7);
                         return $cellTemplate;
                     });
 
                     $templateManager->registerTemplateFileCreator(function () use ($appName, $trans) {
-                        $slideTemplate = new TemplateFileCreator($appName, $trans->t("New presentation"), ".pptx");
-                        $slideTemplate->addMimetype("application/vnd.openxmlformats-officedocument.presentationml.presentation");
+                        $slideTemplate;
+                        if ($this->appConfig->GetDefaultOdf()){
+                            $slideTemplate = new TemplateFileCreator($appName, $trans->t("New presentation"), ".odp");
+                            $slideTemplate->addMimetype("application/vnd.oasis.opendocument.presentation");
+                        } else {
+                            $slideTemplate = new TemplateFileCreator($appName, $trans->t("New presentation"), ".pptx");
+                            $slideTemplate->addMimetype("application/vnd.openxmlformats-officedocument.presentationml.presentation");
+                        }
                         $slideTemplate->setIconClass("icon-onlyoffice-new-pptx");
                         $slideTemplate->setRatio(16/9);
                         return $slideTemplate;

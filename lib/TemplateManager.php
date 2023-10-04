@@ -129,6 +129,12 @@ class TemplateManager {
                 return "spreadsheet";
             case "application/vnd.openxmlformats-officedocument.presentationml.presentation":
                 return "presentation";
+            case "application/vnd.oasis.opendocument.text":
+                return "document";
+            case "application/vnd.oasis.opendocument.spreadsheet":
+                return "spreadsheet";
+            case "application/vnd.oasis.opendocument.presentation":
+                return "presentation";
         }
 
         return "";
@@ -142,13 +148,28 @@ class TemplateManager {
      * @return string
      */
     public static function GetMimeTemplate($type) {
-        switch($type) {
-            case "document":
-                return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-            case "spreadsheet":
-                return "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-            case "presentation":
-                return "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+
+        $appConfig = new AppConfig(self::$appName);
+        if ($appConfig->GetDefaultOdf()) {
+
+            switch($type) {
+                case "document":
+                    return "application/vnd.oasis.opendocument.text";
+                case "spreadsheet":
+                    return "application/vnd.oasis.opendocument.spreadsheet";
+                case "presentation":
+                    return "application/vnd.oasis.opendocument.presentation";
+            }
+        } else {
+
+            switch($type) {
+                case "document":
+                    return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+                case "spreadsheet":
+                    return "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                case "presentation":
+                    return "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+            }
         }
 
         return "";
@@ -163,11 +184,25 @@ class TemplateManager {
      */
     public static function IsTemplateType($name) {
         $ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
-        switch($ext) {
-            case "docx":
-            case "xlsx":
-            case "pptx":
-                return true;
+
+        $appConfig = new AppConfig(self::$appName);
+        if ($appConfig->GetDefaultOdf()) {
+
+            switch($ext) {
+                case "odt":
+                case "ods":
+                case "odp":
+                    return true;
+            }
+
+        } else {
+
+            switch($ext) {
+                case "docx":
+                case "xlsx":
+                case "pptx":
+                    return true;
+            }
         }
 
         return false;

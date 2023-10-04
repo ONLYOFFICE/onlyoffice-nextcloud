@@ -327,6 +327,13 @@ class AppConfig {
     private $_editors_check_interval = "editors_check_interval";
 
     /**
+     * The config key for the setting default odf
+     *
+     * @var string
+     */
+    private $_defaultOdf = "defaultOdf";
+
+    /**
      * @param string $AppName - application name
      */
     public function __construct($AppName) {
@@ -884,6 +891,26 @@ class AppConfig {
      */
     public function GetCustomizationToolbarNoTabs() {
         return $this->config->getAppValue($this->appName, $this->_customizationToolbarNoTabs, "true") === "true";
+    }
+
+    /**
+     * Save the default ODF setting
+     *
+     * @param bool $value - default ODF
+     */
+    public function SetDefaultOdf($value) {
+        $this->logger->info("Set ODF as default: " . json_encode($value), ["app" => $this->appName]);
+
+        $this->config->setAppValue($this->appName, $this->_defaultOdf, json_encode($value));
+    }
+
+    /**
+     * Get the default ODF setting
+     *
+     * @return bool
+     */
+    public function GetDefaultOdf() {
+        return $this->config->getAppValue($this->appName, $this->_defaultOdf, "false") === "true";
     }
 
     /**
