@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<ruleset name="CustomRuleset">
+    <!-- Insert all sniff from PSR2 standard -->
+    <rule ref="PSR2"/>
+</ruleset>
