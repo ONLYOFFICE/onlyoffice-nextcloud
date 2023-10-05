@@ -3,6 +3,7 @@
     <!-- Insert all sniff from PSR2 standard -->
     <rule ref="PSR2">
         <exclude name="Squiz.Functions.MultiLineFunctionDeclaration.BraceOnSameLine" />
+        <exclude name="PSR2.Classes.ClassDeclaration.OpenBraceNewLine" />
     </rule>
     
 </ruleset>
