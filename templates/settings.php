@@ -22,11 +22,11 @@
     script("onlyoffice", "settings");
     script("onlyoffice", "template");
 
-    if ($_["tagsEnabled"]) {
-        script("core", [
-            "dist/systemtags",
-        ]);
-    }
+if ($_["tagsEnabled"]) {
+    script("core", [
+        "dist/systemtags",
+    ]);
+}
 ?>
 <div class="section section-onlyoffice section-onlyoffice-addr">
     <h2>

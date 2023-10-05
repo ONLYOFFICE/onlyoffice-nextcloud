@@ -284,16 +284,16 @@ class Application extends App implements IBootstrap {
 
             if (class_exists("OCP\Files\Template\FileCreatedFromTemplateEvent")) {
                 $eventDispatcher->addListener(FileCreatedFromTemplateEvent::class,
-                    function (FileCreatedFromTemplateEvent $event) {
-                        $template = $event->getTemplate();
-                        if ($template === null) {
-                            $targetFile = $event->getTarget();
-                            $templateEmpty = TemplateManager::GetEmptyTemplate($targetFile->getName());
-                            if ($templateEmpty) {
-                                $targetFile->putContent($templateEmpty);
-                            }
+                function (FileCreatedFromTemplateEvent $event) {
+                    $template = $event->getTemplate();
+                    if ($template === null) {
+                        $targetFile = $event->getTarget();
+                        $templateEmpty = TemplateManager::GetEmptyTemplate($targetFile->getName());
+                        if ($templateEmpty) {
+                            $targetFile->putContent($templateEmpty);
                         }
-                    });
+                    }
+                });
             }
         });
 
