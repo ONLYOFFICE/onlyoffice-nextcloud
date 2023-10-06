@@ -156,7 +156,7 @@ class TemplateController extends Controller {
 
         try {
             $templates = $templateDir->getById($templateId);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $this->logger->logException($e, ["message" => "DeleteTemplate: $templateId", "app" => $this->AppName]);
             return [
                 "error" => $this->trans->t("Failed to delete template")

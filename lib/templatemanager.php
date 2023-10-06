@@ -122,7 +122,7 @@ class TemplateManager {
      * @return string
      */
     public static function GetTypeTemplate($mime) {
-        switch($mime) {
+        switch ($mime) {
             case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
                 return "document";
             case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
@@ -142,7 +142,7 @@ class TemplateManager {
      * @return string
      */
     public static function GetMimeTemplate($type) {
-        switch($type) {
+        switch ($type) {
             case "document":
                 return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
             case "spreadsheet":
@@ -163,7 +163,7 @@ class TemplateManager {
      */
     public static function IsTemplateType($name) {
         $ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
-        switch($ext) {
+        switch ($ext) {
             case "docx":
             case "xlsx":
             case "pptx":

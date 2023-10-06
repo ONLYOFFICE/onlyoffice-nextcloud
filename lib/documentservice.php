@@ -181,7 +181,7 @@ class DocumentService {
         $response_data = simplexml_load_string($response_xml_data);
         if (!$response_data) {
             $exc = $this->trans->t("Bad Response. Errors: ");
-            foreach(libxml_get_errors() as $error) {
+            foreach (libxml_get_errors() as $error) {
                 $exc = $exc . "\t" . $error->message;
             }
             throw new \Exception($exc);

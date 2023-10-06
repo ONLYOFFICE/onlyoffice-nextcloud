@@ -531,7 +531,7 @@ class EditorApiController extends OCSController {
             $templatesList = TemplateManager::GetGlobalTemplates($file->getMimeType());
             if (!empty($templatesList)) {
                 $templates = [];
-                foreach($templatesList as $templateItem) {
+                foreach ($templatesList as $templateItem) {
                     $createParam["templateId"] = $templateItem->getId();
                     $createParam["name"] = $templateItem->getName();
 
@@ -764,12 +764,12 @@ class EditorApiController extends OCSController {
         }
 
         //default is true
-        if($this->config->GetCustomizationMacros() === false) {
+        if ($this->config->GetCustomizationMacros() === false) {
             $params["editorConfig"]["customization"]["macros"] = false;
         }
 
         //default is true
-        if($this->config->GetCustomizationPlugins() === false) {
+        if ($this->config->GetCustomizationPlugins() === false) {
             $params["editorConfig"]["customization"]["plugins"] = false;
         }
 
