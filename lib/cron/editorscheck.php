@@ -192,5 +192,4 @@ class EditorsCheck extends TimedJob {
             $notificationManager->notify($notification);
         }
     }
-
 }
