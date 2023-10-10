@@ -221,12 +221,12 @@ class Preview extends Provider {
      * @return bool
      */
     public function isAvailable(FileInfo $fileInfo) {
-        if ($this->config->GetPreview() !== true) {
+        if ($this->config->getPreview() !== true) {
             return false;
         }
         if (!$fileInfo
             || $fileInfo->getSize() === 0
-            || $fileInfo->getSize() > $this->config->GetLimitThumbSize()) {
+            || $fileInfo->getSize() > $this->config->getLimitThumbSize()) {
             return false;
         }
         if (!in_array($fileInfo->getMimetype(), self::$capabilities, true)) {
@@ -260,14 +260,14 @@ class Preview extends Provider {
         $imageUrl = null;
         $documentService = new DocumentService($this->trans, $this->config);
         try {
-            $imageUrl = $documentService->GetConvertedUri($fileUrl, $extension, self::THUMBEXTENSION, $key);
+            $imageUrl = $documentService->getConvertedUri($fileUrl, $extension, self::THUMBEXTENSION, $key);
         } catch (\Exception $e) {
-            $this->logger->logException($e, ["message" => "GetConvertedUri: from $extension to " . self::THUMBEXTENSION, "app" => $this->appName]);
+            $this->logger->logException($e, ["message" => "getConvertedUri: from $extension to " . self::THUMBEXTENSION, "app" => $this->appName]);
             return false;
         }
 
         try {
-            $thumbnail = $documentService->Request($imageUrl);
+            $thumbnail = $documentService->request($imageUrl);
         } catch (\Exception $e) {
             $this->logger->logException($e, ["message" => "Failed to download thumbnail", "app" => $this->appName]);
             return false;
@@ -313,12 +313,12 @@ class Preview extends Provider {
             $data["template"] = true;
         }
 
-        $hashUrl = $this->crypt->GetHash($data);
+        $hashUrl = $this->crypt->getHash($data);
 
         $fileUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.download", ["doc" => $hashUrl]);
 
-        if (!$this->config->UseDemo() && !empty($this->config->GetStorageUrl())) {
-            $fileUrl = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->config->GetStorageUrl(), $fileUrl);
+        if (!$this->config->useDemo() && !empty($this->config->getStorageUrl())) {
+            $fileUrl = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->config->getStorageUrl(), $fileUrl);
         }
 
         return $fileUrl;
@@ -369,17 +369,17 @@ class Preview extends Provider {
                 $versionId = $version->getRevisionId();
                 if (strcmp($versionId, $fileVersion) === 0) {
                     $key = $this->fileUtility->getVersionKey($version);
-                    $key = DocumentService::GenerateRevisionId($key);
+                    $key = DocumentService::generateRevisionId($key);
 
                     break;
                 }
             }
         } else {
             $key = $this->fileUtility->getKey($fileInfo);
-            $key = DocumentService::GenerateRevisionId($key);
+            $key = DocumentService::generateRevisionId($key);
         }
 
-        if (TemplateManager::IsTemplate($fileInfo->getId())) {
+        if (TemplateManager::isTemplate($fileInfo->getId())) {
             $template = true;
         }
 

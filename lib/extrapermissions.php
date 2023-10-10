@@ -401,7 +401,7 @@ class ExtraPermissions {
 
         $node = $share->getNode();
         $ext = strtolower(pathinfo($node->getName(), PATHINFO_EXTENSION));
-        $format = !empty($ext) && array_key_exists($ext, $this->config->FormatsSetting()) ? $this->config->FormatsSetting()[$ext] : null;
+        $format = !empty($ext) && array_key_exists($ext, $this->config->formatsSetting()) ? $this->config->formatsSetting()[$ext] : null;
         if (!isset($format)) {
             return [$availableExtra, $defaultExtra];
         }

@@ -76,18 +76,18 @@ class FilesListener implements IEventListener {
             return;
         }
 
-        if (!empty($this->appConfig->GetDocumentServerUrl())
-            && $this->appConfig->SettingsAreSuccessful()
+        if (!empty($this->appConfig->getDocumentServerUrl())
+            && $this->appConfig->settingsAreSuccessful()
             && $this->appConfig->isUserAllowedToUse()) {
             Util::addScript("onlyoffice", "desktop");
             Util::addScript("onlyoffice", "main");
             Util::addScript("onlyoffice", "template");
 
-            if ($this->appConfig->GetSameTab()) {
+            if ($this->appConfig->getSameTab()) {
                 Util::addScript("onlyoffice", "listener");
             }
 
-            if ($this->appConfig->GetAdvanced()
+            if ($this->appConfig->getAdvanced()
                 && \OC::$server->getAppManager()->isInstalled("files_sharing")) {
                 Util::addScript("onlyoffice", "share");
                 Util::addStyle("onlyoffice", "share");

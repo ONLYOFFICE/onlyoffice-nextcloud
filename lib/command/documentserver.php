@@ -106,7 +106,7 @@ class DocumentServer extends Command {
     protected function execute(InputInterface $input, OutputInterface $output) {
         $check = $input->getOption("check");
 
-        $documentserver = $this->config->GetDocumentServerUrl(true);
+        $documentserver = $this->config->getDocumentServerUrl(true);
         if (empty($documentserver)) {
             $output->writeln("<info>Document server is not configured</info>");
             return 1;
@@ -116,7 +116,7 @@ class DocumentServer extends Command {
             $documentService = new DocumentService($this->trans, $this->config);
 
             list($error, $version) = $documentService->checkDocServiceUrl($this->urlGenerator, $this->crypt);
-            $this->config->SetSettingsError($error);
+            $this->config->setSettingsError($error);
 
             if (!empty($error)) {
                 $output->writeln("<error>Error connection: $error</error>");

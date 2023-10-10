@@ -50,8 +50,8 @@ class WidgetListener implements IEventListener {
             return;
         }
 
-        if (!empty($this->appConfig->GetDocumentServerUrl())
-            && $this->appConfig->SettingsAreSuccessful()
+        if (!empty($this->appConfig->getDocumentServerUrl())
+            && $this->appConfig->settingsAreSuccessful()
             && $this->appConfig->isUserAllowedToUse()) {
             Util::addScript("onlyoffice", "desktop");
         }

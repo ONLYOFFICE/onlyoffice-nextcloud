@@ -228,7 +228,7 @@ class FileUtility {
         $key = KeyManager::get($fileId);
 
         if (empty($key)) {
-            $instanceId = $this->config->GetSystemValue("instanceid", true);
+            $instanceId = $this->config->getSystemValue("instanceid", true);
 
             $key = $instanceId . "_" . $this->GUID();
 
@@ -259,7 +259,7 @@ class FileUtility {
      * @return string
      */
     public function getVersionKey($version) {
-        $instanceId = $this->config->GetSystemValue("instanceid", true);
+        $instanceId = $this->config->getSystemValue("instanceid", true);
 
         $key = $instanceId . "_" . $version->getSourceFile()->getEtag() . "_" . $version->getRevisionId();
 

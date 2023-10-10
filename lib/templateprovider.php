@@ -59,7 +59,7 @@ class TemplateProvider implements ICustomTemplateProvider {
     public function getCustomTemplates($mimetype) : array {
         $templates = [];
 
-        $templateFiles = TemplateManager::GetGlobalTemplates($mimetype);
+        $templateFiles = TemplateManager::getGlobalTemplates($mimetype);
 
         foreach ($templateFiles as $templateFile) {
             $template = new Template(
@@ -84,6 +84,6 @@ class TemplateProvider implements ICustomTemplateProvider {
      * @return File
      */
     public function getCustomTemplate($templateId) : File {
-        return TemplateManager::GetTemplate($templateId);
+        return TemplateManager::getTemplate($templateId);
     }
 }

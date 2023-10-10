@@ -115,7 +115,7 @@ class Application extends App implements IBootstrap {
         }
 
         // Set the leeway for the JWT library in case the system clock is a second off
-        \Firebase\JWT\JWT::$leeway = $this->appConfig->GetJwtLeeway();
+        \Firebase\JWT\JWT::$leeway = $this->appConfig->getJwtLeeway();
 
         $context->registerService("L10N", function (ContainerInterface $c) {
             return $c->get("ServerContainer")->getL10N($c->get("AppName"));
@@ -289,7 +289,7 @@ class Application extends App implements IBootstrap {
                         $template = $event->getTemplate();
                         if ($template === null) {
                             $targetFile = $event->getTarget();
-                            $templateEmpty = TemplateManager::GetEmptyTemplate($targetFile->getName());
+                            $templateEmpty = TemplateManager::getEmptyTemplate($targetFile->getName());
                             if ($templateEmpty) {
                                 $targetFile->putContent($templateEmpty);
                             }
@@ -305,8 +305,8 @@ class Application extends App implements IBootstrap {
 
         if (class_exists("OCP\Files\Template\TemplateFileCreator")) {
             $context->injectFn(function (ITemplateManager $templateManager, IL10N $trans, $appName) {
-                if (!empty($this->appConfig->GetDocumentServerUrl())
-                    && $this->appConfig->SettingsAreSuccessful()
+                if (!empty($this->appConfig->getDocumentServerUrl())
+                    && $this->appConfig->settingsAreSuccessful()
                     && $this->appConfig->isUserAllowedToUse()) {
                     $templateManager->registerTemplateFileCreator(function () use ($appName, $trans) {
                         $wordTemplate = new TemplateFileCreator($appName, $trans->t("New document"), ".docx");

@@ -130,7 +130,7 @@ class DirectEditor implements IEditor {
             return $mimes;
         }
 
-        $formats = $this->config->FormatsSetting();
+        $formats = $this->config->formatsSetting();
         foreach ($formats as $format => $setting) {
             if (array_key_exists("edit", $setting) && $setting["edit"]
                 && array_key_exists("def", $setting) && $setting["def"]) {
@@ -152,7 +152,7 @@ class DirectEditor implements IEditor {
             return $mimes;
         }
 
-        $formats = $this->config->FormatsSetting();
+        $formats = $this->config->formatsSetting();
         foreach ($formats as $format => $setting) {
             if (array_key_exists("edit", $setting) && $setting["edit"]
                 && (!array_key_exists("def", $setting) || !$setting["def"])) {
@@ -213,14 +213,14 @@ class DirectEditor implements IEditor {
                 return $this->renderError($this->trans->t("Not permitted"));
             }
 
-            $documentServerUrl = $this->config->GetDocumentServerUrl();
+            $documentServerUrl = $this->config->getDocumentServerUrl();
 
             if (empty($documentServerUrl)) {
                 $this->logger->error("documentServerUrl is empty", ["app" => $this->appName]);
                 return $this->renderError($this->trans->t("ONLYOFFICE app is not configured. Please contact admin"));
             }
 
-            $directToken = $this->crypt->GetHash([
+            $directToken = $this->crypt->getHash([
                 "userId" => $userId,
                 "fileId" => $fileId,
                 "action" => "direct",

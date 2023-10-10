@@ -105,7 +105,7 @@ class FederationController extends OCSController {
 
         $key = $this->fileUtility->getKey($file, true);
 
-        $key = DocumentService::GenerateRevisionId($key);
+        $key = DocumentService::generateRevisionId($key);
 
         $this->logger->debug("Federated request get for " . $file->getId() . " key $key", ["app" => $this->appName]);
 

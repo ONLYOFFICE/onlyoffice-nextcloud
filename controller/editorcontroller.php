@@ -256,7 +256,7 @@ class EditorController extends Controller {
         }
 
         if (!empty($templateId)) {
-            $templateFile = TemplateManager::GetTemplate($templateId);
+            $templateFile = TemplateManager::getTemplate($templateId);
             if ($templateFile !== null) {
                 $template = $templateFile->getContent();
             }
@@ -272,14 +272,14 @@ class EditorController extends Controller {
             $region = str_replace("_", "-", \OC::$server->getL10NFactory()->get("")->getLocaleCode());
             $documentService = new DocumentService($this->trans, $this->config);
             try {
-                $newFileUri = $documentService->GetConvertedUri($fileUrl, $targetExt, $ext, $targetKey, $region);
+                $newFileUri = $documentService->getConvertedUri($fileUrl, $targetExt, $ext, $targetKey, $region);
             } catch (\Exception $e) {
-                $this->logger->logException($e, ["message" => "GetConvertedUri: " . $targetFile->getId(), "app" => $this->appName]);
+                $this->logger->logException($e, ["message" => "getConvertedUri: " . $targetFile->getId(), "app" => $this->appName]);
                 return ["error" => $e->getMessage()];
             }
-            $template = $documentService->Request($newFileUri);
+            $template = $documentService->request($newFileUri);
         } else {
-            $template = TemplateManager::GetEmptyTemplate($name);
+            $template = TemplateManager::getEmptyTemplate($name);
         }
 
         if (!$template) {
@@ -582,7 +582,7 @@ class EditorController extends Controller {
         $file = null;
         $fileId = (integer)($referenceData["fileKey"] ?? 0);
         if (!empty($fileId)
-            && $referenceData["instanceId"] === $this->config->GetSystemValue("instanceid", true)) {
+            && $referenceData["instanceId"] === $this->config->getSystemValue("instanceid", true)) {
             list($file, $error, $share) = $this->getFile($userId, $fileId);
         }
 
@@ -610,13 +610,13 @@ class EditorController extends Controller {
             "path" => $userFolder->getRelativePath($file->getPath()),
             "referenceData" => [
                 "fileKey" => $file->getId(),
-                "instanceId" => $this->config->GetSystemValue("instanceid", true),
+                "instanceId" => $this->config->getSystemValue("instanceid", true),
             ],
             "url" => $this->getUrl($file, $user),
         ];
 
-        if (!empty($this->config->GetDocumentServerSecret())) {
-            $token = \Firebase\JWT\JWT::encode($response, $this->config->GetDocumentServerSecret(), "HS256");
+        if (!empty($this->config->getDocumentServerSecret())) {
+            $token = \Firebase\JWT\JWT::encode($response, $this->config->getDocumentServerSecret(), "HS256");
             $response["token"] = $token;
         }
 
@@ -661,7 +661,7 @@ class EditorController extends Controller {
 
         $fileName = $file->getName();
         $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-        $format = $this->config->FormatsSetting()[$ext];
+        $format = $this->config->formatsSetting()[$ext];
         if (!isset($format)) {
             $this->logger->info("Format for convertion not supported: $fileName", ["app" => $this->appName]);
             return ["error" => $this->trans->t("Format is not supported")];
@@ -688,9 +688,9 @@ class EditorController extends Controller {
         $fileUrl = $this->getUrl($file, $user, $shareToken);
         $region = str_replace("_", "-", \OC::$server->getL10NFactory()->get("")->getLocaleCode());
         try {
-            $newFileUri = $documentService->GetConvertedUri($fileUrl, $ext, $internalExtension, $key, $region);
+            $newFileUri = $documentService->getConvertedUri($fileUrl, $ext, $internalExtension, $key, $region);
         } catch (\Exception $e) {
-            $this->logger->logException($e, ["message" => "GetConvertedUri: " . $file->getId(), "app" => $this->appName]);
+            $this->logger->logException($e, ["message" => "getConvertedUri: " . $file->getId(), "app" => $this->appName]);
             return ["error" => $e->getMessage()];
         }
 
@@ -700,7 +700,7 @@ class EditorController extends Controller {
         }
 
         try {
-            $newData = $documentService->Request($newFileUri);
+            $newData = $documentService->request($newFileUri);
         } catch (\Exception $e) {
             $this->logger->logException($e, ["message" => "Failed to download converted file", "app" => $this->appName]);
             return ["error" => $this->trans->t("Failed to download converted file")];
@@ -756,11 +756,11 @@ class EditorController extends Controller {
             return ["error" => $this->trans->t("You don't have enough permission to create")];
         }
 
-        $url = $this->config->ReplaceDocumentServerUrlToInternal($url);
+        $url = $this->config->replaceDocumentServerUrlToInternal($url);
 
         try {
             $documentService = new DocumentService($this->trans, $this->config);
-            $newData = $documentService->Request($url);
+            $newData = $documentService->request($url);
         } catch (\Exception $e) {
             $this->logger->logException($e, ["message" => "Failed to download file for saving: $url", "app" => $this->appName]);
             return ["error" => $this->trans->t("Download failed")];
@@ -836,7 +836,7 @@ class EditorController extends Controller {
             $versionNum = $versionNum + 1;
 
             $key = $this->fileUtility->getVersionKey($version);
-            $key = DocumentService::GenerateRevisionId($key);
+            $key = DocumentService::generateRevisionId($key);
 
             $historyItem = [
                 "created" => $version->getTimestamp(),
@@ -867,7 +867,7 @@ class EditorController extends Controller {
         }
 
         $key = $this->fileUtility->getKey($file, true);
-        $key = DocumentService::GenerateRevisionId($key);
+        $key = DocumentService::generateRevisionId($key);
 
         $historyItem = [
             "created" => $file->getMTime(),
@@ -963,7 +963,7 @@ class EditorController extends Controller {
 
             $fileUrl = $this->getUrl($file, $user, null, $version);
         }
-        $key = DocumentService::GenerateRevisionId($key);
+        $key = DocumentService::generateRevisionId($key);
         $fileName = $file->getName();
         $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
 
@@ -982,7 +982,7 @@ class EditorController extends Controller {
 
             $prevVersion = array_values($versions)[$version - 2];
             $prevVersionKey = $this->fileUtility->getVersionKey($prevVersion);
-            $prevVersionKey = DocumentService::GenerateRevisionId($prevVersionKey);
+            $prevVersionKey = DocumentService::generateRevisionId($prevVersionKey);
 
             $prevVersionUrl = $this->getUrl($file, $user, null, $version - 1);
 
@@ -993,8 +993,8 @@ class EditorController extends Controller {
             ];
         }
 
-        if (!empty($this->config->GetDocumentServerSecret())) {
-            $token = \Firebase\JWT\JWT::encode($result, $this->config->GetDocumentServerSecret(), "HS256");
+        if (!empty($this->config->getDocumentServerSecret())) {
+            $token = \Firebase\JWT\JWT::encode($result, $this->config->getDocumentServerSecret(), "HS256");
             $result["token"] = $token;
         }
 
@@ -1094,8 +1094,8 @@ class EditorController extends Controller {
             "url" => $fileUrl
         ];
 
-        if (!empty($this->config->GetDocumentServerSecret())) {
-            $token = \Firebase\JWT\JWT::encode($result, $this->config->GetDocumentServerSecret(), "HS256");
+        if (!empty($this->config->getDocumentServerSecret())) {
+            $token = \Firebase\JWT\JWT::encode($result, $this->config->getDocumentServerSecret(), "HS256");
             $result["token"] = $token;
         }
 
@@ -1122,7 +1122,7 @@ class EditorController extends Controller {
         }
 
         if ($template) {
-            $templateFile = TemplateManager::GetTemplate($fileId);
+            $templateFile = TemplateManager::getTemplate($fileId);
             if (empty($templateFile)) {
                 $this->logger->info("Download: template not found: $fileId", ["app" => $this->appName]);
                 return $this->renderError($this->trans->t("File not found"));
@@ -1171,14 +1171,14 @@ class EditorController extends Controller {
         $key = $this->fileUtility->getKey($file);
         $fileUrl = $this->getUrl($file, $user);
         try {
-            $newFileUri = $documentService->GetConvertedUri($fileUrl, $ext, $toExtension, $key);
+            $newFileUri = $documentService->getConvertedUri($fileUrl, $ext, $toExtension, $key);
         } catch (\Exception $e) {
-            $this->logger->logException($e, ["message" => "GetConvertedUri: " . $file->getId(), "app" => $this->appName]);
+            $this->logger->logException($e, ["message" => "getConvertedUri: " . $file->getId(), "app" => $this->appName]);
             return $this->renderError($e->getMessage());
         }
 
         try {
-            $newData = $documentService->Request($newFileUri);
+            $newData = $documentService->request($newFileUri);
         } catch (\Exception $e) {
             $this->logger->logException($e, ["message" => "Failed to download converted file", "app" => $this->appName]);
             return $this->renderError($this->trans->t("Failed to download converted file"));
@@ -1187,7 +1187,7 @@ class EditorController extends Controller {
         $fileNameWithoutExt = substr($fileName, 0, strlen($fileName) - strlen($ext) - 1);
         $newFileName = $fileNameWithoutExt . "." . $toExtension;
 
-        $formats = $this->config->FormatsSetting();
+        $formats = $this->config->formatsSetting();
 
         return new DataDownloadResponse($newData, $newFileName, $formats[$toExtension]["mime"]);
     }
@@ -1232,7 +1232,7 @@ class EditorController extends Controller {
             return $this->renderError($this->trans->t("Not permitted"));
         }
 
-        $documentServerUrl = $this->config->GetDocumentServerUrl();
+        $documentServerUrl = $this->config->getDocumentServerUrl();
 
         if (empty($documentServerUrl)) {
             $this->logger->error("documentServerUrl is empty", ["app" => $this->appName]);
@@ -1299,7 +1299,7 @@ class EditorController extends Controller {
      * @NoCSRFRequired
      * @PublicPage
      */
-    public function PublicPage($fileId, $shareToken, $version = 0, $inframe = false) {
+    public function publicPage($fileId, $shareToken, $version = 0, $inframe = false) {
         return $this->index($fileId, null, $shareToken, $version, $inframe);
     }
 
@@ -1319,7 +1319,7 @@ class EditorController extends Controller {
         }
 
         try {
-            $folder = !$template ? $this->root->getUserFolder($userId) : TemplateManager::GetGlobalTemplateDir();
+            $folder = !$template ? $this->root->getUserFolder($userId) : TemplateManager::getGlobalTemplateDir();
             $files = $folder->getById($fileId);
         } catch (\Exception $e) {
             $this->logger->logException($e, ["message" => "getFile: $fileId", "app" => $this->appName]);
@@ -1387,12 +1387,12 @@ class EditorController extends Controller {
             $data["template"] = true;
         }
 
-        $hashUrl = $this->crypt->GetHash($data);
+        $hashUrl = $this->crypt->getHash($data);
 
         $fileUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.download", ["doc" => $hashUrl]);
 
-        if (!$this->config->UseDemo() && !empty($this->config->GetStorageUrl())) {
-            $fileUrl = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->config->GetStorageUrl(), $fileUrl);
+        if (!$this->config->useDemo() && !empty($this->config->getStorageUrl())) {
+            $fileUrl = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->config->getStorageUrl(), $fileUrl);
         }
 
         return $fileUrl;
@@ -1421,7 +1421,7 @@ class EditorController extends Controller {
      * @return string
      */
     private function buildUserId($userId) {
-        $instanceId = $this->config->GetSystemValue("instanceid", true);
+        $instanceId = $this->config->getSystemValue("instanceid", true);
         $userId = $instanceId . "_" . $userId;
         return $userId;
     }
