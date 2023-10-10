@@ -451,7 +451,6 @@ class EditorApiController extends OCSController {
         if (!$template
             && $file->isUpdateable()
             && (empty($shareToken) || ($share->getPermissions() & Constants::PERMISSION_UPDATE) === Constants::PERMISSION_UPDATE)) {
-
             $params["document"]["permissions"]["changeHistory"] = true;
         }
 

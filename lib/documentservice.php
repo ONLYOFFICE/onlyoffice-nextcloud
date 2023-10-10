@@ -388,45 +388,36 @@ class DocumentService {
         $version = null;
 
         try {
-
             if (preg_match("/^https:\/\//i", $urlGenerator->getAbsoluteURL("/"))
                 && preg_match("/^http:\/\//i", $this->config->GetDocumentServerUrl())) {
                 throw new \Exception($this->trans->t("Mixed Active Content is not allowed. HTTPS address for ONLYOFFICE Docs is required."));
             }
-
         } catch (\Exception $e) {
             $logger->logException($e, ["message" => "Protocol on check error", "app" => self::$appName]);
             return [$e->getMessage(), $version];
         }
 
         try {
-
             $healthcheckResponse = $this->HealthcheckRequest();
             if (!$healthcheckResponse) {
                 throw new \Exception($this->trans->t("Bad healthcheck status"));
             }
-
         } catch (\Exception $e) {
             $logger->logException($e, ["message" => "HealthcheckRequest on check error", "app" => self::$appName]);
             return [$e->getMessage(), $version];
         }
 
         try {
-
             $commandResponse = $this->CommandRequest("version");
-
             $logger->debug("CommandRequest on check: " . json_encode($commandResponse), ["app" => self::$appName]);
-
             if (empty($commandResponse)) {
                 throw new \Exception($this->trans->t("Error occurred in the document service"));
             }
-
             $version = $commandResponse->version;
             $versionF = floatval($version);
             if ($versionF > 0.0 && $versionF <= 6.0) {
                 throw new \Exception($this->trans->t("Not supported version"));
             }
-
         } catch (\Exception $e) {
             $logger->logException($e, ["message" => "CommandRequest on check error", "app" => self::$appName]);
             return [$e->getMessage(), $version];
@@ -434,7 +425,6 @@ class DocumentService {
 
         $convertedFileUri = null;
         try {
-
             $hashUrl = $crypt->GetHash(["action" => "empty"]);
             $fileUrl = $urlGenerator->linkToRouteAbsolute(self::$appName . ".callback.emptyfile", ["doc" => $hashUrl]);
             if (!$this->config->UseDemo() && !empty($this->config->GetStorageUrl())) {
@@ -446,7 +436,6 @@ class DocumentService {
             if (strcmp($convertedFileUri, $fileUrl) === 0) {
                 $logger->debug("GetConvertedUri skipped", ["app" => self::$appName]);
             }
-
         } catch (\Exception $e) {
             $logger->logException($e, ["message" => "GetConvertedUri on check error", "app" => self::$appName]);
             return [$e->getMessage(), $version];

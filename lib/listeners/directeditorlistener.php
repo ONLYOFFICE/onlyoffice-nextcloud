@@ -64,7 +64,6 @@ class DirectEditorListener implements IEventListener {
 
         if (!empty($this->appConfig->GetDocumentServerUrl())
             && $this->appConfig->SettingsAreSuccessful()) {
-
             $event->register($this->editor);
         }
     }

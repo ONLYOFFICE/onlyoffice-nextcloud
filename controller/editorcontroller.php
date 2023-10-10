@@ -515,7 +515,6 @@ class EditorController extends Controller {
             if (!$isAvailable
                 && ($file->getFileInfo()->getStorage()->instanceOfStorage("\OCA\GroupFolders\Mount\GroupFolderStorage")
                 || $file->getFileInfo()->getMountPoint() instanceof \OCA\Files_External\Config\ExternalMountPoint)) {
-
                 $recipientFolder = $this->root->getUserFolder($recipientId);
                 $recipientFile = $recipientFolder->getById($file->getId());
 
@@ -978,7 +977,6 @@ class EditorController extends Controller {
         if ($version > 1
             && count($versions) >= $version - 1
             && FileVersions::hasChanges($ownerId, $fileId, $versionId)) {
-
             $changesUrl = $this->getUrl($file, $user, null, $version, true);
             $result["changesUrl"] = $changesUrl;
 

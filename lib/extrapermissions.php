@@ -161,7 +161,6 @@ class ExtraPermissions {
 
         $noActualList = [];
         foreach ($shares as $share) {
-
             $currentExtra = [];
             foreach ($extras as $extra) {
                 if ($extra["share_id"] === $share->getId()) {

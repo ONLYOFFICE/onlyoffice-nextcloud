@@ -143,7 +143,6 @@ class RemoteInstance {
             if (isset($data["alive"])) {
                 $status = $data["alive"] === true;
             }
-
         } catch (\Exception $e) {
             $logger->logException($e, ["message" => "Failed to request federated health check for" . $remote, "app" => self::App_Name]);
         }

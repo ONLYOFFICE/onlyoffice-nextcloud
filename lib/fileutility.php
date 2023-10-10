@@ -219,7 +219,6 @@ class FileUtility {
 
         if ($origin
             && RemoteInstance::isRemoteFile($file)) {
-
             $key = RemoteInstance::getRemoteKey($file);
             if (!empty($key)) {
                 return $key;

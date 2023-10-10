@@ -79,7 +79,6 @@ class FilesListener implements IEventListener {
         if (!empty($this->appConfig->GetDocumentServerUrl())
             && $this->appConfig->SettingsAreSuccessful()
             && $this->appConfig->isUserAllowedToUse()) {
-
             Util::addScript("onlyoffice", "desktop");
             Util::addScript("onlyoffice", "main");
             Util::addScript("onlyoffice", "template");

@@ -258,7 +258,7 @@ class Application extends App implements IBootstrap {
         $container = $this->getContainer();
 
         $previewManager = $container->query(IPreview::class);
-        $previewManager->registerProvider(Preview::getMimeTypeRegex(), function() use ($container) {
+        $previewManager->registerProvider(Preview::getMimeTypeRegex(), function () use ($container) {
             return $container->query(Preview::class);
         });
 
@@ -283,17 +283,19 @@ class Application extends App implements IBootstrap {
         $context->injectFn(function (SymfonyAdapter $eventDispatcher) {
 
             if (class_exists("OCP\Files\Template\FileCreatedFromTemplateEvent")) {
-                $eventDispatcher->addListener(FileCreatedFromTemplateEvent::class,
-                function (FileCreatedFromTemplateEvent $event) {
-                    $template = $event->getTemplate();
-                    if ($template === null) {
-                        $targetFile = $event->getTarget();
-                        $templateEmpty = TemplateManager::GetEmptyTemplate($targetFile->getName());
-                        if ($templateEmpty) {
-                            $targetFile->putContent($templateEmpty);
+                $eventDispatcher->addListener(
+                    FileCreatedFromTemplateEvent::class,
+                    function (FileCreatedFromTemplateEvent $event) {
+                        $template = $event->getTemplate();
+                        if ($template === null) {
+                            $targetFile = $event->getTarget();
+                            $templateEmpty = TemplateManager::GetEmptyTemplate($targetFile->getName());
+                            if ($templateEmpty) {
+                                $targetFile->putContent($templateEmpty);
+                            }
                         }
                     }
-                });
+                );
             }
         });
 
@@ -302,11 +304,10 @@ class Application extends App implements IBootstrap {
         });
 
         if (class_exists("OCP\Files\Template\TemplateFileCreator")) {
-            $context->injectFn(function(ITemplateManager $templateManager, IL10N $trans, $appName) {
+            $context->injectFn(function (ITemplateManager $templateManager, IL10N $trans, $appName) {
                 if (!empty($this->appConfig->GetDocumentServerUrl())
                     && $this->appConfig->SettingsAreSuccessful()
                     && $this->appConfig->isUserAllowedToUse()) {
-
                     $templateManager->registerTemplateFileCreator(function () use ($appName, $trans) {
                         $wordTemplate = new TemplateFileCreator($appName, $trans->t("New document"), ".docx");
                         $wordTemplate->addMimetype("application/vnd.openxmlformats-officedocument.wordprocessingml.document");
