@@ -2,8 +2,9 @@ name: Lint
 
 on:
   push:
+    branches: [master]
   pull_request:
-    branches: [refactor/linter-formatting]
+    branches: [master, develop]
 
 permissions:
   contents: read
