@@ -146,7 +146,7 @@ class Preview extends Provider {
     /**
      * Converted thumbnail format
      */
-    private const thumbExtension = "jpeg";
+    private const THUMBEXTENSION = "jpeg";
 
     /**
      * @param string $appName - application name
@@ -260,9 +260,9 @@ class Preview extends Provider {
         $imageUrl = null;
         $documentService = new DocumentService($this->trans, $this->config);
         try {
-            $imageUrl = $documentService->GetConvertedUri($fileUrl, $extension, self::thumbExtension, $key);
+            $imageUrl = $documentService->GetConvertedUri($fileUrl, $extension, self::THUMBEXTENSION, $key);
         } catch (\Exception $e) {
-            $this->logger->logException($e, ["message" => "GetConvertedUri: from $extension to " . self::thumbExtension, "app" => $this->appName]);
+            $this->logger->logException($e, ["message" => "GetConvertedUri: from $extension to " . self::THUMBEXTENSION, "app" => $this->appName]);
             return false;
         }
 

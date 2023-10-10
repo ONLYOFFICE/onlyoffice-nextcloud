@@ -29,7 +29,7 @@ class KeyManager {
     /**
      * Table name
      */
-    private const TableName_Key = "onlyoffice_filekey";
+    private const TABLENAME_KEY = "onlyoffice_filekey";
 
     /**
      * Get document identifier
@@ -42,7 +42,7 @@ class KeyManager {
         $connection = \OC::$server->getDatabaseConnection();
         $select = $connection->prepare("
             SELECT `key`
-            FROM  `*PREFIX*" . self::TableName_Key . "`
+            FROM  `*PREFIX*" . self::TABLENAME_KEY . "`
             WHERE `file_id` = ?
         ");
         $result = $select->execute([$fileId]);
@@ -64,7 +64,7 @@ class KeyManager {
     public static function set($fileId, $key) {
         $connection = \OC::$server->getDatabaseConnection();
         $insert = $connection->prepare("
-            INSERT INTO `*PREFIX*" . self::TableName_Key . "`
+            INSERT INTO `*PREFIX*" . self::TABLENAME_KEY . "`
                 (`file_id`, `key`)
             VALUES (?, ?)
         ");
@@ -83,7 +83,7 @@ class KeyManager {
         $connection = \OC::$server->getDatabaseConnection();
         $delete = $connection->prepare(
             "
-            DELETE FROM `*PREFIX*" . self::TableName_Key . "`
+            DELETE FROM `*PREFIX*" . self::TABLENAME_KEY . "`
             WHERE `file_id` = ?
             " . ($unlock === false ? "AND `lock` != 1" : "")
         );
@@ -101,7 +101,7 @@ class KeyManager {
     public static function lock($fileId, $lock = true) {
         $connection = \OC::$server->getDatabaseConnection();
         $update = $connection->prepare("
-            UPDATE `*PREFIX*" . self::TableName_Key . "`
+            UPDATE `*PREFIX*" . self::TABLENAME_KEY . "`
             SET `lock` = ?
             WHERE `file_id` = ?
         ");
@@ -119,7 +119,7 @@ class KeyManager {
     public static function setForcesave($fileId, $fs = true) {
         $connection = \OC::$server->getDatabaseConnection();
         $update = $connection->prepare("
-            UPDATE `*PREFIX*" . self::TableName_Key . "`
+            UPDATE `*PREFIX*" . self::TABLENAME_KEY . "`
             SET `fs` = ?
             WHERE `file_id` = ?
         ");
@@ -137,7 +137,7 @@ class KeyManager {
         $connection = \OC::$server->getDatabaseConnection();
         $select = $connection->prepare("
             SELECT `fs`
-            FROM  `*PREFIX*" . self::TableName_Key . "`
+            FROM  `*PREFIX*" . self::TABLENAME_KEY . "`
             WHERE `file_id` = ?
         ");
         $result = $select->execute([$fileId]);

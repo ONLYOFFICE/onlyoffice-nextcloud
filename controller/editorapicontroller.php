@@ -351,7 +351,7 @@ class EditorApiController extends OCSController {
 
             if (!empty($extraPermissions)) {
                 if (isset($format["review"]) && $format["review"]) {
-                    $reviewPermission = ($extraPermissions["permissions"] & ExtraPermissions::Review) === ExtraPermissions::Review;
+                    $reviewPermission = ($extraPermissions["permissions"] & ExtraPermissions::REVIEW) === ExtraPermissions::REVIEW;
                     if ($reviewPermission) {
                         $restrictedEditing = true;
                         $params["document"]["permissions"]["review"] = true;
@@ -359,7 +359,7 @@ class EditorApiController extends OCSController {
                 }
 
                 if (isset($format["comment"]) && $format["comment"]) {
-                    $commentPermission = ($extraPermissions["permissions"] & ExtraPermissions::Comment) === ExtraPermissions::Comment;
+                    $commentPermission = ($extraPermissions["permissions"] & ExtraPermissions::COMMENT) === ExtraPermissions::COMMENT;
                     if ($commentPermission) {
                         $restrictedEditing = true;
                         $params["document"]["permissions"]["comment"] = true;
@@ -367,7 +367,7 @@ class EditorApiController extends OCSController {
                 }
 
                 if (isset($format["fillForms"]) && $format["fillForms"]) {
-                    $fillFormsPermission = ($extraPermissions["permissions"] & ExtraPermissions::FillForms) === ExtraPermissions::FillForms;
+                    $fillFormsPermission = ($extraPermissions["permissions"] & ExtraPermissions::FILLFORMS) === ExtraPermissions::FILLFORMS;
                     if ($fillFormsPermission) {
                         $restrictedEditing = true;
                         $params["document"]["permissions"]["fillForms"] = true;
@@ -375,7 +375,7 @@ class EditorApiController extends OCSController {
                 }
 
                 if (isset($format["modifyFilter"]) && $format["modifyFilter"]) {
-                    $modifyFilter = ($extraPermissions["permissions"] & ExtraPermissions::ModifyFilter) === ExtraPermissions::ModifyFilter;
+                    $modifyFilter = ($extraPermissions["permissions"] & ExtraPermissions::MODIFYFILTER) === ExtraPermissions::MODIFYFILTER;
                     $params["document"]["permissions"]["modifyFilter"] = $modifyFilter;
                 }
             }

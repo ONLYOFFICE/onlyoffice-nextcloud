@@ -228,7 +228,7 @@ if ($_["tagsEnabled"]) {
     </p>
 
     <p class="onlyoffice-header">
-        <?php p($l->t("Review mode for viewing")) ?>
+        <?php p($l->t("REVIEW mode for viewing")) ?>
     </p>
     <div class="onlyoffice-tables">
         <div>
