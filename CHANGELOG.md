@@ -1,5 +1,6 @@
 # Change Log
 
+## 7.9.2
 ## Added
 - Ukrainian translation
 
