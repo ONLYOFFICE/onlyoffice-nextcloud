@@ -16,14 +16,6 @@
  *
  */
 
-.icon-add {
-    opacity: 0.5;
-    padding-left: 44px;
-}
-.icon-add:hover {
-    opacity: 0.7;
-}
-
 .onlyoffice-template-container li {
     margin-bottom: 10px;
 }
@@ -47,6 +39,13 @@
     height: 16px;
     width: 16px;
     opacity: .6;
+}
+.section-onlyoffice-templates .icon-add {
+    opacity: 0.5;
+    padding-left: 44px;
+}
+.section-onlyoffice-templates .icon-add:hover {
+    opacity: 0.7;
 }
 .onlyoffice-template-item img {
     float: left;

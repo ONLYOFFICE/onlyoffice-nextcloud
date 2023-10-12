@@ -1290,7 +1290,7 @@ class AppConfig {
     public function GetEditorsCheckInterval() {
         $interval = $this->GetSystemValue($this->_editors_check_interval);
 
-        if (empty($interval)) {
+        if (empty($interval) && $interval !== 0) {
             $interval = 60*60*24;
         }
         return (integer)$interval;
