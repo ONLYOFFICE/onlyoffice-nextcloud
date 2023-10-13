@@ -2,8 +2,9 @@ name: Lint
 
 on:
   push:
-  pull_request:
     branches: [master]
+  pull_request:
+    branches: [master, develop]
 
 permissions:
   contents: read
@@ -23,4 +24,4 @@ jobs:
           tools: composer, cs2pr, phpcs
       - name: Run phpcs
         run: |
-          phpcs --standard=PSR2 --extensions=php,module,inc,install --ignore=node_modules,bower_components,vendor,3rdparty,Migration --warning-severity=0 ./
+          phpcs --standard=./ruleset.xml --extensions=php,module,inc,install --ignore=node_modules,bower_components,vendor,3rdparty,Migration --warning-severity=0 ./
