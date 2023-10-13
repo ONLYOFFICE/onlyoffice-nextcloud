@@ -92,13 +92,13 @@ class FileCreator extends ACreateEmpty {
      * @return string
      */
     public function getName(): string {
-        switch ($this->format) {
-            case "xlsx":
-                return $this->trans->t("New spreadsheet");
-            case "pptx":
-                return $this->trans->t("New presentation");
-        }
-        return $this->trans->t("New document");
+        $formats = [
+            "xlsx" => "Spreadsheet",
+            "ods"  => "Spreadsheet",
+            "pptx" => "Presentation",
+            "odp"  => "Presentation"
+        ];
+        return $this->trans->t($formats[$this->format] ?? "Document"); // Document for docx/odt
     }
 
     /**

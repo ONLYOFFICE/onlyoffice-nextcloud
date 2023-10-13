@@ -331,7 +331,7 @@ class AppConfig {
      *
      * @var string
      */
-    private $_defaultOdf = "defaultOdf";
+    private $_defaultOdf = "default_odf";
 
     /**
      * @param string $AppName - application name
