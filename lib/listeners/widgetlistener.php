@@ -23,7 +23,6 @@ use OCA\Onlyoffice\AppConfig;
 use OCP\Dashboard\RegisterWidgetEvent;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
-
 use OCP\Util;
 
 /**

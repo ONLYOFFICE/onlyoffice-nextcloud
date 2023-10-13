@@ -22,7 +22,6 @@ namespace OCA\Onlyoffice\Listeners;
 use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\DirectEditor;
 use OCP\DirectEditing\RegisterDirectEditorEvent;
-
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 

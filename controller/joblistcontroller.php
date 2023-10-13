@@ -23,7 +23,6 @@ use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\Cron\EditorsCheck;
 use OCP\AppFramework\Controller;
 use OCP\BackgroundJob\IJob;
-
 use OCP\BackgroundJob\IJobList;
 use OCP\IRequest;
 

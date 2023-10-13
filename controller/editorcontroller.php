@@ -41,10 +41,8 @@ use OCP\Files\NotPermittedException;
 use OCP\IGroupManager;
 use OCP\IL10N;
 use OCP\ILogger;
-
 use OCP\IRequest;
 use OCP\ISession;
-
 use OCP\IURLGenerator;
 use OCP\IUser;
 use OCP\IUserManager;

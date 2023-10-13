@@ -20,7 +20,6 @@
 namespace OCA\Onlyoffice\AppInfo;
 
 use OC\EventDispatcher\SymfonyAdapter;
-
 use OCP\AppFramework\App;
 use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\AppFramework\Bootstrap\IBootstrap;
@@ -38,10 +37,8 @@ use OCP\IL10N;
 use OCP\IPreview;
 use OCP\ITagManager;
 use OCP\Notification\IManager;
-
 use OCA\Files_Sharing\Event\BeforeTemplateRenderedEvent;
 use OCA\Viewer\Event\LoadViewer;
-
 use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\Controller\CallbackController;
 use OCA\Onlyoffice\Controller\EditorController;
@@ -63,7 +60,6 @@ use OCA\Onlyoffice\Preview;
 use OCA\Onlyoffice\TemplateManager;
 use OCA\Onlyoffice\TemplateProvider;
 use OCA\Onlyoffice\SettingsData;
-
 use Psr\Container\ContainerInterface;
 
 class Application extends App implements IBootstrap {

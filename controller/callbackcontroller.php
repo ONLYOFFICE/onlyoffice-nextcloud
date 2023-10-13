@@ -44,9 +44,7 @@ use OCP\Files\Lock\OwnerLockedException;
 use OCP\Files\NotFoundException;
 use OCP\Files\NotPermittedException;
 use OCP\IL10N;
-
 use OCP\ILogger;
-
 use OCP\IRequest;
 use OCP\IUserManager;
 use OCP\IUserSession;

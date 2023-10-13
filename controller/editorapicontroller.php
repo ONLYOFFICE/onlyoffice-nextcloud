@@ -42,9 +42,7 @@ use OCP\ILogger;
 use OCP\IRequest;
 use OCP\ISession;
 use OCP\ITagManager;
-
 use OCP\ITags;
-
 use OCP\IURLGenerator;
 use OCP\IUser;
 use OCP\IUserManager;

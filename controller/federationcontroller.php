@@ -26,7 +26,6 @@ use OCA\Onlyoffice\KeyManager;
 use OCA\Onlyoffice\RemoteInstance;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\OCSController;
-
 use OCP\IL10N;
 use OCP\ILogger;
 use OCP\IRequest;

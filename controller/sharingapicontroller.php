@@ -30,8 +30,6 @@ use OCP\ILogger;
 use OCP\IRequest;
 use OCP\IUserManager;
 use OCP\IUserSession;
-
-
 use OCP\Share\IManager;
 use OCP\Share\IShare;
 

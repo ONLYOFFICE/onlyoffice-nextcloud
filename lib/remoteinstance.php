@@ -20,7 +20,6 @@
 namespace OCA\Onlyoffice;
 
 use OCA\Files_Sharing\External\Storage as SharingExternalStorage;
-
 use OCP\Files\File;
 
 /**

@@ -25,9 +25,7 @@ use OCA\Viewer\Event\LoadViewer;
 use OCP\AppFramework\Http\ContentSecurityPolicy;
 use OCP\AppFramework\Services\IInitialState;
 use OCP\EventDispatcher\Event;
-
 use OCP\EventDispatcher\IEventListener;
-
 use OCP\IServerContainer;
 use OCP\Util;
 

@@ -21,7 +21,6 @@ namespace OCA\Onlyoffice;
 
 use \DateInterval;
 use \DateTime;
-
 use OCP\IConfig;
 use OCP\ILogger;
 

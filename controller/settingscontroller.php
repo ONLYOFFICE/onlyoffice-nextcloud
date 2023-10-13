@@ -25,7 +25,6 @@ use OCA\Onlyoffice\DocumentService;
 use OCA\Onlyoffice\FileVersions;
 use OCA\Onlyoffice\TemplateManager;
 use OCP\AppFramework\Controller;
-
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IL10N;
 use OCP\ILogger;

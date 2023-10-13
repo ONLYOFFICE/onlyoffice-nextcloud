@@ -21,7 +21,6 @@ namespace OCA\Onlyoffice;
 
 use OC\Files\View;
 use OC\Preview\Provider;
-
 use OCA\Files_Sharing\External\Storage as SharingExternalStorage;
 use OCA\Files_Versions\Versions\IVersionManager;
 use OCP\AppFramework\QueryException;
@@ -31,7 +30,6 @@ use OCP\IL10N;
 use OCP\ILogger;
 use OCP\Image;
 use OCP\ISession;
-
 use OCP\IURLGenerator;
 use OCP\Share\IManager;
 

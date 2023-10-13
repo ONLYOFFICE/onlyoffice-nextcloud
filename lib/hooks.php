@@ -20,7 +20,6 @@
 namespace OCA\Onlyoffice;
 
 use OC\Files\Filesystem;
-
 use OCP\Util;
 
 /**

@@ -22,11 +22,9 @@ namespace OCA\Onlyoffice;
 use OC\Files\Node\File;
 use OC\Files\View;
 use OC\User\Database;
-
 use OCA\Files_Sharing\External\Storage as SharingExternalStorage;
 use OCP\Files\FileInfo;
 use OCP\Files\IRootFolder;
-
 use OCP\IUser;
 
 /**

@@ -20,7 +20,6 @@
 namespace OCA\Onlyoffice;
 
 use OCP\Files\File;
-
 use OCP\Files\NotFoundException;
 
 /**
