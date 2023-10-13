@@ -149,30 +149,23 @@ class TemplateManager {
      */
     public static function GetMimeTemplate($type) {
 
+        $defaultMimes = [
+            "document" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            "spreadsheet" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            "presentation" => "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+        ];
+
         $appConfig = new AppConfig(self::$appName);
         if ($appConfig->GetDefaultOdf()) {
-
-            switch($type) {
-                case "document":
-                    return "application/vnd.oasis.opendocument.text";
-                case "spreadsheet":
-                    return "application/vnd.oasis.opendocument.spreadsheet";
-                case "presentation":
-                    return "application/vnd.oasis.opendocument.presentation";
-            }
-        } else {
-
-            switch($type) {
-                case "document":
-                    return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-                case "spreadsheet":
-                    return "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-                case "presentation":
-                    return "application/vnd.openxmlformats-officedocument.presentationml.presentation";
-            }
+            $defaultMimes = [
+                "document" => "application/vnd.oasis.opendocument.text",
+                "spreadsheet" => "application/vnd.oasis.opendocument.spreadsheet",
+                "presentation" => "application/vnd.oasis.opendocument.presentation"
+            ];
         }
 
-        return "";
+        return $defaultMimes[$type] ?? "";
+
     }
 
     /**
@@ -185,24 +178,15 @@ class TemplateManager {
     public static function IsTemplateType($name) {
         $ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
 
+        $supportedExtensions = ["docx", "xlsx", "pptx"];
+
         $appConfig = new AppConfig(self::$appName);
         if ($appConfig->GetDefaultOdf()) {
+            $supportedExtensions = ["odt", "ods", "odp"];
+        }
 
-            switch($ext) {
-                case "odt":
-                case "ods":
-                case "odp":
-                    return true;
-            }
-
-        } else {
-
-            switch($ext) {
-                case "docx":
-                case "xlsx":
-                case "pptx":
-                    return true;
-            }
+        if (in_array($ext, $supportedExtensions)) {
+            return true;
         }
 
         return false;
