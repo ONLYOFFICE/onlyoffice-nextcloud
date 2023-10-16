@@ -177,6 +177,8 @@ When the _Log-in credentials, save in session_ authentication type is used, the 
     ```
     To disable this check running, enter 0 value. 
     
+* When accessing a document without download permission, file printing and using the system clipboard are not available. Copying and pasting within the editor is available via buttons in the editor toolbar and in the context menu.
+
 ## ONLYOFFICE Docs editions
 
 ONLYOFFICE offers different versions of its online document editors that can be deployed on your own servers.
