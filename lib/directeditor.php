@@ -28,10 +28,6 @@ use OCP\IL10N;
 use OCP\ILogger;
 use OCP\IURLGenerator;
 
-use OCA\Onlyoffice\AppConfig;
-use OCA\Onlyoffice\Crypt;
-use OCA\Onlyoffice\FileCreator;
-
 /**
  * Direct Editor
  *
@@ -89,12 +85,14 @@ class DirectEditor implements IEditor {
      * @param AppConfig $config - application configuration
      * @param Crypt $crypt - hash generator
      */
-    public function __construct($AppName,
-                                IURLGenerator $urlGenerator,
-                                IL10N $trans,
-                                ILogger $logger,
-                                AppConfig $config,
-                                Crypt $crypt) {
+    public function __construct(
+        $AppName,
+        IURLGenerator $urlGenerator,
+        IL10N $trans,
+        ILogger $logger,
+        AppConfig $config,
+        Crypt $crypt
+    ) {
         $this->appName = $AppName;
         $this->urlGenerator = $urlGenerator;
         $this->trans = $trans;
@@ -132,7 +130,7 @@ class DirectEditor implements IEditor {
             return $mimes;
         }
 
-        $formats = $this->config->FormatsSetting();
+        $formats = $this->config->formatsSetting();
         foreach ($formats as $format => $setting) {
             if (array_key_exists("edit", $setting) && $setting["edit"]
                 && array_key_exists("def", $setting) && $setting["def"]) {
@@ -154,7 +152,7 @@ class DirectEditor implements IEditor {
             return $mimes;
         }
 
-        $formats = $this->config->FormatsSetting();
+        $formats = $this->config->formatsSetting();
         foreach ($formats as $format => $setting) {
             if (array_key_exists("edit", $setting) && $setting["edit"]
                 && (!array_key_exists("def", $setting) || !$setting["def"])) {
@@ -215,14 +213,14 @@ class DirectEditor implements IEditor {
                 return $this->renderError($this->trans->t("Not permitted"));
             }
 
-            $documentServerUrl = $this->config->GetDocumentServerUrl();
+            $documentServerUrl = $this->config->getDocumentServerUrl();
 
             if (empty($documentServerUrl)) {
                 $this->logger->error("documentServerUrl is empty", ["app" => $this->appName]);
                 return $this->renderError($this->trans->t("ONLYOFFICE app is not configured. Please contact admin"));
             }
 
-            $directToken = $this->crypt->GetHash([
+            $directToken = $this->crypt->getHash([
                 "userId" => $userId,
                 "fileId" => $fileId,
                 "action" => "direct",
@@ -276,12 +274,12 @@ class DirectEditor implements IEditor {
      */
     private function renderError($error, $hint = "") {
         return new TemplateResponse("", "error", [
-                "errors" => [
-                    [
-                        "error" => $error,
-                        "hint" => $hint
-                    ]
+            "errors" => [
+                [
+                    "error" => $error,
+                    "hint" => $hint
                 ]
-            ], "error");
+            ]
+        ], "error");
     }
 }

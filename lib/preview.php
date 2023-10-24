@@ -21,7 +21,8 @@ namespace OCA\Onlyoffice;
 
 use OC\Files\View;
 use OC\Preview\Provider;
-
+use OCA\Files_Sharing\External\Storage as SharingExternalStorage;
+use OCA\Files_Versions\Versions\IVersionManager;
 use OCP\AppFramework\QueryException;
 use OCP\Files\FileInfo;
 use OCP\Files\IRootFolder;
@@ -31,16 +32,6 @@ use OCP\Image;
 use OCP\ISession;
 use OCP\IURLGenerator;
 use OCP\Share\IManager;
-
-use OCA\Files_Sharing\External\Storage as SharingExternalStorage;
-use OCA\Files_Versions\Versions\IVersionManager;
-
-use OCA\Onlyoffice\AppConfig;
-use OCA\Onlyoffice\Crypt;
-use OCA\Onlyoffice\DocumentService;
-use OCA\Onlyoffice\FileUtility;
-use OCA\Onlyoffice\FileVersions;
-use OCA\Onlyoffice\TemplateManager;
 
 /**
  * Preview provider
@@ -102,7 +93,7 @@ class Preview extends Provider {
      * File version manager
      *
      * @var IVersionManager
-    */
+     */
     private $versionManager;
 
     /**
@@ -153,7 +144,7 @@ class Preview extends Provider {
     /**
      * Converted thumbnail format
      */
-    private const thumbExtension = "jpeg";
+    private const THUMBEXTENSION = "jpeg";
 
     /**
      * @param string $appName - application name
@@ -166,16 +157,17 @@ class Preview extends Provider {
      * @param IManager $shareManager - share manager
      * @param ISession $session - session
      */
-    public function __construct(string $appName,
-                                    IRootFolder $root,
-                                    ILogger $logger,
-                                    IL10N $trans,
-                                    AppConfig $config,
-                                    IURLGenerator $urlGenerator,
-                                    Crypt $crypt,
-                                    IManager $shareManager,
-                                    ISession $session
-                                    ) {
+    public function __construct(
+        string $appName,
+        IRootFolder $root,
+        ILogger $logger,
+        IL10N $trans,
+        AppConfig $config,
+        IURLGenerator $urlGenerator,
+        Crypt $crypt,
+        IManager $shareManager,
+        ISession $session
+    ) {
         $this->appName = $appName;
         $this->root = $root;
         $this->logger = $logger;
@@ -227,12 +219,12 @@ class Preview extends Provider {
      * @return bool
      */
     public function isAvailable(FileInfo $fileInfo) {
-        if ($this->config->GetPreview() !== true) {
+        if ($this->config->getPreview() !== true) {
             return false;
         }
-        if (!$fileInfo 
+        if (!$fileInfo
             || $fileInfo->getSize() === 0
-            || $fileInfo->getSize() > $this->config->GetLimitThumbSize()) {
+            || $fileInfo->getSize() > $this->config->getLimitThumbSize()) {
             return false;
         }
         if (!in_array($fileInfo->getMimetype(), self::$capabilities, true)) {
@@ -258,7 +250,7 @@ class Preview extends Provider {
     public function getThumbnail($path, $maxX, $maxY, $scalingup, $view) {
         $this->logger->debug("getThumbnail $path $maxX $maxY", ["app" => $this->appName]);
 
-        list ($fileUrl, $extension, $key) = $this->getFileParam($path, $view);
+        list($fileUrl, $extension, $key) = $this->getFileParam($path, $view);
         if ($fileUrl === null || $extension === null || $key === null) {
             return false;
         }
@@ -266,14 +258,14 @@ class Preview extends Provider {
         $imageUrl = null;
         $documentService = new DocumentService($this->trans, $this->config);
         try {
-            $imageUrl = $documentService->GetConvertedUri($fileUrl, $extension, self::thumbExtension, $key);
+            $imageUrl = $documentService->getConvertedUri($fileUrl, $extension, self::THUMBEXTENSION, $key);
         } catch (\Exception $e) {
-            $this->logger->logException($e, ["message" => "GetConvertedUri: from $extension to " . self::thumbExtension, "app" => $this->appName]);
+            $this->logger->logException($e, ["message" => "getConvertedUri: from $extension to " . self::THUMBEXTENSION, "app" => $this->appName]);
             return false;
         }
 
         try {
-            $thumbnail = $documentService->Request($imageUrl);
+            $thumbnail = $documentService->request($imageUrl);
         } catch (\Exception $e) {
             $this->logger->logException($e, ["message" => "Failed to download thumbnail", "app" => $this->appName]);
             return false;
@@ -319,12 +311,12 @@ class Preview extends Provider {
             $data["template"] = true;
         }
 
-        $hashUrl = $this->crypt->GetHash($data);
+        $hashUrl = $this->crypt->getHash($data);
 
         $fileUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.download", ["doc" => $hashUrl]);
 
-        if (!$this->config->UseDemo() && !empty($this->config->GetStorageUrl())) {
-            $fileUrl = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->config->GetStorageUrl(), $fileUrl);
+        if (!$this->config->useDemo() && !empty($this->config->getStorageUrl())) {
+            $fileUrl = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->config->getStorageUrl(), $fileUrl);
         }
 
         return $fileUrl;
@@ -359,7 +351,7 @@ class Preview extends Provider {
             $absolutePath = $fileInfo->getPath();
             $relativePath = $versionFolder->getRelativePath($absolutePath);
 
-            list ($filePath, $fileVersion) = FileVersions::splitPathVersion($relativePath);
+            list($filePath, $fileVersion) = FileVersions::splitPathVersion($relativePath);
             if ($filePath === null) {
                 return [null, null, null];
             }
@@ -375,17 +367,17 @@ class Preview extends Provider {
                 $versionId = $version->getRevisionId();
                 if (strcmp($versionId, $fileVersion) === 0) {
                     $key = $this->fileUtility->getVersionKey($version);
-                    $key = DocumentService::GenerateRevisionId($key);
+                    $key = DocumentService::generateRevisionId($key);
 
                     break;
                 }
             }
         } else {
             $key = $this->fileUtility->getKey($fileInfo);
-            $key = DocumentService::GenerateRevisionId($key);
+            $key = DocumentService::generateRevisionId($key);
         }
 
-        if (TemplateManager::IsTemplate($fileInfo->getId())) {
+        if (TemplateManager::isTemplate($fileInfo->getId())) {
             $template = true;
         }
 

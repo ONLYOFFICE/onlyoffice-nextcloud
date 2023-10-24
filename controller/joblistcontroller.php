@@ -19,18 +19,12 @@
 
 namespace OCA\Onlyoffice\Controller;
 
-use OC\AppFramework\Http;
-use OC\BackgroundJob\TimedJob;
+use OCA\Onlyoffice\AppConfig;
+use OCA\Onlyoffice\Cron\EditorsCheck;
 use OCP\AppFramework\Controller;
-use OCP\AppFramework\Http\DataDisplayResponse;
-use OCP\AppFramework\Http\DataResponse;
-use OCP\AppFramework\Http\Response;
 use OCP\BackgroundJob\IJob;
 use OCP\BackgroundJob\IJobList;
 use OCP\IRequest;
-
-use OCA\Onlyoffice\Cron\EditorsCheck;
-use OCA\Onlyoffice\AppConfig;
 
 /**
  * Class JobListController
@@ -41,7 +35,7 @@ class JobListController extends Controller {
 
     /**
      * Job list
-     * 
+     *
      * @var IJobList
      */
     private $jobList;
@@ -96,7 +90,7 @@ class JobListController extends Controller {
      *
      */
     private function checkEditorsCheckJob() {
-        if ($this->config->GetEditorsCheckInterval() > 0) {
+        if ($this->config->getEditorsCheckInterval() > 0) {
             $this->addJob(EditorsCheck::class);
         } else {
             $this->removeJob(EditorsCheck::class);

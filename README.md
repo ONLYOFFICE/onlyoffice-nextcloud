@@ -150,7 +150,7 @@ When the _Log-in credentials, save in session_ authentication type is used, the 
     You can check the '**Disable certificate verification (insecure)**' box on the ONLYOFFICE administration page, Server settings section, within your Nextcloud.
 
     Another option is to change the Nextcloud config file manually. Locate the Nextcloud config file (_/nextcloud/config/config.php_) and open it. Insert the following section to it:
-    
+
     ```php
     'onlyoffice' => array (
         'verify_peer_off' => true
@@ -176,7 +176,9 @@ When the _Log-in credentials, save in session_ authentication type is used, the 
     )
     ```
     To disable this check running, enter 0 value. 
-    
+
+* When accessing a document without download permission, file printing and using the system clipboard are not available. Copying and pasting within the editor is available via buttons in the editor toolbar and in the context menu.
+
 ## ONLYOFFICE Docs editions
 
 ONLYOFFICE offers different versions of its online document editors that can be deployed on your own servers.
