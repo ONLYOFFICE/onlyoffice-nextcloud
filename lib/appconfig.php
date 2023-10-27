@@ -1348,15 +1348,4 @@ class AppConfig {
         "SECRET" => "sn2puSUF7muF5Jas",
         "TRIAL" => 30
     ];
-
-    private $linkToDocs = "https://www.onlyoffice.com/docs-registration.aspx?referer=nextcloud";
-
-    /**
-     * Get link to Docs Cloud
-     *
-     * @return string
-     */
-    public function GetLinkToDocs() {
-        return $this->linkToDocs;
-    }
 }

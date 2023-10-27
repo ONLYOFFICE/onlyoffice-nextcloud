@@ -136,9 +136,6 @@
     "Authorization header (leave blank to use default header)": "授权标头 (留空以使用默认的标头)",
     "ONLYOFFICE server is not available": "ONLYOFFICE 服务器不可用",
     "Please check the settings to resolve the problem.": "请检查设置以解决问题。",
-    "View settings": "查看设置",
-    "ONLYOFFICE Docs Cloud": "ONLYOFFICE 文档云",
-    "Easily launch the editors in the cloud without downloading and installation": "无需下载和安装即可轻松启动云端编辑器",
-    "Get Now": "立即获取"
+    "View settings": "查看设置"
 },"pluralForm" :"nplurals=1; plural=0;"
 }

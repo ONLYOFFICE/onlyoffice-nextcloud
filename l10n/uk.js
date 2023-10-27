@@ -138,9 +138,6 @@ OC.L10N.register(
     "Authorization header (leave blank to use default header)": "Заголовок авторизації (залиште порожнім для використання типового заголовку)",
     "ONLYOFFICE server is not available": "Сервер ONLYOFFICE не доступний",
     "Please check the settings to resolve the problem.": "Будь ласка, перевірте налаштування для розв'язання проблеми.",
-    "View settings": "Переглянути налаштування",
-    "ONLYOFFICE Docs Cloud": "ONLYOFFICE Docs Cloud",
-    "Easily launch the editors in the cloud without downloading and installation": "Легко використовуйте редактори у хмарі без звантажень та налаштувань",
-    "Get Now": "Отримати зараз"
+    "View settings": "Переглянути налаштування"
 },
 "nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != 11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || (n % 100 >=11 && n % 100 <=14 )) ? 2: 3);");
