@@ -1,5 +1,9 @@
 # Change Log
 
+##
+## Changed
+- remove link to docs cloud
+
 ## 8.2.2
 ## Added
 - Ukrainian translation
