@@ -1270,6 +1270,8 @@ class EditorController extends Controller {
             }
         }
 
+        \OCP\Util::addHeader("meta", ["name" => "apple-touch-fullscreen", "content" => "yes"]);
+
         $csp = new ContentSecurityPolicy();
         $csp->allowInlineScript(true);
 

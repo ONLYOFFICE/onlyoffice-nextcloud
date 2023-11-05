@@ -134,7 +134,6 @@ class SettingsController extends Controller {
             "reviewDisplay" => $this->config->GetCustomizationReviewDisplay(),
             "theme" => $this->config->GetCustomizationTheme(),
             "templates" => $this->GetGlobalTemplates(),
-            "linkToDocs" => $this->config->GetLinkToDocs(),
             "defaultOdf" => $this->config->GetDefaultOdf()
         ];
         return new TemplateResponse($this->appName, "settings", $data, "blank");
