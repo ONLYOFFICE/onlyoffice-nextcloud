@@ -5,7 +5,7 @@ on:
   push:
     branches: [master]
   pull_request:
-    branches: [master, develop]
+    branches: [master, develop, feature/nc-27]
 
 permissions:
   contents: read
