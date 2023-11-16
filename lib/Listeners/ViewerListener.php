@@ -19,17 +19,15 @@
 
 namespace OCA\Onlyoffice\Listeners;
 
-use OCP\EventDispatcher\Event;
-use OCP\EventDispatcher\IEventListener;
-use OCP\Util;
-use OCP\AppFramework\Http\ContentSecurityPolicy;
-use OCP\AppFramework\Services\IInitialState;
-use OCP\IServerContainer;
-
-use OCA\Viewer\Event\LoadViewer;
-
 use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\SettingsData;
+use OCA\Viewer\Event\LoadViewer;
+use OCP\AppFramework\Http\ContentSecurityPolicy;
+use OCP\AppFramework\Services\IInitialState;
+use OCP\EventDispatcher\Event;
+use OCP\EventDispatcher\IEventListener;
+use OCP\IServerContainer;
+use OCP\Util;
 
 /**
  * Viewer listener
@@ -62,9 +60,11 @@ class ViewerListener implements IEventListener {
      * @param IInitialState $initialState - initial state
      * @param IServerContainer $serverContainer - server container
      */
-    public function __construct(AppConfig $appConfig,
-                                IInitialState $initialState,
-                                IServerContainer $serverContainer) {
+    public function __construct(
+        AppConfig $appConfig,
+        IInitialState $initialState,
+        IServerContainer $serverContainer
+    ) {
         $this->appConfig = $appConfig;
         $this->initialState = $initialState;
         $this->serverContainer = $serverContainer;
@@ -75,8 +75,8 @@ class ViewerListener implements IEventListener {
             return;
         }
 
-        if (!empty($this->appConfig->GetDocumentServerUrl())
-            && $this->appConfig->SettingsAreSuccessful()
+        if (!empty($this->appConfig->getDocumentServerUrl())
+            && $this->appConfig->settingsAreSuccessful()
             && $this->appConfig->isUserAllowedToUse()) {
             Util::addScript("onlyoffice", "viewer", "viewer");
             Util::addScript("onlyoffice", "listener", "viewer");

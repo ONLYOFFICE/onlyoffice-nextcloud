@@ -19,8 +19,6 @@
 
 namespace OCA\Onlyoffice;
 
-use OCA\Onlyoffice\AppConfig;
-
 class SettingsData implements \JsonSerializable {
 
     /**
@@ -36,8 +34,8 @@ class SettingsData implements \JsonSerializable {
 
     public function jsonSerialize(): array {
         $data = [
-            "formats" => $this->appConfig->FormatsSetting(),
-            "sameTab" => $this->appConfig->GetSameTab()
+            "formats" => $this->appConfig->formatsSetting(),
+            "sameTab" => $this->appConfig->getSameTab()
         ];
 
         return $data;

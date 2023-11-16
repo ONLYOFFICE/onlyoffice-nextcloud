@@ -19,18 +19,16 @@
 
 namespace OCA\Onlyoffice\Cron;
 
+use OCA\Onlyoffice\AppConfig;
+use OCA\Onlyoffice\Crypt;
+use OCA\Onlyoffice\DocumentService;
 use OCP\AppFramework\Utility\ITimeFactory;
 use OCP\BackgroundJob\IJob;
 use OCP\BackgroundJob\TimedJob;
 use OCP\IGroup;
 use OCP\IGroupManager;
 use OCP\IL10N;
-use OCP\ILogger;
 use OCP\IURLGenerator;
-
-use OCA\Onlyoffice\AppConfig;
-use OCA\Onlyoffice\Crypt;
-use OCA\Onlyoffice\DocumentService;
 
 /**
  * Editors availability check background job
@@ -95,13 +93,15 @@ class EditorsCheck extends TimedJob {
      * @param IL10N $trans - l10n service
      * @param Crypt $crypt - crypt service
      */
-    public function __construct(string $AppName,
-                            IURLGenerator $urlGenerator,
-                            ITimeFactory $time,
-                            AppConfig $config,
-                            IL10N $trans,
-                            Crypt $crypt,
-                            IGroupManager $groupManager) {
+    public function __construct(
+        string $AppName,
+        IURLGenerator $urlGenerator,
+        ITimeFactory $time,
+        AppConfig $config,
+        IL10N $trans,
+        Crypt $crypt,
+        IGroupManager $groupManager
+    ) {
         parent::__construct($time);
         $this->appName = $AppName;
         $this->urlGenerator = $urlGenerator;
@@ -111,7 +111,7 @@ class EditorsCheck extends TimedJob {
         $this->trans = $trans;
         $this->crypt = $crypt;
         $this->groupManager = $groupManager;
-        $this->setInterval($this->config->GetEditorsCheckInterval());
+        $this->setInterval($this->config->getEditorsCheckInterval());
         $this->setTimeSensitivity(IJob::TIME_SENSITIVE);
     }
 
@@ -121,32 +121,32 @@ class EditorsCheck extends TimedJob {
      * @param array $argument unused argument
      */
     protected function run($argument) {
-        if (empty($this->config->GetDocumentServerUrl())) {
+        if (empty($this->config->getDocumentServerUrl())) {
             $this->logger->debug("Settings are empty", ["app" => $this->appName]);
             return;
         }
-        if (!$this->config->SettingsAreSuccessful()) {
+        if (!$this->config->settingsAreSuccessful()) {
             $this->logger->debug("Settings are not correct", ["app" => $this->appName]);
             return;
         }
         $fileUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.emptyfile");
-        if (!$this->config->UseDemo() && !empty($this->config->GetStorageUrl())) {
-            $fileUrl = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->config->GetStorageUrl(), $fileUrl);
+        if (!$this->config->useDemo() && !empty($this->config->getStorageUrl())) {
+            $fileUrl = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->config->getStorageUrl(), $fileUrl);
         }
         $host = parse_url($fileUrl)["host"];
         if ($host === "localhost" || $host === "127.0.0.1") {
             $this->logger->debug("Localhost is not alowed for cron editors availability check. Please provide server address for internal requests from ONLYOFFICE Docs", ["app" => $this->appName]);
-            return; 
+            return;
         }
 
         $this->logger->debug("ONLYOFFICE check started by cron", ["app" => $this->appName]);
 
         $documentService = new DocumentService($this->trans, $this->config);
-        list ($error, $version) = $documentService->checkDocServiceUrl($this->urlGenerator, $this->crypt);
+        list($error, $version) = $documentService->checkDocServiceUrl($this->urlGenerator, $this->crypt);
 
         if (!empty($error)) {
             $this->logger->info("ONLYOFFICE server is not available", ["app" => $this->appName]);
-            $this->config->SetSettingsError($error);
+            $this->config->setSettingsError($error);
             $this->notifyAdmins();
         } else {
             $this->logger->debug("ONLYOFFICE server availability check is finished successfully", ["app" => $this->appName]);
@@ -191,5 +191,4 @@ class EditorsCheck extends TimedJob {
             $notificationManager->notify($notification);
         }
     }
-
 }

@@ -22,11 +22,11 @@
     script("onlyoffice", "settings");
     script("onlyoffice", "template");
 
-    if ($_["tagsEnabled"]) {
-        script("core", [
-            "dist/systemtags",
-        ]);
-    }
+if ($_["tagsEnabled"]) {
+    script("core", [
+        "dist/systemtags",
+    ]);
+}
 ?>
 <div class="section section-onlyoffice section-onlyoffice-addr">
     <h2>
@@ -209,7 +209,7 @@
     </p>
 
     <p class="onlyoffice-header">
-        <?php p($l->t("Review mode for viewing")) ?>
+        <?php p($l->t("REVIEW mode for viewing")) ?>
     </p>
     <div class="onlyoffice-tables">
         <div>

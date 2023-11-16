@@ -24,8 +24,6 @@ use OCP\Files\File;
 use OCP\IL10N;
 use OCP\ILogger;
 
-use OCA\Onlyoffice\TemplateManager;
-
 /**
  * File creator
  *
@@ -65,12 +63,14 @@ class FileCreator extends ACreateEmpty {
      * @param string $AppName - application name
      * @param IL10N $trans - l10n service
      * @param ILogger $logger - logger
-     * @param string $format - format for creation 
+     * @param string $format - format for creation
      */
-    public function __construct($AppName,
-                                IL10N $trans,
-                                ILogger $logger,
-                                $format) {
+    public function __construct(
+        $AppName,
+        IL10N $trans,
+        ILogger $logger,
+        $format
+    ) {
         $this->appName = $AppName;
         $this->trans = $trans;
         $this->logger = $logger;
@@ -136,7 +136,7 @@ class FileCreator extends ACreateEmpty {
         $this->logger->debug("FileCreator: " . $file->getId() . " " . $file->getName() . " $creatorId $templateId", ["app" => $this->appName]);
 
         $fileName = $file->getName();
-        $template = TemplateManager::GetEmptyTemplate($fileName);
+        $template = TemplateManager::getEmptyTemplate($fileName);
 
         if (!$template) {
             $this->logger->error("FileCreator: Template for file creation not found: $templateId", ["app" => $this->appName]);

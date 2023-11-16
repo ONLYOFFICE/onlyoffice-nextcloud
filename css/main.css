@@ -33,7 +33,11 @@
 .icon-onlyoffice-download,
 .icon-onlyoffice-fill,
 .icon-onlyoffice-create {
-    background-image: url("../img/app-dark.svg");
+    background-color: var(--color-main-text);
+    mask: url("../img/app-dark.svg") no-repeat 50% 50%;
+    mask-size: 16px 16px;
+    -webkit-mask: url("../img/app-dark.svg") no-repeat 50% 50%;
+    -webkit-mask-size: 16px 16px;
 }
 
 /* onlyoffice-inline */

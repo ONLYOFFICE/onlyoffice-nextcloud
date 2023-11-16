@@ -20,12 +20,7 @@
 namespace OCA\Onlyoffice;
 
 use OC\Files\Filesystem;
-
 use OCP\Util;
-
-use OCA\Onlyoffice\FileVersions;
-use OCA\Onlyoffice\KeyManager;
-use OCA\Onlyoffice\ExtraPermissions;
 
 /**
  * The class to handle the filesystem hooks
@@ -140,7 +135,7 @@ class Hooks {
         }
 
         try {
-            list ($filePath, $versionId) = FileVersions::splitPathVersion($pathVersion);
+            list($filePath, $versionId) = FileVersions::splitPathVersion($pathVersion);
             if (empty($filePath)) {
                 return;
             }

@@ -32,7 +32,8 @@
         };
 
         if ($("#onlyofficeInternalUrl").val().length
-            || $("#onlyofficeStorageUrl").val().length) {
+            || $("#onlyofficeStorageUrl").val().length
+            || $("#onlyofficeJwtHeader").val().length) {
             advToogle();
         }
 

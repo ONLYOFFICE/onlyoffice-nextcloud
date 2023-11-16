@@ -71,12 +71,13 @@ class Notifier implements INotifier {
      * @param ILogger $logger - logger
      * @param IUserManager $userManager - user manager
      */
-    public function __construct(string $appName,
-                                    IFactory $l10nFactory,
-                                    IURLGenerator $urlGenerator,
-                                    ILogger $logger,
-                                    IUserManager $userManager
-                                    ) {
+    public function __construct(
+        string $appName,
+        IFactory $l10nFactory,
+        IURLGenerator $urlGenerator,
+        ILogger $logger,
+        IUserManager $userManager
+    ) {
         $this->appName = $appName;
         $this->l10nFactory = $l10nFactory;
         $this->urlGenerator = $urlGenerator;
@@ -159,7 +160,8 @@ class Notifier implements INotifier {
                         "name" => $fileName,
                         "link" => $editorLink
                     ]
-                    ]);
+                ]);
+                // no break
             default:
                 $this->logger->info("Unsupported notification object: ".$notification->getObjectType(), ["app" => $this->appName]);
         }
