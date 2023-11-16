@@ -20,13 +20,11 @@
 namespace OCA\Onlyoffice;
 
 use OCP\Constants;
-use OCP\ILogger;
 use OCP\Files\File;
-use OCP\Share\IShare;
-use OCP\Share\IManager;
+use OCP\ILogger;
 use OCP\Share\Exceptions\ShareNotFound;
-
-use OCA\Onlyoffice\AppConfig;
+use OCP\Share\IManager;
+use OCP\Share\IShare;
 
 /**
  * Class expands base permissions
@@ -66,18 +64,18 @@ class ExtraPermissions {
     /**
      * Table name
      */
-    private const TableName_Key = "onlyoffice_permissions";
+    private const TABLENAME_KEY = "onlyoffice_permissions";
 
     /**
      * Extra permission values
      *
      * @var integer
      */
-    public const None = 0;
-    public const Review = 1;
-    public const Comment = 2;
-    public const FillForms = 4;
-    public const ModifyFilter = 8;
+    public const NONE = 0;
+    public const REVIEW = 1;
+    public const COMMENT = 2;
+    public const FILLFORMS = 4;
+    public const MODIFYFILTER = 8;
 
     /**
      * @param string $AppName - application name
@@ -85,10 +83,12 @@ class ExtraPermissions {
      * @param AppConfig $config - application configuration
      * @param IManager $shareManager - Share manager
      */
-    public function __construct($AppName,
-                                ILogger $logger,
-                                IManager $shareManager,
-                                AppConfig $config) {
+    public function __construct(
+        $AppName,
+        ILogger $logger,
+        IManager $shareManager,
+        AppConfig $config
+    ) {
         $this->appName = $AppName;
         $this->logger = $logger;
         $this->shareManager = $shareManager;
@@ -112,7 +112,7 @@ class ExtraPermissions {
         $extra = self::get($shareId);
 
         $wasInit = isset($extra["permissions"]);
-        $checkExtra = $wasInit ? (int)$extra["permissions"] : self::None;
+        $checkExtra = $wasInit ? (int)$extra["permissions"] : self::NONE;
         list($availableExtra, $defaultPermissions) = $this->validation($share, $checkExtra, $wasInit);
 
         if ($availableExtra === 0
@@ -162,7 +162,6 @@ class ExtraPermissions {
 
         $noActualList = [];
         foreach ($shares as $share) {
-
             $currentExtra = [];
             foreach ($extras as $extra) {
                 if ($extra["share_id"] === $share->getId()) {
@@ -171,7 +170,7 @@ class ExtraPermissions {
             }
 
             $wasInit = isset($currentExtra["permissions"]);
-            $checkExtra = $wasInit ? (int)$currentExtra["permissions"] : self::None;
+            $checkExtra = $wasInit ? (int)$currentExtra["permissions"] : self::NONE;
             list($availableExtra, $defaultPermissions) = $this->validation($share, $checkExtra, $wasInit);
 
             if ($availableExtra === 0
@@ -247,7 +246,7 @@ class ExtraPermissions {
     public static function delete($shareId) {
         $connection = \OC::$server->getDatabaseConnection();
         $delete = $connection->prepare("
-            DELETE FROM `*PREFIX*" . self::TableName_Key . "`
+            DELETE FROM `*PREFIX*" . self::TABLENAME_KEY . "`
             WHERE `share_id` = ?
         ");
         return (bool)$delete->execute([$shareId]);
@@ -271,7 +270,7 @@ class ExtraPermissions {
         }
 
         $delete = $connection->prepare("
-            DELETE FROM `*PREFIX*" . self::TableName_Key . "`
+            DELETE FROM `*PREFIX*" . self::TABLENAME_KEY . "`
             WHERE `share_id` = ?
         " . $condition);
         return (bool)$delete->execute($shareIds);
@@ -288,7 +287,7 @@ class ExtraPermissions {
         $connection = \OC::$server->getDatabaseConnection();
         $select = $connection->prepare("
             SELECT id, share_id, permissions
-            FROM  `*PREFIX*" . self::TableName_Key . "`
+            FROM  `*PREFIX*" . self::TABLENAME_KEY . "`
             WHERE `share_id` = ?
         ");
         $result = $select->execute([$shareId]);
@@ -328,7 +327,7 @@ class ExtraPermissions {
 
         $select = $connection->prepare("
             SELECT id, share_id, permissions
-            FROM  `*PREFIX*" . self::TableName_Key . "`
+            FROM  `*PREFIX*" . self::TABLENAME_KEY . "`
             WHERE `share_id` = ?
         " . $condition);
 
@@ -361,7 +360,7 @@ class ExtraPermissions {
     private static function insert($shareId, $permissions) {
         $connection = \OC::$server->getDatabaseConnection();
         $insert = $connection->prepare("
-            INSERT INTO `*PREFIX*" . self::TableName_Key . "`
+            INSERT INTO `*PREFIX*" . self::TABLENAME_KEY . "`
                 (`share_id`, `permissions`)
             VALUES (?, ?)
         ");
@@ -379,7 +378,7 @@ class ExtraPermissions {
     private static function update($shareId, $permissions) {
         $connection = \OC::$server->getDatabaseConnection();
         $update = $connection->prepare("
-            UPDATE `*PREFIX*" . self::TableName_Key . "`
+            UPDATE `*PREFIX*" . self::TABLENAME_KEY . "`
             SET `permissions` = ?
             WHERE `share_id` = ?
         ");
@@ -396,8 +395,8 @@ class ExtraPermissions {
      * @return array
      */
     private function validation($share, $checkExtra, $wasInit = true) {
-        $availableExtra = self::None;
-        $defaultExtra = self::None;
+        $availableExtra = self::NONE;
+        $defaultExtra = self::NONE;
 
         if (($share->getPermissions() & Constants::PERMISSION_SHARE) === Constants::PERMISSION_SHARE) {
             return [$availableExtra, $defaultExtra];
@@ -405,7 +404,7 @@ class ExtraPermissions {
 
         $node = $share->getNode();
         $ext = strtolower(pathinfo($node->getName(), PATHINFO_EXTENSION));
-        $format = !empty($ext) && array_key_exists($ext, $this->config->FormatsSetting()) ? $this->config->FormatsSetting()[$ext] : null;
+        $format = !empty($ext) && array_key_exists($ext, $this->config->formatsSetting()) ? $this->config->formatsSetting()[$ext] : null;
         if (!isset($format)) {
             return [$availableExtra, $defaultExtra];
         }
@@ -413,20 +412,20 @@ class ExtraPermissions {
         if (($share->getPermissions() & Constants::PERMISSION_UPDATE) === Constants::PERMISSION_UPDATE) {
             if (isset($format["modifyFilter"]) && $format["modifyFilter"]
                 && ($checkExtra & self::Comment) !== self::Comment) {
-                $availableExtra |= self::ModifyFilter;
-                $defaultExtra |= self::ModifyFilter;
+                $availableExtra |= self::MODIFYFILTER;
+                $defaultExtra |= self::MODIFYFILTER;
             }
             if (isset($format["review"]) && $format["review"]) {
-                $availableExtra |= self::Review;
+                $availableExtra |= self::REVIEW;
             }
             if (isset($format["comment"]) && $format["comment"]
-                && ($checkExtra & self::Review) !== self::Review
-                && (($checkExtra & self::ModifyFilter) !== self::ModifyFilter)) {
-                $availableExtra |= self::Comment;
+                && ($checkExtra & self::REVIEW) !== self::REVIEW
+                && (($checkExtra & self::MODIFYFILTER) !== self::MODIFYFILTER)) {
+                $availableExtra |= self::COMMENT;
             }
             if (isset($format["fillForms"]) && $format["fillForms"]
-                && ($checkExtra & self::Review) !== self::Review) {
-                $availableExtra |= self::FillForms;
+                && ($checkExtra & self::REVIEW) !== self::REVIEW) {
+                $availableExtra |= self::FILLFORMS;
             }
 
             if (!$wasInit) {

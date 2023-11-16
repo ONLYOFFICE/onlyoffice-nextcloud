@@ -19,6 +19,11 @@
 
 namespace OCA\Onlyoffice\Controller;
 
+use OCA\Onlyoffice\AppConfig;
+use OCA\Onlyoffice\DocumentService;
+use OCA\Onlyoffice\FileUtility;
+use OCA\Onlyoffice\KeyManager;
+use OCA\Onlyoffice\RemoteInstance;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\OCSController;
 use OCP\IL10N;
@@ -26,12 +31,6 @@ use OCP\ILogger;
 use OCP\IRequest;
 use OCP\ISession;
 use OCP\Share\IManager;
-
-use OCA\Onlyoffice\AppConfig;
-use OCA\Onlyoffice\DocumentService;
-use OCA\Onlyoffice\FileUtility;
-use OCA\Onlyoffice\KeyManager;
-use OCA\Onlyoffice\RemoteInstance;
 
 /**
  * OCS handler
@@ -67,13 +66,14 @@ class FederationController extends OCSController {
      * @param IManager $shareManager - Share manager
      * @param IManager $ISession - Session
      */
-    public function __construct($AppName,
-                                    IRequest $request,
-                                    IL10N $trans,
-                                    ILogger $logger,
-                                    IManager $shareManager,
-                                    ISession $session
-                                    ) {
+    public function __construct(
+        $AppName,
+        IRequest $request,
+        IL10N $trans,
+        ILogger $logger,
+        IManager $shareManager,
+        ISession $session
+    ) {
         parent::__construct($AppName, $request);
 
         $this->logger = $logger;
@@ -95,7 +95,7 @@ class FederationController extends OCSController {
      * @PublicPage
      */
     public function key($shareToken, $path) {
-        list ($file, $error, $share) = $this->fileUtility->getFileByToken(null, $shareToken, $path);
+        list($file, $error, $share) = $this->fileUtility->getFileByToken(null, $shareToken, $path);
 
         if (isset($error)) {
             $this->logger->error("Federated getFileByToken: $error", ["app" => $this->appName]);
@@ -104,7 +104,7 @@ class FederationController extends OCSController {
 
         $key = $this->fileUtility->getKey($file, true);
 
-        $key = DocumentService::GenerateRevisionId($key);
+        $key = DocumentService::generateRevisionId($key);
 
         $this->logger->debug("Federated request get for " . $file->getId() . " key $key", ["app" => $this->appName]);
 
@@ -126,7 +126,7 @@ class FederationController extends OCSController {
      * @PublicPage
      */
     public function keylock($shareToken, $path, $lock, $fs) {
-        list ($file, $error, $share) = $this->fileUtility->getFileByToken(null, $shareToken, $path);
+        list($file, $error, $share) = $this->fileUtility->getFileByToken(null, $shareToken, $path);
 
         if (isset($error)) {
             $this->logger->error("Federated getFileByToken: $error", ["app" => $this->appName]);

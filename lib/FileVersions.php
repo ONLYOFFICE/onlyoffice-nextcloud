@@ -22,12 +22,10 @@ namespace OCA\Onlyoffice;
 use OC\Files\Node\File;
 use OC\Files\View;
 use OC\User\Database;
-
+use OCA\Files_Sharing\External\Storage as SharingExternalStorage;
 use OCP\Files\FileInfo;
 use OCP\Files\IRootFolder;
 use OCP\IUser;
-
-use OCA\Files_Sharing\External\Storage as SharingExternalStorage;
 
 /**
  * File versions
@@ -147,7 +145,7 @@ class FileVersions {
             return null;
         }
 
-        list ($view, $path) = self::getView($ownerId, $fileId);
+        list($view, $path) = self::getView($ownerId, $fileId);
         if ($view === null) {
             return null;
         }
@@ -197,7 +195,7 @@ class FileVersions {
             return false;
         }
 
-        list ($view, $path) = self::getView($ownerId, $fileId);
+        list($view, $path) = self::getView($ownerId, $fileId);
         if ($view === null) {
             return false;
         }
@@ -220,7 +218,7 @@ class FileVersions {
             return null;
         }
 
-        list ($view, $path) = self::getView($ownerId, $fileId);
+        list($view, $path) = self::getView($ownerId, $fileId);
         if ($view === null) {
             return null;
         }
@@ -272,7 +270,7 @@ class FileVersions {
         $fileId = $fileInfo->getId();
         $versionId = $fileInfo->getMtime();
 
-        list ($view, $path) = self::getView($ownerId, $fileId, true);
+        list($view, $path) = self::getView($ownerId, $fileId, true);
 
         try {
             $changesPath = $path . "/" . $versionId . self::$changesExt;
@@ -305,7 +303,7 @@ class FileVersions {
             return;
         }
 
-        list ($view, $path) = self::getView($ownerId, $fileId);
+        list($view, $path) = self::getView($ownerId, $fileId);
         if ($view === null) {
             return;
         }
@@ -319,7 +317,7 @@ class FileVersions {
      * @param string $ownerId - file owner id
      * @param string $fileId - file id
      * @param string $versionId - file version
-    */
+     */
     public static function deleteVersion($ownerId, $fileId, $versionId) {
         $logger = \OC::$server->getLogger();
 
@@ -332,7 +330,7 @@ class FileVersions {
             return;
         }
 
-        list ($view, $path) = self::getView($ownerId, $fileId);
+        list($view, $path) = self::getView($ownerId, $fileId);
         if ($view === null) {
             return null;
         }
@@ -398,7 +396,7 @@ class FileVersions {
         $fileId = $fileInfo->getId();
         $versionId = $fileInfo->getMtime();
 
-        list ($view, $path) = self::getView($ownerId, $fileId, true);
+        list($view, $path) = self::getView($ownerId, $fileId, true);
 
         try {
             $authorPath = $path . "/" . $versionId . self::$authorExt;
@@ -430,7 +428,7 @@ class FileVersions {
             return null;
         }
 
-        list ($view, $path) = self::getView($ownerId, $fileId);
+        list($view, $path) = self::getView($ownerId, $fileId);
         if ($view === null) {
             return null;
         }
@@ -454,7 +452,7 @@ class FileVersions {
      * @param string $ownerId - file owner id
      * @param string $fileId - file id
      * @param string $versionId - file version
-    */
+     */
     public static function deleteAuthor($ownerId, $fileId, $versionId) {
         $logger = \OC::$server->getLogger();
 
@@ -467,7 +465,7 @@ class FileVersions {
             return;
         }
 
-        list ($view, $path) = self::getView($ownerId, $fileId);
+        list($view, $path) = self::getView($ownerId, $fileId);
         if ($view === null) {
             return null;
         }
@@ -482,7 +480,7 @@ class FileVersions {
     /**
      * Get version compare with files_versions
      */
-    public static function getFilesVersionAppInfoCompareResult () {
+    public static function getFilesVersionAppInfoCompareResult() {
         $filesVersionAppInfo = \OC::$server->getAppManager()->getAppInfo("files_versions");
         return \version_compare($filesVersionAppInfo["version"], "1.19");
     }
@@ -491,7 +489,7 @@ class FileVersions {
      * Reverese or not versions array
      *
      * @param array $versions - versions array
-    */
+     */
     public static function processVersionsArray($versions) {
         if (self::getFilesVersionAppInfoCompareResult() === -1) {
             return array_reverse($versions);

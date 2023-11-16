@@ -19,17 +19,15 @@
 
 namespace OCA\Onlyoffice\Command;
 
+use OCA\Onlyoffice\AppConfig;
+use OCA\Onlyoffice\Crypt;
+use OCA\Onlyoffice\DocumentService;
+use OCP\IL10N;
+use OCP\IURLGenerator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-
-use OCP\IURLGenerator;
-use OCP\IL10N;
-
-use OCA\Onlyoffice\AppConfig;
-use OCA\Onlyoffice\DocumentService;
-use OCA\Onlyoffice\Crypt;
 
 class DocumentServer extends Command {
 
@@ -67,10 +65,12 @@ class DocumentServer extends Command {
      * @param IURLGenerator $urlGenerator - url generator service
      * @param Crypt $crypt - hash generator
      */
-    public function __construct(AppConfig $config,
-                                IL10N $trans,
-                                IURLGenerator $urlGenerator,
-                                Crypt $crypt) {
+    public function __construct(
+        AppConfig $config,
+        IL10N $trans,
+        IURLGenerator $urlGenerator,
+        Crypt $crypt
+    ) {
         parent::__construct();
         $this->config = $config;
         $this->trans = $trans;
@@ -85,10 +85,12 @@ class DocumentServer extends Command {
         $this
             ->setName("onlyoffice:documentserver")
             ->setDescription("Manage document server")
-            ->addOption("check",
-                         null,
-                         InputOption::VALUE_NONE,
-                         "Check connection document server");
+            ->addOption(
+                "check",
+                null,
+                InputOption::VALUE_NONE,
+                "Check connection document server"
+            );
     }
 
     /**
@@ -102,7 +104,7 @@ class DocumentServer extends Command {
     protected function execute(InputInterface $input, OutputInterface $output) {
         $check = $input->getOption("check");
 
-        $documentserver = $this->config->GetDocumentServerUrl(true);
+        $documentserver = $this->config->getDocumentServerUrl(true);
         if (empty($documentserver)) {
             $output->writeln("<info>Document server is not configured</info>");
             return 1;
@@ -111,8 +113,8 @@ class DocumentServer extends Command {
         if ($check) {
             $documentService = new DocumentService($this->trans, $this->config);
 
-            list ($error, $version) = $documentService->checkDocServiceUrl($this->urlGenerator, $this->crypt);
-            $this->config->SetSettingsError($error);
+            list($error, $version) = $documentService->checkDocServiceUrl($this->urlGenerator, $this->crypt);
+            $this->config->setSettingsError($error);
 
             if (!empty($error)) {
                 $output->writeln("<error>Error connection: $error</error>");

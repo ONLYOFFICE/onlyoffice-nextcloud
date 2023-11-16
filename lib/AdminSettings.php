@@ -19,10 +19,9 @@
 
 namespace OCA\Onlyoffice;
 
-use OCP\Settings\ISettings;
-
 use OCA\Onlyoffice\AppInfo\Application;
 use OCA\Onlyoffice\Controller\SettingsController;
+use OCP\Settings\ISettings;
 
 /**
  * Settings controller for the administration page

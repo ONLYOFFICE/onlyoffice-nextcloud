@@ -19,12 +19,11 @@
 
 namespace OCA\Onlyoffice\Listeners;
 
+use OCA\Onlyoffice\AppConfig;
+use OCP\Dashboard\RegisterWidgetEvent;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 use OCP\Util;
-use OCP\Dashboard\RegisterWidgetEvent;
-
-use OCA\Onlyoffice\AppConfig;
 
 /**
  * Widget listener
@@ -50,8 +49,8 @@ class WidgetListener implements IEventListener {
             return;
         }
 
-        if (!empty($this->appConfig->GetDocumentServerUrl())
-            && $this->appConfig->SettingsAreSuccessful()
+        if (!empty($this->appConfig->getDocumentServerUrl())
+            && $this->appConfig->settingsAreSuccessful()
             && $this->appConfig->isUserAllowedToUse()) {
             Util::addScript("onlyoffice", "desktop");
         }
