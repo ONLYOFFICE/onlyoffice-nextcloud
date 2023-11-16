@@ -1,5 +1,9 @@
 # Change Log
 
+## 7.9.4
+## Changed
+- remove link to docs cloud
+
 ## 7.9.2
 ## Added
 - Ukrainian translation

@@ -138,9 +138,6 @@ OC.L10N.register(
     "Authorization header (leave blank to use default header)": "En-tête d'autorisation (laissez vide pour utiliser l'en-tête par défaut)",
     "ONLYOFFICE server is not available": "Le serveur ONLYOFFICE n'est pas disponible",
     "Please check the settings to resolve the problem.": "Veuillez vérifier les paramètres pour résoudre le problème.",
-    "View settings": "Afficher les paramètres",
-    "ONLYOFFICE Docs Cloud": "ONLYOFFICE Docs Cloud",
-    "Easily launch the editors in the cloud without downloading and installation": "Lancez facilement les éditeurs dans le cloud sans téléchargement ni installation",
-    "Get Now": "Obtenir maintenant"
+    "View settings": "Afficher les paramètres"
 },
 "nplurals=2; plural=(n > 1);");

@@ -133,8 +133,7 @@ class SettingsController extends Controller {
             "tagsEnabled" => \OC::$server->getAppManager()->isEnabledForUser("systemtags"),
             "reviewDisplay" => $this->config->getCustomizationReviewDisplay(),
             "theme" => $this->config->getCustomizationTheme(),
-            "templates" => $this->getGlobalTemplates(),
-            "linkToDocs" => $this->config->getLinkToDocs()
+            "templates" => $this->getGlobalTemplates()
         ];
         return new TemplateResponse($this->appName, "settings", $data, "blank");
     }
