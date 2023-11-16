@@ -16,6 +16,9 @@
  *
  */
 
+import { FileAction, registerFileAction, FileType, Permission, DefaultType  } from "@nextcloud/files";
+import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
+
 (function (OCA) {
 
     OCA.Onlyoffice = _.extend({
@@ -322,61 +325,83 @@
             if (!config.mime) {
                 return true;
             }
-            OCA.Files.fileActions.registerAction({
-                name: "onlyofficeOpen",
-                displayName: t(OCA.Onlyoffice.AppName, "Open in ONLYOFFICE"),
-                mime: config.mime,
-                permissions: OC.PERMISSION_READ,
-                iconClass: "icon-onlyoffice-open",
-                actionHandler: OCA.Onlyoffice.FileClick
-            });
 
-            if (config.def) {
-                OCA.Files.fileActions.setDefault(config.mime, "onlyofficeOpen");
-            }
-
-            if (config.conv) {
+            if (OCA.Files && OCA.Files.fileActions) {
                 OCA.Files.fileActions.registerAction({
-                    name: "onlyofficeConvert",
-                    displayName: t(OCA.Onlyoffice.AppName, "Convert with ONLYOFFICE"),
-                    mime: config.mime,
-                    permissions: ($("#isPublic").val() ? OC.PERMISSION_UPDATE : OC.PERMISSION_READ),
-                    iconClass: "icon-onlyoffice-convert",
-                    actionHandler: OCA.Onlyoffice.FileConvertClick
-                });
-            }
-
-            if (config.fillForms) {
-                OCA.Files.fileActions.registerAction({
-                    name: "onlyofficeFill",
-                    displayName: t(OCA.Onlyoffice.AppName, "Fill in form in ONLYOFFICE"),
-                    mime: config.mime,
-                    permissions: OC.PERMISSION_UPDATE,
-                    iconClass: "icon-onlyoffice-fill",
-                    actionHandler: OCA.Onlyoffice.FileClick
-                });
-            }
-
-            if (config.createForm) {
-                OCA.Files.fileActions.registerAction({
-                    name: "onlyofficeCreateForm",
-                    displayName: t(OCA.Onlyoffice.AppName, "Create form"),
-                    mime: config.mime,
-                    permissions: ($("#isPublic").val() ? OC.PERMISSION_UPDATE : OC.PERMISSION_READ),
-                    iconClass: "icon-onlyoffice-create",
-                    actionHandler: OCA.Onlyoffice.CreateFormClick
-                });
-            }
-
-            if (config.saveas && !$("#isPublic").val()) {
-                OCA.Files.fileActions.registerAction({
-                    name: "onlyofficeDownload",
-                    displayName: t(OCA.Onlyoffice.AppName, "Download as"),
+                    name: "onlyofficeOpen",
+                    displayName: t(OCA.Onlyoffice.AppName, "Open in ONLYOFFICE"),
                     mime: config.mime,
                     permissions: OC.PERMISSION_READ,
-                    iconClass: "icon-onlyoffice-download",
-                    actionHandler: OCA.Onlyoffice.DownloadClick
+                    iconClass: "icon-onlyoffice-open",
+                    actionHandler: OCA.Onlyoffice.FileClick
                 });
+
+                if (config.def) {
+                    OCA.Files.fileActions.setDefault(config.mime, "onlyofficeOpen");
+                }
+
+                if (config.conv) {
+                    OCA.Files.fileActions.registerAction({
+                        name: "onlyofficeConvert",
+                        displayName: t(OCA.Onlyoffice.AppName, "Convert with ONLYOFFICE"),
+                        mime: config.mime,
+                        permissions: ($("#isPublic").val() ? OC.PERMISSION_UPDATE : OC.PERMISSION_READ),
+                        iconClass: "icon-onlyoffice-convert",
+                        actionHandler: OCA.Onlyoffice.FileConvertClick
+                    });
+                }
+
+                if (config.fillForms) {
+                    OCA.Files.fileActions.registerAction({
+                        name: "onlyofficeFill",
+                        displayName: t(OCA.Onlyoffice.AppName, "Fill in form in ONLYOFFICE"),
+                        mime: config.mime,
+                        permissions: OC.PERMISSION_UPDATE,
+                        iconClass: "icon-onlyoffice-fill",
+                        actionHandler: OCA.Onlyoffice.FileClick
+                    });
+                }
+
+                if (config.createForm) {
+                    OCA.Files.fileActions.registerAction({
+                        name: "onlyofficeCreateForm",
+                        displayName: t(OCA.Onlyoffice.AppName, "Create form"),
+                        mime: config.mime,
+                        permissions: ($("#isPublic").val() ? OC.PERMISSION_UPDATE : OC.PERMISSION_READ),
+                        iconClass: "icon-onlyoffice-create",
+                        actionHandler: OCA.Onlyoffice.CreateFormClick
+                    });
+                }
+
+                if (config.saveas && !$("#isPublic").val()) {
+                    OCA.Files.fileActions.registerAction({
+                        name: "onlyofficeDownload",
+                        displayName: t(OCA.Onlyoffice.AppName, "Download as"),
+                        mime: config.mime,
+                        permissions: OC.PERMISSION_READ,
+                        iconClass: "icon-onlyoffice-download",
+                        actionHandler: OCA.Onlyoffice.DownloadClick
+                    });
+                }
+            } else {
+                registerFileAction(new FileAction({
+                    id: "onlyoffice-open-" + ext,
+                    displayName: () => t(OCA.Onlyoffice.AppName, "Open in ONLYOFFICE"),
+                    iconSvgInline: () => AppDarkSvg,
+                    enabled: (files, view) => {
+                        if (files[0]?.extension?.replace(".", "") == ext)
+                            return true;
+
+                        return false;
+                    },
+                    exec: async (file, view, dir) => {
+                        var winEditor = !OCA.Onlyoffice.setting.sameTab ? document : null;
+                        OCA.Onlyoffice.OpenEditor(file.fileid, dir, file.basename, 0, winEditor);
+
+                        return null;
+                    },
+                    default: config.def ? DefaultType.HIDDEN : null
+                }));
             }
         });
     };
