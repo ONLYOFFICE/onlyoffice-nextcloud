@@ -16,7 +16,8 @@
  *
  */
 
-import { FileAction, registerFileAction, FileType, Permission, DefaultType  } from "@nextcloud/files";
+import { FileAction, registerFileAction, FileType, Permission, DefaultType, File } from "@nextcloud/files";
+import { emit } from '@nextcloud/event-bus';
 import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
 
 (function (OCA) {
@@ -181,9 +182,18 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
     OCA.Onlyoffice.FileConvertClick = function (fileName, context) {
         var fileInfoModel = context.fileInfoModel || context.fileList.getModelForFile(fileName);
         var fileList = context.fileList;
+        var fileId = context.$file[0].dataset.id || fileInfoModel.id;
 
+        OCA.Onlyoffice.FileConvert(fileId, (response) => {
+            if (response.parentId == fileList.dirInfo.id) {
+                fileList.add(response, { animate: true });
+            }
+        });
+    };
+
+    OCA.Onlyoffice.FileConvert = function (fileId, callback) {
         var convertData = {
-            fileId: context.$file[0].dataset.id || fileInfoModel.id
+            fileId: fileId
         };
 
         if ($("#isPublic").val()) {
@@ -198,9 +208,7 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
                     return;
                 }
 
-                if (response.parentId == fileList.dirInfo.id) {
-                    fileList.add(response, { animate: true });
-                }
+                callback(response);
 
                 OCP.Toast.success(t(OCA.Onlyoffice.AppName, "File has been converted. Its content might look different."));
             });
@@ -402,6 +410,41 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
                     },
                     default: config.def ? DefaultType.HIDDEN : null
                 }));
+
+                if (config.conv) {
+                    registerFileAction(new FileAction({
+                        id: "onlyoffice-convert-" + ext,
+                        displayName: () => t(OCA.Onlyoffice.AppName, "Convert with ONLYOFFICE"),
+                        iconSvgInline: () => AppDarkSvg,
+                        enabled: (files, view) => {
+                            if (files[0]?.extension?.replace(".", "") == ext)
+                                return true;
+
+                            return false;
+                        },
+                        exec: async (file, view, dir) => {
+                            OCA.Onlyoffice.FileConvert(file.fileid, async (response) => {
+                                let viewContents = await view.getContents(dir);
+
+                                if (viewContents.folder && (viewContents.folder.fileid == response.parentId)) {
+                                    let newFile = viewContents.contents.find(node => node.fileid == response.id);
+                                    if (newFile) {
+                                        emit("files:node:created", new File({
+                                            source: newFile.source,
+                                            id: newFile.fileid,
+                                            mtime: newFile.mtime,
+                                            mime: newFile.mime,
+                                            permissions: newFile.permissions,
+                                            size: newFile.size
+                                        }));
+                                    }
+                                }
+                            });
+
+                            return null;
+                        }
+                    }));
+                }
             }
         });
     };
