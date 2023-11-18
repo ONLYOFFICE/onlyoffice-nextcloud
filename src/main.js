@@ -445,6 +445,26 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
                         }
                     }));
                 }
+
+                if (config.fillForms) {
+                    registerFileAction(new FileAction({
+                        id: "onlyoffice-fill-" + ext,
+                        displayName: () => t(OCA.Onlyoffice.AppName, "Fill in form in ONLYOFFICE"),
+                        iconSvgInline: () => AppDarkSvg,
+                        enabled: (files, view) => {
+                            if (files[0]?.extension?.replace(".", "") == ext)
+                                return true;
+
+                            return false;
+                        },
+                        exec: async (file, view, dir) => {
+                            var winEditor = !OCA.Onlyoffice.setting.sameTab ? document : null;
+                            OCA.Onlyoffice.OpenEditor(file.fileid, dir, file.basename, 0, winEditor);
+
+                            return null;
+                        }
+                    }));
+                }
             }
         });
     };
