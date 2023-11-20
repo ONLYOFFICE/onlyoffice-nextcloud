@@ -222,6 +222,12 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
     };
 
     OCA.Onlyoffice.DownloadClick = function (fileName, context) {
+        var fileId = context.fileInfoModel.id;
+
+        OCA.Onlyoffice.Download(fileName, fileId);
+    };
+
+    OCA.Onlyoffice.Download = function (fileName, fileId) {
         $.get(OC.filePath(OCA.Onlyoffice.AppName, "templates", "downloadPicker.html"), 
             function (tmpl) {
                 var dialog = $(tmpl).octemplate({
@@ -268,7 +274,6 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
                         classes: "primary",
                         click: function() {
                             var format = this.dataset.format;
-                            var fileId = context.fileInfoModel.id;
                             var downloadLink = OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/downloadas?fileId={fileId}&toExtension={toExtension}",{
                                 fileId: fileId,
                                 toExtension: format
@@ -508,6 +513,25 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
                                     }
                                 }
                             });
+
+                            return null;
+                        }
+                    }));
+                }
+
+                if (config.saveas && !$("#isPublic").val()) {
+                    registerFileAction(new FileAction({
+                        id: "onlyoffice-download-as-" + ext,
+                        displayName: () => t(OCA.Onlyoffice.AppName, "Download as"),
+                        iconSvgInline: () => AppDarkSvg,
+                        enabled: (files, view) => {
+                            if (files[0]?.extension?.replace(".", "") == ext)
+                                return true;
+
+                            return false;
+                        },
+                        exec: async (file, view, dir) => {
+                            OCA.Onlyoffice.Download(file.basename, file.fileid);
 
                             return null;
                         }
