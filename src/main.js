@@ -440,16 +440,7 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
 
                                 if (viewContents.folder && (viewContents.folder.fileid == response.parentId)) {
                                     let newFile = viewContents.contents.find(node => node.fileid == response.id);
-                                    if (newFile) {
-                                        emit("files:node:created", new File({
-                                            source: newFile.source,
-                                            id: newFile.fileid,
-                                            mtime: newFile.mtime,
-                                            mime: newFile.mime,
-                                            permissions: newFile.permissions,
-                                            size: newFile.size
-                                        }));
-                                    }
+                                    if (newFile) emit("files:node:created", new File(newFile));
                                 }
                             });
 
@@ -501,16 +492,7 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
 
                                 if (viewContents.folder && (viewContents.folder.fileid == response.parentId)) {
                                     let newFile = viewContents.contents.find(node => node.fileid == response.id);
-                                    if (newFile) {
-                                        emit("files:node:created", new File({
-                                            source: newFile.source,
-                                            id: newFile.fileid,
-                                            mtime: newFile.mtime,
-                                            mime: newFile.mime,
-                                            permissions: newFile.permissions,
-                                            size: newFile.size
-                                        }));
-                                    }
+                                    if (newFile) emit("files:node:created", new File(newFile));
                                 }
                             });
 
