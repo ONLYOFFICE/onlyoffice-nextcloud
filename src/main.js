@@ -80,9 +80,10 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
                 if (open) {
                     OCA.Onlyoffice.OpenEditor(response.id, dir, response.name, 0, winEditor);
 
-                    OCA.Onlyoffice.context = { fileList: fileList };
-                    OCA.Onlyoffice.context.fileName = response.name;
-                    OCA.Onlyoffice.context.dir = dir;
+                    OCA.Onlyoffice.context = {
+                        fileName: response.name,
+                        dir: dir
+                    };
                 }
 
                 OCP.Toast.success(t(OCA.Onlyoffice.AppName, "File created"));
