@@ -33,8 +33,8 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
     OCA.Onlyoffice.mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini|Macintosh/i.test(navigator.userAgent)
                             && navigator.maxTouchPoints && navigator.maxTouchPoints > 1;
 
-    OCA.Onlyoffice.CreateFile = function (name, fileList, templateId, targetId, open = true) {
-        var dir = fileList.getCurrentDirectory();
+    OCA.Onlyoffice.CreateFile = function (name, fileList, templateId, targetId, open = true, callback = null) {
+        var dir = fileList.getCurrentDirectory ? fileList.getCurrentDirectory() : fileList.dir;
 
         if ((!OCA.Onlyoffice.setting.sameTab || OCA.Onlyoffice.mobile || OCA.Onlyoffice.Desktop) && open) {
             $loaderUrl = OCA.Onlyoffice.Desktop ? "" : OC.filePath(OCA.Onlyoffice.AppName, "templates", "loader.html");
@@ -69,7 +69,14 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
                     return;
                 }
 
-                fileList.add(response, { animate: true });
+                if (fileList.add) {
+                    fileList.add(response, { animate: true });
+                }
+
+                if (callback) {
+                    callback(response);
+                }
+
                 if (open) {
                     OCA.Onlyoffice.OpenEditor(response.id, dir, response.name, 0, winEditor);
 
@@ -460,6 +467,47 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
                         exec: async (file, view, dir) => {
                             var winEditor = !OCA.Onlyoffice.setting.sameTab ? document : null;
                             OCA.Onlyoffice.OpenEditor(file.fileid, dir, file.basename, 0, winEditor);
+
+                            return null;
+                        }
+                    }));
+                }
+
+                if (config.createForm) {
+                    registerFileAction(new FileAction({
+                        id: "onlyoffice-create-form-" + ext,
+                        displayName: () => t(OCA.Onlyoffice.AppName, "Create form"),
+                        iconSvgInline: () => AppDarkSvg,
+                        enabled: (files, view) => {
+                            if (files[0]?.extension?.replace(".", "") == ext)
+                                return true;
+
+                            return false;
+                        },
+                        exec: async (file, view, dir) => {
+                            let fileList = {
+                                dir: dir
+                            };
+
+                            var name = file.basename.replace(/\.[^.]+$/, ".oform");
+
+                            OCA.Onlyoffice.CreateFile(name, fileList, 0, file.fileid, false, async (response) => {
+                                let viewContents = await view.getContents(dir);
+
+                                if (viewContents.folder && (viewContents.folder.fileid == response.parentId)) {
+                                    let newFile = viewContents.contents.find(node => node.fileid == response.id);
+                                    if (newFile) {
+                                        emit("files:node:created", new File({
+                                            source: newFile.source,
+                                            id: newFile.fileid,
+                                            mtime: newFile.mtime,
+                                            mime: newFile.mime,
+                                            permissions: newFile.permissions,
+                                            size: newFile.size
+                                        }));
+                                    }
+                                }
+                            });
 
                             return null;
                         }
