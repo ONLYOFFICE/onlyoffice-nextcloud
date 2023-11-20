@@ -47,6 +47,7 @@ use OCA\Onlyoffice\Controller\JobListController;
 use OCA\Onlyoffice\Controller\SharingApiController;
 use OCA\Onlyoffice\Controller\SettingsController;
 use OCA\Onlyoffice\Controller\TemplateController;
+use OCA\Onlyoffice\Listeners\CreateFromTemplateListener;
 use OCA\Onlyoffice\Listeners\FilesListener;
 use OCA\Onlyoffice\Listeners\FileSharingListener;
 use OCA\Onlyoffice\Listeners\DirectEditorListener;
@@ -57,7 +58,6 @@ use OCA\Onlyoffice\DirectEditor;
 use OCA\Onlyoffice\Hooks;
 use OCA\Onlyoffice\Notifier;
 use OCA\Onlyoffice\Preview;
-use OCA\Onlyoffice\TemplateManager;
 use OCA\Onlyoffice\TemplateProvider;
 use OCA\Onlyoffice\SettingsData;
 use Psr\Container\ContainerInterface;
@@ -241,6 +241,7 @@ class Application extends App implements IBootstrap {
             );
         });
 
+        $context->registerEventListener(FileCreatedFromTemplateEvent::class, CreateFromTemplateListener::class);
         $context->registerEventListener(LoadAdditionalScriptsEvent::class, FilesListener::class);
         $context->registerEventListener(RegisterDirectEditorEvent::class, DirectEditorListener::class);
         $context->registerEventListener(LoadViewer::class, ViewerListener::class);
@@ -275,25 +276,6 @@ class Application extends App implements IBootstrap {
     }
 
     public function boot(IBootContext $context): void {
-
-        $context->injectFn(function (SymfonyAdapter $eventDispatcher) {
-
-            if (class_exists("OCP\Files\Template\FileCreatedFromTemplateEvent")) {
-                $eventDispatcher->addListener(
-                    FileCreatedFromTemplateEvent::class,
-                    function (FileCreatedFromTemplateEvent $event) {
-                        $template = $event->getTemplate();
-                        if ($template === null) {
-                            $targetFile = $event->getTarget();
-                            $templateEmpty = TemplateManager::getEmptyTemplate($targetFile->getName());
-                            if ($templateEmpty) {
-                                $targetFile->putContent($templateEmpty);
-                            }
-                        }
-                    }
-                );
-            }
-        });
 
         $context->injectFn(function (IManager $notificationsManager) {
             $notificationsManager->registerNotifierService(Notifier::class);
