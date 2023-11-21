@@ -33,9 +33,15 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
     OCA.Onlyoffice.mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini|Macintosh/i.test(navigator.userAgent)
                             && navigator.maxTouchPoints && navigator.maxTouchPoints > 1;
 
-    OCA.Onlyoffice.CreateFile = function (name, fileList, templateId, targetId, open = true, callback = null) {
-        var dir = fileList.getCurrentDirectory ? fileList.getCurrentDirectory() : fileList.dir;
+    OCA.Onlyoffice.CreateFile = function (name, fileList, templateId, targetId, open = true) {
+        var dir = fileList.getCurrentDirectory();
 
+        OCA.Onlyoffice.CreateFileProcess(name, dir, templateId, targetId, open, (response) => {
+            fileList.add(response, { animate: true });
+        });
+    };
+
+    OCA.Onlyoffice.CreateFileProcess = function (name, dir, templateId, targetId, open, callback) {
         if ((!OCA.Onlyoffice.setting.sameTab || OCA.Onlyoffice.mobile || OCA.Onlyoffice.Desktop) && open) {
             $loaderUrl = OCA.Onlyoffice.Desktop ? "" : OC.filePath(OCA.Onlyoffice.AppName, "templates", "loader.html");
             var winEditor = window.open($loaderUrl);
@@ -69,13 +75,7 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
                     return;
                 }
 
-                if (fileList.add) {
-                    fileList.add(response, { animate: true });
-                }
-
-                if (callback) {
-                    callback(response);
-                }
+                callback(response);
 
                 if (open) {
                     OCA.Onlyoffice.OpenEditor(response.id, dir, response.name, 0, winEditor);
@@ -187,6 +187,18 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
         OCA.Onlyoffice.context.fileName = fileName;
     };
 
+    OCA.Onlyoffice.FileClickExec = async function (file, view, dir) {
+        var winEditor = !OCA.Onlyoffice.setting.sameTab ? document : null;
+        OCA.Onlyoffice.OpenEditor(file.fileid, dir, file.basename, 0, winEditor);
+
+        OCA.Onlyoffice.context = {
+            fileName: file.basename,
+            dir: dir
+        };
+
+        return null;
+    };
+
     OCA.Onlyoffice.FileConvertClick = function (fileName, context) {
         var fileInfoModel = context.fileInfoModel || context.fileList.getModelForFile(fileName);
         var fileList = context.fileList;
@@ -197,6 +209,19 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
                 fileList.add(response, { animate: true });
             }
         });
+    };
+
+    OCA.Onlyoffice.FileConvertClickExec = async function (file, view, dir) {
+        OCA.Onlyoffice.FileConvert(file.fileid, async (response) => {
+            let viewContents = await view.getContents(dir);
+
+            if (viewContents.folder && (viewContents.folder.fileid == response.parentId)) {
+                let newFile = viewContents.contents.find(node => node.fileid == response.id);
+                if (newFile) emit("files:node:created", new File(newFile));
+            }
+        });
+
+        return null;
     };
 
     OCA.Onlyoffice.FileConvert = function (fileId, callback) {
@@ -339,6 +364,21 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
         OCA.Onlyoffice.CreateFile(name, fileList, 0, targetId, false);
     };
 
+    OCA.Onlyoffice.CreateFormClickExec = async function (file, view, dir) {
+        var name = file.basename.replace(/\.[^.]+$/, ".oform");
+
+        OCA.Onlyoffice.CreateFileProcess(name, dir, 0, file.fileid, false, async (response) => {
+            let viewContents = await view.getContents(dir);
+
+            if (viewContents.folder && (viewContents.folder.fileid == response.parentId)) {
+                let newFile = viewContents.contents.find(node => node.fileid == response.id);
+                if (newFile) emit("files:node:created", new File(newFile));
+            }
+        });
+
+        return null;
+    };
+
     OCA.Onlyoffice.registerAction = function() {
         var formats = OCA.Onlyoffice.setting.formats;
 
@@ -415,12 +455,7 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
 
                         return false;
                     },
-                    exec: async (file, view, dir) => {
-                        var winEditor = !OCA.Onlyoffice.setting.sameTab ? document : null;
-                        OCA.Onlyoffice.OpenEditor(file.fileid, dir, file.basename, 0, winEditor);
-
-                        return null;
-                    },
+                    exec: OCA.Onlyoffice.FileClickExec,
                     default: config.def ? DefaultType.HIDDEN : null
                 }));
 
@@ -435,18 +470,7 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
 
                             return false;
                         },
-                        exec: async (file, view, dir) => {
-                            OCA.Onlyoffice.FileConvert(file.fileid, async (response) => {
-                                let viewContents = await view.getContents(dir);
-
-                                if (viewContents.folder && (viewContents.folder.fileid == response.parentId)) {
-                                    let newFile = viewContents.contents.find(node => node.fileid == response.id);
-                                    if (newFile) emit("files:node:created", new File(newFile));
-                                }
-                            });
-
-                            return null;
-                        }
+                        exec: OCA.Onlyoffice.FileConvertClickExec
                     }));
                 }
 
@@ -461,12 +485,7 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
 
                             return false;
                         },
-                        exec: async (file, view, dir) => {
-                            var winEditor = !OCA.Onlyoffice.setting.sameTab ? document : null;
-                            OCA.Onlyoffice.OpenEditor(file.fileid, dir, file.basename, 0, winEditor);
-
-                            return null;
-                        }
+                        exec: OCA.Onlyoffice.FileClickExec
                     }));
                 }
 
@@ -481,24 +500,7 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
 
                             return false;
                         },
-                        exec: async (file, view, dir) => {
-                            let fileList = {
-                                dir: dir
-                            };
-
-                            var name = file.basename.replace(/\.[^.]+$/, ".oform");
-
-                            OCA.Onlyoffice.CreateFile(name, fileList, 0, file.fileid, false, async (response) => {
-                                let viewContents = await view.getContents(dir);
-
-                                if (viewContents.folder && (viewContents.folder.fileid == response.parentId)) {
-                                    let newFile = viewContents.contents.find(node => node.fileid == response.id);
-                                    if (newFile) emit("files:node:created", new File(newFile));
-                                }
-                            });
-
-                            return null;
-                        }
+                        exec: OCA.Onlyoffice.CreateFormClickExec
                     }));
                 }
 
