@@ -450,10 +450,15 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
                     displayName: () => t(OCA.Onlyoffice.AppName, "Open in ONLYOFFICE"),
                     iconSvgInline: () => AppDarkSvg,
                     enabled: (files, view) => {
-                        if (files[0]?.extension?.replace(".", "") == ext)
-                            return true;
+                        if (files[0]?.extension?.replace(".", "") !== ext)
+                            return false;
 
-                        return false;
+                        if (Permission.READ !== (files[0].permissions & Permission.READ))
+                            return false;
+                        if (Permission.READ !== (files[0].attributes["share-permissions"] & Permission.READ))
+                            return false;
+
+                        return true;
                     },
                     exec: OCA.Onlyoffice.FileClickExec,
                     default: config.def ? DefaultType.HIDDEN : null
@@ -465,10 +470,16 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
                         displayName: () => t(OCA.Onlyoffice.AppName, "Convert with ONLYOFFICE"),
                         iconSvgInline: () => AppDarkSvg,
                         enabled: (files, view) => {
-                            if (files[0]?.extension?.replace(".", "") == ext)
-                                return true;
+                            if (files[0]?.extension?.replace(".", "") !== ext)
+                                return false;
 
-                            return false;
+                            var required = $("#isPublic").val() ? Permission.UPDATE : Permission.READ;
+                            if (required !== (files[0].permissions & required))
+                                return false;
+                            if (required !== (files[0].attributes["share-permissions"] & required))
+                                return false;
+
+                            return true;
                         },
                         exec: OCA.Onlyoffice.FileConvertClickExec
                     }));
@@ -480,10 +491,15 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
                         displayName: () => t(OCA.Onlyoffice.AppName, "Fill in form in ONLYOFFICE"),
                         iconSvgInline: () => AppDarkSvg,
                         enabled: (files, view) => {
-                            if (files[0]?.extension?.replace(".", "") == ext)
-                                return true;
+                            if (files[0]?.extension?.replace(".", "") !== ext)
+                                return false;
 
-                            return false;
+                            if (Permission.UPDATE !== (files[0].permissions & Permission.UPDATE))
+                                return false;
+                            if (Permission.UPDATE !== (files[0].attributes["share-permissions"] & Permission.UPDATE))
+                                return false;
+
+                            return true;
                         },
                         exec: OCA.Onlyoffice.FileClickExec
                     }));
@@ -495,10 +511,16 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
                         displayName: () => t(OCA.Onlyoffice.AppName, "Create form"),
                         iconSvgInline: () => AppDarkSvg,
                         enabled: (files, view) => {
-                            if (files[0]?.extension?.replace(".", "") == ext)
-                                return true;
+                            if (files[0]?.extension?.replace(".", "") !== ext)
+                                return false;
 
-                            return false;
+                            var required = $("#isPublic").val() ? Permission.UPDATE : Permission.READ;
+                            if (required !== (files[0].permissions & required))
+                                return false;
+                            if (required !== (files[0].attributes["share-permissions"] & required))
+                                return false;
+
+                            return true;
                         },
                         exec: OCA.Onlyoffice.CreateFormClickExec
                     }));
@@ -510,10 +532,15 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
                         displayName: () => t(OCA.Onlyoffice.AppName, "Download as"),
                         iconSvgInline: () => AppDarkSvg,
                         enabled: (files, view) => {
-                            if (files[0]?.extension?.replace(".", "") == ext)
-                                return true;
+                            if (files[0]?.extension?.replace(".", "") !== ext)
+                                return false;
 
-                            return false;
+                            if (Permission.READ !== (files[0].permissions & Permission.READ))
+                                return false;
+                            if (Permission.READ !== (files[0].attributes["share-permissions"] & Permission.READ))
+                                return false;
+
+                            return true;
                         },
                         exec: async (file, view, dir) => {
                             OCA.Onlyoffice.Download(file.basename, file.fileid);
