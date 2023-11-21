@@ -16,7 +16,7 @@
  *
  */
 
-import { FileAction, registerFileAction, FileType, Permission, DefaultType, File } from "@nextcloud/files";
+import { FileAction, registerFileAction, Permission, DefaultType, File } from "@nextcloud/files";
 import { emit } from '@nextcloud/event-bus';
 import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
 
@@ -449,7 +449,7 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
                     id: "onlyoffice-open-" + ext,
                     displayName: () => t(OCA.Onlyoffice.AppName, "Open in ONLYOFFICE"),
                     iconSvgInline: () => AppDarkSvg,
-                    enabled: (files, view) => {
+                    enabled: (files) => {
                         if (files[0]?.extension?.replace(".", "") !== ext)
                             return false;
 
@@ -469,7 +469,7 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
                         id: "onlyoffice-convert-" + ext,
                         displayName: () => t(OCA.Onlyoffice.AppName, "Convert with ONLYOFFICE"),
                         iconSvgInline: () => AppDarkSvg,
-                        enabled: (files, view) => {
+                        enabled: (files) => {
                             if (files[0]?.extension?.replace(".", "") !== ext)
                                 return false;
 
@@ -490,7 +490,7 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
                         id: "onlyoffice-fill-" + ext,
                         displayName: () => t(OCA.Onlyoffice.AppName, "Fill in form in ONLYOFFICE"),
                         iconSvgInline: () => AppDarkSvg,
-                        enabled: (files, view) => {
+                        enabled: (files) => {
                             if (files[0]?.extension?.replace(".", "") !== ext)
                                 return false;
 
@@ -510,7 +510,7 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
                         id: "onlyoffice-create-form-" + ext,
                         displayName: () => t(OCA.Onlyoffice.AppName, "Create form"),
                         iconSvgInline: () => AppDarkSvg,
-                        enabled: (files, view) => {
+                        enabled: (files) => {
                             if (files[0]?.extension?.replace(".", "") !== ext)
                                 return false;
 
@@ -531,7 +531,7 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
                         id: "onlyoffice-download-as-" + ext,
                         displayName: () => t(OCA.Onlyoffice.AppName, "Download as"),
                         iconSvgInline: () => AppDarkSvg,
-                        enabled: (files, view) => {
+                        enabled: (files) => {
                             if (files[0]?.extension?.replace(".", "") !== ext)
                                 return false;
 
@@ -542,7 +542,7 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
 
                             return true;
                         },
-                        exec: async (file, view, dir) => {
+                        exec: async (file) => {
                             OCA.Onlyoffice.Download(file.basename, file.fileid);
 
                             return null;
