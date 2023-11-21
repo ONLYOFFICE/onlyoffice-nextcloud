@@ -1,5 +1,13 @@
 Nextcloud ONLYOFFICE integration app uses code from the following 3rd party projects:
 
+@nextcloud/webpack-vue-config - Base config package (https://github.com/nextcloud-libraries/webpack-vue-config/blob/master/LICENSE)
+License:        AGPL-3.0
+License File:   licenses/@nextcloud.webpack-vue-config
+
+@nextcloud/browserslist-config - Shared browserslist config for Nextcloud (https://github.com/nextcloud-libraries/browserslist-config/blob/master/LICENSE)
+License:        AGPL-3.0
+License File:   licenses/@nextcloud.browserslist-config
+
 JWT           - JSON Web Token implementation (https://github.com/firebase/php-jwt/blob/master/LICENSE)
 License:        BSD
 License File:   3rdparty/jwt/LICENSE
