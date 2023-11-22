@@ -16,9 +16,19 @@
  *
  */
 
-import { FileAction, registerFileAction, Permission, DefaultType, File } from "@nextcloud/files";
+import { FileAction,
+    registerFileAction,
+    Permission,
+    DefaultType,
+    File,
+    addNewFileMenuEntry,
+    davGetClient,
+    davRootPath,
+    davGetDefaultPropfind,
+    davResultToNode } from "@nextcloud/files";
 import { emit } from '@nextcloud/event-bus';
 import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
+import NewDocxfSvg from "!!raw-loader!../img/new-docxf.svg";
 
 (function (OCA) {
 
@@ -40,6 +50,21 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
             fileList.add(response, { animate: true });
         });
     };
+
+    OCA.Onlyoffice.CreateFileOverload = function (name, context, templateId, targetId, open = true) {
+        if (!context.view) {
+            context.view = OCP.Files.Router._router.app.currentView;
+        }
+
+        OCA.Onlyoffice.CreateFileProcess(name, context.dir, templateId, targetId, open, async (response) => {
+            let viewContents = await context.view.getContents(context.dir);
+
+            if (viewContents.folder && (viewContents.folder.fileid == response.parentId)) {
+                let newFile = viewContents.contents.find(node => node.fileid == response.id);
+                if (newFile) emit("files:node:created", new File(newFile));
+            }
+        });
+    }
 
     OCA.Onlyoffice.CreateFileProcess = function (name, dir, templateId, targetId, open, callback) {
         if ((!OCA.Onlyoffice.setting.sameTab || OCA.Onlyoffice.mobile || OCA.Onlyoffice.Desktop) && open) {
@@ -337,26 +362,41 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
         ];
 
         OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Create new Form template"),
-            function (filePath, type) {
+            async function (filePath, type) {
                 var dialogFileList = OC.dialogs.filelist;
                 var targetId = 0;
 
+                var targetFileName = OC.basename(filePath);
+                var targetFolderPath = OC.dirname(filePath);
+
+                if (!dialogFileList) {
+                    var results = await davGetClient().getDirectoryContents(davRootPath + targetFolderPath, {
+                        details: true,
+                        data: davGetDefaultPropfind(),
+                    });
+                    dialogFileList = results.data.map((result) => davResultToNode(result));
+                }
+
                 if (type === "target") {
-                    var targetFileName = filePath.split("/").pop();
                     dialogFileList.forEach(item => {
-                        if (item.name === targetFileName) {
-                            targetId = item.id;
+                        let itemName = item.name ? item.name : item.basename;
+                        if (itemName === targetFileName) {
+                            targetId = item.id ? item.id : item.fileid;
                         }
                     })
                 }
 
-                OCA.Onlyoffice.CreateFile(name, filelist, 0, targetId);
+                if (filelist.getCurrentDirectory) {
+                    OCA.Onlyoffice.CreateFile(name, filelist, 0, targetId);
+                } else {
+                    OCA.Onlyoffice.CreateFileOverload(name, filelist, 0, targetId)
+                }
             },
             false,
             filterMimes,
             true,
             OC.dialogs.FILEPICKER_TYPE_CUSTOM,
-            filelist.getCurrentDirectory(),
+            filelist.getCurrentDirectory ? filelist.getCurrentDirectory() : filelist.dir,
             {
                 buttons: buttons
             });
@@ -372,15 +412,12 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
 
     OCA.Onlyoffice.CreateFormClickExec = async function (file, view, dir) {
         var name = file.basename.replace(/\.[^.]+$/, ".oform");
+        var context = {
+            dir: dir,
+            view: view
+        };
 
-        OCA.Onlyoffice.CreateFileProcess(name, dir, 0, file.fileid, false, async (response) => {
-            let viewContents = await view.getContents(dir);
-
-            if (viewContents.folder && (viewContents.folder.fileid == response.parentId)) {
-                let newFile = viewContents.contents.find(node => node.fileid == response.id);
-                if (newFile) emit("files:node:created", new File(newFile));
-            }
-        });
+        OCA.Onlyoffice.CreateFileOverload(name, context, 0, file.fileid, false);
 
         return null;
     };
@@ -555,6 +592,28 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
         });
     };
 
+    OCA.Onlyoffice.registerNewFileMenu = function () {
+        addNewFileMenuEntry({
+            id: "new-onlyoffice-docxf",
+            displayName: t(OCA.Onlyoffice.AppName, "New form template"),
+            enabled: (folder) => {
+                if (Permission.CREATE !== (folder.permissions & Permission.CREATE))
+                    return false;
+                if (Permission.CREATE !== (folder.attributes["share-permissions"] & Permission.CREATE))
+                    return false;
+
+                return true;
+            },
+            iconSvgInline: NewDocxfSvg,
+            handler: (folder) => {
+                var name = t(OCA.Onlyoffice.AppName, "New form template");
+                var context = { dir: folder.path };
+
+                OCA.Onlyoffice.OpenFormPicker(name + ".docxf", context);
+            }
+        });
+    };
+
     OCA.Onlyoffice.NewFileMenu = {
         attach: function (menu) {
             var fileList = menu.fileList;
@@ -722,6 +781,8 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
             OC.Plugins.register("OCA.Files.NewFileMenu", OCA.Onlyoffice.NewFileMenu);
 
             OC.Plugins.register("OCA.Files.FileList", OCA.Onlyoffice.TabView);
+
+            OCA.Onlyoffice.registerNewFileMenu();
 
             OCA.Onlyoffice.registerAction();
 
