@@ -69,7 +69,7 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
                     || format["modifyFilter"])) {
                     canDisplay = true;
 
-                    if ($("#sharing").hasClass("active")
+                    if (($("#sharing").hasClass("active") || $("#tab-button-sharing").hasClass("active"))
                         && tabcontext.fileInfo
                         && tabcontext.fileInfo.id == fileInfo.id) {
                         this.update(fileInfo);
@@ -85,13 +85,14 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
         var $el = $(el);
 
         var format = null;
-        var fileInfo = null;
         var collection = null;
         var customEvents = null;
         var permissionsMenu = null;
         var templateItem = null;
 
         return {
+            fileInfo: null,
+
             getContainer: function () {
                 return $el.find(".onlyoffice-share-container");
             },
@@ -121,12 +122,12 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
 
                 this.getContainer().children().remove();
 
-                fileInfo = _fileInfo;
+                this.fileInfo = _fileInfo;
 
-                var ext = OCA.Onlyoffice.getFileExtension(fileInfo.name);
+                var ext = OCA.Onlyoffice.getFileExtension(this.fileInfo.name);
                 format = OCA.Onlyoffice.setting.formats[ext];
 
-                OCA.Onlyoffice.GetShares(fileInfo.id, (shares) => {
+                OCA.Onlyoffice.GetShares(this.fileInfo.id, (shares) => {
                     collection = shares;
 
                     this.render();
@@ -187,7 +188,7 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
             onClickSetPermissions: function (e) {
                 var permissionValues = permissionsMenu.getValues();
                 var shareId = permissionsMenu.getTargetId();
-                var fileId = fileInfo.id;
+                var fileId = tabcontext.fileInfo.id;
                 var extra = collection.find(item => item.share_id == shareId);
 
                 var permissions = OCA.Onlyoffice.Permissions.None;
