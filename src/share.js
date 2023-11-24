@@ -41,8 +41,10 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
 
         mount(el, fileInfo, context) {
             if (!tabcontext) {
-                tabcontext = advancedContext(el);
+                tabcontext = advancedContext();
             }
+
+            tabcontext.setElement(el);
 
             tabcontext.getTemplate(() => {
                 tabcontext.update(fileInfo);
@@ -54,7 +56,7 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
         },
 
         destroy() {
-            tabcontext = null;
+            tabcontext.clear();
         },
 
         enabled(fileInfo) {
@@ -81,8 +83,8 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
         }
     });
 
-    var advancedContext = function (el) {
-        var $el = $(el);
+    var advancedContext = function () {
+        var $el = null;
 
         var format = null;
         var collection = null;
@@ -93,11 +95,20 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
         return {
             fileInfo: null,
 
+            setElement: function (el) {
+                $el = $(el);
+            },
+
             getContainer: function () {
                 return $el.find(".onlyoffice-share-container");
             },
 
             getTemplate: function (callback) {
+                if ($el.find(".onlyoffice-share-container").length === 0) {
+                    $("<ul>", {class: "onlyoffice-share-container"}).appendTo($el)
+                    $("<div>").html(t(OCA.Onlyoffice.AppName, "Provide advanced document permissions using ONLYOFFICE Docs")).prependTo($el);
+                }
+
                 if (templateItem) {
                     callback();
                     return;
@@ -106,9 +117,6 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
                 $.get(OC.filePath(OCA.Onlyoffice.AppName, "templates", "share.html"),
                     function (tmpl) {
                         templateItem = $(tmpl);
-
-                        $("<ul>", {class: "onlyoffice-share-container"}).appendTo($el)
-                        $("<div>").html(t(OCA.Onlyoffice.AppName, "Provide advanced document permissions using ONLYOFFICE Docs")).prependTo($el);
 
                         callback();
                     });
@@ -132,6 +140,15 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
 
                     this.render();
                 });
+            },
+
+            clear: function () {
+                this.fileInfo = null;
+
+                $el = null;
+                format = null;
+                collection = null;
+                permissionsMenu = null;
             },
 
             render() {
