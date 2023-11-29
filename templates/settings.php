@@ -19,8 +19,8 @@
 
     style("onlyoffice", "settings");
     style("onlyoffice", "template");
-    script("onlyoffice", "settings");
-    script("onlyoffice", "template");
+    script("onlyoffice", "onlyoffice-settings");
+    script("onlyoffice", "onlyoffice-template");
 
 if ($_["tagsEnabled"]) {
     script("core", [

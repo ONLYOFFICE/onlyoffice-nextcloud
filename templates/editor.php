@@ -18,10 +18,10 @@
  */
 
     style("onlyoffice", "editor");
-    script("onlyoffice", "desktop");
-    script("onlyoffice", "editor");
+    script("onlyoffice", "onlyoffice-desktop");
+    script("onlyoffice", "onlyoffice-editor");
 if (!empty($_["directToken"])) {
-    script("onlyoffice", "directeditor");
+    script("onlyoffice", "onlyoffice-directeditor");
 }
 ?>
 
