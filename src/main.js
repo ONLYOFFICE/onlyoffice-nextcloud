@@ -253,6 +253,12 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
         OCA.Onlyoffice.Download(fileName, fileId);
     };
 
+    OCA.Onlyoffice.DownloadClickExec = async function (file) {
+        OCA.Onlyoffice.Download(file.basename, file.fileid);
+
+        return null;
+    };
+
     OCA.Onlyoffice.Download = function (fileName, fileId) {
         $.get(OC.filePath(OCA.Onlyoffice.AppName, "templates", "downloadPicker.html"), 
             function (tmpl) {
@@ -542,11 +548,7 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
 
                             return true;
                         },
-                        exec: async (file) => {
-                            OCA.Onlyoffice.Download(file.basename, file.fileid);
-
-                            return null;
-                        }
+                        exec: OCA.Onlyoffice.DownloadClickExec
                     }));
                 }
             }
