@@ -61,7 +61,7 @@ import NewDocxfSvg from "!!raw-loader!../img/new-docxf.svg";
 
             if (viewContents.folder && (viewContents.folder.fileid == response.parentId)) {
                 let newFile = viewContents.contents.find(node => node.fileid == response.id);
-                if (newFile) emit("files:node:created", new File(newFile));
+                if (newFile) emit("files:node:created", newFile);
             }
         });
     }
@@ -242,7 +242,7 @@ import NewDocxfSvg from "!!raw-loader!../img/new-docxf.svg";
 
             if (viewContents.folder && (viewContents.folder.fileid == response.parentId)) {
                 let newFile = viewContents.contents.find(node => node.fileid == response.id);
-                if (newFile) emit("files:node:created", new File(newFile));
+                if (newFile) emit("files:node:created", newFile);
             }
         });
 
