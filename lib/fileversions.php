@@ -65,6 +65,13 @@ class FileVersions {
     private static $authorExt = "_author.json";
 
     /**
+     * Groupfolder name
+     *
+     * @var string
+     */
+    private static $groupFolderName = "__groupfolders";
+
+    /**
      * Split file path and version id
      *
      * @param string $pathVersion - version path
@@ -114,9 +121,14 @@ class FileVersions {
         $fileId = null;
         if ($fileInfo !== null) {
             $fileId = $fileInfo->getId();
+            if ($fileInfo->getStorage()->instanceOfStorage(\OCA\GroupFolders\Mount\GroupFolderStorage::class)) {
+                $view = new View("/" . self::$groupFolderName);
+            } else {
+                $view = new View("/" . $userId);
+            }
+        } else {
+            $view = new View("/" . $userId);
         }
-
-        $view = new View("/" . $userId);
 
         $path = self::$appName;
         if (!self::checkFolderExist($view, $path, $createIfNotExist)) {
@@ -371,12 +383,17 @@ class FileVersions {
         $userIds = $userDatabase->getUsers();
 
         $view = new View("/");
+        $groupFolderView = new View("/" . self::$groupFolderName);
 
         foreach ($userIds as $userId) {
             $path = $userId . "/" . self::$appName;
 
             if ($view->file_exists($path)) {
                 $view->unlink($path);
+            }
+
+            if ($groupFolderView->file_exists($path)) {
+                $groupFolderView->unlink($path);
             }
         }
 
