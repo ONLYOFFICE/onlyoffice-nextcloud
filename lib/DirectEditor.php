@@ -247,7 +247,6 @@ class DirectEditor implements IEditor {
             $response = new TemplateResponse($this->appName, "editor", $params, "base");
 
             $csp = new ContentSecurityPolicy();
-            $csp->allowInlineScript(true);
 
             if (preg_match("/^https?:\/\//i", $documentServerUrl)) {
                 $csp->addAllowedScriptDomain($documentServerUrl);

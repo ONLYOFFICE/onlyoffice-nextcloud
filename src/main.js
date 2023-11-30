@@ -33,8 +33,8 @@
         var dir = fileList.getCurrentDirectory();
 
         if ((!OCA.Onlyoffice.setting.sameTab || OCA.Onlyoffice.mobile || OCA.Onlyoffice.Desktop) && open) {
-            $loaderUrl = OCA.Onlyoffice.Desktop ? "" : OC.filePath(OCA.Onlyoffice.AppName, "templates", "loader.html");
-            var winEditor = window.open($loaderUrl);
+            var loaderUrl = OCA.Onlyoffice.Desktop ? "" : OC.filePath(OCA.Onlyoffice.AppName, "templates", "loader.html");
+            var winEditor = window.open(loaderUrl);
         }
 
         var createData = {
