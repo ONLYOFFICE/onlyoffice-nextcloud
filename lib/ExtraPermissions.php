@@ -411,7 +411,7 @@ class ExtraPermissions {
 
         if (($share->getPermissions() & Constants::PERMISSION_UPDATE) === Constants::PERMISSION_UPDATE) {
             if (isset($format["modifyFilter"]) && $format["modifyFilter"]
-                && ($checkExtra & self::Comment) !== self::Comment) {
+                && ($checkExtra & self::COMMENT) !== self::COMMENT) {
                 $availableExtra |= self::MODIFYFILTER;
                 $defaultExtra |= self::MODIFYFILTER;
             }
@@ -429,8 +429,8 @@ class ExtraPermissions {
             }
 
             if (!$wasInit) {
-                if (($defaultExtra & self::ModifyFilter) === self::ModifyFilter) {
-                    $availableExtra ^= self::Comment;
+                if (($defaultExtra & self::MODIFYFILTER) === self::MODIFYFILTER) {
+                    $availableExtra ^= self::COMMENT;
                 }
             }
         }
