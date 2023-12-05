@@ -111,7 +111,9 @@
         } else {
             OCA.Onlyoffice.frameSelector = "#onlyofficeFrame";
             var $iframe = $("<iframe id=\"onlyofficeFrame\" nonce=\"" + btoa(OC.requestToken) + "\" scrolling=\"no\" allowfullscreen src=\"" + url + "&inframe=true\" />");
-            $("#app-content").append($iframe);
+
+            var frameContainer = $("#app-content").length > 0 ? $("#app-content") : $("#app-content-vue");
+            frameContainer.append($iframe);
 
             $("body").addClass("onlyoffice-inline");
 

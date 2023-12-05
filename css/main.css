@@ -42,18 +42,22 @@
 
 /* onlyoffice-inline */
 #body-user.onlyoffice-inline #app-navigation,
+#body-user.onlyoffice-inline .app-navigation,
 #body-user.onlyoffice-inline #app-navigation-vue,
 #body-user.onlyoffice-inline .searchbox,
 #body-user.onlyoffice-inline #app-content .files-controls,
 #body-user.onlyoffice-inline #app-content-vue .files-controls,
-#body-user.onlyoffice-inline .files-filestable {
+#body-user.onlyoffice-inline .files-filestable,
+#body-user.onlyoffice-inline .files-list,
+#body-user.onlyoffice-inline .files-list__header {
     display: none;
 }
 #body-user.onlyoffice-inline #app-navigation-toggle {
     display: none !important;
 }
 #body-public.onlyoffice-inline #content #app-content,
-#body-user.onlyoffice-inline #content #app-content {
+#body-user.onlyoffice-inline #content #app-content,
+#body-user.onlyoffice-inline #content #app-content-vue {
     margin-left: 0;
     position: relative;
     overflow: hidden;
