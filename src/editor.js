@@ -183,7 +183,7 @@
                             config.events.onRequestHistory = OCA.Onlyoffice.onRequestHistory;
                             config.events.onRequestHistoryData = OCA.Onlyoffice.onRequestHistoryData;
                             config.events.onRequestRestore = OCA.Onlyoffice.onRequestRestore;
-    
+
                             if (!OCA.Onlyoffice.version) {
                                 config.events.onRequestHistoryClose = OCA.Onlyoffice.onRequestHistoryClose;
                             }

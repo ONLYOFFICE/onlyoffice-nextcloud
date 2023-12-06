@@ -68,8 +68,8 @@ import NewDocxfSvg from "!!raw-loader!../img/new-docxf.svg";
 
     OCA.Onlyoffice.CreateFileProcess = function (name, dir, templateId, targetId, open, callback) {
         if ((!OCA.Onlyoffice.setting.sameTab || OCA.Onlyoffice.mobile || OCA.Onlyoffice.Desktop) && open) {
-            $loaderUrl = OCA.Onlyoffice.Desktop ? "" : OC.filePath(OCA.Onlyoffice.AppName, "templates", "loader.html");
-            var winEditor = window.open($loaderUrl);
+            var loaderUrl = OCA.Onlyoffice.Desktop ? "" : OC.filePath(OCA.Onlyoffice.AppName, "templates", "loader.html");
+            var winEditor = window.open(loaderUrl);
         }
 
         var createData = {
@@ -148,7 +148,9 @@ import NewDocxfSvg from "!!raw-loader!../img/new-docxf.svg";
         } else {
             OCA.Onlyoffice.frameSelector = "#onlyofficeFrame";
             var $iframe = $("<iframe id=\"onlyofficeFrame\" nonce=\"" + btoa(OC.requestToken) + "\" scrolling=\"no\" allowfullscreen src=\"" + url + "&inframe=true\" />");
-            $("#app-content").append($iframe);
+
+            var frameContainer = $("#app-content").length > 0 ? $("#app-content") : $("#app-content-vue");
+            frameContainer.append($iframe);
 
             $("body").addClass("onlyoffice-inline");
 
@@ -686,14 +688,6 @@ import NewDocxfSvg from "!!raw-loader!../img/new-docxf.svg";
         }
     };
 
-    OCA.Onlyoffice.TabView = {
-        attach(fileList) {
-            if (OCA.Onlyoffice.SharingTabView) {
-                fileList.registerTabView(new OCA.Onlyoffice.SharingTabView())
-            }
-        }
-    }
-
     OCA.Onlyoffice.getFileExtension = function (fileName) {
         var extension = fileName.substr(fileName.lastIndexOf(".") + 1).toLowerCase();
         return extension;
@@ -779,8 +773,6 @@ import NewDocxfSvg from "!!raw-loader!../img/new-docxf.svg";
             }
         } else {
             OC.Plugins.register("OCA.Files.NewFileMenu", OCA.Onlyoffice.NewFileMenu);
-
-            OC.Plugins.register("OCA.Files.FileList", OCA.Onlyoffice.TabView);
 
             OCA.Onlyoffice.registerNewFileMenu();
 

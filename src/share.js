@@ -16,7 +16,9 @@
  *
  */
 
- (function ($, OC) {
+import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
+
+(function ($, OC) {
 
     OCA.Onlyoffice = _.extend({
         AppName: "onlyoffice",
@@ -32,90 +34,28 @@
 
     var tabcontext = null;
 
-    OCA.Onlyoffice.SharingTabView = OCA.Files.DetailTabView.extend({
+    var advancedTab = new OCA.Files.Sidebar.Tab({
         id: "onlyofficeSharingTabView",
-        className: "tab onlyofficeSharingTabView",
+        name: t(OCA.Onlyoffice.AppName, "Advanced"),
+        iconSvg: AppDarkSvg,
 
-        customEvents: null,
-        fileInfo: null,
-        templateItem: null,
-        permissionsMenu: null,
-        colectionLoading: null,
-        collection: null,
-        format: null,
-
-        events: {
-            "click #onlyoffice-share-action": "_onClickPermissionMenu",
-            "change .onlyoffice-share-action input": "_onClickSetPermissions"
-        },
-
-        initialize() {
-            OCA.Files.DetailTabView.prototype.initialize.apply(this, arguments);
-            tabcontext = this;
-
-            this.colectionLoading = false;
-        },
-
-        getLabel() {
-            return t(OCA.Onlyoffice.AppName, "Advanced")
-        },
-
-        getIcon() {
-            return "icon-onlyoffice-sharing"
-        },
-
-        render() {
-            var self = this;
-
-            if (this.customEvents === null) {
-                this.customEvents = this._customEvents();
-                this.customEvents.on();
+        mount(el, fileInfo, context) {
+            if (!tabcontext) {
+                tabcontext = advancedContext();
             }
 
-            this._getTemplate(() => {
-                this.collection.forEach(extra => {
-                    var itemNode = self.templateItem.clone();
-                    var descNode = itemNode.find("span");
-                    var avatar = itemNode.find("img");
-
-                    var avatarSrc = "/index.php/avatar/" + extra.shareWith + "/32?v=0";
-                    var label = extra.shareWithName;
-                    if (extra.type == OC.Share.SHARE_TYPE_GROUP) {
-                        avatarSrc = "/index.php/avatar/guest/" + extra.shareWith + "/32?v=0";
-                        label = extra.shareWith + " (" + t(OCA.Onlyoffice.AppName, "group") + ")";
-                    }
-
-                    avatar[0].src = avatarSrc;
-                    descNode[0].innerText = label;
-
-                    itemNode[0].id = extra.share_id;
-
-                    self._getContainer().append(itemNode);
-                });
-            });
+            tabcontext.init(el, fileInfo);
         },
 
-        setFileInfo(fileInfo) {
-            if(fileInfo) {
-                this.fileInfo = fileInfo;
-
-                if (this.colectionLoading) {
-                    return;
-                }
-
-                this._getContainer().children().remove();
-
-                this.colectionLoading = true;
-                OCA.Onlyoffice.GetShares(this.fileInfo.id, (shares) => {
-                    this.collection = shares;
-
-                    this.colectionLoading = false;
-                    this.render();
-                });
-            }
+        update(fileInfo) {
+            tabcontext.update(fileInfo);
         },
 
-        canDisplay: function (fileInfo) {
+        destroy() {
+            tabcontext.clear();
+        },
+
+        enabled(fileInfo) {
             var canDisplay = false;
 
             if (!fileInfo.isDirectory()) {
@@ -126,9 +66,8 @@
                     || format["fillForms"]
                     || format["modifyFilter"])) {
                     canDisplay = true;
-                    tabcontext.format = format;
 
-                    if ($("#sharing").hasClass("active")
+                    if (($("#sharing").hasClass("active") || $("#tab-button-sharing").hasClass("active"))
                         && tabcontext.fileInfo
                         && tabcontext.fileInfo.id == fileInfo.id) {
                         this.update(fileInfo);
@@ -137,35 +76,74 @@
             };
 
             return canDisplay;
-        },
+        }
+    });
 
-        _getContainer: function () {
-            return this.$el.find(".onlyoffice-share-container");
-        },
+    var advancedContext = function () {
+        var $el = null;
 
-        _getTemplate: function (callback) {
-            if (this.templateItem) {
+        var format = null;
+        var fileInfo = null;
+        var collection = null;
+        var customEvents = null;
+        var permissionsMenu = null;
+        var templateItem = null;
+
+        var getContainer = function () {
+            return $el.find(".onlyoffice-share-container");
+        };
+
+        var getTemplate = function (callback) {
+            if ($el.find(".onlyoffice-share-container").length === 0) {
+                $("<ul>", {class: "onlyoffice-share-container"}).appendTo($el)
+                $("<div>").html(t(OCA.Onlyoffice.AppName, "Provide advanced document permissions using ONLYOFFICE Docs")).prependTo($el);
+            }
+
+            if (templateItem) {
                 callback();
                 return;
             }
 
-            var self = this;
-            $.get(OC.filePath(OCA.Onlyoffice.AppName, "templates", "share.html"), 
+            $.get(OC.filePath(OCA.Onlyoffice.AppName, "templates", "share.html"),
                 function (tmpl) {
-                    self.templateItem = $(tmpl);
-
-                    $("<ul>", {class: "onlyoffice-share-container"}).appendTo(self.$el)
-                    $("<div>").html(t(OCA.Onlyoffice.AppName, "Provide advanced document permissions using ONLYOFFICE Docs")).prependTo(self.$el);
+                    templateItem = $(tmpl);
 
                     callback();
                 });
-        },
+        };
 
-        _onClickSetPermissions: function (e) {
-            var permissionValues = this.permissionsMenu.getValues();
-            var shareId = this.permissionsMenu.getTargetId();
-            var fileId = this.fileInfo.id;
-            var extra = this.collection.find(item => item.share_id == shareId);
+        var render = function () {
+            getTemplate(() => {
+                collection.forEach(extra => {
+                    var itemNode = templateItem.clone();
+                    var descNode = itemNode.find("span");
+                    var avatar = itemNode.find("img");
+                    var actionButton = itemNode.find("#onlyoffice-share-action");
+
+                    var avatarSrc = "/index.php/avatar/" + extra.shareWith + "/32?v=0";
+                    var label = extra.shareWithName;
+                    if (extra.type == OC.Share.SHARE_TYPE_GROUP) {
+                        avatarSrc = "/index.php/avatar/guest/" + extra.shareWith + "/32?v=0";
+                        label = extra.shareWith + " (" + t(OCA.Onlyoffice.AppName, "group") + ")";
+                    }
+
+                    actionButton.click(onClickPermissionMenu);
+
+                    avatar[0].src = avatarSrc;
+                    descNode[0].innerText = label;
+
+                    itemNode[0].id = extra.share_id;
+
+                    getContainer().append(itemNode);
+                });
+            });
+        };
+
+        var onClickSetPermissions = function (e) {
+            var permissionValues = permissionsMenu.getValues();
+            var shareId = permissionsMenu.getTargetId();
+            var fileId = fileInfo.id;
+            var extra = collection.find(item => item.share_id == shareId);
 
             var permissions = OCA.Onlyoffice.Permissions.None;
             if (permissionValues[OCA.Onlyoffice.Permissions.Review]) {
@@ -185,9 +163,9 @@
                 permissions |= OCA.Onlyoffice.Permissions.ModifyFilter;
             }
 
-            this.permissionsMenu.block(true);
+            permissionsMenu.block(true);
             OCA.Onlyoffice.SetShares(extra.id, shareId, fileId, permissions, (extra) => {
-                this.collection.forEach(item => {
+                collection.forEach(item => {
                     if (item.share_id == extra.share_id) {
                         item.id = extra.id;
                         item.permissions = extra.permissions;
@@ -195,40 +173,64 @@
                     }
                 });
 
-                var attributes = this._getPermissionAttributes(extra);
+                var attributes = getPermissionAttributes(extra);
 
-                this.permissionsMenu.refresh(attributes);
-                this.permissionsMenu.block(false);
+                permissionsMenu.refresh(attributes);
+                permissionsMenu.block(false);
             });
-        },
+        };
 
-        _onClickPermissionMenu: function (e) {
-            if (!this.permissionsMenu) {
-                this.permissionsMenu = this._permissionMenu();
+        var onClickPermissionMenu = function (e) {
+            if (!permissionsMenu) {
+                permissionsMenu = getPermissionMenu();
             }
 
             var shareNode = $(e.target).closest(".onlyoffice-share-item")[0];
             var shareId = shareNode.id;
 
-
-            if (this.permissionsMenu.isOpen()) {
-                var previousId = this.permissionsMenu.getTargetId();
-                this.permissionsMenu.close();
+            if (permissionsMenu.isOpen()) {
+                var previousId = permissionsMenu.getTargetId();
+                permissionsMenu.close();
 
                 if (previousId == shareId) return;
             }
 
-            var extra = this.collection.find(item => item.share_id == shareId);
+            var extra = collection.find(item => item.share_id == shareId);
 
-            var attributes = this._getPermissionAttributes(extra);
+            var attributes = getPermissionAttributes(extra);
 
-            this.permissionsMenu.open(extra.share_id, attributes, $(e.target).position());
-        },
+            permissionsMenu.open(extra.share_id, attributes, $(e.target).position());
+        };
 
-        _getPermissionAttributes: function (extra) {
+        var getCustomEvents = function () {
+            var init = false;
+
+            return {
+                on: function () {
+                    if (!init) {
+                        $("#content").on("click", function (e) {
+                            var target = $(e.target)[0];
+                            if (!permissionsMenu
+                                || !permissionsMenu.isOpen()
+                                || target.id == "onlyoffice-share-action"
+                                || target.className == "onlyoffice-share-label"
+                                || target.closest(".onlyoffice-share-action")) {
+                                return;
+                            }
+
+                            permissionsMenu.close();
+                        });
+
+                        init = true;
+                    }
+                }
+            }
+        };
+
+        var getPermissionAttributes = function (extra) {
             var attributes = [];
 
-            if (tabcontext.format["review"]
+            if (format["review"]
                 && (OCA.Onlyoffice.Permissions.Review & extra["available"]) === OCA.Onlyoffice.Permissions.Review) {
                 var review = (OCA.Onlyoffice.Permissions.Review & extra["permissions"]) === OCA.Onlyoffice.Permissions.Review;
                 attributes.push({
@@ -237,7 +239,7 @@
                     label: t(OCA.Onlyoffice.AppName, "Review only")
                 });
             }
-            if (tabcontext.format["comment"]
+            if (format["comment"]
                 && (OCA.Onlyoffice.Permissions.Comment & extra["available"]) === OCA.Onlyoffice.Permissions.Comment) {
                 var comment = (OCA.Onlyoffice.Permissions.Comment & extra["permissions"]) === OCA.Onlyoffice.Permissions.Comment;
                 attributes.push({
@@ -246,7 +248,7 @@
                     label: t(OCA.Onlyoffice.AppName, "Comment only")
                 });
             }
-            if (tabcontext.format["fillForms"]
+            if (format["fillForms"]
                 && (OCA.Onlyoffice.Permissions.FillForms & extra["available"]) === OCA.Onlyoffice.Permissions.FillForms) {
                 var fillForms = (OCA.Onlyoffice.Permissions.FillForms & extra["permissions"]) === OCA.Onlyoffice.Permissions.FillForms;
                 attributes.push({
@@ -256,7 +258,7 @@
                 });
             }
 
-            if (tabcontext.format["modifyFilter"]
+            if (format["modifyFilter"]
                 && (OCA.Onlyoffice.Permissions.ModifyFilter & extra["available"]) === OCA.Onlyoffice.Permissions.ModifyFilter) {
                 var modifyFilter = (OCA.Onlyoffice.Permissions.ModifyFilter & extra["permissions"]) === OCA.Onlyoffice.Permissions.ModifyFilter;
                 attributes.push({
@@ -267,35 +269,9 @@
             }
 
             return attributes;
-        },
+        };
 
-        _customEvents: function () {
-            var init = false;
-            var self = this;
-
-            return {
-                on: function () {
-                    if (!init) {
-                        $("#content").on("click", function (e) {
-                            var target = $(e.target)[0];
-                            if (!self.permissionsMenu
-                                || !self.permissionsMenu.isOpen()
-                                || target.id == "onlyoffice-share-action"
-                                || target.className == "onlyoffice-share-label"
-                                || target.closest(".onlyoffice-share-action")) {
-                                return;
-                            }
-
-                            self.permissionsMenu.close();
-                        });
-
-                        init = true;
-                    }
-                }
-            }
-        },
-
-        _permissionMenu: function () {
+        var getPermissionMenu = function () {
             var popup = $("<div>", {
                 class: "popovermenu onlyoffice-share-popup"
             }).append($("<ul>"), {
@@ -316,6 +292,9 @@
                     class: "onlyoffice-share-label"
                 })));
 
+                var input = item.find("input");
+                input.click(onClickSetPermissions);
+
                 popup.find("ul").append(item);
             };
 
@@ -330,7 +309,7 @@
                 popup.find("ul").attr("id", id);
             };
 
-            this.$el.append(popup);
+            $el.append(popup);
 
             return {
                 isOpen: function () {
@@ -385,10 +364,52 @@
 
                 getTargetId: function () {
                     return popup.find("ul").attr("id");
-                },
+                }
             }
-        }
-    });
+        };
+
+        return {
+            get fileInfo () {
+                return fileInfo;
+            },
+
+            init: function (_el, _fileInfo) {
+                $el = $(_el);
+
+                getTemplate(() => {
+                    this.update(_fileInfo);
+                });
+            },
+
+            update: function (_fileInfo) {
+                if (customEvents === null) {
+                    customEvents = getCustomEvents();
+                    customEvents.on();
+                }
+
+                getContainer().children().remove();
+
+                fileInfo = _fileInfo;
+
+                var ext = OCA.Onlyoffice.getFileExtension(fileInfo.name);
+                format = OCA.Onlyoffice.setting.formats[ext];
+
+                OCA.Onlyoffice.GetShares(fileInfo.id, (shares) => {
+                    collection = shares;
+
+                    render();
+                });
+            },
+
+            clear: function () {
+                $el = null;
+                format = null;
+                fileInfo = null;
+                collection = null;
+                permissionsMenu = null;
+            }
+        };
+    };
 
     OCA.Onlyoffice.GetShares = function(fileId, callback) {
         $.ajax({
@@ -397,7 +418,7 @@
                 callback(response.ocs.data);
             }
         })
-    }
+    };
 
     OCA.Onlyoffice.SetShares = function(id, shareId, fileId, permissions, callback) {
         var data = {
@@ -415,6 +436,10 @@
                 callback(response.ocs.data);
             }
         })
+    };
+
+    if (OCA.Files.Sidebar && OCA.Files.Sidebar.registerTab) {
+        OCA.Files.Sidebar.registerTab(advancedTab);
     }
 
 })(jQuery, OC);
