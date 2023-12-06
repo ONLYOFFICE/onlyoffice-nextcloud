@@ -11,6 +11,7 @@
         "dev": "NODE_ENV=development webpack --progress --config webpack.js"
     },
     "dependencies": {
+        "@nextcloud/files": "^3.0.0"
     },
     "devDependencies": {
         "@nextcloud/webpack-vue-config": "^6.0.0",

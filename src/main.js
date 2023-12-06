@@ -16,6 +16,20 @@
  *
  */
 
+import { FileAction,
+    registerFileAction,
+    Permission,
+    DefaultType,
+    File,
+    addNewFileMenuEntry,
+    davGetClient,
+    davRootPath,
+    davGetDefaultPropfind,
+    davResultToNode } from "@nextcloud/files";
+import { emit } from '@nextcloud/event-bus';
+import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
+import NewDocxfSvg from "!!raw-loader!../img/new-docxf.svg";
+
 (function (OCA) {
 
     OCA.Onlyoffice = _.extend({
@@ -32,6 +46,27 @@
     OCA.Onlyoffice.CreateFile = function (name, fileList, templateId, targetId, open = true) {
         var dir = fileList.getCurrentDirectory();
 
+        OCA.Onlyoffice.CreateFileProcess(name, dir, templateId, targetId, open, (response) => {
+            fileList.add(response, { animate: true });
+        });
+    };
+
+    OCA.Onlyoffice.CreateFileOverload = function (name, context, templateId, targetId, open = true) {
+        if (!context.view) {
+            context.view = OCP.Files.Router._router.app.currentView;
+        }
+
+        OCA.Onlyoffice.CreateFileProcess(name, context.dir, templateId, targetId, open, async (response) => {
+            let viewContents = await context.view.getContents(context.dir);
+
+            if (viewContents.folder && (viewContents.folder.fileid == response.parentId)) {
+                let newFile = viewContents.contents.find(node => node.fileid == response.id);
+                if (newFile) emit("files:node:created", newFile);
+            }
+        });
+    }
+
+    OCA.Onlyoffice.CreateFileProcess = function (name, dir, templateId, targetId, open, callback) {
         if ((!OCA.Onlyoffice.setting.sameTab || OCA.Onlyoffice.mobile || OCA.Onlyoffice.Desktop) && open) {
             var loaderUrl = OCA.Onlyoffice.Desktop ? "" : OC.filePath(OCA.Onlyoffice.AppName, "templates", "loader.html");
             var winEditor = window.open(loaderUrl);
@@ -65,13 +100,15 @@
                     return;
                 }
 
-                fileList.add(response, { animate: true });
+                callback(response);
+
                 if (open) {
                     OCA.Onlyoffice.OpenEditor(response.id, dir, response.name, 0, winEditor);
 
-                    OCA.Onlyoffice.context = { fileList: fileList };
-                    OCA.Onlyoffice.context.fileName = response.name;
-                    OCA.Onlyoffice.context.dir = dir;
+                    OCA.Onlyoffice.context = {
+                        fileName: response.name,
+                        dir: dir
+                    };
                 }
 
                 OCP.Toast.success(t(OCA.Onlyoffice.AppName, "File created"));
@@ -177,12 +214,46 @@
         OCA.Onlyoffice.context.fileName = fileName;
     };
 
+    OCA.Onlyoffice.FileClickExec = async function (file, view, dir) {
+        var winEditor = !OCA.Onlyoffice.setting.sameTab ? document : null;
+        OCA.Onlyoffice.OpenEditor(file.fileid, dir, file.basename, 0, winEditor);
+
+        OCA.Onlyoffice.context = {
+            fileName: file.basename,
+            dir: dir
+        };
+
+        return null;
+    };
+
     OCA.Onlyoffice.FileConvertClick = function (fileName, context) {
         var fileInfoModel = context.fileInfoModel || context.fileList.getModelForFile(fileName);
         var fileList = context.fileList;
+        var fileId = context.$file[0].dataset.id || fileInfoModel.id;
 
+        OCA.Onlyoffice.FileConvert(fileId, (response) => {
+            if (response.parentId == fileList.dirInfo.id) {
+                fileList.add(response, { animate: true });
+            }
+        });
+    };
+
+    OCA.Onlyoffice.FileConvertClickExec = async function (file, view, dir) {
+        OCA.Onlyoffice.FileConvert(file.fileid, async (response) => {
+            let viewContents = await view.getContents(dir);
+
+            if (viewContents.folder && (viewContents.folder.fileid == response.parentId)) {
+                let newFile = viewContents.contents.find(node => node.fileid == response.id);
+                if (newFile) emit("files:node:created", newFile);
+            }
+        });
+
+        return null;
+    };
+
+    OCA.Onlyoffice.FileConvert = function (fileId, callback) {
         var convertData = {
-            fileId: context.$file[0].dataset.id || fileInfoModel.id
+            fileId: fileId
         };
 
         if ($("#isPublic").val()) {
@@ -197,15 +268,25 @@
                     return;
                 }
 
-                if (response.parentId == fileList.dirInfo.id) {
-                    fileList.add(response, { animate: true });
-                }
+                callback(response);
 
                 OCP.Toast.success(t(OCA.Onlyoffice.AppName, "File has been converted. Its content might look different."));
             });
     };
 
     OCA.Onlyoffice.DownloadClick = function (fileName, context) {
+        var fileId = context.fileInfoModel.id;
+
+        OCA.Onlyoffice.Download(fileName, fileId);
+    };
+
+    OCA.Onlyoffice.DownloadClickExec = async function (file) {
+        OCA.Onlyoffice.Download(file.basename, file.fileid);
+
+        return null;
+    };
+
+    OCA.Onlyoffice.Download = function (fileName, fileId) {
         $.get(OC.filePath(OCA.Onlyoffice.AppName, "templates", "downloadPicker.html"), 
             function (tmpl) {
                 var dialog = $(tmpl).octemplate({
@@ -252,7 +333,6 @@
                         classes: "primary",
                         click: function() {
                             var format = this.dataset.format;
-                            var fileId = context.fileInfoModel.id;
                             var downloadLink = OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/downloadas?fileId={fileId}&toExtension={toExtension}",{
                                 fileId: fileId,
                                 toExtension: format
@@ -284,26 +364,41 @@
         ];
 
         OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Create new Form template"),
-            function (filePath, type) {
+            async function (filePath, type) {
                 var dialogFileList = OC.dialogs.filelist;
                 var targetId = 0;
 
+                var targetFileName = OC.basename(filePath);
+                var targetFolderPath = OC.dirname(filePath);
+
+                if (!dialogFileList) {
+                    var results = await davGetClient().getDirectoryContents(davRootPath + targetFolderPath, {
+                        details: true,
+                        data: davGetDefaultPropfind(),
+                    });
+                    dialogFileList = results.data.map((result) => davResultToNode(result));
+                }
+
                 if (type === "target") {
-                    var targetFileName = filePath.split("/").pop();
                     dialogFileList.forEach(item => {
-                        if (item.name === targetFileName) {
-                            targetId = item.id;
+                        let itemName = item.name ? item.name : item.basename;
+                        if (itemName === targetFileName) {
+                            targetId = item.id ? item.id : item.fileid;
                         }
                     })
                 }
 
-                OCA.Onlyoffice.CreateFile(name, filelist, 0, targetId);
+                if (filelist.getCurrentDirectory) {
+                    OCA.Onlyoffice.CreateFile(name, filelist, 0, targetId);
+                } else {
+                    OCA.Onlyoffice.CreateFileOverload(name, filelist, 0, targetId)
+                }
             },
             false,
             filterMimes,
             true,
             OC.dialogs.FILEPICKER_TYPE_CUSTOM,
-            filelist.getCurrentDirectory(),
+            filelist.getCurrentDirectory ? filelist.getCurrentDirectory() : filelist.dir,
             {
                 buttons: buttons
             });
@@ -317,6 +412,18 @@
         OCA.Onlyoffice.CreateFile(name, fileList, 0, targetId, false);
     };
 
+    OCA.Onlyoffice.CreateFormClickExec = async function (file, view, dir) {
+        var name = file.basename.replace(/\.[^.]+$/, ".oform");
+        var context = {
+            dir: dir,
+            view: view
+        };
+
+        OCA.Onlyoffice.CreateFileOverload(name, context, 0, file.fileid, false);
+
+        return null;
+    };
+
     OCA.Onlyoffice.registerAction = function() {
         var formats = OCA.Onlyoffice.setting.formats;
 
@@ -324,61 +431,187 @@
             if (!config.mime) {
                 return true;
             }
-            OCA.Files.fileActions.registerAction({
-                name: "onlyofficeOpen",
-                displayName: t(OCA.Onlyoffice.AppName, "Open in ONLYOFFICE"),
-                mime: config.mime,
-                permissions: OC.PERMISSION_READ,
-                iconClass: "icon-onlyoffice-open",
-                actionHandler: OCA.Onlyoffice.FileClick
-            });
 
-            if (config.def) {
-                OCA.Files.fileActions.setDefault(config.mime, "onlyofficeOpen");
-            }
-
-            if (config.conv) {
+            if (OCA.Files && OCA.Files.fileActions) {
                 OCA.Files.fileActions.registerAction({
-                    name: "onlyofficeConvert",
-                    displayName: t(OCA.Onlyoffice.AppName, "Convert with ONLYOFFICE"),
-                    mime: config.mime,
-                    permissions: ($("#isPublic").val() ? OC.PERMISSION_UPDATE : OC.PERMISSION_READ),
-                    iconClass: "icon-onlyoffice-convert",
-                    actionHandler: OCA.Onlyoffice.FileConvertClick
-                });
-            }
-
-            if (config.fillForms) {
-                OCA.Files.fileActions.registerAction({
-                    name: "onlyofficeFill",
-                    displayName: t(OCA.Onlyoffice.AppName, "Fill in form in ONLYOFFICE"),
-                    mime: config.mime,
-                    permissions: OC.PERMISSION_UPDATE,
-                    iconClass: "icon-onlyoffice-fill",
-                    actionHandler: OCA.Onlyoffice.FileClick
-                });
-            }
-
-            if (config.createForm) {
-                OCA.Files.fileActions.registerAction({
-                    name: "onlyofficeCreateForm",
-                    displayName: t(OCA.Onlyoffice.AppName, "Create form"),
-                    mime: config.mime,
-                    permissions: ($("#isPublic").val() ? OC.PERMISSION_UPDATE : OC.PERMISSION_READ),
-                    iconClass: "icon-onlyoffice-create",
-                    actionHandler: OCA.Onlyoffice.CreateFormClick
-                });
-            }
-
-            if (config.saveas && !$("#isPublic").val()) {
-                OCA.Files.fileActions.registerAction({
-                    name: "onlyofficeDownload",
-                    displayName: t(OCA.Onlyoffice.AppName, "Download as"),
+                    name: "onlyofficeOpen",
+                    displayName: t(OCA.Onlyoffice.AppName, "Open in ONLYOFFICE"),
                     mime: config.mime,
                     permissions: OC.PERMISSION_READ,
-                    iconClass: "icon-onlyoffice-download",
-                    actionHandler: OCA.Onlyoffice.DownloadClick
+                    iconClass: "icon-onlyoffice-open",
+                    actionHandler: OCA.Onlyoffice.FileClick
                 });
+
+                if (config.def) {
+                    OCA.Files.fileActions.setDefault(config.mime, "onlyofficeOpen");
+                }
+
+                if (config.conv) {
+                    OCA.Files.fileActions.registerAction({
+                        name: "onlyofficeConvert",
+                        displayName: t(OCA.Onlyoffice.AppName, "Convert with ONLYOFFICE"),
+                        mime: config.mime,
+                        permissions: ($("#isPublic").val() ? OC.PERMISSION_UPDATE : OC.PERMISSION_READ),
+                        iconClass: "icon-onlyoffice-convert",
+                        actionHandler: OCA.Onlyoffice.FileConvertClick
+                    });
+                }
+
+                if (config.fillForms) {
+                    OCA.Files.fileActions.registerAction({
+                        name: "onlyofficeFill",
+                        displayName: t(OCA.Onlyoffice.AppName, "Fill in form in ONLYOFFICE"),
+                        mime: config.mime,
+                        permissions: OC.PERMISSION_UPDATE,
+                        iconClass: "icon-onlyoffice-fill",
+                        actionHandler: OCA.Onlyoffice.FileClick
+                    });
+                }
+
+                if (config.createForm) {
+                    OCA.Files.fileActions.registerAction({
+                        name: "onlyofficeCreateForm",
+                        displayName: t(OCA.Onlyoffice.AppName, "Create form"),
+                        mime: config.mime,
+                        permissions: ($("#isPublic").val() ? OC.PERMISSION_UPDATE : OC.PERMISSION_READ),
+                        iconClass: "icon-onlyoffice-create",
+                        actionHandler: OCA.Onlyoffice.CreateFormClick
+                    });
+                }
+
+                if (config.saveas && !$("#isPublic").val()) {
+                    OCA.Files.fileActions.registerAction({
+                        name: "onlyofficeDownload",
+                        displayName: t(OCA.Onlyoffice.AppName, "Download as"),
+                        mime: config.mime,
+                        permissions: OC.PERMISSION_READ,
+                        iconClass: "icon-onlyoffice-download",
+                        actionHandler: OCA.Onlyoffice.DownloadClick
+                    });
+                }
+            } else {
+                registerFileAction(new FileAction({
+                    id: "onlyoffice-open-" + ext,
+                    displayName: () => t(OCA.Onlyoffice.AppName, "Open in ONLYOFFICE"),
+                    iconSvgInline: () => AppDarkSvg,
+                    enabled: (files) => {
+                        if (files[0]?.extension?.replace(".", "") !== ext)
+                            return false;
+
+                        if (Permission.READ !== (files[0].permissions & Permission.READ))
+                            return false;
+                        if (Permission.READ !== (files[0].attributes["share-permissions"] & Permission.READ))
+                            return false;
+
+                        return true;
+                    },
+                    exec: OCA.Onlyoffice.FileClickExec,
+                    default: config.def ? DefaultType.HIDDEN : null
+                }));
+
+                if (config.conv) {
+                    registerFileAction(new FileAction({
+                        id: "onlyoffice-convert-" + ext,
+                        displayName: () => t(OCA.Onlyoffice.AppName, "Convert with ONLYOFFICE"),
+                        iconSvgInline: () => AppDarkSvg,
+                        enabled: (files) => {
+                            if (files[0]?.extension?.replace(".", "") !== ext)
+                                return false;
+
+                            var required = $("#isPublic").val() ? Permission.UPDATE : Permission.READ;
+                            if (required !== (files[0].permissions & required))
+                                return false;
+                            if (required !== (files[0].attributes["share-permissions"] & required))
+                                return false;
+
+                            return true;
+                        },
+                        exec: OCA.Onlyoffice.FileConvertClickExec
+                    }));
+                }
+
+                if (config.fillForms) {
+                    registerFileAction(new FileAction({
+                        id: "onlyoffice-fill-" + ext,
+                        displayName: () => t(OCA.Onlyoffice.AppName, "Fill in form in ONLYOFFICE"),
+                        iconSvgInline: () => AppDarkSvg,
+                        enabled: (files) => {
+                            if (files[0]?.extension?.replace(".", "") !== ext)
+                                return false;
+
+                            if (Permission.UPDATE !== (files[0].permissions & Permission.UPDATE))
+                                return false;
+                            if (Permission.UPDATE !== (files[0].attributes["share-permissions"] & Permission.UPDATE))
+                                return false;
+
+                            return true;
+                        },
+                        exec: OCA.Onlyoffice.FileClickExec
+                    }));
+                }
+
+                if (config.createForm) {
+                    registerFileAction(new FileAction({
+                        id: "onlyoffice-create-form-" + ext,
+                        displayName: () => t(OCA.Onlyoffice.AppName, "Create form"),
+                        iconSvgInline: () => AppDarkSvg,
+                        enabled: (files) => {
+                            if (files[0]?.extension?.replace(".", "") !== ext)
+                                return false;
+
+                            var required = $("#isPublic").val() ? Permission.UPDATE : Permission.READ;
+                            if (required !== (files[0].permissions & required))
+                                return false;
+                            if (required !== (files[0].attributes["share-permissions"] & required))
+                                return false;
+
+                            return true;
+                        },
+                        exec: OCA.Onlyoffice.CreateFormClickExec
+                    }));
+                }
+
+                if (config.saveas && !$("#isPublic").val()) {
+                    registerFileAction(new FileAction({
+                        id: "onlyoffice-download-as-" + ext,
+                        displayName: () => t(OCA.Onlyoffice.AppName, "Download as"),
+                        iconSvgInline: () => AppDarkSvg,
+                        enabled: (files) => {
+                            if (files[0]?.extension?.replace(".", "") !== ext)
+                                return false;
+
+                            if (Permission.READ !== (files[0].permissions & Permission.READ))
+                                return false;
+                            if (Permission.READ !== (files[0].attributes["share-permissions"] & Permission.READ))
+                                return false;
+
+                            return true;
+                        },
+                        exec: OCA.Onlyoffice.DownloadClickExec
+                    }));
+                }
+            }
+        });
+    };
+
+    OCA.Onlyoffice.registerNewFileMenu = function () {
+        addNewFileMenuEntry({
+            id: "new-onlyoffice-docxf",
+            displayName: t(OCA.Onlyoffice.AppName, "New form template"),
+            enabled: (folder) => {
+                if (Permission.CREATE !== (folder.permissions & Permission.CREATE))
+                    return false;
+                if (Permission.CREATE !== (folder.attributes["share-permissions"] & Permission.CREATE))
+                    return false;
+
+                return true;
+            },
+            iconSvgInline: NewDocxfSvg,
+            handler: (folder) => {
+                var name = t(OCA.Onlyoffice.AppName, "New form template");
+                var context = { dir: folder.path };
+
+                OCA.Onlyoffice.OpenFormPicker(name + ".docxf", context);
             }
         });
     };
@@ -540,6 +773,8 @@
             }
         } else {
             OC.Plugins.register("OCA.Files.NewFileMenu", OCA.Onlyoffice.NewFileMenu);
+
+            OCA.Onlyoffice.registerNewFileMenu();
 
             OCA.Onlyoffice.registerAction();
 
