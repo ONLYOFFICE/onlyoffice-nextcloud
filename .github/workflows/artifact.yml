@@ -38,6 +38,7 @@ jobs:
           rm ./package-lock.json
           rm ./webpack.js
           rm -rf ./assets/.git
+          rm ./ruleset.xml
           cd $cwd
           tar -czvf onlyoffice.tar.gz onlyoffice
       - name: Upload Artifact
