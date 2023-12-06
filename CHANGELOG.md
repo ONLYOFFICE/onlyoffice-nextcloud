@@ -1,7 +1,7 @@
 # Change Log
 
 ## Changed
-- added webpack build
+- compatible with Nextcloud 28
 
 ## 8.2.4
 ## Changed
