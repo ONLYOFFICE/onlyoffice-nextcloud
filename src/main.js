@@ -427,12 +427,12 @@ import NewDocxfSvg from "!!raw-loader!../img/new-docxf.svg";
     OCA.Onlyoffice.registerAction = function() {
         var formats = OCA.Onlyoffice.setting.formats;
 
-        $.each(formats, function (ext, config) {
-            if (!config.mime) {
-                return true;
-            }
+        if (OCA.Files && OCA.Files.fileActions) {
+            $.each(formats, function (ext, config) {
+                if (!config.mime) {
+                    return true;
+                }
 
-            if (OCA.Files && OCA.Files.fileActions) {
                 OCA.Files.fileActions.registerAction({
                     name: "onlyofficeOpen",
                     displayName: t(OCA.Onlyoffice.AppName, "Open in ONLYOFFICE"),
@@ -489,130 +489,152 @@ import NewDocxfSvg from "!!raw-loader!../img/new-docxf.svg";
                         actionHandler: OCA.Onlyoffice.DownloadClick
                     });
                 }
-            } else {
+            });
+        } else {
+            registerFileAction(new FileAction({
+                id: "onlyoffice-open-def",
+                displayName: () => t(OCA.Onlyoffice.AppName, "Open in ONLYOFFICE"),
+                iconSvgInline: () => AppDarkSvg,
+                enabled: (files) => {
+                    var config = formats[files[0]?.extension?.replace(".", "")];
+
+                    if (!config) return;
+                    if (!config.def) return;
+
+                    if (Permission.READ !== (files[0].permissions & Permission.READ))
+                        return false;
+
+                    return true;
+                },
+                exec: OCA.Onlyoffice.FileClickExec,
+                default: DefaultType.HIDDEN
+            }));
+
+            registerFileAction(new FileAction({
+                id: "onlyoffice-open",
+                displayName: () => t(OCA.Onlyoffice.AppName, "Open in ONLYOFFICE"),
+                iconSvgInline: () => AppDarkSvg,
+                enabled: (files) => {
+                    var config = formats[files[0]?.extension?.replace(".", "")];
+
+                    if (!config) return false;
+                    if (config.def) return false;
+
+                    if (Permission.READ !== (files[0].permissions & Permission.READ))
+                        return false;
+
+                    return true;
+                },
+                exec: OCA.Onlyoffice.FileClickExec
+            }));
+
+            registerFileAction(new FileAction({
+                id: "onlyoffice-convert",
+                displayName: () => t(OCA.Onlyoffice.AppName, "Convert with ONLYOFFICE"),
+                iconSvgInline: () => AppDarkSvg,
+                enabled: (files) => {
+                    var config = formats[files[0]?.extension?.replace(".", "")];
+
+                    if (!config) return;
+                    if (!config.conv) return false;
+
+                    var required = $("#isPublic").val() ? Permission.UPDATE : Permission.READ;
+                    if (required !== (files[0].permissions & required))
+                        return false;
+
+                    if (files[0].attributes["mount-type"] === "shared") {
+                        if (required !== (files[0].attributes["share-permissions"] & required))
+                            return false;
+
+                        var attributes = JSON.parse(files[0].attributes["share-attributes"]);
+                        var downloadAttribute = attributes.find((attribute) => attribute.scope === "permissions" && attribute.key === "download");
+                        if (downloadAttribute !== undefined && downloadAttribute.enabled === false)
+                            return false;
+                    }
+
+                    return true;
+                },
+                exec: OCA.Onlyoffice.FileConvertClickExec
+            }));
+
+            registerFileAction(new FileAction({
+                id: "onlyoffice-fill",
+                displayName: () => t(OCA.Onlyoffice.AppName, "Fill in form in ONLYOFFICE"),
+                iconSvgInline: () => AppDarkSvg,
+                enabled: (files) => {
+                    var config = formats[files[0]?.extension?.replace(".", "")];
+
+                    if (!config) return;
+                    if (!config.fillForms) return false;
+
+                    if (Permission.UPDATE !== (files[0].permissions & Permission.UPDATE))
+                        return false;
+
+                    if (files[0].attributes["mount-type"] === "shared"
+                        && Permission.UPDATE !== (files[0].attributes["share-permissions"] & Permission.UPDATE))
+                        return false;
+
+                    return true;
+                },
+                exec: OCA.Onlyoffice.FileClickExec
+            }));
+
+            registerFileAction(new FileAction({
+                id: "onlyoffice-create-form",
+                displayName: () => t(OCA.Onlyoffice.AppName, "Create form"),
+                iconSvgInline: () => AppDarkSvg,
+                enabled: (files) => {
+                    var config = formats[files[0]?.extension?.replace(".", "")];
+
+                    if (!config) return;
+                    if (!config.createForm) return false;
+
+                    var required = $("#isPublic").val() ? Permission.UPDATE : Permission.READ;
+                    if (required !== (files[0].permissions & required))
+                        return false;
+
+                    if (files[0].attributes["mount-type"] === "shared") {
+                        if (required !== (files[0].attributes["share-permissions"] & required))
+                            return false;
+
+                        var attributes = JSON.parse(files[0].attributes["share-attributes"]);
+                        var downloadAttribute = attributes.find((attribute) => attribute.scope === "permissions" && attribute.key === "download");
+                        if (downloadAttribute !== undefined && downloadAttribute.enabled === false)
+                            return false;
+                    }
+
+                    return true;
+                },
+                exec: OCA.Onlyoffice.CreateFormClickExec
+            }));
+
+            if (!$("#isPublic").val()) {
                 registerFileAction(new FileAction({
-                    id: "onlyoffice-open-" + ext,
-                    displayName: () => t(OCA.Onlyoffice.AppName, "Open in ONLYOFFICE"),
+                    id: "onlyoffice-download-as",
+                    displayName: () => t(OCA.Onlyoffice.AppName, "Download as"),
                     iconSvgInline: () => AppDarkSvg,
                     enabled: (files) => {
-                        if (files[0]?.extension?.replace(".", "") !== ext)
-                            return false;
+                        var config = formats[files[0]?.extension?.replace(".", "")];
+
+                        if (!config) return;
+                        if (!config.saveas) return false;
 
                         if (Permission.READ !== (files[0].permissions & Permission.READ))
                             return false;
 
+                        if (files[0].attributes["mount-type"] === "shared") {
+                            var attributes = JSON.parse(files[0].attributes["share-attributes"]);
+                            var downloadAttribute = attributes.find((attribute) => attribute.scope === "permissions" && attribute.key === "download");
+                            if (downloadAttribute !== undefined && downloadAttribute.enabled === false)
+                                return false;
+                        }
+
                         return true;
                     },
-                    exec: OCA.Onlyoffice.FileClickExec,
-                    default: config.def ? DefaultType.HIDDEN : null
+                    exec: OCA.Onlyoffice.DownloadClickExec
                 }));
-
-                if (config.conv) {
-                    registerFileAction(new FileAction({
-                        id: "onlyoffice-convert-" + ext,
-                        displayName: () => t(OCA.Onlyoffice.AppName, "Convert with ONLYOFFICE"),
-                        iconSvgInline: () => AppDarkSvg,
-                        enabled: (files) => {
-                            if (files[0]?.extension?.replace(".", "") !== ext)
-                                return false;
-
-                            var required = $("#isPublic").val() ? Permission.UPDATE : Permission.READ;
-                            if (required !== (files[0].permissions & required))
-                                return false;
-
-                            if (files[0].attributes["mount-type"] === "shared") {
-                                if (required !== (files[0].attributes["share-permissions"] & required))
-                                    return false;
-
-                                var attributes = JSON.parse(files[0].attributes["share-attributes"]);
-                                var downloadAttribute = attributes.find((attribute) => attribute.scope === "permissions" && attribute.key === "download");
-                                if (downloadAttribute !== undefined && downloadAttribute.enabled === false)
-                                    return false;
-                            }
-
-                            return true;
-                        },
-                        exec: OCA.Onlyoffice.FileConvertClickExec
-                    }));
-                }
-
-                if (config.fillForms) {
-                    registerFileAction(new FileAction({
-                        id: "onlyoffice-fill-" + ext,
-                        displayName: () => t(OCA.Onlyoffice.AppName, "Fill in form in ONLYOFFICE"),
-                        iconSvgInline: () => AppDarkSvg,
-                        enabled: (files) => {
-                            if (files[0]?.extension?.replace(".", "") !== ext)
-                                return false;
-
-                            if (Permission.UPDATE !== (files[0].permissions & Permission.UPDATE))
-                                return false;
-
-                            if (files[0].attributes["mount-type"] === "shared"
-                                && Permission.UPDATE !== (files[0].attributes["share-permissions"] & Permission.UPDATE))
-                                return false;
-
-                            return true;
-                        },
-                        exec: OCA.Onlyoffice.FileClickExec
-                    }));
-                }
-
-                if (config.createForm) {
-                    registerFileAction(new FileAction({
-                        id: "onlyoffice-create-form-" + ext,
-                        displayName: () => t(OCA.Onlyoffice.AppName, "Create form"),
-                        iconSvgInline: () => AppDarkSvg,
-                        enabled: (files) => {
-                            if (files[0]?.extension?.replace(".", "") !== ext)
-                                return false;
-
-                            var required = $("#isPublic").val() ? Permission.UPDATE : Permission.READ;
-                            if (required !== (files[0].permissions & required))
-                                return false;
-
-                            if (files[0].attributes["mount-type"] === "shared") {
-                                if (required !== (files[0].attributes["share-permissions"] & required))
-                                    return false;
-
-                                var attributes = JSON.parse(files[0].attributes["share-attributes"]);
-                                var downloadAttribute = attributes.find((attribute) => attribute.scope === "permissions" && attribute.key === "download");
-                                if (downloadAttribute !== undefined && downloadAttribute.enabled === false)
-                                    return false;
-                            }
-
-                            return true;
-                        },
-                        exec: OCA.Onlyoffice.CreateFormClickExec
-                    }));
-                }
-
-                if (config.saveas && !$("#isPublic").val()) {
-                    registerFileAction(new FileAction({
-                        id: "onlyoffice-download-as-" + ext,
-                        displayName: () => t(OCA.Onlyoffice.AppName, "Download as"),
-                        iconSvgInline: () => AppDarkSvg,
-                        enabled: (files) => {
-                            if (files[0]?.extension?.replace(".", "") !== ext)
-                                return false;
-
-                            if (Permission.READ !== (files[0].permissions & Permission.READ))
-                                return false;
-
-                            if (files[0].attributes["mount-type"] === "shared") {
-                                var attributes = JSON.parse(files[0].attributes["share-attributes"]);
-                                var downloadAttribute = attributes.find((attribute) => attribute.scope === "permissions" && attribute.key === "download");
-                                if (downloadAttribute !== undefined && downloadAttribute.enabled === false)
-                                    return false;
-                            }
-
-                            return true;
-                        },
-                        exec: OCA.Onlyoffice.DownloadClickExec
-                    }));
-                }
             }
-        });
+        }
     };
 
     OCA.Onlyoffice.registerNewFileMenu = function () {
