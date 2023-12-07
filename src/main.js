@@ -500,8 +500,6 @@ import NewDocxfSvg from "!!raw-loader!../img/new-docxf.svg";
 
                         if (Permission.READ !== (files[0].permissions & Permission.READ))
                             return false;
-                        if (Permission.READ !== (files[0].attributes["share-permissions"] & Permission.READ))
-                            return false;
 
                         return true;
                     },
@@ -521,8 +519,16 @@ import NewDocxfSvg from "!!raw-loader!../img/new-docxf.svg";
                             var required = $("#isPublic").val() ? Permission.UPDATE : Permission.READ;
                             if (required !== (files[0].permissions & required))
                                 return false;
-                            if (required !== (files[0].attributes["share-permissions"] & required))
-                                return false;
+
+                            if (files[0].attributes["mount-type"] === "shared") {
+                                if (required !== (files[0].attributes["share-permissions"] & required))
+                                    return false;
+
+                                var attributes = JSON.parse(files[0].attributes["share-attributes"]);
+                                var downloadAttribute = attributes.find((attribute) => attribute.scope === "permissions" && attribute.key === "download");
+                                if (downloadAttribute !== undefined && downloadAttribute.enabled === false)
+                                    return false;
+                            }
 
                             return true;
                         },
@@ -541,7 +547,9 @@ import NewDocxfSvg from "!!raw-loader!../img/new-docxf.svg";
 
                             if (Permission.UPDATE !== (files[0].permissions & Permission.UPDATE))
                                 return false;
-                            if (Permission.UPDATE !== (files[0].attributes["share-permissions"] & Permission.UPDATE))
+
+                            if (files[0].attributes["mount-type"] === "shared"
+                                && Permission.UPDATE !== (files[0].attributes["share-permissions"] & Permission.UPDATE))
                                 return false;
 
                             return true;
@@ -562,8 +570,16 @@ import NewDocxfSvg from "!!raw-loader!../img/new-docxf.svg";
                             var required = $("#isPublic").val() ? Permission.UPDATE : Permission.READ;
                             if (required !== (files[0].permissions & required))
                                 return false;
-                            if (required !== (files[0].attributes["share-permissions"] & required))
-                                return false;
+
+                            if (files[0].attributes["mount-type"] === "shared") {
+                                if (required !== (files[0].attributes["share-permissions"] & required))
+                                    return false;
+
+                                var attributes = JSON.parse(files[0].attributes["share-attributes"]);
+                                var downloadAttribute = attributes.find((attribute) => attribute.scope === "permissions" && attribute.key === "download");
+                                if (downloadAttribute !== undefined && downloadAttribute.enabled === false)
+                                    return false;
+                            }
 
                             return true;
                         },
@@ -582,8 +598,13 @@ import NewDocxfSvg from "!!raw-loader!../img/new-docxf.svg";
 
                             if (Permission.READ !== (files[0].permissions & Permission.READ))
                                 return false;
-                            if (Permission.READ !== (files[0].attributes["share-permissions"] & Permission.READ))
-                                return false;
+
+                            if (files[0].attributes["mount-type"] === "shared") {
+                                var attributes = JSON.parse(files[0].attributes["share-attributes"]);
+                                var downloadAttribute = attributes.find((attribute) => attribute.scope === "permissions" && attribute.key === "download");
+                                if (downloadAttribute !== undefined && downloadAttribute.enabled === false)
+                                    return false;
+                            }
 
                             return true;
                         },
