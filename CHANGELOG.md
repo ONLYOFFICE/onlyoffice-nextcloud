@@ -1,5 +1,9 @@
 # Change Log
 
+## 7.9.6
+## Changeв
+- fix author in group folder
+
 ## 7.9.4
 ## Changed
 - remove link to docs cloud
