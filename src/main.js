@@ -225,8 +225,7 @@ import NewDocxfSvg from "!!raw-loader!../img/new-docxf.svg";
     };
 
     OCA.Onlyoffice.FileClickExec = async function (file, view, dir) {
-        var winEditor = !OCA.Onlyoffice.setting.sameTab ? document : null;
-        OCA.Onlyoffice.OpenEditor(file.fileid, dir, file.basename, 0, winEditor);
+        OCA.Onlyoffice.OpenEditor(file.fileid, dir, file.basename, 0);
 
         OCA.Onlyoffice.context = {
             fileName: file.basename,
