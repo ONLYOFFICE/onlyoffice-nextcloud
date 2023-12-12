@@ -2,6 +2,7 @@
 
 ## Changed
 - compatible with Nextcloud 28
+- agpl v3 license
 
 ## 8.2.4
 ## Changed
