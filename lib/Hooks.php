@@ -127,7 +127,7 @@ class Hooks {
 
             KeyManager::delete($fileId, true);
 
-            FileVersions::deleteAllVersions($ownerId, $fileId);
+            FileVersions::deleteAllVersions($ownerId, $fileInfo);
         } catch (\Exception $e) {
             \OC::$server->getLogger()->logException($e, ["message" => "Hook: fileDelete " . json_encode($params), "app" => self::$appName]);
         }
@@ -162,8 +162,8 @@ class Hooks {
 
             $fileId = $fileInfo->getId();
 
-            FileVersions::deleteVersion($ownerId, $fileId, $versionId);
-            FileVersions::deleteAuthor($ownerId, $fileId, $versionId);
+            FileVersions::deleteVersion($ownerId, $fileInfo, $versionId);
+            FileVersions::deleteAuthor($ownerId, $fileInfo, $versionId);
         } catch (\Exception $e) {
             \OC::$server->getLogger()->logException($e, ["message" => "Hook: fileVersionDelete " . json_encode($params), "app" => self::$appName]);
         }
@@ -198,7 +198,7 @@ class Hooks {
 
             KeyManager::delete($fileId);
 
-            FileVersions::deleteVersion($ownerId, $fileId, $versionId);
+            FileVersions::deleteVersion($ownerId, $fileInfo, $versionId);
         } catch (\Exception $e) {
             \OC::$server->getLogger()->logException($e, ["message" => "Hook: fileVersionRestore " . json_encode($params), "app" => self::$appName]);
         }

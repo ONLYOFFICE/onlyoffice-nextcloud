@@ -1,6 +1,7 @@
 # Change Log
 
 ## Changed
+- fix author in group folder
 - compatible with Nextcloud 28
 - agpl v3 license
 
