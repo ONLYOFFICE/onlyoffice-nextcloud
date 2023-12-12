@@ -291,7 +291,7 @@ class CallbackController extends Controller {
                 $versionId = $fileVersion->getRevisionId();
             }
 
-            $changesFile = FileVersions::getChangesFile($owner->getUID(), $fileId, $versionId);
+            $changesFile = FileVersions::getChangesFile($owner->getUID(), $file->getFileInfo(), $versionId);
             if ($changesFile === null) {
                 $this->logger->error("Download: changes $fileId ($version) was not found", ["app" => $this->appName]);
                 return new JSONResponse(["message" => $this->trans->t("Files not found")], Http::STATUS_NOT_FOUND);

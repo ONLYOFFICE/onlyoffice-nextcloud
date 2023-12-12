@@ -63,6 +63,13 @@ class FileVersions {
     private static $authorExt = "_author.json";
 
     /**
+     * Groupfolder name
+     *
+     * @var string
+     */
+    private static $groupFolderName = "__groupfolders";
+
+    /**
      * Split file path and version id
      *
      * @param string $pathVersion - version path
@@ -103,13 +110,23 @@ class FileVersions {
      * Get view and path for changes
      *
      * @param string $userId - user id
-     * @param string $fileId - file id
+     * @param FileInfo $fileInfo - file info
      * @param bool $createIfNotExist - create folder if not exist
      *
      * @return array
      */
-    private static function getView($userId, $fileId, $createIfNotExist = false) {
-        $view = new View("/" . $userId);
+    private static function getView($userId, $fileInfo, $createIfNotExist = false) {
+        $fileId = null;
+        if ($fileInfo !== null) {
+            $fileId = $fileInfo->getId();
+            if ($fileInfo->getStorage()->instanceOfStorage(\OCA\GroupFolders\Mount\GroupFolderStorage::class)) {
+                $view = new View("/" . self::$groupFolderName);
+            } else {
+                $view = new View("/" . $userId);
+            }
+        } else {
+            $view = new View("/" . $userId);
+        }
 
         $path = self::$appName;
         if (!self::checkFolderExist($view, $path, $createIfNotExist)) {
@@ -132,20 +149,21 @@ class FileVersions {
      * Get changes from stored to history object
      *
      * @param string $ownerId - file owner id
-     * @param string $fileId - file id
+     * @param FileInfo $fileInfo - file info
      * @param string $versionId - file version
      * @param string $prevVersion - previous version for check
      *
      * @return array
      */
-    public static function getHistoryData($ownerId, $fileId, $versionId, $prevVersion) {
+    public static function getHistoryData($ownerId, $fileInfo, $versionId, $prevVersion) {
         $logger = \OC::$server->getLogger();
 
-        if ($ownerId === null || $fileId === null) {
+        if ($ownerId === null || $fileInfo === null) {
             return null;
         }
 
-        list($view, $path) = self::getView($ownerId, $fileId);
+        $fileId = $fileInfo->getId();
+        list($view, $path) = self::getView($ownerId, $fileInfo);
         if ($view === null) {
             return null;
         }
@@ -185,17 +203,17 @@ class FileVersions {
      * Check if changes is stored
      *
      * @param string $ownerId - file owner id
-     * @param string $fileId - file id
+     * @param FileInfo $fileInfo - file info
      * @param string $versionId - file version
      *
      * @return bool
      */
-    public static function hasChanges($ownerId, $fileId, $versionId) {
-        if ($ownerId === null || $fileId === null) {
+    public static function hasChanges($ownerId, $fileInfo, $versionId) {
+        if ($ownerId === null || $fileInfo === null) {
             return false;
         }
 
-        list($view, $path) = self::getView($ownerId, $fileId);
+        list($view, $path) = self::getView($ownerId, $fileInfo);
         if ($view === null) {
             return false;
         }
@@ -208,17 +226,18 @@ class FileVersions {
      * Get changes file
      *
      * @param string $ownerId - file owner id
-     * @param string $fileId - file id
+     * @param FileInfo $fileInfo - file info
      * @param string $versionId - file version
      *
      * @return File
      */
-    public static function getChangesFile($ownerId, $fileId, $versionId) {
-        if ($ownerId === null || $fileId === null) {
+    public static function getChangesFile($ownerId, $fileInfo, $versionId) {
+        if ($ownerId === null || $fileInfo === null) {
             return null;
         }
+        $fileId = $fileInfo->getId();
 
-        list($view, $path) = self::getView($ownerId, $fileId);
+        list($view, $path) = self::getView($ownerId, $fileInfo);
         if ($view === null) {
             return null;
         }
@@ -270,7 +289,7 @@ class FileVersions {
         $fileId = $fileInfo->getId();
         $versionId = $fileInfo->getMtime();
 
-        list($view, $path) = self::getView($ownerId, $fileId, true);
+        list($view, $path) = self::getView($ownerId, $fileInfo, true);
 
         try {
             $changesPath = $path . "/" . $versionId . self::$changesExt;
@@ -292,10 +311,14 @@ class FileVersions {
      * Delete all versions of file
      *
      * @param string $ownerId - file owner id
-     * @param string $fileId - file id
+     * @param FileInfo $fileInfo - file info
      */
-    public static function deleteAllVersions($ownerId, $fileId = null) {
+    public static function deleteAllVersions($ownerId, $fileInfo = null) {
         $logger = \OC::$server->getLogger();
+        $fileId = null;
+        if ($fileInfo !== null) {
+            $fileId = $fileInfo->getId();
+        }
 
         $logger->debug("deleteAllVersions $ownerId $fileId", ["app" => self::$appName]);
 
@@ -303,7 +326,7 @@ class FileVersions {
             return;
         }
 
-        list($view, $path) = self::getView($ownerId, $fileId);
+        list($view, $path) = self::getView($ownerId, $fileInfo);
         if ($view === null) {
             return;
         }
@@ -315,22 +338,22 @@ class FileVersions {
      * Delete changes and history
      *
      * @param string $ownerId - file owner id
-     * @param string $fileId - file id
+     * @param FileInfo $fileInfo - file info
      * @param string $versionId - file version
      */
-    public static function deleteVersion($ownerId, $fileId, $versionId) {
-        $logger = \OC::$server->getLogger();
-
-        $logger->debug("deleteVersion $fileId ($versionId)", ["app" => self::$appName]);
-
+    public static function deleteVersion($ownerId, $fileInfo, $versionId) {
         if ($ownerId === null) {
             return;
         }
-        if ($fileId === null || empty($versionId)) {
+        if ($fileInfo === null || empty($versionId)) {
             return;
         }
 
-        list($view, $path) = self::getView($ownerId, $fileId);
+        $logger = \OC::$server->getLogger();
+        $fileId = $fileInfo->getId();
+        $logger->debug("deleteVersion $fileId ($versionId)", ["app" => self::$appName]);
+
+        list($view, $path) = self::getView($ownerId, $fileInfo);
         if ($view === null) {
             return null;
         }
@@ -358,12 +381,17 @@ class FileVersions {
         $userIds = $userDatabase->getUsers();
 
         $view = new View("/");
+        $groupFolderView = new View("/" . self::$groupFolderName);
 
         foreach ($userIds as $userId) {
             $path = $userId . "/" . self::$appName;
 
             if ($view->file_exists($path)) {
                 $view->unlink($path);
+            }
+
+            if ($groupFolderView->file_exists($path)) {
+                $groupFolderView->unlink($path);
             }
         }
 
@@ -396,7 +424,7 @@ class FileVersions {
         $fileId = $fileInfo->getId();
         $versionId = $fileInfo->getMtime();
 
-        list($view, $path) = self::getView($ownerId, $fileId, true);
+        list($view, $path) = self::getView($ownerId, $fileInfo, true);
 
         try {
             $authorPath = $path . "/" . $versionId . self::$authorExt;
@@ -418,17 +446,18 @@ class FileVersions {
      * Get version author id and name
      *
      * @param string $ownerId - file owner id
-     * @param string $fileId - file id
+     * @param FileInfo $fileInfo - file info
      * @param string $versionId - file version
      *
      * @return array
      */
-    public static function getAuthor($ownerId, $fileId, $versionId) {
-        if ($ownerId === null || $fileId === null) {
+    public static function getAuthor($ownerId, $fileInfo, $versionId) {
+        if ($ownerId === null || $fileInfo === null) {
             return null;
         }
 
-        list($view, $path) = self::getView($ownerId, $fileId);
+        $fileId = $fileInfo->getId();
+        list($view, $path) = self::getView($ownerId, $fileInfo);
         if ($view === null) {
             return null;
         }
@@ -450,22 +479,24 @@ class FileVersions {
      * Delete version author info
      *
      * @param string $ownerId - file owner id
-     * @param string $fileId - file id
+     * @param FileInfo $fileInfo - file info
      * @param string $versionId - file version
      */
-    public static function deleteAuthor($ownerId, $fileId, $versionId) {
+    public static function deleteAuthor($ownerId, $fileInfo, $versionId) {
         $logger = \OC::$server->getLogger();
+
+        $fileId = $fileInfo->getId();
 
         $logger->debug("deleteAuthor $fileId ($versionId)", ["app" => self::$appName]);
 
         if ($ownerId === null) {
             return;
         }
-        if ($fileId === null || empty($versionId)) {
+        if ($fileInfo === null || empty($versionId)) {
             return;
         }
 
-        list($view, $path) = self::getView($ownerId, $fileId);
+        list($view, $path) = self::getView($ownerId, $fileInfo);
         if ($view === null) {
             return null;
         }

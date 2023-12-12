@@ -844,7 +844,7 @@ class EditorController extends Controller {
 
             $versionId = $version->getRevisionId();
 
-            $author = FileVersions::getAuthor($ownerId, $fileId, $versionId);
+            $author = FileVersions::getAuthor($ownerId, $file->getFileInfo(), $versionId);
             $authorId = $author !== null ? $author["id"] : $ownerId;
             $authorName = $author !== null ? $author["name"] : $owner->getDisplayName();
 
@@ -853,7 +853,7 @@ class EditorController extends Controller {
                 "name" => $authorName
             ];
 
-            $historyData = FileVersions::getHistoryData($ownerId, $fileId, $versionId, $prevVersion);
+            $historyData = FileVersions::getHistoryData($ownerId, $file->getFileInfo(), $versionId, $prevVersion);
             if ($historyData !== null) {
                 $historyItem["changes"] = $historyData["changes"];
                 $historyItem["serverVersion"] = $historyData["serverVersion"];
@@ -875,7 +875,7 @@ class EditorController extends Controller {
 
         $versionId = $file->getFileInfo()->getMtime();
 
-        $author = FileVersions::getAuthor($ownerId, $fileId, $versionId);
+        $author = FileVersions::getAuthor($ownerId, $file->getFileInfo(), $versionId);
         if ($author !== null) {
             $historyItem["user"] = [
                 "id" => $this->buildUserId($author["id"]),
@@ -888,7 +888,7 @@ class EditorController extends Controller {
             ];
         }
 
-        $historyData = FileVersions::getHistoryData($ownerId, $fileId, $versionId, $prevVersion);
+        $historyData = FileVersions::getHistoryData($ownerId, $file->getFileInfo(), $versionId, $prevVersion);
         if ($historyData !== null) {
             $historyItem["changes"] = $historyData["changes"];
             $historyItem["serverVersion"] = $historyData["serverVersion"];
@@ -974,7 +974,7 @@ class EditorController extends Controller {
 
         if ($version > 1
             && count($versions) >= $version - 1
-            && FileVersions::hasChanges($ownerId, $fileId, $versionId)) {
+            && FileVersions::hasChanges($ownerId, $file->getFileInfo(), $versionId)) {
             $changesUrl = $this->getUrl($file, $user, null, $version, true);
             $result["changesUrl"] = $changesUrl;
 
