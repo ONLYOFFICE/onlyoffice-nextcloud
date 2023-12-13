@@ -80,9 +80,14 @@
 
                     var avatarSrc = "/index.php/avatar/" + extra.shareWith + "/32?v=0";
                     var label = extra.shareWithName;
-                    if (extra.type == OC.Share.SHARE_TYPE_GROUP) {
+                    if (extra.type == OC.Share.SHARE_TYPE_GROUP
+                        || extra.type == OC.Share.SHARE_TYPE_ROOM) {
                         avatarSrc = "/index.php/avatar/guest/" + extra.shareWith + "/32?v=0";
                         label = extra.shareWith + " (" + t(OCA.Onlyoffice.AppName, "group") + ")";
+                    }
+
+                    if (extra.type == OC.Share.SHARE_TYPE_ROOM) {
+                        label = extra.shareWith + " (" + t(OCA.Onlyoffice.AppName, "conversation") + ")";
                     }
 
                     avatar[0].src = avatarSrc;
