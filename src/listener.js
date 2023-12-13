@@ -159,8 +159,12 @@
     });
 
     window.addEventListener("DOMNodeRemoved", function(event) {
-        if ($(event.target).length && $(OCA.Onlyoffice.frameSelector).length
+        if ($(event.target).length
+            && $(OCA.Onlyoffice.frameSelector).length > 0
+            && $(OCA.Onlyoffice.frameSelector)[0].contentWindow
+            && $(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA
             && ($(event.target)[0].id === "viewer" || $(event.target)[0].id === $(OCA.Onlyoffice.frameSelector)[0].id)) {
+
             OCA.Onlyoffice.changeFavicon($(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.faviconBase);
             window.document.title = $(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.titleBase;
         }
