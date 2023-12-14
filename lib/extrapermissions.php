@@ -423,7 +423,8 @@ class ExtraPermissions {
         $availableExtra = self::NONE;
         $defaultExtra = self::NONE;
 
-        if (($share->getPermissions() & Constants::PERMISSION_SHARE) === Constants::PERMISSION_SHARE) {
+        if ($share->getShareType() !== IShare::TYPE_LINK
+            && ($share->getPermissions() & Constants::PERMISSION_SHARE) === Constants::PERMISSION_SHARE) {
             return [$availableExtra, $defaultExtra];
         }
 

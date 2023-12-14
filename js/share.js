@@ -90,6 +90,15 @@
                         label = extra.shareWith + " (" + t(OCA.Onlyoffice.AppName, "conversation") + ")";
                     }
 
+                    if (extra.type == OC.Share.SHARE_TYPE_LINK) {
+                        label = t(OCA.Onlyoffice.AppName, "Share link");
+
+                        var avatarWrapper = itemNode.find(".avatardiv");
+                        avatarWrapper.addClass("onlyoffice-share-link-avatar");
+
+                        avatarSrc = "/core/img/actions/public.svg";
+                    }
+
                     avatar[0].src = avatarSrc;
                     descNode[0].innerText = label;
 
