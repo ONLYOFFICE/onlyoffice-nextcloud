@@ -4,6 +4,9 @@
 ## Changed
 - fix author in group folder
 
+## Added
+- advanced access rights for talk files and share links
+
 ## 7.9.4
 ## Changed
 - remove link to docs cloud
