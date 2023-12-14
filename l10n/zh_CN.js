@@ -138,6 +138,8 @@ OC.L10N.register(
     "Authorization header (leave blank to use default header)": "授权标头 (留空以使用默认的标头)",
     "ONLYOFFICE server is not available": "ONLYOFFICE 服务器不可用",
     "Please check the settings to resolve the problem.": "请检查设置以解决问题。",
-    "View settings": "查看设置"
+    "View settings": "查看设置",
+    "Share link": "共享链接",
+    "conversation": "会话"
 },
 "nplurals=1; plural=0;");

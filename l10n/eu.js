@@ -134,6 +134,8 @@ OC.L10N.register(
     "Enable plugins": "Gaitu gehigarriak",
     "Enable document protection for": "Gaitu dokumentuen babesa hauentzat",
     "All users": "Erabiltzaile guztientzat",
-    "Owner only": "Jabearentzat soilik"
+    "Owner only": "Jabearentzat soilik",
+    "Share link": "Partekatu esteka",
+    "conversation": "elkarrizketa"
 },
 "nplurals=2; plural=(n != 1);");

@@ -127,6 +127,8 @@ OC.L10N.register(
     "Form filling": "Formulärfyllning",
     "Custom filter": "Anpassat filter",
     "group": "grupp",
-    "Advanced": "Avancerad"
+    "Advanced": "Avancerad",
+    "Share link": "Dela länk",
+    "conversation": "konversation"
 },
 "nplurals=2; plural=(n != 1);");

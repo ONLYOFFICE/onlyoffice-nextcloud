@@ -127,6 +127,8 @@ OC.L10N.register(
     "Form filling": "Попълване на формуляр",
     "Custom filter": "Персонализиран филтър",
     "group": "група",
-    "Advanced": "Допълнително"
+    "Advanced": "Допълнително",
+    "conversation": "разговор",
+    "Share link": "Връзка за споделяне"
 },
 "nplurals=2; plural=(n != 1);");
