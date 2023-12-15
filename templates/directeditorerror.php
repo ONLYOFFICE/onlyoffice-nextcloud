@@ -20,7 +20,7 @@
 script("onlyoffice", "directeditor");
 ?>
 <div class="guest-box" id="directEditorError">
-	<h2><?php p($l->t('Error')); ?></h2>
+    <h2><?php p($l->t('Error')); ?></h2>
     <p><?php p($_["error"]); ?></p>
 </div>
 <p>
