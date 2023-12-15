@@ -1086,11 +1086,7 @@ class EditorController extends Controller {
         $fileStorage = $file->getStorage();
         if ($fileStorage->instanceOfStorage("\OCA\Files_Sharing\SharedStorage")) {
             $share = $fileStorage->getShare();
-            $attributes = $share->getAttributes();
-            $downloadAttr = isset($attributes) ? $attributes->getAttribute("permissions", "download") : null;
-            if (isset($downloadAttr) && !$downloadAttr) {
-                $canDownload = false;
-            }
+            $canDownload = FileUtility::canShareDownload($share);
         }
 
         if (!$file->isReadable() || !$canDownload) {
@@ -1159,13 +1155,9 @@ class EditorController extends Controller {
 
         $fileStorage = $file->getStorage();
         if ($fileStorage->instanceOfStorage("\OCA\Files_Sharing\SharedStorage")) {
-            if (method_exists(IShare::class, "getAttributes")) {
-                $share = empty($share) ? $fileStorage->getShare() : $share;
-                $attributes = $share->getAttributes();
-                $downloadAttr = isset($attributes) ? $attributes->getAttribute("permissions", "download") : null;
-                if (isset($downloadAttr) && !$downloadAttr) {
-                    return $this->renderError($this->trans->t("Not permitted"));
-                }
+            $share = empty($share) ? $fileStorage->getShare() : $share;
+            if (!FileUtility::canShareDownload($share)) {
+                return $this->renderError($this->trans->t("Not permitted"));
             }
         }
 

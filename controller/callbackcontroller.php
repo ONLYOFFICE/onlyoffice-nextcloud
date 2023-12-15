@@ -24,6 +24,7 @@ use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\Crypt;
 use OCA\Onlyoffice\DocumentService;
 use OCA\Onlyoffice\FileVersions;
+use OCA\Onlyoffice\FileUtility;
 use OCA\Onlyoffice\KeyManager;
 use OCA\Onlyoffice\RemoteInstance;
 use OCA\Onlyoffice\TemplateManager;
@@ -261,10 +262,9 @@ class CallbackController extends Controller {
         $fileStorage = $file->getStorage();
         if ($fileStorage->instanceOfStorage("\OCA\Files_Sharing\SharedStorage") || !empty($shareToken)) {
             $share = empty($share) ? $fileStorage->getShare() : $share;
-            $attributes = $share->getAttributes();
-            $downloadAttr = isset($attributes) ? $attributes->getAttribute("permissions", "download") : null;
-            if (isset($downloadAttr) && !$downloadAttr && empty($this->config->getDocumentServerSecret())) {
-                $canDownload = false;
+            $canDownload = FileUtility::canShareDownload($share);
+            if (!$canDownload && !empty($this->config->getDocumentServerSecret())) {
+                $canDownload = true;
             }
         }
 
@@ -645,7 +645,7 @@ class CallbackController extends Controller {
      */
     private function getFile($userId, $fileId, $filePath = null, $version = 0, $template = false) {
         if (empty($fileId)) {
-            return [null, new JSONResponse(["message" => $this->trans->t("FileId is empty")], Http::STATUS_BAD_REQUEST)];
+            return [null, new JSONResponse(["message" => $this->trans->t("FileId is empty")], Http::STATUS_BAD_REQUEST), null];
         }
 
         try {
@@ -653,12 +653,12 @@ class CallbackController extends Controller {
             $files = $folder->getById($fileId);
         } catch (\Exception $e) {
             $this->logger->logException($e, ["message" => "getFile: $fileId", "app" => $this->appName]);
-            return [null, new JSONResponse(["message" => $this->trans->t("Invalid request")], Http::STATUS_BAD_REQUEST)];
+            return [null, new JSONResponse(["message" => $this->trans->t("Invalid request")], Http::STATUS_BAD_REQUEST), null];
         }
 
         if (empty($files)) {
             $this->logger->error("Files not found: $fileId", ["app" => $this->appName]);
-            return [null, new JSONResponse(["message" => $this->trans->t("Files not found")], Http::STATUS_NOT_FOUND)];
+            return [null, new JSONResponse(["message" => $this->trans->t("Files not found")], Http::STATUS_NOT_FOUND), null];
         }
 
         $file = $files[0];
@@ -683,10 +683,10 @@ class CallbackController extends Controller {
 
             if ($owner !== null) {
                 if ($owner->getUID() !== $userId) {
-                    list($file, $error) = $this->getFile($owner->getUID(), $file->getId());
+                    list($file, $error, $share) = $this->getFile($owner->getUID(), $file->getId());
 
                     if (isset($error)) {
-                        return [null, $error];
+                        return [null, $error, null];
                     }
                 }
 
@@ -698,7 +698,7 @@ class CallbackController extends Controller {
             }
         }
 
-        return [$file, null];
+        return [$file, null, null];
     }
 
     /**
