@@ -207,9 +207,7 @@ class ExtraPermissions {
                 $currentExtra["shareWithName"] = $share->getSharedWithDisplayName();
                 $currentExtra["available"] = $availableExtra;
 
-                if ($currentExtra["type"] === IShare::TYPE_ROOM
-                    && $this->talkManager !== null) {
-
+                if ($currentExtra["type"] === IShare::TYPE_ROOM && $this->talkManager !== null) {
                     $rooms = $this->talkManager->searchRoomsByToken($currentExtra["shareWith"]);
                     if (!empty($rooms)) {
                         $room = $rooms[0];
