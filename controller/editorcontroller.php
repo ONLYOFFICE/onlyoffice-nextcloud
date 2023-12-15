@@ -1080,7 +1080,20 @@ class EditorController extends Controller {
             $this->logger->error("File for generate presigned url was not found: $filePath", ["app" => $this->appName]);
             return ["error" => $this->trans->t("File not found")];
         }
-        if (!$file->isReadable()) {
+
+        $canDownload = true;
+
+        $fileStorage = $file->getStorage();
+        if ($fileStorage->instanceOfStorage("\OCA\Files_Sharing\SharedStorage")) {
+            $share = $fileStorage->getShare();
+            $attributes = $share->getAttributes();
+            $downloadAttr = isset($attributes) ? $attributes->getAttribute("permissions", "download") : null;
+            if (isset($downloadAttr) && !$downloadAttr) {
+                $canDownload = false;
+            }
+        }
+
+        if (!$file->isReadable() || !$canDownload) {
             $this->logger->error("File without permission: $filePath", ["app" => $this->appName]);
             return ["error" => $this->trans->t("You do not have enough permissions to view the file")];
         }
