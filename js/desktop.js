@@ -27,7 +27,7 @@
     OCA.Onlyoffice.Desktop = true;
 
     if (location.href.indexOf(_oc_appswebroots.dashboard) !== -1) {
-        location.href = location.href.split(_oc_appswebroots.dashboard)[0] + _oc_appswebroots.files;
+        location.pathname = location.pathname.replace(_oc_appswebroots.dashboard, _oc_appswebroots.files);
         return;
     }
 
