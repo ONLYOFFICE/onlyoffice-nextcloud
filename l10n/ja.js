@@ -138,6 +138,8 @@ OC.L10N.register(
     "Authorization header (leave blank to use default header)" : "認証ヘッダー (デフォルトのヘッダーを使用したい場合は空白にしてください)",
     "ONLYOFFICE server is not available": "ONLYOFFICEサーバーは只今利用できません",
     "Please check the settings to resolve the problem.": "問題を解決するために設定をご確認ください。",
-    "View settings": "設定を見る"
+    "View settings": "設定を見る",
+    "Share link": "URLで共有",
+    "conversation": "会話"
 },
 "nplurals=1; plural=0;");

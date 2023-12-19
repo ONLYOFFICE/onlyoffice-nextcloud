@@ -136,6 +136,8 @@
     "Authorization header (leave blank to use default header)": "Cabeçalho de autorização (Deixe em branco para usar o cabeçalho padrão)",
     "ONLYOFFICE server is not available": "O servidor ONLYOFFICE não está disponível",
     "Please check the settings to resolve the problem.": "Verifique as configurações para resolver o problema.",
-    "View settings": "Configurações de exibição"
+    "View settings": "Configurações de exibição",
+    "Share link": "Link de compartilhamento",
+    "conversation": "conversa"
 },"pluralForm" :"nplurals=2; plural=(n > 1);"
 }

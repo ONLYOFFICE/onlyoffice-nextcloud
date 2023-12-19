@@ -349,8 +349,8 @@ class EditorApiController extends OCSController {
         $canDownload = true;
         $restrictedEditing = false;
         $fileStorage = $file->getStorage();
-        if (empty($shareToken) && $fileStorage->instanceOfStorage("\OCA\Files_Sharing\SharedStorage")) {
-            $shareId = $fileStorage->getShareId();
+        if ($fileStorage->instanceOfStorage("\OCA\Files_Sharing\SharedStorage") || !empty($shareToken)) {
+            $shareId = empty($share) ? $fileStorage->getShareId() : $share->getId();
 
             $extraPermissions = null;
             if ($this->extraPermissions !== null) {

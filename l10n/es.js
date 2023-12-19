@@ -138,6 +138,8 @@ OC.L10N.register(
     "Authorization header (leave blank to use default header)": "Encabezado de autenticación (dejar en blanco para utilizar el encabezado predeterminado)",
     "ONLYOFFICE server is not available": "El servidor de ONLYOFFICE no está disponible",
     "Please check the settings to resolve the problem.": "Por favor, compruebe la configuración para resolver el problema.",
-    "View settings": "Ver configuración"
+    "View settings": "Ver configuración",
+    "Share link": "Compartir enlace",
+    "conversation": "conversación"
 },
 "nplurals=2; plural=(n != 1);");

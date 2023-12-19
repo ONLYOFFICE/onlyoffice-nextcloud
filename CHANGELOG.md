@@ -5,6 +5,9 @@
 - compatible with Nextcloud 28
 - agpl v3 license
 
+## Added
+- advanced access rights for talk files and share links
+
 ## 8.2.4
 ## Changed
 - remove link to docs cloud
