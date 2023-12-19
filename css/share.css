@@ -50,3 +50,15 @@
     padding-left: 14px !important;
     opacity: .7;
 }
+.onlyoffice-share-link-avatar {
+    height: 32px;
+    width: 32px;
+    background: var(--color-background-dark);
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+.onlyoffice-share-link-avatar img {
+    height: 16px;
+    width: 16px;
+}

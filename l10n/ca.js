@@ -127,6 +127,8 @@ OC.L10N.register(
     "Form filling": "Emplenament de formularis",
     "Custom filter": "Filtre personalitzat",
     "group": "agrupa",
-    "Advanced": "Avançat"
+    "Advanced": "Avançat",
+    "Share link": "Comparteix un enllaç",
+    "conversation": "conversa"
 },
 "nplurals=2; plural=(n != 1);");

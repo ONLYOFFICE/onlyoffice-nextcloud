@@ -19,6 +19,7 @@
 
 namespace OCA\Onlyoffice;
 
+use OCA\Talk\Manager as TalkManager;
 use OCP\Constants;
 use OCP\Files\File;
 use OCP\ILogger;
@@ -62,6 +63,13 @@ class ExtraPermissions {
     private $config;
 
     /**
+     * Talk manager
+     *
+     * @var TalkManager
+     */
+    private $talkManager;
+
+    /**
      * Table name
      */
     private const TABLENAME_KEY = "onlyoffice_permissions";
@@ -93,6 +101,14 @@ class ExtraPermissions {
         $this->logger = $logger;
         $this->shareManager = $shareManager;
         $this->config = $config;
+
+        if (\OC::$server->getAppManager()->isInstalled("spreed")) {
+            try {
+                $this->talkManager = \OC::$server->query(TalkManager::class);
+            } catch (QueryException $e) {
+                $this->logger->logException($e, ["message" => "TalkManager init error", "app" => $this->appName]);
+            }
+        }
     }
 
     /**
@@ -190,6 +206,16 @@ class ExtraPermissions {
                 $currentExtra["shareWith"] = $share->getSharedWith();
                 $currentExtra["shareWithName"] = $share->getSharedWithDisplayName();
                 $currentExtra["available"] = $availableExtra;
+
+                if ($currentExtra["type"] === IShare::TYPE_ROOM && $this->talkManager !== null) {
+                    $rooms = $this->talkManager->searchRoomsByToken($currentExtra["shareWith"]);
+                    if (!empty($rooms)) {
+                        $room = $rooms[0];
+
+                        $currentExtra["shareWith"] = $room->getName();
+                        $currentExtra["shareWithName"] = $room->getName();
+                    }
+                }
 
                 array_push($result, $currentExtra);
             }
@@ -395,7 +421,8 @@ class ExtraPermissions {
         $availableExtra = self::NONE;
         $defaultExtra = self::NONE;
 
-        if (($share->getPermissions() & Constants::PERMISSION_SHARE) === Constants::PERMISSION_SHARE) {
+        if ($share->getShareType() !== IShare::TYPE_LINK
+            && ($share->getPermissions() & Constants::PERMISSION_SHARE) === Constants::PERMISSION_SHARE) {
             return [$availableExtra, $defaultExtra];
         }
 
@@ -439,11 +466,16 @@ class ExtraPermissions {
     private function getShare($shareId) {
         try {
             $share = $this->shareManager->getShareById("ocinternal:" . $shareId);
-        } catch (ShareNotFound $e) {
-            $this->logger->logException($e, ["message" => "getShare error", "app" => $this->appName]);
-            return null;
-        }
+            return $share;
+        } catch (ShareNotFound $e) {}
 
-        return $share;
+        try {
+            $share = $this->shareManager->getShareById("ocRoomShare:" . $shareId);
+            return $share;
+        } catch (ShareNotFound $e) {}
+
+        $this->logger->error("getShare: share not found: " . $shareId, ["app" => $this->appName]);
+
+        return null;
     }
 }

@@ -5,6 +5,9 @@
 - fix author in group folder
 - Nextcloud v25 is no longer supported
 
+## Added
+- advanced access rights for talk files and share links
+
 ## 7.9.4
 ## Changed
 - remove link to docs cloud
