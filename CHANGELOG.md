@@ -3,6 +3,7 @@
 ##
 ## Changed
 - fix author in group folder
+- Nextcloud v25 is no longer supported
 
 ## 7.9.4
 ## Changed
