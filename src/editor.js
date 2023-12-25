@@ -590,6 +590,10 @@
     }
 
     OCA.Onlyoffice.showMessage = function (message, type = "success", props = null) {
+        if (OCA.Onlyoffice.directEditor) {
+            OCA.Onlyoffice.directEditor.loaded();
+        }
+
         if (OCA.Onlyoffice.inframe) {
             window.parent.postMessage({
                 method: "onShowMessage",

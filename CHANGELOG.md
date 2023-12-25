@@ -2,6 +2,8 @@
 
 ## Changed
 - fix author in group folder
+- fixed error display in the mobile application
+- Nextcloud v25 is no longer supported
 - compatible with Nextcloud 28
 - agpl v3 license
 
