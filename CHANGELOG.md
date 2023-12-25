@@ -3,7 +3,11 @@
 ##
 ## Changed
 - fix author in group folder
-- Fixed error display in the mobile application
+- fixed error display in the mobile application
+- Nextcloud v25 is no longer supported
+
+## Added
+- advanced access rights for talk files and share links
 
 ## 7.9.4
 ## Changed

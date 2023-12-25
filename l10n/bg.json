@@ -125,6 +125,8 @@
     "Form filling": "Попълване на формуляр",
     "Custom filter": "Персонализиран филтър",
     "group": "група",
-    "Advanced": "Допълнително"
+    "Advanced": "Допълнително",
+    "conversation": "разговор",
+    "Share link": "Връзка за споделяне"
 },"pluralForm": "nplurals=2; plural=(n != 1);"
 }
