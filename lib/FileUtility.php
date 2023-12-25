@@ -35,6 +35,7 @@ use OCP\Files\NotFoundException;
 use OCP\IL10N;
 use OCP\ILogger;
 use OCP\ISession;
+use OCP\Share\Exceptions\ShareNotFound;
 use OCP\Share\IManager;
 
 /**
@@ -195,7 +196,6 @@ class FileUtility {
             return [null, $this->trans->t("FileId is empty")];
         }
 
-        $share = null;
         try {
             $share = $this->shareManager->getShareByToken($shareToken);
         } catch (ShareNotFound $e) {
