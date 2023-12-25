@@ -3,6 +3,7 @@
 ##
 ## Changed
 - fix author in group folder
+- Fixed error display in the mobile application
 
 ## 7.9.4
 ## Changed
