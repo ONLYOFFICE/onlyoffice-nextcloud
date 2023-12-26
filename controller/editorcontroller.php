@@ -602,10 +602,12 @@ class EditorController extends Controller {
 
         $fileName = $file->getName();
         $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+        $key = $this->fileUtility->getKey($file);
 
         $response = [
             "fileType" => $ext,
             "path" => $userFolder->getRelativePath($file->getPath()),
+            "key" => $key,
             "referenceData" => [
                 "fileKey" => $file->getId(),
                 "instanceId" => $this->config->getSystemValue("instanceid", true),
