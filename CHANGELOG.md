@@ -3,10 +3,12 @@
 ##
 ## Changed
 - fix author in group folder
+- fixed error display in the mobile application
 - Nextcloud v25 is no longer supported
 
 ## Added
 - advanced access rights for talk files and share links
+- reference data from coediting
 
 ## 7.9.4
 ## Changed

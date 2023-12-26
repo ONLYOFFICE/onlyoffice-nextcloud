@@ -63,4 +63,17 @@
         }
     };
 
+
+    window.onload = function() {
+        let directEditorError = document.getElementById("directEditorError");
+
+        if (directEditorError) {
+            OCA.Onlyoffice.directEditor.loaded();
+            let directEditorErrorButton = document.getElementById("directEditorErrorButton");
+            directEditorErrorButton.addEventListener('click', function() {
+                OCA.Onlyoffice.directEditor.close();
+            });
+        }
+    };
+
 })(OCA);
