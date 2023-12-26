@@ -75,7 +75,8 @@ class FileSharingListener implements IEventListener {
         }
 
         if (!empty($this->appConfig->getDocumentServerUrl())
-            && $this->appConfig->settingsAreSuccessful()) {
+            && $this->appConfig->settingsAreSuccessful()
+            && empty($this->appConfig->getLimitGroups())) {
             Util::addScript("onlyoffice", "main");
 
             if ($this->appConfig->getSameTab()) {

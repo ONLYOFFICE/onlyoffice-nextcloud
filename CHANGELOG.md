@@ -3,6 +3,7 @@
 ##
 ## Changed
 - fix author in group folder
+- fixed guest redirect when limiting the app to groups
 - fixed error display in the mobile application
 - Nextcloud v25 is no longer supported
 
