@@ -8,6 +8,7 @@
 
 ## Added
 - advanced access rights for talk files and share links
+- reference data from coediting
 
 ## 7.9.4
 ## Changed
