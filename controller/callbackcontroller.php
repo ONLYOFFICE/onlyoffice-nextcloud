@@ -24,6 +24,7 @@ use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\Crypt;
 use OCA\Onlyoffice\DocumentService;
 use OCA\Onlyoffice\FileVersions;
+use OCA\Onlyoffice\FileUtility;
 use OCA\Onlyoffice\KeyManager;
 use OCA\Onlyoffice\RemoteInstance;
 use OCA\Onlyoffice\TemplateManager;
@@ -250,13 +251,24 @@ class CallbackController extends Controller {
         }
 
         $shareToken = isset($hashData->shareToken) ? $hashData->shareToken : null;
-        list($file, $error) = empty($shareToken) ? $this->getFile($userId, $fileId, null, $changes ? null : $version, $template) : $this->getFileByToken($fileId, $shareToken, $changes ? null : $version);
+        list($file, $error, $share) = empty($shareToken) ? $this->getFile($userId, $fileId, null, $changes ? null : $version, $template) : $this->getFileByToken($fileId, $shareToken, $changes ? null : $version);
 
         if (isset($error)) {
             return $error;
         }
 
-        if (!empty($user) && !$file->isReadable()) {
+        $canDownload = true;
+
+        $fileStorage = $file->getStorage();
+        if ($fileStorage->instanceOfStorage("\OCA\Files_Sharing\SharedStorage") || !empty($shareToken)) {
+            $share = empty($share) ? $fileStorage->getShare() : $share;
+            $canDownload = FileUtility::canShareDownload($share);
+            if (!$canDownload && !empty($this->config->getDocumentServerSecret())) {
+                $canDownload = true;
+            }
+        }
+
+        if ((!empty($user) && !$file->isReadable()) || !$canDownload) {
             $this->logger->error("Download without access right", ["app" => $this->appName]);
             return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
         }
@@ -500,7 +512,7 @@ class CallbackController extends Controller {
             \OC_Util::setupFS($userId);
         }
 
-        list($file, $error) = empty($shareToken) ? $this->getFile($userId, $fileId, $filePath) : $this->getFileByToken($fileId, $shareToken);
+        list($file, $error, $share) = empty($shareToken) ? $this->getFile($userId, $fileId, $filePath) : $this->getFileByToken($fileId, $shareToken);
 
         if (isset($error)) {
             $this->logger->error("track error $fileId " . json_encode($error->getData()), ["app" => $this->appName]);
@@ -633,7 +645,7 @@ class CallbackController extends Controller {
      */
     private function getFile($userId, $fileId, $filePath = null, $version = 0, $template = false) {
         if (empty($fileId)) {
-            return [null, new JSONResponse(["message" => $this->trans->t("FileId is empty")], Http::STATUS_BAD_REQUEST)];
+            return [null, new JSONResponse(["message" => $this->trans->t("FileId is empty")], Http::STATUS_BAD_REQUEST), null];
         }
 
         try {
@@ -641,12 +653,12 @@ class CallbackController extends Controller {
             $files = $folder->getById($fileId);
         } catch (\Exception $e) {
             $this->logger->logException($e, ["message" => "getFile: $fileId", "app" => $this->appName]);
-            return [null, new JSONResponse(["message" => $this->trans->t("Invalid request")], Http::STATUS_BAD_REQUEST)];
+            return [null, new JSONResponse(["message" => $this->trans->t("Invalid request")], Http::STATUS_BAD_REQUEST), null];
         }
 
         if (empty($files)) {
             $this->logger->error("Files not found: $fileId", ["app" => $this->appName]);
-            return [null, new JSONResponse(["message" => $this->trans->t("Files not found")], Http::STATUS_NOT_FOUND)];
+            return [null, new JSONResponse(["message" => $this->trans->t("Files not found")], Http::STATUS_NOT_FOUND), null];
         }
 
         $file = $files[0];
@@ -671,10 +683,10 @@ class CallbackController extends Controller {
 
             if ($owner !== null) {
                 if ($owner->getUID() !== $userId) {
-                    list($file, $error) = $this->getFile($owner->getUID(), $file->getId());
+                    list($file, $error, $share) = $this->getFile($owner->getUID(), $file->getId());
 
                     if (isset($error)) {
-                        return [null, $error];
+                        return [null, $error, null];
                     }
                 }
 
@@ -686,7 +698,7 @@ class CallbackController extends Controller {
             }
         }
 
-        return [$file, null];
+        return [$file, null, null];
     }
 
     /**
@@ -702,14 +714,14 @@ class CallbackController extends Controller {
         list($share, $error) = $this->getShare($shareToken);
 
         if (isset($error)) {
-            return [null, $error];
+            return [null, $error, null];
         }
 
         try {
             $node = $share->getNode();
         } catch (NotFoundException $e) {
             $this->logger->logException($e, ["message" => "getFileByToken error", "app" => $this->appName]);
-            return [null, new JSONResponse(["message" => $this->trans->t("File not found")], Http::STATUS_NOT_FOUND)];
+            return [null, new JSONResponse(["message" => $this->trans->t("File not found")], Http::STATUS_NOT_FOUND), null];
         }
 
         if ($node instanceof Folder) {
@@ -717,11 +729,11 @@ class CallbackController extends Controller {
                 $files = $node->getById($fileId);
             } catch (\Exception $e) {
                 $this->logger->logException($e, ["message" => "getFileByToken: $fileId", "app" => $this->appName]);
-                return [null, new JSONResponse(["message" => $this->trans->t("Invalid request")], Http::STATUS_NOT_FOUND)];
+                return [null, new JSONResponse(["message" => $this->trans->t("Invalid request")], Http::STATUS_NOT_FOUND), null];
             }
 
             if (empty($files)) {
-                return [null, new JSONResponse(["message" => $this->trans->t("File not found")], Http::STATUS_NOT_FOUND)];
+                return [null, new JSONResponse(["message" => $this->trans->t("File not found")], Http::STATUS_NOT_FOUND), null];
             }
             $file = $files[0];
         } else {
@@ -740,7 +752,7 @@ class CallbackController extends Controller {
             }
         }
 
-        return [$file, null];
+        return [$file, null, $share];
     }
 
     /**

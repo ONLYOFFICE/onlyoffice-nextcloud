@@ -5,6 +5,7 @@
 - fix author in group folder
 - fixed guest redirect when limiting the app to groups
 - fixed error display in the mobile application
+- fixed opening file without download access
 - Nextcloud v25 is no longer supported
 
 ## Added

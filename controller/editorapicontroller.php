@@ -380,11 +380,7 @@ class EditorApiController extends OCSController {
 
             if (method_exists(IShare::class, "getAttributes")) {
                 $share = empty($share) ? $fileStorage->getShare() : $share;
-                $attributes = $share->getAttributes();
-                $downloadAttr = isset($attributes) ? $attributes->getAttribute("permissions", "download") : null;
-                if (isset($downloadAttr) && !$downloadAttr) {
-                    $canDownload = false;
-                }
+                $canDownload = FileUtility::canShareDownload($share);
             }
         }
 
