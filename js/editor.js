@@ -458,14 +458,14 @@
             "*");
         } else {
             OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Select file to " + event.data.c),
-                OCA.Onlyoffice.editorSetRevised.bind({documentSelectionType: event.data.c}),
+                OCA.Onlyoffice.editorSetRequested.bind({documentSelectionType: event.data.c}),
                 false,
                 revisedMimes,
                 true);
         }
     };
 
-    OCA.Onlyoffice.editorSetRevised = function (filePath) {
+    OCA.Onlyoffice.editorSetRequested = function (filePath) {
         let documentSelectionType = this.documentSelectionType;
         $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/url?filePath={filePath}",
             {

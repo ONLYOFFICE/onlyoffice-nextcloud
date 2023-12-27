@@ -68,7 +68,7 @@
 
     OCA.Onlyoffice.onRequestSelectDocument = function (revisedMimes, documentSelectionType) {
         OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Select file to compare"),
-            $(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.editorSetRevised.bind({documentSelectionType: documentSelectionType}),
+            $(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.editorSetRequested.bind({documentSelectionType: documentSelectionType}),
             false,
             revisedMimes,
             true);
