@@ -66,9 +66,9 @@
             true);
     };
 
-    OCA.Onlyoffice.onRequestCompareFile = function (revisedMimes) {
+    OCA.Onlyoffice.onRequestSelectDocument = function (revisedMimes, documentSelectionType) {
         OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Select file to compare"),
-            $(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.editorSetRevised,
+            $(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.editorSetRevised.bind({documentSelectionType: documentSelectionType}),
             false,
             revisedMimes,
             true);
@@ -128,8 +128,8 @@
             case "editorRequestMailMergeRecipients":
                 OCA.Onlyoffice.onRequestMailMergeRecipients(event.data.param);
                 break;
-            case "editorRequestCompareFile":
-                OCA.Onlyoffice.onRequestCompareFile(event.data.param);
+            case "editorRequestSelectDocument":
+                OCA.Onlyoffice.onRequestSelectDocument(event.data.param, event.data.documentSelectionType);
                 break;
             case "onDocumentReady":
                 OCA.Onlyoffice.onDocumentReady(event.data.param);

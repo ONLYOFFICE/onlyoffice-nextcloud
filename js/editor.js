@@ -166,7 +166,7 @@
                         config.events.onRequestSaveAs = OCA.Onlyoffice.onRequestSaveAs;
                         config.events.onRequestInsertImage = OCA.Onlyoffice.onRequestInsertImage;
                         config.events.onRequestMailMergeRecipients = OCA.Onlyoffice.onRequestMailMergeRecipients;
-                        config.events.onRequestCompareFile = OCA.Onlyoffice.onRequestCompareFile;
+                        config.events.onRequestSelectDocument = OCA.Onlyoffice.onRequestSelectDocument;
                         config.events.onRequestSendNotify = OCA.Onlyoffice.onRequestSendNotify;
                         config.events.onRequestReferenceData = OCA.Onlyoffice.onRequestReferenceData;
                         config.events.onMetaChange = OCA.Onlyoffice.onMetaChange;
@@ -444,20 +444,21 @@
         "*");
     };
 
-    OCA.Onlyoffice.onRequestCompareFile = function () {
+    OCA.Onlyoffice.onRequestSelectDocument = function (event) {
         var revisedMimes = [
             "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         ];
 
         if (OCA.Onlyoffice.inframe) {
             window.parent.postMessage({
-                method: "editorRequestCompareFile",
-                param: revisedMimes
+                method: "editorRequestSelectDocument",
+                param: revisedMimes,
+                documentSelectionType: event.data.c
             },
             "*");
         } else {
-            OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Select file to compare"),
-                OCA.Onlyoffice.editorSetRevised,
+            OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Select file to " + event.data.c),
+                OCA.Onlyoffice.editorSetRevised.bind({documentSelectionType: event.data.c}),
                 false,
                 revisedMimes,
                 true);
@@ -465,6 +466,7 @@
     };
 
     OCA.Onlyoffice.editorSetRevised = function (filePath) {
+        let documentSelectionType = this.documentSelectionType;
         $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/url?filePath={filePath}",
             {
                 filePath: filePath
@@ -474,8 +476,9 @@
                     OCP.Toast.error(response.error);
                     return;
                 }
+                response.c = documentSelectionType;
 
-                OCA.Onlyoffice.docEditor.setRevisedFile(response);
+                OCA.Onlyoffice.docEditor.setRequestedDocument(response);
             });
     };
 
