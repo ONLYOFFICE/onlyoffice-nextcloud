@@ -11,6 +11,7 @@
 ## Added
 - advanced access rights for talk files and share links
 - reference data from coediting
+- selecting a document to combine from the storage
 
 ## 7.9.4
 ## Changed
