@@ -457,7 +457,14 @@
             },
             "*");
         } else {
-            OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Select file to " + event.data.c),
+            switch (event.data.c) {
+                case "combine":
+                    var title =  t(OCA.Onlyoffice.AppName, "Select file to combine");
+                    break;
+                default:
+                    title =  t(OCA.Onlyoffice.AppName, "Select file to compare");
+            }
+            OC.dialogs.filepicker(title,
                 OCA.Onlyoffice.editorSetRequested.bind({documentSelectionType: event.data.c}),
                 false,
                 revisedMimes,

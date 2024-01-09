@@ -67,7 +67,14 @@
     };
 
     OCA.Onlyoffice.onRequestSelectDocument = function (revisedMimes, documentSelectionType) {
-        OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Select file to compare"),
+        switch (documentSelectionType) {
+            case "combine":
+                var title =  t(OCA.Onlyoffice.AppName, "Select file to combine");
+                break;
+            default:
+                title =  t(OCA.Onlyoffice.AppName, "Select file to compare");
+        }
+        OC.dialogs.filepicker(title,
             $(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.editorSetRequested.bind({documentSelectionType: documentSelectionType}),
             false,
             revisedMimes,
