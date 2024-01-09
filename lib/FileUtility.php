@@ -37,6 +37,7 @@ use OCP\ILogger;
 use OCP\ISession;
 use OCP\Share\Exceptions\ShareNotFound;
 use OCP\Share\IManager;
+use OCP\Share\IShare;
 
 /**
  * File utility
@@ -274,5 +275,42 @@ class FileUtility {
         $key = $instanceId . "_" . $version->getSourceFile()->getEtag() . "_" . $version->getRevisionId();
 
         return $key;
+    }
+
+    /**
+     * The method checks download permission
+     *
+     * @param IShare $share - share object
+     *
+     * @return bool
+     */
+    public static function canShareDownload($share) {
+        $can = true;
+
+        $downloadAttribute = self::getShareAttrubute($share, "download");
+        if (isset($downloadAttribute)) {
+            $can = $downloadAttribute;
+        }
+
+        return $can;
+    }
+
+    /**
+     * The method extracts share attribute
+     *
+     * @param IShare $share - share object
+     * @param string $attribute - attribute name
+     *
+     * @return bool|null
+     */
+    private static function getShareAttrubute($share, $attribute) {
+        $attributes = null;
+        if (method_exists(IShare::class, "getAttributes")) {
+            $attributes = $share->getAttributes();
+        }
+
+        $attribute = isset($attributes) ? $attributes->getAttribute("permissions", $attribute) : null;
+
+        return $attribute;
     }
 }

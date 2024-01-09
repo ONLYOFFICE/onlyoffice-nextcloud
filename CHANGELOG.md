@@ -2,13 +2,17 @@
 
 ## Changed
 - fix author in group folder
+- fixed guest redirect when limiting the app to groups
 - fixed error display in the mobile application
+- fixed opening file without download access
 - Nextcloud v25 is no longer supported
 - compatible with Nextcloud 28
 - agpl v3 license
 
 ## Added
 - advanced access rights for talk files and share links
+- reference data from coediting
+- selecting a document to combine from the storage
 
 ## 8.2.4
 ## Changed

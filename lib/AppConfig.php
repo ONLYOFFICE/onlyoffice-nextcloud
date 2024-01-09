@@ -1086,7 +1086,7 @@ class AppConfig {
 
         $groups = $this->getLimitGroups();
         // no group set -> all users are allowed
-        if (count($groups) === 0) {
+        if (empty($groups)) {
             return true;
         }
 
