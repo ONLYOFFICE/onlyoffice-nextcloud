@@ -169,6 +169,7 @@
                         config.events.onRequestSelectDocument = OCA.Onlyoffice.onRequestSelectDocument;
                         config.events.onRequestSendNotify = OCA.Onlyoffice.onRequestSendNotify;
                         config.events.onRequestReferenceData = OCA.Onlyoffice.onRequestReferenceData;
+                        config.events.onRequestOpen = OCA.Onlyoffice.onRequestOpen;
                         config.events.onMetaChange = OCA.Onlyoffice.onMetaChange;
 
                         if (OC.currentUser) {
@@ -570,6 +571,14 @@
 
                 OCA.Onlyoffice.docEditor.setReferenceData(response);
             });
+    };
+
+    OCA.Onlyoffice.onRequestOpen = function (event) {
+        let filePath  = event.data.path;
+        let fileId = event.data.referenceData.fileKey;
+        let windowName = event.data.windowName;
+        let sourceUrl = OC.generateUrl(`apps/${OCA.Onlyoffice.AppName}/${fileId}?filePath=${OC.encodePath(filePath)}`);
+        window.open(sourceUrl, windowName);
     };
 
     OCA.Onlyoffice.onMetaChange = function (event) {
