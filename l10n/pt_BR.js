@@ -139,8 +139,7 @@ OC.L10N.register(
     "ONLYOFFICE server is not available": "O servidor ONLYOFFICE não está disponível",
     "Please check the settings to resolve the problem.": "Verifique as configurações para resolver o problema.",
     "View settings": "Configurações de exibição",
-    "ONLYOFFICE Docs Cloud": "ONLYOFFICE Docs Cloud",
-    "Easily launch the editors in the cloud without downloading and installation": "Inicie facilmente os editores na nuvem sem download e instalação",
-    "Get Now": "Obter agora"
+    "Share link": "Link de compartilhamento",
+    "conversation": "conversa"
 },
 "nplurals=2; plural=(n > 1);");

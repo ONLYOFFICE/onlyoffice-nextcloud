@@ -1,5 +1,30 @@
 # Change Log
 
+##
+## Changed
+- fix author in group folder
+- fixed guest redirect when limiting the app to groups
+- fixed error display in the mobile application
+- fixed opening file without download access
+- Nextcloud v25 is no longer supported
+
+## Added
+- advanced access rights for talk files and share links
+- reference data from coediting
+- selecting a document to combine from the storage
+
+## 7.9.4
+## Changed
+- remove link to docs cloud
+
+## 7.9.2
+## Added
+- Ukrainian translation
+
+## Changed
+- fix disabling background job
+- fix opening direct link
+
 ## 7.9.0
 ## Added
 - jwt header setting

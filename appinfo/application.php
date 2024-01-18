@@ -20,7 +20,6 @@
 namespace OCA\Onlyoffice\AppInfo;
 
 use OC\EventDispatcher\SymfonyAdapter;
-
 use OCP\AppFramework\App;
 use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\AppFramework\Bootstrap\IBootstrap;
@@ -38,10 +37,8 @@ use OCP\IL10N;
 use OCP\IPreview;
 use OCP\ITagManager;
 use OCP\Notification\IManager;
-
 use OCA\Files_Sharing\Event\BeforeTemplateRenderedEvent;
 use OCA\Viewer\Event\LoadViewer;
-
 use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\Controller\CallbackController;
 use OCA\Onlyoffice\Controller\EditorController;
@@ -63,7 +60,6 @@ use OCA\Onlyoffice\Preview;
 use OCA\Onlyoffice\TemplateManager;
 use OCA\Onlyoffice\TemplateProvider;
 use OCA\Onlyoffice\SettingsData;
-
 use Psr\Container\ContainerInterface;
 
 class Application extends App implements IBootstrap {
@@ -115,7 +111,7 @@ class Application extends App implements IBootstrap {
         }
 
         // Set the leeway for the JWT library in case the system clock is a second off
-        \Firebase\JWT\JWT::$leeway = $this->appConfig->GetJwtLeeway();
+        \Firebase\JWT\JWT::$leeway = $this->appConfig->getJwtLeeway();
 
         $context->registerService("L10N", function (ContainerInterface $c) {
             return $c->get("ServerContainer")->getL10N($c->get("AppName"));
@@ -258,7 +254,7 @@ class Application extends App implements IBootstrap {
         $container = $this->getContainer();
 
         $previewManager = $container->query(IPreview::class);
-        $previewManager->registerProvider(Preview::getMimeTypeRegex(), function() use ($container) {
+        $previewManager->registerProvider(Preview::getMimeTypeRegex(), function () use ($container) {
             return $container->query(Preview::class);
         });
 
@@ -283,17 +279,19 @@ class Application extends App implements IBootstrap {
         $context->injectFn(function (SymfonyAdapter $eventDispatcher) {
 
             if (class_exists("OCP\Files\Template\FileCreatedFromTemplateEvent")) {
-                $eventDispatcher->addListener(FileCreatedFromTemplateEvent::class,
+                $eventDispatcher->addListener(
+                    FileCreatedFromTemplateEvent::class,
                     function (FileCreatedFromTemplateEvent $event) {
                         $template = $event->getTemplate();
                         if ($template === null) {
                             $targetFile = $event->getTarget();
-                            $templateEmpty = TemplateManager::GetEmptyTemplate($targetFile->getName());
+                            $templateEmpty = TemplateManager::getEmptyTemplate($targetFile->getName());
                             if ($templateEmpty) {
                                 $targetFile->putContent($templateEmpty);
                             }
                         }
-                    });
+                    }
+                );
             }
         });
 
@@ -302,11 +300,10 @@ class Application extends App implements IBootstrap {
         });
 
         if (class_exists("OCP\Files\Template\TemplateFileCreator")) {
-            $context->injectFn(function(ITemplateManager $templateManager, IL10N $trans, $appName) {
-                if (!empty($this->appConfig->GetDocumentServerUrl())
-                    && $this->appConfig->SettingsAreSuccessful()
+            $context->injectFn(function (ITemplateManager $templateManager, IL10N $trans, $appName) {
+                if (!empty($this->appConfig->getDocumentServerUrl())
+                    && $this->appConfig->settingsAreSuccessful()
                     && $this->appConfig->isUserAllowedToUse()) {
-
                     $templateManager->registerTemplateFileCreator(function () use ($appName, $trans) {
                         $wordTemplate = new TemplateFileCreator($appName, $trans->t("New document"), ".docx");
                         $wordTemplate->addMimetype("application/vnd.openxmlformats-officedocument.wordprocessingml.document");

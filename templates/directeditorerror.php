@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System SIA 2022
+ * (c) Copyright Ascensio System SIA 2023
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,27 +17,12 @@
  *
  */
 
-namespace OCA\Onlyoffice;
-
-class SettingsData implements \JsonSerializable {
-
-    /**
-     * Application configuration
-     *
-     * @var AppConfig
-     */
-    private $appConfig;
-
-    public function __construct(AppConfig $appConfig) {
-        $this->appConfig = $appConfig;
-    }
-
-    public function jsonSerialize(): array {
-        $data = [
-            "formats" => $this->appConfig->formatsSetting(),
-            "sameTab" => $this->appConfig->getSameTab()
-        ];
-
-        return $data;
-    }
-}
+script("onlyoffice", "directeditor");
+?>
+<div class="guest-box" id="directEditorError">
+    <h2><?php p($l->t('Error')); ?></h2>
+    <p><?php p($_["error"]); ?></p>
+</div>
+<p>
+    <button class="primary button" id="directEditorErrorButton" style="margin-top: 18px;">Go back</button>
+</p>

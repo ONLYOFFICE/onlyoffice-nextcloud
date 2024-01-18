@@ -19,10 +19,10 @@
 
     style("onlyoffice", "editor");
     script("onlyoffice", "desktop");
+if (!empty($_["directToken"])) {
+    script("onlyoffice", "directeditor");
+}
     script("onlyoffice", "editor");
-    if (!empty($_["directToken"])) {
-        script("onlyoffice", "directeditor");
-    }
 ?>
 
 <div id="app"

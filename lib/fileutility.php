@@ -25,11 +25,9 @@ use OCP\Files\NotFoundException;
 use OCP\IL10N;
 use OCP\ILogger;
 use OCP\ISession;
+use OCP\Share\Exceptions\ShareNotFound;
 use OCP\Share\IManager;
-
-use OCA\Onlyoffice\AppConfig;
-use OCA\Onlyoffice\KeyManager;
-use OCA\Onlyoffice\RemoteInstance;
+use OCP\Share\IShare;
 
 /**
  * File utility
@@ -88,12 +86,14 @@ class FileUtility {
      * @param IManager $shareManager - Share manager
      * @param IManager $ISession - Session
      */
-    public function __construct($AppName,
-                                IL10N $trans,
-                                ILogger $logger,
-                                AppConfig $config,
-                                IManager $shareManager,
-                                ISession $session) {
+    public function __construct(
+        $AppName,
+        IL10N $trans,
+        ILogger $logger,
+        AppConfig $config,
+        IManager $shareManager,
+        ISession $session
+    ) {
         $this->appName = $AppName;
         $this->trans = $trans;
         $this->logger = $logger;
@@ -112,7 +112,7 @@ class FileUtility {
      * @return array
      */
     public function getFileByToken($fileId, $shareToken, $path = null) {
-        list ($node, $error, $share) = $this->getNodeByToken($shareToken);
+        list($node, $error, $share) = $this->getNodeByToken($shareToken);
 
         if (isset($error)) {
             return [null, $error, null];
@@ -155,7 +155,7 @@ class FileUtility {
      * @return array
      */
     public function getNodeByToken($shareToken) {
-        list ($share, $error) = $this->getShare($shareToken);
+        list($share, $error) = $this->getShare($shareToken);
 
         if (isset($error)) {
             return [null, $error, null];
@@ -187,7 +187,6 @@ class FileUtility {
             return [null, $this->trans->t("FileId is empty")];
         }
 
-        $share = null;
         try {
             $share = $this->shareManager->getShareByToken($shareToken);
         } catch (ShareNotFound $e) {
@@ -221,7 +220,6 @@ class FileUtility {
 
         if ($origin
             && RemoteInstance::isRemoteFile($file)) {
-
             $key = RemoteInstance::getRemoteKey($file);
             if (!empty($key)) {
                 return $key;
@@ -230,8 +228,8 @@ class FileUtility {
 
         $key = KeyManager::get($fileId);
 
-        if (empty($key) ) {
-            $instanceId = $this->config->GetSystemValue("instanceid", true);
+        if (empty($key)) {
+            $instanceId = $this->config->getSystemValue("instanceid", true);
 
             $key = $instanceId . "_" . $this->GUID();
 
@@ -246,10 +244,8 @@ class FileUtility {
      *
      * @return string
      */
-    private function GUID()
-    {
-        if (function_exists("com_create_guid") === true)
-        {
+    private function GUID() {
+        if (function_exists("com_create_guid") === true) {
             return trim(com_create_guid(), "{}");
         }
 
@@ -264,10 +260,47 @@ class FileUtility {
      * @return string
      */
     public function getVersionKey($version) {
-        $instanceId = $this->config->GetSystemValue("instanceid", true);
+        $instanceId = $this->config->getSystemValue("instanceid", true);
 
         $key = $instanceId . "_" . $version->getSourceFile()->getEtag() . "_" . $version->getRevisionId();
 
         return $key;
+    }
+
+    /**
+     * The method checks download permission
+     *
+     * @param IShare $share - share object
+     *
+     * @return bool
+     */
+    public static function canShareDownload($share) {
+        $can = true;
+
+        $downloadAttribute = self::getShareAttrubute($share, "download");
+        if (isset($downloadAttribute)) {
+            $can = $downloadAttribute;
+        }
+
+        return $can;
+    }
+
+    /**
+     * The method extracts share attribute
+     *
+     * @param IShare $share - share object
+     * @param string $attribute - attribute name
+     *
+     * @return bool|null
+     */
+    private static function getShareAttrubute($share, $attribute) {
+        $attributes = null;
+        if (method_exists(IShare::class, "getAttributes")) {
+            $attributes = $share->getAttributes();
+        }
+
+        $attribute = isset($attributes) ? $attributes->getAttribute("permissions", $attribute) : null;
+
+        return $attribute;
     }
 }

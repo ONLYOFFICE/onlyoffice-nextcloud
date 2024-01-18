@@ -19,9 +19,8 @@
 
 namespace OCA\Onlyoffice;
 
-use OCP\Files\NotFoundException;
-
 use OCP\Files\File;
+use OCP\Files\NotFoundException;
 
 /**
  * Template manager
@@ -49,8 +48,8 @@ class TemplateManager {
      *
      * @return Folder
      */
-    public static function GetGlobalTemplateDir() {
-        $dirPath = "appdata_" . \OC::$server->getConfig()->GetSystemValue("instanceid", null)
+    public static function getGlobalTemplateDir() {
+        $dirPath = "appdata_" . \OC::$server->getConfig()->getSystemValue("instanceid", null)
                                 . "/" . self::$appName
                                 . "/" . self::$templateFolderName;
 
@@ -72,8 +71,8 @@ class TemplateManager {
      *
      * @return array
      */
-    public static function GetGlobalTemplates($mimetype = null) {
-        $templateDir = self::GetGlobalTemplateDir();
+    public static function getGlobalTemplates($mimetype = null) {
+        $templateDir = self::getGlobalTemplateDir();
 
         $templatesList = $templateDir->getDirectoryListing();
         if (!empty($mimetype)
@@ -91,7 +90,7 @@ class TemplateManager {
      *
      * @return File
      */
-    public static function GetTemplate($templateId) {
+    public static function getTemplate($templateId) {
         $logger = \OC::$server->getLogger();
 
         if (empty($templateId)) {
@@ -99,11 +98,11 @@ class TemplateManager {
             return null;
         }
 
-        $templateDir = self::GetGlobalTemplateDir();
+        $templateDir = self::getGlobalTemplateDir();
         try {
             $templates = $templateDir->getById($templateId);
         } catch (\Exception $e) {
-            $logger->logException($e, ["message" => "GetTemplate: $templateId", "app" => self::$appName]);
+            $logger->logException($e, ["message" => "getTemplate: $templateId", "app" => self::$appName]);
             return null;
         }
 
@@ -121,8 +120,8 @@ class TemplateManager {
      *
      * @return string
      */
-    public static function GetTypeTemplate($mime) {
-        switch($mime) {
+    public static function getTypeTemplate($mime) {
+        switch ($mime) {
             case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
                 return "document";
             case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
@@ -141,8 +140,8 @@ class TemplateManager {
      *
      * @return string
      */
-    public static function GetMimeTemplate($type) {
-        switch($type) {
+    public static function getMimeTemplate($type) {
+        switch ($type) {
             case "document":
                 return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
             case "spreadsheet":
@@ -161,9 +160,9 @@ class TemplateManager {
      *
      * @return bool
      */
-    public static function IsTemplateType($name) {
+    public static function isTemplateType($name) {
         $ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
-        switch($ext) {
+        switch ($ext) {
             case "docx":
             case "xlsx":
             case "pptx":
@@ -180,8 +179,8 @@ class TemplateManager {
      *
      * @return bool
      */
-    public static function IsTemplate($fileId) {
-        $template = self::GetTemplate($fileId);
+    public static function isTemplate($fileId) {
+        $template = self::getTemplate($fileId);
 
         if (empty($template)) {
             return false;
@@ -197,12 +196,12 @@ class TemplateManager {
      *
      * @return string
      */
-    public static function GetEmptyTemplate($name) {
+    public static function getEmptyTemplate($name) {
         $ext = strtolower("." . pathinfo($name, PATHINFO_EXTENSION));
 
         $lang = \OC::$server->getL10NFactory("")->get("")->getLanguageCode();
 
-        $templatePath = self::GetEmptyTemplatePath($lang, $ext);
+        $templatePath = self::getEmptyTemplatePath($lang, $ext);
         if (!file_exists($templatePath)) {
             return false;
         }
@@ -219,7 +218,7 @@ class TemplateManager {
      *
      * @return string
      */
-    public static function GetEmptyTemplatePath($lang, $ext) {
+    public static function getEmptyTemplatePath($lang, $ext) {
         if (!array_key_exists($lang, self::$localPath)) {
             $lang = "en";
         }

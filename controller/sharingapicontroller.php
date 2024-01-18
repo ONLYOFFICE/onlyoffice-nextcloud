@@ -19,28 +19,19 @@
 
 namespace OCA\Onlyoffice\Controller;
 
+use OCA\Onlyoffice\AppConfig;
+use OCA\Onlyoffice\ExtraPermissions;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\OCSController;
-use OCP\IL10N;
+use OCP\Files\File;
+use OCP\Files\IRootFolder;
 use OCP\ILogger;
 use OCP\IRequest;
-use OCP\ISession;
-use OCP\Constants;
-use OCP\Share\IManager;
-use OCP\Files\IRootFolder;
 use OCP\IUserManager;
 use OCP\IUserSession;
-use OCP\Files\File;
+use OCP\Share\IManager;
 use OCP\Share\IShare;
-use OCP\Share\Exceptions\ShareNotFound;
-
-
-use OCA\Onlyoffice\AppConfig;
-use OCA\Onlyoffice\DocumentService;
-use OCA\Onlyoffice\FileUtility;
-use OCA\Onlyoffice\KeyManager;
-use OCA\Onlyoffice\ExtraPermissions;
 
 /**
  * OCS handler
@@ -86,14 +77,14 @@ class SharingApiController extends OCSController {
      * Share manager
      *
      * @var IManager
-    */
+     */
     private $shareManager;
 
     /**
      * Extra permissions
      *
      * @var ExtraPermissions
-    */
+     */
     private $extraPermissions;
 
     /**
@@ -106,15 +97,16 @@ class SharingApiController extends OCSController {
      * @param IManager $shareManager - Share manager
      * @param AppConfig $appConfig - application configuration
      */
-    public function __construct($AppName,
-                                    IRequest $request,
-                                    IRootFolder $root,
-                                    ILogger $logger,
-                                    IUserSession $userSession,
-                                    IUserManager $userManager,
-                                    IManager $shareManager,
-                                    AppConfig $appConfig
-                                    ) {
+    public function __construct(
+        $AppName,
+        IRequest $request,
+        IRootFolder $root,
+        ILogger $logger,
+        IUserSession $userSession,
+        IUserManager $userManager,
+        IManager $shareManager,
+        AppConfig $appConfig
+    ) {
         parent::__construct($AppName, $request);
 
         $this->root = $root;
@@ -124,7 +116,7 @@ class SharingApiController extends OCSController {
         $this->shareManager = $shareManager;
         $this->appConfig = $appConfig;
 
-        if ($this->appConfig->GetAdvanced()
+        if ($this->appConfig->getAdvanced()
             && \OC::$server->getAppManager()->isInstalled("files_sharing")) {
             $this->extraPermissions = new ExtraPermissions($AppName, $logger, $shareManager, $appConfig);
         }
@@ -157,7 +149,9 @@ class SharingApiController extends OCSController {
 
         $sharesUser = $this->shareManager->getSharesBy($userId, IShare::TYPE_USER, $sourceFile, null, true);
         $sharesGroup = $this->shareManager->getSharesBy($userId, IShare::TYPE_GROUP, $sourceFile, null, true);
-        $shares = array_merge($sharesUser, $sharesGroup);
+        $sharesRoom = $this->shareManager->getSharesBy($userId, IShare::TYPE_ROOM, $sourceFile, null, true);
+        $sharesLink = $this->shareManager->getSharesBy($userId, IShare::TYPE_LINK, $sourceFile, null, true);
+        $shares = array_merge($sharesUser, $sharesGroup, $sharesRoom, $sharesLink);
         $extras = $this->extraPermissions->getExtras($shares, $sourceFile);
 
         return new DataResponse($extras);

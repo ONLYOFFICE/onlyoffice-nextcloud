@@ -33,8 +33,8 @@
         var dir = fileList.getCurrentDirectory();
 
         if ((!OCA.Onlyoffice.setting.sameTab || OCA.Onlyoffice.mobile || OCA.Onlyoffice.Desktop) && open) {
-            $loaderUrl = OCA.Onlyoffice.Desktop ? "" : OC.filePath(OCA.Onlyoffice.AppName, "templates", "loader.html");
-            var winEditor = window.open($loaderUrl);
+            var loaderUrl = OCA.Onlyoffice.Desktop ? "" : OC.filePath(OCA.Onlyoffice.AppName, "templates", "loader.html");
+            var winEditor = window.open(loaderUrl);
         }
 
         var createData = {
@@ -166,7 +166,7 @@
 
     OCA.Onlyoffice.FileClick = function (fileName, context) {
         var fileInfoModel = context.fileInfoModel || context.fileList.getModelForFile(fileName);
-        var fileId = context.$file[0].dataset.id || fileInfoModel.id;
+        var fileId = context.fileId || context.$file[0].dataset.id || fileInfoModel.id;
         var winEditor = !fileInfoModel && !OCA.Onlyoffice.setting.sameTab ? document : null;
 
         OCA.Onlyoffice.OpenEditor(fileId, context.dir, fileName, 0, winEditor);

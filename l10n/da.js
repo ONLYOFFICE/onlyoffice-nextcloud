@@ -130,6 +130,8 @@ OC.L10N.register(
     "Custom filter": "Brugerdefineret filter",
     "group": "gruppe",
     "Advanced": "Avanceret",
-    "Provide advanced document permissions using ONLYOFFICE Docs": "Giv avancerede dokumenttilladelser ved brug af ONLYOFFICE"
+    "Provide advanced document permissions using ONLYOFFICE Docs": "Giv avancerede dokumenttilladelser ved brug af ONLYOFFICE",
+    "Share link": "Share link",
+    "conversation": "samtale"
 },
 "nplurals=2; plural=(n != 1);");

@@ -19,8 +19,6 @@
 
 namespace OCA\Onlyoffice;
 
-use OCA\Onlyoffice\AppConfig;
-
 /**
  * Token generator
  *
@@ -49,8 +47,8 @@ class Crypt {
      *
      * @return string
      */
-    public function GetHash($object) {
-        return \Firebase\JWT\JWT::encode($object, $this->config->GetSKey(), "HS256");
+    public function getHash($object) {
+        return \Firebase\JWT\JWT::encode($object, $this->config->getSKey(), "HS256");
     }
 
     /**
@@ -60,14 +58,14 @@ class Crypt {
      *
      * @return array
      */
-    public function ReadHash($token) {
+    public function readHash($token) {
         $result = null;
         $error = null;
         if ($token === null) {
             return [$result, "token is empty"];
         }
         try {
-            $result = \Firebase\JWT\JWT::decode($token, new \Firebase\JWT\Key($this->config->GetSKey(), "HS256"));
+            $result = \Firebase\JWT\JWT::decode($token, new \Firebase\JWT\Key($this->config->getSKey(), "HS256"));
         } catch (\UnexpectedValueException $e) {
             $error = $e->getMessage();
         }

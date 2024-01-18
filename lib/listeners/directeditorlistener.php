@@ -19,12 +19,11 @@
 
 namespace OCA\Onlyoffice\Listeners;
 
-use OCP\EventDispatcher\Event;
-use OCP\EventDispatcher\IEventListener;
-use OCP\DirectEditing\RegisterDirectEditorEvent;
-
 use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\DirectEditor;
+use OCP\DirectEditing\RegisterDirectEditorEvent;
+use OCP\EventDispatcher\Event;
+use OCP\EventDispatcher\IEventListener;
 
 /**
  * DirectEditor listener
@@ -49,8 +48,10 @@ class DirectEditorListener implements IEventListener {
      * @param AppConfig $config - application configuration
      * @param DirectEditor $editor - direct editor
      */
-    public function __construct(AppConfig $appConfig,
-                                    DirectEditor $editor) {
+    public function __construct(
+        AppConfig $appConfig,
+        DirectEditor $editor
+    ) {
         $this->appConfig = $appConfig;
         $this->editor = $editor;
     }
@@ -60,9 +61,8 @@ class DirectEditorListener implements IEventListener {
             return;
         }
 
-        if (!empty($this->appConfig->GetDocumentServerUrl())
-            && $this->appConfig->SettingsAreSuccessful()) {
-
+        if (!empty($this->appConfig->getDocumentServerUrl())
+            && $this->appConfig->settingsAreSuccessful()) {
             $event->register($this->editor);
         }
     }

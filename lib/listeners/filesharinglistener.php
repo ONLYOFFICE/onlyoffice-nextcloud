@@ -19,16 +19,14 @@
 
 namespace OCA\Onlyoffice\Listeners;
 
-use OCP\EventDispatcher\Event;
-use OCP\EventDispatcher\IEventListener;
-use OCP\Util;
-use OCP\AppFramework\Services\IInitialState;
-use OCP\IServerContainer;
-
 use OCA\Files_Sharing\Event\BeforeTemplateRenderedEvent;
-
 use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\SettingsData;
+use OCP\AppFramework\Services\IInitialState;
+use OCP\EventDispatcher\Event;
+use OCP\EventDispatcher\IEventListener;
+use OCP\IServerContainer;
+use OCP\Util;
 
 /**
  * File Sharing listener
@@ -61,9 +59,11 @@ class FileSharingListener implements IEventListener {
      * @param IInitialState $initialState - initial state
      * @param IServerContainer $serverContainer - server container
      */
-    public function __construct(AppConfig $appConfig,
-                                IInitialState $initialState,
-                                IServerContainer $serverContainer) {
+    public function __construct(
+        AppConfig $appConfig,
+        IInitialState $initialState,
+        IServerContainer $serverContainer
+    ) {
         $this->appConfig = $appConfig;
         $this->initialState = $initialState;
         $this->serverContainer = $serverContainer;
@@ -74,11 +74,12 @@ class FileSharingListener implements IEventListener {
             return;
         }
 
-        if (!empty($this->appConfig->GetDocumentServerUrl())
-            && $this->appConfig->SettingsAreSuccessful()) {
+        if (!empty($this->appConfig->getDocumentServerUrl())
+            && $this->appConfig->settingsAreSuccessful()
+            && empty($this->appConfig->getLimitGroups())) {
             Util::addScript("onlyoffice", "main");
 
-            if ($this->appConfig->GetSameTab()) {
+            if ($this->appConfig->getSameTab()) {
                 Util::addScript("onlyoffice", "listener");
             }
 
