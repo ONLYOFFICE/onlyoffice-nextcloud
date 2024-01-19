@@ -7,6 +7,7 @@
 - fixed error display in the mobile application
 - fixed opening file without download access
 - Nextcloud v25 is no longer supported
+- users without email are now added to the list of users to protect ranges of cells
 
 ## Added
 - advanced access rights for talk files and share links
