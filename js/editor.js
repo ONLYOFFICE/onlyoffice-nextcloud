@@ -518,13 +518,14 @@
     };
 
     OCA.Onlyoffice.onRequestUsers = function (event) {
-        $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/users?fileId={fileId}",
+        let operationType = typeof(event.data.c) !== "undefined" ? event.data.c : null;
+        $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/users?fileId={fileId}&operationType=" + operationType,
         {
             fileId: OCA.Onlyoffice.fileId || 0
         }),
         function onSuccess(response) {
             OCA.Onlyoffice.docEditor.setUsers({
-                "c": typeof(event.data.c) !== "undefined" ? event.data.c : null,
+                "c": operationType,
                 "users": response
             });
         });
