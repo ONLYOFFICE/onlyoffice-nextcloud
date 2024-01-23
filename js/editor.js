@@ -40,11 +40,13 @@
         OCA.Onlyoffice.anchor = $("#iframeEditor").attr("data-anchor");
         var guestName = localStorage.getItem("nick");
         OCA.Onlyoffice.currentWindow = window;
+        OCA.Onlyoffice.currentUser = OC.getCurrentUser();
 
         if (OCA.Onlyoffice.inframe) {
             OCA.Onlyoffice.faviconBase = $('link[rel="icon"]').attr("href");
             OCA.Onlyoffice.currentWindow = window.parent;
             OCA.Onlyoffice.titleBase = OCA.Onlyoffice.currentWindow.document.title;
+            OCA.Onlyoffice.currentUser = OCA.Onlyoffice.currentWindow.OC.getCurrentUser();
         }
 
         if (!OCA.Onlyoffice.fileId && !OCA.Onlyoffice.shareToken && !directToken) {
@@ -162,7 +164,7 @@
                     }
 
                     if (OCA.Onlyoffice.inframe && !OCA.Onlyoffice.shareToken
-                        || OC.currentUser) {
+                        || OCA.Onlyoffice.currentUser.uid) {
                         config.events.onRequestSaveAs = OCA.Onlyoffice.onRequestSaveAs;
                         config.events.onRequestInsertImage = OCA.Onlyoffice.onRequestInsertImage;
                         config.events.onRequestMailMergeRecipients = OCA.Onlyoffice.onRequestMailMergeRecipients;
@@ -171,7 +173,7 @@
                         config.events.onRequestReferenceData = OCA.Onlyoffice.onRequestReferenceData;
                         config.events.onMetaChange = OCA.Onlyoffice.onMetaChange;
 
-                        if (OC.currentUser) {
+                        if (OCA.Onlyoffice.currentUser.uid) {
                             config.events.onRequestUsers = OCA.Onlyoffice.onRequestUsers;
                         }
 
