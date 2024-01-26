@@ -14,6 +14,7 @@
 - reference data from coediting
 - selecting a document to combine from the storage
 - opening a reference data source
+- changing a reference data source
 
 ## 7.9.4
 ## Changed
