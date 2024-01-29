@@ -82,7 +82,6 @@
     };
 
     OCA.Onlyoffice.onRequestReferenceSource = function (referenceSourceMimes) {
-        console.log(referenceSourceMimes);
         OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Select data source"),
             $(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.editorReferenceSource,
             false,
