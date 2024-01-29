@@ -168,6 +168,7 @@
                         config.events.onRequestSaveAs = OCA.Onlyoffice.onRequestSaveAs;
                         config.events.onRequestInsertImage = OCA.Onlyoffice.onRequestInsertImage;
                         config.events.onRequestMailMergeRecipients = OCA.Onlyoffice.onRequestMailMergeRecipients;
+                        config.events.onRequestCompareFile = OCA.Onlyoffice.onRequestSelectDocument; //todo: remove (for editors 7.4)
                         config.events.onRequestSelectDocument = OCA.Onlyoffice.onRequestSelectDocument;
                         config.events.onRequestSendNotify = OCA.Onlyoffice.onRequestSendNotify;
                         config.events.onRequestReferenceData = OCA.Onlyoffice.onRequestReferenceData;
