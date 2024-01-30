@@ -1,4 +1,0 @@
-[submodule "assets"]
-	path = assets
-	url = https://github.com/ONLYOFFICE/document-templates
-	branch = main/new
