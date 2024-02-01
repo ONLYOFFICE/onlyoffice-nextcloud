@@ -15,6 +15,7 @@
 - selecting a document to combine from the storage
 - opening a reference data source
 - changing a reference data source
+- updatable list of supported formats
 
 ## 7.9.4
 ## Changed
