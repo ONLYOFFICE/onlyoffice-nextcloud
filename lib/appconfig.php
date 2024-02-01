@@ -1309,12 +1309,12 @@ class AppConfig {
             if ($onlyofficeFormats !== false) { 
                 foreach ($onlyofficeFormats as $onlyOfficeFormat) {
                     if ($onlyOfficeFormat["name"]
-                        && isset($onlyOfficeFormat["mime"][0])
+                        && $onlyOfficeFormat["mime"]
                         && $onlyOfficeFormat["type"]
                         && $onlyOfficeFormat["actions"]
                         && $onlyOfficeFormat["convert"]) {
                         $result[$onlyOfficeFormat["name"]] = [
-                            "mime" => $onlyOfficeFormat["mime"][0],
+                            "mime" => $onlyOfficeFormat["mime"],
                             "type" => $onlyOfficeFormat["type"],
                             "edit" => in_array("edit", $onlyOfficeFormat["actions"]),
                             "editable" => in_array("lossy-edit", $onlyOfficeFormat["actions"]),
