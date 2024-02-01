@@ -1300,34 +1300,39 @@ class AppConfig {
      * @return array
      */
     private function buildOnlyofficeFormats() {
-        $onlyofficeFormats = file_get_contents(dirname(__DIR__) . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . "document-formats" . DIRECTORY_SEPARATOR . "onlyoffice-docs-formats.json");
-        $onlyofficeFormats = json_decode($onlyofficeFormats, true);
-        $result = [];
-        $additionalFormats = $this->getAdditionalFormatAttributes();
+        try {
+            $onlyofficeFormats = file_get_contents(dirname(__DIR__) . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . "document-formats" . DIRECTORY_SEPARATOR . "onlyoffice-docs-formats.json");
+            $onlyofficeFormats = json_decode($onlyofficeFormats, true);
+            $result = [];
+            $additionalFormats = $this->getAdditionalFormatAttributes();
 
-        if ($onlyofficeFormats !== false) { 
-            foreach ($onlyofficeFormats as $onlyOfficeFormat) {
-                if ($onlyOfficeFormat["name"]
-                    && isset($onlyOfficeFormat["mime"][0])
-                    && $onlyOfficeFormat["type"]
-                    && $onlyOfficeFormat["actions"]
-                    && $onlyOfficeFormat["convert"]) {
-                    $result[$onlyOfficeFormat["name"]] = [
-                        "mime" => $onlyOfficeFormat["mime"][0],
-                        "type" => $onlyOfficeFormat["type"],
-                        "edit" => in_array("edit", $onlyOfficeFormat["actions"]),
-                        "editable" => in_array("lossy-edit", $onlyOfficeFormat["actions"]),
-                        "conv" => in_array("auto-convert", $onlyOfficeFormat["actions"]),
-                        "fillForms" => in_array("fill", $onlyOfficeFormat["actions"]),
-                        "saveas" => $onlyOfficeFormat["convert"],
-                    ];
-                    if (isset($additionalFormats[$onlyOfficeFormat["name"]])) {
-                        $result[$onlyOfficeFormat["name"]] = array_merge($result[$onlyOfficeFormat["name"]], $additionalFormats[$onlyOfficeFormat["name"]]);
+            if ($onlyofficeFormats !== false) { 
+                foreach ($onlyofficeFormats as $onlyOfficeFormat) {
+                    if ($onlyOfficeFormat["name"]
+                        && isset($onlyOfficeFormat["mime"][0])
+                        && $onlyOfficeFormat["type"]
+                        && $onlyOfficeFormat["actions"]
+                        && $onlyOfficeFormat["convert"]) {
+                        $result[$onlyOfficeFormat["name"]] = [
+                            "mime" => $onlyOfficeFormat["mime"][0],
+                            "type" => $onlyOfficeFormat["type"],
+                            "edit" => in_array("edit", $onlyOfficeFormat["actions"]),
+                            "editable" => in_array("lossy-edit", $onlyOfficeFormat["actions"]),
+                            "conv" => in_array("auto-convert", $onlyOfficeFormat["actions"]),
+                            "fillForms" => in_array("fill", $onlyOfficeFormat["actions"]),
+                            "saveas" => $onlyOfficeFormat["convert"],
+                        ];
+                        if (isset($additionalFormats[$onlyOfficeFormat["name"]])) {
+                            $result[$onlyOfficeFormat["name"]] = array_merge($result[$onlyOfficeFormat["name"]], $additionalFormats[$onlyOfficeFormat["name"]]);
+                        }
                     }
                 }
             }
+            return $result;
+        } catch (\Exception $e) {
+            $this->logger->logException($e, ["message" => "Format matrix error", "app" => $this->appName]);
+            return [];
         }
-        return $result;
     }
 
     /**
