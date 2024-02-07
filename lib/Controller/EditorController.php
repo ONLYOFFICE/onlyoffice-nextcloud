@@ -56,132 +56,23 @@ use OCA\Onlyoffice\FileVersions;
  * Controller with the main functions
  */
 class EditorController extends Controller {
-
-    /**
-     * Current user session
-     *
-     * @var IUserSession
-     */
-    private $userSession;
-
-    /**
-     * User manager
-     *
-     * @var IUserManager
-     */
-    private $userManager;
-
-    /**
-     * Root folder
-     *
-     * @var IRootFolder
-     */
-    private $root;
-
-    /**
-     * Url generator service
-     *
-     * @var IURLGenerator
-     */
-    private $urlGenerator;
-
-    /**
-     * l10n service
-     *
-     * @var IL10N
-     */
-    private $trans;
-
-    /**
-     * Logger
-     *
-     * @var ILogger
-     */
-    private $logger;
-
-    /**
-     * Application configuration
-     *
-     * @var AppConfig
-     */
-    private $config;
-
-    /**
-     * Hash generator
-     *
-     * @var Crypt
-     */
-    private $crypt;
-
-    /**
-     * File utility
-     *
-     * @var FileUtility
-     */
-    private $fileUtility;
-
-    /**
-     * File version manager
-     *
-     * @var IVersionManager
-    */
-    private $versionManager;
-
-    /**
-     * Share manager
-     *
-     * @var IManager
-     */
-    private $shareManager;
-
-    /**
-     * Group manager
-     *
-     * @var IGroupManager
-     */
-    private $groupManager;
-
-    /**
-     * @param string $AppName - application name
-     * @param IRequest $request - request object
-     * @param IRootFolder $root - root folder
-     * @param IUserSession $userSession - current user session
-     * @param IUserManager $userManager - user manager
-     * @param IURLGenerator $urlGenerator - url generator service
-     * @param IL10N $trans - l10n service
-     * @param ILogger $logger - logger
-     * @param AppConfig $config - application configuration
-     * @param Crypt $crypt - hash generator
-     * @param IManager $shareManager - Share manager
-     * @param ISession $session - Session
-     * @param IGroupManager $groupManager - group Manager
-     */
-    public function __construct($AppName,
-                                    IRequest $request,
-                                    IRootFolder $root,
-                                    IUserSession $userSession,
-                                    IUserManager $userManager,
-                                    IURLGenerator $urlGenerator,
-                                    IL10N $trans,
-                                    ILogger $logger,
-                                    AppConfig $config,
-                                    Crypt $crypt,
-                                    IManager $shareManager,
-                                    ISession $session,
-                                    IGroupManager $groupManager
-                                    ) {
-        parent::__construct($AppName, $request);
-
-        $this->userSession = $userSession;
-        $this->userManager = $userManager;
-        $this->root = $root;
-        $this->urlGenerator = $urlGenerator;
-        $this->trans = $trans;
-        $this->logger = $logger;
-        $this->config = $config;
-        $this->crypt = $crypt;
-        $this->shareManager = $shareManager;
-        $this->groupManager = $groupManager;
+    public function __construct(
+        private IUserSession $userSession,
+        private IUserManager $userManager,
+        private IRootFolder $root,
+        private IURLGenerator $urlGenerator,
+        private IL10N $trans,
+        private ILogger $logger,
+        private AppConfig $config,
+        private Crypt $crypt,
+        private FileUtility $fileUtility,
+        private ?IVersionManager $versionManager,
+        private IManager $shareManager,
+        private IGroupManager $groupManager,
+        string $appName,
+        IRequest $request,
+    ) {
+        parent::__construct($appName, $request);
 
         if (\OC::$server->getAppManager()->isInstalled("files_versions")) {
             try {
@@ -208,7 +99,7 @@ class EditorController extends Controller {
      * @NoAdminRequired
      * @PublicPage
      */
-    public function create($name, $dir, $templateId = null, $targetId = 0, $shareToken = null) {
+    public function create(string $name, string $dir, ?string $templateId = null, int $targetId = 0, ?string $shareToken = null): array {
         $this->logger->debug("Create: $name", ["app" => $this->appName]);
 
         if (empty($shareToken) && !$this->config->isUserAllowedToUse()) {
@@ -319,7 +210,7 @@ class EditorController extends Controller {
      * @NoAdminRequired
      * @NoCSRFRequired
      */
-    public function createNew($name, $dir, $templateId = null) {
+    public function createNew(string $name, string $dir, ?string $templateId = null): TemplateResponse|RedirectResponse {
         $this->logger->debug("Create from editor: $name in $dir", ["app" => $this->appName]);
 
         $result = $this->create($name, $dir, $templateId);
@@ -334,14 +225,14 @@ class EditorController extends Controller {
     /**
      * Get users
      *
-     * @param $fileId - file identifier
+     * @param int $fileId - file identifier
      *
      * @return array
      *
      * @NoAdminRequired
      * @NoCSRFRequired
      */
-    public function users($fileId) {
+    public function users(int $fileId): array {
         $this->logger->debug("Search users", ["app" => $this->appName]);
         $result = [];
         $currentUserGroups = [];
@@ -435,7 +326,7 @@ class EditorController extends Controller {
      * @NoAdminRequired
      * @NoCSRFRequired
      */
-    public function mention($fileId, $anchor, $comment, $emails) {
+    public function mention(int $fileId, string $anchor, string $comment, array $emails): array {
         $this->logger->debug("mention: from $fileId to " . json_encode($emails), ["app" => $this->appName]);
 
         if (!$this->config->isUserAllowedToUse()) {
@@ -565,7 +456,7 @@ class EditorController extends Controller {
      * @NoAdminRequired
      * @PublicPage
      */
-    public function reference($referenceData, $path = null) {
+    public function reference(array $referenceData, ?string $path = null): array {
         $this->logger->debug("reference: " . json_encode($referenceData) . " $path", ["app" => $this->appName]);
 
         if (!$this->config->isUserAllowedToUse()) {
@@ -626,7 +517,7 @@ class EditorController extends Controller {
     /**
      * Conversion file to Office Open XML format
      *
-     * @param integer $fileId - file identifier
+     * @param int $fileId - file identifier
      * @param string $shareToken - access token
      *
      * @return array
@@ -634,7 +525,7 @@ class EditorController extends Controller {
      * @NoAdminRequired
      * @PublicPage
      */
-    public function convert($fileId, $shareToken = null) {
+    public function convert(int $fileId, ?string $shareToken = null): array {
         $this->logger->debug("Convert: $fileId", ["app" => $this->appName]);
 
         if (empty($shareToken) && !$this->config->isUserAllowedToUse()) {
@@ -735,7 +626,7 @@ class EditorController extends Controller {
      *
      * @NoAdminRequired
      */
-    public function save($name, $dir, $url) {
+    public function save(string $name, string $dir, string $url): array {
         $this->logger->debug("Save: $name", ["app" => $this->appName]);
 
         if (!$this->config->isUserAllowedToUse()) {
@@ -786,13 +677,13 @@ class EditorController extends Controller {
     /**
      * Get versions history for file
      *
-     * @param integer $fileId - file identifier
+     * @param int $fileId - file identifier
      *
      * @return array
      *
      * @NoAdminRequired
      */
-    public function history($fileId) {
+    public function history(int $fileId): array {
         $this->logger->debug("Request history for: $fileId", ["app" => $this->appName]);
 
         if (!$this->config->isUserAllowedToUse()) {
@@ -903,14 +794,14 @@ class EditorController extends Controller {
     /**
      * Get file attributes of specific version
      *
-     * @param integer $fileId - file identifier
-     * @param integer $version - file version
+     * @param int $fileId - file identifier
+     * @param int $version - file version
      *
      * @return array
      *
      * @NoAdminRequired
      */
-    public function version($fileId, $version) {
+    public function version(int $fileId, int $version): array {
         $this->logger->debug("Request version for: $fileId ($version)", ["app" => $this->appName]);
 
         if (!$this->config->isUserAllowedToUse()) {
@@ -1005,14 +896,14 @@ class EditorController extends Controller {
     /**
      * Restore file version
      *
-     * @param integer $fileId - file identifier
-     * @param integer $version - file version
+     * @param int $fileId - file identifier
+     * @param int $version - file version
      *
      * @return array
      *
      * @NoAdminRequired
      */
-    public function restore($fileId, $version) {
+    public function restore(int $fileId, int $version): array {
         $this->logger->debug("Request restore version for: $fileId ($version)", ["app" => $this->appName]);
 
         if (!$this->config->isUserAllowedToUse()) {
@@ -1064,7 +955,7 @@ class EditorController extends Controller {
      *
      * @NoAdminRequired
      */
-    public function url($filePath) {
+    public function url(string $filePath): array {
         $this->logger->debug("Request url for: $filePath", ["app" => $this->appName]);
 
         if (!$this->config->isUserAllowedToUse()) {
@@ -1115,7 +1006,7 @@ class EditorController extends Controller {
      * @NoAdminRequired
      * @NoCSRFRequired
      */
-    public function download($fileId, $toExtension = null, $template = false) {
+    public function download(int $fileId, ?string $toExtension = null, bool $template = false): DataDownloadResponse|TemplateResponse {
         $this->logger->debug("Download: $fileId $toExtension", ["app" => $this->appName]);
 
         if (!$this->config->isUserAllowedToUse()) {
@@ -1196,10 +1087,10 @@ class EditorController extends Controller {
     /**
      * Print editor section
      *
-     * @param integer $fileId - file identifier
+     * @param int $fileId - file identifier
      * @param string $filePath - file path
      * @param string $shareToken - access token
-     * @param integer $version - file version
+     * @param int $version - file version
      * @param bool $inframe - open in frame
      * @param bool $inviewer - open in viewer
      * @param bool $template - file is template
@@ -1210,7 +1101,7 @@ class EditorController extends Controller {
      * @NoAdminRequired
      * @NoCSRFRequired
      */
-    public function index($fileId, $filePath = null, $shareToken = null, $version = 0, $inframe = false, $inviewer = false, $template = false, $anchor = null) {
+    public function index(int $fileId, ?string $filePath = null, ?string $shareToken = null, int $version = 0, bool $inframe = false, bool $inviewer = false, bool $template = false, ?string $anchor = null): TemplateResponse|RedirectResponse {
         $this->logger->debug("Open: $fileId ($version) $filePath ", ["app" => $this->appName]);
 
         $isLoggedIn = $this->userSession->isLoggedIn();
@@ -1289,9 +1180,9 @@ class EditorController extends Controller {
     /**
      * Print public editor section
      *
-     * @param integer $fileId - file identifier
+     * @param int $fileId - file identifier
      * @param string $shareToken - access token
-     * @param integer $version - file version
+     * @param int $version - file version
      * @param bool $inframe - open in frame
      *
      * @return TemplateResponse
@@ -1300,7 +1191,7 @@ class EditorController extends Controller {
      * @NoCSRFRequired
      * @PublicPage
      */
-    public function PublicPage($fileId, $shareToken, $version = 0, $inframe = false) {
+    public function PublicPage(int $fileId, string $shareToken, int $version = 0, bool $inframe = false): TemplateResponse {
         return $this->index($fileId, null, $shareToken, $version, $inframe);
     }
 
@@ -1308,13 +1199,13 @@ class EditorController extends Controller {
      * Getting file by identifier
      *
      * @param string $userId - user identifier
-     * @param integer $fileId - file identifier
+     * @param int $fileId - file identifier
      * @param string $filePath - file path
      * @param bool $template - file is template
      *
      * @return array
      */
-    private function getFile($userId, $fileId, $filePath = null, $template = false) {
+    private function getFile(stirng $userId, int $fileId, ?string $filePath = null, bool $template = false): array {
         if (empty($fileId)) {
             return [null, $this->trans->t("FileId is empty"), null];
         }
@@ -1357,13 +1248,13 @@ class EditorController extends Controller {
      * @param File $file - file
      * @param IUser $user - user with access
      * @param string $shareToken - access token
-     * @param integer $version - file version
+     * @param int $version - file version
      * @param bool $changes - is required url to file changes
      * @param bool $template - file is template
      *
      * @return string
      */
-    private function getUrl($file, $user = null, $shareToken = null, $version = 0, $changes = false, $template = false) {
+    private function getUrl(File $file, ?IUser $user = null, ?string $shareToken = null, int $version = 0, bool $changes = false, bool $template = false): string {
 
         $data = [
             "action" => "download",
@@ -1404,7 +1295,7 @@ class EditorController extends Controller {
      *
      * @return array
      */
-    private function getShareExcludedGroups() {
+    private function getShareExcludedGroups(): array {
         $excludedGroups = [];
 
         if (\OC::$server->getConfig()->getAppValue("core", "shareapi_exclude_groups", "no") === "yes") {
@@ -1421,7 +1312,7 @@ class EditorController extends Controller {
      *
      * @return string
      */
-    private function buildUserId($userId) {
+    private function buildUserId(string $userId): string {
         $instanceId = $this->config->GetSystemValue("instanceid", true);
         $userId = $instanceId . "_" . $userId;
         return $userId;
@@ -1435,7 +1326,7 @@ class EditorController extends Controller {
      *
      * @return TemplateResponse
      */
-    private function renderError($error, $hint = "") {
+    private function renderError(string $error, string $hint = ""): TemplateResponse {
         return new TemplateResponse("", "error", [
                 "errors" => [
                     [
