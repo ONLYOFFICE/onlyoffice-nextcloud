@@ -90,7 +90,9 @@
     }
 
     OCA.Onlyoffice.onDocumentReady = function (documentType) {
-        if (documentType === "word") {
+        if (documentType === "word"
+            || documentType === "cell"
+            || documentType === "slide") {
             if (OCA.Onlyoffice.bindVersionClick) {
                 OCA.Onlyoffice.bindVersionClick();
             }
