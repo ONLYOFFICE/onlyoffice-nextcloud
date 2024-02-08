@@ -309,7 +309,7 @@
 
     OCA.Onlyoffice.CreateFormClick = function (fileName, context) {
         var fileList = context.fileList;
-        var name = fileName.replace(/\.[^.]+$/, ".oform");
+        var name = fileName.replace(/\.[^.]+$/, ".pdf");
         var targetId = context.fileInfoModel.id;
 
         OCA.Onlyoffice.CreateFile(name, fileList, 0, targetId, false);
