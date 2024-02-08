@@ -27,7 +27,7 @@ jobs:
           rm -rf ./.github/
           rm -rf ./.git/
           rm ./.gitmodules
-          rm -rf ./assets/.git
+          rm -rf ./assets/document-templates/.git
           cd $cwd
           tar -czvf onlyoffice.tar.gz onlyoffice
       - name: Upload Artifact
