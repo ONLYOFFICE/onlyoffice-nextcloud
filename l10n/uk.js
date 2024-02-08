@@ -116,7 +116,6 @@ OC.L10N.register(
     "Create new Form template": "Створити новий шаблон форми",
     "Create form": "Створити форму",
     "Fill in form in ONLYOFFICE": "Заповнити форму у ONLYOFFICE",
-    "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online": "Оновіть сервер ONLYOFFICE Docs до версії 7.0 для роботи з формами в онлайні",
     "Security": "Безпека",
     "Run document macros": "Виконувати макроси документу",
     "Anonymous": "Гість",

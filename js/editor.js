@@ -122,12 +122,6 @@
                         return;
                     }
 
-                    if ((config.document.fileType === "docxf" || config.document.fileType === "oform")
-                        && docsVersion[0] < 7) {
-                        OCA.Onlyoffice.showMessage(t(OCA.Onlyoffice.AppName, "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online"), "error", {timeout: -1});
-                        return;
-                    }
-
                     var docIsChanged = null;
                     var docIsChangedTimeout = null;
 

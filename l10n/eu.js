@@ -116,7 +116,6 @@ OC.L10N.register(
     "Create new Form template": "Sortu inprimaki txantiloi berria",
     "Create form": "Sortu inprimakia",
     "Fill in form in ONLYOFFICE": "Bete inprimakia ONLYOFFICE-en",
-    "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online": "Mesdez, eguneratu ONLYOFFICE Docs 7.0 bertsiora inprimagarri betegarriekin linean lan egiteko",
     "Security": "Segurtasuna",
     "Run document macros": "Exekutatu dokumentuen macroak",
     "Anonymous": "Anonimoa",

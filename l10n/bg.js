@@ -116,7 +116,6 @@ OC.L10N.register(
     "Create new Form template": "Създайте нов шаблон на формуляр",
     "Create form": "Създайте формуляр",
     "Fill in form in ONLYOFFICE": "Попълнете формуляр в ONLYOFFICE",
-    "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online": "Молим да актуализирате ONLYOFFICE Docs към версия 7.0, за да работи с онлайн формуляри за попълване",
     "Security": "Сигурност",
     "Anonymous": "Анонимен",
     "Light": "Светла",
