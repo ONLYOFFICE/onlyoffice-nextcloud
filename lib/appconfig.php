@@ -1365,6 +1365,12 @@ class AppConfig {
                 "comment" => true,
                 "modifyFilter" => true,
             ],
+            "txt" => [
+                "edit" => true,
+            ],
+            "csv" => [
+                "edit" => true,
+            ],
         ];
         return $additionalFormatAttributes;
     }
