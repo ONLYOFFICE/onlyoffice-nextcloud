@@ -198,6 +198,7 @@
             var sameTab = $("#onlyofficeSameTab").is(":checked");
             var preview = $("#onlyofficePreview").is(":checked");
             var advanced = $("#onlyofficeAdvanced").is(":checked");
+            var cronChecker = $("#onlyofficeCronChecker").is(":checked");
             var versionHistory = $("#onlyofficeVersionHistory").is(":checked");
 
             var limitGroupsString = $("#onlyofficeGroups").prop("checked") ? $("#onlyofficeLimitGroups").val() : "";
@@ -221,6 +222,7 @@
                     sameTab: sameTab,
                     preview: preview,
                     advanced: advanced,
+                    cronChecker: cronChecker,
                     versionHistory: versionHistory,
                     limitGroups: limitGroups,
                     chat: chat,

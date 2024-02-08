@@ -16,6 +16,7 @@
 - selecting a document to combine from the storage
 - opening a reference data source
 - changing a reference data source
+- setting for disable editors cron check
 
 ## 7.9.4
 ## Changed
