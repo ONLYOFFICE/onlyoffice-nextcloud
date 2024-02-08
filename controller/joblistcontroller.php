@@ -90,7 +90,7 @@ class JobListController extends Controller {
      *
      */
     private function checkEditorsCheckJob() {
-        if ($this->config->getCronChecker()) {
+        if (!$this->config->getCronChecker()) {
             $this->removeJob(EditorsCheck::class);
             return;
         }

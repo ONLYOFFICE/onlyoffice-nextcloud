@@ -132,7 +132,7 @@ if ($_["tagsEnabled"]) {
     <p>
         <input type="checkbox" class="checkbox" id="onlyofficeCronChecker"
             <?php if ($_["cronChecker"]) { ?>checked="checked"<?php } ?> />
-        <label for="onlyofficeCronChecker"><?php p($l->t("Disable cron check (scheduled task of checking connection to the editors)")) ?></label>
+        <label for="onlyofficeCronChecker"><?php p($l->t("Enable background connection check to the editors")) ?></label>
     </p>
 
     <p class="onlyoffice-header"><?php p($l->t("The default application for opening the format")) ?></p>

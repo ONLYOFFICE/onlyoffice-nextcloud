@@ -724,7 +724,7 @@ class AppConfig {
      * @return bool
      */
     public function getCronChecker() {
-        return $this->config->getAppValue($this->appName, $this->_cronChecker, "false") === "true";
+        return $this->config->getAppValue($this->appName, $this->_cronChecker, "true") !== "false";
     }
 
     /**
@@ -733,7 +733,7 @@ class AppConfig {
      * @param bool $value - cronChecker
      */
     public function setCronChecker($value) {
-        $this->logger->info("Set disable cron checker: " . json_encode($value), ["app" => $this->appName]);
+        $this->logger->info("Set cron checker: " . json_encode($value), ["app" => $this->appName]);
 
         $this->config->setAppValue($this->appName, $this->_cronChecker, json_encode($value));
     }
