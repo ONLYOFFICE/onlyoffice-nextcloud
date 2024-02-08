@@ -8,6 +8,7 @@
 - fixed opening file without download access
 - Nextcloud v25 is no longer supported
 - Arabic and Serbian empty file templates
+- When creating a form from docx, pdf is created instead of oform
 
 ## Added
 - advanced access rights for talk files and share links
