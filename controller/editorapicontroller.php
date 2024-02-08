@@ -342,6 +342,11 @@ class EditorApiController extends OCSController {
         if ($fileStorage->instanceOfStorage("\OCA\Files_Sharing\SharedStorage") || !empty($shareToken)) {
             $shareId = empty($share) ? $fileStorage->getShareId() : $share->getId();
 
+            $params["editorConfig"]["coEditing"] = [
+                "mode" => "strict",
+                "change" => false
+            ];
+
             $extraPermissions = null;
             if ($this->extraPermissions !== null) {
                 $extraPermissions = $this->extraPermissions->getExtra($shareId);

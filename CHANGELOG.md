@@ -7,6 +7,7 @@
 - fixed error display in the mobile application
 - fixed opening file without download access
 - Nextcloud v25 is no longer supported
+- offline viewer for share link
 
 ## Added
 - advanced access rights for talk files and share links
