@@ -7,12 +7,15 @@
 - fixed error display in the mobile application
 - fixed opening file without download access
 - Nextcloud v25 is no longer supported
-- users without email are now added to the list of users to protect ranges of cells
+- Arabic and Serbian empty file templates
+- list of users to protect ranges of cells
 
 ## Added
 - advanced access rights for talk files and share links
 - reference data from coediting
 - selecting a document to combine from the storage
+- opening a reference data source
+- changing a reference data source
 
 ## 7.9.4
 ## Changed

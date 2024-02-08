@@ -608,6 +608,7 @@ class EditorController extends Controller {
         $fileName = $file->getName();
         $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
         $key = $this->fileUtility->getKey($file);
+        $key = DocumentService::generateRevisionId($key);
 
         $response = [
             "fileType" => $ext,
