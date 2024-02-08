@@ -8,6 +8,7 @@
 - fixed opening file without download access
 - Nextcloud v25 is no longer supported
 - Arabic and Serbian empty file templates
+- list of users to protect ranges of cells
 
 ## Added
 - advanced access rights for talk files and share links
