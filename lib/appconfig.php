@@ -1393,6 +1393,9 @@ class AppConfig {
             "oform" => [
                 "def" => true,
             ],
+            "pdf" => [
+                "def" => true,
+            ],
             "pptx" => [
                 "def" => true,
                 "comment" => true,
