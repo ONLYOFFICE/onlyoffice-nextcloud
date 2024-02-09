@@ -116,7 +116,6 @@ OC.L10N.register(
     "Create new Form template": "Creare un nuovo modello di modulo",
     "Create form": "Creare modulo",
     "Fill in form in ONLYOFFICE": "Compilare il modulo in ONLYOFFICE",
-    "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online": "Si prega di aggiornare ONLYOFFICE Docs alla versione 7.0 per lavorare su moduli compilabili online",
     "Security": "Sicurezza",
     "Run document macros": "Esegui le macro del documento",
     "Anonymous": "Anonimo",
