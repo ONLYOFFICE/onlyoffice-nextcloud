@@ -116,7 +116,6 @@ OC.L10N.register(
     "Create new Form template": "Opret ny formularskabelon",
     "Create form": "Opret formular",
     "Fill in form in ONLYOFFICE": "Udfyld formularen i ONLYOFFICE",
-    "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online": "Opdater venligst ONLYOFFICE Docs til version 7.0 for at arbejde på udfyldelige formularer online",
     "Security": "Sikkerhed",
     "Run document macros": "Kør dokumentmakroer",
     "Anonymous": "Anonym",

@@ -116,7 +116,6 @@ OC.L10N.register(
     "Create new Form template": "Создать новый Шаблон формы",
     "Create form": "Создать форму",
     "Fill in form in ONLYOFFICE": "Заполнить форму в ONLYOFFICE",
-    "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online": "Обновите сервер ONLYOFFICE Docs до версии 7.0 для работы с формами онлайн",
     "Security": "Безопасность",
     "Run document macros": "Запускать макросы документа",
     "Anonymous": "Аноним",
@@ -143,6 +142,7 @@ OC.L10N.register(
     "conversation": "беседа",
     "Select file to combine" : "Выбрать файл для объединения",
     "Select data source": "Выбрать источник данных",
-    "The data source must not be the current document": "Источником данных не должен быть текущий документ"
+    "The data source must not be the current document": "Источником данных не должен быть текущий документ",
+    "Enable background connection check to the editors": "Включить фоновую проверку подключения к редакторам"
 },
 "nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);");

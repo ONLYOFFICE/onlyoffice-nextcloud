@@ -1,6 +1,6 @@
 /**
  *
- * (c) Copyright Ascensio System SIA 2023
+ * (c) Copyright Ascensio System SIA 2024
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -198,6 +198,7 @@
             var sameTab = $("#onlyofficeSameTab").is(":checked");
             var preview = $("#onlyofficePreview").is(":checked");
             var advanced = $("#onlyofficeAdvanced").is(":checked");
+            var cronChecker = $("#onlyofficeCronChecker").is(":checked");
             var versionHistory = $("#onlyofficeVersionHistory").is(":checked");
 
             var limitGroupsString = $("#onlyofficeGroups").prop("checked") ? $("#onlyofficeLimitGroups").val() : "";
@@ -221,6 +222,7 @@
                     sameTab: sameTab,
                     preview: preview,
                     advanced: advanced,
+                    cronChecker: cronChecker,
                     versionHistory: versionHistory,
                     limitGroups: limitGroups,
                     chat: chat,

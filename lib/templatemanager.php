@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System SIA 2023
+ * (c) Copyright Ascensio System SIA 2024
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -232,6 +232,7 @@ class TemplateManager {
      * @var Array
      */
     private static $localPath = [
+        "ar" => "ar-SA",
         "az" => "az-Latn-AZ",
         "bg" => "bg-BG",
         "cs" => "cs-CZ",
@@ -255,6 +256,7 @@ class TemplateManager {
         "ru" => "ru-RU",
         "si" => "si-LK",
         "sk" => "sk-SK",
+        "sr" => "sr-Latn-RS",
         "sv" => "sv-SE",
         "tr" => "tr-TR",
         "uk" => "uk-UA",

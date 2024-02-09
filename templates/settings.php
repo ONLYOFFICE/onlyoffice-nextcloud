@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System SIA 2023
+ * (c) Copyright Ascensio System SIA 2024
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -127,6 +127,12 @@ if ($_["tagsEnabled"]) {
             <?php if ($_["versionHistory"]) { ?>checked="checked"<?php } ?> />
         <label for="onlyofficeVersionHistory"><?php p($l->t("Keep metadata for each version once the document is edited (it will take up disk space)")) ?></label>
         <button id="onlyofficeClearVersionHistory" class="button"><?php p($l->t("Clear")) ?></button>
+    </p>
+
+    <p>
+        <input type="checkbox" class="checkbox" id="onlyofficeCronChecker"
+            <?php if ($_["cronChecker"]) { ?>checked="checked"<?php } ?> />
+        <label for="onlyofficeCronChecker"><?php p($l->t("Enable background connection check to the editors")) ?></label>
     </p>
 
     <p class="onlyoffice-header"><?php p($l->t("The default application for opening the format")) ?></p>

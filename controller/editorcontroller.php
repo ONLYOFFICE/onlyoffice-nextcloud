@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System SIA 2023
+ * (c) Copyright Ascensio System SIA 2024
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -334,13 +334,14 @@ class EditorController extends Controller {
      * Get users
      *
      * @param $fileId - file identifier
+     * @param $operationType - type of operation
      *
      * @return array
      *
      * @NoAdminRequired
      * @NoCSRFRequired
      */
-    public function users($fileId) {
+    public function users($fileId, $operationType = null) {
         $this->logger->debug("Search users", ["app" => $this->appName]);
         $result = [];
         $currentUserGroups = [];
@@ -410,11 +411,15 @@ class EditorController extends Controller {
 
         foreach ($users as $user) {
             $email = $user->getEMailAddress();
-            if ($user->getUID() != $currentUserId && !empty($email)) {
-                array_push($result, [
-                    "email" => $email,
-                    "name" => $user->getDisplayName()
-                ]);
+            if ($user->getUID() != $currentUserId && (!empty($email) || $operationType === "protect")) {
+                $userElement = [
+                    "name" => $user->getDisplayName(),
+                    "id" => $user->getUID()
+                ];
+                if (!empty($email)) {
+                    $userElement["email"] = $email;
+                }
+                array_push($result, $userElement);
             }
         }
 
@@ -603,6 +608,7 @@ class EditorController extends Controller {
         $fileName = $file->getName();
         $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
         $key = $this->fileUtility->getKey($file);
+        $key = DocumentService::generateRevisionId($key);
 
         $response = [
             "fileType" => $ext,

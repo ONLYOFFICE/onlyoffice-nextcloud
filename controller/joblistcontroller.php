@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System SIA 2023
+ * (c) Copyright Ascensio System SIA 2024
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -90,6 +90,10 @@ class JobListController extends Controller {
      *
      */
     private function checkEditorsCheckJob() {
+        if (!$this->config->getCronChecker()) {
+            $this->removeJob(EditorsCheck::class);
+            return;
+        }
         if ($this->config->getEditorsCheckInterval() > 0) {
             $this->addJob(EditorsCheck::class);
         } else {

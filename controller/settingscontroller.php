@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System SIA 2023
+ * (c) Copyright Ascensio System SIA 2024
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -117,6 +117,7 @@ class SettingsController extends Controller {
             "sameTab" => $this->config->getSameTab(),
             "preview" => $this->config->getPreview(),
             "advanced" => $this->config->getAdvanced(),
+            "cronChecker" => $this->config->getCronChecker(),
             "versionHistory" => $this->config->getVersionHistory(),
             "protection" => $this->config->getProtection(),
             "limitGroups" => $this->config->getLimitGroups(),
@@ -203,6 +204,7 @@ class SettingsController extends Controller {
      * @param bool $sameTab - open in the same tab
      * @param bool $preview - generate preview files
      * @param bool $advanced - use advanced tab
+     * @param bool $cronChecker - disable cron checker
      * @param bool $versionHistory - keep version history
      * @param array $limitGroups - list of groups
      * @param bool $chat - display chat
@@ -221,6 +223,7 @@ class SettingsController extends Controller {
         $sameTab,
         $preview,
         $advanced,
+        $cronChecker,
         $versionHistory,
         $limitGroups,
         $chat,
@@ -238,6 +241,7 @@ class SettingsController extends Controller {
         $this->config->setSameTab($sameTab);
         $this->config->setPreview($preview);
         $this->config->setAdvanced($advanced);
+        $this->config->setCronChecker($cronChecker);
         $this->config->setVersionHistory($versionHistory);
         $this->config->setLimitGroups($limitGroups);
         $this->config->setCustomizationChat($chat);

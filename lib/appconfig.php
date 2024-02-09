@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System SIA 2023
+ * (c) Copyright Ascensio System SIA 2024
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,8 @@ namespace OCA\Onlyoffice;
 
 use \DateInterval;
 use \DateTime;
+use OCP\ICache;
+use OCP\ICacheFactory;
 use OCP\IConfig;
 use OCP\ILogger;
 
@@ -121,6 +123,13 @@ class AppConfig {
      * @var string
      */
     private $_advanced = "advanced";
+
+    /**
+     * The config key for the cronChecker
+     *
+     * @var string
+     */
+    private $_cronChecker = "cronChecker";
 
     /**
      * The config key for the keep versions history
@@ -326,6 +335,13 @@ class AppConfig {
     private $_editors_check_interval = "editors_check_interval";
 
     /**
+     * The config key for store cache
+     *
+     * @var ICache
+     */
+    private $cache;
+
+    /**
      * @param string $AppName - application name
      */
     public function __construct($AppName) {
@@ -334,6 +350,8 @@ class AppConfig {
 
         $this->config = \OC::$server->getConfig();
         $this->logger = \OC::$server->getLogger();
+        $cacheFactory = \OC::$server->get(ICacheFactory::class);
+        $this->cache = $cacheFactory->createLocal($this->appName);
     }
 
     /**
@@ -709,6 +727,26 @@ class AppConfig {
         $this->logger->info("Set advanced: " . json_encode($value), ["app" => $this->appName]);
 
         $this->config->setAppValue($this->appName, $this->_advanced, json_encode($value));
+    }
+
+    /**
+     * Get cron checker setting
+     *
+     * @return bool
+     */
+    public function getCronChecker() {
+        return $this->config->getAppValue($this->appName, $this->_cronChecker, "true") !== "false";
+    }
+
+    /**
+     * Save cron checker setting
+     *
+     * @param bool $value - cronChecker
+     */
+    public function setCronChecker($value) {
+        $this->logger->info("Set cron checker: " . json_encode($value), ["app" => $this->appName]);
+
+        $this->config->setAppValue($this->appName, $this->_cronChecker, json_encode($value));
     }
 
     /**
@@ -1301,12 +1339,11 @@ class AppConfig {
      */
     private function buildOnlyofficeFormats() {
         try {
-            $onlyofficeFormats = file_get_contents(dirname(__DIR__) . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . "document-formats" . DIRECTORY_SEPARATOR . "onlyoffice-docs-formats.json");
-            $onlyofficeFormats = json_decode($onlyofficeFormats, true);
+            $onlyofficeFormats = $this->getFormats();
             $result = [];
             $additionalFormats = $this->getAdditionalFormatAttributes();
 
-            if ($onlyofficeFormats !== false) { 
+            if ($onlyofficeFormats !== false) {
                 foreach ($onlyofficeFormats as $onlyOfficeFormat) {
                     if ($onlyOfficeFormat["name"]
                         && $onlyOfficeFormat["mime"]
@@ -1365,8 +1402,31 @@ class AppConfig {
                 "comment" => true,
                 "modifyFilter" => true,
             ],
+            "txt" => [
+                "edit" => true,
+            ],
+            "csv" => [
+                "edit" => true,
+            ],
         ];
         return $additionalFormatAttributes;
+    }
+
+    /**
+     * Get the formats list from cache or file
+     *
+     * @return array
+     */
+    public function getFormats() {
+        $cachedFormats = $this->cache->get("document_formats");
+        if ($cachedFormats !== null) {
+            return json_decode($cachedFormats, true);
+        }
+
+        $formats = file_get_contents(dirname(__DIR__) . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . "document-formats" . DIRECTORY_SEPARATOR . "onlyoffice-docs-formats.json");
+        $this->cache->set("document_formats", $formats, 6 * 3600);
+        $this->logger->debug("Getting formats from file", ["app" => $this->appName]);
+        return json_decode($formats, true);
     }
 
     /**
