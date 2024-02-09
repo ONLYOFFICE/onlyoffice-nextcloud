@@ -8,6 +8,7 @@
 - fixed opening file without download access
 - Nextcloud v25 is no longer supported
 - offline viewer for share link
+- updatable list of supported formats
 
 ## Added
 - advanced access rights for talk files and share links

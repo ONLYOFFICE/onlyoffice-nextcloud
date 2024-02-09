@@ -76,7 +76,7 @@
                 return format.mime;
             }
         });
-
+        mimes.flat();
         OCA.Viewer.registerHandler({
             id: OCA.Onlyoffice.AppName,
             group: null,

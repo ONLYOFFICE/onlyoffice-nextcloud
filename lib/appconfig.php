@@ -21,6 +21,8 @@ namespace OCA\Onlyoffice;
 
 use \DateInterval;
 use \DateTime;
+use OCP\ICache;
+use OCP\ICacheFactory;
 use OCP\IConfig;
 use OCP\ILogger;
 
@@ -333,6 +335,13 @@ class AppConfig {
     private $_editors_check_interval = "editors_check_interval";
 
     /**
+     * The config key for store cache
+     *
+     * @var ICache
+     */
+    private $cache;
+
+    /**
      * @param string $AppName - application name
      */
     public function __construct($AppName) {
@@ -341,6 +350,8 @@ class AppConfig {
 
         $this->config = \OC::$server->getConfig();
         $this->logger = \OC::$server->getLogger();
+        $cacheFactory = \OC::$server->get(ICacheFactory::class);
+        $this->cache = $cacheFactory->createLocal($this->appName);
     }
 
     /**
@@ -1248,7 +1259,7 @@ class AppConfig {
      * @NoAdminRequired
      */
     public function formatsSetting() {
-        $result = $this->formats;
+        $result = $this->buildOnlyofficeFormats();
 
         $defFormats = $this->getDefaultFormats();
         foreach ($defFormats as $format => $setting) {
@@ -1322,47 +1333,101 @@ class AppConfig {
     }
 
     /**
-     * Additional data about formats
+     * Get ONLYOFFICE formats list
      *
-     * @var array
+     * @return array
      */
-    private $formats = [
-        "csv" => [ "mime" => "text/csv", "type" => "cell", "edit" => true, "editable" => true, "saveas" => ["ods", "pdf", "xlsx"] ],
-        "doc" => [ "mime" => "application/msword", "type" => "word", "conv" => true, "saveas" => ["docx", "odt", "pdf", "rtf", "txt"] ],
-        "docm" => [ "mime" => "application/vnd.ms-word.document.macroEnabled.12", "type" => "word", "conv" => true, "saveas" => ["docx", "odt", "pdf", "rtf", "txt"] ],
-        "docx" => [ "mime" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "type" => "word", "edit" => true, "def" => true, "review" => true, "comment" => true, "saveas" => ["odt", "pdf", "rtf", "txt", "docxf"] ],
-        "docxf" => [ "mime" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document.docxf", "type" => "word", "edit" => true, "def" => true, "review" => true, "comment" => true, "saveas" => ["odt", "pdf", "rtf", "txt"], "createForm" => true ],
-        "oform" => [ "mime" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document.oform", "type" => "word", "fillForms" => true, "def" => true ],
-        "dot" => [ "type" => "word", "conv" => true, "saveas" => ["docx", "odt", "pdf", "rtf", "txt"] ],
-        "dotx" => [ "mime" => "application/vnd.openxmlformats-officedocument.wordprocessingml.template", "type" => "word", "conv" => true, "saveas" => ["docx", "odt", "pdf", "rtf", "txt"] ],
-        "epub" => [ "mime" => "application/epub+zip", "type" => "word", "conv" => true, "saveas" => ["docx", "odt", "pdf", "rtf", "txt"] ],
-        "htm" => [ "type" => "word", "conv" => true ],
-        "html" => [ "mime" => "text/html", "type" => "word", "conv" => true, "saveas" => ["docx", "odt", "pdf", "rtf", "txt"] ],
-        "odp" => [ "mime" => "application/vnd.oasis.opendocument.presentation", "type" => "slide", "conv" => true, "editable" => true, "saveas" => ["pdf", "pptx"] ],
-        "ods" => [ "mime" => "application/vnd.oasis.opendocument.spreadsheet", "type" => "cell", "conv" => true, "editable" => true, "saveas" => ["csv", "pdf", "xlsx"] ],
-        "odt" => [ "mime" => "application/vnd.oasis.opendocument.text", "type" => "word", "conv" => true, "editable" => true, "saveas" => ["docx", "pdf", "rtf", "txt"] ],
-        "otp" => [ "mime" => "application/vnd.oasis.opendocument.presentation-template", "type" => "slide", "conv" => true, "saveas" => ["pdf", "pptx", "odp"] ],
-        "ots" => [ "mime" => "application/vnd.oasis.opendocument.spreadsheet-template", "type" => "cell", "conv" => true, "saveas" => ["csv", "ods", "pdf", "xlsx"] ],
-        "ott" => [ "mime" => "application/vnd.oasis.opendocument.text-template", "type" => "word", "conv" => true, "saveas" => ["docx", "odt", "pdf", "rtf", "txt"] ],
-        "pdf" => [ "mime" => "application/pdf", "type" => "word" ],
-        "pot" => [ "type" => "slide", "conv" => true, "saveas" => ["pdf", "pptx", "odp"] ],
-        "potm" => [ "mime" => "application/vnd.ms-powerpoint.template.macroEnabled.12", "type" => "slide", "conv" => true, "saveas" => ["pdf", "pptx", "odp"] ],
-        "potx" => [ "mime" => "application/vnd.openxmlformats-officedocument.presentationml.template", "type" => "slide", "conv" => true, "saveas" => ["pdf", "pptx", "odp"] ],
-        "pps" => [ "type" => "slide", "conv" => true, "saveas" => ["pdf", "pptx", "odp"] ],
-        "ppsm" => [ "mime" => "application/vnd.ms-powerpoint.slideshow.macroEnabled.12", "type" => "slide", "conv" => true, "saveas" => ["pdf", "pptx", "odp"] ],
-        "ppsx" => [ "mime" => "application/vnd.openxmlformats-officedocument.presentationml.slideshow", "type" => "slide", "conv" => true, "saveas" => ["pdf", "pptx", "odp"] ],
-        "ppt" => [ "mime" => "application/vnd.ms-powerpoint", "type" => "slide", "conv" => true, "saveas" => ["pdf", "pptx", "odp"] ],
-        "pptm" => [ "mime" => "application/vnd.ms-powerpoint.presentation.macroEnabled.12", "type" => "slide", "conv" => true, "saveas" => ["pdf", "pptx", "odp"] ],
-        "pptx" => [ "mime" => "application/vnd.openxmlformats-officedocument.presentationml.presentation", "type" => "slide", "edit" => true, "def" => true, "comment" => true, "saveas" => ["pdf", "odp"] ],
-        "rtf" => [ "mime" => "text/rtf", "type" => "word", "conv" => true, "editable" => true, "saveas" => ["docx", "odt", "pdf", "txt"] ],
-        "txt" => [ "mime" => "text/plain", "type" => "word", "edit" => true, "editable" => true, "saveas" => ["docx", "odt", "pdf", "rtf"] ],
-        "xls" => [ "mime" => "application/vnd.ms-excel", "type" => "cell", "conv" => true, "saveas" => ["csv", "ods", "pdf", "xlsx"] ],
-        "xlsm" => [ "mime" => "application/vnd.ms-excel.sheet.macroEnabled.12", "type" => "cell", "conv" => true, "saveas" => ["csv", "ods", "pdf", "xlsx"] ],
-        "xlsx" => [ "mime" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "type" => "cell", "edit" => true, "def" => true, "comment" => true, "modifyFilter" => true, "saveas" => ["csv", "ods", "pdf"] ],
-        "xlt" => [ "type" => "cell", "conv" => true, "saveas" => ["csv", "ods", "pdf", "xlsx"] ],
-        "xltm" => [ "mime" => "application/vnd.ms-excel.template.macroEnabled.12", "type" => "cell", "conv" => true, "saveas" => ["csv", "ods", "pdf", "xlsx"] ],
-        "xltx" => [ "mime" => "application/vnd.openxmlformats-officedocument.spreadsheetml.template", "type" => "cell", "conv" => true, "saveas" => ["csv", "ods", "pdf", "xlsx"] ]
-    ];
+    private function buildOnlyofficeFormats() {
+        try {
+            $onlyofficeFormats = $this->getFormats();
+            $result = [];
+            $additionalFormats = $this->getAdditionalFormatAttributes();
+
+            if ($onlyofficeFormats !== false) {
+                foreach ($onlyofficeFormats as $onlyOfficeFormat) {
+                    if ($onlyOfficeFormat["name"]
+                        && $onlyOfficeFormat["mime"]
+                        && $onlyOfficeFormat["type"]
+                        && $onlyOfficeFormat["actions"]
+                        && $onlyOfficeFormat["convert"]) {
+                        $result[$onlyOfficeFormat["name"]] = [
+                            "mime" => $onlyOfficeFormat["mime"],
+                            "type" => $onlyOfficeFormat["type"],
+                            "edit" => in_array("edit", $onlyOfficeFormat["actions"]),
+                            "editable" => in_array("lossy-edit", $onlyOfficeFormat["actions"]),
+                            "conv" => in_array("auto-convert", $onlyOfficeFormat["actions"]),
+                            "fillForms" => in_array("fill", $onlyOfficeFormat["actions"]),
+                            "saveas" => $onlyOfficeFormat["convert"],
+                        ];
+                        if (isset($additionalFormats[$onlyOfficeFormat["name"]])) {
+                            $result[$onlyOfficeFormat["name"]] = array_merge($result[$onlyOfficeFormat["name"]], $additionalFormats[$onlyOfficeFormat["name"]]);
+                        }
+                    }
+                }
+            }
+            return $result;
+        } catch (\Exception $e) {
+            $this->logger->logException($e, ["message" => "Format matrix error", "app" => $this->appName]);
+            return [];
+        }
+    }
+
+    /**
+     * Get the additional format attributes
+     *
+     * @return array
+     */
+    private function getAdditionalFormatAttributes() {
+        $additionalFormatAttributes = [
+            "docx" => [
+                "def" => true,
+                "review" => true,
+                "comment" => true,
+            ],
+            "docxf" => [
+                "def" => true,
+                "review" => true,
+                "comment" => true,
+                "createForm" => true,
+            ],
+            "oform" => [
+                "def" => true,
+            ],
+            "pptx" => [
+                "def" => true,
+                "comment" => true,
+            ],
+            "xlsx" => [
+                "def" => true,
+                "comment" => true,
+                "modifyFilter" => true,
+            ],
+            "txt" => [
+                "edit" => true,
+            ],
+            "csv" => [
+                "edit" => true,
+            ],
+        ];
+        return $additionalFormatAttributes;
+    }
+
+    /**
+     * Get the formats list from cache or file
+     *
+     * @return array
+     */
+    public function getFormats() {
+        $cachedFormats = $this->cache->get("document_formats");
+        if ($cachedFormats !== null) {
+            return json_decode($cachedFormats, true);
+        }
+
+        $formats = file_get_contents(dirname(__DIR__) . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . "document-formats" . DIRECTORY_SEPARATOR . "onlyoffice-docs-formats.json");
+        $this->cache->set("document_formats", $formats, 6 * 3600);
+        $this->logger->debug("Getting formats from file", ["app" => $this->appName]);
+        return json_decode($formats, true);
+    }
 
     /**
      * DEMO DATA

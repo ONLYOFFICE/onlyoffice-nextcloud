@@ -156,7 +156,7 @@ if ($_["tagsEnabled"]) {
     </p>
     <div class="onlyoffice-exts">
         <?php foreach ($_["formats"] as $format => $setting) { ?>
-            <?php if (array_key_exists("editable", $setting)) { ?>
+            <?php if (array_key_exists("editable", $setting) && $setting["editable"]) { ?>
             <div>
                 <input type="checkbox" class="checkbox"
                     id="onlyofficeEditFormat<?php p($format) ?>"
