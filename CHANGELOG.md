@@ -9,7 +9,7 @@
 - Nextcloud v25 is no longer supported
 - offline viewer for share link
 - updatable list of supported formats
-- When creating a form from docx, pdf is created instead of oform
+- filling pdf instead oform
 
 ## Added
 - advanced access rights for talk files and share links
