@@ -21,6 +21,8 @@ namespace OCA\Onlyoffice;
 
 use \DateInterval;
 use \DateTime;
+use OCP\ICache;
+use OCP\ICacheFactory;
 use OCP\IConfig;
 use OCP\ILogger;
 
@@ -326,6 +328,13 @@ class AppConfig {
     private $_editors_check_interval = "editors_check_interval";
 
     /**
+     * The config key for store cache
+     *
+     * @var ICache
+     */
+    private $cache;
+
+    /**
      * @param string $AppName - application name
      */
     public function __construct($AppName) {
@@ -334,6 +343,8 @@ class AppConfig {
 
         $this->config = \OC::$server->getConfig();
         $this->logger = \OC::$server->getLogger();
+        $cacheFactory = \OC::$server->get(ICacheFactory::class);
+        $this->cache = $cacheFactory->createLocal($this->appName);
     }
 
     /**
@@ -1301,8 +1312,7 @@ class AppConfig {
      */
     private function buildOnlyofficeFormats() {
         try {
-            $onlyofficeFormats = file_get_contents(dirname(__DIR__) . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . "document-formats" . DIRECTORY_SEPARATOR . "onlyoffice-docs-formats.json");
-            $onlyofficeFormats = json_decode($onlyofficeFormats, true);
+            $onlyofficeFormats = $this->getFormats();
             $result = [];
             $additionalFormats = $this->getAdditionalFormatAttributes();
 
@@ -1373,6 +1383,23 @@ class AppConfig {
             ],
         ];
         return $additionalFormatAttributes;
+    }
+
+    /**
+     * Get the formats list from cache or file
+     *
+     * @return array
+     */
+    public function getFormats() {
+        $cachedFormats = $this->cache->get("document_formats");
+        if ($cachedFormats !== null) {
+            return json_decode($cachedFormats, true);
+        }
+
+        $formats = file_get_contents(dirname(__DIR__) . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . "document-formats" . DIRECTORY_SEPARATOR . "onlyoffice-docs-formats.json");
+        $this->cache->set("document_formats", $formats, 6 * 3600);
+        $this->logger->debug("Getting formats from file", ["app" => $this->appName]);
+        return json_decode($formats, true);
     }
 
     /**
