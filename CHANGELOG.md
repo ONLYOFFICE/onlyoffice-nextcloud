@@ -8,6 +8,7 @@
 - fixed opening file without download access
 - Nextcloud v25 is no longer supported
 - Arabic and Serbian empty file templates
+- updatable list of supported formats
 
 ## Added
 - advanced access rights for talk files and share links
@@ -15,7 +16,6 @@
 - selecting a document to combine from the storage
 - opening a reference data source
 - changing a reference data source
-- updatable list of supported formats
 
 ## 7.9.4
 ## Changed
