@@ -1343,7 +1343,7 @@ class AppConfig {
             $result = [];
             $additionalFormats = $this->getAdditionalFormatAttributes();
 
-            if ($onlyofficeFormats !== false) { 
+            if ($onlyofficeFormats !== false) {
                 foreach ($onlyofficeFormats as $onlyOfficeFormat) {
                     if ($onlyOfficeFormat["name"]
                         && $onlyOfficeFormat["mime"]
