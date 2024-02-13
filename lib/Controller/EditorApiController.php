@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System SIA 2023
+ * (c) Copyright Ascensio System SIA 2024
  *
  * This program is a free software product.
  * You can redistribute it and/or modify it under the terms of the GNU Affero General Public License
@@ -351,6 +351,11 @@ class EditorApiController extends OCSController {
         $fileStorage = $file->getStorage();
         if ($fileStorage->instanceOfStorage("\OCA\Files_Sharing\SharedStorage") || !empty($shareToken)) {
             $shareId = empty($share) ? $fileStorage->getShareId() : $share->getId();
+
+            $params["editorConfig"]["coEditing"] = [
+                "mode" => "strict",
+                "change" => false
+            ];
 
             $extraPermissions = null;
             if ($this->extraPermissions !== null) {

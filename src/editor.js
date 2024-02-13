@@ -1,6 +1,6 @@
 /**
  *
- * (c) Copyright Ascensio System SIA 2023
+ * (c) Copyright Ascensio System SIA 2024
  *
  * This program is a free software product.
  * You can redistribute it and/or modify it under the terms of the GNU Affero General Public License
@@ -50,11 +50,13 @@
         OCA.Onlyoffice.anchor = $("#iframeEditor").attr("data-anchor");
         var guestName = localStorage.getItem("nick");
         OCA.Onlyoffice.currentWindow = window;
+        OCA.Onlyoffice.currentUser = OC.getCurrentUser();
 
         if (OCA.Onlyoffice.inframe) {
             OCA.Onlyoffice.faviconBase = $('link[rel="icon"]').attr("href");
             OCA.Onlyoffice.currentWindow = window.parent;
             OCA.Onlyoffice.titleBase = OCA.Onlyoffice.currentWindow.document.title;
+            OCA.Onlyoffice.currentUser = OCA.Onlyoffice.currentWindow.OC.getCurrentUser();
         }
 
         if (!OCA.Onlyoffice.fileId && !OCA.Onlyoffice.shareToken && !directToken) {
@@ -130,12 +132,6 @@
                         return;
                     }
 
-                    if ((config.document.fileType === "docxf" || config.document.fileType === "oform")
-                        && docsVersion[0] < 7) {
-                        OCA.Onlyoffice.showMessage(t(OCA.Onlyoffice.AppName, "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online"), "error", {timeout: -1});
-                        return;
-                    }
-
                     var docIsChanged = null;
                     var docIsChangedTimeout = null;
 
@@ -172,16 +168,19 @@
                     }
 
                     if (OCA.Onlyoffice.inframe && !OCA.Onlyoffice.shareToken
-                        || OC.currentUser) {
+                        || OCA.Onlyoffice.currentUser.uid) {
                         config.events.onRequestSaveAs = OCA.Onlyoffice.onRequestSaveAs;
                         config.events.onRequestInsertImage = OCA.Onlyoffice.onRequestInsertImage;
                         config.events.onRequestMailMergeRecipients = OCA.Onlyoffice.onRequestMailMergeRecipients;
+                        config.events.onRequestCompareFile = OCA.Onlyoffice.onRequestSelectDocument; //todo: remove (for editors 7.4)
                         config.events.onRequestSelectDocument = OCA.Onlyoffice.onRequestSelectDocument;
                         config.events.onRequestSendNotify = OCA.Onlyoffice.onRequestSendNotify;
                         config.events.onRequestReferenceData = OCA.Onlyoffice.onRequestReferenceData;
+                        config.events.onRequestOpen = OCA.Onlyoffice.onRequestOpen;
+                        config.events.onRequestReferenceSource = OCA.Onlyoffice.onRequestReferenceSource;
                         config.events.onMetaChange = OCA.Onlyoffice.onMetaChange;
 
-                        if (OC.currentUser) {
+                        if (OCA.Onlyoffice.currentUser.uid) {
                             config.events.onRequestUsers = OCA.Onlyoffice.onRequestUsers;
                         }
 
@@ -433,6 +432,25 @@
             });
     };
 
+    OCA.Onlyoffice.editorReferenceSource = function (filePath) {
+        if (filePath === OCA.Onlyoffice.filePath) {
+            OCA.Onlyoffice.showMessage(t(OCA.Onlyoffice.AppName, "The data source must not be the current document"), "error");
+            return;
+        }
+
+        $.post(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/reference"),
+        {
+            path: filePath
+        },
+        function onSuccess(response) {
+            if (response.error) {
+                OCA.Onlyoffice.showMessage(response.error, "error");
+                return;
+            }
+            OCA.Onlyoffice.docEditor.setReferenceSource(response);
+        });
+    }
+
     OCA.Onlyoffice.onRequestClose = function () {
         if (OCA.Onlyoffice.directEditor) {
             OCA.Onlyoffice.directEditor.close();
@@ -528,12 +546,14 @@
     };
 
     OCA.Onlyoffice.onRequestUsers = function (event) {
-        $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/users?fileId={fileId}",
+        let operationType = typeof(event.data.c) !== "undefined" ? event.data.c : null;
+        $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/users?fileId={fileId}&operationType=" + operationType,
         {
             fileId: OCA.Onlyoffice.fileId || 0
         }),
         function onSuccess(response) {
             OCA.Onlyoffice.docEditor.setUsers({
+                "c": operationType,
                 "users": response
             });
         });
@@ -580,6 +600,33 @@
 
                 OCA.Onlyoffice.docEditor.setReferenceData(response);
             });
+    };
+
+    OCA.Onlyoffice.onRequestOpen = function (event) {
+        let filePath  = event.data.path;
+        let fileId = event.data.referenceData.fileKey;
+        let windowName = event.data.windowName;
+        let sourceUrl = OC.generateUrl(`apps/${OCA.Onlyoffice.AppName}/${fileId}?filePath=${OC.encodePath(filePath)}`);
+        window.open(sourceUrl, windowName);
+    };
+
+    OCA.Onlyoffice.onRequestReferenceSource = function (event) {
+        let referenceSourceMimes = [
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        ];
+        if (OCA.Onlyoffice.inframe) {
+            window.parent.postMessage({
+                method: "editorRequestReferenceSource",
+                param: referenceSourceMimes
+            },
+            "*");
+        } else {
+            OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Select data source"),
+                OCA.Onlyoffice.editorReferenceSource,
+                false,
+                referenceSourceMimes,
+                true);
+        }
     };
 
     OCA.Onlyoffice.onMetaChange = function (event) {

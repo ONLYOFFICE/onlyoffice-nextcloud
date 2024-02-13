@@ -6,13 +6,21 @@
 - fixed error display in the mobile application
 - fixed opening file without download access
 - Nextcloud v25 is no longer supported
+- offline viewer for share link
+- updatable list of supported formats
+- filling pdf instead oform
 - compatible with Nextcloud 28
 - agpl v3 license
 
 ## Added
 - advanced access rights for talk files and share links
-- reference data from coediting
 - selecting a document to combine from the storage
+- reference data from coediting
+- opening a reference data source
+- changing a reference data source
+- setting for disable editors cron check
+- Arabic and Serbian empty file templates
+- list of users to protect ranges of cells
 
 ## 8.2.4
 ## Changed

@@ -1,6 +1,6 @@
 /**
  *
- * (c) Copyright Ascensio System SIA 2023
+ * (c) Copyright Ascensio System SIA 2024
  *
  * This program is a free software product.
  * You can redistribute it and/or modify it under the terms of the GNU Affero General Public License
@@ -208,6 +208,7 @@
             var sameTab = $("#onlyofficeSameTab").is(":checked");
             var preview = $("#onlyofficePreview").is(":checked");
             var advanced = $("#onlyofficeAdvanced").is(":checked");
+            var cronChecker = $("#onlyofficeCronChecker").is(":checked");
             var versionHistory = $("#onlyofficeVersionHistory").is(":checked");
 
             var limitGroupsString = $("#onlyofficeGroups").prop("checked") ? $("#onlyofficeLimitGroups").val() : "";
@@ -231,6 +232,7 @@
                     sameTab: sameTab,
                     preview: preview,
                     advanced: advanced,
+                    cronChecker: cronChecker,
                     versionHistory: versionHistory,
                     limitGroups: limitGroups,
                     chat: chat,

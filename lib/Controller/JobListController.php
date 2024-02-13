@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System SIA 2023
+ * (c) Copyright Ascensio System SIA 2024
  *
  * This program is a free software product.
  * You can redistribute it and/or modify it under the terms of the GNU Affero General Public License
@@ -100,6 +100,10 @@ class JobListController extends Controller {
      *
      */
     private function checkEditorsCheckJob() {
+        if (!$this->config->getCronChecker()) {
+            $this->removeJob(EditorsCheck::class);
+            return;
+        }
         if ($this->config->getEditorsCheckInterval() > 0) {
             $this->addJob(EditorsCheck::class);
         } else {

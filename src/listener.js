@@ -1,6 +1,6 @@
 /**
  *
- * (c) Copyright Ascensio System SIA 2023
+ * (c) Copyright Ascensio System SIA 2024
  *
  * This program is a free software product.
  * You can redistribute it and/or modify it under the terms of the GNU Affero General Public License
@@ -91,8 +91,18 @@
             true);
     };
 
+    OCA.Onlyoffice.onRequestReferenceSource = function (referenceSourceMimes) {
+        OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Select data source"),
+            $(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.editorReferenceSource,
+            false,
+            referenceSourceMimes,
+            true);
+    }
+
     OCA.Onlyoffice.onDocumentReady = function (documentType) {
-        if (documentType === "word") {
+        if (documentType === "word"
+            || documentType === "cell"
+            || documentType === "slide") {
             if (OCA.Onlyoffice.bindVersionClick) {
                 OCA.Onlyoffice.bindVersionClick();
             }
@@ -147,6 +157,9 @@
                 break;
             case "editorRequestSelectDocument":
                 OCA.Onlyoffice.onRequestSelectDocument(event.data.param, event.data.documentSelectionType);
+                break;
+            case "editorRequestReferenceSource":
+                OCA.Onlyoffice.onRequestReferenceSource(event.data.param);
                 break;
             case "onDocumentReady":
                 OCA.Onlyoffice.onDocumentReady(event.data.param);

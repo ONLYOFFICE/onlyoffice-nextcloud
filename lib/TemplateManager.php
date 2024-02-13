@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System SIA 2023
+ * (c) Copyright Ascensio System SIA 2024
  *
  * This program is a free software product.
  * You can redistribute it and/or modify it under the terms of the GNU Affero General Public License
@@ -233,7 +233,7 @@ class TemplateManager {
             $lang = "en";
         }
 
-        return dirname(__DIR__) . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . self::$localPath[$lang] . DIRECTORY_SEPARATOR . "new" . $ext;
+        return dirname(__DIR__) . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . "document-templates" . DIRECTORY_SEPARATOR . self::$localPath[$lang] . DIRECTORY_SEPARATOR . "new" . $ext;
     }
 
     /**
@@ -242,6 +242,7 @@ class TemplateManager {
      * @var Array
      */
     private static $localPath = [
+        "ar" => "ar-SA",
         "az" => "az-Latn-AZ",
         "bg" => "bg-BG",
         "cs" => "cs-CZ",
@@ -265,6 +266,7 @@ class TemplateManager {
         "ru" => "ru-RU",
         "si" => "si-LK",
         "sk" => "sk-SK",
+        "sr" => "sr-Latn-RS",
         "sv" => "sv-SE",
         "tr" => "tr-TR",
         "uk" => "uk-UA",

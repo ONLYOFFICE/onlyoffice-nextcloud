@@ -1,6 +1,6 @@
 /**
  *
- * (c) Copyright Ascensio System SIA 2023
+ * (c) Copyright Ascensio System SIA 2024
  *
  * This program is a free software product.
  * You can redistribute it and/or modify it under the terms of the GNU Affero General Public License
@@ -415,7 +415,7 @@ import NewDocxfSvg from "!!raw-loader!../img/new-docxf.svg";
 
     OCA.Onlyoffice.CreateFormClick = function (fileName, context) {
         var fileList = context.fileList;
-        var name = fileName.replace(/\.[^.]+$/, ".oform");
+        var name = fileName.replace(/\.[^.]+$/, ".pdf");
         var targetId = context.fileInfoModel.id;
 
         OCA.Onlyoffice.CreateFile(name, fileList, 0, targetId, false);
@@ -442,62 +442,65 @@ import NewDocxfSvg from "!!raw-loader!../img/new-docxf.svg";
                     return true;
                 }
 
-                OCA.Files.fileActions.registerAction({
-                    name: "onlyofficeOpen",
-                    displayName: t(OCA.Onlyoffice.AppName, "Open in ONLYOFFICE"),
-                    mime: config.mime,
-                    permissions: OC.PERMISSION_READ,
-                    iconClass: "icon-onlyoffice-open",
-                    actionHandler: OCA.Onlyoffice.FileClick
-                });
-
-                if (config.def) {
-                    OCA.Files.fileActions.setDefault(config.mime, "onlyofficeOpen");
-                }
-
-                if (config.conv) {
+                let mimeTypes = config.mime;
+                mimeTypes.forEach((mime) => {
                     OCA.Files.fileActions.registerAction({
-                        name: "onlyofficeConvert",
-                        displayName: t(OCA.Onlyoffice.AppName, "Convert with ONLYOFFICE"),
-                        mime: config.mime,
-                        permissions: ($("#isPublic").val() ? OC.PERMISSION_UPDATE : OC.PERMISSION_READ),
-                        iconClass: "icon-onlyoffice-convert",
-                        actionHandler: OCA.Onlyoffice.FileConvertClick
-                    });
-                }
-
-                if (config.fillForms) {
-                    OCA.Files.fileActions.registerAction({
-                        name: "onlyofficeFill",
-                        displayName: t(OCA.Onlyoffice.AppName, "Fill in form in ONLYOFFICE"),
-                        mime: config.mime,
-                        permissions: OC.PERMISSION_UPDATE,
-                        iconClass: "icon-onlyoffice-fill",
+                        name: "onlyofficeOpen",
+                        displayName: t(OCA.Onlyoffice.AppName, "Open in ONLYOFFICE"),
+                        mime: mime,
+                        permissions: OC.PERMISSION_READ,
+                        iconClass: "icon-onlyoffice-open",
                         actionHandler: OCA.Onlyoffice.FileClick
                     });
-                }
 
-                if (config.createForm) {
-                    OCA.Files.fileActions.registerAction({
-                        name: "onlyofficeCreateForm",
-                        displayName: t(OCA.Onlyoffice.AppName, "Create form"),
-                        mime: config.mime,
-                        permissions: ($("#isPublic").val() ? OC.PERMISSION_UPDATE : OC.PERMISSION_READ),
-                        iconClass: "icon-onlyoffice-create",
-                        actionHandler: OCA.Onlyoffice.CreateFormClick
-                    });
-                }
+                    if (config.def) {
+                        OCA.Files.fileActions.setDefault(mime, "onlyofficeOpen");
+                    }
 
-                if (config.saveas && !$("#isPublic").val()) {
-                    OCA.Files.fileActions.registerAction({
-                        name: "onlyofficeDownload",
-                        displayName: t(OCA.Onlyoffice.AppName, "Download as"),
-                        mime: config.mime,
-                        permissions: OC.PERMISSION_READ,
-                        iconClass: "icon-onlyoffice-download",
-                        actionHandler: OCA.Onlyoffice.DownloadClick
-                    });
-                }
+                    if (config.conv) {
+                        OCA.Files.fileActions.registerAction({
+                            name: "onlyofficeConvert",
+                            displayName: t(OCA.Onlyoffice.AppName, "Convert with ONLYOFFICE"),
+                            mime: mime,
+                            permissions: ($("#isPublic").val() ? OC.PERMISSION_UPDATE : OC.PERMISSION_READ),
+                            iconClass: "icon-onlyoffice-convert",
+                            actionHandler: OCA.Onlyoffice.FileConvertClick
+                        });
+                    }
+
+                    if (config.fillForms) {
+                        OCA.Files.fileActions.registerAction({
+                            name: "onlyofficeFill",
+                            displayName: t(OCA.Onlyoffice.AppName, "Fill in form in ONLYOFFICE"),
+                            mime: mime,
+                            permissions: OC.PERMISSION_UPDATE,
+                            iconClass: "icon-onlyoffice-fill",
+                            actionHandler: OCA.Onlyoffice.FileClick
+                        });
+                    }
+
+                    if (config.createForm) {
+                        OCA.Files.fileActions.registerAction({
+                            name: "onlyofficeCreateForm",
+                            displayName: t(OCA.Onlyoffice.AppName, "Create form"),
+                            mime: mime,
+                            permissions: ($("#isPublic").val() ? OC.PERMISSION_UPDATE : OC.PERMISSION_READ),
+                            iconClass: "icon-onlyoffice-create",
+                            actionHandler: OCA.Onlyoffice.CreateFormClick
+                        });
+                    }
+
+                    if (config.saveas && !$("#isPublic").val()) {
+                        OCA.Files.fileActions.registerAction({
+                            name: "onlyofficeDownload",
+                            displayName: t(OCA.Onlyoffice.AppName, "Download as"),
+                            mime: mime,
+                            permissions: OC.PERMISSION_READ,
+                            iconClass: "icon-onlyoffice-download",
+                            actionHandler: OCA.Onlyoffice.DownloadClick
+                        });
+                    }
+                });
             });
         } else {
             registerFileAction(new FileAction({

@@ -37,7 +37,8 @@ jobs:
           rm ./package.json
           rm ./package-lock.json
           rm ./webpack.js
-          rm -rf ./assets/.git
+          rm -rf ./assets/document-templates/.git
+          rm -rf ./assets/document-formats/.git
           rm ./ruleset.xml
           cd $cwd
           tar -czvf onlyoffice.tar.gz onlyoffice

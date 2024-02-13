@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System SIA 2023
+ * (c) Copyright Ascensio System SIA 2024
  *
  * This program is a free software product.
  * You can redistribute it and/or modify it under the terms of the GNU Affero General Public License
@@ -272,7 +272,6 @@ class Application extends App implements IBootstrap {
         $detector = $container->query(IMimeTypeDetector::class);
         $detector->getAllMappings();
         $detector->registerType("docxf", "application/vnd.openxmlformats-officedocument.wordprocessingml.document.docxf");
-        $detector->registerType("oform", "application/vnd.openxmlformats-officedocument.wordprocessingml.document.oform");
 
         $checkBackgroundJobs = new JobListController(
             $container->query("AppName"),

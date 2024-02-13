@@ -13,9 +13,8 @@ The app allows to:
 
 Supported formats:
 
-* For viewing and editing: DOCX, XLSX, PPTX, CSV, TXT, DOCXF, OFORM.
-* For viewing only: PDF.
-* For converting to Office Open XML formats: DOC, DOCM, DOT, DOTX, EPUB, HTM, HTML, ODP, ODT, POT, POTM, POTX, PPS, PPSM, PPSX, PPT, PPTM, RTF, XLS, XLSM, XLT, XLTM, XLTX.
+* For editing: DOCM, DOCX, DOCXF, DOTM, DOTX, EPUB, FB2, HTML, ODT, OTT, RTF, TXT, CSV, ODS, OTS, XLSM, XLSX, XLTM, XLTX, ODP, OTP, POTM, POTX, PPSM, PPSX, PPTM, PPTX.
+* For viewing only: DJVU, DOC, DOT, FODT, HTM, MHT, MHTML, OFORM, PDF, STW, SXW, WPS, WPT, XML, XPS, ET, ETT, FODS, SXC, XLS, XLSB, XLT, DPS, DPT, FODP, POT, PPS, PPT, SXI.
 
 ## Installing ONLYOFFICE Docs
 
@@ -203,12 +202,12 @@ The table below will help you to make the right choice.
 | Conversion Service                | + | + |
 | Document Builder Service          | + | + |
 | **Interface** | **Community Edition** | **Enterprise Edition** |
-| Tabbed interface                       | + | + |
-| Dark theme                             | + | + |
-| 125%, 150%, 175%, 200% scaling         | + | + |
-| White Label                            | - | - |
-| Integrated test example (node.js)      | + | + |
-| Mobile web editors                     | - | +* |
+| Tabbed interface                  | + | + |
+| Dark theme                        | + | + |
+| 125%, 150%, 175%, 200% scaling    | + | + |
+| White Label                       | - | - |
+| Integrated test example (node.js) | + | + |
+| Mobile web editors                | - | +* |
 | **Plugins & Macros** | **Community Edition** | **Enterprise Edition** |
 | Plugins                           | + | + |
 | Macros                            | + | + |
@@ -235,9 +234,9 @@ The table below will help you to make the right choice.
 | Functions, formulas, equations  | + | + |
 | Table templates                 | + | + |
 | Pivot tables                    | + | + |
-| Data validation	          | + | + |
+| Data validation                 | + | + |
 | Conditional formatting          | + | + |
-| Sparklines	                  | + | + |
+| Sparklines                      | + | + |
 | Sheet Views                     | + | + |
 | **Presentation Editor features** | **Community Edition** | **Enterprise Edition** |
 | Font and paragraph formatting   | + | + |
