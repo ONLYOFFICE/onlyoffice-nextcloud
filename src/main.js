@@ -436,6 +436,13 @@ import NewDocxfSvg from "!!raw-loader!../img/new-docxf.svg";
     OCA.Onlyoffice.registerAction = function() {
         var formats = OCA.Onlyoffice.setting.formats;
 
+        var getConfig = function (file) {
+            var fileExt = file?.extension?.toLowerCase()?.replace(".", "");
+            var config = formats[fileExt];
+
+            return config;
+        };
+
         if (OCA.Files && OCA.Files.fileActions) {
             $.each(formats, function (ext, config) {
                 if (!config.mime) {
@@ -508,7 +515,7 @@ import NewDocxfSvg from "!!raw-loader!../img/new-docxf.svg";
                 displayName: () => t(OCA.Onlyoffice.AppName, "Open in ONLYOFFICE"),
                 iconSvgInline: () => AppDarkSvg,
                 enabled: (files) => {
-                    var config = formats[files[0]?.extension?.replace(".", "")];
+                    var config = getConfig(files[0]);
 
                     if (!config) return;
                     if (!config.def) return;
@@ -527,7 +534,7 @@ import NewDocxfSvg from "!!raw-loader!../img/new-docxf.svg";
                 displayName: () => t(OCA.Onlyoffice.AppName, "Open in ONLYOFFICE"),
                 iconSvgInline: () => AppDarkSvg,
                 enabled: (files) => {
-                    var config = formats[files[0]?.extension?.replace(".", "")];
+                    var config = getConfig(files[0]);
 
                     if (!config) return false;
                     if (config.def) return false;
@@ -545,7 +552,7 @@ import NewDocxfSvg from "!!raw-loader!../img/new-docxf.svg";
                 displayName: () => t(OCA.Onlyoffice.AppName, "Convert with ONLYOFFICE"),
                 iconSvgInline: () => AppDarkSvg,
                 enabled: (files) => {
-                    var config = formats[files[0]?.extension?.replace(".", "")];
+                    var config = getConfig(files[0]);
 
                     if (!config) return;
                     if (!config.conv) return false;
@@ -574,7 +581,7 @@ import NewDocxfSvg from "!!raw-loader!../img/new-docxf.svg";
                 displayName: () => t(OCA.Onlyoffice.AppName, "Fill in form in ONLYOFFICE"),
                 iconSvgInline: () => AppDarkSvg,
                 enabled: (files) => {
-                    var config = formats[files[0]?.extension?.replace(".", "")];
+                    var config = getConfig(files[0]);
 
                     if (!config) return;
                     if (!config.fillForms) return false;
@@ -596,7 +603,7 @@ import NewDocxfSvg from "!!raw-loader!../img/new-docxf.svg";
                 displayName: () => t(OCA.Onlyoffice.AppName, "Create form"),
                 iconSvgInline: () => AppDarkSvg,
                 enabled: (files) => {
-                    var config = formats[files[0]?.extension?.replace(".", "")];
+                    var config = getConfig(files[0]);
 
                     if (!config) return;
                     if (!config.createForm) return false;
@@ -626,7 +633,7 @@ import NewDocxfSvg from "!!raw-loader!../img/new-docxf.svg";
                     displayName: () => t(OCA.Onlyoffice.AppName, "Download as"),
                     iconSvgInline: () => AppDarkSvg,
                     enabled: (files) => {
-                        var config = formats[files[0]?.extension?.replace(".", "")];
+                        var config = getConfig(files[0]);
 
                         if (!config) return;
                         if (!config.saveas) return false;
