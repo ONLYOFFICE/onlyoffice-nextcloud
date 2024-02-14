@@ -281,7 +281,7 @@
             }
         ];
 
-        OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Create new Form template"),
+        OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Create new PDF form"),
             function (filePath, type) {
                 var dialogFileList = OC.dialogs.filelist;
                 var targetId = 0;
@@ -446,8 +446,8 @@
 
             menu.addMenuEntry({
                 id: "onlyofficeDocxf",
-                displayName: t(OCA.Onlyoffice.AppName, "New form template"),
-                templateName: t(OCA.Onlyoffice.AppName, "New form template"),
+                displayName: t(OCA.Onlyoffice.AppName, "New PDF form"),
+                templateName: t(OCA.Onlyoffice.AppName, "New PDF form"),
                 iconClass: "icon-onlyoffice-new-docxf",
                 fileType: "docxf",
                 actionHandler: function (name) {
