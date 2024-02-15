@@ -140,6 +140,13 @@ class EditorController extends Controller {
     private $groupManager;
 
     /**
+     * Avatar manager
+     *
+     * @var IAvatarManager
+     */
+    private $avatarManager;
+
+    /**
      * @param string $AppName - application name
      * @param IRequest $request - request object
      * @param IRootFolder $root - root folder
@@ -191,6 +198,7 @@ class EditorController extends Controller {
         }
 
         $this->fileUtility = new FileUtility($AppName, $trans, $logger, $config, $shareManager, $session);
+        $this->avatarManager = \OC::$server->getAvatarManager();
     }
 
     /**
@@ -419,6 +427,19 @@ class EditorController extends Controller {
                 if (!empty($email)) {
                     $userElement["email"] = $email;
                 }
+                if ($operationType === "info") {
+                    $avatar = $this->avatarManager->getAvatar($user->getUID());
+                    if ($avatar->exists() && $avatar->isCustomAvatar()) {
+                        $userAvatarUrl = $this->urlGenerator->getAbsoluteURL(
+                            $this->urlGenerator->linkToRoute("core.avatar.getAvatar", [
+                                "userId" => $user->getUID(),
+                                "size" => 64,
+                            ])
+                        );
+                        $userElement["image"] = $userAvatarUrl;
+                    }
+                }
+
                 array_push($result, $userElement);
             }
         }
