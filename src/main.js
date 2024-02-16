@@ -215,7 +215,7 @@ import NewDocxfSvg from "!!raw-loader!../img/new-docxf.svg";
 
     OCA.Onlyoffice.FileClick = function (fileName, context) {
         var fileInfoModel = context.fileInfoModel || context.fileList.getModelForFile(fileName);
-        var fileId = context.fileId || context.$file[0].dataset.id || fileInfoModel.id;
+        var fileId = context.fileId || context.$file && context.$file[0].dataset.id || fileInfoModel.id;
         var winEditor = !fileInfoModel && !OCA.Onlyoffice.setting.sameTab ? document : null;
 
         OCA.Onlyoffice.OpenEditor(fileId, context.dir, fileName, 0, winEditor);
@@ -238,7 +238,7 @@ import NewDocxfSvg from "!!raw-loader!../img/new-docxf.svg";
     OCA.Onlyoffice.FileConvertClick = function (fileName, context) {
         var fileInfoModel = context.fileInfoModel || context.fileList.getModelForFile(fileName);
         var fileList = context.fileList;
-        var fileId = context.$file[0].dataset.id || fileInfoModel.id;
+        var fileId = context.$file ? context.$file[0].dataset.id : fileInfoModel.id;
 
         OCA.Onlyoffice.FileConvert(fileId, (response) => {
             if (response.parentId == fileList.dirInfo.id) {
@@ -372,7 +372,7 @@ import NewDocxfSvg from "!!raw-loader!../img/new-docxf.svg";
             }
         ];
 
-        OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Create new Form template"),
+        OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Create new PDF form"),
             async function (filePath, type) {
                 var dialogFileList = OC.dialogs.filelist;
                 var targetId = 0;
@@ -739,8 +739,8 @@ import NewDocxfSvg from "!!raw-loader!../img/new-docxf.svg";
 
             menu.addMenuEntry({
                 id: "onlyofficeDocxf",
-                displayName: t(OCA.Onlyoffice.AppName, "New form template"),
-                templateName: t(OCA.Onlyoffice.AppName, "New form template"),
+                displayName: t(OCA.Onlyoffice.AppName, "New PDF form"),
+                templateName: t(OCA.Onlyoffice.AppName, "New PDF form"),
                 iconClass: "icon-onlyoffice-new-docxf",
                 fileType: "docxf",
                 actionHandler: function (name) {

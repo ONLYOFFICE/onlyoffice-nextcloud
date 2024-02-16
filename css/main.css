@@ -26,18 +26,6 @@
  *
  */
 
-.icon-onlyoffice-new-docx {
-    background-image: url("../img/new-docx.svg");
-}
-.icon-onlyoffice-new-xlsx {
-    background-image: url("../img/new-xlsx.svg");
-}
-.icon-onlyoffice-new-pptx {
-    background-image: url("../img/new-pptx.svg");
-}
-.icon-onlyoffice-new-docxf {
-    background-image: url("../img/new-docxf.svg");
-}
 .icon-onlyoffice-open,
 .icon-onlyoffice-convert,
 .icon-onlyoffice-download,

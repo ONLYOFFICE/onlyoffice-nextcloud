@@ -108,6 +108,7 @@ class FilesListener implements IEventListener {
 
             Util::addStyle("onlyoffice", "main");
             Util::addStyle("onlyoffice", "template");
+            Util::addStyle("onlyoffice", "format");
         }
     }
 }
