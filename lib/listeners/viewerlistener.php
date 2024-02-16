@@ -82,6 +82,7 @@ class ViewerListener implements IEventListener {
             Util::addScript("onlyoffice", "listener", "viewer");
 
             Util::addStyle("onlyoffice", "viewer");
+            Util::addStyle("onlyoffice", "format");
 
             $container = $this->serverContainer;
             $this->initialState->provideLazyInitialState("settings", function () use ($container) {

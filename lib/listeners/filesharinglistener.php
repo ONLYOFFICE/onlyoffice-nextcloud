@@ -89,6 +89,7 @@ class FileSharingListener implements IEventListener {
             });
 
             Util::addStyle("onlyoffice", "main");
+            Util::addStyle("onlyoffice", "format");
         }
     }
 }
