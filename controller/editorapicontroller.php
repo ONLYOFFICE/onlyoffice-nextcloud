@@ -470,21 +470,20 @@ class EditorApiController extends OCSController {
                 "id" => $this->buildUserId($userId),
                 "name" => $user->getDisplayName()
             ];
+            $avatar = $this->avatarManager->getAvatar($userId);
+            if ($avatar->exists() && $avatar->isCustomAvatar()) {
+                $userAvatarUrl = $this->urlGenerator->getAbsoluteURL(
+                    $this->urlGenerator->linkToRoute("core.avatar.getAvatar", [
+                        "userId" => $userId,
+                        "size" => 64,
+                    ])
+                );
+                $params["editorConfig"]["user"]["image"] = $userAvatarUrl;
+            }
         } elseif (!empty($guestName)) {
             $params["editorConfig"]["user"] = [
                 "name" => $guestName
             ];
-        }
-
-        $avatar = $this->avatarManager->getAvatar($userId);
-        if ($avatar->exists() && $avatar->isCustomAvatar()) {
-            $userAvatarUrl = $this->urlGenerator->getAbsoluteURL(
-                $this->urlGenerator->linkToRoute("core.avatar.getAvatar", [
-                    "userId" => $userId,
-                    "size" => 64,
-                ])
-            );
-            $params["editorConfig"]["user"]["image"] = $userAvatarUrl;
         }
 
         $folderLink = null;
