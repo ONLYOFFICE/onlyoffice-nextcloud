@@ -28,6 +28,7 @@ return [
        ["name" => "editor#index", "url" => "/{fileId}", "verb" => "GET"],
        ["name" => "editor#public_page", "url" => "/s/{shareToken}", "verb" => "GET"],
        ["name" => "editor#users", "url" => "/ajax/users", "verb" => "GET"],
+       ["name" => "editor#user_info", "url" => "/ajax/userInfo", "verb" => "GET"],
        ["name" => "editor#mention", "url" => "/ajax/mention", "verb" => "POST"],
        ["name" => "editor#reference", "url" => "/ajax/reference", "verb" => "POST"],
        ["name" => "editor#create", "url" => "/ajax/new", "verb" => "POST"],

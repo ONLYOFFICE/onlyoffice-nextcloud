@@ -427,23 +427,43 @@ class EditorController extends Controller {
                 if (!empty($email)) {
                     $userElement["email"] = $email;
                 }
-                if ($operationType === "info") {
-                    $avatar = $this->avatarManager->getAvatar($user->getUID());
-                    if ($avatar->exists() && $avatar->isCustomAvatar()) {
-                        $userAvatarUrl = $this->urlGenerator->getAbsoluteURL(
-                            $this->urlGenerator->linkToRoute("core.avatar.getAvatar", [
-                                "userId" => $user->getUID(),
-                                "size" => 64,
-                            ])
-                        );
-                        $userElement["image"] = $userAvatarUrl;
-                    }
-                }
-
                 array_push($result, $userElement);
             }
         }
 
+        return $result;
+    }
+
+    /**
+     * Get user for Info
+     *
+     * @param string $userId - user identifier
+     *
+     * @return array
+     * 
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     */
+    public function userInfo($userId) {
+        $userId = $this->getUserId($userId);  
+        $user = $this->userManager->get($userId);
+        $result = [];
+        if (!empty($user)) {
+            $result = [
+                "name" => $user->getDisplayName(),
+                "id" => $user->getUID()
+            ];
+            $avatar = $this->avatarManager->getAvatar($user->getUID());
+            if ($avatar->exists() && $avatar->isCustomAvatar()) {
+                $userAvatarUrl = $this->urlGenerator->getAbsoluteURL(
+                    $this->urlGenerator->linkToRoute("core.avatar.getAvatar", [
+                        "userId" => $user->getUID(),
+                        "size" => 64,
+                    ])
+                );
+                $result["image"] = $userAvatarUrl;
+            }
+        }
         return $result;
     }
 
@@ -1454,6 +1474,21 @@ class EditorController extends Controller {
     private function buildUserId($userId) {
         $instanceId = $this->config->getSystemValue("instanceid", true);
         $userId = $instanceId . "_" . $userId;
+        return $userId;
+    }
+
+    /**
+     * Get Nextcloud userId from unique user identifier
+     *
+     * @param string $userId - current user identifier
+     *
+     * @return string
+     */
+    private function getUserId($userId) {
+        if (str_contains($userId, "_")) {
+            $userIdExp = explode("_", $userId);
+            $userId = end($userIdExp); 
+        }
         return $userId;
     }
 
