@@ -440,12 +440,12 @@ class EditorController extends Controller {
      * @param string $userId - user identifier
      *
      * @return array
-     * 
+     *
      * @NoAdminRequired
      * @NoCSRFRequired
      */
     public function userInfo($userId) {
-        $userId = $this->getUserId($userId);  
+        $userId = $this->getUserId($userId);
         $user = $this->userManager->get($userId);
         $result = [];
         if (!empty($user)) {
@@ -1487,7 +1487,7 @@ class EditorController extends Controller {
     private function getUserId($userId) {
         if (str_contains($userId, "_")) {
             $userIdExp = explode("_", $userId);
-            $userId = end($userIdExp); 
+            $userId = end($userIdExp);
         }
         return $userId;
     }
