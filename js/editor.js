@@ -112,6 +112,11 @@
             url: configUrl,
             success: function onSuccess(config) {
                 if (config) {
+                    OCA.Onlyoffice.device = config.type;
+                    if (OCA.Onlyoffice.device === "mobile") {
+                        OCA.Onlyoffice.resizeEvents();
+                    }
+
                     if (config.redirectUrl) {
                         location.href = config.redirectUrl;
                         return;
@@ -293,6 +298,8 @@
         if (OCA.Onlyoffice.version > 0) {
             OCA.Onlyoffice.onRequestHistory(OCA.Onlyoffice.version);
         }
+
+        OCA.Onlyoffice.resize();
     };
 
     OCA.Onlyoffice.onRequestSaveAs = function (event) {
@@ -693,6 +700,30 @@
         }
         OCA.Onlyoffice.docEditor.refreshHistory(data);
     }
+
+    OCA.Onlyoffice.resize = function () {
+        if (OCA.Onlyoffice.device !== "mobile") {
+            return;
+        }
+
+        var wrapEl = $("#app>iframe");
+        if (wrapEl.length > 0) {
+            wrapEl[0].style.height = (screen.availHeight - 50) + "px";
+            window.scrollTo(0, -1);
+            wrapEl[0].style.height = (window.innerHeight - 50) + "px";
+        }
+    };
+
+    OCA.Onlyoffice.resizeEvents = function() {
+        if (window.addEventListener) {
+            if (/Android/i.test(navigator.userAgent)) {
+                window.addEventListener("resize", OCA.Onlyoffice.resize);
+            }
+            if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                window.addEventListener("orientationchange", OCA.Onlyoffice.resize);
+            }
+        }
+    };
 
     OCA.Onlyoffice.InitEditor();
 
