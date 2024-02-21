@@ -539,20 +539,16 @@
         let operationType = typeof(event.data.c) !== "undefined" ? event.data.c : null;
         switch (operationType) {
             case "info":
-                let users = [];
-                for (var i = 0; i < event.data.id.length; i++) {
-                    $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/userInfo?userId={userId}",
+                    $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/userInfo?userIds={userIds}",
                     {
-                        userId: event.data.id[i]
+                        userIds: JSON.stringify(event.data.id)
                     }),
                     function onSuccess(response) {
-                        users.push(response);
+                        OCA.Onlyoffice.docEditor.setUsers({
+                            "c": operationType,
+                            "users": response
+                        });
                     });
-                }
-                OCA.Onlyoffice.docEditor.setUsers({
-                    "c": operationType,
-                    "users": users
-                });
                 break;
                 default:
                     $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/users?fileId={fileId}&operationType=" + operationType,

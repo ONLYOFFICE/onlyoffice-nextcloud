@@ -437,31 +437,39 @@ class EditorController extends Controller {
     /**
      * Get user for Info
      *
-     * @param string $userId - user identifier
+     * @param string $userIds - users identifiers
      *
      * @return array
      *
      * @NoAdminRequired
      * @NoCSRFRequired
      */
-    public function userInfo($userId) {
-        $userId = $this->getUserId($userId);
-        $user = $this->userManager->get($userId);
+    public function userInfo($userIds) {
         $result = [];
-        if (!empty($user)) {
-            $result = [
-                "name" => $user->getDisplayName(),
-                "id" => $user->getUID()
-            ];
-            $avatar = $this->avatarManager->getAvatar($user->getUID());
-            if ($avatar->exists() && $avatar->isCustomAvatar()) {
-                $userAvatarUrl = $this->urlGenerator->getAbsoluteURL(
-                    $this->urlGenerator->linkToRoute("core.avatar.getAvatar", [
-                        "userId" => $user->getUID(),
-                        "size" => 64,
-                    ])
-                );
-                $result["image"] = $userAvatarUrl;
+        $userIds = json_decode($userIds, true);
+
+        if ($userIds !== null && is_array($userIds)) {
+            foreach ($userIds as $userId) {
+                $userData = [];
+                $userId = $this->getUserId($userId);
+                $user = $this->userManager->get($userId);
+                if (!empty($user)) {
+                    $userData = [
+                        "name" => $user->getDisplayName(),
+                        "id" => $user->getUID()
+                    ];
+                    $avatar = $this->avatarManager->getAvatar($user->getUID());
+                    if ($avatar->exists() && $avatar->isCustomAvatar()) {
+                        $userAvatarUrl = $this->urlGenerator->getAbsoluteURL(
+                            $this->urlGenerator->linkToRoute("core.avatar.getAvatar", [
+                                "userId" => $user->getUID(),
+                                "size" => 64,
+                            ])
+                        );
+                        $userData["image"] = $userAvatarUrl;
+                    }
+                    array_push($result, $userData);
+                }
             }
         }
         return $result;
