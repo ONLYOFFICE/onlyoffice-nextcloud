@@ -706,11 +706,12 @@
             return;
         }
 
+        var headerHeight = $("#header").length > 0 ? $("#header").height() : 50;
         var wrapEl = $("#app>iframe");
         if (wrapEl.length > 0) {
-            wrapEl[0].style.height = (screen.availHeight - 50) + "px";
+            wrapEl[0].style.height = (screen.availHeight - headerHeight) + "px";
             window.scrollTo(0, -1);
-            wrapEl[0].style.height = (window.innerHeight - 50) + "px";
+            wrapEl[0].style.height = (window.innerHeight - headerHeight) + "px";
         }
     };
 
