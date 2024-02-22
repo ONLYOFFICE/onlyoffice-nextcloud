@@ -451,12 +451,11 @@ class EditorController extends Controller {
         if ($userIds !== null && is_array($userIds)) {
             foreach ($userIds as $userId) {
                 $userData = [];
-                $userId = $this->getUserId($userId);
-                $user = $this->userManager->get($userId);
+                $user = $this->userManager->get($this->getUserId($userId));
                 if (!empty($user)) {
                     $userData = [
                         "name" => $user->getDisplayName(),
-                        "id" => $user->getUID()
+                        "id" => $userId
                     ];
                     $avatar = $this->avatarManager->getAvatar($user->getUID());
                     if ($avatar->exists() && $avatar->isCustomAvatar()) {
