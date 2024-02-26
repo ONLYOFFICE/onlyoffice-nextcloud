@@ -11,6 +11,7 @@
 - filling pdf instead oform
 - compatible with Nextcloud 28
 - agpl v3 license
+- version opening from right tab is no longer supported
 
 ## Added
 - advanced access rights for talk files and share links
