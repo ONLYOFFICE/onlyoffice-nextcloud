@@ -10,6 +10,7 @@
 - offline viewer for share link
 - updatable list of supported formats
 - filling pdf instead oform
+- version opening from right tab is no longer supported
 
 ## Added
 - advanced access rights for talk files and share links
