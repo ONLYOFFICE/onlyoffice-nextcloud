@@ -188,8 +188,6 @@ import NewDocxfSvg from "!!raw-loader!../img/new-docxf.svg";
             window.history.pushState(null, null, url);
             OCA.Onlyoffice.folderUrl = null;
         }
-
-        OCA.Onlyoffice.bindVersionClick();
     };
 
     OCA.Onlyoffice.OpenShareDialog = function () {
@@ -755,56 +753,6 @@ import NewDocxfSvg from "!!raw-loader!../img/new-docxf.svg";
         return extension;
     }
 
-    OCA.Onlyoffice.openVersion = function (fileId, version) {
-        if (OCA.Onlyoffice.frameSelector) {
-            $(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.onRequestHistory(version);
-            return;
-        }
-
-        OCA.Onlyoffice.OpenEditor(fileId, "", "", version)
-    };
-
-    OCA.Onlyoffice.bindVersionClick = function () {
-        OCA.Onlyoffice.unbindVersionClick();
-        $(document).on("click.onlyoffice-version", "#tab-version_vue .list-item__wrapper", function() {
-
-            var fileName = "";
-            var titleTabNode = $(".app-sidebar-header__maintitle");
-            if (titleTabNode.length > 0) {
-                fileName = titleTabNode[0].title;
-            }
-
-            var ext = fileName.split(".").pop();
-            if (!OCA.Onlyoffice.setting.formats[ext]
-                || !OCA.Onlyoffice.setting.formats[ext].def) {
-                return true;
-            }
-
-            var previewStyle = $(".app-sidebar-header__figure").attr("style");
-            var search = new RegExp("/preview[?|&]fileId=([^&]*)");
-            var result = search.exec(previewStyle);
-            if (result && result.length > 1) {
-                var fileId = result[1];
-            }
-            if (!fileId) {
-                return true;
-            }
-
-            var versionNodes = $("#tab-version_vue ul>div");
-            var versionNode = $(this)[0].parentNode;
-
-            var versionNum = versionNodes.length - $.inArray(versionNode, versionNodes);
-
-            OCA.Onlyoffice.openVersion(fileId, versionNum);
-
-            return false;
-        });
-    };
-
-    OCA.Onlyoffice.unbindVersionClick = function() {
-        $(document).off("click.onlyoffice-version", "#tab-version_vue .list-item__wrapper");
-    }
-
     var initPage = function () {
         if ($("#isPublic").val() === "1" && $("#mimetype").val() !== "httpd/unix-directory") {
             //file by shared link
@@ -846,8 +794,6 @@ import NewDocxfSvg from "!!raw-loader!../img/new-docxf.svg";
             OCA.Onlyoffice.registerNewFileMenu();
 
             OCA.Onlyoffice.registerAction();
-
-            OCA.Onlyoffice.bindVersionClick();
         }
     };
 
