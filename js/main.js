@@ -139,8 +139,6 @@
             window.history.pushState(null, null, url);
             OCA.Onlyoffice.folderUrl = null;
         }
-
-        OCA.Onlyoffice.bindVersionClick();
     };
 
     OCA.Onlyoffice.OpenShareDialog = function () {
@@ -471,49 +469,6 @@
         return extension;
     }
 
-    OCA.Onlyoffice.openVersion = function (fileId, version) {
-        if (OCA.Onlyoffice.frameSelector) {
-            $(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.onRequestHistory(version);
-            return;
-        }
-
-        OCA.Onlyoffice.OpenEditor(fileId, "", "", version)
-    };
-
-    OCA.Onlyoffice.bindVersionClick = function () {
-        OCA.Onlyoffice.unbindVersionClick();
-        $(document).on("click.onlyoffice-version", "#versionsTabView .downloadVersion", function() {
-            var ext = $(this).attr("download").split(".").pop();
-            if (!OCA.Onlyoffice.setting.formats[ext]
-                || !OCA.Onlyoffice.setting.formats[ext].def) {
-                return true;
-            }
-
-            var versionNodes = $("#versionsTabView ul.versions>li");
-            var versionNode = $(this).closest("#versionsTabView ul.versions>li")[0];
-
-            var href = $(this).attr("href");
-            var search = new RegExp("\/versions\/(\\d+)\/\\d+$");
-            var result = search.exec(href);
-            if (result && result.length > 1) {
-                var fileId = result[1];
-            }
-            if (!fileId) {
-                return true;
-            }
-
-            var versionNum = versionNodes.length - $.inArray(versionNode, versionNodes);
-
-            OCA.Onlyoffice.openVersion(fileId, versionNum);
-
-            return false;
-        });
-    };
-
-    OCA.Onlyoffice.unbindVersionClick = function() {
-        $(document).off("click.onlyoffice-version", "#versionsTabView .downloadVersion");
-    }
-
     var initPage = function () {
         if ($("#isPublic").val() === "1" && $("#mimetype").val() !== "httpd/unix-directory") {
             //file by shared link
@@ -555,8 +510,6 @@
             OC.Plugins.register("OCA.Files.FileList", OCA.Onlyoffice.TabView);
 
             OCA.Onlyoffice.registerAction();
-
-            OCA.Onlyoffice.bindVersionClick();
         }
     };
 
