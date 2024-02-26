@@ -537,16 +537,31 @@
 
     OCA.Onlyoffice.onRequestUsers = function (event) {
         let operationType = typeof(event.data.c) !== "undefined" ? event.data.c : null;
-        $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/users?fileId={fileId}&operationType=" + operationType,
-        {
-            fileId: OCA.Onlyoffice.fileId || 0
-        }),
-        function onSuccess(response) {
-            OCA.Onlyoffice.docEditor.setUsers({
-                "c": operationType,
-                "users": response
-            });
-        });
+        switch (operationType) {
+            case "info":
+                    $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/userInfo?userIds={userIds}",
+                    {
+                        userIds: JSON.stringify(event.data.id)
+                    }),
+                    function onSuccess(response) {
+                        OCA.Onlyoffice.docEditor.setUsers({
+                            "c": operationType,
+                            "users": response
+                        });
+                    });
+                break;
+                default:
+                    $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/users?fileId={fileId}&operationType=" + operationType,
+                    {
+                        fileId: OCA.Onlyoffice.fileId || 0
+                    }),
+                    function onSuccess(response) {
+                        OCA.Onlyoffice.docEditor.setUsers({
+                            "c": operationType,
+                            "users": response
+                        });
+                    });
+        }
     };
 
     OCA.Onlyoffice.onRequestSendNotify = function (event) {
