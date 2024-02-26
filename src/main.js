@@ -766,25 +766,32 @@ import NewDocxfSvg from "!!raw-loader!../img/new-docxf.svg";
 
     OCA.Onlyoffice.bindVersionClick = function () {
         OCA.Onlyoffice.unbindVersionClick();
-        $(document).on("click.onlyoffice-version", "#versionsTabView .downloadVersion", function() {
-            var ext = $(this).attr("download").split(".").pop();
+        $(document).on("click.onlyoffice-version", "#tab-version_vue .list-item__wrapper", function() {
+
+            var fileName = "";
+            var titleTabNode = $(".app-sidebar-header__maintitle");
+            if (titleTabNode.length > 0) {
+                fileName = titleTabNode[0].title;
+            }
+
+            var ext = fileName.split(".").pop();
             if (!OCA.Onlyoffice.setting.formats[ext]
                 || !OCA.Onlyoffice.setting.formats[ext].def) {
                 return true;
             }
 
-            var versionNodes = $("#versionsTabView ul.versions>li");
-            var versionNode = $(this).closest("#versionsTabView ul.versions>li")[0];
-
-            var href = $(this).attr("href");
-            var search = new RegExp("\/versions\/(\\d+)\/\\d+$");
-            var result = search.exec(href);
+            var previewStyle = $(".app-sidebar-header__figure").attr("style");
+            var search = new RegExp("/preview[?|&]fileId=([^&]*)");
+            var result = search.exec(previewStyle);
             if (result && result.length > 1) {
                 var fileId = result[1];
             }
             if (!fileId) {
                 return true;
             }
+
+            var versionNodes = $("#tab-version_vue ul>div");
+            var versionNode = $(this)[0].parentNode;
 
             var versionNum = versionNodes.length - $.inArray(versionNode, versionNodes);
 
@@ -795,7 +802,7 @@ import NewDocxfSvg from "!!raw-loader!../img/new-docxf.svg";
     };
 
     OCA.Onlyoffice.unbindVersionClick = function() {
-        $(document).off("click.onlyoffice-version", "#versionsTabView .downloadVersion");
+        $(document).off("click.onlyoffice-version", "#tab-version_vue .list-item__wrapper");
     }
 
     var initPage = function () {
