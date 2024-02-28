@@ -300,6 +300,7 @@
         }
 
         OCA.Onlyoffice.resize();
+        OCA.Onlyoffice.setViewport();
     };
 
     OCA.Onlyoffice.onRequestSaveAs = function (event) {
@@ -739,6 +740,10 @@
                 window.addEventListener("orientationchange", OCA.Onlyoffice.resize);
             }
         }
+    };
+
+    OCA.Onlyoffice.setViewport = function() {
+        document.querySelector('meta[name="viewport"]').setAttribute("content","width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0");
     };
 
     OCA.Onlyoffice.InitEditor();
