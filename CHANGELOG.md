@@ -10,6 +10,7 @@
 - offline viewer for share link
 - updatable list of supported formats
 - filling pdf instead oform
+- fixed mobile editor size
 - version opening from right tab is no longer supported
 
 ## Added
@@ -21,6 +22,7 @@
 - setting for disable editors cron check
 - Arabic and Serbian empty file templates
 - list of users to protect ranges of cells
+- support of user avatar in editor
 
 ## 7.9.4
 ## Changed

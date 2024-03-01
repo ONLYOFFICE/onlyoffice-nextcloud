@@ -108,6 +108,11 @@
             url: configUrl,
             success: function onSuccess(config) {
                 if (config) {
+                    OCA.Onlyoffice.device = config.type;
+                    if (OCA.Onlyoffice.device === "mobile") {
+                        OCA.Onlyoffice.resizeEvents();
+                    }
+
                     if (config.redirectUrl) {
                         location.href = config.redirectUrl;
                         return;
@@ -282,6 +287,9 @@
             },
             "*");
         }
+
+        OCA.Onlyoffice.resize();
+        OCA.Onlyoffice.setViewport();
     };
 
     OCA.Onlyoffice.onRequestSaveAs = function (event) {
@@ -526,16 +534,31 @@
 
     OCA.Onlyoffice.onRequestUsers = function (event) {
         let operationType = typeof(event.data.c) !== "undefined" ? event.data.c : null;
-        $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/users?fileId={fileId}&operationType=" + operationType,
-        {
-            fileId: OCA.Onlyoffice.fileId || 0
-        }),
-        function onSuccess(response) {
-            OCA.Onlyoffice.docEditor.setUsers({
-                "c": operationType,
-                "users": response
-            });
-        });
+        switch (operationType) {
+            case "info":
+                    $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/userInfo?userIds={userIds}",
+                    {
+                        userIds: JSON.stringify(event.data.id)
+                    }),
+                    function onSuccess(response) {
+                        OCA.Onlyoffice.docEditor.setUsers({
+                            "c": operationType,
+                            "users": response
+                        });
+                    });
+                break;
+                default:
+                    $.get(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/users?fileId={fileId}&operationType=" + operationType,
+                    {
+                        fileId: OCA.Onlyoffice.fileId || 0
+                    }),
+                    function onSuccess(response) {
+                        OCA.Onlyoffice.docEditor.setUsers({
+                            "c": operationType,
+                            "users": response
+                        });
+                    });
+        }
     };
 
     OCA.Onlyoffice.onRequestSendNotify = function (event) {
@@ -682,6 +705,35 @@
         }
         OCA.Onlyoffice.docEditor.refreshHistory(data);
     }
+
+    OCA.Onlyoffice.resize = function () {
+        if (OCA.Onlyoffice.device !== "mobile") {
+            return;
+        }
+
+        var headerHeight = $("#header").length > 0 ? $("#header").height() : 50;
+        var wrapEl = $("#app>iframe");
+        if (wrapEl.length > 0) {
+            wrapEl[0].style.height = (screen.availHeight - headerHeight) + "px";
+            window.scrollTo(0, -1);
+            wrapEl[0].style.height = (window.innerHeight - headerHeight) + "px";
+        }
+    };
+
+    OCA.Onlyoffice.resizeEvents = function() {
+        if (window.addEventListener) {
+            if (/Android/i.test(navigator.userAgent)) {
+                window.addEventListener("resize", OCA.Onlyoffice.resize);
+            }
+            if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                window.addEventListener("orientationchange", OCA.Onlyoffice.resize);
+            }
+        }
+    };
+
+    OCA.Onlyoffice.setViewport = function() {
+        document.querySelector('meta[name="viewport"]').setAttribute("content","width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0");
+    };
 
     OCA.Onlyoffice.InitEditor();
 

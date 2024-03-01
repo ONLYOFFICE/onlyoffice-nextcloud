@@ -274,7 +274,7 @@
                 attributes.push({
                     checked: modifyFilter,
                     extra: OCA.Onlyoffice.Permissions.ModifyFilter,
-                    label: t(OCA.Onlyoffice.AppName, "Custom filter")
+                    label: t(OCA.Onlyoffice.AppName, "Global filter")
                 });
             }
 

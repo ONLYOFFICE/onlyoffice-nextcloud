@@ -90,10 +90,15 @@
     }
 
     OCA.Onlyoffice.onDocumentReady = function () {
+        OCA.Onlyoffice.setViewport();
     };
 
     OCA.Onlyoffice.changeFavicon = function (favicon) {
         $('link[rel="icon"]').attr("href", favicon);
+    };
+
+    OCA.Onlyoffice.setViewport = function() {
+        document.querySelector('meta[name="viewport"]').setAttribute("content","width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0");
     };
 
     OCA.Onlyoffice.onShowMessage = function (messageObj) {
