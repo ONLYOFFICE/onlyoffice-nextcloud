@@ -285,7 +285,7 @@
         if (OCA.Onlyoffice.inframe) {
             window.parent.postMessage({
                 method: "onDocumentReady",
-                param: OCA.Onlyoffice.documentType
+                param: {}
             },
             "*");
         }
