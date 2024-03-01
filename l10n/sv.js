@@ -121,7 +121,6 @@ OC.L10N.register(
     "Review": "Granska",
     "Comment": "Kommentar",
     "Form filling": "Formulärfyllning",
-    "Custom filter": "Anpassat filter",
     "group": "grupp",
     "Advanced": "Avancerad",
     "Share link": "Dela länk",

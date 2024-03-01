@@ -123,7 +123,6 @@ OC.L10N.register(
     "Review": "レビュー",
     "Comment": "コメント",
     "Form filling": "フォーム入力",
-    "Custom filter": "ユーザー設定フィルター",
     "group": "グループ",
     "Advanced": "詳細",
     "Provide advanced document permissions using ONLYOFFICE Docs": "ONLYOFFICE Docsを利用した高度なドキュメント権限の提供",

@@ -121,7 +121,6 @@ OC.L10N.register(
     "Review": "Visualització prèvia",
     "Comment": "Comentari",
     "Form filling": "Emplenament de formularis",
-    "Custom filter": "Filtre personalitzat",
     "group": "agrupa",
     "Advanced": "Avançat",
     "Share link": "Comparteix un enllaç",

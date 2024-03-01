@@ -122,7 +122,6 @@ OC.L10N.register(
     "Review": "Преглед",
     "Comment": "Коментар",
     "Form filling": "Попълване на формуляр",
-    "Custom filter": "Персонализиран филтър",
     "group": "група",
     "Advanced": "Допълнително",
     "conversation": "разговор",

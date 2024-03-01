@@ -124,7 +124,6 @@ OC.L10N.register(
     "Review": "Revisar",
     "Comment": "Comente",
     "Form filling": "Preenchimento de formularios",
-    "Custom filter": "Filtro personalizado",
     "group": "grupo",
     "Advanced": "Avançado",
     "Provide advanced document permissions using ONLYOFFICE Docs": "Forneça permissões avançadas de documentos usando o ONLYOFFICE Docs",

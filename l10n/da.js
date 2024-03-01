@@ -123,7 +123,6 @@ OC.L10N.register(
     "Review": "Anmeldelse",
     "Comment": "Kommentar",
     "Form filling": "Formular udfyldning",
-    "Custom filter": "Brugerdefineret filter",
     "group": "gruppe",
     "Advanced": "Avanceret",
     "Provide advanced document permissions using ONLYOFFICE Docs": "Giv avancerede dokumenttilladelser ved brug af ONLYOFFICE",

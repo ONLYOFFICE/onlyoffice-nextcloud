@@ -123,7 +123,6 @@ OC.L10N.register(
     "Review": "Berrikusi",
     "Comment": "Iruzkinak",
     "Form filling": "Inprimakia bete",
-    "Custom filter": "Iragazki pertsonalizatua",
     "group": "taldea",
     "Advanced": "Aurreratua",
     "Provide advanced document permissions using ONLYOFFICE Docs": "Eman baimen aurreratuak dokumentuei ONLYOFFICE Docs erabiliz",
