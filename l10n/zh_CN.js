@@ -44,7 +44,7 @@ OC.L10N.register(
     "View details" : "查看详情",
     "Save" : "保存",
     "Mixed Active Content is not allowed. HTTPS address for ONLYOFFICE Docs is required." : "不允许混合活动内容，请使用HTTPS连接ONLYOFFICE Docs。",
-    "Restrict access to editors to following groups" : "仅授权的用户组可以使用该服务",
+    "Allow the following groups to access the editors" : "仅授权的用户组可以使用该服务",
     "Server settings" : "服务器设置",
     "Common settings" : "常用设置",
     "Editor customization settings" : "编辑器自定义设置",

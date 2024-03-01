@@ -42,7 +42,7 @@
     "View details" : "Подробнее",
     "Save" : "Сохранить",
     "Mixed Active Content is not allowed. HTTPS address for ONLYOFFICE Docs is required." : "Смешанное активное содержимое запрещено. Для ONLYOFFICE Docs необходимо использовать HTTPS-адрес.",
-    "Restrict access to editors to following groups" : "Дать доступ к редакторам только следующим группам",
+    "Allow the following groups to access the editors" : "Дать доступ к редакторам только следующим группам",
     "Server settings" : "Настройки сервера",
     "Common settings" : "Общие настройки",
     "Editor customization settings" : "Настройка редактора",

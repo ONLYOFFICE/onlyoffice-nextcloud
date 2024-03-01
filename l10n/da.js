@@ -44,7 +44,6 @@ OC.L10N.register(
     "View details" : "Se detaljer",
     "Save" : "Gem",
     "Mixed Active Content is not allowed. HTTPS address for ONLYOFFICE Docs is required." : "Blandet aktivt indhold er ikke tilladt. HTTPS-adresse for ONLYOFFICE Docs er påkrævet.",
-    "Restrict access to editors to following groups" : "Begræns adgangen til redaktører til følgende grupper",
     "Server settings" : "Serverindstillinger",
     "Common settings" : "Fælles indstillinger",
     "Editor customization settings" : "Editor tilpasningsindstillinger ",

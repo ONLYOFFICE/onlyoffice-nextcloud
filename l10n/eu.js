@@ -44,7 +44,6 @@ OC.L10N.register(
     "View details" : "Ikusi xehetasunak",
     "Save" : "Gorde",
     "Mixed Active Content is not allowed. HTTPS address for ONLYOFFICE Docs is required." : "Eduki Nahasi Aktiboa ez da onartzen. ONLYOFFICE Docs-erako HTTPS helbidea behar da.",
-    "Restrict access to editors to following groups" : "Mugatu ediziora sarbidea honako taldeetara",
     "Server settings" : "Zerbitzariaren ezarpenak",
     "Common settings" : "Ohiko ezarpenak",
     "Editor customization settings" : "Editorearen ezarpenak",
