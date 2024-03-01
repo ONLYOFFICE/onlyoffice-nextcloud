@@ -31,7 +31,6 @@
 
         OCA.Onlyoffice.fileId = $("#iframeEditor").data("id");
         OCA.Onlyoffice.shareToken = $("#iframeEditor").data("sharetoken");
-        OCA.Onlyoffice.version = $("#iframeEditor").data("version");
         var directToken = $("#iframeEditor").data("directtoken");
         OCA.Onlyoffice.template = $("#iframeEditor").data("template");
         OCA.Onlyoffice.inframe = !!$("#iframeEditor").data("inframe");
@@ -79,9 +78,6 @@
         if (directToken) {
             $("html").addClass("onlyoffice-full-page");
             params.push("directToken=" + encodeURIComponent(directToken));
-        }
-        if (OCA.Onlyoffice.version > 0) {
-            params.push("version=" + OCA.Onlyoffice.version);
         }
         if (OCA.Onlyoffice.template) {
             params.push("template=true");
@@ -182,10 +178,7 @@
                             config.events.onRequestHistory = OCA.Onlyoffice.onRequestHistory;
                             config.events.onRequestHistoryData = OCA.Onlyoffice.onRequestHistoryData;
                             config.events.onRequestRestore = OCA.Onlyoffice.onRequestRestore;
-
-                            if (!OCA.Onlyoffice.version) {
-                                config.events.onRequestHistoryClose = OCA.Onlyoffice.onRequestHistoryClose;
-                            }
+                            config.events.onRequestHistoryClose = OCA.Onlyoffice.onRequestHistoryClose;
                         }
                     }
 
@@ -288,10 +281,6 @@
                 param: {}
             },
             "*");
-        }
-
-        if (OCA.Onlyoffice.version > 0) {
-            OCA.Onlyoffice.onRequestHistory(OCA.Onlyoffice.version);
         }
     };
 

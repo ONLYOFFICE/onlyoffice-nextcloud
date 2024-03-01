@@ -67,7 +67,7 @@
 
                 fileList.add(response, { animate: true });
                 if (open) {
-                    OCA.Onlyoffice.OpenEditor(response.id, dir, response.name, 0, winEditor);
+                    OCA.Onlyoffice.OpenEditor(response.id, dir, response.name, winEditor);
 
                     OCA.Onlyoffice.context = { fileList: fileList };
                     OCA.Onlyoffice.context.fileName = response.name;
@@ -79,7 +79,7 @@
         );
     };
 
-    OCA.Onlyoffice.OpenEditor = function (fileId, fileDir, fileName, version, winEditor) {
+    OCA.Onlyoffice.OpenEditor = function (fileId, fileDir, fileName, winEditor) {
         var filePath = "";
         if (fileName) {
             filePath = fileDir.replace(new RegExp("\/$"), "") + "/" + fileName;
@@ -96,10 +96,6 @@
                     shareToken: encodeURIComponent($("#sharingToken").val()),
                     fileId: fileId
                 });
-        }
-
-        if (version > 0) {
-            url += "&version=" + version;
         }
 
         if (winEditor && winEditor.location) {
@@ -167,7 +163,7 @@
         var fileId = context.fileId || context.$file && context.$file[0].dataset.id || fileInfoModel.id;
         var winEditor = !fileInfoModel && !OCA.Onlyoffice.setting.sameTab ? document : null;
 
-        OCA.Onlyoffice.OpenEditor(fileId, context.dir, fileName, 0, winEditor);
+        OCA.Onlyoffice.OpenEditor(fileId, context.dir, fileName, winEditor);
 
         OCA.Onlyoffice.context = context;
         OCA.Onlyoffice.context.fileName = fileName;

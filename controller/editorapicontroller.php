@@ -19,13 +19,11 @@
 
 namespace OCA\Onlyoffice\Controller;
 
-use OCA\Files_Versions\Versions\IVersionManager;
 use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\Crypt;
 use OCA\Onlyoffice\DocumentService;
 use OCA\Onlyoffice\ExtraPermissions;
 use OCA\Onlyoffice\FileUtility;
-use OCA\Onlyoffice\FileVersions;
 use OCA\Onlyoffice\TemplateManager;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\AppFramework\OCSController;
@@ -120,13 +118,6 @@ class EditorApiController extends OCSController {
     private $fileUtility;
 
     /**
-     * File version manager
-     *
-     * @var IVersionManager
-     */
-    private $versionManager;
-
-    /**
      * Tag manager
      *
      * @var ITagManager
@@ -197,14 +188,6 @@ class EditorApiController extends OCSController {
         $this->tagManager = $tagManager;
         $this->lockManager = $lockManager;
 
-        if (\OC::$server->getAppManager()->isInstalled("files_versions")) {
-            try {
-                $this->versionManager = \OC::$server->query(IVersionManager::class);
-            } catch (QueryException $e) {
-                $this->logger->logException($e, ["message" => "VersionManager init error", "app" => $this->appName]);
-            }
-        }
-
         if ($this->config->getAdvanced()
             && \OC::$server->getAppManager()->isInstalled("files_sharing")) {
             $this->extraPermissions = new ExtraPermissions($AppName, $logger, $shareManager, $config);
@@ -220,7 +203,6 @@ class EditorApiController extends OCSController {
      * @param string $filePath - file path
      * @param string $shareToken - access token
      * @param string $directToken - direct token
-     * @param integer $version - file version
      * @param bool $inframe - open in frame
      * @param bool $inviewer - open in viewer
      * @param bool $desktop - desktop label
@@ -233,7 +215,7 @@ class EditorApiController extends OCSController {
      * @NoAdminRequired
      * @PublicPage
      */
-    public function config($fileId, $filePath = null, $shareToken = null, $directToken = null, $version = 0, $inframe = false, $inviewer = false, $desktop = false, $guestName = null, $template = false, $anchor = null) {
+    public function config($fileId, $filePath = null, $shareToken = null, $directToken = null, $inframe = false, $inviewer = false, $desktop = false, $guestName = null, $template = false, $anchor = null) {
 
         if (!empty($directToken)) {
             list($directData, $error) = $this->crypt->readHash($directToken);
@@ -292,24 +274,9 @@ class EditorApiController extends OCSController {
             return new JSONResponse(["error" => $this->trans->t("Format is not supported")]);
         }
 
-        $fileUrl = $this->getUrl($file, $user, $shareToken, $version, null, $template);
+        $fileUrl = $this->getUrl($file, $user, $shareToken, null, $template);
 
-        $key = null;
-        if ($version > 0
-            && $this->versionManager !== null) {
-            $owner = $file->getFileInfo()->getOwner();
-            if ($owner !== null) {
-                $versions = FileVersions::processVersionsArray($this->versionManager->getVersionsForFile($owner, $file->getFileInfo()));
-                if ($version <= count($versions)) {
-                    $fileVersion = array_values($versions)[$version - 1];
-
-                    $key = $this->fileUtility->getVersionKey($fileVersion);
-                }
-            }
-        }
-        if ($key === null) {
-            $key = $this->fileUtility->getKey($file, true);
-        }
+        $key = $this->fileUtility->getKey($file, true);
         $key = DocumentService::generateRevisionId($key);
 
         $params = [
@@ -390,8 +357,7 @@ class EditorApiController extends OCSController {
         }
 
         $isTempLock = false;
-        if ($version < 1
-            && $this->lockManager->isLockProviderAvailable()) {
+        if ($this->lockManager->isLockProviderAvailable()) {
             try {
                 $locks = $this->lockManager->getLocks($file->getId());
                 $lock = !empty($locks) ? $locks[0] : null;
@@ -411,8 +377,7 @@ class EditorApiController extends OCSController {
 
         $canEdit = isset($format["edit"]) && $format["edit"];
         $canFillForms = isset($format["fillForms"]) && $format["fillForms"];
-        $editable = $version < 1
-                    && !$template
+        $editable = !$template
                     && $file->isUpdateable()
                     && !$isTempLock
                     && (empty($shareToken) || ($share->getPermissions() & Constants::PERMISSION_UPDATE) === Constants::PERMISSION_UPDATE);
@@ -599,7 +564,7 @@ class EditorApiController extends OCSController {
             $params["token"] = $token;
         }
 
-        $this->logger->debug("Config is generated for: $fileId ($version) with key $key", ["app" => $this->appName]);
+        $this->logger->debug("Config is generated for: $fileId with key $key", ["app" => $this->appName]);
 
         return new JSONResponse($params);
     }
@@ -657,13 +622,12 @@ class EditorApiController extends OCSController {
      * @param File $file - file
      * @param IUser $user - user with access
      * @param string $shareToken - access token
-     * @param integer $version - file version
      * @param bool $changes - is required url to file changes
      * @param bool $template - file is template
      *
      * @return string
      */
-    private function getUrl($file, $user = null, $shareToken = null, $version = 0, $changes = false, $template = false) {
+    private function getUrl($file, $user = null, $shareToken = null, $changes = false, $template = false) {
 
         $data = [
             "action" => "download",
@@ -677,9 +641,6 @@ class EditorApiController extends OCSController {
         }
         if (!empty($shareToken)) {
             $data["shareToken"] = $shareToken;
-        }
-        if ($version > 0) {
-            $data["version"] = $version;
         }
         if ($changes) {
             $data["changes"] = true;

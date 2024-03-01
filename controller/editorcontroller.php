@@ -1209,7 +1209,6 @@ class EditorController extends Controller {
      * @param integer $fileId - file identifier
      * @param string $filePath - file path
      * @param string $shareToken - access token
-     * @param integer $version - file version
      * @param bool $inframe - open in frame
      * @param bool $inviewer - open in viewer
      * @param bool $template - file is template
@@ -1220,8 +1219,8 @@ class EditorController extends Controller {
      * @NoAdminRequired
      * @NoCSRFRequired
      */
-    public function index($fileId, $filePath = null, $shareToken = null, $version = 0, $inframe = false, $inviewer = false, $template = false, $anchor = null) {
-        $this->logger->debug("Open: $fileId ($version) $filePath ", ["app" => $this->appName]);
+    public function index($fileId, $filePath = null, $shareToken = null, $inframe = false, $inviewer = false, $template = false, $anchor = null) {
+        $this->logger->debug("Open: $fileId $filePath ", ["app" => $this->appName]);
 
         $isLoggedIn = $this->userSession->isLoggedIn();
         if (empty($shareToken) && !$isLoggedIn) {
@@ -1256,7 +1255,6 @@ class EditorController extends Controller {
             "filePath" => $filePath,
             "shareToken" => $shareToken,
             "directToken" => null,
-            "version" => $version,
             "isTemplate" => $template,
             "inframe" => false,
             "inviewer" => $inviewer === true,
@@ -1300,7 +1298,6 @@ class EditorController extends Controller {
      *
      * @param integer $fileId - file identifier
      * @param string $shareToken - access token
-     * @param integer $version - file version
      * @param bool $inframe - open in frame
      *
      * @return TemplateResponse
@@ -1309,8 +1306,8 @@ class EditorController extends Controller {
      * @NoCSRFRequired
      * @PublicPage
      */
-    public function publicPage($fileId, $shareToken, $version = 0, $inframe = false) {
-        return $this->index($fileId, null, $shareToken, $version, $inframe);
+    public function publicPage($fileId, $shareToken, $inframe = false) {
+        return $this->index($fileId, null, $shareToken, $inframe);
     }
 
     /**
