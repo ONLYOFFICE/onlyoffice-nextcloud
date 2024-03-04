@@ -1,5 +1,6 @@
 # Change Log
 
+##
 ## Changed
 - fix author in group folder
 - fixed guest redirect when limiting the app to groups
@@ -11,8 +12,6 @@
 - filling pdf instead oform
 - fixed mobile editor size
 - version opening from right tab is no longer supported
-- compatible with Nextcloud 28
-- agpl v3 license
 
 ## Added
 - advanced access rights for talk files and share links
@@ -24,6 +23,11 @@
 - Arabic and Serbian empty file templates
 - list of users to protect ranges of cells
 - support of user avatar in editor
+
+## 9.0.0
+## Changed
+- compatible with Nextcloud 28
+- agpl v3 license
 
 ## 8.2.4
 ## Changed
