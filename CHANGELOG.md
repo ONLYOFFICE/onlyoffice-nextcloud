@@ -1,28 +1,28 @@
 # Change Log
 
 ## 7.10.0
-## Changed
-- fix author in group folder
-- fixed guest redirect when limiting the app to groups
-- fixed error display in the mobile application
-- fixed opening file without download access
-- Nextcloud v25 is no longer supported
-- offline viewer for share link
-- updatable list of supported formats
-- filling pdf instead oform
-- fixed mobile editor size
-- version opening from right tab is no longer supported
-
 ## Added
+- support of user avatar in editor
+- list of users to protect ranges of cells
+- setting for disable editors cron check
 - advanced access rights for talk files and share links
 - selecting a document to combine from the storage
 - reference data from coediting
 - opening a reference data source
 - changing a reference data source
-- setting for disable editors cron check
 - Arabic and Serbian empty file templates
-- list of users to protect ranges of cells
-- support of user avatar in editor
+
+## Changed
+- fix author in group folder
+- fixed opening file without download access
+- fixed guest redirect when limiting the app to groups
+- fixed error display in the mobile application
+- fixed mobile editor size
+- offline viewer for share link
+- updatable list of supported formats
+- filling pdf instead oform
+- version opening from right tab is no longer supported
+- Nextcloud v25 is no longer supported
 
 ## 7.9.4
 ## Changed
