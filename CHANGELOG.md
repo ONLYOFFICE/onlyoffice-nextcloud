@@ -1,6 +1,6 @@
 # Change Log
 
-##
+## 7.10.0
 ## Changed
 - fix author in group folder
 - fixed guest redirect when limiting the app to groups
