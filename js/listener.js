@@ -89,16 +89,7 @@
             true);
     }
 
-    OCA.Onlyoffice.onDocumentReady = function (documentType) {
-        if (documentType === "word"
-            || documentType === "cell"
-            || documentType === "slide") {
-            if (OCA.Onlyoffice.bindVersionClick) {
-                OCA.Onlyoffice.bindVersionClick();
-            }
-        } else if (OCA.Onlyoffice.unbindVersionClick) {
-            OCA.Onlyoffice.unbindVersionClick();
-        }
+    OCA.Onlyoffice.onDocumentReady = function () {
         OCA.Onlyoffice.setViewport();
     };
 

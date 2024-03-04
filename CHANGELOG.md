@@ -11,6 +11,7 @@
 - updatable list of supported formats
 - filling pdf instead oform
 - fixed mobile editor size
+- version opening from right tab is no longer supported
 
 ## Added
 - advanced access rights for talk files and share links
