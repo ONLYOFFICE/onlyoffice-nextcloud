@@ -150,6 +150,13 @@ class EditorController extends Controller {
     private $groupManager;
 
     /**
+     * Avatar manager
+     *
+     * @var IAvatarManager
+     */
+    private $avatarManager;
+
+    /**
      * @param string $AppName - application name
      * @param IRequest $request - request object
      * @param IRootFolder $root - root folder
@@ -201,6 +208,7 @@ class EditorController extends Controller {
         }
 
         $this->fileUtility = new FileUtility($AppName, $trans, $logger, $config, $shareManager, $session);
+        $this->avatarManager = \OC::$server->getAvatarManager();
     }
 
     /**
@@ -433,6 +441,46 @@ class EditorController extends Controller {
             }
         }
 
+        return $result;
+    }
+
+    /**
+     * Get user for Info
+     *
+     * @param string $userIds - users identifiers
+     *
+     * @return array
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     */
+    public function userInfo($userIds) {
+        $result = [];
+        $userIds = json_decode($userIds, true);
+
+        if ($userIds !== null && is_array($userIds)) {
+            foreach ($userIds as $userId) {
+                $userData = [];
+                $user = $this->userManager->get($this->getUserId($userId));
+                if (!empty($user)) {
+                    $userData = [
+                        "name" => $user->getDisplayName(),
+                        "id" => $userId
+                    ];
+                    $avatar = $this->avatarManager->getAvatar($user->getUID());
+                    if ($avatar->exists() && $avatar->isCustomAvatar()) {
+                        $userAvatarUrl = $this->urlGenerator->getAbsoluteURL(
+                            $this->urlGenerator->linkToRoute("core.avatar.getAvatar", [
+                                "userId" => $user->getUID(),
+                                "size" => 64,
+                            ])
+                        );
+                        $userData["image"] = $userAvatarUrl;
+                    }
+                    array_push($result, $userData);
+                }
+            }
+        }
         return $result;
     }
 
@@ -770,6 +818,17 @@ class EditorController extends Controller {
         if (!($folder->isCreatable() && $folder->isUpdateable())) {
             $this->logger->error("Folder for saving file without permission: $dir", ["app" => $this->appName]);
             return ["error" => $this->trans->t("You don't have enough permission to create")];
+        }
+        $documentServerUrl = $this->config->getDocumentServerUrl();
+
+        if (empty($documentServerUrl)) {
+            $this->logger->error("documentServerUrl is empty", ["app" => $this->appName]);
+            return ["error" => $this->trans->t("ONLYOFFICE app is not configured. Please contact admin")];
+        }
+
+        if (parse_url($url, PHP_URL_HOST) !== parse_url($documentServerUrl, PHP_URL_HOST)) {
+            $this->logger->error("Incorrect domain in file url", ["app" => $this->appName]);
+            return ["error" => $this->trans->t("The domain in the file url does not match the domain of the Document server")];
         }
 
         $url = $this->config->replaceDocumentServerUrlToInternal($url);
@@ -1219,7 +1278,6 @@ class EditorController extends Controller {
      * @param integer $fileId - file identifier
      * @param string $filePath - file path
      * @param string $shareToken - access token
-     * @param integer $version - file version
      * @param bool $inframe - open in frame
      * @param bool $inviewer - open in viewer
      * @param bool $template - file is template
@@ -1230,8 +1288,8 @@ class EditorController extends Controller {
      * @NoAdminRequired
      * @NoCSRFRequired
      */
-    public function index($fileId, $filePath = null, $shareToken = null, $version = 0, $inframe = false, $inviewer = false, $template = false, $anchor = null) {
-        $this->logger->debug("Open: $fileId ($version) $filePath ", ["app" => $this->appName]);
+    public function index($fileId, $filePath = null, $shareToken = null, $inframe = false, $inviewer = false, $template = false, $anchor = null) {
+        $this->logger->debug("Open: $fileId $filePath ", ["app" => $this->appName]);
 
         $isLoggedIn = $this->userSession->isLoggedIn();
         if (empty($shareToken) && !$isLoggedIn) {
@@ -1266,7 +1324,6 @@ class EditorController extends Controller {
             "filePath" => $filePath,
             "shareToken" => $shareToken,
             "directToken" => null,
-            "version" => $version,
             "isTemplate" => $template,
             "inframe" => false,
             "inviewer" => $inviewer === true,
@@ -1310,7 +1367,6 @@ class EditorController extends Controller {
      *
      * @param integer $fileId - file identifier
      * @param string $shareToken - access token
-     * @param integer $version - file version
      * @param bool $inframe - open in frame
      *
      * @return TemplateResponse
@@ -1319,8 +1375,8 @@ class EditorController extends Controller {
      * @NoCSRFRequired
      * @PublicPage
      */
-    public function publicPage($fileId, $shareToken, $version = 0, $inframe = false) {
-        return $this->index($fileId, null, $shareToken, $version, $inframe);
+    public function publicPage($fileId, $shareToken, $inframe = false) {
+        return $this->index($fileId, null, $shareToken, $inframe);
     }
 
     /**
@@ -1443,6 +1499,21 @@ class EditorController extends Controller {
     private function buildUserId($userId) {
         $instanceId = $this->config->getSystemValue("instanceid", true);
         $userId = $instanceId . "_" . $userId;
+        return $userId;
+    }
+
+    /**
+     * Get Nextcloud userId from unique user identifier
+     *
+     * @param string $userId - current user identifier
+     *
+     * @return string
+     */
+    private function getUserId($userId) {
+        if (str_contains($userId, "_")) {
+            $userIdExp = explode("_", $userId);
+            $userId = end($userIdExp);
+        }
         return $userId;
     }
 

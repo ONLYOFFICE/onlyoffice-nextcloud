@@ -39,12 +39,12 @@
     position: fixed;
     vertical-align: top;
     left: 0px;
-    height: calc(100vh - 58px);
+    height: calc(100dvh - 58px);
     margin-top: -50px;
 }
 
 #content.app-onlyoffice #app > iframe {
-    height: calc(100vh - 50px);
+    height: calc(100dvh - 50px);
     margin-top: 0px;
 }
 

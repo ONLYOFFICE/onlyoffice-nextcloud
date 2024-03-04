@@ -45,7 +45,6 @@ if (!empty($_["directToken"])) {
         data-path="<?php p($_["filePath"]) ?>"
         data-sharetoken="<?php p($_["shareToken"]) ?>"
         data-directtoken="<?php p($_["directToken"]) ?>"
-        data-version="<?php p($_["version"]) ?>"
         data-template="<?php p($_["isTemplate"]) ?>"
         data-anchor="<?php p($_["anchor"]) ?>"
         data-inframe="<?php p($_["inframe"]) ?>"
