@@ -61,12 +61,16 @@ There are several ways to do that:
     cd onlyoffice
     git submodule update --init --recursive
     ```
-
-2. Change the owner to update the application right from Nextcloud web interface:
+3. Build webpack:
+    ```bash
+    npm install
+    npm run build
+    ```
+4. Change the owner to update the application right from Nextcloud web interface:
     ```bash
     chown -R www-data:www-data onlyoffice
     ```
-3. In Nextcloud open the `~/settings/apps/disabled` page with _Not enabled_ apps by administrator and click _Enable_ for the **ONLYOFFICE** application.
+5. In Nextcloud open the `~/settings/apps/disabled` page with _Not enabled_ apps by administrator and click _Enable_ for the **ONLYOFFICE** application.
 
 ## Configuring Nextcloud ONLYOFFICE integration app
 
