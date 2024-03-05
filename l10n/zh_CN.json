@@ -42,7 +42,7 @@
     "View details" : "查看详情",
     "Save" : "保存",
     "Mixed Active Content is not allowed. HTTPS address for ONLYOFFICE Docs is required." : "不允许混合活动内容，请使用HTTPS连接ONLYOFFICE Docs。",
-    "Allow the following groups to access the editors" : "仅授权的用户组可以使用该服务",
+    "Allow the following groups to access the editors" : "让以下用户组访问编辑器",
     "Server settings" : "服务器设置",
     "Common settings" : "常用设置",
     "Editor customization settings" : "编辑器自定义设置",
@@ -108,8 +108,10 @@
     "%1$s mentioned in the %2$s: \"%3$s\".": "%1$s 提到 %2$s: \"%3$s\".",
     "{notifier} mentioned in the {file}: \"%1$s\".": "{notifier} 在 {file}: \"%1$s\"中提到了您.",
     "Choose a format to convert {fileName}": "转换 {fileName} 为选中的格式",
+    "New PDF form": "新建 PDF 表单",
     "Blank": "空白",
     "From text document": "从文本文件",
+    "Create new PDF Form": "创建新的 PDF 表单",
     "Create form": "创建表单",
     "Fill in form in ONLYOFFICE": "在ONLYOFFICE上填写表单",
     "Security": "安全",
@@ -122,6 +124,7 @@
     "Review only": "仅审阅",
     "Comment only": "仅评论",
     "Form filling": "表单填报",
+    "Global filter": "全局过滤器",
     "group": "分组",
     "Advanced": "进阶",
     "Provide advanced document permissions using ONLYOFFICE Docs": "使用ONLYOFFICE Docs 提供高级文档权限",
@@ -134,6 +137,11 @@
     "Please check the settings to resolve the problem.": "请检查设置以解决问题。",
     "View settings": "查看设置",
     "Share link": "共享链接",
-    "conversation": "会话"
+    "conversation": "会话",
+    "Select file to combine" : "选择要合并的文件",
+    "Select data source": "选择数据源",
+    "The data source must not be the current document": "数据源不应该是当前文档",
+    "Enable background connection check to the editors": "启用编辑器后台连接检查",
+    "The domain in the file url does not match the domain of the Document server": "文件 URL 中的域与文档服务器的域不匹配"
 },"pluralForm" :"nplurals=1; plural=0;"
 }

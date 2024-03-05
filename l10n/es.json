@@ -42,6 +42,7 @@
     "View details" : "Ver detalles",
     "Save" : "Guardar",
     "Mixed Active Content is not allowed. HTTPS address for ONLYOFFICE Docs is required." : "Contenido Mixto Activo no está permitido. Se requiere la dirección HTTPS para ONLYOFFICE Docs.",
+    "Allow the following groups to access the editors" : "Permitir a los siguientes grupos acceder a los editores",
     "Server settings" : "Ajustes de servidor",
     "Common settings" : "Ajustes comunes",
     "Editor customization settings" : "Ajustes del editor",
@@ -107,8 +108,10 @@
     "%1$s mentioned in the %2$s: \"%3$s\".": "%1$s ha mencionado en %2$s: \"%3$s\".",
     "{notifier} mentioned in the {file}: \"%1$s\".": "{notifier} le ha mencionado en {file}: \"%1$s\".",
     "Choose a format to convert {fileName}": "Elija un formato para convertir {fileName}",
+    "New PDF form": "Nuevo formulario PDF",
     "Blank": "En blanco",
     "From text document": "Desde documento de texto",
+    "Create new PDF Form": "Crear nuevo formulario PDF",
     "Create form": "Crear formulario",
     "Fill in form in ONLYOFFICE": "Rellenar el formulario en ONLYOFFICE",
     "Security": "Seguridad",
@@ -121,6 +124,7 @@
     "Review only": "Solo revisión",
     "Comment only": "Solo comentarios",
     "Form filling": "Relleno de formulario",
+    "Global filter": "Filtro global",
     "group": "grupo",
     "Advanced": "Avanzado",
     "Provide advanced document permissions using ONLYOFFICE Docs": "Proporcione permisos avanzados para los documentos utilizando ONLYOFFICE Docs",
@@ -133,6 +137,11 @@
     "Please check the settings to resolve the problem.": "Por favor, compruebe la configuración para resolver el problema.",
     "View settings": "Ver configuración",
     "Share link": "Compartir enlace",
-    "conversation": "conversación"
+    "conversation": "conversación",
+    "Select file to combine" : "Seleccionar archivo para combinar",
+    "Select data source": "Seleccionar fuente de datos",
+    "The data source must not be the current document": "La fuente de datos no debe ser el documento actual",
+    "Enable background connection check to the editors": "Activar la comprobación de conexión en segundo plano con los editores",
+    "The domain in the file url does not match the domain of the Document server": "El dominio de la URL del archivo no coincide con el dominio del Servidor de documentos"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }
