@@ -138,10 +138,10 @@
     "View settings": "Visualizza impostazioni",
     "Share link": "Condividi collegamento",
     "conversation": "conversazione",
-      "Select file to combine" : "Seleziona file da unire",
+    "Select file to combine" : "Seleziona file da unire",
     "Select data source": "Seleziona fonte dati",
     "The data source must not be the current document": "La fonte dei dati non deve essere il documento corrente",
     "Enable background connection check to the editors": "Abilita il controllo della connessione in background per gli editor",
     "The domain in the file url does not match the domain of the Document server": "Il dominio nell'URL del file non corrisponde al dominio del Document server"
-  },"pluralForm" :"nplurals=2; plural=(n != 1);"
+},"pluralForm" :"nplurals=2; plural=(n != 1);"
 }
