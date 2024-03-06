@@ -36,6 +36,7 @@ use OCA\Onlyoffice\Crypt;
 use OCA\Onlyoffice\DocumentService;
 use OCA\Onlyoffice\FileUtility;
 use OCA\Onlyoffice\FileVersions;
+use OCA\Onlyoffice\KeyManager;
 use OCA\Onlyoffice\TemplateManager;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\ContentSecurityPolicy;
@@ -1123,6 +1124,9 @@ class EditorController extends Controller {
             if (count($versions) >= $version) {
                 $fileVersion = array_values($versions)[$version - 1];
                 $this->versionManager->rollback($fileVersion);
+                if ($fileVersion->getSourceFile()->getFileInfo()->getStorage()->instanceOfStorage("\OCA\GroupFolders\Mount\GroupFolderStorage")) {
+                    KeyManager::delete($fileVersion->getSourceFile()->getId());
+                }
             }
         }
 
