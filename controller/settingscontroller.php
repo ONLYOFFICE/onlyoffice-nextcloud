@@ -323,4 +323,17 @@ class SettingsController extends Controller {
 
         return $templates;
     }
+    
+      /**
+     *
+     *
+     * @return string
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     * 
+     */
+	public function getOnlyOfficeServerUrl() {
+         
+                 return $this->config->GetDocumentServerUrl(true);
+            }
 }
