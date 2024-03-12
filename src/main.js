@@ -653,7 +653,7 @@ import NewDocxfSvg from "!!raw-loader!../img/new-docxf.svg";
     OCA.Onlyoffice.registerNewFileMenu = function () {
         addNewFileMenuEntry({
             id: "new-onlyoffice-docxf",
-            displayName: t(OCA.Onlyoffice.AppName, "New form template"),
+            displayName: t(OCA.Onlyoffice.AppName, "New PDF form"),
             enabled: (folder) => {
                 if (Permission.CREATE !== (folder.permissions & Permission.CREATE))
                     return false;
@@ -664,7 +664,7 @@ import NewDocxfSvg from "!!raw-loader!../img/new-docxf.svg";
             },
             iconSvgInline: NewDocxfSvg,
             handler: (folder) => {
-                var name = t(OCA.Onlyoffice.AppName, "New form template");
+                var name = t(OCA.Onlyoffice.AppName, "New PDF form");
                 var context = { dir: folder.path };
 
                 OCA.Onlyoffice.OpenFormPicker(name + ".docxf", context);
