@@ -1259,7 +1259,7 @@ class EditorController extends Controller {
 
         $formats = $this->config->formatsSetting();
 
-        return new DataDownloadResponse($newData, $newFileName, $formats[$toExtension]["mime"]);
+        return new DataDownloadResponse($newData, $newFileName, $formats[$toExtension]["mime"][0]);
     }
 
     /**
