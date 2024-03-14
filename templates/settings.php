@@ -292,7 +292,7 @@ if ($_["tagsEnabled"]) {
     <ul class="onlyoffice-template-container">
         <?php foreach ($_["templates"] as $template) { ?>
             <li data-id=<?php p($template["id"]) ?> class="onlyoffice-template-item" >
-                <img src="/core/img/filetypes/x-office-<?php p($template["type"]) ?>.svg" />
+                <img src="../../core/img/filetypes/x-office-<?php p($template["type"]) ?>.svg" />
                 <p><?php p($template["name"]) ?></p>
                 <span class="onlyoffice-template-download"></span>
                 <span class="onlyoffice-template-delete icon-delete"></span>

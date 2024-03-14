@@ -1273,7 +1273,7 @@ class EditorController extends Controller {
 
         $formats = $this->config->formatsSetting();
 
-        return new DataDownloadResponse($newData, $newFileName, $formats[$toExtension]["mime"]);
+        return new DataDownloadResponse($newData, $newFileName, $formats[$toExtension]["mime"][0]);
     }
 
     /**
@@ -1394,6 +1394,10 @@ class EditorController extends Controller {
      * @return array
      */
     private function getFile($userId, $fileId, $filePath = null, $template = false) {
+        if (empty($userId)) {
+            return [null, $this->trans->t("UserId is empty"), null];
+        }
+
         if (empty($fileId)) {
             return [null, $this->trans->t("FileId is empty"), null];
         }
