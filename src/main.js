@@ -416,7 +416,7 @@ import NewDocxfSvg from "!!raw-loader!../img/new-docxf.svg";
     };
 
     OCA.Onlyoffice.CreateFormClickExec = async function (file, view, dir) {
-        var name = file.basename.replace(/\.[^.]+$/, ".oform");
+        var name = file.basename.replace(/\.[^.]+$/, ".pdf");
         var context = {
             dir: dir,
             view: view
