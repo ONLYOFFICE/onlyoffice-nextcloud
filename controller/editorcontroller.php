@@ -1257,9 +1257,9 @@ class EditorController extends Controller {
         $fileNameWithoutExt = substr($fileName, 0, strlen($fileName) - strlen($ext) - 1);
         $newFileName = $fileNameWithoutExt . "." . $toExtension;
 
-        $formats = $this->config->formatsSetting();
+        $mimeType = $this->config->getMimeType($toExtension);
 
-        return new DataDownloadResponse($newData, $newFileName, $formats[$toExtension]["mime"][0]);
+        return new DataDownloadResponse($newData, $newFileName, $mimeType);
     }
 
     /**

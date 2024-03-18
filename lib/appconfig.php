@@ -1433,6 +1433,27 @@ class AppConfig {
     }
 
     /**
+     * Get the mime type by format name
+     *
+     * @param string $ext - format name
+     *
+     * @return string
+     */
+    public function getMimeType($ext) {
+        $onlyofficeFormats = $this->getFormats();
+        $result = "text/plain";
+
+        foreach ($onlyofficeFormats as $onlyOfficeFormat) {
+            if ($onlyOfficeFormat["name"] === $ext && !empty($onlyOfficeFormat["mime"])) {
+                $result = $onlyOfficeFormat["mime"][0];
+                break;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
      * DEMO DATA
      */
     private $DEMO_PARAM = [
