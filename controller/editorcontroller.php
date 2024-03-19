@@ -391,7 +391,7 @@ class EditorController extends Controller {
 
         $all = false;
         $users = [];
-        if ($canShare) {
+        if ($canShare && $operationType !== "protect") {
             if ($shareMemberGroups || $autocompleteMemberGroup) {
                 foreach ($currentUserGroups as $currentUserGroup) {
                     $group = $this->groupManager->get($currentUserGroup);
