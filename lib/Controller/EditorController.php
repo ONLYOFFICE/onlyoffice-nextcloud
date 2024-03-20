@@ -402,7 +402,7 @@ class EditorController extends Controller {
 
         $all = false;
         $users = [];
-        if ($canShare) {
+        if ($canShare && $operationType !== "protect") {
             if ($shareMemberGroups || $autocompleteMemberGroup) {
                 foreach ($currentUserGroups as $currentUserGroup) {
                     $group = $this->groupManager->get($currentUserGroup);
@@ -1271,9 +1271,9 @@ class EditorController extends Controller {
         $fileNameWithoutExt = substr($fileName, 0, strlen($fileName) - strlen($ext) - 1);
         $newFileName = $fileNameWithoutExt . "." . $toExtension;
 
-        $formats = $this->config->formatsSetting();
+        $mimeType = $this->config->getMimeType($toExtension);
 
-        return new DataDownloadResponse($newData, $newFileName, $formats[$toExtension]["mime"][0]);
+        return new DataDownloadResponse($newData, $newFileName, $mimeType);
     }
 
     /**

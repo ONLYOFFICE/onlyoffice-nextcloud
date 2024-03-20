@@ -1335,6 +1335,13 @@ class AppConfig {
      */
     public function getEditorsCheckInterval() {
         $interval = $this->getSystemValue($this->_editors_check_interval);
+        if ($interval !== null && !is_int($interval)) {
+            if (is_string($interval) && !ctype_digit($interval)) {
+                $interval = null;
+            } else {
+                $interval = (integer)$interval;
+            }
+        }
 
         if (empty($interval) && $interval !== 0) {
             $interval = 60 * 60 * 24;
@@ -1440,6 +1447,27 @@ class AppConfig {
         $this->cache->set("document_formats", $formats, 6 * 3600);
         $this->logger->debug("Getting formats from file", ["app" => $this->appName]);
         return json_decode($formats, true);
+    }
+
+    /**
+     * Get the mime type by format name
+     *
+     * @param string $ext - format name
+     *
+     * @return string
+     */
+    public function getMimeType($ext) {
+        $onlyofficeFormats = $this->getFormats();
+        $result = "text/plain";
+
+        foreach ($onlyofficeFormats as $onlyOfficeFormat) {
+            if ($onlyOfficeFormat["name"] === $ext && !empty($onlyOfficeFormat["mime"])) {
+                $result = $onlyOfficeFormat["mime"][0];
+                break;
+            }
+        }
+
+        return $result;
     }
 
     /**
