@@ -261,6 +261,9 @@ class EditorApiController extends OCSController {
             }
 
             $user = $this->userManager->get($userId);
+            if (method_exists($this->userSession, 'setVolatileActiveUser')) {
+                $this->userSession->setVolatileActiveUser($user);
+            }
         } else {
             $user = $this->userSession->getUser();
             $userId = null;
