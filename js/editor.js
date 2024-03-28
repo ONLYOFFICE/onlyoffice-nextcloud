@@ -716,7 +716,7 @@
         if (wrapEl.length > 0) {
             wrapEl[0].style.height = (screen.availHeight - headerHeight) + "px";
             window.scrollTo(0, -1);
-            wrapEl[0].style.height = (window.innerHeight - headerHeight) + "px";
+            wrapEl[0].style.height = (window.top.innerHeight - headerHeight) + "px";
         }
     };
 
