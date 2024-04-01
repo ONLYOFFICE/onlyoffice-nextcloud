@@ -385,7 +385,7 @@ class EditorController extends Controller {
 
         $excludedGroups = $this->getShareExcludedGroups();
         $isMemberExcludedGroups = true;
-        if (count(array_intersect($currentUserGroups, $excludedGroups)) !== count($currentUserGroups)) {
+        if ((count(array_intersect($currentUserGroups, $excludedGroups)) !== count($currentUserGroups)) || empty($currentUserGroups)) {
             $isMemberExcludedGroups = false;
         }
 
@@ -530,7 +530,7 @@ class EditorController extends Controller {
 
         $excludedGroups = $this->getShareExcludedGroups();
         $isMemberExcludedGroups = true;
-        if (count(array_intersect($currentUserGroups, $excludedGroups)) !== count($currentUserGroups)) {
+        if ((count(array_intersect($currentUserGroups, $excludedGroups)) !== count($currentUserGroups)) || empty($currentUserGroups)) {
             $isMemberExcludedGroups = false;
         }
 
