@@ -459,13 +459,7 @@ class EditorController extends Controller {
                     ];
                     $avatar = $this->avatarManager->getAvatar($user->getUID());
                     if ($avatar->exists() && $avatar->isCustomAvatar()) {
-                        $userAvatarUrl = $this->urlGenerator->getAbsoluteURL(
-                            $this->urlGenerator->linkToRoute("core.avatar.getAvatar", [
-                                "userId" => $user->getUID(),
-                                "size" => 64,
-                            ])
-                        );
-                        $userData["image"] = $userAvatarUrl;
+                        $userData["image"] = "data:image/png;base64," . $avatar->get()->__toString();
                     }
                     array_push($result, $userData);
                 }
