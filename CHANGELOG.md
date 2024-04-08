@@ -1,5 +1,34 @@
 # Change Log
 
+## 9.1.0
+## Added
+- support of user avatar in editor
+- list of users to protect ranges of cells
+- setting for disable editors cron check
+- advanced access rights for talk files and share links
+- selecting a document to combine from the storage
+- reference data from coediting
+- opening a reference data source
+- changing a reference data source
+- Arabic and Serbian empty file templates
+
+## Changed
+- fix author in group folder
+- fixed opening file without download access
+- fixed guest redirect when limiting the app to groups
+- fixed error display in the mobile application
+- fixed mobile editor size
+- offline viewer for share link
+- updatable list of supported formats
+- filling pdf instead oform
+- version opening from right tab is no longer supported
+- Nextcloud v25 is no longer supported
+
+## 9.0.0
+## Changed
+- compatible with Nextcloud 28
+- agpl v3 license
+
 ## 8.2.4
 ## Changed
 - remove link to docs cloud

@@ -42,7 +42,6 @@
     "View details" : "Bekijk details",
     "Save" : "Opslaan",
     "Mixed Active Content is not allowed. HTTPS address for ONLYOFFICE Docs is required." : "Gemende Actieve Inhoud is niet toegestaan. HTTPS-adres voor ONLYOFFICE Docs is vereist.",
-    "Restrict access to editors to following groups" : "Beperk de toegang tot editors tot de volgende groepen",
     "Server settings" : "Serverinstellingen",
     "Common settings" : "Algemene instellingen",
     "Editor customization settings" : "Editor aanpassingsinstellingen",
@@ -108,13 +107,10 @@
     "%1$s mentioned in the %2$s: \"%3$s\".": "%1$s genoemd in de %2$s: \"%3$s\".",
     "{notifier} mentioned in the {file}: \"%1$s\".": "{notifier} genoemd in {file}: \"%1$s\".",
     "Choose a format to convert {fileName}": "Kies een formaat om {fileName} te converteren",
-    "New form template": "Nieuw formulier sjabloon",
     "Blank": "Blanco",
     "From text document": "Van tekstdocument",
-    "Create new Form template": "Nieuw Formulier sjabloon maken",
     "Create form": "Formulier maken",
     "Fill in form in ONLYOFFICE": "Formulier invullen in ONLYOFFICE",
-    "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online": "Update ONLYOFFICE Docs naar versie 7.0 om online invulbare formulieren te kunnen gebruiken",
     "Security": "Beveiliging",
     "Anonymous": "Anoniem",
     "Default editor theme": "Standaard editor thema",
@@ -124,9 +120,10 @@
     "Review only": "Aleen overzicht",
     "Comment only": "Alleen commentaar",
     "Form filling": "Formulier invullen",
-    "Custom filter": "Aangepast filter",
     "group": "groep",
     "Advanced": "Geavanceerd",
-    "Provide advanced document permissions using ONLYOFFICE Docs": "Geavanceerde documentrechten geven met ONLYOFFICE Docs"
+    "Provide advanced document permissions using ONLYOFFICE Docs": "Geavanceerde documentrechten geven met ONLYOFFICE Docs",
+    "Share link": "Delen link",
+    "conversation": "gesprek"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

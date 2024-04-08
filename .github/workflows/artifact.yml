@@ -12,6 +12,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
       - name: Get Info
         run: |
           echo "version=$(grep -Eo '[0-9]+(\.[0-9]+)+' CHANGELOG.md | head -n 1)" >> $GITHUB_OUTPUT
@@ -21,13 +24,22 @@ jobs:
           cd ${{ github.workspace }}
           cwd=$(pwd)
           git submodule update --init --recursive
+          npm install
+          npm run build
           mkdir -p onlyoffice
           rsync -av --exclude='onlyoffice' . onlyoffice
           cd onlyoffice
           rm -rf ./.github/
           rm -rf ./.git/
           rm ./.gitmodules
-          rm -rf ./assets/.git
+          rm -rf ./node_modules/
+          rm -rf ./src/
+          rm ./package.json
+          rm ./package-lock.json
+          rm ./webpack.js
+          rm -rf ./assets/document-templates/.git
+          rm -rf ./assets/document-formats/.git
+          rm ./ruleset.xml
           cd $cwd
           tar -czvf onlyoffice.tar.gz onlyoffice
       - name: Upload Artifact

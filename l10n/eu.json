@@ -42,7 +42,6 @@
     "View details" : "Ikusi xehetasunak",
     "Save" : "Gorde",
     "Mixed Active Content is not allowed. HTTPS address for ONLYOFFICE Docs is required." : "Eduki Nahasi Aktiboa ez da onartzen. ONLYOFFICE Docs-erako HTTPS helbidea behar da.",
-    "Restrict access to editors to following groups" : "Mugatu ediziora sarbidea honako taldeetara",
     "Server settings" : "Zerbitzariaren ezarpenak",
     "Common settings" : "Ohiko ezarpenak",
     "Editor customization settings" : "Editorearen ezarpenak",
@@ -108,13 +107,10 @@
     "%1$s mentioned in the %2$s: \"%3$s\".": "%1$s iruzkindu du hemen %2$s: \"%3$s\".",
     "{notifier} mentioned in the {file}: \"%1$s\".": "{notifier} iruzkinduta {file}-n: \"%1$s\".",
     "Choose a format to convert {fileName}": "Aukeratu bihurtzeko formatu bat {fileName}",
-    "New form template": "Inprimaki txantiloi berria",
     "Blank": "Zurian",
     "From text document": "Testu dokumentutik",
-    "Create new Form template": "Sortu inprimaki txantiloi berria",
     "Create form": "Sortu inprimakia",
     "Fill in form in ONLYOFFICE": "Bete inprimakia ONLYOFFICE-en",
-    "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online": "Mesedez, eguneratu ONLYOFFICE Docs 7.0 bertsiora inprimagarri betegarriekin linean lan egiteko",
     "Security": "Segurtasuna",
     "Run document macros": "Exekutatu dokumentuen macroak",
     "Anonymous": "Anonimoa",
@@ -125,13 +121,14 @@
     "Review": "Berrikusi",
     "Comment": "Iruzkinak",
     "Form filling": "Inprimakia bete",
-    "Custom filter": "Iragazki pertsonalizatua",
     "group": "taldea",
     "Advanced": "Aurreratua",
     "Provide advanced document permissions using ONLYOFFICE Docs": "Eman baimen aurreratuak dokumentuei ONLYOFFICE Docs erabiliz",
     "Enable plugins": "Gaitu gehigarriak",
     "Enable document protection for": "Gaitu dokumentuen babesa hauentzat",
     "All users": "Erabiltzaile guztientzat",
-    "Owner only": "Jabearentzat soilik"
+    "Owner only": "Jabearentzat soilik",
+    "Share link": "Partekatu esteka",
+    "conversation": "elkarrizketa"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

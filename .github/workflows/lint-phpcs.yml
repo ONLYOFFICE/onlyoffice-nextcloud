@@ -3,9 +3,9 @@ name: Lint
 on:
   workflow_dispatch:
   push:
-    branches: [master]
-  pull_request:
     branches: [master, develop]
+  pull_request:
+    branches: [master, develop, feature/nc-27]
 
 permissions:
   contents: read

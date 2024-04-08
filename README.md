@@ -13,9 +13,8 @@ The app allows to:
 
 Supported formats:
 
-* For viewing and editing: DOCX, XLSX, PPTX, CSV, TXT, DOCXF, OFORM.
-* For viewing only: PDF.
-* For converting to Office Open XML formats: DOC, DOCM, DOT, DOTX, EPUB, HTM, HTML, ODP, ODT, POT, POTM, POTX, PPS, PPSM, PPSX, PPT, PPTM, RTF, XLS, XLSM, XLT, XLTM, XLTX.
+* For editing: DOCM, DOCX, DOCXF, DOTM, DOTX, EPUB, FB2, HTML, ODT, OTT, RTF, TXT, CSV, ODS, OTS, XLSM, XLSX, XLTM, XLTX, ODP, OTP, POTM, POTX, PPSM, PPSX, PPTM, PPTX.
+* For viewing only: DJVU, DOC, DOT, FODT, HTM, MHT, MHTML, OFORM, PDF, STW, SXW, WPS, WPT, XML, XPS, ET, ETT, FODS, SXC, XLS, XLSB, XLT, DPS, DPT, FODP, POT, PPS, PPT, SXI.
 
 ## Installing ONLYOFFICE Docs
 
@@ -62,12 +61,16 @@ There are several ways to do that:
     cd onlyoffice
     git submodule update --init --recursive
     ```
-
-2. Change the owner to update the application right from Nextcloud web interface:
+3. Build webpack:
+    ```bash
+    npm install
+    npm run build
+    ```
+4. Change the owner to update the application right from Nextcloud web interface:
     ```bash
     chown -R www-data:www-data onlyoffice
     ```
-3. In Nextcloud open the `~/settings/apps/disabled` page with _Not enabled_ apps by administrator and click _Enable_ for the **ONLYOFFICE** application.
+5. In Nextcloud open the `~/settings/apps/disabled` page with _Not enabled_ apps by administrator and click _Enable_ for the **ONLYOFFICE** application.
 
 ## Configuring Nextcloud ONLYOFFICE integration app
 
@@ -150,7 +153,7 @@ When the _Log-in credentials, save in session_ authentication type is used, the 
     You can check the '**Disable certificate verification (insecure)**' box on the ONLYOFFICE administration page, Server settings section, within your Nextcloud.
 
     Another option is to change the Nextcloud config file manually. Locate the Nextcloud config file (_/nextcloud/config/config.php_) and open it. Insert the following section to it:
-    
+
     ```php
     'onlyoffice' => array (
         'verify_peer_off' => true
@@ -176,7 +179,9 @@ When the _Log-in credentials, save in session_ authentication type is used, the 
     )
     ```
     To disable this check running, enter 0 value. 
-    
+
+* When accessing a document without download permission, file printing and using the system clipboard are not available. Copying and pasting within the editor is available via buttons in the editor toolbar and in the context menu.
+
 ## ONLYOFFICE Docs editions
 
 ONLYOFFICE offers different versions of its online document editors that can be deployed on your own servers.
@@ -201,12 +206,12 @@ The table below will help you to make the right choice.
 | Conversion Service                | + | + |
 | Document Builder Service          | + | + |
 | **Interface** | **Community Edition** | **Enterprise Edition** |
-| Tabbed interface                       | + | + |
-| Dark theme                             | + | + |
-| 125%, 150%, 175%, 200% scaling         | + | + |
-| White Label                            | - | - |
-| Integrated test example (node.js)      | + | + |
-| Mobile web editors                     | - | +* |
+| Tabbed interface                  | + | + |
+| Dark theme                        | + | + |
+| 125%, 150%, 175%, 200% scaling    | + | + |
+| White Label                       | - | - |
+| Integrated test example (node.js) | + | + |
+| Mobile web editors                | - | +* |
 | **Plugins & Macros** | **Community Edition** | **Enterprise Edition** |
 | Plugins                           | + | + |
 | Macros                            | + | + |
@@ -233,21 +238,26 @@ The table below will help you to make the right choice.
 | Functions, formulas, equations  | + | + |
 | Table templates                 | + | + |
 | Pivot tables                    | + | + |
-| Data validation	          | + | + |
+| Data validation                 | + | + |
 | Conditional formatting          | + | + |
-| Sparklines	                  | + | + |
+| Sparklines                      | + | + |
 | Sheet Views                     | + | + |
 | **Presentation Editor features** | **Community Edition** | **Enterprise Edition** |
 | Font and paragraph formatting   | + | + |
 | Object insertion                | + | + |
 | Transitions                     | + | + |
+| Animations                      | + | + |
 | Presenter mode                  | + | + |
 | Notes                           | + | + |
 | **Form creator features** | **Community Edition** | **Enterprise Edition** |
 | Adding form fields	          | + | + |
 | Form preview                    | + | + |
 | Saving as PDF	                  | + | + |
+| **Working with PDF**      | **Community Edition** | **Enterprise Edition** |
+| Text annotations (highlight, underline, cross out) | + | + |
+| Comments                        | + | + |
+| Freehand drawings               | + | + |
+| Form filling                    | + | + |
 | | [Get it now](https://www.onlyoffice.com/download-docs.aspx?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud#docs-community)  | [Start Free Trial](https://www.onlyoffice.com/download-docs.aspx?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud#docs-enterprise)  |
 
 \* If supported by DMS.
-

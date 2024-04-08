@@ -1,32 +1,41 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System SIA 2023
+ * (c) Copyright Ascensio System SIA 2024
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * This program is a free software product.
+ * You can redistribute it and/or modify it under the terms of the GNU Affero General Public License
+ * (AGPL) version 3 as published by the Free Software Foundation.
+ * In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended to the effect
+ * that Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * This program is distributed WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * For details, see the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * You can contact Ascensio System SIA at 20A-12 Ernesta Birznieka-Upisha street, Riga, Latvia, EU, LV-1050.
+ *
+ * The interactive user interfaces in modified source and object code versions of the Program
+ * must display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+ *
+ * Pursuant to Section 7(b) of the License you must retain the original Product logo when distributing the program.
+ * Pursuant to Section 7(e) we decline to grant you any rights under trademark law for use of our trademarks.
+ *
+ * All the Product's GUI elements, including illustrations and icon sets, as well as technical
+ * writing content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0 International.
+ * See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
  *
  */
 
 namespace OCA\Onlyoffice;
 
+use OCA\Talk\Manager as TalkManager;
 use OCP\Constants;
-use OCP\ILogger;
 use OCP\Files\File;
-use OCP\Share\IShare;
-use OCP\Share\IManager;
+use OCP\ILogger;
 use OCP\Share\Exceptions\ShareNotFound;
-
-use OCA\Onlyoffice\AppConfig;
+use OCP\Share\IManager;
+use OCP\Share\IShare;
 
 /**
  * Class expands base permissions
@@ -64,20 +73,27 @@ class ExtraPermissions {
     private $config;
 
     /**
+     * Talk manager
+     *
+     * @var TalkManager
+     */
+    private $talkManager;
+
+    /**
      * Table name
      */
-    private const TableName_Key = "onlyoffice_permissions";
+    private const TABLENAME_KEY = "onlyoffice_permissions";
 
     /**
      * Extra permission values
      *
      * @var integer
      */
-    public const None = 0;
-    public const Review = 1;
-    public const Comment = 2;
-    public const FillForms = 4;
-    public const ModifyFilter = 8;
+    public const NONE = 0;
+    public const REVIEW = 1;
+    public const COMMENT = 2;
+    public const FILLFORMS = 4;
+    public const MODIFYFILTER = 8;
 
     /**
      * @param string $AppName - application name
@@ -85,14 +101,24 @@ class ExtraPermissions {
      * @param AppConfig $config - application configuration
      * @param IManager $shareManager - Share manager
      */
-    public function __construct($AppName,
-                                ILogger $logger,
-                                IManager $shareManager,
-                                AppConfig $config) {
+    public function __construct(
+        $AppName,
+        ILogger $logger,
+        IManager $shareManager,
+        AppConfig $config
+    ) {
         $this->appName = $AppName;
         $this->logger = $logger;
         $this->shareManager = $shareManager;
         $this->config = $config;
+
+        if (\OC::$server->getAppManager()->isInstalled("spreed")) {
+            try {
+                $this->talkManager = \OC::$server->query(TalkManager::class);
+            } catch (QueryException $e) {
+                $this->logger->logException($e, ["message" => "TalkManager init error", "app" => $this->appName]);
+            }
+        }
     }
 
     /**
@@ -112,7 +138,7 @@ class ExtraPermissions {
         $extra = self::get($shareId);
 
         $wasInit = isset($extra["permissions"]);
-        $checkExtra = $wasInit ? (int)$extra["permissions"] : self::None;
+        $checkExtra = $wasInit ? (int)$extra["permissions"] : self::NONE;
         list($availableExtra, $defaultPermissions) = $this->validation($share, $checkExtra, $wasInit);
 
         if ($availableExtra === 0
@@ -162,7 +188,6 @@ class ExtraPermissions {
 
         $noActualList = [];
         foreach ($shares as $share) {
-
             $currentExtra = [];
             foreach ($extras as $extra) {
                 if ($extra["share_id"] === $share->getId()) {
@@ -171,7 +196,7 @@ class ExtraPermissions {
             }
 
             $wasInit = isset($currentExtra["permissions"]);
-            $checkExtra = $wasInit ? (int)$currentExtra["permissions"] : self::None;
+            $checkExtra = $wasInit ? (int)$currentExtra["permissions"] : self::NONE;
             list($availableExtra, $defaultPermissions) = $this->validation($share, $checkExtra, $wasInit);
 
             if ($availableExtra === 0
@@ -193,6 +218,16 @@ class ExtraPermissions {
                 $currentExtra["shareWith"] = $share->getSharedWith();
                 $currentExtra["shareWithName"] = $share->getSharedWithDisplayName();
                 $currentExtra["available"] = $availableExtra;
+
+                if ($currentExtra["type"] === IShare::TYPE_ROOM && $this->talkManager !== null) {
+                    $rooms = $this->talkManager->searchRoomsByToken($currentExtra["shareWith"]);
+                    if (!empty($rooms)) {
+                        $room = $rooms[0];
+
+                        $currentExtra["shareWith"] = $room->getName();
+                        $currentExtra["shareWithName"] = $room->getName();
+                    }
+                }
 
                 array_push($result, $currentExtra);
             }
@@ -247,7 +282,7 @@ class ExtraPermissions {
     public static function delete($shareId) {
         $connection = \OC::$server->getDatabaseConnection();
         $delete = $connection->prepare("
-            DELETE FROM `*PREFIX*" . self::TableName_Key . "`
+            DELETE FROM `*PREFIX*" . self::TABLENAME_KEY . "`
             WHERE `share_id` = ?
         ");
         return (bool)$delete->execute([$shareId]);
@@ -271,7 +306,7 @@ class ExtraPermissions {
         }
 
         $delete = $connection->prepare("
-            DELETE FROM `*PREFIX*" . self::TableName_Key . "`
+            DELETE FROM `*PREFIX*" . self::TABLENAME_KEY . "`
             WHERE `share_id` = ?
         " . $condition);
         return (bool)$delete->execute($shareIds);
@@ -288,7 +323,7 @@ class ExtraPermissions {
         $connection = \OC::$server->getDatabaseConnection();
         $select = $connection->prepare("
             SELECT id, share_id, permissions
-            FROM  `*PREFIX*" . self::TableName_Key . "`
+            FROM  `*PREFIX*" . self::TABLENAME_KEY . "`
             WHERE `share_id` = ?
         ");
         $result = $select->execute([$shareId]);
@@ -328,7 +363,7 @@ class ExtraPermissions {
 
         $select = $connection->prepare("
             SELECT id, share_id, permissions
-            FROM  `*PREFIX*" . self::TableName_Key . "`
+            FROM  `*PREFIX*" . self::TABLENAME_KEY . "`
             WHERE `share_id` = ?
         " . $condition);
 
@@ -361,7 +396,7 @@ class ExtraPermissions {
     private static function insert($shareId, $permissions) {
         $connection = \OC::$server->getDatabaseConnection();
         $insert = $connection->prepare("
-            INSERT INTO `*PREFIX*" . self::TableName_Key . "`
+            INSERT INTO `*PREFIX*" . self::TABLENAME_KEY . "`
                 (`share_id`, `permissions`)
             VALUES (?, ?)
         ");
@@ -379,7 +414,7 @@ class ExtraPermissions {
     private static function update($shareId, $permissions) {
         $connection = \OC::$server->getDatabaseConnection();
         $update = $connection->prepare("
-            UPDATE `*PREFIX*" . self::TableName_Key . "`
+            UPDATE `*PREFIX*" . self::TABLENAME_KEY . "`
             SET `permissions` = ?
             WHERE `share_id` = ?
         ");
@@ -396,42 +431,43 @@ class ExtraPermissions {
      * @return array
      */
     private function validation($share, $checkExtra, $wasInit = true) {
-        $availableExtra = self::None;
-        $defaultExtra = self::None;
+        $availableExtra = self::NONE;
+        $defaultExtra = self::NONE;
 
-        if (($share->getPermissions() & Constants::PERMISSION_SHARE) === Constants::PERMISSION_SHARE) {
+        if ($share->getShareType() !== IShare::TYPE_LINK
+            && ($share->getPermissions() & Constants::PERMISSION_SHARE) === Constants::PERMISSION_SHARE) {
             return [$availableExtra, $defaultExtra];
         }
 
         $node = $share->getNode();
         $ext = strtolower(pathinfo($node->getName(), PATHINFO_EXTENSION));
-        $format = !empty($ext) && array_key_exists($ext, $this->config->FormatsSetting()) ? $this->config->FormatsSetting()[$ext] : null;
+        $format = !empty($ext) && array_key_exists($ext, $this->config->formatsSetting()) ? $this->config->formatsSetting()[$ext] : null;
         if (!isset($format)) {
             return [$availableExtra, $defaultExtra];
         }
 
         if (($share->getPermissions() & Constants::PERMISSION_UPDATE) === Constants::PERMISSION_UPDATE) {
             if (isset($format["modifyFilter"]) && $format["modifyFilter"]
-                && ($checkExtra & self::Comment) !== self::Comment) {
-                $availableExtra |= self::ModifyFilter;
-                $defaultExtra |= self::ModifyFilter;
+                && ($checkExtra & self::COMMENT) !== self::COMMENT) {
+                $availableExtra |= self::MODIFYFILTER;
+                $defaultExtra |= self::MODIFYFILTER;
             }
             if (isset($format["review"]) && $format["review"]) {
-                $availableExtra |= self::Review;
+                $availableExtra |= self::REVIEW;
             }
             if (isset($format["comment"]) && $format["comment"]
-                && ($checkExtra & self::Review) !== self::Review
-                && (($checkExtra & self::ModifyFilter) !== self::ModifyFilter)) {
-                $availableExtra |= self::Comment;
+                && ($checkExtra & self::REVIEW) !== self::REVIEW
+                && (($checkExtra & self::MODIFYFILTER) !== self::MODIFYFILTER)) {
+                $availableExtra |= self::COMMENT;
             }
             if (isset($format["fillForms"]) && $format["fillForms"]
-                && ($checkExtra & self::Review) !== self::Review) {
-                $availableExtra |= self::FillForms;
+                && ($checkExtra & self::REVIEW) !== self::REVIEW) {
+                $availableExtra |= self::FILLFORMS;
             }
 
             if (!$wasInit) {
-                if (($defaultExtra & self::ModifyFilter) === self::ModifyFilter) {
-                    $availableExtra ^= self::Comment;
+                if (($defaultExtra & self::MODIFYFILTER) === self::MODIFYFILTER) {
+                    $availableExtra ^= self::COMMENT;
                 }
             }
         }
@@ -449,11 +485,16 @@ class ExtraPermissions {
     private function getShare($shareId) {
         try {
             $share = $this->shareManager->getShareById("ocinternal:" . $shareId);
-        } catch (ShareNotFound $e) {
-            $this->logger->logException($e, ["message" => "getShare error", "app" => $this->appName]);
-            return null;
-        }
+            return $share;
+        } catch (ShareNotFound $e) {}
 
-        return $share;
+        try {
+            $share = $this->shareManager->getShareById("ocRoomShare:" . $shareId);
+            return $share;
+        } catch (ShareNotFound $e) {}
+
+        $this->logger->error("getShare: share not found: " . $shareId, ["app" => $this->appName]);
+
+        return null;
     }
 }

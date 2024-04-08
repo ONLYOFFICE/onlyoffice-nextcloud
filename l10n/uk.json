@@ -42,7 +42,7 @@
     "View details" : "Докладно",
     "Save" : "Зберегти",
     "Mixed Active Content is not allowed. HTTPS address for ONLYOFFICE Docs is required." : "Зміщаний активний вміст заборонено. Для використання ONLYOFFICE Docs потрібно використовувати безпечне HTTPS-з'єднання.",
-    "Restrict access to editors to following groups" : "Надати доступ до редагування лише таким групам",
+    "Allow the following groups to access the editors" : "Надати доступ до редагування лише таким групам",
     "Server settings" : "Налаштування сервера",
     "Common settings" : "Загальні налаштування",
     "Editor customization settings" : "Користувацькі налаштування редактора",
@@ -108,13 +108,10 @@
     "%1$s mentioned in the %2$s: \"%3$s\".": "%1$s згадав у %2$s: \"%3$s\".",
     "{notifier} mentioned in the {file}: \"%1$s\".": "{notifier} згадав вас у {file}: \"%1$s\".",
     "Choose a format to convert {fileName}": "Виберіть формат для {fileName}",
-    "New form template": "Новий шаблон форми",
     "Blank": "Порожній",
     "From text document": "Із текстового документу",
-    "Create new Form template": "Створити новий шаблон форми",
     "Create form": "Створити форму",
     "Fill in form in ONLYOFFICE": "Заповнити форму у ONLYOFFICE",
-    "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online": "Оновіть сервер ONLYOFFICE Docs до версії 7.0 для роботи з формами в онлайні",
     "Security": "Безпека",
     "Run document macros": "Виконувати макроси документу",
     "Anonymous": "Гість",
@@ -125,7 +122,6 @@
     "Review": "Рецензії",
     "Comment": "Коментарі",
     "Form filling": "Заповнення форм",
-    "Custom filter": "Користувацький фільтр",
     "group": "група",
     "Advanced": "Додатково",
     "Provide advanced document permissions using ONLYOFFICE Docs": "Увімкнути розширені права доступу до документів у ONLYOFFICE Docs",
@@ -136,6 +132,8 @@
     "Authorization header (leave blank to use default header)": "Заголовок авторизації (залиште порожнім для використання типового заголовку)",
     "ONLYOFFICE server is not available": "Сервер ONLYOFFICE не доступний",
     "Please check the settings to resolve the problem.": "Будь ласка, перевірте налаштування для розв'язання проблеми.",
-    "View settings": "Переглянути налаштування"
+    "View settings": "Переглянути налаштування",
+    "Share link": "Посилання на спільний доступ",
+    "conversation": "розмова"
 },"pluralForm" :"nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != 11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || (n % 100 >=11 && n % 100 <=14 )) ? 2: 3);"
 }
