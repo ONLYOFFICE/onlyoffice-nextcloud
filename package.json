@@ -1,0 +1,21 @@
+{
+    "name": "onlyoffice",
+    "description": "ONLYOFFICE connector allows you to view, edit and collaborate on text documents, spreadsheets and presentations within Nextcloud using ONLYOFFICE Docs. This will create a new Edit in ONLYOFFICE action within the document library for Office documents. This allows multiple users to co-author documents in real time from the familiar web interface and save the changes back to your file storage.",
+    "version": "8.2.4",
+    "author": "Ascensio System SIA <integration@onlyoffice.com> (https://www.onlyoffice.com)",
+    "license": "AGPL-3.0",
+    "homepage": "https://www.onlyoffice.com",
+    "private": true,
+    "scripts": {
+        "build": "NODE_ENV=production webpack --progress --config webpack.js",
+        "dev": "NODE_ENV=development webpack --progress --config webpack.js"
+    },
+    "dependencies": {
+        "@nextcloud/files": "^3.0.0"
+    },
+    "devDependencies": {
+        "@nextcloud/webpack-vue-config": "^6.0.0",
+        "@nextcloud/browserslist-config": "^3.0.0",
+        "raw-loader": "^4.0.2"
+    }
+}

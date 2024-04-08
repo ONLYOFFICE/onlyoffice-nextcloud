@@ -1,6 +1,10 @@
 # Change Log
 
-## 7.10.0
+##
+## Changed
+- Nextcloud v26 is no longer supported
+
+## 9.1.0
 ## Added
 - support of user avatar in editor
 - list of users to protect ranges of cells
@@ -24,11 +28,16 @@
 - version opening from right tab is no longer supported
 - Nextcloud v25 is no longer supported
 
-## 7.9.4
+## 9.0.0
+## Changed
+- compatible with Nextcloud 28
+- agpl v3 license
+
+## 8.2.4
 ## Changed
 - remove link to docs cloud
 
-## 7.9.2
+## 8.2.2
 ## Added
 - Ukrainian translation
 
@@ -36,7 +45,7 @@
 - fix disabling background job
 - fix opening direct link
 
-## 7.9.0
+## 8.2.0
 ## Added
 - jwt header setting
 - Paste Special to add a link between files
@@ -50,6 +59,14 @@
 - change page title when editing a file
 - jwt library update
 - fileType parameter used in callback instead of extension from url (DocumentServer 7.0 required)
+
+## 8.1.0
+## Changed
+- advanced permissions are only available with full access
+
+## 8.0.0
+## Changed
+- compatible with Nextcloud 27
 
 ## 7.8.0
 ## Added
