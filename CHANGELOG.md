@@ -4,6 +4,10 @@
 ## Changed
 - Nextcloud v26 is no longer supported
 
+## 9.1.2
+## Changed
+- artifact rebuilt
+
 ## 9.1.0
 ## Added
 - support of user avatar in editor
