@@ -1435,18 +1435,28 @@ class AppConfig {
     /**
      * Get the formats list from cache or file
      *
-     * @return array
+     * @return array|false
      */
     public function getFormats() {
+        $result = [];
         $cachedFormats = $this->cache->get("document_formats");
-        if ($cachedFormats !== null) {
-            return json_decode($cachedFormats, true);
+        if (!empty($cachedFormats)) {
+            $result = json_decode($cachedFormats, true);
+            if (!empty($result)) {
+                return $result;
+            }
         }
 
         $formats = file_get_contents(dirname(__DIR__) . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . "document-formats" . DIRECTORY_SEPARATOR . "onlyoffice-docs-formats.json");
+        $result = json_decode($formats, true);
+        if (empty($result)) {
+            $this->logger->error("Unable to get list of formats", ["app" => $this->appName]);
+            return false;
+        }
+
         $this->cache->set("document_formats", $formats, 6 * 3600);
         $this->logger->debug("Getting formats from file", ["app" => $this->appName]);
-        return json_decode($formats, true);
+        return $result;
     }
 
     /**
@@ -1460,10 +1470,12 @@ class AppConfig {
         $onlyofficeFormats = $this->getFormats();
         $result = "text/plain";
 
-        foreach ($onlyofficeFormats as $onlyOfficeFormat) {
-            if ($onlyOfficeFormat["name"] === $ext && !empty($onlyOfficeFormat["mime"])) {
-                $result = $onlyOfficeFormat["mime"][0];
-                break;
+        if ($onlyOfficeFormats !== false) {
+            foreach ($onlyofficeFormats as $onlyOfficeFormat) {
+                if ($onlyOfficeFormat["name"] === $ext && !empty($onlyOfficeFormat["mime"])) {
+                    $result = $onlyOfficeFormat["mime"][0];
+                    break;
+                }
             }
         }
 
