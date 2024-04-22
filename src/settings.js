@@ -88,14 +88,14 @@
             "allTags",
             "linkTags",
         ];
-        $.each(watermarkLists, function (i, watermarkList) {
-            var watermarkListToggle = function () {
-                if ($("#onlyofficeWatermark_" + watermarkList).prop("checked")) {
-                    if (watermarkList.indexOf("Group") >= 0) {
-                        OC.Settings.setupGroupsSelect($("#onlyofficeWatermark_" + watermarkList + "List"));
-                    } else {
-                        OC.SystemTags.collection.fetch({
-                            success: function () {
+        OC.SystemTags.collection.fetch({
+            success: function () {
+                $.each(watermarkLists, function (i, watermarkList) {
+                    var watermarkListToggle = function () {
+                        if ($("#onlyofficeWatermark_" + watermarkList).prop("checked")) {
+                            if (watermarkList.indexOf("Group") >= 0) {
+                                OC.Settings.setupGroupsSelect($("#onlyofficeWatermark_" + watermarkList + "List"));
+                            } else {
                                 $("#onlyofficeWatermark_" + watermarkList + "List").select2({
                                     allowClear: true,
                                     closeOnSelect: false,
@@ -128,15 +128,15 @@
                                     }
                                 });
                             }
-                        });
-                    }
-                } else {
-                    $("#onlyofficeWatermark_" + watermarkList + "List").select2("destroy");
-                }
-            };
+                        } else {
+                            $("#onlyofficeWatermark_" + watermarkList + "List").select2("destroy");
+                        }
+                    };
 
-            $("#onlyofficeWatermark_" + watermarkList).click(watermarkListToggle);
-            watermarkListToggle();
+                    $("#onlyofficeWatermark_" + watermarkList).click(watermarkListToggle);
+                    watermarkListToggle();
+                });
+            }
         });
 
 
