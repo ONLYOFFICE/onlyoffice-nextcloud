@@ -55,7 +55,8 @@
 }
 #body-public.onlyoffice-inline #content #app-content,
 #body-user.onlyoffice-inline #content #app-content,
-#body-user.onlyoffice-inline #content #app-content-vue {
+#body-user.onlyoffice-inline #content #app-content-vue,
+#body-user.onlyoffice-inline #content-vue #app-content-vue {
     margin-left: 0;
     position: relative;
     overflow: hidden;
