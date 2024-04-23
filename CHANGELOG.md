@@ -2,7 +2,7 @@
 
 ##
 ## Changed
-- Nextcloud v26 is no longer supported
+- compatible with Nextcloud 29
 
 ## 9.1.2
 ## Changed
