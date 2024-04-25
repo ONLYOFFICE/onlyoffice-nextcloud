@@ -1,5 +1,9 @@
 # Change Log
 
+## 9.2.0
+## Changed
+- compatible with Nextcloud 29
+
 ## 9.1.2
 ## Changed
 - artifact rebuilt

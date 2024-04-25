@@ -31,6 +31,7 @@ jobs:
           cd onlyoffice
           rm -rf ./.github/
           rm -rf ./.git/
+          rm ./.gitignore
           rm ./.gitmodules
           rm -rf ./node_modules/
           rm -rf ./src/

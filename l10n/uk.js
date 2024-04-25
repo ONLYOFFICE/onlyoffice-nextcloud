@@ -110,8 +110,10 @@ OC.L10N.register(
     "%1\$s mentioned in the %2\$s: \"%3\$s\".": "%1\$s згадав у %2\$s: \"%3\$s\".",
     "{notifier} mentioned in the {file}: \"%1\$s\".": "{notifier} згадав вас у {file}: \"%1\$s\".",
     "Choose a format to convert {fileName}": "Виберіть формат для {fileName}",
+    "New PDF form": "Нова форма PDF",
     "Blank": "Порожній",
     "From text document": "Із текстового документу",
+    "Create new PDF form": "Створити нову форму PDF",
     "Create form": "Створити форму",
     "Fill in form in ONLYOFFICE": "Заповнити форму у ONLYOFFICE",
     "Security": "Безпека",
@@ -124,6 +126,7 @@ OC.L10N.register(
     "Review": "Рецензії",
     "Comment": "Коментарі",
     "Form filling": "Заповнення форм",
+    "Global filter": "Глобальний фільтр",
     "group": "група",
     "Advanced": "Додатково",
     "Provide advanced document permissions using ONLYOFFICE Docs": "Увімкнути розширені права доступу до документів у ONLYOFFICE Docs",
@@ -136,6 +139,11 @@ OC.L10N.register(
     "Please check the settings to resolve the problem.": "Будь ласка, перевірте налаштування для розв'язання проблеми.",
     "View settings": "Переглянути налаштування",
     "Share link": "Посилання на спільний доступ",
-    "conversation": "розмова"
+    "conversation": "розмова",
+    "Select file to combine": "Вибрати файл для об’єднання",
+    "Select data source": "Вибрати джерело даних",
+    "The data source must not be the current document": "Джерело даних не має бути поточним документом",
+    "Enable background connection check to the editors": "Увімкніть фонову перевірку з’єднання з редакторами",
+    "The domain in the file url does not match the domain of the Document server": "Домен в URL-адресі файлу не збігається з доменом сервера документів"
 },
 "nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != 11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || (n % 100 >=11 && n % 100 <=14 )) ? 2: 3);");
