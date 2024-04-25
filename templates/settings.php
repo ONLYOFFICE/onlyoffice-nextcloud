@@ -350,7 +350,7 @@ if ($_["tagsEnabled"]) {
         <br />
         <p><?php p($l->t("Watermark text")) ?></p>
         <br />
-        <p class="settings-hint"><?php p($l->t("Supported placeholders")) ?>: {userId}, {date}</p>
+        <p class="settings-hint"><?php p($l->t("Supported placeholders")) ?>: {userId}, {date}, {themingName}</p>
         <p><input id="onlyofficeWatermark_text" value="<?php p($_["watermark"]["text"]) ?>" placeholder="<?php p($l->t("DO NOT SHARE THIS")) ?> {userId} {date}" type="text"></p>
 
         <br />
