@@ -44,7 +44,6 @@ OC.L10N.register(
     "View details" : "Visa detaljer",
     "Save" : "Spara",
     "Mixed Active Content is not allowed. HTTPS address for ONLYOFFICE Docs is required." : "Blandat aktivt innehåll är inte tillåtet. HTTPS-adress till ONLYOFFICE Docs krävs.",
-    "Restrict access to editors to following groups" : "Begränsa åtkomst till följande grupper",
     "Server settings" : "Serverinställningar",
     "Common settings" : "Allmänna inställningar",
     "Editor customization settings" : "Anpassningar ONLYOFFICE ",
@@ -110,13 +109,10 @@ OC.L10N.register(
     "%1\$s mentioned in the %2\$s: \"%3\$s\".": "%1\$s har nämnt i %2\$s: \"%3\$s\".",
     "{notifier} mentioned in the {file}: \"%1\$s\".": "{notifier} nämnde dig i {file}: \"%1\$s\".",
     "Choose a format to convert {fileName}": "Välj det filformat som {fileName} ska konverteras till.",
-    "New form template": "Ny formulärmall",
     "Blank": "Töm",
     "From text document": "Formulärmall från textfil",
-    "Create new Form template": "Skapa ny formulärmall",
     "Create form": "Skapa formulär",
     "Fill in form in ONLYOFFICE": "Fylla i formulär i ONLYOFFICE",
-    "Please update ONLYOFFICE Docs to version 7.0 to work on fillable forms online": "Uppdatera ONLYOFFICE Docs till version 7.0 för att arbeta med ifyllbart onlineformulär",
     "Security": "Säkerhet",
     "Anonymous": "Anonym",
     "Light": "Ljus",
@@ -125,8 +121,9 @@ OC.L10N.register(
     "Review only": "Endast granskning",
     "Comment only": "Endast kommentar",
     "Form filling": "Formulärfyllning",
-    "Custom filter": "Anpassat filter",
     "group": "grupp",
-    "Advanced": "Avancerad"
+    "Advanced": "Avancerad",
+    "Share link": "Dela länk",
+    "conversation": "konversation"
 },
 "nplurals=2; plural=(n != 1);");

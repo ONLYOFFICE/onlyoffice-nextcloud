@@ -1,9 +1,11 @@
 name: Lint
 
 on:
+  workflow_dispatch:
   push:
+    branches: [master, develop]
   pull_request:
-    branches: [master]
+    branches: [master, develop, feature/nc-27]
 
 permissions:
   contents: read
@@ -23,4 +25,4 @@ jobs:
           tools: composer, cs2pr, phpcs
       - name: Run phpcs
         run: |
-          phpcs --standard=PSR2 --extensions=php,module,inc,install --ignore=node_modules,bower_components,vendor,3rdparty,Migration --warning-severity=0 ./
+          phpcs --standard=./ruleset.xml --extensions=php,module,inc,install --ignore=node_modules,bower_components,vendor,3rdparty,Migration --warning-severity=0 ./

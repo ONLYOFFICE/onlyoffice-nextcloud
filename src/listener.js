@@ -1,18 +1,28 @@
 /**
  *
- * (c) Copyright Ascensio System SIA 2023
+ * (c) Copyright Ascensio System SIA 2024
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * This program is a free software product.
+ * You can redistribute it and/or modify it under the terms of the GNU Affero General Public License
+ * (AGPL) version 3 as published by the Free Software Foundation.
+ * In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended to the effect
+ * that Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * This program is distributed WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * For details, see the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * You can contact Ascensio System SIA at 20A-12 Ernesta Birznieka-Upisha street, Riga, Latvia, EU, LV-1050.
+ *
+ * The interactive user interfaces in modified source and object code versions of the Program
+ * must display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+ *
+ * Pursuant to Section 7(b) of the License you must retain the original Product logo when distributing the program.
+ * Pursuant to Section 7(e) we decline to grant you any rights under trademark law for use of our trademarks.
+ *
+ * All the Product's GUI elements, including illustrations and icon sets, as well as technical
+ * writing content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0 International.
+ * See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
  *
  */
 
@@ -66,26 +76,39 @@
             true);
     };
 
-    OCA.Onlyoffice.onRequestCompareFile = function (revisedMimes) {
-        OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Select file to compare"),
-            $(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.editorSetRevised,
+    OCA.Onlyoffice.onRequestSelectDocument = function (revisedMimes, documentSelectionType) {
+        switch (documentSelectionType) {
+            case "combine":
+                var title =  t(OCA.Onlyoffice.AppName, "Select file to combine");
+                break;
+            default:
+                title =  t(OCA.Onlyoffice.AppName, "Select file to compare");
+        }
+        OC.dialogs.filepicker(title,
+            $(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.editorSetRequested.bind({documentSelectionType: documentSelectionType}),
             false,
             revisedMimes,
             true);
     };
 
-    OCA.Onlyoffice.onDocumentReady = function (documentType) {
-        if (documentType === "word") {
-            if (OCA.Onlyoffice.bindVersionClick) {
-                OCA.Onlyoffice.bindVersionClick();
-            }
-        } else if (OCA.Onlyoffice.unbindVersionClick) {
-            OCA.Onlyoffice.unbindVersionClick();
-        }
+    OCA.Onlyoffice.onRequestReferenceSource = function (referenceSourceMimes) {
+        OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Select data source"),
+            $(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.editorReferenceSource,
+            false,
+            referenceSourceMimes,
+            true);
+    }
+
+    OCA.Onlyoffice.onDocumentReady = function () {
+        OCA.Onlyoffice.setViewport();
     };
 
     OCA.Onlyoffice.changeFavicon = function (favicon) {
         $('link[rel="icon"]').attr("href", favicon);
+    };
+
+    OCA.Onlyoffice.setViewport = function() {
+        document.querySelector('meta[name="viewport"]').setAttribute("content","width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0");
     };
 
     OCA.Onlyoffice.onShowMessage = function (messageObj) {
@@ -128,8 +151,11 @@
             case "editorRequestMailMergeRecipients":
                 OCA.Onlyoffice.onRequestMailMergeRecipients(event.data.param);
                 break;
-            case "editorRequestCompareFile":
-                OCA.Onlyoffice.onRequestCompareFile(event.data.param);
+            case "editorRequestSelectDocument":
+                OCA.Onlyoffice.onRequestSelectDocument(event.data.param, event.data.documentSelectionType);
+                break;
+            case "editorRequestReferenceSource":
+                OCA.Onlyoffice.onRequestReferenceSource(event.data.param);
                 break;
             case "onDocumentReady":
                 OCA.Onlyoffice.onDocumentReady(event.data.param);
@@ -149,8 +175,12 @@
     });
 
     window.addEventListener("DOMNodeRemoved", function(event) {
-        if ($(event.target).length && $(OCA.Onlyoffice.frameSelector).length
+        if ($(event.target).length
+            && $(OCA.Onlyoffice.frameSelector).length > 0
+            && $(OCA.Onlyoffice.frameSelector)[0].contentWindow
+            && $(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA
             && ($(event.target)[0].id === "viewer" || $(event.target)[0].id === $(OCA.Onlyoffice.frameSelector)[0].id)) {
+
             OCA.Onlyoffice.changeFavicon($(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.faviconBase);
             window.document.title = $(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.titleBase;
         }

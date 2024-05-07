@@ -1,19 +1,29 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System SIA 2023
+ * (c) Copyright Ascensio System SIA 2024
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * This program is a free software product.
+ * You can redistribute it and/or modify it under the terms of the GNU Affero General Public License
+ * (AGPL) version 3 as published by the Free Software Foundation.
+ * In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended to the effect
+ * that Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * This program is distributed WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * For details, see the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * You can contact Ascensio System SIA at 20A-12 Ernesta Birznieka-Upisha street, Riga, Latvia, EU, LV-1050.
+ *
+ * The interactive user interfaces in modified source and object code versions of the Program
+ * must display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+ *
+ * Pursuant to Section 7(b) of the License you must retain the original Product logo when distributing the program.
+ * Pursuant to Section 7(e) we decline to grant you any rights under trademark law for use of our trademarks.
+ *
+ * All the Product's GUI elements, including illustrations and icon sets, as well as technical
+ * writing content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0 International.
+ * See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
  *
  */
 
@@ -21,7 +31,8 @@ namespace OCA\Onlyoffice;
 
 use \DateInterval;
 use \DateTime;
-
+use OCP\ICache;
+use OCP\ICacheFactory;
 use OCP\IConfig;
 use OCP\ILogger;
 
@@ -122,6 +133,13 @@ class AppConfig {
      * @var string
      */
     private $_advanced = "advanced";
+
+    /**
+     * The config key for the cronChecker
+     *
+     * @var string
+     */
+    private $_cronChecker = "cronChecker";
 
     /**
      * The config key for the keep versions history
@@ -240,7 +258,7 @@ class AppConfig {
      *
      * @var string
      */
-    const WATERMARK_APP_NAMESPACE = "files";
+    public const WATERMARK_APP_NAMESPACE = "files";
 
     /**
      * The config key for limit thumbnail size
@@ -327,6 +345,13 @@ class AppConfig {
     private $_editors_check_interval = "editors_check_interval";
 
     /**
+     * The config key for store cache
+     *
+     * @var ICache
+     */
+    private $cache;
+
+    /**
      * @param string $AppName - application name
      */
     public function __construct($AppName) {
@@ -335,6 +360,8 @@ class AppConfig {
 
         $this->config = \OC::$server->getConfig();
         $this->logger = \OC::$server->getLogger();
+        $cacheFactory = \OC::$server->get(ICacheFactory::class);
+        $this->cache = $cacheFactory->createLocal($this->appName);
     }
 
     /**
@@ -345,7 +372,7 @@ class AppConfig {
      *
      * @return string
      */
-    public function GetSystemValue($key, $system = false) {
+    public function getSystemValue($key, $system = false) {
         if ($system) {
             return $this->config->getSystemValue($key);
         }
@@ -363,10 +390,10 @@ class AppConfig {
      *
      * @return bool
      */
-    public function SelectDemo($value) {
+    public function selectDemo($value) {
         $this->logger->info("Select demo: " . json_encode($value), ["app" => $this->appName]);
 
-        $data = $this->GetDemoData();
+        $data = $this->getDemoData();
 
         if ($value === true && !$data["available"]) {
             $this->logger->info("Trial demo is overdue: " . json_encode($data), ["app" => $this->appName]);
@@ -387,7 +414,7 @@ class AppConfig {
      *
      * @return array
      */
-    public function GetDemoData() {
+    public function getDemoData() {
         $data = $this->config->getAppValue($this->appName, $this->_demo, "");
 
         if (empty($data)) {
@@ -416,8 +443,8 @@ class AppConfig {
      *
      * @return bool
      */
-    public function UseDemo() {
-        return $this->GetDemoData()["enabled"] === true;
+    public function useDemo() {
+        return $this->getDemoData()["enabled"] === true;
     }
 
     /**
@@ -425,7 +452,7 @@ class AppConfig {
      *
      * @param string $documentServer - document service address
      */
-    public function SetDocumentServerUrl($documentServer) {
+    public function setDocumentServerUrl($documentServer) {
         $documentServer = trim($documentServer);
         if (strlen($documentServer) > 0) {
             $documentServer = rtrim($documentServer, "/") . "/";
@@ -434,7 +461,7 @@ class AppConfig {
             }
         }
 
-        $this->logger->info("SetDocumentServerUrl: $documentServer", ["app" => $this->appName]);
+        $this->logger->info("setDocumentServerUrl: $documentServer", ["app" => $this->appName]);
 
         $this->config->setAppValue($this->appName, $this->_documentserver, $documentServer);
     }
@@ -446,14 +473,14 @@ class AppConfig {
      *
      * @return string
      */
-    public function GetDocumentServerUrl($origin = false) {
-        if (!$origin && $this->UseDemo()) {
+    public function getDocumentServerUrl($origin = false) {
+        if (!$origin && $this->useDemo()) {
             return $this->DEMO_PARAM["ADDR"];
         }
 
         $url = $this->config->getAppValue($this->appName, $this->_documentserver, "");
         if (empty($url)) {
-            $url = $this->GetSystemValue($this->_documentserver);
+            $url = $this->getSystemValue($this->_documentserver);
         }
         if ($url !== null && $url !== "/") {
             $url = rtrim($url, "/");
@@ -469,7 +496,7 @@ class AppConfig {
      *
      * @param string $documentServerInternal - document service address
      */
-    public function SetDocumentServerInternalUrl($documentServerInternal) {
+    public function setDocumentServerInternalUrl($documentServerInternal) {
         $documentServerInternal = rtrim(trim($documentServerInternal), "/");
         if (strlen($documentServerInternal) > 0) {
             $documentServerInternal = $documentServerInternal . "/";
@@ -478,7 +505,7 @@ class AppConfig {
             }
         }
 
-        $this->logger->info("SetDocumentServerInternalUrl: $documentServerInternal", ["app" => $this->appName]);
+        $this->logger->info("setDocumentServerInternalUrl: $documentServerInternal", ["app" => $this->appName]);
 
         $this->config->setAppValue($this->appName, $this->_documentserverInternal, $documentServerInternal);
     }
@@ -490,17 +517,17 @@ class AppConfig {
      *
      * @return string
      */
-    public function GetDocumentServerInternalUrl($origin = false) {
-        if (!$origin && $this->UseDemo()) {
-            return $this->GetDocumentServerUrl();
+    public function getDocumentServerInternalUrl($origin = false) {
+        if (!$origin && $this->useDemo()) {
+            return $this->getDocumentServerUrl();
         }
 
         $url = $this->config->getAppValue($this->appName, $this->_documentserverInternal, "");
         if (empty($url)) {
-            $url = $this->GetSystemValue($this->_documentserverInternal);
+            $url = $this->getSystemValue($this->_documentserverInternal);
         }
         if (!$origin && empty($url)) {
-            $url = $this->GetDocumentServerUrl();
+            $url = $this->getDocumentServerUrl();
         }
         return $url;
     }
@@ -512,18 +539,17 @@ class AppConfig {
      *
      * @return string
      */
-    public function ReplaceDocumentServerUrlToInternal($url) {
-        $documentServerUrl = $this->GetDocumentServerInternalUrl();
+    public function replaceDocumentServerUrlToInternal($url) {
+        $documentServerUrl = $this->getDocumentServerInternalUrl();
         if (!empty($documentServerUrl)) {
-            $from = $this->GetDocumentServerUrl();
+            $from = $this->getDocumentServerUrl();
 
             if (!preg_match("/^https?:\/\//i", $from)) {
                 $parsedUrl = parse_url($url);
                 $from = $parsedUrl["scheme"] . "://" . $parsedUrl["host"] . (array_key_exists("port", $parsedUrl) ? (":" . $parsedUrl["port"]) : "") . $from;
             }
 
-            if ($from !== $documentServerUrl)
-            {
+            if ($from !== $documentServerUrl) {
                 $this->logger->debug("Replace url from $from to $documentServerUrl", ["app" => $this->appName]);
                 $url = str_replace($from, $documentServerUrl, $url);
             }
@@ -537,7 +563,7 @@ class AppConfig {
      *
      * @param string $documentServer - document service address
      */
-    public function SetStorageUrl($storageUrl) {
+    public function setStorageUrl($storageUrl) {
         $storageUrl = rtrim(trim($storageUrl), "/");
         if (strlen($storageUrl) > 0) {
             $storageUrl = $storageUrl . "/";
@@ -546,7 +572,7 @@ class AppConfig {
             }
         }
 
-        $this->logger->info("SetStorageUrl: $storageUrl", ["app" => $this->appName]);
+        $this->logger->info("setStorageUrl: $storageUrl", ["app" => $this->appName]);
 
         $this->config->setAppValue($this->appName, $this->_storageUrl, $storageUrl);
     }
@@ -556,10 +582,10 @@ class AppConfig {
      *
      * @return string
      */
-    public function GetStorageUrl() {
+    public function getStorageUrl() {
         $url = $this->config->getAppValue($this->appName, $this->_storageUrl, "");
         if (empty($url)) {
-            $url = $this->GetSystemValue($this->_storageUrl);
+            $url = $this->getSystemValue($this->_storageUrl);
         }
         return $url;
     }
@@ -569,7 +595,7 @@ class AppConfig {
      *
      * @param string $secret - secret key
      */
-    public function SetDocumentServerSecret($secret) {
+    public function setDocumentServerSecret($secret) {
         $secret = trim($secret);
         if (empty($secret)) {
             $this->logger->info("Clear secret key", ["app" => $this->appName]);
@@ -587,14 +613,14 @@ class AppConfig {
      *
      * @return string
      */
-    public function GetDocumentServerSecret($origin = false) {
-        if (!$origin && $this->UseDemo()) {
+    public function getDocumentServerSecret($origin = false) {
+        if (!$origin && $this->useDemo()) {
             return $this->DEMO_PARAM["SECRET"];
         }
 
         $secret = $this->config->getAppValue($this->appName, $this->_jwtSecret, "");
         if (empty($secret)) {
-            $secret = $this->GetSystemValue($this->_jwtSecret);
+            $secret = $this->getSystemValue($this->_jwtSecret);
         }
         return $secret;
     }
@@ -604,10 +630,10 @@ class AppConfig {
      *
      * @return string
      */
-    public function GetSKey() {
-        $secret = $this->GetDocumentServerSecret();
+    public function getSKey() {
+        $secret = $this->getDocumentServerSecret();
         if (empty($secret)) {
-            $secret = $this->GetSystemValue($this->_cryptSecret, true);
+            $secret = $this->getSystemValue($this->_cryptSecret, true);
         }
         return $secret;
     }
@@ -617,7 +643,7 @@ class AppConfig {
      *
      * @param array $formats - formats with status
      */
-    public function SetDefaultFormats($formats) {
+    public function setDefaultFormats($formats) {
         $value = json_encode($formats);
         $this->logger->info("Set default formats: $value", ["app" => $this->appName]);
 
@@ -629,7 +655,7 @@ class AppConfig {
      *
      * @return array
      */
-    private function GetDefaultFormats() {
+    private function getDefaultFormats() {
         $value = $this->config->getAppValue($this->appName, $this->_defFormats, "");
         if (empty($value)) {
             return array();
@@ -642,7 +668,7 @@ class AppConfig {
      *
      * @param array $formats - formats with status
      */
-    public function SetEditableFormats($formats) {
+    public function setEditableFormats($formats) {
         $value = json_encode($formats);
         $this->logger->info("Set editing formats: $value", ["app" => $this->appName]);
 
@@ -654,7 +680,7 @@ class AppConfig {
      *
      * @return array
      */
-    private function GetEditableFormats() {
+    private function getEditableFormats() {
         $value = $this->config->getAppValue($this->appName, $this->_editFormats, "");
         if (empty($value)) {
             return array();
@@ -667,7 +693,7 @@ class AppConfig {
      *
      * @param bool $value - same tab
      */
-    public function SetSameTab($value) {
+    public function setSameTab($value) {
         $this->logger->info("Set opening in a same tab: " . json_encode($value), ["app" => $this->appName]);
 
         $this->config->setAppValue($this->appName, $this->_sameTab, json_encode($value));
@@ -678,7 +704,7 @@ class AppConfig {
      *
      * @return bool
      */
-    public function GetSameTab() {
+    public function getSameTab() {
         return $this->config->getAppValue($this->appName, $this->_sameTab, "true") === "true";
     }
 
@@ -687,7 +713,7 @@ class AppConfig {
      *
      * @param bool $value - preview
      */
-    public function SetPreview($value) {
+    public function setPreview($value) {
         $this->logger->info("Set generate preview: " . json_encode($value), ["app" => $this->appName]);
 
         $this->config->setAppValue($this->appName, $this->_preview, json_encode($value));
@@ -698,7 +724,7 @@ class AppConfig {
      *
      * @return bool
      */
-    public function GetAdvanced() {
+    public function getAdvanced() {
         return $this->config->getAppValue($this->appName, $this->_advanced, "false") === "true";
     }
 
@@ -707,10 +733,30 @@ class AppConfig {
      *
      * @param bool $value - advanced
      */
-    public function SetAdvanced($value) {
+    public function setAdvanced($value) {
         $this->logger->info("Set advanced: " . json_encode($value), ["app" => $this->appName]);
 
         $this->config->setAppValue($this->appName, $this->_advanced, json_encode($value));
+    }
+
+    /**
+     * Get cron checker setting
+     *
+     * @return bool
+     */
+    public function getCronChecker() {
+        return $this->config->getAppValue($this->appName, $this->_cronChecker, "true") !== "false";
+    }
+
+    /**
+     * Save cron checker setting
+     *
+     * @param bool $value - cronChecker
+     */
+    public function setCronChecker($value) {
+        $this->logger->info("Set cron checker: " . json_encode($value), ["app" => $this->appName]);
+
+        $this->config->setAppValue($this->appName, $this->_cronChecker, json_encode($value));
     }
 
     /**
@@ -718,7 +764,7 @@ class AppConfig {
      *
      * @return bool
      */
-    public function GetPreview() {
+    public function getPreview() {
         return $this->config->getAppValue($this->appName, $this->_preview, "true") === "true";
     }
 
@@ -727,7 +773,7 @@ class AppConfig {
      *
      * @param bool $value - version history
      */
-    public function SetVersionHistory($value) {
+    public function setVersionHistory($value) {
         $this->logger->info("Set keep versions history: " . json_encode($value), ["app" => $this->appName]);
 
         $this->config->setAppValue($this->appName, $this->_versionHistory, json_encode($value));
@@ -738,7 +784,7 @@ class AppConfig {
      *
      * @return bool
      */
-    public function GetVersionHistory() {
+    public function getVersionHistory() {
         return $this->config->getAppValue($this->appName, $this->_versionHistory, "true") === "true";
     }
 
@@ -747,7 +793,7 @@ class AppConfig {
      *
      * @param bool $value - version history
      */
-    public function SetProtection($value) {
+    public function setProtection($value) {
         $this->logger->info("Set protection: " . $value, ["app" => $this->appName]);
 
         $this->config->setAppValue($this->appName, $this->_protection, $value);
@@ -758,7 +804,7 @@ class AppConfig {
      *
      * @return bool
      */
-    public function GetProtection() {
+    public function getProtection() {
         $value = $this->config->getAppValue($this->appName, $this->_protection, "owner");
         if ($value === "all") {
             return "all";
@@ -771,7 +817,7 @@ class AppConfig {
      *
      * @param bool $value - display chat
      */
-    public function SetCustomizationChat($value) {
+    public function setCustomizationChat($value) {
         $this->logger->info("Set chat display: " . json_encode($value), ["app" => $this->appName]);
 
         $this->config->setAppValue($this->appName, $this->_customizationChat, json_encode($value));
@@ -782,7 +828,7 @@ class AppConfig {
      *
      * @return bool
      */
-    public function GetCustomizationChat() {
+    public function getCustomizationChat() {
         return $this->config->getAppValue($this->appName, $this->_customizationChat, "true") === "true";
     }
 
@@ -791,7 +837,7 @@ class AppConfig {
      *
      * @param bool $value - display compact header
      */
-    public function SetCustomizationCompactHeader($value) {
+    public function setCustomizationCompactHeader($value) {
         $this->logger->info("Set compact header display: " . json_encode($value), ["app" => $this->appName]);
 
         $this->config->setAppValue($this->appName, $this->_customizationCompactHeader, json_encode($value));
@@ -802,7 +848,7 @@ class AppConfig {
      *
      * @return bool
      */
-    public function GetCustomizationCompactHeader() {
+    public function getCustomizationCompactHeader() {
         return $this->config->getAppValue($this->appName, $this->_customizationCompactHeader, "true") === "true";
     }
 
@@ -811,7 +857,7 @@ class AppConfig {
      *
      * @param bool $value - display feedback
      */
-    public function SetCustomizationFeedback($value) {
+    public function setCustomizationFeedback($value) {
         $this->logger->info("Set feedback display: " . json_encode($value), ["app" => $this->appName]);
 
         $this->config->setAppValue($this->appName, $this->_customizationFeedback, json_encode($value));
@@ -822,7 +868,7 @@ class AppConfig {
      *
      * @return bool
      */
-    public function GetCustomizationFeedback() {
+    public function getCustomizationFeedback() {
         return $this->config->getAppValue($this->appName, $this->_customizationFeedback, "true") === "true";
     }
 
@@ -831,7 +877,7 @@ class AppConfig {
      *
      * @param bool $value - forcesave
      */
-    public function SetCustomizationForcesave($value) {
+    public function setCustomizationForcesave($value) {
         $this->logger->info("Set forcesave: " . json_encode($value), ["app" => $this->appName]);
 
         $this->config->setAppValue($this->appName, $this->_customizationForcesave, json_encode($value));
@@ -842,7 +888,7 @@ class AppConfig {
      *
      * @return bool
      */
-    public function GetCustomizationForcesave() {
+    public function getCustomizationForcesave() {
         return $this->config->getAppValue($this->appName, $this->_customizationForcesave, "false") === "true";
     }
 
@@ -851,7 +897,7 @@ class AppConfig {
      *
      * @param bool $value - display help
      */
-    public function SetCustomizationHelp($value) {
+    public function setCustomizationHelp($value) {
         $this->logger->info("Set help display: " . json_encode($value), ["app" => $this->appName]);
 
         $this->config->setAppValue($this->appName, $this->_customizationHelp, json_encode($value));
@@ -862,7 +908,7 @@ class AppConfig {
      *
      * @return bool
      */
-    public function GetCustomizationHelp() {
+    public function getCustomizationHelp() {
         return $this->config->getAppValue($this->appName, $this->_customizationHelp, "true") === "true";
     }
 
@@ -871,7 +917,7 @@ class AppConfig {
      *
      * @param bool $value - without tabs
      */
-    public function SetCustomizationToolbarNoTabs($value) {
+    public function setCustomizationToolbarNoTabs($value) {
         $this->logger->info("Set without tabs: " . json_encode($value), ["app" => $this->appName]);
 
         $this->config->setAppValue($this->appName, $this->_customizationToolbarNoTabs, json_encode($value));
@@ -882,7 +928,7 @@ class AppConfig {
      *
      * @return bool
      */
-    public function GetCustomizationToolbarNoTabs() {
+    public function getCustomizationToolbarNoTabs() {
         return $this->config->getAppValue($this->appName, $this->_customizationToolbarNoTabs, "true") === "true";
     }
 
@@ -891,7 +937,7 @@ class AppConfig {
      *
      * @param string $value - review mode
      */
-    public function SetCustomizationReviewDisplay($value) {
+    public function setCustomizationReviewDisplay($value) {
         $this->logger->info("Set review mode: " . $value, array("app" => $this->appName));
 
         $this->config->setAppValue($this->appName, $this->_customizationReviewDisplay, $value);
@@ -902,7 +948,7 @@ class AppConfig {
      *
      * @return string
      */
-    public function GetCustomizationReviewDisplay() {
+    public function getCustomizationReviewDisplay() {
         $value = $this->config->getAppValue($this->appName, $this->_customizationReviewDisplay, "original");
         if ($value === "markup") {
             return "markup";
@@ -918,7 +964,7 @@ class AppConfig {
      *
      * @param string $value - theme
      */
-    public function SetCustomizationTheme($value) {
+    public function setCustomizationTheme($value) {
         $this->logger->info("Set theme: " . $value, array("app" => $this->appName));
 
         $this->config->setAppValue($this->appName, $this->_customizationTheme, $value);
@@ -929,7 +975,7 @@ class AppConfig {
      *
      * @return string
      */
-    public function GetCustomizationTheme() {
+    public function getCustomizationTheme() {
         $value = $this->config->getAppValue($this->appName, $this->_customizationTheme, "theme-classic-light");
         if ($value === "theme-light") {
             return "theme-light";
@@ -945,7 +991,7 @@ class AppConfig {
      *
      * @param array $settings - watermark settings
      */
-    public function SetWatermarkSettings($settings) {
+    public function setWatermarkSettings($settings) {
         $this->logger->info("Set watermark enabled: " . $settings["enabled"], ["app" => $this->appName]);
 
         if ($settings["enabled"] !== "true") {
@@ -993,7 +1039,7 @@ class AppConfig {
      *
      * @return bool|array
      */
-    public function GetWatermarkSettings() {
+    public function getWatermarkSettings() {
         $result = [
             "text" => $this->config->getAppValue(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_text", "{userId}, {date}"),
         ];
@@ -1035,7 +1081,7 @@ class AppConfig {
      *
      * @param array $groups - the list of groups
      */
-    public function SetLimitGroups($groups) {
+    public function setLimitGroups($groups) {
         if (!is_array($groups)) {
             $groups = array();
         }
@@ -1050,7 +1096,7 @@ class AppConfig {
      *
      * @return array
      */
-    public function GetLimitGroups() {
+    public function getLimitGroups() {
         $value = $this->config->getAppValue($this->appName, $this->_groups, "");
         if (empty($value)) {
             return array();
@@ -1076,9 +1122,9 @@ class AppConfig {
             return false;
         }
 
-        $groups = $this->GetLimitGroups();
+        $groups = $this->getLimitGroups();
         // no group set -> all users are allowed
-        if (count($groups) === 0) {
+        if (empty($groups)) {
             return true;
         }
 
@@ -1096,7 +1142,7 @@ class AppConfig {
             $group = \OC::$server->getGroupManager()->get($groupName);
             if ($group === null) {
                 \OC::$server->getLogger()->error("Group is unknown $groupName", ["app" => $this->appName]);
-                $this->SetLimitGroups(array_diff($groups, [$groupName]));
+                $this->setLimitGroups(array_diff($groups, [$groupName]));
             } else {
                 if ($group->inGroup($user)) {
                     return true;
@@ -1112,8 +1158,8 @@ class AppConfig {
      *
      * @param bool $verifyPeerOff - parameter verification setting
      */
-    public function SetVerifyPeerOff($verifyPeerOff) {
-        $this->logger->info("SetVerifyPeerOff " . json_encode($verifyPeerOff), ["app" => $this->appName]);
+    public function setVerifyPeerOff($verifyPeerOff) {
+        $this->logger->info("setVerifyPeerOff " . json_encode($verifyPeerOff), ["app" => $this->appName]);
 
         $this->config->setAppValue($this->appName, $this->_verification, json_encode($verifyPeerOff));
     }
@@ -1123,14 +1169,14 @@ class AppConfig {
      *
      * @return bool
      */
-    public function GetVerifyPeerOff() {
+    public function getVerifyPeerOff() {
         $turnOff = $this->config->getAppValue($this->appName, $this->_verification, "");
 
         if (!empty($turnOff)) {
             return $turnOff === "true";
         }
 
-        return $this->GetSystemValue($this->_verification);
+        return $this->getSystemValue($this->_verification);
     }
 
     /**
@@ -1138,14 +1184,14 @@ class AppConfig {
      *
      * @return int
      */
-    public function GetLimitThumbSize() {
-        $limitSize = (integer)$this->GetSystemValue($this->_limitThumbSize);
+    public function getLimitThumbSize() {
+        $limitSize = (integer)$this->getSystemValue($this->_limitThumbSize);
 
         if (!empty($limitSize)) {
             return $limitSize;
         }
 
-        return 100*1024*1024;
+        return 100 * 1024 * 1024;
     }
 
     /**
@@ -1155,14 +1201,14 @@ class AppConfig {
      *
      * @return string
      */
-    public function JwtHeader($origin = false) {
-        if (!$origin && $this->UseDemo()) {
+    public function jwtHeader($origin = false) {
+        if (!$origin && $this->useDemo()) {
             return $this->DEMO_PARAM["HEADER"];
         }
 
         $header = $this->config->getAppValue($this->appName, $this->_jwtHeader, "");
         if (empty($header)) {
-            $header = $this->GetSystemValue($this->_jwtHeader);
+            $header = $this->getSystemValue($this->_jwtHeader);
         }
         if (!$origin && empty($header)) {
             $header = "Authorization";
@@ -1175,7 +1221,7 @@ class AppConfig {
      *
      * @param string $value - jwtHeader
      */
-    public function SetJwtHeader($value) {
+    public function setJwtHeader($value) {
         $value = trim($value);
         if (empty($value)) {
             $this->logger->info("Clear header key", ["app" => $this->appName]);
@@ -1191,8 +1237,8 @@ class AppConfig {
      *
      * @return int
      */
-    public function GetJwtLeeway() {
-        $jwtLeeway = (integer)$this->GetSystemValue($this->_jwtLeeway);
+    public function getJwtLeeway() {
+        $jwtLeeway = (integer)$this->getSystemValue($this->_jwtLeeway);
 
         return $jwtLeeway;
     }
@@ -1202,7 +1248,7 @@ class AppConfig {
      *
      * @param string $value - error
      */
-    public function SetSettingsError($value) {
+    public function setSettingsError($value) {
         $this->config->setAppValue($this->appName, $this->_settingsError, $value);
     }
 
@@ -1211,7 +1257,7 @@ class AppConfig {
      *
      * @return bool
      */
-    public function SettingsAreSuccessful() {
+    public function settingsAreSuccessful() {
         return empty($this->config->getAppValue($this->appName, $this->_settingsError, ""));
     }
 
@@ -1222,17 +1268,17 @@ class AppConfig {
      *
      * @NoAdminRequired
      */
-    public function FormatsSetting() {
-        $result = $this->formats;
+    public function formatsSetting() {
+        $result = $this->buildOnlyofficeFormats();
 
-        $defFormats = $this->GetDefaultFormats();
+        $defFormats = $this->getDefaultFormats();
         foreach ($defFormats as $format => $setting) {
             if (array_key_exists($format, $result)) {
                 $result[$format]["def"] = ($setting === true || $setting === "true");
             }
         }
 
-        $editFormats = $this->GetEditableFormats();
+        $editFormats = $this->getEditableFormats();
         foreach ($editFormats as $format => $setting) {
             if (array_key_exists($format, $result)) {
                 $result[$format]["edit"] = ($setting === true || $setting === "true");
@@ -1247,7 +1293,7 @@ class AppConfig {
      *
      * @param bool $value - enable macros
      */
-    public function SetCustomizationMacros($value) {
+    public function setCustomizationMacros($value) {
         $this->logger->info("Set macros enabled: " . json_encode($value), ["app" => $this->appName]);
 
         $this->config->setAppValue($this->appName, $this->_customizationMacros, json_encode($value));
@@ -1258,7 +1304,7 @@ class AppConfig {
      *
      * @return bool
      */
-    public function GetCustomizationMacros() {
+    public function getCustomizationMacros() {
         return $this->config->getAppValue($this->appName, $this->_customizationMacros, "true") === "true";
     }
 
@@ -1267,7 +1313,7 @@ class AppConfig {
      *
      * @param bool $value - enable macros
      */
-    public function SetCustomizationPlugins($value) {
+    public function setCustomizationPlugins($value) {
         $this->logger->info("Set plugins enabled: " . json_encode($value), ["app" => $this->appName]);
 
         $this->config->setAppValue($this->appName, $this->_customizationPlugins, json_encode($value));
@@ -1278,7 +1324,7 @@ class AppConfig {
      *
      * @return bool
      */
-    public function GetCustomizationPlugins() {
+    public function getCustomizationPlugins() {
         return $this->config->getAppValue($this->appName, $this->_customizationPlugins, "true") === "true";
     }
 
@@ -1287,57 +1333,142 @@ class AppConfig {
      *
      * @return int
      */
-    public function GetEditorsCheckInterval() {
-        $interval = $this->GetSystemValue($this->_editors_check_interval);
+    public function getEditorsCheckInterval() {
+        $interval = $this->getSystemValue($this->_editors_check_interval);
+        if ($interval !== null && !is_int($interval)) {
+            if (is_string($interval) && !ctype_digit($interval)) {
+                $interval = null;
+            } else {
+                $interval = (integer)$interval;
+            }
+        }
 
-        if (empty($interval)) {
-            $interval = 60*60*24;
+        if (empty($interval) && $interval !== 0) {
+            $interval = 60 * 60 * 24;
         }
         return (integer)$interval;
     }
 
     /**
-     * Additional data about formats
+     * Get ONLYOFFICE formats list
      *
-     * @var array
+     * @return array
      */
-    private $formats = [
-        "csv" => [ "mime" => "text/csv", "type" => "cell", "edit" => true, "editable" => true, "saveas" => ["ods", "pdf", "xlsx"] ],
-        "doc" => [ "mime" => "application/msword", "type" => "word", "conv" => true, "saveas" => ["docx", "odt", "pdf", "rtf", "txt"] ],
-        "docm" => [ "mime" => "application/vnd.ms-word.document.macroEnabled.12", "type" => "word", "conv" => true, "saveas" => ["docx", "odt", "pdf", "rtf", "txt"] ],
-        "docx" => [ "mime" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "type" => "word", "edit" => true, "def" => true, "review" => true, "comment" => true, "saveas" => ["odt", "pdf", "rtf", "txt", "docxf"] ],
-        "docxf" => [ "mime" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document.docxf", "type" => "word", "edit" => true, "def" => true, "review" => true, "comment" => true, "saveas" => ["odt", "pdf", "rtf", "txt"], "createForm" => true ],
-        "oform" => [ "mime" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document.oform", "type" => "word", "fillForms" => true, "def" => true ],
-        "dot" => [ "type" => "word", "conv" => true, "saveas" => ["docx", "odt", "pdf", "rtf", "txt"] ],
-        "dotx" => [ "mime" => "application/vnd.openxmlformats-officedocument.wordprocessingml.template", "type" => "word", "conv" => true, "saveas" => ["docx", "odt", "pdf", "rtf", "txt"] ],
-        "epub" => [ "mime" => "application/epub+zip", "type" => "word", "conv" => true, "saveas" => ["docx", "odt", "pdf", "rtf", "txt"] ],
-        "htm" => [ "type" => "word", "conv" => true ],
-        "html" => [ "mime" => "text/html", "type" => "word", "conv" => true, "saveas" => ["docx", "odt", "pdf", "rtf", "txt"] ],
-        "odp" => [ "mime" => "application/vnd.oasis.opendocument.presentation", "type" => "slide", "conv" => true, "editable" => true, "saveas" => ["pdf", "pptx"] ],
-        "ods" => [ "mime" => "application/vnd.oasis.opendocument.spreadsheet", "type" => "cell", "conv" => true, "editable" => true, "saveas" => ["csv", "pdf", "xlsx"] ],
-        "odt" => [ "mime" => "application/vnd.oasis.opendocument.text", "type" => "word", "conv" => true, "editable" => true, "saveas" => ["docx", "pdf", "rtf", "txt"] ],
-        "otp" => [ "mime" => "application/vnd.oasis.opendocument.presentation-template", "type" => "slide", "conv" => true, "saveas" => ["pdf", "pptx", "odp"] ],
-        "ots" => [ "mime" => "application/vnd.oasis.opendocument.spreadsheet-template", "type" => "cell", "conv" => true, "saveas" => ["csv", "ods", "pdf", "xlsx"] ],
-        "ott" => [ "mime" => "application/vnd.oasis.opendocument.text-template", "type" => "word", "conv" => true, "saveas" => ["docx", "odt", "pdf", "rtf", "txt"] ],
-        "pdf" => [ "mime" => "application/pdf", "type" => "word" ],
-        "pot" => [ "type" => "slide", "conv" => true, "saveas" => ["pdf", "pptx", "odp"] ],
-        "potm" => [ "mime" => "application/vnd.ms-powerpoint.template.macroEnabled.12", "type" => "slide", "conv" => true, "saveas" => ["pdf", "pptx", "odp"] ],
-        "potx" => [ "mime" => "application/vnd.openxmlformats-officedocument.presentationml.template", "type" => "slide", "conv" => true, "saveas" => ["pdf", "pptx", "odp"] ],
-        "pps" => [ "type" => "slide", "conv" => true, "saveas" => ["pdf", "pptx", "odp"] ],
-        "ppsm" => [ "mime" => "application/vnd.ms-powerpoint.slideshow.macroEnabled.12", "type" => "slide", "conv" => true, "saveas" => ["pdf", "pptx", "odp"] ],
-        "ppsx" => [ "mime" => "application/vnd.openxmlformats-officedocument.presentationml.slideshow", "type" => "slide", "conv" => true, "saveas" => ["pdf", "pptx", "odp"] ],
-        "ppt" => [ "mime" => "application/vnd.ms-powerpoint", "type" => "slide", "conv" => true, "saveas" => ["pdf", "pptx", "odp"] ],
-        "pptm" => [ "mime" => "application/vnd.ms-powerpoint.presentation.macroEnabled.12", "type" => "slide", "conv" => true, "saveas" => ["pdf", "pptx", "odp"] ],
-        "pptx" => [ "mime" => "application/vnd.openxmlformats-officedocument.presentationml.presentation", "type" => "slide", "edit" => true, "def" => true, "comment" => true, "saveas" => ["pdf", "odp"] ],
-        "rtf" => [ "mime" => "text/rtf", "type" => "word", "conv" => true, "editable" => true, "saveas" => ["docx", "odt", "pdf", "txt"] ],
-        "txt" => [ "mime" => "text/plain", "type" => "word", "edit" => true, "editable" => true, "saveas" => ["docx", "odt", "pdf", "rtf"] ],
-        "xls" => [ "mime" => "application/vnd.ms-excel", "type" => "cell", "conv" => true, "saveas" => ["csv", "ods", "pdf", "xlsx"] ],
-        "xlsm" => [ "mime" => "application/vnd.ms-excel.sheet.macroEnabled.12", "type" => "cell", "conv" => true, "saveas" => ["csv", "ods", "pdf", "xlsx"] ],
-        "xlsx" => [ "mime" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "type" => "cell", "edit" => true, "def" => true, "comment" => true, "modifyFilter" => true, "saveas" => ["csv", "ods", "pdf"] ],
-        "xlt" => [ "type" => "cell", "conv" => true, "saveas" => ["csv", "ods", "pdf", "xlsx"] ],
-        "xltm" => [ "mime" => "application/vnd.ms-excel.template.macroEnabled.12", "type" => "cell", "conv" => true, "saveas" => ["csv", "ods", "pdf", "xlsx"] ],
-        "xltx" => [ "mime" => "application/vnd.openxmlformats-officedocument.spreadsheetml.template", "type" => "cell", "conv" => true, "saveas" => ["csv", "ods", "pdf", "xlsx"] ]
-    ];
+    private function buildOnlyofficeFormats() {
+        try {
+            $onlyofficeFormats = $this->getFormats();
+            $result = [];
+            $additionalFormats = $this->getAdditionalFormatAttributes();
+
+            if ($onlyofficeFormats !== false) {
+                foreach ($onlyofficeFormats as $onlyOfficeFormat) {
+                    if ($onlyOfficeFormat["name"]
+                        && $onlyOfficeFormat["mime"]
+                        && $onlyOfficeFormat["type"]
+                        && $onlyOfficeFormat["actions"]
+                        && $onlyOfficeFormat["convert"]) {
+                        $result[$onlyOfficeFormat["name"]] = [
+                            "mime" => $onlyOfficeFormat["mime"],
+                            "type" => $onlyOfficeFormat["type"],
+                            "edit" => in_array("edit", $onlyOfficeFormat["actions"]),
+                            "editable" => in_array("lossy-edit", $onlyOfficeFormat["actions"]),
+                            "conv" => in_array("auto-convert", $onlyOfficeFormat["actions"]),
+                            "fillForms" => in_array("fill", $onlyOfficeFormat["actions"]),
+                            "saveas" => $onlyOfficeFormat["convert"],
+                        ];
+                        if (isset($additionalFormats[$onlyOfficeFormat["name"]])) {
+                            $result[$onlyOfficeFormat["name"]] = array_merge($result[$onlyOfficeFormat["name"]], $additionalFormats[$onlyOfficeFormat["name"]]);
+                        }
+                    }
+                }
+            }
+            return $result;
+        } catch (\Exception $e) {
+            $this->logger->logException($e, ["message" => "Format matrix error", "app" => $this->appName]);
+            return [];
+        }
+    }
+
+    /**
+     * Get the additional format attributes
+     *
+     * @return array
+     */
+    private function getAdditionalFormatAttributes() {
+        $additionalFormatAttributes = [
+            "docx" => [
+                "def" => true,
+                "review" => true,
+                "comment" => true,
+            ],
+            "docxf" => [
+                "def" => true,
+                "review" => true,
+                "comment" => true,
+                "createForm" => true,
+            ],
+            "oform" => [
+                "def" => true,
+            ],
+            "pdf" => [
+                "def" => true,
+            ],
+            "pptx" => [
+                "def" => true,
+                "comment" => true,
+            ],
+            "xlsx" => [
+                "def" => true,
+                "comment" => true,
+                "modifyFilter" => true,
+            ],
+            "txt" => [
+                "edit" => true,
+            ],
+            "csv" => [
+                "edit" => true,
+            ],
+        ];
+        return $additionalFormatAttributes;
+    }
+
+    /**
+     * Get the formats list from cache or file
+     *
+     * @return array
+     */
+    public function getFormats() {
+        $cachedFormats = $this->cache->get("document_formats");
+        if ($cachedFormats !== null) {
+            return json_decode($cachedFormats, true);
+        }
+
+        $formats = file_get_contents(dirname(__DIR__) . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . "document-formats" . DIRECTORY_SEPARATOR . "onlyoffice-docs-formats.json");
+        $this->cache->set("document_formats", $formats, 6 * 3600);
+        $this->logger->debug("Getting formats from file", ["app" => $this->appName]);
+        return json_decode($formats, true);
+    }
+
+    /**
+     * Get the mime type by format name
+     *
+     * @param string $ext - format name
+     *
+     * @return string
+     */
+    public function getMimeType($ext) {
+        $onlyofficeFormats = $this->getFormats();
+        $result = "text/plain";
+
+        foreach ($onlyofficeFormats as $onlyOfficeFormat) {
+            if ($onlyOfficeFormat["name"] === $ext && !empty($onlyOfficeFormat["mime"])) {
+                $result = $onlyOfficeFormat["mime"][0];
+                break;
+            }
+        }
+
+        return $result;
+    }
 
     /**
      * DEMO DATA
@@ -1348,15 +1479,4 @@ class AppConfig {
         "SECRET" => "sn2puSUF7muF5Jas",
         "TRIAL" => 30
     ];
-
-    private $linkToDocs = "https://www.onlyoffice.com/docs-registration.aspx?referer=nextcloud";
-
-    /**
-     * Get link to Docs Cloud
-     *
-     * @return string
-     */
-    public function GetLinkToDocs() {
-        return $this->linkToDocs;
-    }
 }

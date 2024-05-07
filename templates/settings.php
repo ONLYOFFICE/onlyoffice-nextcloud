@@ -1,32 +1,42 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System SIA 2023
+ * (c) Copyright Ascensio System SIA 2024
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * This program is a free software product.
+ * You can redistribute it and/or modify it under the terms of the GNU Affero General Public License
+ * (AGPL) version 3 as published by the Free Software Foundation.
+ * In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended to the effect
+ * that Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * This program is distributed WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * For details, see the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * You can contact Ascensio System SIA at 20A-12 Ernesta Birznieka-Upisha street, Riga, Latvia, EU, LV-1050.
+ *
+ * The interactive user interfaces in modified source and object code versions of the Program
+ * must display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+ *
+ * Pursuant to Section 7(b) of the License you must retain the original Product logo when distributing the program.
+ * Pursuant to Section 7(e) we decline to grant you any rights under trademark law for use of our trademarks.
+ *
+ * All the Product's GUI elements, including illustrations and icon sets, as well as technical
+ * writing content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0 International.
+ * See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
  *
  */
 
     style("onlyoffice", "settings");
     style("onlyoffice", "template");
-    script("onlyoffice", "settings");
-    script("onlyoffice", "template");
+    script("onlyoffice", "onlyoffice-settings");
+    script("onlyoffice", "onlyoffice-template");
 
-    if ($_["tagsEnabled"]) {
-        script("core", [
-            "dist/systemtags",
-        ]);
-    }
+if ($_["tagsEnabled"]) {
+    script("core", [
+        "dist/systemtags",
+    ]);
+}
 ?>
 <div class="section section-onlyoffice section-onlyoffice-addr">
     <h2>
@@ -92,25 +102,6 @@
         </div>
     </div>
 
-    <div id="onlyofficeDocsCloudBannerWrapper">
-        <div id="onlyofficeDocsCloudBannerPicWrapper">
-            <div id="onlyofficeDocsCloudBannerPic">
-
-            </div>
-        </div>
-        <div id="onlyofficeDocsCloudBannerContent">
-            <div id="onlyofficeDocsCloudBannerContentText">
-                <p><h2>ONLYOFFICE Docs Cloud</h2></p>
-                <p><?php p($l->t("Easily launch the editors in the cloud without downloading and installation")) ?></p>
-            </div>
-            <div id="onlyofficeDocsCloudBannerContentButtonWrapper">
-                <a id="onlyofficeDocsCloudBannerContentButton" class="button" href="<?php p($_["linkToDocs"]) ?>" target="_blank">
-                    <?php p($l->t("Get Now")) ?>
-                </a>
-            </div>
-        </div>
-    </div>
-
 </div>
 
 <div class="section section-onlyoffice section-onlyoffice-common <?php if (empty($_["documentserver"]) && !$_["demo"]["enabled"] || !$_["successful"]) { ?>onlyoffice-hide<?php } ?>">
@@ -119,7 +110,7 @@
     <p>
         <input type="checkbox" class="checkbox" id="onlyofficeGroups"
             <?php if (count($_["limitGroups"]) > 0) { ?>checked="checked"<?php } ?> />
-        <label for="onlyofficeGroups"><?php p($l->t("Restrict access to editors to following groups")) ?></label>
+        <label for="onlyofficeGroups"><?php p($l->t("Allow the following groups to access the editors")) ?></label>
         <input type="hidden" id="onlyofficeLimitGroups" value="<?php p(implode("|", $_["limitGroups"])) ?>" style="display: block" />
     </p>
 
@@ -148,6 +139,12 @@
         <button id="onlyofficeClearVersionHistory" class="button"><?php p($l->t("Clear")) ?></button>
     </p>
 
+    <p>
+        <input type="checkbox" class="checkbox" id="onlyofficeCronChecker"
+            <?php if ($_["cronChecker"]) { ?>checked="checked"<?php } ?> />
+        <label for="onlyofficeCronChecker"><?php p($l->t("Enable background connection check to the editors")) ?></label>
+    </p>
+
     <p class="onlyoffice-header"><?php p($l->t("The default application for opening the format")) ?></p>
     <div class="onlyoffice-exts">
         <?php foreach ($_["formats"] as $format => $setting) { ?>
@@ -169,7 +166,7 @@
     </p>
     <div class="onlyoffice-exts">
         <?php foreach ($_["formats"] as $format => $setting) { ?>
-            <?php if (array_key_exists("editable", $setting)) { ?>
+            <?php if (array_key_exists("editable", $setting) && $setting["editable"]) { ?>
             <div>
                 <input type="checkbox" class="checkbox"
                     id="onlyofficeEditFormat<?php p($format) ?>"
@@ -228,7 +225,7 @@
     </p>
 
     <p class="onlyoffice-header">
-        <?php p($l->t("Review mode for viewing")) ?>
+        <?php p($l->t("REVIEW mode for viewing")) ?>
     </p>
     <div class="onlyoffice-tables">
         <div>
@@ -295,7 +292,7 @@
     <ul class="onlyoffice-template-container">
         <?php foreach ($_["templates"] as $template) { ?>
             <li data-id=<?php p($template["id"]) ?> class="onlyoffice-template-item" >
-                <img src="/core/img/filetypes/x-office-<?php p($template["type"]) ?>.svg" />
+                <img src="../../core/img/filetypes/x-office-<?php p($template["type"]) ?>.svg" />
                 <p><?php p($template["name"]) ?></p>
                 <span class="onlyoffice-template-download"></span>
                 <span class="onlyoffice-template-delete icon-delete"></span>
