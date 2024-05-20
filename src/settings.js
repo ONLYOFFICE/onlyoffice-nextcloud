@@ -143,14 +143,15 @@
             watermarkNodeBehaviour(watermarkGroup);
         });
 
-        OC.SystemTags.collection.fetch({
-            success: function () {
-                $.each(watermarkTagLists, function (i, watermarkTag) {
-                    watermarkNodeBehaviour(watermarkTag);
-                });
-            }
-        });
-
+        if (OC.SystemTags && OC.SystemTags.collection) {
+            OC.SystemTags.collection.fetch({
+                success: function () {
+                    $.each(watermarkTagLists, function (i, watermarkTag) {
+                        watermarkNodeBehaviour(watermarkTag);
+                    });
+                }
+            });
+        }
 
         $("#onlyofficeAddrSave").click(function () {
             $(".section-onlyoffice").addClass("icon-loading");
