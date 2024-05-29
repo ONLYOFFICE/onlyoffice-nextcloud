@@ -1,5 +1,9 @@
 # Change Log
 
+## 9.2.2
+## Changed
+- fix settings page when tag app is disabled
+
 ## 9.2.0
 ## Changed
 - compatible with Nextcloud 29
