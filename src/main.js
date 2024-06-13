@@ -113,7 +113,10 @@ import NewPdfSvg from "!!raw-loader!../img/new-pdf.svg";
                 callback(response);
 
                 if (open) {
-                    OCA.Onlyoffice.OpenEditor(response.id, dir, response.name, winEditor);
+                    var fileName = response.name;
+                    var extension = OCA.Onlyoffice.getFileExtension(fileName);
+                    var forceEdit = OCA.Onlyoffice.setting.formats[extension].fillForms;
+                    OCA.Onlyoffice.OpenEditor(response.id, dir, fileName, winEditor, forceEdit);
 
                     OCA.Onlyoffice.context = {
                         fileName: response.name,
@@ -126,7 +129,7 @@ import NewPdfSvg from "!!raw-loader!../img/new-pdf.svg";
         );
     };
 
-    OCA.Onlyoffice.OpenEditor = function (fileId, fileDir, fileName, winEditor) {
+    OCA.Onlyoffice.OpenEditor = function (fileId, fileDir, fileName, winEditor, forceEdit) {
         var filePath = "";
         if (fileName) {
             filePath = fileDir.replace(new RegExp("\/$"), "") + "/" + fileName;
@@ -143,6 +146,10 @@ import NewPdfSvg from "!!raw-loader!../img/new-pdf.svg";
                     shareToken: encodeURIComponent($("#sharingToken").val()),
                     fileId: fileId
                 });
+        }
+
+        if (forceEdit) {
+            url += "&forceEdit=true";
         }
 
         if (winEditor && winEditor.location) {
