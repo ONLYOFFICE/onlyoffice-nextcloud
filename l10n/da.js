@@ -112,7 +112,6 @@ OC.L10N.register(
     "Blank": "Tom",
     "From text document": "Fra tekstdokument",
     "Create form": "Opret formular",
-    "Fill in form in ONLYOFFICE": "Udfyld formularen i ONLYOFFICE",
     "Security": "Sikkerhed",
     "Run document macros": "Kør dokumentmakroer",
     "Anonymous": "Anonym",

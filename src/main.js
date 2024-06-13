@@ -469,17 +469,6 @@ import NewPdfSvg from "!!raw-loader!../img/new-pdf.svg";
                         });
                     }
 
-                    if (config.fillForms) {
-                        OCA.Files.fileActions.registerAction({
-                            name: "onlyofficeFill",
-                            displayName: t(OCA.Onlyoffice.AppName, "Fill in form in ONLYOFFICE"),
-                            mime: mime,
-                            permissions: OC.PERMISSION_UPDATE,
-                            iconClass: "icon-onlyoffice-fill",
-                            actionHandler: OCA.Onlyoffice.FileClick
-                        });
-                    }
-
                     if (config.createForm) {
                         OCA.Files.fileActions.registerAction({
                             name: "onlyofficeCreateForm",
@@ -568,28 +557,6 @@ import NewPdfSvg from "!!raw-loader!../img/new-pdf.svg";
                     return true;
                 },
                 exec: OCA.Onlyoffice.FileConvertClickExec
-            }));
-
-            registerFileAction(new FileAction({
-                id: "onlyoffice-fill",
-                displayName: () => t(OCA.Onlyoffice.AppName, "Fill in form in ONLYOFFICE"),
-                iconSvgInline: () => AppDarkSvg,
-                enabled: (files) => {
-                    var config = getConfig(files[0]);
-
-                    if (!config) return;
-                    if (!config.fillForms) return false;
-
-                    if (Permission.UPDATE !== (files[0].permissions & Permission.UPDATE))
-                        return false;
-
-                    if (files[0].attributes["mount-type"] === "shared"
-                        && Permission.UPDATE !== (files[0].attributes["share-permissions"] & Permission.UPDATE))
-                        return false;
-
-                    return true;
-                },
-                exec: OCA.Onlyoffice.FileClickExec
             }));
 
             registerFileAction(new FileAction({
