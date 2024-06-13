@@ -417,6 +417,10 @@ class EditorApiController extends OCSController {
                 $params["document"]["permissions"]["protect"] = false;
             }
 
+            if ($canFillForms) {
+                $params["document"]["permissions"]["fillForms"] = true;
+            }
+
             $hashCallback = $this->crypt->getHash(["userId" => $userId, "ownerId" => $ownerId, "fileId" => $file->getId(), "filePath" => $filePath, "shareToken" => $shareToken, "action" => "track"]);
             $callback = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.track", ["doc" => $hashCallback]);
 
