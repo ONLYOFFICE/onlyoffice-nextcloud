@@ -271,7 +271,6 @@ class Application extends App implements IBootstrap {
 
         $detector = $container->query(IMimeTypeDetector::class);
         $detector->getAllMappings();
-        $detector->registerType("docxf", "application/vnd.openxmlformats-officedocument.wordprocessingml.document.docxf");
 
         $checkBackgroundJobs = new JobListController(
             $container->query("AppName"),

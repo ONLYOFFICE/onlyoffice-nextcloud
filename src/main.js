@@ -38,7 +38,7 @@ import { FileAction,
     davResultToNode } from "@nextcloud/files";
 import { emit } from '@nextcloud/event-bus';
 import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
-import NewDocxfSvg from "!!raw-loader!../img/new-docxf.svg";
+import NewPdfSvg from "!!raw-loader!../img/new-pdf.svg";
 
 (function (OCA) {
 
@@ -652,7 +652,7 @@ import NewDocxfSvg from "!!raw-loader!../img/new-docxf.svg";
 
     OCA.Onlyoffice.registerNewFileMenu = function () {
         addNewFileMenuEntry({
-            id: "new-onlyoffice-docxf",
+            id: "new-onlyoffice-pdf",
             displayName: t(OCA.Onlyoffice.AppName, "New PDF form"),
             enabled: (folder) => {
                 if (Permission.CREATE !== (folder.permissions & Permission.CREATE))
@@ -662,12 +662,12 @@ import NewDocxfSvg from "!!raw-loader!../img/new-docxf.svg";
 
                 return true;
             },
-            iconSvgInline: NewDocxfSvg,
+            iconSvgInline: NewPdfSvg,
             handler: (folder) => {
                 var name = t(OCA.Onlyoffice.AppName, "New PDF form");
                 var context = { dir: folder.path };
 
-                OCA.Onlyoffice.OpenFormPicker(name + ".docxf", context);
+                OCA.Onlyoffice.OpenFormPicker(name + ".pdf", context);
             }
         });
     };
@@ -732,13 +732,13 @@ import NewDocxfSvg from "!!raw-loader!../img/new-docxf.svg";
             }
 
             menu.addMenuEntry({
-                id: "onlyofficeDocxf",
+                id: "onlyofficePdf",
                 displayName: t(OCA.Onlyoffice.AppName, "New PDF form"),
                 templateName: t(OCA.Onlyoffice.AppName, "New PDF form"),
-                iconClass: "icon-onlyoffice-new-docxf",
-                fileType: "docxf",
+                iconClass: "icon-onlyoffice-new-pdf",
+                fileType: "pdf",
                 actionHandler: function (name) {
-                    OCA.Onlyoffice.OpenFormPicker(name + ".docxf", fileList);
+                    OCA.Onlyoffice.OpenFormPicker(name + ".pdf", fileList);
                 }
             });
         }
