@@ -227,13 +227,14 @@ class EditorApiController extends OCSController {
      * @param string $guestName - nickname not logged user
      * @param bool $template - file is template
      * @param string $anchor - anchor for file content
+     * @param bool $forceEdit - open editing
      *
      * @return JSONResponse
      *
      * @NoAdminRequired
      * @PublicPage
      */
-    public function config($fileId, $filePath = null, $shareToken = null, $directToken = null, $inframe = false, $inviewer = false, $desktop = false, $guestName = null, $template = false, $anchor = null) {
+    public function config($fileId, $filePath = null, $shareToken = null, $directToken = null, $inframe = false, $inviewer = false, $desktop = false, $guestName = null, $template = false, $anchor = null, $forceEdit = false) {
 
         if (!empty($directToken)) {
             list($directData, $error) = $this->crypt->readHash($directToken);
@@ -397,7 +398,7 @@ class EditorApiController extends OCSController {
                     && !$isTempLock
                     && (empty($shareToken) || ($share->getPermissions() & Constants::PERMISSION_UPDATE) === Constants::PERMISSION_UPDATE)
                     && !$restrictedEditing;
-        $params["document"]["permissions"]["edit"] = $editable && !$canFillForms;
+        $params["document"]["permissions"]["edit"] = $editable && ($forceEdit || !$canFillForms);
         if (($editable || $restrictedEditing) && ($canEdit || $canFillForms)) {
             $ownerId = null;
             $owner = $file->getOwner();

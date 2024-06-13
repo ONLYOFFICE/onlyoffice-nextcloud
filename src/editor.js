@@ -47,6 +47,7 @@
         OCA.Onlyoffice.inviewer = !!$("#iframeEditor").data("inviewer");
         OCA.Onlyoffice.filePath = $("#iframeEditor").data("path");
         OCA.Onlyoffice.anchor = $("#iframeEditor").attr("data-anchor");
+        OCA.Onlyoffice.forceEdit = $("#iframeEditor").attr("data-forceEdit");
         var guestName = localStorage.getItem("nick");
         OCA.Onlyoffice.currentWindow = window;
         OCA.Onlyoffice.currentUser = OC.getCurrentUser();
@@ -97,6 +98,9 @@
         }
         if (OCA.Onlyoffice.anchor) {
             params.push("anchor=" + encodeURIComponent(OCA.Onlyoffice.anchor));
+        }
+        if (OCA.Onlyoffice.forceEdit) {
+            params.push("forceEdit=true");
         }
 
         if (OCA.Onlyoffice.inframe || directToken) {

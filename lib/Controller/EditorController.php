@@ -1286,13 +1286,14 @@ class EditorController extends Controller {
      * @param bool $inviewer - open in viewer
      * @param bool $template - file is template
      * @param string $anchor - anchor for file content
+     * @param bool $forceEdit - open editing
      *
      * @return TemplateResponse|RedirectResponse
      *
      * @NoAdminRequired
      * @NoCSRFRequired
      */
-    public function index($fileId, $filePath = null, $shareToken = null, $inframe = false, $inviewer = false, $template = false, $anchor = null) {
+    public function index($fileId, $filePath = null, $shareToken = null, $inframe = false, $inviewer = false, $template = false, $anchor = null, $forceEdit = false) {
         $this->logger->debug("Open: $fileId $filePath ", ["app" => $this->appName]);
 
         $isLoggedIn = $this->userSession->isLoggedIn();
@@ -1331,7 +1332,8 @@ class EditorController extends Controller {
             "isTemplate" => $template,
             "inframe" => false,
             "inviewer" => $inviewer === true,
-            "anchor" => $anchor
+            "anchor" => $anchor,
+            "forceEdit" => $forceEdit
         ];
 
         $response = null;
