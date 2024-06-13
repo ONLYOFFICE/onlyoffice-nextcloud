@@ -1374,6 +1374,7 @@ class EditorController extends Controller {
      * @param integer $fileId - file identifier
      * @param string $shareToken - access token
      * @param bool $inframe - open in frame
+     * @param bool $forceEdit - open editing
      *
      * @return TemplateResponse
      *
@@ -1381,8 +1382,8 @@ class EditorController extends Controller {
      * @NoCSRFRequired
      * @PublicPage
      */
-    public function publicPage($fileId, $shareToken, $inframe = false) {
-        return $this->index($fileId, null, $shareToken, $inframe);
+    public function publicPage($fileId, $shareToken, $inframe = false, $forceEdit = false) {
+        return $this->index($fileId, null, $shareToken, $inframe, $forceEdit);
     }
 
     /**
