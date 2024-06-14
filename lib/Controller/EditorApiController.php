@@ -419,6 +419,7 @@ class EditorApiController extends OCSController {
 
             if ($canFillForms) {
                 $params["document"]["permissions"]["fillForms"] = true;
+                $params["canEdit"] = $canEdit && $editable;
             }
 
             $hashCallback = $this->crypt->getHash(["userId" => $userId, "ownerId" => $ownerId, "fileId" => $file->getId(), "filePath" => $filePath, "shareToken" => $shareToken, "action" => "track"]);
