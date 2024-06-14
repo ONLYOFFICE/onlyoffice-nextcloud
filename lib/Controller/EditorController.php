@@ -289,7 +289,7 @@ class EditorController extends Controller {
             $region = str_replace("_", "-", \OC::$server->getL10NFactory()->get("")->getLocaleCode());
             $documentService = new DocumentService($this->trans, $this->config);
             try {
-                $newFileUri = $documentService->getConvertedUri($fileUrl, $targetExt, $ext, $targetKey, $region);
+                $newFileUri = $documentService->getConvertedUri($fileUrl, $targetExt, $ext, $targetKey, $region, $ext === "pdf");
             } catch (\Exception $e) {
                 $this->logger->logException($e, ["message" => "getConvertedUri: " . $targetFile->getId(), "app" => $this->appName]);
                 return ["error" => $e->getMessage()];

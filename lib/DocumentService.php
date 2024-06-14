@@ -92,11 +92,12 @@ class DocumentService {
      * @param string $to_extension - Extension to which to convert
      * @param string $document_revision_id - Key for caching on service
      * @param string $region - Region
+     * @param bool $toForm - Convert to form
      *
      * @return string
      */
-    public function getConvertedUri($document_uri, $from_extension, $to_extension, $document_revision_id, $region = null) {
-        $responceFromConvertService = $this->sendRequestToConvertService($document_uri, $from_extension, $to_extension, $document_revision_id, false, $region);
+    public function getConvertedUri($document_uri, $from_extension, $to_extension, $document_revision_id, $region = null, $toForm = false) {
+        $responceFromConvertService = $this->sendRequestToConvertService($document_uri, $from_extension, $to_extension, $document_revision_id, false, $region, $toForm);
 
         $errorElement = $responceFromConvertService->Error;
         if ($errorElement->count() > 0) {
@@ -121,10 +122,11 @@ class DocumentService {
      * @param string $document_revision_id - Key for caching on service
      * @param bool $is_async - Perform conversions asynchronously
      * @param string $region - Region
+     * @param bool $toForm - Convert to form
      *
      * @return array
      */
-    public function sendRequestToConvertService($document_uri, $from_extension, $to_extension, $document_revision_id, $is_async, $region = null) {
+    public function sendRequestToConvertService($document_uri, $from_extension, $to_extension, $document_revision_id, $is_async, $region = null, $toForm = false) {
         $documentServerUrl = $this->config->getDocumentServerInternalUrl();
 
         if (empty($documentServerUrl)) {
@@ -160,6 +162,12 @@ class DocumentService {
 
         if ($this->config->useDemo()) {
             $data["tenant"] = $this->config->getSystemValue("instanceid", true);
+        }
+
+        if ($toForm) {
+            $data["pdf"] = [
+                "form" => true
+            ];
         }
 
         $opts = [
