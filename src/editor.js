@@ -92,7 +92,7 @@
         if (OCA.Onlyoffice.template) {
             params.push("template=true");
         }
-        if (guestName) {
+        if (guestName && guestName !== "null") {
             params.push("guestName=" + encodeURIComponent(guestName));
         }
         if (OCA.Onlyoffice.anchor) {
