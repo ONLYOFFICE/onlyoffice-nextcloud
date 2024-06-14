@@ -119,7 +119,7 @@ class DocumentService {
      * @param string $from_extension - Document extension
      * @param string $to_extension - Extension to which to convert
      * @param string $document_revision_id - Key for caching on service
-     * @param bool - $is_async - Perform conversions asynchronously
+     * @param bool $is_async - Perform conversions asynchronously
      * @param string $region - Region
      *
      * @return array
