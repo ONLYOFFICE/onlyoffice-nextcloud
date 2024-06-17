@@ -1382,7 +1382,7 @@ class EditorController extends Controller {
      * @NoCSRFRequired
      * @PublicPage
      */
-    public function publicPage($fileId, $shareToken, $inframe = false, $forceEdit) {
+    public function publicPage($fileId, $shareToken, $inframe = false, $forceEdit = false) {
         return $this->index($fileId, null, $shareToken, $inframe, $forceEdit);
     }
 
