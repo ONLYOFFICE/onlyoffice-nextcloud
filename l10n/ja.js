@@ -115,7 +115,6 @@ OC.L10N.register(
     "From text document": "テキスト文書から作成する",
     "Create new PDF form": "新規PDFフォームの作成",
     "Create form": "フォームの作成",
-    "Fill in form in ONLYOFFICE": "ONLYOFFICEでフォームを記入する",
     "Security": "セキュリティ",
     "Run document macros": "ドキュメントマクロを実行する",
     "Anonymous": "匿名",

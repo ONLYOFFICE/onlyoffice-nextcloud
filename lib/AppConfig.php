@@ -1403,12 +1403,11 @@ class AppConfig {
             ],
             "docxf" => [
                 "def" => true,
-                "review" => true,
-                "comment" => true,
                 "createForm" => true,
             ],
             "oform" => [
                 "def" => true,
+                "createForm" => true,
             ],
             "pdf" => [
                 "def" => true,

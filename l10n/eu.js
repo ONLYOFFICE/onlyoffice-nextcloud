@@ -112,7 +112,6 @@ OC.L10N.register(
     "Blank": "Zurian",
     "From text document": "Testu dokumentutik",
     "Create form": "Sortu inprimakia",
-    "Fill in form in ONLYOFFICE": "Bete inprimakia ONLYOFFICE-en",
     "Security": "Segurtasuna",
     "Run document macros": "Exekutatu dokumentuen macroak",
     "Anonymous": "Anonimoa",

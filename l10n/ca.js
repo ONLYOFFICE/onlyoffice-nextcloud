@@ -112,7 +112,6 @@ OC.L10N.register(
     "Blank": "En blanc",
     "From text document": "Des de document de text",
     "Create form": "Crear formulari",
-    "Fill in form in ONLYOFFICE": "Omplir el formulari en ONLYOFFICE",
     "Security": "Seguretat",
     "Anonymous": "Anònim",
     "Light": "Llum",

@@ -115,7 +115,6 @@ OC.L10N.register(
     "From text document": "Из текстового документа",
     "Create new PDF form": "Создать новую PDF-форму",
     "Create form": "Создать форму",
-    "Fill in form in ONLYOFFICE": "Заполнить форму в ONLYOFFICE",
     "Security": "Безопасность",
     "Run document macros": "Запускать макросы документа",
     "Anonymous": "Аноним",

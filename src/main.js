@@ -38,7 +38,7 @@ import { FileAction,
     davResultToNode } from "@nextcloud/files";
 import { emit } from '@nextcloud/event-bus';
 import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
-import NewDocxfSvg from "!!raw-loader!../img/new-docxf.svg";
+import NewPdfSvg from "!!raw-loader!../img/new-pdf.svg";
 
 (function (OCA) {
 
@@ -113,7 +113,10 @@ import NewDocxfSvg from "!!raw-loader!../img/new-docxf.svg";
                 callback(response);
 
                 if (open) {
-                    OCA.Onlyoffice.OpenEditor(response.id, dir, response.name, winEditor);
+                    var fileName = response.name;
+                    var extension = OCA.Onlyoffice.getFileExtension(fileName);
+                    var forceEdit = OCA.Onlyoffice.setting.formats[extension].fillForms;
+                    OCA.Onlyoffice.OpenEditor(response.id, dir, fileName, winEditor, forceEdit);
 
                     OCA.Onlyoffice.context = {
                         fileName: response.name,
@@ -126,7 +129,7 @@ import NewDocxfSvg from "!!raw-loader!../img/new-docxf.svg";
         );
     };
 
-    OCA.Onlyoffice.OpenEditor = function (fileId, fileDir, fileName, winEditor) {
+    OCA.Onlyoffice.OpenEditor = function (fileId, fileDir, fileName, winEditor, forceEdit) {
         var filePath = "";
         if (fileName) {
             filePath = fileDir.replace(new RegExp("\/$"), "") + "/" + fileName;
@@ -143,6 +146,10 @@ import NewDocxfSvg from "!!raw-loader!../img/new-docxf.svg";
                     shareToken: encodeURIComponent($("#sharingToken").val()),
                     fileId: fileId
                 });
+        }
+
+        if (forceEdit) {
+            url += "&forceEdit=true";
         }
 
         if (winEditor && winEditor.location) {
@@ -469,17 +476,6 @@ import NewDocxfSvg from "!!raw-loader!../img/new-docxf.svg";
                         });
                     }
 
-                    if (config.fillForms) {
-                        OCA.Files.fileActions.registerAction({
-                            name: "onlyofficeFill",
-                            displayName: t(OCA.Onlyoffice.AppName, "Fill in form in ONLYOFFICE"),
-                            mime: mime,
-                            permissions: OC.PERMISSION_UPDATE,
-                            iconClass: "icon-onlyoffice-fill",
-                            actionHandler: OCA.Onlyoffice.FileClick
-                        });
-                    }
-
                     if (config.createForm) {
                         OCA.Files.fileActions.registerAction({
                             name: "onlyofficeCreateForm",
@@ -571,28 +567,6 @@ import NewDocxfSvg from "!!raw-loader!../img/new-docxf.svg";
             }));
 
             registerFileAction(new FileAction({
-                id: "onlyoffice-fill",
-                displayName: () => t(OCA.Onlyoffice.AppName, "Fill in form in ONLYOFFICE"),
-                iconSvgInline: () => AppDarkSvg,
-                enabled: (files) => {
-                    var config = getConfig(files[0]);
-
-                    if (!config) return;
-                    if (!config.fillForms) return false;
-
-                    if (Permission.UPDATE !== (files[0].permissions & Permission.UPDATE))
-                        return false;
-
-                    if (files[0].attributes["mount-type"] === "shared"
-                        && Permission.UPDATE !== (files[0].attributes["share-permissions"] & Permission.UPDATE))
-                        return false;
-
-                    return true;
-                },
-                exec: OCA.Onlyoffice.FileClickExec
-            }));
-
-            registerFileAction(new FileAction({
                 id: "onlyoffice-create-form",
                 displayName: () => t(OCA.Onlyoffice.AppName, "Create form"),
                 iconSvgInline: () => AppDarkSvg,
@@ -652,7 +626,7 @@ import NewDocxfSvg from "!!raw-loader!../img/new-docxf.svg";
 
     OCA.Onlyoffice.registerNewFileMenu = function () {
         addNewFileMenuEntry({
-            id: "new-onlyoffice-docxf",
+            id: "new-onlyoffice-pdf",
             displayName: t(OCA.Onlyoffice.AppName, "New PDF form"),
             enabled: (folder) => {
                 if (Permission.CREATE !== (folder.permissions & Permission.CREATE))
@@ -662,12 +636,12 @@ import NewDocxfSvg from "!!raw-loader!../img/new-docxf.svg";
 
                 return true;
             },
-            iconSvgInline: NewDocxfSvg,
+            iconSvgInline: NewPdfSvg,
             handler: (folder) => {
                 var name = t(OCA.Onlyoffice.AppName, "New PDF form");
                 var context = { dir: folder.path };
 
-                OCA.Onlyoffice.OpenFormPicker(name + ".docxf", context);
+                OCA.Onlyoffice.OpenFormPicker(name + ".pdf", context);
             }
         });
     };
@@ -732,13 +706,13 @@ import NewDocxfSvg from "!!raw-loader!../img/new-docxf.svg";
             }
 
             menu.addMenuEntry({
-                id: "onlyofficeDocxf",
+                id: "onlyofficePdf",
                 displayName: t(OCA.Onlyoffice.AppName, "New PDF form"),
                 templateName: t(OCA.Onlyoffice.AppName, "New PDF form"),
-                iconClass: "icon-onlyoffice-new-docxf",
-                fileType: "docxf",
+                iconClass: "icon-onlyoffice-new-pdf",
+                fileType: "pdf",
                 actionHandler: function (name) {
-                    OCA.Onlyoffice.OpenFormPicker(name + ".docxf", fileList);
+                    OCA.Onlyoffice.OpenFormPicker(name + ".pdf", fileList);
                 }
             });
         }
