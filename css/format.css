@@ -16,15 +16,23 @@
  *
  */
 
- .icon-onlyoffice-new-docx {
-  background-image: url("../img/new-docx.svg");
+.icon-onlyoffice-new-docx {
+    background-size: 20px !important;
+    background-position: 12px !important;
+    background-image: url("../img/new-docx.svg");
 }
 .icon-onlyoffice-new-xlsx {
-  background-image: url("../img/new-xlsx.svg");
+    background-size: 20px !important;
+    background-position: 12px !important;
+    background-image: url("../img/new-xlsx.svg");
 }
 .icon-onlyoffice-new-pptx {
-  background-image: url("../img/new-pptx.svg");
+    background-size: 20px !important;
+    background-position: 12px !important;
+    background-image: url("../img/new-pptx.svg");
 }
 .icon-onlyoffice-new-pdf {
-  background-image: url("../img/new-pdf.svg");
+    background-size: 20px !important;
+    background-position: 12px !important;
+    background-image: url("../img/new-pdf.svg");
 }
