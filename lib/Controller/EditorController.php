@@ -1283,17 +1283,17 @@ class EditorController extends Controller {
      * @param string $filePath - file path
      * @param string $shareToken - access token
      * @param bool $inframe - open in frame
+     * @param bool $forceEdit - open editing
      * @param bool $inviewer - open in viewer
      * @param bool $template - file is template
      * @param string $anchor - anchor for file content
-     * @param bool $forceEdit - open editing
      *
      * @return TemplateResponse|RedirectResponse
      *
      * @NoAdminRequired
      * @NoCSRFRequired
      */
-    public function index($fileId, $filePath = null, $shareToken = null, $inframe = false, $inviewer = false, $template = false, $anchor = null, $forceEdit = false) {
+    public function index($fileId, $filePath = null, $shareToken = null, $inframe = false, $forceEdit = false, $inviewer = false, $template = false, $anchor = null) {
         $this->logger->debug("Open: $fileId $filePath ", ["app" => $this->appName]);
 
         $isLoggedIn = $this->userSession->isLoggedIn();
