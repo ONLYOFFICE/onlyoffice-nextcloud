@@ -21,7 +21,7 @@
     <category>office</category>
     <category>tools</category>
     <website>https://www.onlyoffice.com</website>
-    <discussion>https://dev.onlyoffice.org/</discussion>
+    <discussion>https://forum.onlyoffice.com/</discussion>
     <bugs>https://github.com/ONLYOFFICE/onlyoffice-nextcloud/issues</bugs>
     <repository type="git">https://github.com/ONLYOFFICE/onlyoffice-nextcloud.git</repository>
     <screenshot small-thumbnail="https://raw.githubusercontent.com/ONLYOFFICE/onlyoffice-nextcloud/master/screenshots/main_small.png">https://raw.githubusercontent.com/ONLYOFFICE/onlyoffice-nextcloud/master/screenshots/main.png</screenshot>
