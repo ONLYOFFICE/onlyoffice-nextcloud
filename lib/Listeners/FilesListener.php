@@ -102,7 +102,7 @@ class FilesListener implements IEventListener {
     ) {
         $this->appConfig = $appConfig;
         $this->initialState = $initialState;
-        $this->serverContainer = $serverContainer;;
+        $this->serverContainer = $serverContainer;
         $this->trans = $trans;
         $this->urlGenerator = $urlGenerator;
         $this->crypt = $crypt;
