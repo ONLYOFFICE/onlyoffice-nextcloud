@@ -204,10 +204,24 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
             });
         };
 
+        var listenOuterClicks = function(event) {
+            if (event.target.id === "onlyoffice-share-action") {
+                return;
+            }
+            let target = document.querySelector("#onlyoffice-share-popup-menu");
+            if (target) {
+                let eventPath = event.composedPath().includes(target);
+                if (!eventPath && typeof(permissionsMenu)!=="undefined" && permissionsMenu.isOpen()) {
+                    permissionsMenu.close();
+                }
+            }
+        }
+
         var onClickPermissionMenu = function (e) {
             if (!permissionsMenu) {
                 permissionsMenu = getPermissionMenu();
             }
+            window.addEventListener("click", listenOuterClicks);
 
             var shareNode = $(e.target).closest(".onlyoffice-share-item")[0];
             var shareId = shareNode.id;
@@ -297,7 +311,8 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
 
         var getPermissionMenu = function () {
             var popup = $("<div>", {
-                class: "popovermenu onlyoffice-share-popup"
+                class: "popovermenu onlyoffice-share-popup",
+                id: "onlyoffice-share-popup-menu"
             }).append($("<ul>"), {
                 id: -1
             });
@@ -360,6 +375,7 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
 
                     setTargetId(-1);
                     popup.hide();
+                    window.removeEventListener("click", listenOuterClicks);
                 },
 
                 refresh: function (attributes) {
