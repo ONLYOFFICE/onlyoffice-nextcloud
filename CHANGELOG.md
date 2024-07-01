@@ -1,5 +1,7 @@
 # Change Log
 
+- Nextcloud v27 is no longer supported
+
 ## 9.3.0
 ## Changed
 - creating and editing pdf form
