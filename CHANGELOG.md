@@ -1,5 +1,9 @@
 # Change Log
 
+## 9.3.0
+## Changed
+- creating and editing pdf form
+
 ## 9.2.2
 ## Changed
 - fix settings page when tag app is disabled

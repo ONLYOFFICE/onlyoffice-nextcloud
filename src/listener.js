@@ -120,7 +120,11 @@
                 OCP.Toast.error(messageObj.message, messageObj.props);
                 break;
         }
-    }
+    };
+
+    OCA.Onlyoffice.onRequestEditRights = function () {
+        $(OCA.Onlyoffice.frameSelector).attr("src", $(OCA.Onlyoffice.frameSelector).attr("src") + "&forceEdit=true");
+    };
 
     window.addEventListener("message", function (event) {
         if (!$(OCA.Onlyoffice.frameSelector).length
@@ -165,6 +169,9 @@
                 break;
             case "onShowMessage":
                 OCA.Onlyoffice.onShowMessage(event.data.param);
+                break;
+            case "onRequestEditRights":
+                OCA.Onlyoffice.onRequestEditRights();
         }
     }, false);
 

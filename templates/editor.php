@@ -48,7 +48,8 @@ if (!empty($_["directToken"])) {
         data-template="<?php p($_["isTemplate"]) ?>"
         data-anchor="<?php p($_["anchor"]) ?>"
         data-inframe="<?php p($_["inframe"]) ?>"
-        data-inviewer="<?php p($_["inviewer"]) ?>"></div>
+        data-inviewer="<?php p($_["inviewer"]) ?>"
+        data-forceedit="<?php p($_["forceEdit"]) ?>"></div>
 
     <?php if (!empty($_["documentServerUrl"])) { ?>
         <script nonce="<?php p(base64_encode($_["requesttoken"])) ?>"

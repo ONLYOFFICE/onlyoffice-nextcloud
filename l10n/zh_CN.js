@@ -115,7 +115,6 @@ OC.L10N.register(
     "From text document": "从文本文件",
     "Create new PDF form": "创建新的 PDF 表单",
     "Create form": "创建表单",
-    "Fill in form in ONLYOFFICE": "在ONLYOFFICE上填写表单",
     "Security": "安全",
     "Run document macros": "运行文档宏",
     "Anonymous": "匿名",

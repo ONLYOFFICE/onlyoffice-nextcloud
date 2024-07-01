@@ -289,7 +289,7 @@ class EditorController extends Controller {
             $region = str_replace("_", "-", \OC::$server->getL10NFactory()->get("")->getLocaleCode());
             $documentService = new DocumentService($this->trans, $this->config);
             try {
-                $newFileUri = $documentService->getConvertedUri($fileUrl, $targetExt, $ext, $targetKey, $region);
+                $newFileUri = $documentService->getConvertedUri($fileUrl, $targetExt, $ext, $targetKey, $region, $ext === "pdf");
             } catch (\Exception $e) {
                 $this->logger->logException($e, ["message" => "getConvertedUri: " . $targetFile->getId(), "app" => $this->appName]);
                 return ["error" => $e->getMessage()];
@@ -1283,6 +1283,7 @@ class EditorController extends Controller {
      * @param string $filePath - file path
      * @param string $shareToken - access token
      * @param bool $inframe - open in frame
+     * @param bool $forceEdit - open editing
      * @param bool $inviewer - open in viewer
      * @param bool $template - file is template
      * @param string $anchor - anchor for file content
@@ -1292,7 +1293,7 @@ class EditorController extends Controller {
      * @NoAdminRequired
      * @NoCSRFRequired
      */
-    public function index($fileId, $filePath = null, $shareToken = null, $inframe = false, $inviewer = false, $template = false, $anchor = null) {
+    public function index($fileId, $filePath = null, $shareToken = null, $inframe = false, $forceEdit = false, $inviewer = false, $template = false, $anchor = null) {
         $this->logger->debug("Open: $fileId $filePath ", ["app" => $this->appName]);
 
         $isLoggedIn = $this->userSession->isLoggedIn();
@@ -1331,7 +1332,8 @@ class EditorController extends Controller {
             "isTemplate" => $template,
             "inframe" => false,
             "inviewer" => $inviewer === true,
-            "anchor" => $anchor
+            "anchor" => $anchor,
+            "forceEdit" => $forceEdit
         ];
 
         $response = null;
@@ -1372,6 +1374,7 @@ class EditorController extends Controller {
      * @param integer $fileId - file identifier
      * @param string $shareToken - access token
      * @param bool $inframe - open in frame
+     * @param bool $forceEdit - open editing
      *
      * @return TemplateResponse
      *
@@ -1379,8 +1382,8 @@ class EditorController extends Controller {
      * @NoCSRFRequired
      * @PublicPage
      */
-    public function publicPage($fileId, $shareToken, $inframe = false) {
-        return $this->index($fileId, null, $shareToken, $inframe);
+    public function publicPage($fileId, $shareToken, $inframe = false, $forceEdit = false) {
+        return $this->index($fileId, null, $shareToken, $inframe, $forceEdit);
     }
 
     /**

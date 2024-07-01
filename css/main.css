@@ -29,7 +29,6 @@
 .icon-onlyoffice-open,
 .icon-onlyoffice-convert,
 .icon-onlyoffice-download,
-.icon-onlyoffice-fill,
 .icon-onlyoffice-create {
     background-color: var(--color-main-text);
     mask: url("../img/app-dark.svg") no-repeat 50% 50%;

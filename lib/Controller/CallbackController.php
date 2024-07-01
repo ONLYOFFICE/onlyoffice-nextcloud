@@ -616,7 +616,11 @@ class CallbackController extends Controller {
                         $changes = null;
                         if (!empty($changesurl)) {
                             $changesurl = $this->config->replaceDocumentServerUrlToInternal($changesurl);
-                            $changes = $documentService->request($changesurl);
+                            try {
+                                $changes = $documentService->request($changesurl);
+                            } catch (\Exception $e) {
+                                $this->logger->logException($e, ["message" => "Failed to download changes", "app" => $this->appName]);
+                            }
                         }
                         FileVersions::saveHistory($file->getFileInfo(), $history, $changes, $prevVersion);
                     }
