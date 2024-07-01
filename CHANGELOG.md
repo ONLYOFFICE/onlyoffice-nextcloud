@@ -1,8 +1,8 @@
 # Change Log
 
-## 
+## 9.3.0
 ## Changed
-- creating pdf form
+- creating and editing pdf form
 
 ## 9.2.2
 ## Changed
