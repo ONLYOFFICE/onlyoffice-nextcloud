@@ -28,6 +28,10 @@
 
 import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
 
+/**
+ * @param {object} $ JQueryStatic object
+ * @param {object} OC Nextcloud OCA object
+ */
 (function ($, OC) {
 
     OCA.Onlyoffice = _.extend({

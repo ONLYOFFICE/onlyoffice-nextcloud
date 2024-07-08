@@ -40,6 +40,9 @@ import { emit } from '@nextcloud/event-bus';
 import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
 import NewPdfSvg from "!!raw-loader!../img/new-pdf.svg";
 
+/**
+ * @param {object} OCA Nextcloud OCA object
+ */
 (function (OCA) {
 
     OCA.Onlyoffice = _.extend({

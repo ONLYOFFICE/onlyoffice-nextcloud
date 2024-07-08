@@ -26,6 +26,10 @@
  *
  */
 
+/**
+ * @param {object} $ JQueryStatic object
+ * @param {object} OC Nextcloud OCA object
+ */
 (function ($, OC) {
 
     $(document).ready(function () {
