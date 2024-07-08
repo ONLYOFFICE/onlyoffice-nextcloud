@@ -31,29 +31,29 @@
  */
 (function(OCA) {
 
-	OCA.Onlyoffice = _.extend({}, OCA.Onlyoffice);
+	OCA.Onlyoffice = _.extend({}, OCA.Onlyoffice)
 
 	var callMobileMessage = function(messageName, attributes) {
 		var message = messageName
-		if (typeof attributes !== "undefined") {
+		if (typeof attributes !== 'undefined') {
 			message = {
 				MessageName: messageName,
 				Values: attributes,
-			};
+			}
 		}
 		var attributesString = null
 		try {
-			attributesString = JSON.stringify(attributes);
+			attributesString = JSON.stringify(attributes)
 		} catch (e) {
-			attributesString = null;
+			attributesString = null
 		}
 
 		// Forward to mobile handler
-		if (window.DirectEditingMobileInterface && typeof window.DirectEditingMobileInterface[messageName] === "function") {
-			if (attributesString === null || typeof attributesString === "undefined") {
-				window.DirectEditingMobileInterface[messageName]();
+		if (window.DirectEditingMobileInterface && typeof window.DirectEditingMobileInterface[messageName] === 'function') {
+			if (attributesString === null || typeof attributesString === 'undefined') {
+				window.DirectEditingMobileInterface[messageName]()
 			} else {
-				window.DirectEditingMobileInterface[messageName](attributesString);
+				window.DirectEditingMobileInterface[messageName](attributesString)
 			}
 		}
 
@@ -61,32 +61,32 @@
 		if (window.webkit
             && window.webkit.messageHandlers
             && window.webkit.messageHandlers.DirectEditingMobileInterface) {
-			window.webkit.messageHandlers.DirectEditingMobileInterface.postMessage(message);
+			window.webkit.messageHandlers.DirectEditingMobileInterface.postMessage(message)
 		}
 
-		window.postMessage(message);
+		window.postMessage(message)
 	}
 
 	OCA.Onlyoffice.directEditor = {
 		close: function() {
-			callMobileMessage("close");
+			callMobileMessage('close')
 		},
 		loaded: function() {
-			callMobileMessage("loaded");
+			callMobileMessage('loaded')
 		}
-	};
+	}
 
 
 	window.onload = function() {
-		let directEditorError = document.getElementById("directEditorError");
+		let directEditorError = document.getElementById('directEditorError')
 
 		if (directEditorError) {
-			OCA.Onlyoffice.directEditor.loaded();
-			let directEditorErrorButton = document.getElementById("directEditorErrorButton");
+			OCA.Onlyoffice.directEditor.loaded()
+			let directEditorErrorButton = document.getElementById('directEditorErrorButton')
 			directEditorErrorButton.addEventListener('click', function() {
-				OCA.Onlyoffice.directEditor.close();
-			});
+				OCA.Onlyoffice.directEditor.close()
+			})
 		}
-	};
+	}
 
-})(OCA);
+})(OCA)

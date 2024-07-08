@@ -32,7 +32,7 @@
 (function(OCA) {
 
 	OCA.Onlyoffice = _.extend({
-		AppName: "onlyoffice",
+		AppName: 'onlyoffice',
 		frameSelector: null,
 	}, OCA.Onlyoffice);
 
@@ -51,20 +51,20 @@
 
 	OCA.Onlyoffice.onRequestSaveAs = function(saveData) {
 
-		OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Save as"),
+		OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, 'Save as'),
 			function(fileDir) {
 				saveData.dir = fileDir;
 				$(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.editorSaveAs(saveData);
 			},
 			false,
-			"httpd/unix-directory",
+			'httpd/unix-directory',
 			true,
 			OC.dialogs.FILEPICKER_TYPE_CHOOSE,
 			saveData.dir);
 	};
 
 	OCA.Onlyoffice.onRequestInsertImage = function(imageMimes) {
-		OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Insert image"),
+		OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, 'Insert image'),
 			$(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.editorInsertImage,
 			false,
 			imageMimes,
@@ -72,7 +72,7 @@
 	};
 
 	OCA.Onlyoffice.onRequestMailMergeRecipients = function(recipientMimes) {
-		OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Select recipients"),
+		OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, 'Select recipients'),
 			$(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.editorSetRecipient,
 			false,
 			recipientMimes,
@@ -81,11 +81,11 @@
 
 	OCA.Onlyoffice.onRequestSelectDocument = function(revisedMimes, documentSelectionType) {
 		switch (documentSelectionType) {
-		case "combine":
-			var title =  t(OCA.Onlyoffice.AppName, "Select file to combine");
+		case 'combine':
+			var title =  t(OCA.Onlyoffice.AppName, 'Select file to combine');
 			break;
 		default:
-			title =  t(OCA.Onlyoffice.AppName, "Select file to compare");
+			title =  t(OCA.Onlyoffice.AppName, 'Select file to compare');
 		}
 		OC.dialogs.filepicker(title,
 			$(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.editorSetRequested.bind({documentSelectionType: documentSelectionType}),
@@ -95,7 +95,7 @@
 	};
 
 	OCA.Onlyoffice.onRequestReferenceSource = function(referenceSourceMimes) {
-		OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Select data source"),
+		OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, 'Select data source'),
 			$(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.editorReferenceSource,
 			false,
 			referenceSourceMimes,
@@ -107,89 +107,89 @@
 	};
 
 	OCA.Onlyoffice.changeFavicon = function(favicon) {
-		$('link[rel="icon"]').attr("href", favicon);
+		$('link[rel="icon"]').attr('href', favicon);
 	};
 
 	OCA.Onlyoffice.setViewport = function() {
-		document.querySelector('meta[name="viewport"]').setAttribute("content","width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0");
+		document.querySelector('meta[name="viewport"]').setAttribute('content','width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0');
 	};
 
 	OCA.Onlyoffice.onShowMessage = function(messageObj) {
 		switch (messageObj.type) {
-		case "success":
+		case 'success':
 			OCP.Toast.success(messageObj.message, messageObj.props);
 			break;
-		case "error":
+		case 'error':
 			OCP.Toast.error(messageObj.message, messageObj.props);
 			break;
 		}
 	};
 
 	OCA.Onlyoffice.onRequestEditRights = function() {
-		$(OCA.Onlyoffice.frameSelector).attr("src", $(OCA.Onlyoffice.frameSelector).attr("src") + "&forceEdit=true");
+		$(OCA.Onlyoffice.frameSelector).attr('src', $(OCA.Onlyoffice.frameSelector).attr('src') + '&forceEdit=true');
 	};
 
-	window.addEventListener("message", function(event) {
+	window.addEventListener('message', function(event) {
 		if (!$(OCA.Onlyoffice.frameSelector).length
             || $(OCA.Onlyoffice.frameSelector)[0].contentWindow !== event.source
-            || !event.data["method"]) {
+            || !event.data['method']) {
 			return;
 		}
 		switch (event.data.method) {
-		case "editorRequestClose":
+		case 'editorRequestClose':
 			OCA.Onlyoffice.onRequestClose();
 			break;
-		case "editorRequestSharingSettings":
+		case 'editorRequestSharingSettings':
 			if (OCA.Onlyoffice.OpenShareDialog) {
 				OCA.Onlyoffice.OpenShareDialog();
 			}
 			break;
-		case "onRefreshVersionsDialog":
+		case 'onRefreshVersionsDialog':
 			if (OCA.Onlyoffice.RefreshVersionsDialog) {
 				OCA.Onlyoffice.RefreshVersionsDialog();
 			}
 			break;
-		case "editorRequestSaveAs":
+		case 'editorRequestSaveAs':
 			OCA.Onlyoffice.onRequestSaveAs(event.data.param);
 			break;
-		case "editorRequestInsertImage":
+		case 'editorRequestInsertImage':
 			OCA.Onlyoffice.onRequestInsertImage(event.data.param);
 			break;
-		case "editorRequestMailMergeRecipients":
+		case 'editorRequestMailMergeRecipients':
 			OCA.Onlyoffice.onRequestMailMergeRecipients(event.data.param);
 			break;
-		case "editorRequestSelectDocument":
+		case 'editorRequestSelectDocument':
 			OCA.Onlyoffice.onRequestSelectDocument(event.data.param, event.data.documentSelectionType);
 			break;
-		case "editorRequestReferenceSource":
+		case 'editorRequestReferenceSource':
 			OCA.Onlyoffice.onRequestReferenceSource(event.data.param);
 			break;
-		case "onDocumentReady":
+		case 'onDocumentReady':
 			OCA.Onlyoffice.onDocumentReady(event.data.param);
 			break;
-		case "changeFavicon":
+		case 'changeFavicon':
 			OCA.Onlyoffice.changeFavicon(event.data.param);
 			break;
-		case "onShowMessage":
+		case 'onShowMessage':
 			OCA.Onlyoffice.onShowMessage(event.data.param);
 			break;
-		case "onRequestEditRights":
+		case 'onRequestEditRights':
 			OCA.Onlyoffice.onRequestEditRights();
 		}
 	}, false);
 
-	window.addEventListener("popstate", function(event) {
+	window.addEventListener('popstate', function(event) {
 		if ($(OCA.Onlyoffice.frameSelector).length) {
 			OCA.Onlyoffice.onRequestClose();
 		}
 	});
 
-	window.addEventListener("DOMNodeRemoved", function(event) {
+	window.addEventListener('DOMNodeRemoved', function(event) {
 		if ($(event.target).length
             && $(OCA.Onlyoffice.frameSelector).length > 0
             && $(OCA.Onlyoffice.frameSelector)[0].contentWindow
             && $(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA
-            && ($(event.target)[0].id === "viewer" || $(event.target)[0].id === $(OCA.Onlyoffice.frameSelector)[0].id)) {
+            && ($(event.target)[0].id === 'viewer' || $(event.target)[0].id === $(OCA.Onlyoffice.frameSelector)[0].id)) {
 
 			OCA.Onlyoffice.changeFavicon($(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.faviconBase);
 			window.document.title = $(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.titleBase;

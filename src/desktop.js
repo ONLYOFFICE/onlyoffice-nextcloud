@@ -33,7 +33,7 @@
 
 	OCA.Onlyoffice = _.extend({}, OCA.Onlyoffice);
 
-	if (!window["AscDesktopEditor"]) {
+	if (!window['AscDesktopEditor']) {
 		return;
 	}
 
@@ -44,17 +44,17 @@
 		return;
 	}
 
-	$("html").addClass("AscDesktopEditor");
+	$('html').addClass('AscDesktopEditor');
 
-	var domain = new RegExp("^http(s)?:\/\/[^\/]+").exec(location)[0];
+	var domain = new RegExp('^http(s)?:\/\/[^\/]+').exec(location)[0];
 	domain += OC.getRootPath();
 
 	var data = {
 		displayName: oc_current_user,
 		domain: domain,
-		provider: "Nextcloud",
+		provider: 'Nextcloud',
 	};
 
-	window.AscDesktopEditor.execCommand("portal:login", JSON.stringify(data));
+	window.AscDesktopEditor.execCommand('portal:login', JSON.stringify(data));
 
 })(OCA);

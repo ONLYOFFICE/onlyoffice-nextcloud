@@ -26,7 +26,7 @@
  *
  */
 
-import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
+import AppDarkSvg from '!!raw-loader!../img/app-dark.svg';
 
 /**
  * @param {object} $ JQueryStatic object
@@ -35,7 +35,7 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
 (function($, OC) {
 
 	OCA.Onlyoffice = _.extend({
-		AppName: "onlyoffice",
+		AppName: 'onlyoffice',
 	}, OCA.Onlyoffice);
 
 	OCA.Onlyoffice.Permissions = {
@@ -49,8 +49,8 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
 	var tabcontext = null;
 
 	var advancedTab = new OCA.Files.Sidebar.Tab({
-		id: "onlyofficeSharingTabView",
-		name: t(OCA.Onlyoffice.AppName, "Advanced"),
+		id: 'onlyofficeSharingTabView',
+		name: t(OCA.Onlyoffice.AppName, 'Advanced'),
 		iconSvg: AppDarkSvg,
 
 		mount(el, fileInfo, context) {
@@ -75,13 +75,13 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
 			if (!fileInfo.isDirectory()) {
 				var ext = OCA.Onlyoffice.getFileExtension(fileInfo.name);
 				var format = OCA.Onlyoffice.setting.formats[ext];
-				if (format && (format["review"]
-                    || format["comment"]
-                    || format["fillForms"]
-                    || format["modifyFilter"])) {
+				if (format && (format['review']
+                    || format['comment']
+                    || format['fillForms']
+                    || format['modifyFilter'])) {
 					canDisplay = true;
 
-					if (($("#sharing").hasClass("active") || $("#tab-button-sharing").hasClass("active"))
+					if (($('#sharing').hasClass('active') || $('#tab-button-sharing').hasClass('active'))
                         && tabcontext.fileInfo
                         && tabcontext.fileInfo.id == fileInfo.id) {
 						this.update(fileInfo);
@@ -104,13 +104,13 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
 		var templateItem = null;
 
 		var getContainer = function() {
-			return $el.find(".onlyoffice-share-container");
+			return $el.find('.onlyoffice-share-container');
 		};
 
 		var getTemplate = function(callback) {
-			if ($el.find(".onlyoffice-share-container").length === 0) {
-				$("<ul>", {class: "onlyoffice-share-container"}).appendTo($el)
-				$("<div>").html(t(OCA.Onlyoffice.AppName, "Provide advanced document permissions using ONLYOFFICE Docs")).prependTo($el);
+			if ($el.find('.onlyoffice-share-container').length === 0) {
+				$('<ul>', {class: 'onlyoffice-share-container'}).appendTo($el)
+				$('<div>').html(t(OCA.Onlyoffice.AppName, 'Provide advanced document permissions using ONLYOFFICE Docs')).prependTo($el);
 			}
 
 			if (templateItem) {
@@ -118,7 +118,7 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
 				return;
 			}
 
-			$.get(OC.filePath(OCA.Onlyoffice.AppName, "templates", "share.html"),
+			$.get(OC.filePath(OCA.Onlyoffice.AppName, 'templates', 'share.html'),
 				function(tmpl) {
 					templateItem = $(tmpl);
 
@@ -130,29 +130,29 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
 			getTemplate(() => {
 				collection.forEach(extra => {
 					var itemNode = templateItem.clone();
-					var descNode = itemNode.find("span");
-					var avatar = itemNode.find("img");
-					var actionButton = itemNode.find("#onlyoffice-share-action");
+					var descNode = itemNode.find('span');
+					var avatar = itemNode.find('img');
+					var actionButton = itemNode.find('#onlyoffice-share-action');
 
-					var avatarSrc = "/index.php/avatar/" + extra.shareWith + "/32?v=0";
+					var avatarSrc = '/index.php/avatar/' + extra.shareWith + '/32?v=0';
 					var label = extra.shareWithName;
 					if (extra.type == OC.Share.SHARE_TYPE_GROUP
                         || extra.type == OC.Share.SHARE_TYPE_ROOM) {
-						avatarSrc = "/index.php/avatar/guest/" + extra.shareWith + "/32?v=0";
-						label = extra.shareWith + " (" + t(OCA.Onlyoffice.AppName, "group") + ")";
+						avatarSrc = '/index.php/avatar/guest/' + extra.shareWith + '/32?v=0';
+						label = extra.shareWith + ' (' + t(OCA.Onlyoffice.AppName, 'group') + ')';
 					}
 
 					if (extra.type == OC.Share.SHARE_TYPE_ROOM) {
-						label = extra.shareWith + " (" + t(OCA.Onlyoffice.AppName, "conversation") + ")";
+						label = extra.shareWith + ' (' + t(OCA.Onlyoffice.AppName, 'conversation') + ')';
 					}
 
 					if (extra.type == OC.Share.SHARE_TYPE_LINK) {
-						label = t(OCA.Onlyoffice.AppName, "Share link");
+						label = t(OCA.Onlyoffice.AppName, 'Share link');
 
-						var avatarWrapper = itemNode.find(".avatardiv");
-						avatarWrapper.addClass("onlyoffice-share-link-avatar");
+						var avatarWrapper = itemNode.find('.avatardiv');
+						avatarWrapper.addClass('onlyoffice-share-link-avatar');
 
-						avatarSrc = "/core/img/actions/public.svg";
+						avatarSrc = '/core/img/actions/public.svg';
 					}
 
 					actionButton.click(onClickPermissionMenu);
@@ -209,13 +209,13 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
 		};
 
 		var listenOuterClicks = function(event) {
-			if (event.target.id === "onlyoffice-share-action") {
+			if (event.target.id === 'onlyoffice-share-action') {
 				return;
 			}
-			let target = document.querySelector("#onlyoffice-share-popup-menu");
+			let target = document.querySelector('#onlyoffice-share-popup-menu');
 			if (target) {
 				let eventPath = event.composedPath().includes(target);
-				if (!eventPath && typeof(permissionsMenu)!=="undefined" && permissionsMenu.isOpen()) {
+				if (!eventPath && typeof(permissionsMenu)!=='undefined' && permissionsMenu.isOpen()) {
 					permissionsMenu.close();
 				}
 			}
@@ -225,9 +225,9 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
 			if (!permissionsMenu) {
 				permissionsMenu = getPermissionMenu();
 			}
-			window.addEventListener("click", listenOuterClicks);
+			window.addEventListener('click', listenOuterClicks);
 
-			var shareNode = $(e.target).closest(".onlyoffice-share-item")[0];
+			var shareNode = $(e.target).closest('.onlyoffice-share-item')[0];
 			var shareId = shareNode.id;
 
 			if (permissionsMenu.isOpen()) {
@@ -250,13 +250,13 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
 			return {
 				on: function() {
 					if (!init) {
-						$("#content").on("click", function(e) {
+						$('#content').on('click', function(e) {
 							var target = $(e.target)[0];
 							if (!permissionsMenu
                                 || !permissionsMenu.isOpen()
-                                || target.id == "onlyoffice-share-action"
-                                || target.className == "onlyoffice-share-label"
-                                || target.closest(".onlyoffice-share-action")) {
+                                || target.id == 'onlyoffice-share-action'
+                                || target.className == 'onlyoffice-share-label'
+                                || target.closest('.onlyoffice-share-action')) {
 								return;
 							}
 
@@ -272,41 +272,41 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
 		var getPermissionAttributes = function(extra) {
 			var attributes = [];
 
-			if (format["review"]
-                && (OCA.Onlyoffice.Permissions.Review & extra["available"]) === OCA.Onlyoffice.Permissions.Review) {
-				var review = (OCA.Onlyoffice.Permissions.Review & extra["permissions"]) === OCA.Onlyoffice.Permissions.Review;
+			if (format['review']
+                && (OCA.Onlyoffice.Permissions.Review & extra['available']) === OCA.Onlyoffice.Permissions.Review) {
+				var review = (OCA.Onlyoffice.Permissions.Review & extra['permissions']) === OCA.Onlyoffice.Permissions.Review;
 				attributes.push({
 					checked: review,
 					extra: OCA.Onlyoffice.Permissions.Review,
-					label: t(OCA.Onlyoffice.AppName, "Review only")
+					label: t(OCA.Onlyoffice.AppName, 'Review only')
 				});
 			}
-			if (format["comment"]
-                && (OCA.Onlyoffice.Permissions.Comment & extra["available"]) === OCA.Onlyoffice.Permissions.Comment) {
-				var comment = (OCA.Onlyoffice.Permissions.Comment & extra["permissions"]) === OCA.Onlyoffice.Permissions.Comment;
+			if (format['comment']
+                && (OCA.Onlyoffice.Permissions.Comment & extra['available']) === OCA.Onlyoffice.Permissions.Comment) {
+				var comment = (OCA.Onlyoffice.Permissions.Comment & extra['permissions']) === OCA.Onlyoffice.Permissions.Comment;
 				attributes.push({
 					checked: comment,
 					extra: OCA.Onlyoffice.Permissions.Comment,
-					label: t(OCA.Onlyoffice.AppName, "Comment only")
+					label: t(OCA.Onlyoffice.AppName, 'Comment only')
 				});
 			}
-			if (format["fillForms"]
-                && (OCA.Onlyoffice.Permissions.FillForms & extra["available"]) === OCA.Onlyoffice.Permissions.FillForms) {
-				var fillForms = (OCA.Onlyoffice.Permissions.FillForms & extra["permissions"]) === OCA.Onlyoffice.Permissions.FillForms;
+			if (format['fillForms']
+                && (OCA.Onlyoffice.Permissions.FillForms & extra['available']) === OCA.Onlyoffice.Permissions.FillForms) {
+				var fillForms = (OCA.Onlyoffice.Permissions.FillForms & extra['permissions']) === OCA.Onlyoffice.Permissions.FillForms;
 				attributes.push({
 					checked: fillForms,
 					extra: OCA.Onlyoffice.Permissions.FillForms,
-					label: t(OCA.Onlyoffice.AppName, "Form filling")
+					label: t(OCA.Onlyoffice.AppName, 'Form filling')
 				});
 			}
 
-			if (format["modifyFilter"]
-                && (OCA.Onlyoffice.Permissions.ModifyFilter & extra["available"]) === OCA.Onlyoffice.Permissions.ModifyFilter) {
-				var modifyFilter = (OCA.Onlyoffice.Permissions.ModifyFilter & extra["permissions"]) === OCA.Onlyoffice.Permissions.ModifyFilter;
+			if (format['modifyFilter']
+                && (OCA.Onlyoffice.Permissions.ModifyFilter & extra['available']) === OCA.Onlyoffice.Permissions.ModifyFilter) {
+				var modifyFilter = (OCA.Onlyoffice.Permissions.ModifyFilter & extra['permissions']) === OCA.Onlyoffice.Permissions.ModifyFilter;
 				attributes.push({
 					checked: modifyFilter,
 					extra: OCA.Onlyoffice.Permissions.ModifyFilter,
-					label: t(OCA.Onlyoffice.AppName, "Global filter")
+					label: t(OCA.Onlyoffice.AppName, 'Global filter')
 				});
 			}
 
@@ -314,49 +314,49 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
 		};
 
 		var getPermissionMenu = function() {
-			var popup = $("<div>", {
-				class: "popovermenu onlyoffice-share-popup",
-				id: "onlyoffice-share-popup-menu"
-			}).append($("<ul>"), {
+			var popup = $('<div>', {
+				class: 'popovermenu onlyoffice-share-popup',
+				id: 'onlyoffice-share-popup-menu'
+			}).append($('<ul>'), {
 				id: -1
 			});
 
 			var appendItem = function(checked, extra, name) {
-				var item = $("<li>").append($("<span>", {
-					class: "onlyoffice-share-action"
-				}).append($("<input>", {
-					id: "extra-" + extra,
-					type: "checkbox",
-					class: "checkbox action-checkbox__checkbox focusable",
+				var item = $('<li>').append($('<span>', {
+					class: 'onlyoffice-share-action'
+				}).append($('<input>', {
+					id: 'extra-' + extra,
+					type: 'checkbox',
+					class: 'checkbox action-checkbox__checkbox focusable',
 					checked: checked
-				})).append($("<label>", {
-					for: "extra-" + extra,
+				})).append($('<label>', {
+					for: 'extra-' + extra,
 					text: name,
-					class: "onlyoffice-share-label"
+					class: 'onlyoffice-share-label'
 				})));
 
-				var input = item.find("input");
+				var input = item.find('input');
 				input.click(onClickSetPermissions);
 
-				popup.find("ul").append(item);
+				popup.find('ul').append(item);
 			};
 
 			var removeItems = function() {
-				var items = popup.find("li");
+				var items = popup.find('li');
 				if (items) {
 					items.remove();
 				}
 			}
 
 			var setTargetId = function(id) {
-				popup.find("ul").attr("id", id);
+				popup.find('ul').attr('id', id);
 			};
 
 			$el.append(popup);
 
 			return {
 				isOpen: function() {
-					return popup.is(":visible");
+					return popup.is(':visible');
 				},
 
 				open: function(id, attributes, position) {
@@ -379,7 +379,7 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
 
 					setTargetId(-1);
 					popup.hide();
-					window.removeEventListener("click", listenOuterClicks);
+					window.removeEventListener('click', listenOuterClicks);
 				},
 
 				refresh: function(attributes) {
@@ -391,15 +391,15 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
 				},
 
 				block: function(value) {
-					popup.find("input").prop("disabled", value);
+					popup.find('input').prop('disabled', value);
 				},
 
 				getValues: function() {
 					var values = [];
 
-					var items = popup.find("input");
+					var items = popup.find('input');
 					for (var i = 0; i < items.length; i++) {
-						var extra = items[i].id.split("extra-")[1];
+						var extra = items[i].id.split('extra-')[1];
 						values[extra] = items[i].checked;
 					}
 
@@ -407,7 +407,7 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
 				},
 
 				getTargetId: function() {
-					return popup.find("ul").attr("id");
+					return popup.find('ul').attr('id');
 				}
 			}
 		};
@@ -457,7 +457,7 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
 
 	OCA.Onlyoffice.GetShares = function(fileId, callback) {
 		$.ajax({
-			url: OC.linkToOCS("apps/" + OCA.Onlyoffice.AppName + "/api/v1/shares", 2) + fileId + "?format=json",
+			url: OC.linkToOCS('apps/' + OCA.Onlyoffice.AppName + '/api/v1/shares', 2) + fileId + '?format=json',
 			success: function onSuccess(response) {
 				callback(response.ocs.data);
 			}
@@ -473,8 +473,8 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
 		}
 
 		$.ajax({
-			method: "PUT",
-			url: OC.linkToOCS("apps/" + OCA.Onlyoffice.AppName + "/api/v1", 2) + "shares?format=json",
+			method: 'PUT',
+			url: OC.linkToOCS('apps/' + OCA.Onlyoffice.AppName + '/api/v1', 2) + 'shares?format=json',
 			data: data,
 			success: function onSuccess(response) {
 				callback(response.ocs.data);

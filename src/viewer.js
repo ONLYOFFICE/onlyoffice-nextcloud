@@ -35,23 +35,23 @@
 	}
 
 	OCA.Onlyoffice = {
-		AppName: "onlyoffice",
+		AppName: 'onlyoffice',
 		frameSelector: null,
 		setting: {},
 	};
 
-	OCA.Onlyoffice.setting = OCP.InitialState.loadState(OCA.Onlyoffice.AppName, "settings");
+	OCA.Onlyoffice.setting = OCP.InitialState.loadState(OCA.Onlyoffice.AppName, 'settings');
 
 	var OnlyofficeViewerVue = {
-		name: "OnlyofficeViewerVue",
+		name: 'OnlyofficeViewerVue',
 		render: function(createElement) {
 			var self = this;
 
-			return createElement("iframe", {
+			return createElement('iframe', {
 				attrs: {
-					id: "onlyofficeViewerFrame",
-					scrolling: "no",
-					src: self.url + "&inframe=true&inviewer=true",
+					id: 'onlyofficeViewerFrame',
+					scrolling: 'no',
+					src: self.url + '&inframe=true&inviewer=true',
 				},
 				on: {
 					load: function() {
@@ -72,7 +72,7 @@
 		},
 		data: function() {
 			return {
-				url: OC.generateUrl("/apps/" + OCA.Onlyoffice.AppName + "/{fileId}?filePath={filePath}",
+				url: OC.generateUrl('/apps/' + OCA.Onlyoffice.AppName + '/{fileId}?filePath={filePath}',
 					{
 						fileId: this.fileid,
 						filePath: this.filename
@@ -82,7 +82,7 @@
 	};
 
 	if (OCA.Viewer) {
-		OCA.Onlyoffice.frameSelector = "#onlyofficeViewerFrame";
+		OCA.Onlyoffice.frameSelector = '#onlyofficeViewerFrame';
 
 		var mimes = $.map(OCA.Onlyoffice.setting.formats, function(format) {
 			if (format.def) {

@@ -35,10 +35,10 @@ import { FileAction,
 	davGetClient,
 	davRootPath,
 	davGetDefaultPropfind,
-	davResultToNode } from "@nextcloud/files";
+	davResultToNode } from '@nextcloud/files';
 import { emit } from '@nextcloud/event-bus';
-import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
-import NewPdfSvg from "!!raw-loader!../img/new-pdf.svg";
+import AppDarkSvg from '!!raw-loader!../img/app-dark.svg';
+import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 
 /**
  * @param {object} OCA Nextcloud OCA object
@@ -46,13 +46,13 @@ import NewPdfSvg from "!!raw-loader!../img/new-pdf.svg";
 (function(OCA) {
 
 	OCA.Onlyoffice = _.extend({
-		AppName: "onlyoffice",
+		AppName: 'onlyoffice',
 		context: null,
 		folderUrl: null,
 		frameSelector: null,
 	}, OCA.Onlyoffice);
 
-	OCA.Onlyoffice.setting = OCP.InitialState.loadState(OCA.Onlyoffice.AppName, "settings");
+	OCA.Onlyoffice.setting = OCP.InitialState.loadState(OCA.Onlyoffice.AppName, 'settings');
 	OCA.Onlyoffice.mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini|Macintosh/i.test(navigator.userAgent)
                             && navigator.maxTouchPoints && navigator.maxTouchPoints > 1;
 
@@ -74,14 +74,14 @@ import NewPdfSvg from "!!raw-loader!../img/new-pdf.svg";
 
 			if (viewContents.folder && (viewContents.folder.fileid == response.parentId)) {
 				let newFile = viewContents.contents.find(node => node.fileid == response.id);
-				if (newFile) emit("files:node:created", newFile);
+				if (newFile) emit('files:node:created', newFile);
 			}
 		});
 	}
 
 	OCA.Onlyoffice.CreateFileProcess = function(name, dir, templateId, targetId, open, callback) {
 		if ((!OCA.Onlyoffice.setting.sameTab || OCA.Onlyoffice.mobile || OCA.Onlyoffice.Desktop) && open) {
-			var loaderUrl = OCA.Onlyoffice.Desktop ? "" : OC.filePath(OCA.Onlyoffice.AppName, "templates", "loader.html");
+			var loaderUrl = OCA.Onlyoffice.Desktop ? '' : OC.filePath(OCA.Onlyoffice.AppName, 'templates', 'loader.html');
 			var winEditor = window.open(loaderUrl);
 		}
 
@@ -98,11 +98,11 @@ import NewPdfSvg from "!!raw-loader!../img/new-pdf.svg";
 			createData.targetId = targetId;
 		}
 
-		if ($("#isPublic").val()) {
-			createData.shareToken = encodeURIComponent($("#sharingToken").val());
+		if ($('#isPublic').val()) {
+			createData.shareToken = encodeURIComponent($('#sharingToken').val());
 		}
 
-		$.post(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/new"),
+		$.post(OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/new'),
 			createData,
 			function onSuccess(response) {
 				if (response.error) {
@@ -127,55 +127,55 @@ import NewPdfSvg from "!!raw-loader!../img/new-pdf.svg";
 					};
 				}
 
-				OCP.Toast.success(t(OCA.Onlyoffice.AppName, "File created"));
+				OCP.Toast.success(t(OCA.Onlyoffice.AppName, 'File created'));
 			}
 		);
 	};
 
 	OCA.Onlyoffice.OpenEditor = function(fileId, fileDir, fileName, winEditor, forceEdit) {
-		var filePath = "";
+		var filePath = '';
 		if (fileName) {
-			filePath = fileDir.replace(new RegExp("\/$"), "") + "/" + fileName;
+			filePath = fileDir.replace(new RegExp('\/$'), '') + '/' + fileName;
 		}
-		var url = OC.generateUrl("/apps/" + OCA.Onlyoffice.AppName + "/{fileId}?filePath={filePath}",
+		var url = OC.generateUrl('/apps/' + OCA.Onlyoffice.AppName + '/{fileId}?filePath={filePath}',
 			{
 				fileId: fileId,
 				filePath: filePath
 			});
 
-		if ($("#isPublic").val()) {
-			url = OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/s/{shareToken}?fileId={fileId}",
+		if ($('#isPublic').val()) {
+			url = OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/s/{shareToken}?fileId={fileId}',
 				{
-					shareToken: encodeURIComponent($("#sharingToken").val()),
+					shareToken: encodeURIComponent($('#sharingToken').val()),
 					fileId: fileId
 				});
 		}
 
 		if (forceEdit) {
-			url += "&forceEdit=true";
+			url += '&forceEdit=true';
 		}
 
 		if (winEditor && winEditor.location) {
 			winEditor.location.href = url;
 		} else if (!OCA.Onlyoffice.setting.sameTab || OCA.Onlyoffice.mobile || OCA.Onlyoffice.Desktop) {
-			winEditor = window.open(url, "_blank");
-		} else if ($("#isPublic").val() === "1" && $("#mimetype").val() !== "httpd/unix-directory") {
+			winEditor = window.open(url, '_blank');
+		} else if ($('#isPublic').val() === '1' && $('#mimetype').val() !== 'httpd/unix-directory') {
 			location.href = url;
 		} else {
-			OCA.Onlyoffice.frameSelector = "#onlyofficeFrame";
-			var $iframe = $("<iframe id=\"onlyofficeFrame\" nonce=\"" + btoa(OC.requestToken) + "\" scrolling=\"no\" allowfullscreen src=\"" + url + "&inframe=true\" />");
+			OCA.Onlyoffice.frameSelector = '#onlyofficeFrame';
+			var $iframe = $('<iframe id="onlyofficeFrame" nonce="' + btoa(OC.requestToken) + '" scrolling="no" allowfullscreen src="' + url + '&inframe=true" />');
 
-			var frameContainer = $("#app-content").length > 0 ? $("#app-content") : $("#app-content-vue");
+			var frameContainer = $('#app-content').length > 0 ? $('#app-content') : $('#app-content-vue');
 			frameContainer.append($iframe);
 
-			$("body").addClass("onlyoffice-inline");
+			$('body').addClass('onlyoffice-inline');
 
 			if (OCA.Files.Sidebar) {
 				OCA.Files.Sidebar.close();
 			}
 
-			var scrollTop = $("#app-content").scrollTop();
-			$(OCA.Onlyoffice.frameSelector).css("top", scrollTop);
+			var scrollTop = $('#app-content').scrollTop();
+			$(OCA.Onlyoffice.frameSelector).css('top', scrollTop);
 
 			OCA.Onlyoffice.folderUrl = location.href;
 			window.history.pushState(null, null, url);
@@ -185,7 +185,7 @@ import NewPdfSvg from "!!raw-loader!../img/new-pdf.svg";
 	OCA.Onlyoffice.CloseEditor = function() {
 		OCA.Onlyoffice.frameSelector = null;
 
-		$("body").removeClass("onlyoffice-inline");
+		$('body').removeClass('onlyoffice-inline');
 
 		OCA.Onlyoffice.context = null;
 
@@ -198,9 +198,9 @@ import NewPdfSvg from "!!raw-loader!../img/new-pdf.svg";
 
 	OCA.Onlyoffice.OpenShareDialog = function() {
 		if (OCA.Onlyoffice.context) {
-			if (!$("#app-sidebar-vue").is(":visible")) {
-				OCA.Files.Sidebar.open(OCA.Onlyoffice.context.dir + "/" + OCA.Onlyoffice.context.fileName);
-				OCA.Files.Sidebar.setActiveTab("sharing");
+			if (!$('#app-sidebar-vue').is(':visible')) {
+				OCA.Files.Sidebar.open(OCA.Onlyoffice.context.dir + '/' + OCA.Onlyoffice.context.fileName);
+				OCA.Files.Sidebar.setActiveTab('sharing');
 			} else {
 				OCA.Files.Sidebar.close();
 			}
@@ -209,10 +209,10 @@ import NewPdfSvg from "!!raw-loader!../img/new-pdf.svg";
 
 	OCA.Onlyoffice.RefreshVersionsDialog = function() {
 		if (OCA.Onlyoffice.context) {
-			if ($("#app-sidebar-vue").is(":visible")) {
+			if ($('#app-sidebar-vue').is(':visible')) {
 				OCA.Files.Sidebar.close();
-				OCA.Files.Sidebar.open(OCA.Onlyoffice.context.dir + "/" + OCA.Onlyoffice.context.fileName);
-				OCA.Files.Sidebar.setActiveTab("versionsTabView");
+				OCA.Files.Sidebar.open(OCA.Onlyoffice.context.dir + '/' + OCA.Onlyoffice.context.fileName);
+				OCA.Files.Sidebar.setActiveTab('versionsTabView');
 			}
 		}
 	};
@@ -257,7 +257,7 @@ import NewPdfSvg from "!!raw-loader!../img/new-pdf.svg";
 
 			if (viewContents.folder && (viewContents.folder.fileid == response.parentId)) {
 				let newFile = viewContents.contents.find(node => node.fileid == response.id);
-				if (newFile) emit("files:node:created", newFile);
+				if (newFile) emit('files:node:created', newFile);
 			}
 		});
 
@@ -269,11 +269,11 @@ import NewPdfSvg from "!!raw-loader!../img/new-pdf.svg";
 			fileId: fileId
 		};
 
-		if ($("#isPublic").val()) {
-			convertData.shareToken = encodeURIComponent($("#sharingToken").val());
+		if ($('#isPublic').val()) {
+			convertData.shareToken = encodeURIComponent($('#sharingToken').val());
 		}
 
-		$.post(OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/convert"),
+		$.post(OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/convert'),
 			convertData,
 			function onSuccess(response) {
 				if (response.error) {
@@ -283,7 +283,7 @@ import NewPdfSvg from "!!raw-loader!../img/new-pdf.svg";
 
 				callback(response);
 
-				OCP.Toast.success(t(OCA.Onlyoffice.AppName, "File has been converted. Its content might look different."));
+				OCP.Toast.success(t(OCA.Onlyoffice.AppName, 'File has been converted. Its content might look different.'));
 			});
 	};
 
@@ -300,59 +300,59 @@ import NewPdfSvg from "!!raw-loader!../img/new-pdf.svg";
 	};
 
 	OCA.Onlyoffice.Download = function(fileName, fileId) {
-		$.get(OC.filePath(OCA.Onlyoffice.AppName, "templates", "downloadPicker.html"), 
+		$.get(OC.filePath(OCA.Onlyoffice.AppName, 'templates', 'downloadPicker.html'), 
 			function(tmpl) {
 				var dialog = $(tmpl).octemplate({
-					dialog_name: "download-picker",
-					dialog_title: t("onlyoffice", "Download as")
+					dialog_name: 'download-picker',
+					dialog_title: t('onlyoffice', 'Download as')
 				});
 
-				$(dialog[0].querySelectorAll("p")).text(t(OCA.Onlyoffice.AppName, "Choose a format to convert {fileName}", {fileName: fileName}));
+				$(dialog[0].querySelectorAll('p')).text(t(OCA.Onlyoffice.AppName, 'Choose a format to convert {fileName}', {fileName: fileName}));
 
 				var extension = OCA.Onlyoffice.getFileExtension(fileName);
-				var selectNode = dialog[0].querySelectorAll("select")[0];
-				var optionNodeOrigin = selectNode.querySelectorAll("option")[0];
+				var selectNode = dialog[0].querySelectorAll('select')[0];
+				var optionNodeOrigin = selectNode.querySelectorAll('option')[0];
 
-				$(optionNodeOrigin).attr("data-value", extension);
-				$(optionNodeOrigin).text(t(OCA.Onlyoffice.AppName, "Origin format"));
+				$(optionNodeOrigin).attr('data-value', extension);
+				$(optionNodeOrigin).text(t(OCA.Onlyoffice.AppName, 'Origin format'));
 
 				dialog[0].dataset.format = extension;
 				selectNode.onchange = function() {
-					dialog[0].dataset.format = $("#onlyoffice-download-select option:selected").attr("data-value");
+					dialog[0].dataset.format = $('#onlyoffice-download-select option:selected').attr('data-value');
 				}
 
 				OCA.Onlyoffice.setting.formats[extension].saveas.forEach(ext => {
 					var optionNode = optionNodeOrigin.cloneNode(true);
 
-					$(optionNode).attr("data-value", ext);
+					$(optionNode).attr('data-value', ext);
 					$(optionNode).text(ext);
 
 					selectNode.append(optionNode);
 				})
 
-				$("body").append(dialog)
+				$('body').append(dialog)
 
-				$("#download-picker").ocdialog({
+				$('#download-picker').ocdialog({
 					closeOnEscape: true,
 					modal: true,
 					buttons: [{
-						text: t("core", "Cancel"),
-						classes: "cancel",
+						text: t('core', 'Cancel'),
+						classes: 'cancel',
 						click: function() {
-							$(this).ocdialog("close")
+							$(this).ocdialog('close')
 						}
 					}, {
-						text: t("onlyoffice", "Download"),
-						classes: "primary",
+						text: t('onlyoffice', 'Download'),
+						classes: 'primary',
 						click: function() {
 							var format = this.dataset.format;
-							var downloadLink = OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/downloadas?fileId={fileId}&toExtension={toExtension}",{
+							var downloadLink = OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/downloadas?fileId={fileId}&toExtension={toExtension}',{
 								fileId: fileId,
 								toExtension: format
 							});
 
 							location.href = downloadLink;
-							$(this).ocdialog("close")
+							$(this).ocdialog('close')
 						}
 					}]
 				});
@@ -361,22 +361,22 @@ import NewPdfSvg from "!!raw-loader!../img/new-pdf.svg";
 
 	OCA.Onlyoffice.OpenFormPicker = function(name, filelist) {
 		var filterMimes = [
-			"application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+			'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
 		];
 
 		var buttons = [
 			{
-				text: t(OCA.Onlyoffice.AppName, "Blank"),
-				type: "blank"
+				text: t(OCA.Onlyoffice.AppName, 'Blank'),
+				type: 'blank'
 			},
 			{
-				text: t(OCA.Onlyoffice.AppName, "From text document"),
-				type: "target",
+				text: t(OCA.Onlyoffice.AppName, 'From text document'),
+				type: 'target',
 				defaultButton: true
 			}
 		];
 
-		OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Create new PDF form"),
+		OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, 'Create new PDF form'),
 			async function(filePath, type) {
 				var dialogFileList = OC.dialogs.filelist;
 				var targetId = 0;
@@ -392,7 +392,7 @@ import NewPdfSvg from "!!raw-loader!../img/new-pdf.svg";
 					dialogFileList = results.data.map((result) => davResultToNode(result));
 				}
 
-				if (type === "target") {
+				if (type === 'target') {
 					dialogFileList.forEach(item => {
 						let itemName = item.name ? item.name : item.basename;
 						if (itemName === targetFileName) {
@@ -419,14 +419,14 @@ import NewPdfSvg from "!!raw-loader!../img/new-pdf.svg";
 
 	OCA.Onlyoffice.CreateFormClick = function(fileName, context) {
 		var fileList = context.fileList;
-		var name = fileName.replace(/\.[^.]+$/, ".pdf");
+		var name = fileName.replace(/\.[^.]+$/, '.pdf');
 		var targetId = context.fileInfoModel.id;
 
 		OCA.Onlyoffice.CreateFile(name, fileList, 0, targetId, false);
 	};
 
 	OCA.Onlyoffice.CreateFormClickExec = async function(file, view, dir) {
-		var name = file.basename.replace(/\.[^.]+$/, ".pdf");
+		var name = file.basename.replace(/\.[^.]+$/, '.pdf');
 		var context = {
 			dir: dir,
 			view: view
@@ -441,7 +441,7 @@ import NewPdfSvg from "!!raw-loader!../img/new-pdf.svg";
 		var formats = OCA.Onlyoffice.setting.formats;
 
 		var getConfig = function(file) {
-			var fileExt = file?.extension?.toLowerCase()?.replace(".", "");
+			var fileExt = file?.extension?.toLowerCase()?.replace('.', '');
 			var config = formats[fileExt];
 
 			return config;
@@ -456,47 +456,47 @@ import NewPdfSvg from "!!raw-loader!../img/new-pdf.svg";
 				let mimeTypes = config.mime;
 				mimeTypes.forEach((mime) => {
 					OCA.Files.fileActions.registerAction({
-						name: "onlyofficeOpen",
-						displayName: t(OCA.Onlyoffice.AppName, "Open in ONLYOFFICE"),
+						name: 'onlyofficeOpen',
+						displayName: t(OCA.Onlyoffice.AppName, 'Open in ONLYOFFICE'),
 						mime: mime,
 						permissions: OC.PERMISSION_READ,
-						iconClass: "icon-onlyoffice-open",
+						iconClass: 'icon-onlyoffice-open',
 						actionHandler: OCA.Onlyoffice.FileClick
 					});
 
 					if (config.def) {
-						OCA.Files.fileActions.setDefault(mime, "onlyofficeOpen");
+						OCA.Files.fileActions.setDefault(mime, 'onlyofficeOpen');
 					}
 
 					if (config.conv) {
 						OCA.Files.fileActions.registerAction({
-							name: "onlyofficeConvert",
-							displayName: t(OCA.Onlyoffice.AppName, "Convert with ONLYOFFICE"),
+							name: 'onlyofficeConvert',
+							displayName: t(OCA.Onlyoffice.AppName, 'Convert with ONLYOFFICE'),
 							mime: mime,
-							permissions: ($("#isPublic").val() ? OC.PERMISSION_UPDATE : OC.PERMISSION_READ),
-							iconClass: "icon-onlyoffice-convert",
+							permissions: ($('#isPublic').val() ? OC.PERMISSION_UPDATE : OC.PERMISSION_READ),
+							iconClass: 'icon-onlyoffice-convert',
 							actionHandler: OCA.Onlyoffice.FileConvertClick
 						});
 					}
 
 					if (config.createForm) {
 						OCA.Files.fileActions.registerAction({
-							name: "onlyofficeCreateForm",
-							displayName: t(OCA.Onlyoffice.AppName, "Create form"),
+							name: 'onlyofficeCreateForm',
+							displayName: t(OCA.Onlyoffice.AppName, 'Create form'),
 							mime: mime,
-							permissions: ($("#isPublic").val() ? OC.PERMISSION_UPDATE : OC.PERMISSION_READ),
-							iconClass: "icon-onlyoffice-create",
+							permissions: ($('#isPublic').val() ? OC.PERMISSION_UPDATE : OC.PERMISSION_READ),
+							iconClass: 'icon-onlyoffice-create',
 							actionHandler: OCA.Onlyoffice.CreateFormClick
 						});
 					}
 
-					if (config.saveas && !$("#isPublic").val()) {
+					if (config.saveas && !$('#isPublic').val()) {
 						OCA.Files.fileActions.registerAction({
-							name: "onlyofficeDownload",
-							displayName: t(OCA.Onlyoffice.AppName, "Download as"),
+							name: 'onlyofficeDownload',
+							displayName: t(OCA.Onlyoffice.AppName, 'Download as'),
 							mime: mime,
 							permissions: OC.PERMISSION_READ,
-							iconClass: "icon-onlyoffice-download",
+							iconClass: 'icon-onlyoffice-download',
 							actionHandler: OCA.Onlyoffice.DownloadClick
 						});
 					}
@@ -504,8 +504,8 @@ import NewPdfSvg from "!!raw-loader!../img/new-pdf.svg";
 			});
 		} else {
 			registerFileAction(new FileAction({
-				id: "onlyoffice-open-def",
-				displayName: () => t(OCA.Onlyoffice.AppName, "Open in ONLYOFFICE"),
+				id: 'onlyoffice-open-def',
+				displayName: () => t(OCA.Onlyoffice.AppName, 'Open in ONLYOFFICE'),
 				iconSvgInline: () => AppDarkSvg,
 				enabled: (files) => {
 					var config = getConfig(files[0]);
@@ -523,8 +523,8 @@ import NewPdfSvg from "!!raw-loader!../img/new-pdf.svg";
 			}));
 
 			registerFileAction(new FileAction({
-				id: "onlyoffice-open",
-				displayName: () => t(OCA.Onlyoffice.AppName, "Open in ONLYOFFICE"),
+				id: 'onlyoffice-open',
+				displayName: () => t(OCA.Onlyoffice.AppName, 'Open in ONLYOFFICE'),
 				iconSvgInline: () => AppDarkSvg,
 				enabled: (files) => {
 					var config = getConfig(files[0]);
@@ -541,8 +541,8 @@ import NewPdfSvg from "!!raw-loader!../img/new-pdf.svg";
 			}));
 
 			registerFileAction(new FileAction({
-				id: "onlyoffice-convert",
-				displayName: () => t(OCA.Onlyoffice.AppName, "Convert with ONLYOFFICE"),
+				id: 'onlyoffice-convert',
+				displayName: () => t(OCA.Onlyoffice.AppName, 'Convert with ONLYOFFICE'),
 				iconSvgInline: () => AppDarkSvg,
 				enabled: (files) => {
 					var config = getConfig(files[0]);
@@ -550,16 +550,16 @@ import NewPdfSvg from "!!raw-loader!../img/new-pdf.svg";
 					if (!config) return;
 					if (!config.conv) return false;
 
-					var required = $("#isPublic").val() ? Permission.UPDATE : Permission.READ;
+					var required = $('#isPublic').val() ? Permission.UPDATE : Permission.READ;
 					if (required !== (files[0].permissions & required))
 						return false;
 
-					if (files[0].attributes["mount-type"] === "shared") {
-						if (required !== (files[0].attributes["share-permissions"] & required))
+					if (files[0].attributes['mount-type'] === 'shared') {
+						if (required !== (files[0].attributes['share-permissions'] & required))
 							return false;
 
-						var attributes = JSON.parse(files[0].attributes["share-attributes"]);
-						var downloadAttribute = attributes.find((attribute) => attribute.scope === "permissions" && attribute.key === "download");
+						var attributes = JSON.parse(files[0].attributes['share-attributes']);
+						var downloadAttribute = attributes.find((attribute) => attribute.scope === 'permissions' && attribute.key === 'download');
 						if (downloadAttribute !== undefined && downloadAttribute.enabled === false)
 							return false;
 					}
@@ -570,8 +570,8 @@ import NewPdfSvg from "!!raw-loader!../img/new-pdf.svg";
 			}));
 
 			registerFileAction(new FileAction({
-				id: "onlyoffice-create-form",
-				displayName: () => t(OCA.Onlyoffice.AppName, "Create form"),
+				id: 'onlyoffice-create-form',
+				displayName: () => t(OCA.Onlyoffice.AppName, 'Create form'),
 				iconSvgInline: () => AppDarkSvg,
 				enabled: (files) => {
 					var config = getConfig(files[0]);
@@ -579,16 +579,16 @@ import NewPdfSvg from "!!raw-loader!../img/new-pdf.svg";
 					if (!config) return;
 					if (!config.createForm) return false;
 
-					var required = $("#isPublic").val() ? Permission.UPDATE : Permission.READ;
+					var required = $('#isPublic').val() ? Permission.UPDATE : Permission.READ;
 					if (required !== (files[0].permissions & required))
 						return false;
 
-					if (files[0].attributes["mount-type"] === "shared") {
-						if (required !== (files[0].attributes["share-permissions"] & required))
+					if (files[0].attributes['mount-type'] === 'shared') {
+						if (required !== (files[0].attributes['share-permissions'] & required))
 							return false;
 
-						var attributes = JSON.parse(files[0].attributes["share-attributes"]);
-						var downloadAttribute = attributes.find((attribute) => attribute.scope === "permissions" && attribute.key === "download");
+						var attributes = JSON.parse(files[0].attributes['share-attributes']);
+						var downloadAttribute = attributes.find((attribute) => attribute.scope === 'permissions' && attribute.key === 'download');
 						if (downloadAttribute !== undefined && downloadAttribute.enabled === false)
 							return false;
 					}
@@ -598,10 +598,10 @@ import NewPdfSvg from "!!raw-loader!../img/new-pdf.svg";
 				exec: OCA.Onlyoffice.CreateFormClickExec
 			}));
 
-			if (!$("#isPublic").val()) {
+			if (!$('#isPublic').val()) {
 				registerFileAction(new FileAction({
-					id: "onlyoffice-download-as",
-					displayName: () => t(OCA.Onlyoffice.AppName, "Download as"),
+					id: 'onlyoffice-download-as',
+					displayName: () => t(OCA.Onlyoffice.AppName, 'Download as'),
 					iconSvgInline: () => AppDarkSvg,
 					enabled: (files) => {
 						var config = getConfig(files[0]);
@@ -612,9 +612,9 @@ import NewPdfSvg from "!!raw-loader!../img/new-pdf.svg";
 						if (Permission.READ !== (files[0].permissions & Permission.READ))
 							return false;
 
-						if (files[0].attributes["mount-type"] === "shared") {
-							var attributes = JSON.parse(files[0].attributes["share-attributes"]);
-							var downloadAttribute = attributes.find((attribute) => attribute.scope === "permissions" && attribute.key === "download");
+						if (files[0].attributes['mount-type'] === 'shared') {
+							var attributes = JSON.parse(files[0].attributes['share-attributes']);
+							var downloadAttribute = attributes.find((attribute) => attribute.scope === 'permissions' && attribute.key === 'download');
 							if (downloadAttribute !== undefined && downloadAttribute.enabled === false)
 								return false;
 						}
@@ -629,22 +629,22 @@ import NewPdfSvg from "!!raw-loader!../img/new-pdf.svg";
 
 	OCA.Onlyoffice.registerNewFileMenu = function() {
 		addNewFileMenuEntry({
-			id: "new-onlyoffice-pdf",
-			displayName: t(OCA.Onlyoffice.AppName, "New PDF form"),
+			id: 'new-onlyoffice-pdf',
+			displayName: t(OCA.Onlyoffice.AppName, 'New PDF form'),
 			enabled: (folder) => {
 				if (Permission.CREATE !== (folder.permissions & Permission.CREATE))
 					return false;
-				if (Permission.CREATE !== (folder.attributes["share-permissions"] & Permission.CREATE))
+				if (Permission.CREATE !== (folder.attributes['share-permissions'] & Permission.CREATE))
 					return false;
 
 				return true;
 			},
 			iconSvgInline: NewPdfSvg,
 			handler: (folder) => {
-				var name = t(OCA.Onlyoffice.AppName, "New PDF form");
+				var name = t(OCA.Onlyoffice.AppName, 'New PDF form');
 				var context = { dir: folder.path };
 
-				OCA.Onlyoffice.OpenFormPicker(name + ".pdf", context);
+				OCA.Onlyoffice.OpenFormPicker(name + '.pdf', context);
 			}
 		});
 	};
@@ -653,52 +653,52 @@ import NewPdfSvg from "!!raw-loader!../img/new-pdf.svg";
 		attach: function(menu) {
 			var fileList = menu.fileList;
 
-			if (fileList.id !== "files" && fileList.id !== "files.public") {
+			if (fileList.id !== 'files' && fileList.id !== 'files.public') {
 				return;
 			}
 
-			if ($("#isPublic").val() === "1" && $("#mimetype").val() === "httpd/unix-directory") {
+			if ($('#isPublic').val() === '1' && $('#mimetype').val() === 'httpd/unix-directory') {
 				menu.addMenuEntry({
-					id: "onlyofficeDocx",
-					displayName: t(OCA.Onlyoffice.AppName, "New document"),
-					templateName: t(OCA.Onlyoffice.AppName, "New document"),
-					iconClass: "icon-onlyoffice-new-docx",
-					fileType: "docx",
+					id: 'onlyofficeDocx',
+					displayName: t(OCA.Onlyoffice.AppName, 'New document'),
+					templateName: t(OCA.Onlyoffice.AppName, 'New document'),
+					iconClass: 'icon-onlyoffice-new-docx',
+					fileType: 'docx',
 					actionHandler: function(name) {
-						if (!$("#isPublic").val() && OCA.Onlyoffice.TemplateExist("document")) {
-							OCA.Onlyoffice.OpenTemplatePicker(name, ".docx", "document");
+						if (!$('#isPublic').val() && OCA.Onlyoffice.TemplateExist('document')) {
+							OCA.Onlyoffice.OpenTemplatePicker(name, '.docx', 'document');
 						} else {
-							OCA.Onlyoffice.CreateFile(name + ".docx", fileList);
+							OCA.Onlyoffice.CreateFile(name + '.docx', fileList);
 						}
 					}
 				});
 
 				menu.addMenuEntry({
-					id: "onlyofficeXlsx",
-					displayName: t(OCA.Onlyoffice.AppName, "New spreadsheet"),
-					templateName: t(OCA.Onlyoffice.AppName, "New spreadsheet"),
-					iconClass: "icon-onlyoffice-new-xlsx",
-					fileType: "xlsx",
+					id: 'onlyofficeXlsx',
+					displayName: t(OCA.Onlyoffice.AppName, 'New spreadsheet'),
+					templateName: t(OCA.Onlyoffice.AppName, 'New spreadsheet'),
+					iconClass: 'icon-onlyoffice-new-xlsx',
+					fileType: 'xlsx',
 					actionHandler: function(name) {
-						if (!$("#isPublic").val() && OCA.Onlyoffice.TemplateExist("spreadsheet")) {
-							OCA.Onlyoffice.OpenTemplatePicker(name, ".xlsx", "spreadsheet");
+						if (!$('#isPublic').val() && OCA.Onlyoffice.TemplateExist('spreadsheet')) {
+							OCA.Onlyoffice.OpenTemplatePicker(name, '.xlsx', 'spreadsheet');
 						} else {
-							OCA.Onlyoffice.CreateFile(name + ".xlsx", fileList);
+							OCA.Onlyoffice.CreateFile(name + '.xlsx', fileList);
 						}
 					}
 				});
 
 				menu.addMenuEntry({
-					id: "onlyofficePpts",
-					displayName: t(OCA.Onlyoffice.AppName, "New presentation"),
-					templateName: t(OCA.Onlyoffice.AppName, "New presentation"),
-					iconClass: "icon-onlyoffice-new-pptx",
-					fileType: "pptx",
+					id: 'onlyofficePpts',
+					displayName: t(OCA.Onlyoffice.AppName, 'New presentation'),
+					templateName: t(OCA.Onlyoffice.AppName, 'New presentation'),
+					iconClass: 'icon-onlyoffice-new-pptx',
+					fileType: 'pptx',
 					actionHandler: function(name) {
-						if (!$("#isPublic").val() && OCA.Onlyoffice.TemplateExist("presentation")) {
-							OCA.Onlyoffice.OpenTemplatePicker(name, ".pptx", "presentation");
+						if (!$('#isPublic').val() && OCA.Onlyoffice.TemplateExist('presentation')) {
+							OCA.Onlyoffice.OpenTemplatePicker(name, '.pptx', 'presentation');
 						} else {
-							OCA.Onlyoffice.CreateFile(name + ".pptx", fileList);
+							OCA.Onlyoffice.CreateFile(name + '.pptx', fileList);
 						}
 					}
 				});
@@ -709,27 +709,27 @@ import NewPdfSvg from "!!raw-loader!../img/new-pdf.svg";
 			}
 
 			menu.addMenuEntry({
-				id: "onlyofficePdf",
-				displayName: t(OCA.Onlyoffice.AppName, "New PDF form"),
-				templateName: t(OCA.Onlyoffice.AppName, "New PDF form"),
-				iconClass: "icon-onlyoffice-new-pdf",
-				fileType: "pdf",
+				id: 'onlyofficePdf',
+				displayName: t(OCA.Onlyoffice.AppName, 'New PDF form'),
+				templateName: t(OCA.Onlyoffice.AppName, 'New PDF form'),
+				iconClass: 'icon-onlyoffice-new-pdf',
+				fileType: 'pdf',
 				actionHandler: function(name) {
-					OCA.Onlyoffice.OpenFormPicker(name + ".pdf", fileList);
+					OCA.Onlyoffice.OpenFormPicker(name + '.pdf', fileList);
 				}
 			});
 		}
 	};
 
 	OCA.Onlyoffice.getFileExtension = function(fileName) {
-		var extension = fileName.substr(fileName.lastIndexOf(".") + 1).toLowerCase();
+		var extension = fileName.substr(fileName.lastIndexOf('.') + 1).toLowerCase();
 		return extension;
 	}
 
 	var initPage = function() {
-		if ($("#isPublic").val() === "1" && $("#mimetype").val() !== "httpd/unix-directory") {
+		if ($('#isPublic').val() === '1' && $('#mimetype').val() !== 'httpd/unix-directory') {
 			//file by shared link
-			var fileName = $("#filename").val();
+			var fileName = $('#filename').val();
 			var extension = OCA.Onlyoffice.getFileExtension(fileName);
 
 			var formats = OCA.Onlyoffice.setting.formats;
@@ -739,30 +739,30 @@ import NewPdfSvg from "!!raw-loader!../img/new-pdf.svg";
 				return;
 			}
 
-			var editorUrl = OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/s/" + encodeURIComponent($("#sharingToken").val()));
+			var editorUrl = OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/s/' + encodeURIComponent($('#sharingToken').val()));
 
 			if (_oc_appswebroots.richdocuments
-                || _oc_appswebroots.files_pdfviewer && extension === "pdf"
-                || _oc_appswebroots.text && extension === "txt") {
+                || _oc_appswebroots.files_pdfviewer && extension === 'pdf'
+                || _oc_appswebroots.text && extension === 'txt') {
 
-				var button = document.createElement("a");
+				var button = document.createElement('a');
 				button.href = editorUrl;
-				button.className = "onlyoffice-public-open button";
-				button.innerText = t(OCA.Onlyoffice.AppName, "Open in ONLYOFFICE")
+				button.className = 'onlyoffice-public-open button';
+				button.innerText = t(OCA.Onlyoffice.AppName, 'Open in ONLYOFFICE')
 
 				if (!OCA.Onlyoffice.setting.sameTab) {
-					button.target = "_blank";
+					button.target = '_blank';
 				}
 
-				$("#preview").prepend(button);
+				$('#preview').prepend(button);
 			} else {
-				OCA.Onlyoffice.frameSelector = "#onlyofficeFrame";
-				var $iframe = $("<iframe id=\"onlyofficeFrame\" nonce=\"" + btoa(OC.requestToken) + "\" scrolling=\"no\" allowfullscreen src=\"" + editorUrl + "?inframe=true\" />");
-				$("#app-content").append($iframe);
-				$("body").addClass("onlyoffice-inline");
+				OCA.Onlyoffice.frameSelector = '#onlyofficeFrame';
+				var $iframe = $('<iframe id="onlyofficeFrame" nonce="' + btoa(OC.requestToken) + '" scrolling="no" allowfullscreen src="' + editorUrl + '?inframe=true" />');
+				$('#app-content').append($iframe);
+				$('body').addClass('onlyoffice-inline');
 			}
 		} else {
-			OC.Plugins.register("OCA.Files.NewFileMenu", OCA.Onlyoffice.NewFileMenu);
+			OC.Plugins.register('OCA.Files.NewFileMenu', OCA.Onlyoffice.NewFileMenu);
 
 			OCA.Onlyoffice.registerNewFileMenu();
 
