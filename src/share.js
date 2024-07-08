@@ -43,12 +43,12 @@ import AppDarkSvg from '!!raw-loader!../img/app-dark.svg';
 		Review: 1,
 		Comment: 2,
 		FillForms: 4,
-		ModifyFilter: 8
+		ModifyFilter: 8,
 	}
 
-	var tabcontext = null
+	let tabcontext = null
 
-	var advancedTab = new OCA.Files.Sidebar.Tab({
+	const advancedTab = new OCA.Files.Sidebar.Tab({
 		id: 'onlyofficeSharingTabView',
 		name: t(OCA.Onlyoffice.AppName, 'Advanced'),
 		iconSvg: AppDarkSvg,
@@ -70,15 +70,15 @@ import AppDarkSvg from '!!raw-loader!../img/app-dark.svg';
 		},
 
 		enabled(fileInfo) {
-			var canDisplay = false
+			let canDisplay = false
 
 			if (!fileInfo.isDirectory()) {
-				var ext = OCA.Onlyoffice.getFileExtension(fileInfo.name)
-				var format = OCA.Onlyoffice.setting.formats[ext]
-				if (format && (format['review']
-                    || format['comment']
-                    || format['fillForms']
-                    || format['modifyFilter'])) {
+				const ext = OCA.Onlyoffice.getFileExtension(fileInfo.name)
+				const format = OCA.Onlyoffice.setting.formats[ext]
+				if (format && (format.review
+                    || format.comment
+                    || format.fillForms
+                    || format.modifyFilter)) {
 					canDisplay = true
 
 					if (($('#sharing').hasClass('active') || $('#tab-button-sharing').hasClass('active'))
@@ -87,35 +87,35 @@ import AppDarkSvg from '!!raw-loader!../img/app-dark.svg';
 						this.update(fileInfo)
 					}
 				}
-			};
+			}
 
 			return canDisplay
-		}
+		},
 	})
 
-	var advancedContext = function() {
-		var $el = null
+	const advancedContext = function() {
+		let $el = null
 
-		var format = null
-		var fileInfo = null
-		var collection = null
-		var customEvents = null
-		var permissionsMenu = null
-		var templateItem = null
+		let format = null
+		let fileInfo = null
+		let collection = null
+		let customEvents = null
+		let permissionsMenu = null
+		let templateItem = null
 
-		var getContainer = function() {
+		const getContainer = function() {
 			return $el.find('.onlyoffice-share-container')
-		};
+		}
 
-		var getTemplate = function(callback) {
+		const getTemplate = function(callback) {
 			if ($el.find('.onlyoffice-share-container').length === 0) {
-				$('<ul>', {class: 'onlyoffice-share-container'}).appendTo($el)
+				$('<ul>', { class: 'onlyoffice-share-container' }).appendTo($el)
 				$('<div>').html(t(OCA.Onlyoffice.AppName, 'Provide advanced document permissions using ONLYOFFICE Docs')).prependTo($el)
 			}
 
 			if (templateItem) {
 				callback()
-				return;
+				return
 			}
 
 			$.get(OC.filePath(OCA.Onlyoffice.AppName, 'templates', 'share.html'),
@@ -124,18 +124,18 @@ import AppDarkSvg from '!!raw-loader!../img/app-dark.svg';
 
 					callback()
 				})
-		};
+		}
 
-		var render = function() {
+		const render = function() {
 			getTemplate(() => {
 				collection.forEach(extra => {
-					var itemNode = templateItem.clone()
-					var descNode = itemNode.find('span')
-					var avatar = itemNode.find('img')
-					var actionButton = itemNode.find('#onlyoffice-share-action')
+					const itemNode = templateItem.clone()
+					const descNode = itemNode.find('span')
+					const avatar = itemNode.find('img')
+					const actionButton = itemNode.find('#onlyoffice-share-action')
 
-					var avatarSrc = '/index.php/avatar/' + extra.shareWith + '/32?v=0'
-					var label = extra.shareWithName
+					let avatarSrc = '/index.php/avatar/' + extra.shareWith + '/32?v=0'
+					let label = extra.shareWithName
 					if (extra.type == OC.Share.SHARE_TYPE_GROUP
                         || extra.type == OC.Share.SHARE_TYPE_ROOM) {
 						avatarSrc = '/index.php/avatar/guest/' + extra.shareWith + '/32?v=0'
@@ -149,7 +149,7 @@ import AppDarkSvg from '!!raw-loader!../img/app-dark.svg';
 					if (extra.type == OC.Share.SHARE_TYPE_LINK) {
 						label = t(OCA.Onlyoffice.AppName, 'Share link')
 
-						var avatarWrapper = itemNode.find('.avatardiv')
+						const avatarWrapper = itemNode.find('.avatardiv')
 						avatarWrapper.addClass('onlyoffice-share-link-avatar')
 
 						avatarSrc = '/core/img/actions/public.svg'
@@ -165,15 +165,15 @@ import AppDarkSvg from '!!raw-loader!../img/app-dark.svg';
 					getContainer().append(itemNode)
 				})
 			})
-		};
+		}
 
-		var onClickSetPermissions = function(e) {
-			var permissionValues = permissionsMenu.getValues()
-			var shareId = permissionsMenu.getTargetId()
-			var fileId = fileInfo.id
-			var extra = collection.find(item => item.share_id == shareId)
+		const onClickSetPermissions = function(e) {
+			const permissionValues = permissionsMenu.getValues()
+			const shareId = permissionsMenu.getTargetId()
+			const fileId = fileInfo.id
+			const extra = collection.find(item => item.share_id == shareId)
 
-			var permissions = OCA.Onlyoffice.Permissions.None
+			let permissions = OCA.Onlyoffice.Permissions.None
 			if (permissionValues[OCA.Onlyoffice.Permissions.Review]) {
 				permissions |= OCA.Onlyoffice.Permissions.Review
 			}
@@ -201,57 +201,57 @@ import AppDarkSvg from '!!raw-loader!../img/app-dark.svg';
 					}
 				})
 
-				var attributes = getPermissionAttributes(extra)
+				const attributes = getPermissionAttributes(extra)
 
 				permissionsMenu.refresh(attributes)
 				permissionsMenu.block(false)
 			})
-		};
+		}
 
-		var listenOuterClicks = function(event) {
+		const listenOuterClicks = function(event) {
 			if (event.target.id === 'onlyoffice-share-action') {
 				return
 			}
-			let target = document.querySelector('#onlyoffice-share-popup-menu')
+			const target = document.querySelector('#onlyoffice-share-popup-menu')
 			if (target) {
-				let eventPath = event.composedPath().includes(target)
+				const eventPath = event.composedPath().includes(target)
 				if (!eventPath && typeof(permissionsMenu)!=='undefined' && permissionsMenu.isOpen()) {
 					permissionsMenu.close()
 				}
 			}
 		}
 
-		var onClickPermissionMenu = function(e) {
+		const onClickPermissionMenu = function(e) {
 			if (!permissionsMenu) {
 				permissionsMenu = getPermissionMenu()
 			}
 			window.addEventListener('click', listenOuterClicks)
 
-			var shareNode = $(e.target).closest('.onlyoffice-share-item')[0]
-			var shareId = shareNode.id
+			const shareNode = $(e.target).closest('.onlyoffice-share-item')[0]
+			const shareId = shareNode.id
 
 			if (permissionsMenu.isOpen()) {
-				var previousId = permissionsMenu.getTargetId()
+				const previousId = permissionsMenu.getTargetId()
 				permissionsMenu.close()
 
 				if (previousId == shareId) return
 			}
 
-			var extra = collection.find(item => item.share_id == shareId)
+			const extra = collection.find(item => item.share_id == shareId)
 
-			var attributes = getPermissionAttributes(extra)
+			const attributes = getPermissionAttributes(extra)
 
 			permissionsMenu.open(extra.share_id, attributes, $(e.target).position())
-		};
+		}
 
-		var getCustomEvents = function() {
-			var init = false
+		const getCustomEvents = function() {
+			let init = false
 
 			return {
-				on: function() {
+				on() {
 					if (!init) {
 						$('#content').on('click', function(e) {
-							var target = $(e.target)[0]
+							const target = $(e.target)[0]
 							if (!permissionsMenu
                                 || !permissionsMenu.isOpen()
                                 || target.id == 'onlyoffice-share-action'
@@ -265,105 +265,105 @@ import AppDarkSvg from '!!raw-loader!../img/app-dark.svg';
 
 						init = true
 					}
-				}
+				},
 			}
 		}
 
-		var getPermissionAttributes = function(extra) {
-			var attributes = []
+		const getPermissionAttributes = function(extra) {
+			const attributes = []
 
-			if (format['review']
-                && (OCA.Onlyoffice.Permissions.Review & extra['available']) === OCA.Onlyoffice.Permissions.Review) {
-				var review = (OCA.Onlyoffice.Permissions.Review & extra['permissions']) === OCA.Onlyoffice.Permissions.Review
+			if (format.review
+                && (OCA.Onlyoffice.Permissions.Review & extra.available) === OCA.Onlyoffice.Permissions.Review) {
+				const review = (OCA.Onlyoffice.Permissions.Review & extra.permissions) === OCA.Onlyoffice.Permissions.Review
 				attributes.push({
 					checked: review,
 					extra: OCA.Onlyoffice.Permissions.Review,
-					label: t(OCA.Onlyoffice.AppName, 'Review only')
+					label: t(OCA.Onlyoffice.AppName, 'Review only'),
 				})
 			}
-			if (format['comment']
-                && (OCA.Onlyoffice.Permissions.Comment & extra['available']) === OCA.Onlyoffice.Permissions.Comment) {
-				var comment = (OCA.Onlyoffice.Permissions.Comment & extra['permissions']) === OCA.Onlyoffice.Permissions.Comment
+			if (format.comment
+                && (OCA.Onlyoffice.Permissions.Comment & extra.available) === OCA.Onlyoffice.Permissions.Comment) {
+				const comment = (OCA.Onlyoffice.Permissions.Comment & extra.permissions) === OCA.Onlyoffice.Permissions.Comment
 				attributes.push({
 					checked: comment,
 					extra: OCA.Onlyoffice.Permissions.Comment,
-					label: t(OCA.Onlyoffice.AppName, 'Comment only')
+					label: t(OCA.Onlyoffice.AppName, 'Comment only'),
 				})
 			}
-			if (format['fillForms']
-                && (OCA.Onlyoffice.Permissions.FillForms & extra['available']) === OCA.Onlyoffice.Permissions.FillForms) {
-				var fillForms = (OCA.Onlyoffice.Permissions.FillForms & extra['permissions']) === OCA.Onlyoffice.Permissions.FillForms
+			if (format.fillForms
+                && (OCA.Onlyoffice.Permissions.FillForms & extra.available) === OCA.Onlyoffice.Permissions.FillForms) {
+				const fillForms = (OCA.Onlyoffice.Permissions.FillForms & extra.permissions) === OCA.Onlyoffice.Permissions.FillForms
 				attributes.push({
 					checked: fillForms,
 					extra: OCA.Onlyoffice.Permissions.FillForms,
-					label: t(OCA.Onlyoffice.AppName, 'Form filling')
+					label: t(OCA.Onlyoffice.AppName, 'Form filling'),
 				})
 			}
 
-			if (format['modifyFilter']
-                && (OCA.Onlyoffice.Permissions.ModifyFilter & extra['available']) === OCA.Onlyoffice.Permissions.ModifyFilter) {
-				var modifyFilter = (OCA.Onlyoffice.Permissions.ModifyFilter & extra['permissions']) === OCA.Onlyoffice.Permissions.ModifyFilter
+			if (format.modifyFilter
+                && (OCA.Onlyoffice.Permissions.ModifyFilter & extra.available) === OCA.Onlyoffice.Permissions.ModifyFilter) {
+				const modifyFilter = (OCA.Onlyoffice.Permissions.ModifyFilter & extra.permissions) === OCA.Onlyoffice.Permissions.ModifyFilter
 				attributes.push({
 					checked: modifyFilter,
 					extra: OCA.Onlyoffice.Permissions.ModifyFilter,
-					label: t(OCA.Onlyoffice.AppName, 'Global filter')
+					label: t(OCA.Onlyoffice.AppName, 'Global filter'),
 				})
 			}
 
 			return attributes
-		};
+		}
 
-		var getPermissionMenu = function() {
-			var popup = $('<div>', {
+		const getPermissionMenu = function() {
+			const popup = $('<div>', {
 				class: 'popovermenu onlyoffice-share-popup',
-				id: 'onlyoffice-share-popup-menu'
+				id: 'onlyoffice-share-popup-menu',
 			}).append($('<ul>'), {
-				id: -1
+				id: -1,
 			})
 
-			var appendItem = function(checked, extra, name) {
-				var item = $('<li>').append($('<span>', {
-					class: 'onlyoffice-share-action'
+			const appendItem = function(checked, extra, name) {
+				const item = $('<li>').append($('<span>', {
+					class: 'onlyoffice-share-action',
 				}).append($('<input>', {
 					id: 'extra-' + extra,
 					type: 'checkbox',
 					class: 'checkbox action-checkbox__checkbox focusable',
-					checked: checked
+					checked,
 				})).append($('<label>', {
 					for: 'extra-' + extra,
 					text: name,
-					class: 'onlyoffice-share-label'
+					class: 'onlyoffice-share-label',
 				})))
 
-				var input = item.find('input')
+				const input = item.find('input')
 				input.click(onClickSetPermissions)
 
 				popup.find('ul').append(item)
-			};
+			}
 
-			var removeItems = function() {
-				var items = popup.find('li')
+			const removeItems = function() {
+				const items = popup.find('li')
 				if (items) {
 					items.remove()
 				}
 			}
 
-			var setTargetId = function(id) {
+			const setTargetId = function(id) {
 				popup.find('ul').attr('id', id)
-			};
+			}
 
 			$el.append(popup)
 
 			return {
-				isOpen: function() {
+				isOpen() {
 					return popup.is(':visible')
 				},
 
-				open: function(id, attributes, position) {
+				open(id, attributes, position) {
 					removeItems()
 
 					if (position) {
-						popup.css({top: position.top})
+						popup.css({ top: position.top })
 					}
 
 					attributes.forEach(attr => {
@@ -374,7 +374,7 @@ import AppDarkSvg from '!!raw-loader!../img/app-dark.svg';
 					popup.show()
 				},
 
-				close: function() {
+				close() {
 					removeItems()
 
 					setTargetId(-1)
@@ -382,7 +382,7 @@ import AppDarkSvg from '!!raw-loader!../img/app-dark.svg';
 					window.removeEventListener('click', listenOuterClicks)
 				},
 
-				refresh: function(attributes) {
+				refresh(attributes) {
 					removeItems()
 
 					attributes.forEach(attr => {
@@ -390,25 +390,25 @@ import AppDarkSvg from '!!raw-loader!../img/app-dark.svg';
 					})
 				},
 
-				block: function(value) {
+				block(value) {
 					popup.find('input').prop('disabled', value)
 				},
 
-				getValues: function() {
-					var values = []
+				getValues() {
+					const values = []
 
-					var items = popup.find('input')
-					for (var i = 0; i < items.length; i++) {
-						var extra = items[i].id.split('extra-')[1]
+					const items = popup.find('input')
+					for (let i = 0; i < items.length; i++) {
+						const extra = items[i].id.split('extra-')[1]
 						values[extra] = items[i].checked
 					}
 
 					return values
 				},
 
-				getTargetId: function() {
+				getTargetId() {
 					return popup.find('ul').attr('id')
-				}
+				},
 			}
 		}
 
@@ -417,7 +417,7 @@ import AppDarkSvg from '!!raw-loader!../img/app-dark.svg';
 				return fileInfo
 			},
 
-			init: function(_el, _fileInfo) {
+			init(_el, _fileInfo) {
 				$el = $(_el)
 
 				getTemplate(() => {
@@ -425,7 +425,7 @@ import AppDarkSvg from '!!raw-loader!../img/app-dark.svg';
 				})
 			},
 
-			update: function(_fileInfo) {
+			update(_fileInfo) {
 				if (customEvents === null) {
 					customEvents = getCustomEvents()
 					customEvents.on()
@@ -435,7 +435,7 @@ import AppDarkSvg from '!!raw-loader!../img/app-dark.svg';
 
 				fileInfo = _fileInfo
 
-				var ext = OCA.Onlyoffice.getFileExtension(fileInfo.name)
+				const ext = OCA.Onlyoffice.getFileExtension(fileInfo.name)
 				format = OCA.Onlyoffice.setting.formats[ext]
 
 				OCA.Onlyoffice.GetShares(fileInfo.id, (shares) => {
@@ -445,40 +445,40 @@ import AppDarkSvg from '!!raw-loader!../img/app-dark.svg';
 				})
 			},
 
-			clear: function() {
+			clear() {
 				$el = null
 				format = null
 				fileInfo = null
 				collection = null
 				permissionsMenu = null
-			}
+			},
 		}
-	};
+	}
 
 	OCA.Onlyoffice.GetShares = function(fileId, callback) {
 		$.ajax({
 			url: OC.linkToOCS('apps/' + OCA.Onlyoffice.AppName + '/api/v1/shares', 2) + fileId + '?format=json',
 			success: function onSuccess(response) {
 				callback(response.ocs.data)
-			}
+			},
 		})
 	}
 
 	OCA.Onlyoffice.SetShares = function(id, shareId, fileId, permissions, callback) {
-		var data = {
+		const data = {
 			extraId: id,
-			shareId: shareId,
-			fileId: fileId,
-			permissions: permissions
+			shareId,
+			fileId,
+			permissions,
 		}
 
 		$.ajax({
 			method: 'PUT',
 			url: OC.linkToOCS('apps/' + OCA.Onlyoffice.AppName + '/api/v1', 2) + 'shares?format=json',
-			data: data,
+			data,
 			success: function onSuccess(response) {
 				callback(response.ocs.data)
-			}
+			},
 		})
 	}
 

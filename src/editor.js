@@ -44,14 +44,14 @@
 
 		OCA.Onlyoffice.fileId = $('#iframeEditor').data('id')
 		OCA.Onlyoffice.shareToken = $('#iframeEditor').data('sharetoken')
-		var directToken = $('#iframeEditor').data('directtoken')
+		const directToken = $('#iframeEditor').data('directtoken')
 		OCA.Onlyoffice.template = $('#iframeEditor').data('template')
 		OCA.Onlyoffice.inframe = !!$('#iframeEditor').data('inframe')
 		OCA.Onlyoffice.inviewer = !!$('#iframeEditor').data('inviewer')
 		OCA.Onlyoffice.filePath = $('#iframeEditor').data('path')
 		OCA.Onlyoffice.anchor = $('#iframeEditor').attr('data-anchor')
 		OCA.Onlyoffice.forceEdit = $('#iframeEditor').attr('data-forceEdit')
-		var guestName = localStorage.getItem('nick')
+		const guestName = localStorage.getItem('nick')
 		OCA.Onlyoffice.currentWindow = window
 		OCA.Onlyoffice.currentUser = OC.getCurrentUser()
 
@@ -64,25 +64,25 @@
 
 		if (!OCA.Onlyoffice.fileId && !OCA.Onlyoffice.shareToken && !directToken) {
 			OCA.Onlyoffice.showMessage(t(OCA.Onlyoffice.AppName, 'FileId is empty'), 'error', {timeout: -1})
-			return;
+			return
 		}
 
 		if (typeof DocsAPI === 'undefined') {
 			OCA.Onlyoffice.showMessage(t(OCA.Onlyoffice.AppName, 'ONLYOFFICE cannot be reached. Please contact admin'), 'error', {timeout: -1})
-			return;
+			return
 		}
 
-		var docsVersion = DocsAPI.DocEditor.version().split('.')
+		const docsVersion = DocsAPI.DocEditor.version().split('.')
 		if (docsVersion[0] < 6
             || docsVersion[0] == 6 && docsVersion[1] == 0) {
 			OCA.Onlyoffice.showMessage(t(OCA.Onlyoffice.AppName, 'Not supported version'), 'error', {timeout: -1})
-			return;
+			return
 		}
 
-		var configUrl = OC.linkToOCS('apps/' + OCA.Onlyoffice.AppName + '/api/v1/config', 2) + (OCA.Onlyoffice.fileId || 0)
+		let configUrl = OC.linkToOCS('apps/' + OCA.Onlyoffice.AppName + '/api/v1/config', 2) + (OCA.Onlyoffice.fileId || 0)
 
-		var params = []
-		var filePath = $('#iframeEditor').data('path')
+		const params = []
+		const filePath = $('#iframeEditor').data('path')
 		if (filePath) {
 			params.push('filePath=' + encodeURIComponent(filePath))
 		}
@@ -132,25 +132,25 @@
 
 					if (config.redirectUrl) {
 						location.href = config.redirectUrl
-						return;
+						return
 					}
 
 					if (config.error != null) {
 						OCA.Onlyoffice.showMessage(config.error, 'error', {timeout: -1})
-						return;
+						return
 					}
 
-					var docIsChanged = null
-					var docIsChangedTimeout = null
+					let docIsChanged = null
+					let docIsChangedTimeout = null
 
-					var setPageTitle = function(event) {
+					const setPageTitle = function(event) {
 						clearTimeout(docIsChangedTimeout)
 
 						if (docIsChanged !== event.data) {
-							var titleChange = function() {
+							let titleChange = function() {
 								OCA.Onlyoffice.currentWindow.document.title = config.document.title + (event.data ? ' *' : '') + ' - ' + oc_defaults.title
 								docIsChanged = event.data
-							};
+							}
 
 							if (event === false || event.data) {
 								titleChange()
@@ -172,7 +172,7 @@
 					if (config.editorConfig.tenant) {
 						config.events.onAppReady = function() {
 							OCA.Onlyoffice.docEditor.showMessage(t(OCA.Onlyoffice.AppName, 'You are using public demo ONLYOFFICE Docs server. Please do not store private sensitive data.'))
-						};
+						}
 					}
 
 					if (OCA.Onlyoffice.inframe && !OCA.Onlyoffice.shareToken
@@ -231,7 +231,7 @@
 						$('#app > iframe').css('height', 'calc(100% - 50px)')
 					}
 
-					var favicon = OC.filePath(OCA.Onlyoffice.AppName, 'img', OCA.Onlyoffice.documentType + '.ico')
+					const favicon = OC.filePath(OCA.Onlyoffice.AppName, 'img', OCA.Onlyoffice.documentType + '.ico')
 					if (OCA.Onlyoffice.inframe) {
 						window.parent.postMessage({
 							method: 'changeFavicon',
@@ -244,7 +244,7 @@
 				}
 			}
 		})
-	};
+	}
 
 	OCA.Onlyoffice.onRequestEditRights = function() {
 		if (OCA.Onlyoffice.inframe) {
@@ -252,10 +252,10 @@
 				method: 'onRequestEditRights'
 			},
 			'*')
-			return;
+			return
 		}
 		location.href += '&forceEdit=true'
-	};
+	}
 
 	OCA.Onlyoffice.onRequestHistory = function(version) {
 		$.get(OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/history?fileId={fileId}',
@@ -265,10 +265,10 @@
 		function onSuccess(response) {
 			OCA.Onlyoffice.refreshHistory(response, version)
 		})
-	};
+	}
 
 	OCA.Onlyoffice.onRequestHistoryData = function(event) {
-		var version = event.data
+		const version = event.data
 
 		$.get(OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/version?fileId={fileId}&version={version}',
 			{
@@ -284,10 +284,10 @@
 			}
 			OCA.Onlyoffice.docEditor.setHistoryData(response)
 		})
-	};
+	}
 
 	OCA.Onlyoffice.onRequestRestore = function(event) {
-		var version = event.data.version
+		const version = event.data.version
 
 		$.ajax({
 			method: 'PUT',
@@ -307,11 +307,11 @@
 				}
 			}
 		})
-	};
+	}
 
 	OCA.Onlyoffice.onRequestHistoryClose = function() {
 		location.reload(true)
-	};
+	}
 
 	OCA.Onlyoffice.onDocumentReady = function() {
 		if (OCA.Onlyoffice.inframe) {
@@ -324,16 +324,16 @@
 
 		OCA.Onlyoffice.resize()
 		OCA.Onlyoffice.setViewport()
-	};
+	}
 
 	OCA.Onlyoffice.onRequestSaveAs = function(event) {
-		var saveData = {
+		const saveData = {
 			name: event.data.title,
 			url: event.data.url
 		}
 
 		if (OCA.Onlyoffice.filePath) {
-			var arrayPath = OCA.Onlyoffice.filePath.split('/')
+			const arrayPath = OCA.Onlyoffice.filePath.split('/')
 			arrayPath.pop()
 			arrayPath.shift()
 			saveData.dir = '/' + arrayPath.join('/')
@@ -365,15 +365,15 @@
 			function onSuccess(response) {
 				if (response.error) {
 					OCA.Onlyoffice.showMessage(response.error, 'error')
-					return;
+					return
 				}
 
 				OCA.Onlyoffice.showMessage(t(OCA.Onlyoffice.AppName, 'File saved') + ' (' + response.name + ')')
 			})
-	};
+	}
 
 	OCA.Onlyoffice.onRequestInsertImage = function(event) {
-		var imageMimes = [
+		const imageMimes = [
 			'image/bmp', 'image/x-bmp', 'image/x-bitmap', 'application/bmp',
 			'image/gif',
 			'image/jpeg', 'image/jpg', 'application/jpg', 'application/x-jpg',
@@ -407,7 +407,7 @@
 		function onSuccess(response) {
 			if (response.error) {
 				OCA.Onlyoffice.showMessage(response.error, 'error')
-				return;
+				return
 			}
 
 			if (OCA.Onlyoffice.insertImageType) {
@@ -416,10 +416,10 @@
 
 			OCA.Onlyoffice.docEditor.insertImage(response)
 		})
-	};
+	}
 
 	OCA.Onlyoffice.onRequestMailMergeRecipients = function() {
-		var recipientMimes = [
+		const recipientMimes = [
 			'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
 		]
 
@@ -446,17 +446,17 @@
 		function onSuccess(response) {
 			if (response.error) {
 				OCA.Onlyoffice.showMessage(response.error, 'error')
-				return;
+				return
 			}
 
 			OCA.Onlyoffice.docEditor.setMailMergeRecipients(response)
 		})
-	};
+	}
 
 	OCA.Onlyoffice.editorReferenceSource = function(filePath) {
 		if (filePath === OCA.Onlyoffice.filePath) {
 			OCA.Onlyoffice.showMessage(t(OCA.Onlyoffice.AppName, 'The data source must not be the current document'), 'error')
-			return;
+			return
 		}
 
 		$.post(OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/reference'),
@@ -466,7 +466,7 @@
 			function onSuccess(response) {
 				if (response.error) {
 					OCA.Onlyoffice.showMessage(response.error, 'error')
-					return;
+					return
 				}
 				OCA.Onlyoffice.docEditor.setReferenceSource(response)
 			})
@@ -475,7 +475,7 @@
 	OCA.Onlyoffice.onRequestClose = function() {
 		if (OCA.Onlyoffice.directEditor) {
 			OCA.Onlyoffice.directEditor.close()
-			return;
+			return
 		}
 
 		OCA.Onlyoffice.docEditor.destroyEditor()
@@ -484,17 +484,17 @@
 			method: 'editorRequestClose'
 		},
 		'*')
-	};
+	}
 
 	OCA.Onlyoffice.onRequestSharingSettings = function() {
 		window.parent.postMessage({
 			method: 'editorRequestSharingSettings'
 		},
 		'*')
-	};
+	}
 
 	OCA.Onlyoffice.onRequestSelectDocument = function(event) {
-		var revisedMimes = [
+		const revisedMimes = [
 			'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
 		]
 
@@ -506,10 +506,11 @@
 			},
 			'*')
 		} else {
+			let title
 			switch (event.data.c) {
 			case 'combine':
-				var title =  t(OCA.Onlyoffice.AppName, 'Select file to combine')
-				break;
+				title =  t(OCA.Onlyoffice.AppName, 'Select file to combine')
+				break
 			default:
 				title =  t(OCA.Onlyoffice.AppName, 'Select file to compare')
 			}
@@ -522,7 +523,7 @@
 	}
 
 	OCA.Onlyoffice.editorSetRequested = function(filePath) {
-		let documentSelectionType = this.documentSelectionType
+		const documentSelectionType = this.documentSelectionType
 		$.get(OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/url?filePath={filePath}',
 			{
 				filePath: filePath
@@ -530,31 +531,31 @@
 		function onSuccess(response) {
 			if (response.error) {
 				OCP.Toast.error(response.error)
-				return;
+				return
 			}
 			response.c = documentSelectionType
 
 			OCA.Onlyoffice.docEditor.setRequestedDocument(response)
 		})
-	};
+	}
 
 	OCA.Onlyoffice.onMakeActionLink = function(event) {
-		var url = location.href
+		let url = location.href
 		if (event && event.data) {
-			var indexAnchor = url.indexOf('#')
+			const indexAnchor = url.indexOf('#')
 			if (indexAnchor != -1) {
 				url = url.substring(0, indexAnchor)
 			}
 
-			var data = JSON.stringify(event.data)
+			let data = JSON.stringify(event.data)
 			data = 'anchor=' + encodeURIComponent(data)
 
-			var inframeRegex = /inframe=([^&]*&?)/g
+			const inframeRegex = /inframe=([^&]*&?)/g
 			if (inframeRegex.test(url)) {
 				url = url.replace(inframeRegex, data)
 			}
 
-			var anchorRegex = /anchor=([^&]*)/g
+			const anchorRegex = /anchor=([^&]*)/g
 			if (anchorRegex.test(url)) {
 				url = url.replace(anchorRegex, data)
 			} else {
@@ -564,10 +565,10 @@
 		}
 
 		OCA.Onlyoffice.docEditor.setActionLink(url)
-	};
+	}
 
 	OCA.Onlyoffice.onRequestUsers = function(event) {
-		let operationType = typeof(event.data.c) !== 'undefined' ? event.data.c : null
+		const operationType = typeof(event.data.c) !== 'undefined' ? event.data.c : null
 		switch (operationType) {
 		case 'info':
 			$.get(OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/userInfo?userIds={userIds}',
@@ -580,7 +581,7 @@
 					'users': response
 				})
 			})
-			break;
+			break
 		default:
 			$.get(OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/users?fileId={fileId}&operationType=' + operationType,
 				{
@@ -596,11 +597,11 @@
 	}
 
 	OCA.Onlyoffice.onRequestSendNotify = function(event) {
-		var actionLink = event.data.actionLink
-		var comment = event.data.message
-		var emails = event.data.emails
+		const actionLink = event.data.actionLink
+		const comment = event.data.message
+		const emails = event.data.emails
 
-		var fileId = OCA.Onlyoffice.fileId
+		const fileId = OCA.Onlyoffice.fileId
 
 		$.post(OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/mention'),
 			{
@@ -612,16 +613,16 @@
 			function onSuccess(response) {
 				if (response.error) {
 					OCA.Onlyoffice.showMessage(response.error, 'error')
-					return;
+					return
 				}
 
 				OCA.Onlyoffice.showMessage(response.message)
 			})
-	};
+	}
 
 	OCA.Onlyoffice.onRequestReferenceData = function(event) {
-		let referenceData = event.data.referenceData
-		let path = event.data.path
+		const referenceData = event.data.referenceData
+		const path = event.data.path
 
 		$.post(OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/reference'),
 			{
@@ -631,23 +632,23 @@
 			function onSuccess(response) {
 				if (response.error) {
 					OCA.Onlyoffice.showMessage(response.error, 'error')
-					return;
+					return
 				}
 
 				OCA.Onlyoffice.docEditor.setReferenceData(response)
 			})
-	};
+	}
 
 	OCA.Onlyoffice.onRequestOpen = function(event) {
-		let filePath  = event.data.path
-		let fileId = event.data.referenceData.fileKey
-		let windowName = event.data.windowName
-		let sourceUrl = OC.generateUrl(`apps/${OCA.Onlyoffice.AppName}/${fileId}?filePath=${OC.encodePath(filePath)}`)
+		const filePath  = event.data.path
+		const fileId = event.data.referenceData.fileKey
+		const windowName = event.data.windowName
+		const sourceUrl = OC.generateUrl(`apps/${OCA.Onlyoffice.AppName}/${fileId}?filePath=${OC.encodePath(filePath)}`)
 		window.open(sourceUrl, windowName)
-	};
+	}
 
 	OCA.Onlyoffice.onRequestReferenceSource = function(event) {
-		let referenceSourceMimes = [
+		const referenceSourceMimes = [
 			'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
 		]
 		if (OCA.Onlyoffice.inframe) {
@@ -697,16 +698,16 @@
 				}
 			},
 			'*')
-			return;
+			return
 		}
 
 		switch (type) {
 		case 'success':
 			OCP.Toast.success(message, props)
-			break;
+			break
 		case 'error':
 			OCP.Toast.error(message, props)
-			break;
+			break
 		}
 	}
 
@@ -714,7 +715,7 @@
 		if (response.error) {
 			var data = {error: response.error}
 		} else {
-			var currentVersion = 0
+			let currentVersion = 0
 			$.each(response, function(i, fileVersion) {
 				if (fileVersion.version >= currentVersion) {
 					currentVersion = fileVersion.version
@@ -745,8 +746,8 @@
 			return
 		}
 
-		var headerHeight = $('#header').length > 0 ? $('#header').height() : 50
-		var wrapEl = $('#app>iframe')
+		const headerHeight = $('#header').length > 0 ? $('#header').height() : 50
+		const wrapEl = $('#app>iframe')
 		if (wrapEl.length > 0) {
 			wrapEl[0].style.height = (screen.availHeight - headerHeight) + 'px'
 			window.scrollTo(0, -1)
@@ -767,7 +768,7 @@
 
 	OCA.Onlyoffice.setViewport = function() {
 		document.querySelector('meta[name="viewport"]').setAttribute('content','width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0')
-	};
+	}
 
 	OCA.Onlyoffice.InitEditor()
 

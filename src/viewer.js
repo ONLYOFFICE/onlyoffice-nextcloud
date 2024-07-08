@@ -42,10 +42,10 @@
 
 	OCA.Onlyoffice.setting = OCP.InitialState.loadState(OCA.Onlyoffice.AppName, 'settings')
 
-	var OnlyofficeViewerVue = {
+	const OnlyofficeViewerVue = {
 		name: 'OnlyofficeViewerVue',
-		render: function(createElement) {
-			var self = this
+		render(createElement) {
+			let self = this
 
 			return createElement('iframe', {
 				attrs: {
@@ -63,28 +63,28 @@
 		props: {
 			filename: {
 				type: String,
-				default: null
+				default: null,
 			},
 			fileid: {
 				type: Number,
-				default: null
+				default: null,
 			}
 		},
-		data: function() {
+		data() {
 			return {
 				url: OC.generateUrl('/apps/' + OCA.Onlyoffice.AppName + '/{fileId}?filePath={filePath}',
 					{
 						fileId: this.fileid,
-						filePath: this.filename
-					})
+						filePath: this.filename,
+					}),
 			}
-		}
+		},
 	}
 
 	if (OCA.Viewer) {
 		OCA.Onlyoffice.frameSelector = '#onlyofficeViewerFrame'
 
-		var mimes = $.map(OCA.Onlyoffice.setting.formats, function(format) {
+		const mimes = $.map(OCA.Onlyoffice.setting.formats, function(format) {
 			if (format.def) {
 				return format.mime
 			}
@@ -93,8 +93,8 @@
 		OCA.Viewer.registerHandler({
 			id: OCA.Onlyoffice.AppName,
 			group: null,
-			mimes: mimes,
-			component: OnlyofficeViewerVue
+			mimes,
+			component: OnlyofficeViewerVue,
 		})
 	}
 

@@ -40,10 +40,10 @@
 			}
 		}
 
-		var advToogle = function() {
+		const advToogle = function() {
 			$('#onlyofficeSecretPanel').toggleClass('onlyoffice-hide')
 			$('#onlyofficeAdv .icon').toggleClass('icon-triangle-s icon-triangle-n')
-		};
+		}
 
 		if ($('#onlyofficeInternalUrl').val().length
             || $('#onlyofficeStorageUrl').val().length
@@ -55,7 +55,7 @@
 
 		$('#onlyofficeGroups').prop('checked', $('#onlyofficeLimitGroups').val() != '')
 
-		var groupListToggle = function() {
+		const groupListToggle = function() {
 			if ($('#onlyofficeGroups').prop('checked')) {
 				OC.Settings.setupGroupsSelect($('#onlyofficeLimitGroups'))
 			} else {
@@ -66,16 +66,16 @@
 		$('#onlyofficeGroups').click(groupListToggle)
 		groupListToggle()
 
-		var demoToggle = function() {
+		const demoToggle = function() {
 			$('#onlyofficeAddrSettings input:not(#onlyofficeStorageUrl)').prop('disabled', $('#onlyofficeDemo').prop('checked'))
-		};
+		}
 
 		$('#onlyofficeDemo').click(demoToggle)
 		demoToggle()
 
-		var watermarkToggle = function() {
+		const watermarkToggle = function() {
 			$('#onlyofficeWatermarkSettings').toggleClass('onlyoffice-hide', !$('#onlyofficeWatermark_enabled').prop('checked'))
-		};
+		}
 
 		$('#onlyofficeWatermark_enabled').click(watermarkToggle)
 
@@ -87,17 +87,17 @@
 			$('#onlyofficeWatermark_link_sensitive').toggleClass('onlyoffice-hide')
 		})
 
-		var watermarkGroupLists = [
+		const watermarkGroupLists = [
 			'allGroups',
 		]
 
-		var watermarkTagLists = [
+		const watermarkTagLists = [
 			'allTags',
 			'linkTags',
 		]
 
-		var watermarkNodeBehaviour = function(watermark){
-			var watermarkListToggle = function() {
+		const watermarkNodeBehaviour = function(watermark){
+			let watermarkListToggle = function() {
 				if ($('#onlyofficeWatermark_' + watermark).prop('checked')) {
 					if (watermark.indexOf('Group') >= 0) {
 						OC.Settings.setupGroupsSelect($('#onlyofficeWatermark_' + watermark + 'List'))
@@ -115,7 +115,7 @@
 								})
 							}, 100, true),
 							initSelection: function(element, callback) {
-								var selection = ($(element).val() || []).split('|').map(function(tagId) {
+								let selection = ($(element).val() || []).split('|').map(function(tagId) {
 									return OC.SystemTags.collection.get(tagId)
 								})
 								callback(selection)
@@ -141,7 +141,7 @@
 
 			$('#onlyofficeWatermark_' + watermark).click(watermarkListToggle)
 			watermarkListToggle()
-		};
+		}
 
 		$.each(watermarkGroupLists, function(i, watermarkGroup) {
 			watermarkNodeBehaviour(watermarkGroup)
@@ -159,18 +159,18 @@
 
 		$('#onlyofficeAddrSave').click(function() {
 			$('.section-onlyoffice').addClass('icon-loading')
-			var onlyofficeUrl = $('#onlyofficeUrl').val().trim()
+			const onlyofficeUrl = $('#onlyofficeUrl').val().trim()
 
 			if (!onlyofficeUrl.length) {
 				$('#onlyofficeInternalUrl, #onlyofficeStorageUrl, #onlyofficeSecret, #onlyofficeJwtHeader').val('')
 			}
 
-			var onlyofficeInternalUrl = ($('#onlyofficeInternalUrl:visible').val() || '').trim()
-			var onlyofficeStorageUrl = ($('#onlyofficeStorageUrl:visible').val() || '').trim()
-			var onlyofficeVerifyPeerOff = $('#onlyofficeVerifyPeerOff').prop('checked')
-			var onlyofficeSecret = ($('#onlyofficeSecret:visible').val() || '').trim()
-			var jwtHeader = ($('#onlyofficeJwtHeader:visible').val() || '').trim()
-			var demo = $('#onlyofficeDemo').prop('checked')
+			const onlyofficeInternalUrl = ($('#onlyofficeInternalUrl:visible').val() || '').trim()
+			const onlyofficeStorageUrl = ($('#onlyofficeStorageUrl:visible').val() || '').trim()
+			const onlyofficeVerifyPeerOff = $('#onlyofficeVerifyPeerOff').prop('checked')
+			const onlyofficeSecret = ($('#onlyofficeSecret:visible').val() || '').trim()
+			const jwtHeader = ($('#onlyofficeJwtHeader:visible').val() || '').trim()
+			const demo = $('#onlyofficeDemo').prop('checked')
 
 			$.ajax({
 				method: 'PUT',
@@ -195,7 +195,7 @@
 
 						$('.section-onlyoffice-common, .section-onlyoffice-templates, .section-onlyoffice-watermark').toggleClass('onlyoffice-hide', (response.documentserver == null && !demo) || !!response.error.length)
 
-						var versionMessage = response.version ? (' (' + t(OCA.Onlyoffice.AppName, 'version') + ' ' + response.version + ')') : ''
+						const versionMessage = response.version ? (' (' + t(OCA.Onlyoffice.AppName, 'version') + ' ' + response.version + ')') : ''
 
 						if (response.error) {
 							OCP.Toast.error(t(OCA.Onlyoffice.AppName, 'Error when trying to connect') + ' (' + response.error + ')' + versionMessage)
@@ -212,33 +212,33 @@
 		$('#onlyofficeSave').click(function() {
 			$('.section-onlyoffice').addClass('icon-loading')
 
-			var defFormats = {}
+			const defFormats = {}
 			$('input[id^="onlyofficeDefFormat"]').each(function() {
 				defFormats[this.name] = this.checked
 			})
 
-			var editFormats = {}
+			const editFormats = {}
 			$('input[id^="onlyofficeEditFormat"]').each(function() {
 				editFormats[this.name] = this.checked
 			})
 
-			var sameTab = $('#onlyofficeSameTab').is(':checked')
-			var preview = $('#onlyofficePreview').is(':checked')
-			var advanced = $('#onlyofficeAdvanced').is(':checked')
-			var cronChecker = $('#onlyofficeCronChecker').is(':checked')
-			var versionHistory = $('#onlyofficeVersionHistory').is(':checked')
+			const sameTab = $('#onlyofficeSameTab').is(':checked')
+			const preview = $('#onlyofficePreview').is(':checked')
+			const advanced = $('#onlyofficeAdvanced').is(':checked')
+			const cronChecker = $('#onlyofficeCronChecker').is(':checked')
+			const versionHistory = $('#onlyofficeVersionHistory').is(':checked')
 
-			var limitGroupsString = $('#onlyofficeGroups').prop('checked') ? $('#onlyofficeLimitGroups').val() : ''
-			var limitGroups = limitGroupsString ? limitGroupsString.split('|') : []
+			const limitGroupsString = $('#onlyofficeGroups').prop('checked') ? $('#onlyofficeLimitGroups').val() : ''
+			const limitGroups = limitGroupsString ? limitGroupsString.split('|') : []
 
-			var chat = $('#onlyofficeChat').is(':checked')
-			var compactHeader = $('#onlyofficeCompactHeader').is(':checked')
-			var feedback = $('#onlyofficeFeedback').is(':checked')
-			var forcesave = $('#onlyofficeForcesave').is(':checked')
-			var help = $('#onlyofficeHelp').is(':checked')
-			var toolbarNoTabs = $('#onlyofficeToolbarNoTabs').is(':checked')
-			var reviewDisplay = $("input[type='radio'][name='reviewDisplay']:checked").attr('id').replace('onlyofficeReviewDisplay_', '')
-			var theme = $("input[type='radio'][name='theme']:checked").attr('id').replace('onlyofficeTheme_', '')
+			const chat = $('#onlyofficeChat').is(':checked')
+			const compactHeader = $('#onlyofficeCompactHeader').is(':checked')
+			const feedback = $('#onlyofficeFeedback').is(':checked')
+			const forcesave = $('#onlyofficeForcesave').is(':checked')
+			const help = $('#onlyofficeHelp').is(':checked')
+			const toolbarNoTabs = $('#onlyofficeToolbarNoTabs').is(':checked')
+			const reviewDisplay = $("input[type='radio'][name='reviewDisplay']:checked").attr('id').replace('onlyofficeReviewDisplay_', '')
+			const theme = $("input[type='radio'][name='theme']:checked").attr('id').replace('onlyofficeTheme_', '')
 
 			$.ajax({
 				method: 'PUT',
@@ -273,17 +273,17 @@
 		$('#onlyofficeSecuritySave').click(function() {
 			$('.section-onlyoffice').addClass('icon-loading')
 
-			var plugins = $('#onlyofficePlugins').is(':checked')
-			var macros = $('#onlyofficeMacros').is(':checked')
-			var protection = $("input[type='radio'][name='protection']:checked").attr('id').replace('onlyofficeProtection_', '')
+			const plugins = $('#onlyofficePlugins').is(':checked')
+			const macros = $('#onlyofficeMacros').is(':checked')
+			const protection = $("input[type='radio'][name='protection']:checked").attr('id').replace('onlyofficeProtection_', '')
 
-			var watermarkSettings = {
+			const watermarkSettings = {
 				enabled: $('#onlyofficeWatermark_enabled').is(':checked'),
 			}
 			if (watermarkSettings.enabled) {
 				watermarkSettings.text = ($('#onlyofficeWatermark_text').val() || '').trim()
 
-				var watermarkLabels = [
+				const watermarkLabels = [
 					'allGroups',
 					'allTags',
 					'linkAll',
@@ -298,7 +298,7 @@
 				})
 
 				$.each(watermarkGroupLists.concat(watermarkTagLists), function(i, watermarkList) {
-					var list = $('#onlyofficeWatermark_' + watermarkList).is(':checked') ? $('#onlyofficeWatermark_' + watermarkList + 'List').val() : ''
+					const list = $('#onlyofficeWatermark_' + watermarkList).is(':checked') ? $('#onlyofficeWatermark_' + watermarkList + 'List').val() : ''
 					watermarkSettings[watermarkList + 'List'] = list ? list.split('|') : []
 				})
 			}
@@ -322,7 +322,7 @@
 		})
 
 		$('.section-onlyoffice-addr input').keypress(function(e) {
-			var code = e.keyCode || e.which
+			const code = e.keyCode || e.which
 			if (code === 13) {
 				$('#onlyofficeAddrSave').click()
 			}
@@ -352,8 +352,8 @@
 		})
 
 		$('#onlyofficeAddTemplate').change(function() {
-			var file = this.files[0]
-			var data = new FormData()
+			const file = this.files[0]
+			const data = new FormData()
 
 			data.append('file', file)
 
@@ -361,12 +361,12 @@
 			OCA.Onlyoffice.AddTemplate(file, (template, error) => {
 
 				$('.section-onlyoffice').removeClass('icon-loading')
-				var message = error ? t(OCA.Onlyoffice.AppName, 'Error') + ': ' + error
+				const message = error ? t(OCA.Onlyoffice.AppName, 'Error') + ': ' + error
 					: t(OCA.Onlyoffice.AppName, 'Template successfully added')
 
 				if (error) {
 					OCP.Toast.error(message)
-					return;
+					return
 				}
 
 				if (template) {
@@ -377,18 +377,18 @@
 		})
 
 		$(document).on('click', '.onlyoffice-template-delete', function(event) {
-			var item = $(event.target).parents('.onlyoffice-template-item')
-			var templateId = $(item).attr('data-id')
+			const item = $(event.target).parents('.onlyoffice-template-item')
+			const templateId = $(item).attr('data-id')
 
 			$('.section-onlyoffice').addClass('icon-loading')
 			OCA.Onlyoffice.DeleteTemplate(templateId, (response) => {
 				$('.section-onlyoffice').removeClass('icon-loading')
 
-				var message = response.error ? t(OCA.Onlyoffice.AppName, 'Error') + ': ' + response.error
+				const message = response.error ? t(OCA.Onlyoffice.AppName, 'Error') + ': ' + response.error
 					: t(OCA.Onlyoffice.AppName, 'Template successfully deleted')
 				if (response.error) {
 					OCP.Toast.error(message)
-					return;
+					return
 				}
 
 				$(item).detach()
@@ -397,10 +397,10 @@
 		})
 
 		$(document).on('click', '.onlyoffice-template-item p', function(event) {
-			var item = $(event.target).parents('.onlyoffice-template-item')
-			var templateId = $(item).attr('data-id')
+			const item = $(event.target).parents('.onlyoffice-template-item')
+			const templateId = $(item).attr('data-id')
 
-			var url = OC.generateUrl('/apps/' + OCA.Onlyoffice.AppName + '/{fileId}?template={template}',
+			const url = OC.generateUrl('/apps/' + OCA.Onlyoffice.AppName + '/{fileId}?template={template}',
 				{
 					fileId: templateId,
 					template: 'true',
@@ -410,10 +410,10 @@
 		})
 
 		$(document).on('click', '.onlyoffice-template-download', function(event) {
-			var item = $(event.target).parents('.onlyoffice-template-item')
-			var templateId = $(item).attr('data-id')
+			const item = $(event.target).parents('.onlyoffice-template-item')
+			const templateId = $(item).attr('data-id')
 
-			var downloadLink = OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/downloadas?fileId={fileId}&template={template}',{
+			const downloadLink = OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/downloadas?fileId={fileId}&template={template}',{
 				fileId: templateId,
 				template: 'true',
 			})

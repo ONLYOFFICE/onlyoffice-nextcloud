@@ -61,7 +61,7 @@
 			true,
 			OC.dialogs.FILEPICKER_TYPE_CHOOSE,
 			saveData.dir)
-	};
+	}
 
 	OCA.Onlyoffice.onRequestInsertImage = function(imageMimes) {
 		OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, 'Insert image'),
@@ -69,7 +69,7 @@
 			false,
 			imageMimes,
 			true)
-	};
+	}
 
 	OCA.Onlyoffice.onRequestMailMergeRecipients = function(recipientMimes) {
 		OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, 'Select recipients'),
@@ -77,13 +77,14 @@
 			false,
 			recipientMimes,
 			true)
-	};
+	}
 
 	OCA.Onlyoffice.onRequestSelectDocument = function(revisedMimes, documentSelectionType) {
+		let title
 		switch (documentSelectionType) {
 		case 'combine':
-			var title =  t(OCA.Onlyoffice.AppName, 'Select file to combine')
-			break;
+			title =  t(OCA.Onlyoffice.AppName, 'Select file to combine')
+			break
 		default:
 			title =  t(OCA.Onlyoffice.AppName, 'Select file to compare')
 		}
@@ -92,7 +93,7 @@
 			false,
 			revisedMimes,
 			true)
-	};
+	}
 
 	OCA.Onlyoffice.onRequestReferenceSource = function(referenceSourceMimes) {
 		OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, 'Select data source'),
@@ -104,30 +105,30 @@
 
 	OCA.Onlyoffice.onDocumentReady = function() {
 		OCA.Onlyoffice.setViewport()
-	};
+	}
 
 	OCA.Onlyoffice.changeFavicon = function(favicon) {
 		$('link[rel="icon"]').attr('href', favicon)
-	};
+	}
 
 	OCA.Onlyoffice.setViewport = function() {
 		document.querySelector('meta[name="viewport"]').setAttribute('content','width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0')
-	};
+	}
 
 	OCA.Onlyoffice.onShowMessage = function(messageObj) {
 		switch (messageObj.type) {
 		case 'success':
 			OCP.Toast.success(messageObj.message, messageObj.props)
-			break;
+			break
 		case 'error':
 			OCP.Toast.error(messageObj.message, messageObj.props)
-			break;
+			break
 		}
 	}
 
 	OCA.Onlyoffice.onRequestEditRights = function() {
 		$(OCA.Onlyoffice.frameSelector).attr('src', $(OCA.Onlyoffice.frameSelector).attr('src') + '&forceEdit=true')
-	};
+	}
 
 	window.addEventListener('message', function(event) {
 		if (!$(OCA.Onlyoffice.frameSelector).length
@@ -138,7 +139,7 @@
 		switch (event.data.method) {
 		case 'editorRequestClose':
 			OCA.Onlyoffice.onRequestClose()
-			break;
+			break
 		case 'editorRequestSharingSettings':
 			if (OCA.Onlyoffice.OpenShareDialog) {
 				OCA.Onlyoffice.OpenShareDialog()
@@ -151,28 +152,28 @@
 			break
 		case 'editorRequestSaveAs':
 			OCA.Onlyoffice.onRequestSaveAs(event.data.param)
-			break;
+			break
 		case 'editorRequestInsertImage':
 			OCA.Onlyoffice.onRequestInsertImage(event.data.param)
-			break;
+			break
 		case 'editorRequestMailMergeRecipients':
 			OCA.Onlyoffice.onRequestMailMergeRecipients(event.data.param)
-			break;
+			break
 		case 'editorRequestSelectDocument':
 			OCA.Onlyoffice.onRequestSelectDocument(event.data.param, event.data.documentSelectionType)
-			break;
+			break
 		case 'editorRequestReferenceSource':
 			OCA.Onlyoffice.onRequestReferenceSource(event.data.param)
-			break;
+			break
 		case 'onDocumentReady':
 			OCA.Onlyoffice.onDocumentReady(event.data.param)
-			break;
+			break
 		case 'changeFavicon':
 			OCA.Onlyoffice.changeFavicon(event.data.param)
-			break;
+			break
 		case 'onShowMessage':
 			OCA.Onlyoffice.onShowMessage(event.data.param)
-			break;
+			break
 		case 'onRequestEditRights':
 			OCA.Onlyoffice.onRequestEditRights()
 		}

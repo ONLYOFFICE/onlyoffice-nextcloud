@@ -33,15 +33,15 @@
 
 	OCA.Onlyoffice = _.extend({}, OCA.Onlyoffice)
 
-	var callMobileMessage = function(messageName, attributes) {
-		var message = messageName
+	const callMobileMessage = function(messageName, attributes) {
+		let message = messageName
 		if (typeof attributes !== 'undefined') {
 			message = {
 				MessageName: messageName,
 				Values: attributes,
 			}
 		}
-		var attributesString = null
+		let attributesString = null
 		try {
 			attributesString = JSON.stringify(attributes)
 		} catch (e) {
@@ -78,11 +78,11 @@
 
 
 	window.onload = function() {
-		let directEditorError = document.getElementById('directEditorError')
+		const directEditorError = document.getElementById('directEditorError')
 
 		if (directEditorError) {
 			OCA.Onlyoffice.directEditor.loaded()
-			let directEditorErrorButton = document.getElementById('directEditorErrorButton')
+			const directEditorErrorButton = document.getElementById('directEditorErrorButton')
 			directEditorErrorButton.addEventListener('click', function() {
 				OCA.Onlyoffice.directEditor.close()
 			})

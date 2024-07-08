@@ -57,12 +57,12 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
                             && navigator.maxTouchPoints && navigator.maxTouchPoints > 1
 
 	OCA.Onlyoffice.CreateFile = function(name, fileList, templateId, targetId, open = true) {
-		var dir = fileList.getCurrentDirectory()
+		const dir = fileList.getCurrentDirectory()
 
 		OCA.Onlyoffice.CreateFileProcess(name, dir, templateId, targetId, open, (response) => {
 			fileList.add(response, { animate: true })
 		})
-	};
+	}
 
 	OCA.Onlyoffice.CreateFileOverload = function(name, context, templateId, targetId, open = true) {
 		if (!context.view) {
@@ -70,22 +70,23 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 		}
 
 		OCA.Onlyoffice.CreateFileProcess(name, context.dir, templateId, targetId, open, async (response) => {
-			let viewContents = await context.view.getContents(context.dir)
+			const viewContents = await context.view.getContents(context.dir)
 
 			if (viewContents.folder && (viewContents.folder.fileid == response.parentId)) {
-				let newFile = viewContents.contents.find(node => node.fileid == response.id)
+				const newFile = viewContents.contents.find(node => node.fileid == response.id)
 				if (newFile) emit('files:node:created', newFile)
 			}
 		})
 	}
 
 	OCA.Onlyoffice.CreateFileProcess = function(name, dir, templateId, targetId, open, callback) {
+		let winEditor = null
 		if ((!OCA.Onlyoffice.setting.sameTab || OCA.Onlyoffice.mobile || OCA.Onlyoffice.Desktop) && open) {
-			var loaderUrl = OCA.Onlyoffice.Desktop ? '' : OC.filePath(OCA.Onlyoffice.AppName, 'templates', 'loader.html')
-			var winEditor = window.open(loaderUrl)
+			const loaderUrl = OCA.Onlyoffice.Desktop ? '' : OC.filePath(OCA.Onlyoffice.AppName, 'templates', 'loader.html')
+			winEditor = window.open(loaderUrl)
 		}
 
-		var createData = {
+		const createData = {
 			name: name,
 			dir: dir
 		}
@@ -110,15 +111,15 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 						winEditor.close()
 					}
 					OCP.Toast.error(response.error)
-					return;
+					return
 				}
 
 				callback(response)
 
 				if (open) {
-					var fileName = response.name
-					var extension = OCA.Onlyoffice.getFileExtension(fileName)
-					var forceEdit = OCA.Onlyoffice.setting.formats[extension].fillForms
+					const fileName = response.name
+					const extension = OCA.Onlyoffice.getFileExtension(fileName)
+					const forceEdit = OCA.Onlyoffice.setting.formats[extension].fillForms
 					OCA.Onlyoffice.OpenEditor(response.id, dir, fileName, winEditor, forceEdit)
 
 					OCA.Onlyoffice.context = {
@@ -130,14 +131,14 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 				OCP.Toast.success(t(OCA.Onlyoffice.AppName, 'File created'))
 			}
 		)
-	};
+	}
 
 	OCA.Onlyoffice.OpenEditor = function(fileId, fileDir, fileName, winEditor, forceEdit) {
-		var filePath = ''
+		let filePath = ''
 		if (fileName) {
 			filePath = fileDir.replace(new RegExp('\/$'), '') + '/' + fileName
 		}
-		var url = OC.generateUrl('/apps/' + OCA.Onlyoffice.AppName + '/{fileId}?filePath={filePath}',
+		let url = OC.generateUrl('/apps/' + OCA.Onlyoffice.AppName + '/{fileId}?filePath={filePath}',
 			{
 				fileId: fileId,
 				filePath: filePath
@@ -163,9 +164,9 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 			location.href = url
 		} else {
 			OCA.Onlyoffice.frameSelector = '#onlyofficeFrame'
-			var $iframe = $('<iframe id="onlyofficeFrame" nonce="' + btoa(OC.requestToken) + '" scrolling="no" allowfullscreen src="' + url + '&inframe=true" />')
+			const $iframe = $('<iframe id="onlyofficeFrame" nonce="' + btoa(OC.requestToken) + '" scrolling="no" allowfullscreen src="' + url + '&inframe=true" />')
 
-			var frameContainer = $('#app-content').length > 0 ? $('#app-content') : $('#app-content-vue')
+			const frameContainer = $('#app-content').length > 0 ? $('#app-content') : $('#app-content-vue')
 			frameContainer.append($iframe)
 
 			$('body').addClass('onlyoffice-inline')
@@ -174,7 +175,7 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 				OCA.Files.Sidebar.close()
 			}
 
-			var scrollTop = $('#app-content').scrollTop()
+			const scrollTop = $('#app-content').scrollTop()
 			$(OCA.Onlyoffice.frameSelector).css('top', scrollTop)
 
 			OCA.Onlyoffice.folderUrl = location.href
@@ -189,7 +190,7 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 
 		OCA.Onlyoffice.context = null
 
-		var url = OCA.Onlyoffice.folderUrl
+		const url = OCA.Onlyoffice.folderUrl
 		if (!!url) {
 			window.history.pushState(null, null, url)
 			OCA.Onlyoffice.folderUrl = null
@@ -218,15 +219,15 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 	}
 
 	OCA.Onlyoffice.FileClick = function(fileName, context) {
-		var fileInfoModel = context.fileInfoModel || context.fileList.getModelForFile(fileName)
-		var fileId = context.fileId || context.$file && context.$file[0].dataset.id || fileInfoModel.id
-		var winEditor = !fileInfoModel && !OCA.Onlyoffice.setting.sameTab ? document : null
+		const fileInfoModel = context.fileInfoModel || context.fileList.getModelForFile(fileName)
+		const fileId = context.fileId || context.$file && context.$file[0].dataset.id || fileInfoModel.id
+		const winEditor = !fileInfoModel && !OCA.Onlyoffice.setting.sameTab ? document : null
 
 		OCA.Onlyoffice.OpenEditor(fileId, context.dir, fileName, winEditor)
 
 		OCA.Onlyoffice.context = context
 		OCA.Onlyoffice.context.fileName = fileName
-	};
+	}
 
 	OCA.Onlyoffice.FileClickExec = async function(file, view, dir) {
 		OCA.Onlyoffice.OpenEditor(file.fileid, dir, file.basename, 0)
@@ -237,35 +238,35 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 		}
 
 		return null
-	};
+	}
 
 	OCA.Onlyoffice.FileConvertClick = function(fileName, context) {
-		var fileInfoModel = context.fileInfoModel || context.fileList.getModelForFile(fileName)
-		var fileList = context.fileList
-		var fileId = context.$file ? context.$file[0].dataset.id : fileInfoModel.id
+		const fileInfoModel = context.fileInfoModel || context.fileList.getModelForFile(fileName)
+		const fileList = context.fileList
+		const fileId = context.$file ? context.$file[0].dataset.id : fileInfoModel.id
 
 		OCA.Onlyoffice.FileConvert(fileId, (response) => {
 			if (response.parentId == fileList.dirInfo.id) {
 				fileList.add(response, { animate: true })
 			}
 		})
-	};
+	}
 
 	OCA.Onlyoffice.FileConvertClickExec = async function(file, view, dir) {
 		OCA.Onlyoffice.FileConvert(file.fileid, async (response) => {
-			let viewContents = await view.getContents(dir)
+			const viewContents = await view.getContents(dir)
 
 			if (viewContents.folder && (viewContents.folder.fileid == response.parentId)) {
-				let newFile = viewContents.contents.find(node => node.fileid == response.id)
+				const newFile = viewContents.contents.find(node => node.fileid == response.id)
 				if (newFile) emit('files:node:created', newFile)
 			}
 		})
 
 		return null
-	};
+	}
 
 	OCA.Onlyoffice.FileConvert = function(fileId, callback) {
-		var convertData = {
+		const convertData = {
 			fileId: fileId
 		}
 
@@ -278,40 +279,40 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 			function onSuccess(response) {
 				if (response.error) {
 					OCP.Toast.error(response.error)
-					return;
+					return
 				}
 
 				callback(response)
 
 				OCP.Toast.success(t(OCA.Onlyoffice.AppName, 'File has been converted. Its content might look different.'))
 			})
-	};
+	}
 
 	OCA.Onlyoffice.DownloadClick = function(fileName, context) {
-		var fileId = context.fileInfoModel.id
+		const fileId = context.fileInfoModel.id
 
 		OCA.Onlyoffice.Download(fileName, fileId)
-	};
+	}
 
 	OCA.Onlyoffice.DownloadClickExec = async function(file) {
 		OCA.Onlyoffice.Download(file.basename, file.fileid)
 
 		return null
-	};
+	}
 
 	OCA.Onlyoffice.Download = function(fileName, fileId) {
 		$.get(OC.filePath(OCA.Onlyoffice.AppName, 'templates', 'downloadPicker.html'), 
 			function(tmpl) {
-				var dialog = $(tmpl).octemplate({
+				const dialog = $(tmpl).octemplate({
 					dialog_name: 'download-picker',
 					dialog_title: t('onlyoffice', 'Download as')
 				})
 
 				$(dialog[0].querySelectorAll('p')).text(t(OCA.Onlyoffice.AppName, 'Choose a format to convert {fileName}', {fileName: fileName}))
 
-				var extension = OCA.Onlyoffice.getFileExtension(fileName)
-				var selectNode = dialog[0].querySelectorAll('select')[0]
-				var optionNodeOrigin = selectNode.querySelectorAll('option')[0]
+				const extension = OCA.Onlyoffice.getFileExtension(fileName)
+				const selectNode = dialog[0].querySelectorAll('select')[0]
+				const optionNodeOrigin = selectNode.querySelectorAll('option')[0]
 
 				$(optionNodeOrigin).attr('data-value', extension)
 				$(optionNodeOrigin).text(t(OCA.Onlyoffice.AppName, 'Origin format'))
@@ -322,7 +323,7 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 				}
 
 				OCA.Onlyoffice.setting.formats[extension].saveas.forEach(ext => {
-					var optionNode = optionNodeOrigin.cloneNode(true)
+					const optionNode = optionNodeOrigin.cloneNode(true)
 
 					$(optionNode).attr('data-value', ext)
 					$(optionNode).text(ext)
@@ -345,8 +346,8 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 						text: t('onlyoffice', 'Download'),
 						classes: 'primary',
 						click: function() {
-							var format = this.dataset.format
-							var downloadLink = OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/downloadas?fileId={fileId}&toExtension={toExtension}',{
+							const format = this.dataset.format
+							const downloadLink = OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/downloadas?fileId={fileId}&toExtension={toExtension}',{
 								fileId: fileId,
 								toExtension: format
 							})
@@ -357,14 +358,14 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 					}]
 				})
 			})
-	};
+	}
 
 	OCA.Onlyoffice.OpenFormPicker = function(name, filelist) {
-		var filterMimes = [
+		const filterMimes = [
 			'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
 		]
 
-		var buttons = [
+		const buttons = [
 			{
 				text: t(OCA.Onlyoffice.AppName, 'Blank'),
 				type: 'blank'
@@ -378,14 +379,14 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 
 		OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, 'Create new PDF form'),
 			async function(filePath, type) {
-				var dialogFileList = OC.dialogs.filelist
-				var targetId = 0
+				let dialogFileList = OC.dialogs.filelist
+				let targetId = 0
 
-				var targetFileName = OC.basename(filePath)
-				var targetFolderPath = OC.dirname(filePath)
+				const targetFileName = OC.basename(filePath)
+				const targetFolderPath = OC.dirname(filePath)
 
 				if (!dialogFileList) {
-					var results = await davGetClient().getDirectoryContents(davRootPath + targetFolderPath, {
+					const results = await davGetClient().getDirectoryContents(davRootPath + targetFolderPath, {
 						details: true,
 						data: davGetDefaultPropfind(),
 					})
@@ -394,7 +395,7 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 
 				if (type === 'target') {
 					dialogFileList.forEach(item => {
-						let itemName = item.name ? item.name : item.basename
+						const itemName = item.name ? item.name : item.basename
 						if (itemName === targetFileName) {
 							targetId = item.id ? item.id : item.fileid
 						}
@@ -415,19 +416,19 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 			{
 				buttons: buttons
 			})
-	};
+	}
 
 	OCA.Onlyoffice.CreateFormClick = function(fileName, context) {
-		var fileList = context.fileList
-		var name = fileName.replace(/\.[^.]+$/, '.pdf')
-		var targetId = context.fileInfoModel.id
+		const fileList = context.fileList
+		const name = fileName.replace(/\.[^.]+$/, '.pdf')
+		const targetId = context.fileInfoModel.id
 
 		OCA.Onlyoffice.CreateFile(name, fileList, 0, targetId, false)
-	};
+	}
 
 	OCA.Onlyoffice.CreateFormClickExec = async function(file, view, dir) {
-		var name = file.basename.replace(/\.[^.]+$/, '.pdf')
-		var context = {
+		const name = file.basename.replace(/\.[^.]+$/, '.pdf')
+		const context = {
 			dir: dir,
 			view: view
 		}
@@ -435,17 +436,17 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 		OCA.Onlyoffice.CreateFileOverload(name, context, 0, file.fileid, false)
 
 		return null
-	};
+	}
 
 	OCA.Onlyoffice.registerAction = function() {
-		var formats = OCA.Onlyoffice.setting.formats
+		const formats = OCA.Onlyoffice.setting.formats
 
-		var getConfig = function(file) {
-			var fileExt = file?.extension?.toLowerCase()?.replace('.', '')
-			var config = formats[fileExt]
+		const getConfig = function(file) {
+			let fileExt = file?.extension?.toLowerCase()?.replace('.', '')
+			let config = formats[fileExt]
 
 			return config
-		};
+		}
 
 		if (OCA.Files && OCA.Files.fileActions) {
 			$.each(formats, function(ext, config) {
@@ -453,7 +454,7 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 					return true
 				}
 
-				let mimeTypes = config.mime
+				const mimeTypes = config.mime
 				mimeTypes.forEach((mime) => {
 					OCA.Files.fileActions.registerAction({
 						name: 'onlyofficeOpen',
@@ -508,7 +509,7 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 				displayName: () => t(OCA.Onlyoffice.AppName, 'Open in ONLYOFFICE'),
 				iconSvgInline: () => AppDarkSvg,
 				enabled: (files) => {
-					var config = getConfig(files[0])
+					const config = getConfig(files[0])
 
 					if (!config) return
 					if (!config.def) return
@@ -527,7 +528,7 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 				displayName: () => t(OCA.Onlyoffice.AppName, 'Open in ONLYOFFICE'),
 				iconSvgInline: () => AppDarkSvg,
 				enabled: (files) => {
-					var config = getConfig(files[0])
+					const config = getConfig(files[0])
 
 					if (!config) return false
 					if (config.def) return false
@@ -545,12 +546,12 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 				displayName: () => t(OCA.Onlyoffice.AppName, 'Convert with ONLYOFFICE'),
 				iconSvgInline: () => AppDarkSvg,
 				enabled: (files) => {
-					var config = getConfig(files[0])
+					const config = getConfig(files[0])
 
 					if (!config) return
 					if (!config.conv) return false
 
-					var required = $('#isPublic').val() ? Permission.UPDATE : Permission.READ
+					const required = $('#isPublic').val() ? Permission.UPDATE : Permission.READ
 					if (required !== (files[0].permissions & required))
 						return false
 
@@ -558,8 +559,8 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 						if (required !== (files[0].attributes['share-permissions'] & required))
 							return false
 
-						var attributes = JSON.parse(files[0].attributes['share-attributes'])
-						var downloadAttribute = attributes.find((attribute) => attribute.scope === 'permissions' && attribute.key === 'download')
+						const attributes = JSON.parse(files[0].attributes['share-attributes'])
+						const downloadAttribute = attributes.find((attribute) => attribute.scope === 'permissions' && attribute.key === 'download')
 						if (downloadAttribute !== undefined && downloadAttribute.enabled === false)
 							return false
 					}
@@ -574,12 +575,12 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 				displayName: () => t(OCA.Onlyoffice.AppName, 'Create form'),
 				iconSvgInline: () => AppDarkSvg,
 				enabled: (files) => {
-					var config = getConfig(files[0])
+					const config = getConfig(files[0])
 
 					if (!config) return
 					if (!config.createForm) return false
 
-					var required = $('#isPublic').val() ? Permission.UPDATE : Permission.READ
+					const required = $('#isPublic').val() ? Permission.UPDATE : Permission.READ
 					if (required !== (files[0].permissions & required))
 						return false
 
@@ -587,8 +588,8 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 						if (required !== (files[0].attributes['share-permissions'] & required))
 							return false
 
-						var attributes = JSON.parse(files[0].attributes['share-attributes'])
-						var downloadAttribute = attributes.find((attribute) => attribute.scope === 'permissions' && attribute.key === 'download')
+						const attributes = JSON.parse(files[0].attributes['share-attributes'])
+						const downloadAttribute = attributes.find((attribute) => attribute.scope === 'permissions' && attribute.key === 'download')
 						if (downloadAttribute !== undefined && downloadAttribute.enabled === false)
 							return false
 					}
@@ -604,7 +605,7 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 					displayName: () => t(OCA.Onlyoffice.AppName, 'Download as'),
 					iconSvgInline: () => AppDarkSvg,
 					enabled: (files) => {
-						var config = getConfig(files[0])
+						const config = getConfig(files[0])
 
 						if (!config) return
 						if (!config.saveas) return false
@@ -613,8 +614,8 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 							return false
 
 						if (files[0].attributes['mount-type'] === 'shared') {
-							var attributes = JSON.parse(files[0].attributes['share-attributes'])
-							var downloadAttribute = attributes.find((attribute) => attribute.scope === 'permissions' && attribute.key === 'download')
+							const attributes = JSON.parse(files[0].attributes['share-attributes'])
+							const downloadAttribute = attributes.find((attribute) => attribute.scope === 'permissions' && attribute.key === 'download')
 							if (downloadAttribute !== undefined && downloadAttribute.enabled === false)
 								return false
 						}
@@ -641,17 +642,17 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 			},
 			iconSvgInline: NewPdfSvg,
 			handler: (folder) => {
-				var name = t(OCA.Onlyoffice.AppName, 'New PDF form')
-				var context = { dir: folder.path }
+				const name = t(OCA.Onlyoffice.AppName, 'New PDF form')
+				const context = { dir: folder.path }
 
 				OCA.Onlyoffice.OpenFormPicker(name + '.pdf', context)
 			}
 		})
-	};
+	}
 
 	OCA.Onlyoffice.NewFileMenu = {
 		attach: function(menu) {
-			var fileList = menu.fileList
+			const fileList = menu.fileList
 
 			if (fileList.id !== 'files' && fileList.id !== 'files.public') {
 				return
@@ -722,30 +723,30 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 	}
 
 	OCA.Onlyoffice.getFileExtension = function(fileName) {
-		var extension = fileName.substr(fileName.lastIndexOf('.') + 1).toLowerCase()
+		const extension = fileName.substr(fileName.lastIndexOf('.') + 1).toLowerCase()
 		return extension
 	}
 
-	var initPage = function() {
+	const initPage = function() {
 		if ($('#isPublic').val() === '1' && $('#mimetype').val() !== 'httpd/unix-directory') {
 			//file by shared link
-			var fileName = $('#filename').val()
-			var extension = OCA.Onlyoffice.getFileExtension(fileName)
+			let fileName = $('#filename').val()
+			let extension = OCA.Onlyoffice.getFileExtension(fileName)
 
-			var formats = OCA.Onlyoffice.setting.formats
+			let formats = OCA.Onlyoffice.setting.formats
 
-			var config = formats[extension]
+			let config = formats[extension]
 			if (!config) {
 				return
 			}
 
-			var editorUrl = OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/s/' + encodeURIComponent($('#sharingToken').val()))
+			let editorUrl = OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/s/' + encodeURIComponent($('#sharingToken').val()))
 
 			if (_oc_appswebroots.richdocuments
                 || _oc_appswebroots.files_pdfviewer && extension === 'pdf'
                 || _oc_appswebroots.text && extension === 'txt') {
 
-				var button = document.createElement('a')
+				let button = document.createElement('a')
 				button.href = editorUrl
 				button.className = 'onlyoffice-public-open button'
 				button.innerText = t(OCA.Onlyoffice.AppName, 'Open in ONLYOFFICE')
@@ -757,7 +758,7 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 				$('#preview').prepend(button)
 			} else {
 				OCA.Onlyoffice.frameSelector = '#onlyofficeFrame'
-				var $iframe = $('<iframe id="onlyofficeFrame" nonce="' + btoa(OC.requestToken) + '" scrolling="no" allowfullscreen src="' + editorUrl + '?inframe=true" />')
+				let $iframe = $('<iframe id="onlyofficeFrame" nonce="' + btoa(OC.requestToken) + '" scrolling="no" allowfullscreen src="' + editorUrl + '?inframe=true" />')
 				$('#app-content').append($iframe)
 				$('body').addClass('onlyoffice-inline')
 			}
