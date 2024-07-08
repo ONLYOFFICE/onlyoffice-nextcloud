@@ -30,19 +30,19 @@
  * @param {object} $ JQueryStatic object
  * @param {object} OC Nextcloud OCA object
  */
- (function ($, OC) {
+ (function($, OC) {
 
     OCA.Onlyoffice = _.extend({
         AppName: "onlyoffice",
         templates: null
     }, OCA.Onlyoffice);
 
-    OCA.Onlyoffice.OpenTemplatePicker = function (name, extension, type) {
+    OCA.Onlyoffice.OpenTemplatePicker = function(name, extension, type) {
 
         $("#onlyoffice-template-picker").remove();
 
         $.get(OC.filePath(OCA.Onlyoffice.AppName, "templates", "templatePicker.html"), 
-            function (tmpl) {
+            function(tmpl) {
                 var $tmpl = $(tmpl)
                 var dialog = $tmpl.octemplate({
                     dialog_name: "onlyoffice-template-picker",
@@ -76,7 +76,7 @@
             });
     };
 
-    OCA.Onlyoffice.GetTemplates = function () {
+    OCA.Onlyoffice.GetTemplates = function() {
         if (OCA.Onlyoffice.templates != null) {
             return;
         }
@@ -96,7 +96,7 @@
             });
     };
 
-    OCA.Onlyoffice.AddTemplate = function (file, callback) {
+    OCA.Onlyoffice.AddTemplate = function(file, callback) {
         var data = new FormData();
         data.append("file", file);
 
@@ -117,7 +117,7 @@
         });
     }
 
-    OCA.Onlyoffice.DeleteTemplate = function (templateId, callback) {
+    OCA.Onlyoffice.DeleteTemplate = function(templateId, callback) {
         $.ajax({
             method: "DELETE",
             url: OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/template?templateId={templateId}",
@@ -132,7 +132,7 @@
         });
     }
 
-    OCA.Onlyoffice.AttachTemplates = function (dialog, type) {
+    OCA.Onlyoffice.AttachTemplates = function(dialog, type) {
         var emptyItem = dialog[0].querySelector(".onlyoffice-template-item");
 
         OCA.Onlyoffice.templates.forEach(template => {
@@ -161,9 +161,9 @@
         }
     }
 
-    OCA.Onlyoffice.AttachItemTemplate = function (template) {
+    OCA.Onlyoffice.AttachItemTemplate = function(template) {
         $.get(OC.filePath(OCA.Onlyoffice.AppName, "templates", "templateItem.html"),
-        function (item) {
+        function(item) {
             var item = $(item)
 
             item.attr("data-id", template.id);
@@ -174,7 +174,7 @@
         });
     }
 
-    OCA.Onlyoffice.TemplateExist = function (type) {
+    OCA.Onlyoffice.TemplateExist = function(type) {
         var isExist = OCA.Onlyoffice.templates.some((template) => {
             return template.type === type;
         });

@@ -30,9 +30,9 @@
  * @param {object} $ JQueryStatic object
  * @param {object} OC Nextcloud OCA object
  */
-(function ($, OC) {
+(function($, OC) {
 
-    $(document).ready(function () {
+    $(document).ready(function() {
         OCA.Onlyoffice = _.extend({}, OCA.Onlyoffice);
         if (!OCA.Onlyoffice.AppName) {
             OCA.Onlyoffice = {
@@ -40,7 +40,7 @@
             };
         }
 
-        var advToogle = function () {
+        var advToogle = function() {
             $("#onlyofficeSecretPanel").toggleClass("onlyoffice-hide");
             $("#onlyofficeAdv .icon").toggleClass("icon-triangle-s icon-triangle-n");
         };
@@ -55,7 +55,7 @@
 
         $("#onlyofficeGroups").prop("checked", $("#onlyofficeLimitGroups").val() != "");
 
-        var groupListToggle = function () {
+        var groupListToggle = function() {
             if ($("#onlyofficeGroups").prop("checked")) {
                 OC.Settings.setupGroupsSelect($("#onlyofficeLimitGroups"));
             } else {
@@ -66,24 +66,24 @@
         $("#onlyofficeGroups").click(groupListToggle);
         groupListToggle();
 
-        var demoToggle = function () {
+        var demoToggle = function() {
             $("#onlyofficeAddrSettings input:not(#onlyofficeStorageUrl)").prop("disabled", $("#onlyofficeDemo").prop("checked"));
         };
 
         $("#onlyofficeDemo").click(demoToggle);
         demoToggle();
 
-        var watermarkToggle = function () {
+        var watermarkToggle = function() {
             $("#onlyofficeWatermarkSettings").toggleClass("onlyoffice-hide", !$("#onlyofficeWatermark_enabled").prop("checked"));
         };
 
         $("#onlyofficeWatermark_enabled").click(watermarkToggle)
 
-        $("#onlyofficeWatermark_shareAll").click(function () {
+        $("#onlyofficeWatermark_shareAll").click(function() {
             $("#onlyofficeWatermark_shareRead").parent().toggleClass("onlyoffice-hide");
         });
 
-        $("#onlyofficeWatermark_linkAll").click(function () {
+        $("#onlyofficeWatermark_linkAll").click(function() {
             $("#onlyofficeWatermark_link_sensitive").toggleClass("onlyoffice-hide");
         });
 
@@ -96,8 +96,8 @@
             "linkTags",
         ];
 
-        var watermarkNodeBehaviour = function (watermark){
-            var watermarkListToggle = function () {
+        var watermarkNodeBehaviour = function(watermark){
+            var watermarkListToggle = function() {
                 if ($("#onlyofficeWatermark_" + watermark).prop("checked")) {
                     if (watermark.indexOf("Group") >= 0) {
                         OC.Settings.setupGroupsSelect($("#onlyofficeWatermark_" + watermark + "List"));
@@ -109,25 +109,25 @@
                             separator: "|",
                             toggleSelect: true,
                             placeholder: t(OCA.Onlyoffice.AppName, "Select tag"),
-                            query: _.debounce(function (query) {
+                            query: _.debounce(function(query) {
                                 query.callback({
                                     results: OC.SystemTags.collection.filterByName(query.term)
                                 });
                             }, 100, true),
-                            initSelection: function (element, callback) {
-                                var selection = ($(element).val() || []).split("|").map(function (tagId) {
+                            initSelection: function(element, callback) {
+                                var selection = ($(element).val() || []).split("|").map(function(tagId) {
                                     return OC.SystemTags.collection.get(tagId);
                                 });
                                 callback(selection);
                             },
-                            formatResult: function (tag) {
+                            formatResult: function(tag) {
                                 return OC.SystemTags.getDescriptiveTag(tag);
                             },
-                            formatSelection: function (tag) {
+                            formatSelection: function(tag) {
                                 return tag.get("name");
                             },
-                            sortResults: function (results) {
-                                results.sort(function (a, b) {
+                            sortResults: function(results) {
+                                results.sort(function(a, b) {
                                     return OC.Util.naturalSortCompare(a.get("name"), b.get("name"));
                                 });
                                 return results;
@@ -143,21 +143,21 @@
             watermarkListToggle();
         };
 
-        $.each(watermarkGroupLists, function (i, watermarkGroup) {
+        $.each(watermarkGroupLists, function(i, watermarkGroup) {
             watermarkNodeBehaviour(watermarkGroup);
         });
 
         if (OC.SystemTags && OC.SystemTags.collection) {
             OC.SystemTags.collection.fetch({
-                success: function () {
-                    $.each(watermarkTagLists, function (i, watermarkTag) {
+                success: function() {
+                    $.each(watermarkTagLists, function(i, watermarkTag) {
                         watermarkNodeBehaviour(watermarkTag);
                     });
                 }
             });
         }
 
-        $("#onlyofficeAddrSave").click(function () {
+        $("#onlyofficeAddrSave").click(function() {
             $(".section-onlyoffice").addClass("icon-loading");
             var onlyofficeUrl = $("#onlyofficeUrl").val().trim();
 
@@ -209,16 +209,16 @@
             });
         });
 
-        $("#onlyofficeSave").click(function () {
+        $("#onlyofficeSave").click(function() {
             $(".section-onlyoffice").addClass("icon-loading");
 
             var defFormats = {};
-            $("input[id^=\"onlyofficeDefFormat\"]").each(function () {
+            $("input[id^=\"onlyofficeDefFormat\"]").each(function() {
                 defFormats[this.name] = this.checked;
             });
 
             var editFormats = {};
-            $("input[id^=\"onlyofficeEditFormat\"]").each(function () {
+            $("input[id^=\"onlyofficeEditFormat\"]").each(function() {
                 editFormats[this.name] = this.checked;
             });
 
@@ -270,7 +270,7 @@
             });
         });
 
-        $("#onlyofficeSecuritySave").click(function () {
+        $("#onlyofficeSecuritySave").click(function() {
             $(".section-onlyoffice").addClass("icon-loading");
 
             var plugins = $("#onlyofficePlugins").is(":checked");
@@ -293,11 +293,11 @@
                     "shareAll",
                     "shareRead"
                 ];
-                $.each(watermarkLabels, function (i, watermarkLabel) {
+                $.each(watermarkLabels, function(i, watermarkLabel) {
                     watermarkSettings[watermarkLabel] = $("#onlyofficeWatermark_" + watermarkLabel).is(":checked");
                 });
 
-                $.each(watermarkGroupLists.concat(watermarkTagLists), function (i, watermarkList) {
+                $.each(watermarkGroupLists.concat(watermarkTagLists), function(i, watermarkList) {
                     var list = $("#onlyofficeWatermark_" + watermarkList).is(":checked") ? $("#onlyofficeWatermark_" + watermarkList + "List").val() : "";
                     watermarkSettings[watermarkList + "List"] = list ? list.split("|") : [];
                 });
@@ -321,14 +321,14 @@
             });
         });
 
-        $(".section-onlyoffice-addr input").keypress(function (e) {
+        $(".section-onlyoffice-addr input").keypress(function(e) {
             var code = e.keyCode || e.which;
             if (code === 13) {
                 $("#onlyofficeAddrSave").click();
             }
         });
 
-        $("#onlyofficeSecret-show").click(function () {
+        $("#onlyofficeSecret-show").click(function() {
             if ($("#onlyofficeSecret").attr("type") == "password") {
                 $("#onlyofficeSecret").attr("type", "text");
             } else {
@@ -336,7 +336,7 @@
             }
         });
 
-        $("#onlyofficeClearVersionHistory").click(function () {
+        $("#onlyofficeClearVersionHistory").click(function() {
             $(".section-onlyoffice").addClass("icon-loading");
 
             $.ajax({
@@ -351,7 +351,7 @@
             });
         });
 
-        $("#onlyofficeAddTemplate").change(function () {
+        $("#onlyofficeAddTemplate").change(function() {
             var file = this.files[0];
             var data = new FormData();
 
@@ -376,7 +376,7 @@
             });
         });
 
-        $(document).on("click", ".onlyoffice-template-delete", function (event) {
+        $(document).on("click", ".onlyoffice-template-delete", function(event) {
             var item = $(event.target).parents(".onlyoffice-template-item");
             var templateId = $(item).attr("data-id");
 
@@ -396,7 +396,7 @@
             });
         });
 
-        $(document).on("click", ".onlyoffice-template-item p", function (event) {
+        $(document).on("click", ".onlyoffice-template-item p", function(event) {
             var item = $(event.target).parents(".onlyoffice-template-item");
             var templateId = $(item).attr("data-id");
 
@@ -409,7 +409,7 @@
             window.open(url);
         });
 
-        $(document).on("click", ".onlyoffice-template-download", function (event) {
+        $(document).on("click", ".onlyoffice-template-download", function(event) {
             var item = $(event.target).parents(".onlyoffice-template-item");
             var templateId = $(item).attr("data-id");
 

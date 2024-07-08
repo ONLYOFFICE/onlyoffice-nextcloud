@@ -29,7 +29,7 @@
 /**
  * @param {object} OCA Nextcloud OCA object
  */
-(function (OCA) {
+(function(OCA) {
 
     OCA.Onlyoffice = _.extend({}, OCA.Onlyoffice);
 

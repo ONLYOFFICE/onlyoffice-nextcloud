@@ -32,7 +32,7 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
  * @param {object} $ JQueryStatic object
  * @param {object} OC Nextcloud OCA object
  */
-(function ($, OC) {
+(function($, OC) {
 
     OCA.Onlyoffice = _.extend({
         AppName: "onlyoffice",
@@ -93,7 +93,7 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
         }
     });
 
-    var advancedContext = function () {
+    var advancedContext = function() {
         var $el = null;
 
         var format = null;
@@ -103,11 +103,11 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
         var permissionsMenu = null;
         var templateItem = null;
 
-        var getContainer = function () {
+        var getContainer = function() {
             return $el.find(".onlyoffice-share-container");
         };
 
-        var getTemplate = function (callback) {
+        var getTemplate = function(callback) {
             if ($el.find(".onlyoffice-share-container").length === 0) {
                 $("<ul>", {class: "onlyoffice-share-container"}).appendTo($el)
                 $("<div>").html(t(OCA.Onlyoffice.AppName, "Provide advanced document permissions using ONLYOFFICE Docs")).prependTo($el);
@@ -119,14 +119,14 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
             }
 
             $.get(OC.filePath(OCA.Onlyoffice.AppName, "templates", "share.html"),
-                function (tmpl) {
+                function(tmpl) {
                     templateItem = $(tmpl);
 
                     callback();
                 });
         };
 
-        var render = function () {
+        var render = function() {
             getTemplate(() => {
                 collection.forEach(extra => {
                     var itemNode = templateItem.clone();
@@ -167,7 +167,7 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
             });
         };
 
-        var onClickSetPermissions = function (e) {
+        var onClickSetPermissions = function(e) {
             var permissionValues = permissionsMenu.getValues();
             var shareId = permissionsMenu.getTargetId();
             var fileId = fileInfo.id;
@@ -221,7 +221,7 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
             }
         }
 
-        var onClickPermissionMenu = function (e) {
+        var onClickPermissionMenu = function(e) {
             if (!permissionsMenu) {
                 permissionsMenu = getPermissionMenu();
             }
@@ -244,13 +244,13 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
             permissionsMenu.open(extra.share_id, attributes, $(e.target).position());
         };
 
-        var getCustomEvents = function () {
+        var getCustomEvents = function() {
             var init = false;
 
             return {
-                on: function () {
+                on: function() {
                     if (!init) {
-                        $("#content").on("click", function (e) {
+                        $("#content").on("click", function(e) {
                             var target = $(e.target)[0];
                             if (!permissionsMenu
                                 || !permissionsMenu.isOpen()
@@ -269,7 +269,7 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
             }
         };
 
-        var getPermissionAttributes = function (extra) {
+        var getPermissionAttributes = function(extra) {
             var attributes = [];
 
             if (format["review"]
@@ -313,7 +313,7 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
             return attributes;
         };
 
-        var getPermissionMenu = function () {
+        var getPermissionMenu = function() {
             var popup = $("<div>", {
                 class: "popovermenu onlyoffice-share-popup",
                 id: "onlyoffice-share-popup-menu"
@@ -321,7 +321,7 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
                 id: -1
             });
 
-            var appendItem = function (checked, extra, name) {
+            var appendItem = function(checked, extra, name) {
                 var item = $("<li>").append($("<span>", {
                     class: "onlyoffice-share-action"
                 }).append($("<input>", {
@@ -341,25 +341,25 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
                 popup.find("ul").append(item);
             };
 
-            var removeItems = function () {
+            var removeItems = function() {
                 var items = popup.find("li");
                 if (items) {
                     items.remove();
                 }
             }
 
-            var setTargetId = function (id) {
+            var setTargetId = function(id) {
                 popup.find("ul").attr("id", id);
             };
 
             $el.append(popup);
 
             return {
-                isOpen: function () {
+                isOpen: function() {
                     return popup.is(":visible");
                 },
 
-                open: function (id, attributes, position) {
+                open: function(id, attributes, position) {
                     removeItems();
 
                     if (position) {
@@ -374,7 +374,7 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
                     popup.show();
                 },
 
-                close: function () {
+                close: function() {
                     removeItems();
 
                     setTargetId(-1);
@@ -382,7 +382,7 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
                     window.removeEventListener("click", listenOuterClicks);
                 },
 
-                refresh: function (attributes) {
+                refresh: function(attributes) {
                     removeItems();
 
                     attributes.forEach(attr => {
@@ -390,11 +390,11 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
                     });
                 },
 
-                block: function (value) {
+                block: function(value) {
                     popup.find("input").prop("disabled", value);
                 },
 
-                getValues: function () {
+                getValues: function() {
                     var values = [];
 
                     var items = popup.find("input");
@@ -406,18 +406,18 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
                     return values;
                 },
 
-                getTargetId: function () {
+                getTargetId: function() {
                     return popup.find("ul").attr("id");
                 }
             }
         };
 
         return {
-            get fileInfo () {
+            get fileInfo() {
                 return fileInfo;
             },
 
-            init: function (_el, _fileInfo) {
+            init: function(_el, _fileInfo) {
                 $el = $(_el);
 
                 getTemplate(() => {
@@ -425,7 +425,7 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
                 });
             },
 
-            update: function (_fileInfo) {
+            update: function(_fileInfo) {
                 if (customEvents === null) {
                     customEvents = getCustomEvents();
                     customEvents.on();
@@ -445,7 +445,7 @@ import AppDarkSvg from "!!raw-loader!../img/app-dark.svg";
                 });
             },
 
-            clear: function () {
+            clear: function() {
                 $el = null;
                 format = null;
                 fileInfo = null;

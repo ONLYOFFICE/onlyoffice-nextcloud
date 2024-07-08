@@ -29,11 +29,11 @@
 /**
  * @param {object} OCA Nextcloud OCA object
  */
-(function (OCA) {
+(function(OCA) {
 
     OCA.Onlyoffice = _.extend({}, OCA.Onlyoffice);
 
-    var callMobileMessage = function (messageName, attributes) {
+    var callMobileMessage = function(messageName, attributes) {
         var message = messageName
         if (typeof attributes !== "undefined") {
             message = {
@@ -68,10 +68,10 @@
     }
 
     OCA.Onlyoffice.directEditor = {
-        close: function () {
+        close: function() {
             callMobileMessage("close");
         },
-        loaded: function () {
+        loaded: function() {
             callMobileMessage("loaded");
         }
     };

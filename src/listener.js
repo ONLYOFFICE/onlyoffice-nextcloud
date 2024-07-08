@@ -29,14 +29,14 @@
 /**
  * @param {object} OCA Nextcloud OCA object
  */
-(function (OCA) {
+(function(OCA) {
 
     OCA.Onlyoffice = _.extend({
             AppName: "onlyoffice",
             frameSelector: null,
         }, OCA.Onlyoffice);
 
-    OCA.Onlyoffice.onRequestClose = function () {
+    OCA.Onlyoffice.onRequestClose = function() {
 
         $(OCA.Onlyoffice.frameSelector).remove();
 
@@ -49,10 +49,10 @@
         }
     };
 
-    OCA.Onlyoffice.onRequestSaveAs = function (saveData) {
+    OCA.Onlyoffice.onRequestSaveAs = function(saveData) {
 
         OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Save as"),
-            function (fileDir) {
+            function(fileDir) {
                 saveData.dir = fileDir;
                 $(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.editorSaveAs(saveData);
             },
@@ -63,7 +63,7 @@
             saveData.dir);
     };
 
-    OCA.Onlyoffice.onRequestInsertImage = function (imageMimes) {
+    OCA.Onlyoffice.onRequestInsertImage = function(imageMimes) {
         OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Insert image"),
             $(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.editorInsertImage,
             false,
@@ -71,7 +71,7 @@
             true);
     };
 
-    OCA.Onlyoffice.onRequestMailMergeRecipients = function (recipientMimes) {
+    OCA.Onlyoffice.onRequestMailMergeRecipients = function(recipientMimes) {
         OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Select recipients"),
             $(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.editorSetRecipient,
             false,
@@ -79,7 +79,7 @@
             true);
     };
 
-    OCA.Onlyoffice.onRequestSelectDocument = function (revisedMimes, documentSelectionType) {
+    OCA.Onlyoffice.onRequestSelectDocument = function(revisedMimes, documentSelectionType) {
         switch (documentSelectionType) {
             case "combine":
                 var title =  t(OCA.Onlyoffice.AppName, "Select file to combine");
@@ -94,7 +94,7 @@
             true);
     };
 
-    OCA.Onlyoffice.onRequestReferenceSource = function (referenceSourceMimes) {
+    OCA.Onlyoffice.onRequestReferenceSource = function(referenceSourceMimes) {
         OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, "Select data source"),
             $(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.editorReferenceSource,
             false,
@@ -102,11 +102,11 @@
             true);
     }
 
-    OCA.Onlyoffice.onDocumentReady = function () {
+    OCA.Onlyoffice.onDocumentReady = function() {
         OCA.Onlyoffice.setViewport();
     };
 
-    OCA.Onlyoffice.changeFavicon = function (favicon) {
+    OCA.Onlyoffice.changeFavicon = function(favicon) {
         $('link[rel="icon"]').attr("href", favicon);
     };
 
@@ -114,7 +114,7 @@
         document.querySelector('meta[name="viewport"]').setAttribute("content","width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0");
     };
 
-    OCA.Onlyoffice.onShowMessage = function (messageObj) {
+    OCA.Onlyoffice.onShowMessage = function(messageObj) {
         switch (messageObj.type) {
             case "success":
                 OCP.Toast.success(messageObj.message, messageObj.props);
@@ -125,11 +125,11 @@
         }
     };
 
-    OCA.Onlyoffice.onRequestEditRights = function () {
+    OCA.Onlyoffice.onRequestEditRights = function() {
         $(OCA.Onlyoffice.frameSelector).attr("src", $(OCA.Onlyoffice.frameSelector).attr("src") + "&forceEdit=true");
     };
 
-    window.addEventListener("message", function (event) {
+    window.addEventListener("message", function(event) {
         if (!$(OCA.Onlyoffice.frameSelector).length
             || $(OCA.Onlyoffice.frameSelector)[0].contentWindow !== event.source
             || !event.data["method"]) {
@@ -178,7 +178,7 @@
         }
     }, false);
 
-    window.addEventListener("popstate", function (event) {
+    window.addEventListener("popstate", function(event) {
         if ($(OCA.Onlyoffice.frameSelector).length) {
             OCA.Onlyoffice.onRequestClose();
         }

@@ -29,7 +29,7 @@
 /**
  * @param {object} OCA Nextcloud OCA object
  */
-(function (OCA) {
+(function(OCA) {
     if (OCA.Onlyoffice) {
         return;
     }
@@ -44,7 +44,7 @@
 
     var OnlyofficeViewerVue = {
         name: "OnlyofficeViewerVue",
-        render: function (createElement) {
+        render: function(createElement) {
             var self = this;
 
             return createElement("iframe", {
@@ -54,7 +54,7 @@
                     src: self.url + "&inframe=true&inviewer=true",
                 },
                 on: {
-                    load: function () {
+                    load: function() {
                         self.doneLoading();
                     },
                 },
@@ -70,7 +70,7 @@
                 default: null
             }
         },
-        data: function () {
+        data: function() {
             return {
                 url: OC.generateUrl("/apps/" + OCA.Onlyoffice.AppName + "/{fileId}?filePath={filePath}",
                     {
@@ -84,7 +84,7 @@
     if (OCA.Viewer) {
         OCA.Onlyoffice.frameSelector = "#onlyofficeViewerFrame";
 
-        var mimes = $.map(OCA.Onlyoffice.setting.formats, function (format) {
+        var mimes = $.map(OCA.Onlyoffice.setting.formats, function(format) {
             if (format.def) {
                 return format.mime;
             }
