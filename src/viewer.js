@@ -31,21 +31,21 @@
  */
 (function(OCA) {
 	if (OCA.Onlyoffice) {
-		return;
+		return
 	}
 
 	OCA.Onlyoffice = {
 		AppName: 'onlyoffice',
 		frameSelector: null,
 		setting: {},
-	};
+	}
 
-	OCA.Onlyoffice.setting = OCP.InitialState.loadState(OCA.Onlyoffice.AppName, 'settings');
+	OCA.Onlyoffice.setting = OCP.InitialState.loadState(OCA.Onlyoffice.AppName, 'settings')
 
 	var OnlyofficeViewerVue = {
 		name: 'OnlyofficeViewerVue',
 		render: function(createElement) {
-			var self = this;
+			var self = this
 
 			return createElement('iframe', {
 				attrs: {
@@ -55,7 +55,7 @@
 				},
 				on: {
 					load: function() {
-						self.doneLoading();
+						self.doneLoading()
 					},
 				},
 			})
@@ -79,17 +79,17 @@
 					})
 			}
 		}
-	};
+	}
 
 	if (OCA.Viewer) {
-		OCA.Onlyoffice.frameSelector = '#onlyofficeViewerFrame';
+		OCA.Onlyoffice.frameSelector = '#onlyofficeViewerFrame'
 
 		var mimes = $.map(OCA.Onlyoffice.setting.formats, function(format) {
 			if (format.def) {
-				return format.mime;
+				return format.mime
 			}
-		});
-		mimes.flat();
+		})
+		mimes.flat()
 		OCA.Viewer.registerHandler({
 			id: OCA.Onlyoffice.AppName,
 			group: null,
@@ -98,4 +98,4 @@
 		})
 	}
 
-})(OCA);
+})(OCA)

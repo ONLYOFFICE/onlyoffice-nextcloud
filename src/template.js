@@ -35,11 +35,11 @@
 	OCA.Onlyoffice = _.extend({
 		AppName: 'onlyoffice',
 		templates: null
-	}, OCA.Onlyoffice);
+	}, OCA.Onlyoffice)
 
 	OCA.Onlyoffice.OpenTemplatePicker = function(name, extension, type) {
 
-		$('#onlyoffice-template-picker').remove();
+		$('#onlyoffice-template-picker').remove()
 
 		$.get(OC.filePath(OCA.Onlyoffice.AppName, 'templates', 'templatePicker.html'), 
 			function(tmpl) {
@@ -47,11 +47,11 @@
 				var dialog = $tmpl.octemplate({
 					dialog_name: 'onlyoffice-template-picker',
 					dialog_title: t(OCA.Onlyoffice.AppName, 'Select template')
-				});
+				})
 
-				OCA.Onlyoffice.AttachTemplates(dialog, type);
+				OCA.Onlyoffice.AttachTemplates(dialog, type)
 
-				$('body').append(dialog);
+				$('body').append(dialog)
 
 				$('#onlyoffice-template-picker').ocdialog({
 					closeOnEscape: true,
@@ -66,19 +66,19 @@
 						text: t(OCA.Onlyoffice.AppName, 'Create'),
 						classes: 'primary',
 						click: function() {
-							var templateId = this.dataset.templateId;
-							var fileList = OCA.Files.App.fileList;
-							OCA.Onlyoffice.CreateFile(name + extension, fileList, templateId);
+							var templateId = this.dataset.templateId
+							var fileList = OCA.Files.App.fileList
+							OCA.Onlyoffice.CreateFile(name + extension, fileList, templateId)
 							$(this).ocdialog('close')
 						}
 					}]
-				});
-			});
+				})
+			})
 	};
 
 	OCA.Onlyoffice.GetTemplates = function() {
 		if (OCA.Onlyoffice.templates != null) {
-			return;
+			return
 		}
 
 		$.get(OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/template'),
@@ -87,18 +87,18 @@
 					OC.Notification.show(response.error, {
 						type: 'error',
 						timeout: 3
-					});
+					})
 					return;
 				}
 
-				OCA.Onlyoffice.templates = response;
+				OCA.Onlyoffice.templates = response
 				return;
-			});
+			})
 	};
 
 	OCA.Onlyoffice.AddTemplate = function(file, callback) {
-		var data = new FormData();
-		data.append('file', file);
+		var data = new FormData()
+		data.append('file', file)
 
 		$.ajax({
 			method: 'POST',
@@ -109,12 +109,12 @@
 			success: function onSuccess(response) {
 				if (response.error) {
 					callback(null, response.error)
-					return;
+					return
 				}
 
-				callback(response, null);
+				callback(response, null)
 			}
-		});
+		})
 	}
 
 	OCA.Onlyoffice.DeleteTemplate = function(templateId, callback) {
@@ -126,38 +126,38 @@
 				}),
 			success: function onSuccess(response) {
 				if (response) {
-					callback(response);
+					callback(response)
 				}
 			}
-		});
+		})
 	}
 
 	OCA.Onlyoffice.AttachTemplates = function(dialog, type) {
-		var emptyItem = dialog[0].querySelector('.onlyoffice-template-item');
+		var emptyItem = dialog[0].querySelector('.onlyoffice-template-item')
 
 		OCA.Onlyoffice.templates.forEach(template => {
 			if (template.type !== type) {
-				return;
+				return
 			}
-			var item = emptyItem.cloneNode(true);
+			var item = emptyItem.cloneNode(true)
 
-			$(item.querySelector('label')).attr('for', 'template_picker-' + template['id']);
-			item.querySelector('input').id = 'template_picker-' + template['id'];
-			item.querySelector('img').src = '../../core/img/filetypes/x-office-' + template['type'] + '.svg';
-			item.querySelector('p').textContent = template['name'];
+			$(item.querySelector('label')).attr('for', 'template_picker-' + template['id'])
+			item.querySelector('input').id = 'template_picker-' + template['id']
+			item.querySelector('img').src = '../../core/img/filetypes/x-office-' + template['type'] + '.svg'
+			item.querySelector('p').textContent = template['name']
 			item.onclick = function() {
-				dialog[0].dataset.templateId = template['id'];
+				dialog[0].dataset.templateId = template['id']
 			}
-			dialog[0].querySelector('.onlyoffice-template-container').appendChild(item);
-		});
+			dialog[0].querySelector('.onlyoffice-template-container').appendChild(item)
+		})
 
-		$(emptyItem.querySelector('label')).attr('for', 'template_picker-0');
-		emptyItem.querySelector('input').id = 'template_picker-0';
-		emptyItem.querySelector('input').checked = true;
-		emptyItem.querySelector('img').src = '../../core/img/filetypes/x-office-' + type + '.svg';
-		emptyItem.querySelector('p').textContent = t(OCA.Onlyoffice.AppName, 'Empty');
+		$(emptyItem.querySelector('label')).attr('for', 'template_picker-0')
+		emptyItem.querySelector('input').id = 'template_picker-0'
+		emptyItem.querySelector('input').checked = true
+		emptyItem.querySelector('img').src = '../../core/img/filetypes/x-office-' + type + '.svg'
+		emptyItem.querySelector('p').textContent = t(OCA.Onlyoffice.AppName, 'Empty')
 		emptyItem.onclick = function() {
-			dialog[0].dataset.templateId = '0';
+			dialog[0].dataset.templateId = '0'
 		}
 	}
 
@@ -166,20 +166,20 @@
 			function(item) {
 				var item = $(item)
 
-				item.attr('data-id', template.id);
-				item.children('img').attr('src', '../../core/img/filetypes/x-office-' + template.type + '.svg');
-				item.children('p').text(template.name);
+				item.attr('data-id', template.id)
+				item.children('img').attr('src', '../../core/img/filetypes/x-office-' + template.type + '.svg')
+				item.children('p').text(template.name)
 
-				$('.onlyoffice-template-container').append(item);
-			});
+				$('.onlyoffice-template-container').append(item)
+			})
 	}
 
 	OCA.Onlyoffice.TemplateExist = function(type) {
 		var isExist = OCA.Onlyoffice.templates.some((template) => {
-			return template.type === type;
-		});
+			return template.type === type
+		})
 
-		return isExist;
+		return isExist
 	}
 
-})(jQuery, OC);
+})(jQuery, OC)
