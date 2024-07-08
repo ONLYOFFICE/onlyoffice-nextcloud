@@ -31,62 +31,62 @@
  */
 (function(OCA) {
 
-    OCA.Onlyoffice = _.extend({}, OCA.Onlyoffice);
+	OCA.Onlyoffice = _.extend({}, OCA.Onlyoffice);
 
-    var callMobileMessage = function(messageName, attributes) {
-        var message = messageName
-        if (typeof attributes !== "undefined") {
-            message = {
-                MessageName: messageName,
-                Values: attributes,
-            };
-        }
-        var attributesString = null
-        try {
-            attributesString = JSON.stringify(attributes);
-        } catch (e) {
-            attributesString = null;
-        }
+	var callMobileMessage = function(messageName, attributes) {
+		var message = messageName
+		if (typeof attributes !== "undefined") {
+			message = {
+				MessageName: messageName,
+				Values: attributes,
+			};
+		}
+		var attributesString = null
+		try {
+			attributesString = JSON.stringify(attributes);
+		} catch (e) {
+			attributesString = null;
+		}
 
-        // Forward to mobile handler
-        if (window.DirectEditingMobileInterface && typeof window.DirectEditingMobileInterface[messageName] === "function") {
-            if (attributesString === null || typeof attributesString === "undefined") {
-                window.DirectEditingMobileInterface[messageName]();
-            } else {
-                window.DirectEditingMobileInterface[messageName](attributesString);
-            }
-        }
+		// Forward to mobile handler
+		if (window.DirectEditingMobileInterface && typeof window.DirectEditingMobileInterface[messageName] === "function") {
+			if (attributesString === null || typeof attributesString === "undefined") {
+				window.DirectEditingMobileInterface[messageName]();
+			} else {
+				window.DirectEditingMobileInterface[messageName](attributesString);
+			}
+		}
 
-        // iOS webkit fallback
-        if (window.webkit
+		// iOS webkit fallback
+		if (window.webkit
             && window.webkit.messageHandlers
             && window.webkit.messageHandlers.DirectEditingMobileInterface) {
-            window.webkit.messageHandlers.DirectEditingMobileInterface.postMessage(message);
-        }
+			window.webkit.messageHandlers.DirectEditingMobileInterface.postMessage(message);
+		}
 
-        window.postMessage(message);
-    }
+		window.postMessage(message);
+	}
 
-    OCA.Onlyoffice.directEditor = {
-        close: function() {
-            callMobileMessage("close");
-        },
-        loaded: function() {
-            callMobileMessage("loaded");
-        }
-    };
+	OCA.Onlyoffice.directEditor = {
+		close: function() {
+			callMobileMessage("close");
+		},
+		loaded: function() {
+			callMobileMessage("loaded");
+		}
+	};
 
 
-    window.onload = function() {
-        let directEditorError = document.getElementById("directEditorError");
+	window.onload = function() {
+		let directEditorError = document.getElementById("directEditorError");
 
-        if (directEditorError) {
-            OCA.Onlyoffice.directEditor.loaded();
-            let directEditorErrorButton = document.getElementById("directEditorErrorButton");
-            directEditorErrorButton.addEventListener('click', function() {
-                OCA.Onlyoffice.directEditor.close();
-            });
-        }
-    };
+		if (directEditorError) {
+			OCA.Onlyoffice.directEditor.loaded();
+			let directEditorErrorButton = document.getElementById("directEditorErrorButton");
+			directEditorErrorButton.addEventListener('click', function() {
+				OCA.Onlyoffice.directEditor.close();
+			});
+		}
+	};
 
 })(OCA);

@@ -31,30 +31,30 @@
  */
 (function(OCA) {
 
-    OCA.Onlyoffice = _.extend({}, OCA.Onlyoffice);
+	OCA.Onlyoffice = _.extend({}, OCA.Onlyoffice);
 
-    if (!window["AscDesktopEditor"]) {
-        return;
-    }
+	if (!window["AscDesktopEditor"]) {
+		return;
+	}
 
-    OCA.Onlyoffice.Desktop = true;
+	OCA.Onlyoffice.Desktop = true;
 
-    if (location.pathname.indexOf(_oc_appswebroots.dashboard) !== -1) {
-        location.pathname = location.pathname.split(_oc_appswebroots.dashboard)[0] + _oc_appswebroots.files;
-        return;
-    }
+	if (location.pathname.indexOf(_oc_appswebroots.dashboard) !== -1) {
+		location.pathname = location.pathname.split(_oc_appswebroots.dashboard)[0] + _oc_appswebroots.files;
+		return;
+	}
 
-    $("html").addClass("AscDesktopEditor");
+	$("html").addClass("AscDesktopEditor");
 
-    var domain = new RegExp("^http(s)?:\/\/[^\/]+").exec(location)[0];
-    domain += OC.getRootPath();
+	var domain = new RegExp("^http(s)?:\/\/[^\/]+").exec(location)[0];
+	domain += OC.getRootPath();
 
-    var data = {
-        displayName: oc_current_user,
-        domain: domain,
-        provider: "Nextcloud",
-    };
+	var data = {
+		displayName: oc_current_user,
+		domain: domain,
+		provider: "Nextcloud",
+	};
 
-    window.AscDesktopEditor.execCommand("portal:login", JSON.stringify(data));
+	window.AscDesktopEditor.execCommand("portal:login", JSON.stringify(data));
 
 })(OCA);

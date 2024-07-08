@@ -30,72 +30,72 @@
  * @param {object} OCA Nextcloud OCA object
  */
 (function(OCA) {
-    if (OCA.Onlyoffice) {
-        return;
-    }
+	if (OCA.Onlyoffice) {
+		return;
+	}
 
-    OCA.Onlyoffice = {
-        AppName: "onlyoffice",
-        frameSelector: null,
-        setting: {},
-    };
+	OCA.Onlyoffice = {
+		AppName: "onlyoffice",
+		frameSelector: null,
+		setting: {},
+	};
 
-    OCA.Onlyoffice.setting = OCP.InitialState.loadState(OCA.Onlyoffice.AppName, "settings");
+	OCA.Onlyoffice.setting = OCP.InitialState.loadState(OCA.Onlyoffice.AppName, "settings");
 
-    var OnlyofficeViewerVue = {
-        name: "OnlyofficeViewerVue",
-        render: function(createElement) {
-            var self = this;
+	var OnlyofficeViewerVue = {
+		name: "OnlyofficeViewerVue",
+		render: function(createElement) {
+			var self = this;
 
-            return createElement("iframe", {
-                attrs: {
-                    id: "onlyofficeViewerFrame",
-                    scrolling: "no",
-                    src: self.url + "&inframe=true&inviewer=true",
-                },
-                on: {
-                    load: function() {
-                        self.doneLoading();
-                    },
-                },
-            })
-        },
-        props: {
-            filename: {
-                type: String,
-                default: null
-            },
-            fileid: {
-                type: Number,
-                default: null
-            }
-        },
-        data: function() {
-            return {
-                url: OC.generateUrl("/apps/" + OCA.Onlyoffice.AppName + "/{fileId}?filePath={filePath}",
-                    {
-                        fileId: this.fileid,
-                        filePath: this.filename
-                    })
-            }
-        }
-    };
+			return createElement("iframe", {
+				attrs: {
+					id: "onlyofficeViewerFrame",
+					scrolling: "no",
+					src: self.url + "&inframe=true&inviewer=true",
+				},
+				on: {
+					load: function() {
+						self.doneLoading();
+					},
+				},
+			})
+		},
+		props: {
+			filename: {
+				type: String,
+				default: null
+			},
+			fileid: {
+				type: Number,
+				default: null
+			}
+		},
+		data: function() {
+			return {
+				url: OC.generateUrl("/apps/" + OCA.Onlyoffice.AppName + "/{fileId}?filePath={filePath}",
+					{
+						fileId: this.fileid,
+						filePath: this.filename
+					})
+			}
+		}
+	};
 
-    if (OCA.Viewer) {
-        OCA.Onlyoffice.frameSelector = "#onlyofficeViewerFrame";
+	if (OCA.Viewer) {
+		OCA.Onlyoffice.frameSelector = "#onlyofficeViewerFrame";
 
-        var mimes = $.map(OCA.Onlyoffice.setting.formats, function(format) {
-            if (format.def) {
-                return format.mime;
-            }
-        });
-        mimes.flat();
-        OCA.Viewer.registerHandler({
-            id: OCA.Onlyoffice.AppName,
-            group: null,
-            mimes: mimes,
-            component: OnlyofficeViewerVue
-        })
-    }
+		var mimes = $.map(OCA.Onlyoffice.setting.formats, function(format) {
+			if (format.def) {
+				return format.mime;
+			}
+		});
+		mimes.flat();
+		OCA.Viewer.registerHandler({
+			id: OCA.Onlyoffice.AppName,
+			group: null,
+			mimes: mimes,
+			component: OnlyofficeViewerVue
+		})
+	}
 
 })(OCA);
