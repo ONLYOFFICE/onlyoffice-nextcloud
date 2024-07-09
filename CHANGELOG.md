@@ -1,5 +1,10 @@
 # Change Log
 
+##
+## Added
+- support tiff format for inserting
+
+## Changed
 - Nextcloud v27 is no longer supported
 
 ## 9.3.0
