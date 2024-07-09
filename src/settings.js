@@ -363,7 +363,8 @@
 			OCA.Onlyoffice.AddTemplate(file, (template, error) => {
 
 				$('.section-onlyoffice').removeClass('icon-loading')
-				const message = error ? t(OCA.Onlyoffice.AppName, 'Error') + ': ' + error
+				const message = error
+					? t(OCA.Onlyoffice.AppName, 'Error') + ': ' + error
 					: t(OCA.Onlyoffice.AppName, 'Template successfully added')
 
 				if (error) {
@@ -386,7 +387,8 @@
 			OCA.Onlyoffice.DeleteTemplate(templateId, (response) => {
 				$('.section-onlyoffice').removeClass('icon-loading')
 
-				const message = response.error ? t(OCA.Onlyoffice.AppName, 'Error') + ': ' + response.error
+				const message = response.error
+					? t(OCA.Onlyoffice.AppName, 'Error') + ': ' + response.error
 					: t(OCA.Onlyoffice.AppName, 'Template successfully deleted')
 				if (response.error) {
 					OCP.Toast.error(message)
@@ -415,7 +417,7 @@
 			const item = $(event.target).parents('.onlyoffice-template-item')
 			const templateId = $(item).attr('data-id')
 
-			const downloadLink = OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/downloadas?fileId={fileId}&template={template}',{
+			const downloadLink = OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/downloadas?fileId={fileId}&template={template}', {
 				fileId: templateId,
 				template: 'true',
 			})

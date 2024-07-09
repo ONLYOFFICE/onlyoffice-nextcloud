@@ -70,7 +70,7 @@
 			fileid: {
 				type: Number,
 				default: null,
-			}
+			},
 		},
 		data() {
 			return {

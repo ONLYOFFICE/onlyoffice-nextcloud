@@ -217,7 +217,7 @@ import AppDarkSvg from '!!raw-loader!../img/app-dark.svg';
 			const target = document.querySelector('#onlyoffice-share-popup-menu')
 			if (target) {
 				const eventPath = event.composedPath().includes(target)
-				if (!eventPath && typeof(permissionsMenu)!=='undefined' && permissionsMenu.isOpen()) {
+				if (!eventPath && typeof (permissionsMenu) !== 'undefined' && permissionsMenu.isOpen()) {
 					permissionsMenu.close()
 				}
 			}

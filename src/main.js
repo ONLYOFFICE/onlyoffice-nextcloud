@@ -28,7 +28,8 @@
 
 /* global _, $, _oc_appswebroots */
 
-import { FileAction,
+import {
+	FileAction,
 	registerFileAction,
 	Permission,
 	DefaultType,
@@ -37,7 +38,8 @@ import { FileAction,
 	davGetClient,
 	davRootPath,
 	davGetDefaultPropfind,
-	davResultToNode } from '@nextcloud/files'
+	davResultToNode,
+} from '@nextcloud/files'
 import { emit } from '@nextcloud/event-bus'
 import AppDarkSvg from '!!raw-loader!../img/app-dark.svg'
 import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
@@ -193,7 +195,7 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 		OCA.Onlyoffice.context = null
 
 		const url = OCA.Onlyoffice.folderUrl
-		if (!!url) {
+		if (url) {
 			window.history.pushState(null, null, url)
 			OCA.Onlyoffice.folderUrl = null
 		}
@@ -222,7 +224,7 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 
 	OCA.Onlyoffice.FileClick = function(fileName, context) {
 		const fileInfoModel = context.fileInfoModel || context.fileList.getModelForFile(fileName)
-		const fileId = context.fileId || context.$file && context.$file[0].dataset.id || fileInfoModel.id
+		const fileId = context.fileId || (context.$file && context.$file[0].dataset.id) || fileInfoModel.id
 		const winEditor = !fileInfoModel && !OCA.Onlyoffice.setting.sameTab ? document : null
 
 		OCA.Onlyoffice.OpenEditor(fileId, context.dir, fileName, winEditor)
@@ -303,14 +305,14 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 	}
 
 	OCA.Onlyoffice.Download = function(fileName, fileId) {
-		$.get(OC.filePath(OCA.Onlyoffice.AppName, 'templates', 'downloadPicker.html'), 
+		$.get(OC.filePath(OCA.Onlyoffice.AppName, 'templates', 'downloadPicker.html'),
 			function(tmpl) {
 				const dialog = $(tmpl).octemplate({
 					dialog_name: 'download-picker',
 					dialog_title: t('onlyoffice', 'Download as'),
 				})
 
-				$(dialog[0].querySelectorAll('p')).text(t(OCA.Onlyoffice.AppName, 'Choose a format to convert {fileName}', {fileName}))
+				$(dialog[0].querySelectorAll('p')).text(t(OCA.Onlyoffice.AppName, 'Choose a format to convert {fileName}', { fileName }))
 
 				const extension = OCA.Onlyoffice.getFileExtension(fileName)
 				const selectNode = dialog[0].querySelectorAll('select')[0]
@@ -349,7 +351,7 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 						classes: 'primary',
 						click() {
 							const format = this.dataset.format
-							const downloadLink = OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/downloadas?fileId={fileId}&toExtension={toExtension}',{
+							const downloadLink = OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/downloadas?fileId={fileId}&toExtension={toExtension}', {
 								fileId,
 								toExtension: format,
 							})
@@ -376,7 +378,7 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 				text: t(OCA.Onlyoffice.AppName, 'From text document'),
 				type: 'target',
 				defaultButton: true,
-			}
+			},
 		]
 
 		OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, 'Create new PDF form'),
@@ -516,8 +518,7 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 					if (!config) return
 					if (!config.def) return
 
-					if (Permission.READ !== (files[0].permissions & Permission.READ))
-						return false
+					if (Permission.READ !== (files[0].permissions & Permission.READ)) { return false }
 
 					return true
 				},
@@ -535,8 +536,7 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 					if (!config) return false
 					if (config.def) return false
 
-					if (Permission.READ !== (files[0].permissions & Permission.READ))
-						return false
+					if (Permission.READ !== (files[0].permissions & Permission.READ)) { return false }
 
 					return true
 				},
@@ -554,17 +554,14 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 					if (!config.conv) return false
 
 					const required = $('#isPublic').val() ? Permission.UPDATE : Permission.READ
-					if (required !== (files[0].permissions & required))
-						return false
+					if (required !== (files[0].permissions & required)) { return false }
 
 					if (files[0].attributes['mount-type'] === 'shared') {
-						if (required !== (files[0].attributes['share-permissions'] & required))
-							return false
+						if (required !== (files[0].attributes['share-permissions'] & required)) { return false }
 
 						const attributes = JSON.parse(files[0].attributes['share-attributes'])
 						const downloadAttribute = attributes.find((attribute) => attribute.scope === 'permissions' && attribute.key === 'download')
-						if (downloadAttribute !== undefined && downloadAttribute.enabled === false)
-							return false
+						if (downloadAttribute !== undefined && downloadAttribute.enabled === false) { return false }
 					}
 
 					return true
@@ -583,17 +580,14 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 					if (!config.createForm) return false
 
 					const required = $('#isPublic').val() ? Permission.UPDATE : Permission.READ
-					if (required !== (files[0].permissions & required))
-						return false
+					if (required !== (files[0].permissions & required)) { return false }
 
 					if (files[0].attributes['mount-type'] === 'shared') {
-						if (required !== (files[0].attributes['share-permissions'] & required))
-							return false
+						if (required !== (files[0].attributes['share-permissions'] & required)) { return false }
 
 						const attributes = JSON.parse(files[0].attributes['share-attributes'])
 						const downloadAttribute = attributes.find((attribute) => attribute.scope === 'permissions' && attribute.key === 'download')
-						if (downloadAttribute !== undefined && downloadAttribute.enabled === false)
-							return false
+						if (downloadAttribute !== undefined && downloadAttribute.enabled === false) { return false }
 					}
 
 					return true
@@ -612,14 +606,12 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 						if (!config) return
 						if (!config.saveas) return false
 
-						if (Permission.READ !== (files[0].permissions & Permission.READ))
-							return false
+						if (Permission.READ !== (files[0].permissions & Permission.READ)) { return false }
 
 						if (files[0].attributes['mount-type'] === 'shared') {
 							const attributes = JSON.parse(files[0].attributes['share-attributes'])
 							const downloadAttribute = attributes.find((attribute) => attribute.scope === 'permissions' && attribute.key === 'download')
-							if (downloadAttribute !== undefined && downloadAttribute.enabled === false)
-								return false
+							if (downloadAttribute !== undefined && downloadAttribute.enabled === false) { return false }
 						}
 
 						return true
@@ -635,10 +627,8 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 			id: 'new-onlyoffice-pdf',
 			displayName: t(OCA.Onlyoffice.AppName, 'New PDF form'),
 			enabled: (folder) => {
-				if (Permission.CREATE !== (folder.permissions & Permission.CREATE))
-					return false
-				if (Permission.CREATE !== (folder.attributes['share-permissions'] & Permission.CREATE))
-					return false
+				if (Permission.CREATE !== (folder.permissions & Permission.CREATE)) { return false }
+				if (Permission.CREATE !== (folder.attributes['share-permissions'] & Permission.CREATE)) { return false }
 
 				return true
 			},
@@ -731,7 +721,7 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 
 	const initPage = function() {
 		if ($('#isPublic').val() === '1' && $('#mimetype').val() !== 'httpd/unix-directory') {
-			//file by shared link
+			// file by shared link
 			const fileName = $('#filename').val()
 			const extension = OCA.Onlyoffice.getFileExtension(fileName)
 
@@ -745,8 +735,8 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 			const editorUrl = OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/s/' + encodeURIComponent($('#sharingToken').val()))
 
 			if (_oc_appswebroots.richdocuments
-                || _oc_appswebroots.files_pdfviewer && extension === 'pdf'
-                || _oc_appswebroots.text && extension === 'txt') {
+                || (_oc_appswebroots.files_pdfviewer && extension === 'pdf')
+                || (_oc_appswebroots.text && extension === 'txt')) {
 
 				const button = document.createElement('a')
 				button.href = editorUrl

@@ -75,7 +75,7 @@
 		},
 		loaded() {
 			callMobileMessage('loaded')
-		}
+		},
 	}
 
 	window.onload = function() {

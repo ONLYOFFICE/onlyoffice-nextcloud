@@ -43,7 +43,7 @@
 
 		$('#onlyoffice-template-picker').remove()
 
-		$.get(OC.filePath(OCA.Onlyoffice.AppName, 'templates', 'templatePicker.html'), 
+		$.get(OC.filePath(OCA.Onlyoffice.AppName, 'templates', 'templatePicker.html'),
 			function(tmpl) {
 				const $tmpl = $(tmpl)
 				const dialog = $tmpl.octemplate({
@@ -94,7 +94,7 @@
 				}
 
 				OCA.Onlyoffice.templates = response
-				return
+
 			})
 	}
 

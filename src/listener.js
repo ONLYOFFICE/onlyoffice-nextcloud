@@ -91,7 +91,7 @@
 			title = t(OCA.Onlyoffice.AppName, 'Select file to compare')
 		}
 		OC.dialogs.filepicker(title,
-			$(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.editorSetRequested.bind({documentSelectionType: documentSelectionType}),
+			$(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.editorSetRequested.bind({ documentSelectionType }),
 			false,
 			revisedMimes,
 			true)
@@ -114,7 +114,7 @@
 	}
 
 	OCA.Onlyoffice.setViewport = function() {
-		document.querySelector('meta[name="viewport"]').setAttribute('content','width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0')
+		document.querySelector('meta[name="viewport"]').setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0')
 	}
 
 	OCA.Onlyoffice.onShowMessage = function(messageObj) {

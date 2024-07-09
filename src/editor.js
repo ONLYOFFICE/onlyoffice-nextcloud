@@ -76,8 +76,8 @@
 		}
 
 		const docsVersion = DocsAPI.DocEditor.version().split('.')
-		if (docsVersion[0] < 6
-            || docsVersion[0] == 6 && docsVersion[1] == 0) {
+		if ((docsVersion[0] < 6)
+            || (docsVersion[0] == 6 && docsVersion[1] == 0)) {
 			OCA.Onlyoffice.showMessage(t(OCA.Onlyoffice.AppName, 'Not supported version'), 'error', { timeout: -1 })
 			return
 		}
@@ -167,9 +167,9 @@
 					OCA.Onlyoffice.documentType = config.documentType
 
 					config.events = {
-						'onDocumentStateChange': setPageTitle,
-						'onDocumentReady': OCA.Onlyoffice.onDocumentReady,
-						'onMakeActionLink': OCA.Onlyoffice.onMakeActionLink,
+						onDocumentStateChange: setPageTitle,
+						onDocumentReady: OCA.Onlyoffice.onDocumentReady,
+						onMakeActionLink: OCA.Onlyoffice.onMakeActionLink,
 					}
 
 					if (config.editorConfig.tenant) {
@@ -178,12 +178,12 @@
 						}
 					}
 
-					if (OCA.Onlyoffice.inframe && !OCA.Onlyoffice.shareToken
-                        || OCA.Onlyoffice.currentUser.uid) {
+					if ((OCA.Onlyoffice.inframe && !OCA.Onlyoffice.shareToken)
+                        || (OCA.Onlyoffice.currentUser.uid)) {
 						config.events.onRequestSaveAs = OCA.Onlyoffice.onRequestSaveAs
 						config.events.onRequestInsertImage = OCA.Onlyoffice.onRequestInsertImage
 						config.events.onRequestMailMergeRecipients = OCA.Onlyoffice.onRequestMailMergeRecipients
-						config.events.onRequestCompareFile = OCA.Onlyoffice.onRequestSelectDocument //todo: remove (for editors 7.4)
+						config.events.onRequestCompareFile = OCA.Onlyoffice.onRequestSelectDocument // todo: remove (for editors 7.4)
 						config.events.onRequestSelectDocument = OCA.Onlyoffice.onRequestSelectDocument
 						config.events.onRequestSendNotify = OCA.Onlyoffice.onRequestSendNotify
 						config.events.onRequestReferenceData = OCA.Onlyoffice.onRequestReferenceData
@@ -571,7 +571,7 @@
 	}
 
 	OCA.Onlyoffice.onRequestUsers = function(event) {
-		const operationType = typeof(event.data.c) !== 'undefined' ? event.data.c : null
+		const operationType = typeof (event.data.c) !== 'undefined' ? event.data.c : null
 		switch (operationType) {
 		case 'info':
 			$.get(OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/userInfo?userIds={userIds}',
@@ -580,8 +580,8 @@
 				}),
 			function onSuccess(response) {
 				OCA.Onlyoffice.docEditor.setUsers({
-					'c': operationType,
-					'users': response,
+					c: operationType,
+					users: response,
 				})
 			})
 			break
@@ -592,8 +592,8 @@
 				}),
 			function onSuccess(response) {
 				OCA.Onlyoffice.docEditor.setUsers({
-					'c': operationType,
-					'users': response,
+					c: operationType,
+					users: response,
 				})
 			})
 		}
@@ -698,7 +698,7 @@
 					message,
 					type,
 					props,
-				}
+				},
 			},
 			'*')
 			return
@@ -771,7 +771,7 @@
 	}
 
 	OCA.Onlyoffice.setViewport = function() {
-		document.querySelector('meta[name="viewport"]').setAttribute('content','width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0')
+		document.querySelector('meta[name="viewport"]').setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0')
 	}
 
 	OCA.Onlyoffice.InitEditor()
