@@ -141,12 +141,12 @@
 			}
 			const item = emptyItem.cloneNode(true)
 
-			$(item.querySelector('label')).attr('for', 'template_picker-' + template['id'])
-			item.querySelector('input').id = 'template_picker-' + template['id']
-			item.querySelector('img').src = '../../core/img/filetypes/x-office-' + template['type'] + '.svg'
-			item.querySelector('p').textContent = template['name']
+			$(item.querySelector('label')).attr('for', 'template_picker-' + template.id)
+			item.querySelector('input').id = 'template_picker-' + template.id
+			item.querySelector('img').src = '../../core/img/filetypes/x-office-' + template.type + '.svg'
+			item.querySelector('p').textContent = template.name
 			item.onclick = function() {
-				dialog[0].dataset.templateId = template['id']
+				dialog[0].dataset.templateId = template.id
 			}
 			dialog[0].querySelector('.onlyoffice-template-container').appendChild(item)
 		})

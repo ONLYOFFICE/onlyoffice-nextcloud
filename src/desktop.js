@@ -33,7 +33,7 @@
 
 	OCA.Onlyoffice = _.extend({}, OCA.Onlyoffice)
 
-	if (!window['AscDesktopEditor']) {
+	if (!window.AscDesktopEditor) {
 		return
 	}
 
