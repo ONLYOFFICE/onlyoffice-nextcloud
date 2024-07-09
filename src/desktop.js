@@ -48,7 +48,7 @@
 
 	$('html').addClass('AscDesktopEditor')
 
-	let domain = new RegExp('^http(s)?:\/\/[^\/]+').exec(location)[0]
+	let domain = /^http(s)?:\/\/[^\\/]+/.exec(location)[0]
 	domain += OC.getRootPath()
 
 	const data = {

@@ -138,7 +138,7 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 	OCA.Onlyoffice.OpenEditor = function(fileId, fileDir, fileName, winEditor, forceEdit) {
 		let filePath = ''
 		if (fileName) {
-			filePath = fileDir.replace(new RegExp('\/$'), '') + '/' + fileName
+			filePath = fileDir.replace(/\/$/, '') + '/' + fileName
 		}
 		let url = OC.generateUrl('/apps/' + OCA.Onlyoffice.AppName + '/{fileId}?filePath={filePath}',
 			{
