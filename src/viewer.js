@@ -45,7 +45,7 @@
 	const OnlyofficeViewerVue = {
 		name: 'OnlyofficeViewerVue',
 		render(createElement) {
-			let self = this
+			const self = this
 
 			return createElement('iframe', {
 				attrs: {
@@ -54,7 +54,7 @@
 					src: self.url + '&inframe=true&inviewer=true',
 				},
 				on: {
-					load: function() {
+					load() {
 						self.doneLoading()
 					},
 				},

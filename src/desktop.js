@@ -51,7 +51,7 @@
 
 	const data = {
 		displayName: oc_current_user,
-		domain: domain,
+		domain,
 		provider: 'Nextcloud',
 	}
 

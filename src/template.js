@@ -34,7 +34,7 @@
 
 	OCA.Onlyoffice = _.extend({
 		AppName: 'onlyoffice',
-		templates: null
+		templates: null,
 	}, OCA.Onlyoffice)
 
 	OCA.Onlyoffice.OpenTemplatePicker = function(name, extension, type) {
@@ -46,7 +46,7 @@
 				const $tmpl = $(tmpl)
 				const dialog = $tmpl.octemplate({
 					dialog_name: 'onlyoffice-template-picker',
-					dialog_title: t(OCA.Onlyoffice.AppName, 'Select template')
+					dialog_title: t(OCA.Onlyoffice.AppName, 'Select template'),
 				})
 
 				OCA.Onlyoffice.AttachTemplates(dialog, type)
@@ -59,19 +59,19 @@
 					buttons: [{
 						text: t('core', 'Cancel'),
 						classes: 'cancel',
-						click: function() {
+						click() {
 							$(this).ocdialog('close')
-						}
+						},
 					}, {
 						text: t(OCA.Onlyoffice.AppName, 'Create'),
 						classes: 'primary',
-						click: function() {
+						click() {
 							const templateId = this.dataset.templateId
 							const fileList = OCA.Files.App.fileList
 							OCA.Onlyoffice.CreateFile(name + extension, fileList, templateId)
 							$(this).ocdialog('close')
-						}
-					}]
+						},
+					}],
 				})
 			})
 	}
@@ -86,7 +86,7 @@
 				if (response.error) {
 					OC.Notification.show(response.error, {
 						type: 'error',
-						timeout: 3
+						timeout: 3,
 					})
 					return
 				}
@@ -103,7 +103,7 @@
 		$.ajax({
 			method: 'POST',
 			url: OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/template'),
-			data: data,
+			data,
 			processData: false,
 			contentType: false,
 			success: function onSuccess(response) {
@@ -113,7 +113,7 @@
 				}
 
 				callback(response, null)
-			}
+			},
 		})
 	}
 
@@ -122,13 +122,13 @@
 			method: 'DELETE',
 			url: OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/template?templateId={templateId}',
 				{
-					templateId: templateId
+					templateId,
 				}),
 			success: function onSuccess(response) {
 				if (response) {
 					callback(response)
 				}
-			}
+			},
 		})
 	}
 

@@ -96,8 +96,8 @@
 			'linkTags',
 		]
 
-		const watermarkNodeBehaviour = function(watermark){
-			let watermarkListToggle = function() {
+		const watermarkNodeBehaviour = function(watermark) {
+			const watermarkListToggle = function() {
 				if ($('#onlyofficeWatermark_' + watermark).prop('checked')) {
 					if (watermark.indexOf('Group') >= 0) {
 						OC.Settings.setupGroupsSelect($('#onlyofficeWatermark_' + watermark + 'List'))
@@ -114,19 +114,19 @@
 									results: OC.SystemTags.collection.filterByName(query.term),
 								})
 							}, 100, true),
-							initSelection: function(element, callback) {
-								let selection = ($(element).val() || []).split('|').map(function(tagId) {
+							initSelection(element, callback) {
+								const selection = ($(element).val() || []).split('|').map(function(tagId) {
 									return OC.SystemTags.collection.get(tagId)
 								})
 								callback(selection)
 							},
-							formatResult: function(tag) {
+							formatResult(tag) {
 								return OC.SystemTags.getDescriptiveTag(tag)
 							},
-							formatSelection: function(tag) {
+							formatSelection(tag) {
 								return tag.get('name')
 							},
-							sortResults: function(results) {
+							sortResults(results) {
 								results.sort(function(a, b) {
 									return OC.Util.naturalSortCompare(a.get('name'), b.get('name'))
 								})
@@ -149,7 +149,7 @@
 
 		if (OC.SystemTags && OC.SystemTags.collection) {
 			OC.SystemTags.collection.fetch({
-				success: function() {
+				success() {
 					$.each(watermarkTagLists, function(i, watermarkTag) {
 						watermarkNodeBehaviour(watermarkTag)
 					})
@@ -181,8 +181,8 @@
 					storageUrl: onlyofficeStorageUrl,
 					verifyPeerOff: onlyofficeVerifyPeerOff,
 					secret: onlyofficeSecret,
-					jwtHeader: jwtHeader,
-					demo: demo,
+					jwtHeader,
+					demo,
 				},
 				success: function onSuccess(response) {
 					$('.section-onlyoffice').removeClass('icon-loading')
@@ -244,22 +244,22 @@
 				method: 'PUT',
 				url: OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/settings/common'),
 				data: {
-					defFormats: defFormats,
-					editFormats: editFormats,
-					sameTab: sameTab,
-					preview: preview,
-					advanced: advanced,
-					cronChecker: cronChecker,
-					versionHistory: versionHistory,
-					limitGroups: limitGroups,
-					chat: chat,
-					compactHeader: compactHeader,
-					feedback: feedback,
-					forcesave: forcesave,
-					help: help,
-					toolbarNoTabs: toolbarNoTabs,
-					reviewDisplay: reviewDisplay,
-					theme: theme,
+					defFormats,
+					editFormats,
+					sameTab,
+					preview,
+					advanced,
+					cronChecker,
+					versionHistory,
+					limitGroups,
+					chat,
+					compactHeader,
+					feedback,
+					forcesave,
+					help,
+					toolbarNoTabs,
+					reviewDisplay,
+					theme,
 				},
 				success: function onSuccess(response) {
 					$('.section-onlyoffice').removeClass('icon-loading')
@@ -308,9 +308,9 @@
 				url: OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/settings/security'),
 				data: {
 					watermarks: watermarkSettings,
-					plugins: plugins,
-					macros: macros,
-					protection: protection,
+					plugins,
+					macros,
+					protection,
 				},
 				success: function onSuccess(response) {
 					$('.section-onlyoffice').removeClass('icon-loading')
