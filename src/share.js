@@ -26,6 +26,8 @@
  *
  */
 
+/* global _, jQuery */
+
 import AppDarkSvg from '!!raw-loader!../img/app-dark.svg';
 
 /**

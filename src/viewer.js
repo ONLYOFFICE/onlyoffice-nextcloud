@@ -26,6 +26,8 @@
  *
  */
 
+/* global $ */
+
 /**
  * @param {object} OCA Nextcloud OCA object
  */

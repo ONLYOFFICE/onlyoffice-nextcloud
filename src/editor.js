@@ -26,6 +26,8 @@
  *
  */
 
+/* global _, DocsAPI, jQuery, moment, oc_defaults */
+
 /**
  * @param {object} $ JQueryStatic object
  * @param {object} OCA Nextcloud OCA object
@@ -64,19 +66,19 @@
 		}
 
 		if (!OCA.Onlyoffice.fileId && !OCA.Onlyoffice.shareToken && !directToken) {
-			OCA.Onlyoffice.showMessage(t(OCA.Onlyoffice.AppName, 'FileId is empty'), 'error', {timeout: -1})
+			OCA.Onlyoffice.showMessage(t(OCA.Onlyoffice.AppName, 'FileId is empty'), 'error', { timeout: -1 })
 			return
 		}
 
 		if (typeof DocsAPI === 'undefined') {
-			OCA.Onlyoffice.showMessage(t(OCA.Onlyoffice.AppName, 'ONLYOFFICE cannot be reached. Please contact admin'), 'error', {timeout: -1})
+			OCA.Onlyoffice.showMessage(t(OCA.Onlyoffice.AppName, 'ONLYOFFICE cannot be reached. Please contact admin'), 'error', { timeout: -1 })
 			return
 		}
 
 		const docsVersion = DocsAPI.DocEditor.version().split('.')
 		if (docsVersion[0] < 6
             || docsVersion[0] == 6 && docsVersion[1] == 0) {
-			OCA.Onlyoffice.showMessage(t(OCA.Onlyoffice.AppName, 'Not supported version'), 'error', {timeout: -1})
+			OCA.Onlyoffice.showMessage(t(OCA.Onlyoffice.AppName, 'Not supported version'), 'error', { timeout: -1 })
 			return
 		}
 
@@ -137,7 +139,7 @@
 					}
 
 					if (config.error != null) {
-						OCA.Onlyoffice.showMessage(config.error, 'error', {timeout: -1})
+						OCA.Onlyoffice.showMessage(config.error, 'error', { timeout: -1 })
 						return
 					}
 
@@ -510,13 +512,13 @@
 			let title
 			switch (event.data.c) {
 			case 'combine':
-				title =  t(OCA.Onlyoffice.AppName, 'Select file to combine')
+				title = t(OCA.Onlyoffice.AppName, 'Select file to combine')
 				break
 			default:
-				title =  t(OCA.Onlyoffice.AppName, 'Select file to compare')
+				title = t(OCA.Onlyoffice.AppName, 'Select file to compare')
 			}
 			OC.dialogs.filepicker(title,
-				OCA.Onlyoffice.editorSetRequested.bind({documentSelectionType: event.data.c}),
+				OCA.Onlyoffice.editorSetRequested.bind({ documentSelectionType: event.data.c }),
 				false,
 				revisedMimes,
 				true)
@@ -641,7 +643,7 @@
 	}
 
 	OCA.Onlyoffice.onRequestOpen = function(event) {
-		const filePath  = event.data.path
+		const filePath = event.data.path
 		const fileId = event.data.referenceData.fileKey
 		const windowName = event.data.windowName
 		const sourceUrl = OC.generateUrl(`apps/${OCA.Onlyoffice.AppName}/${fileId}?filePath=${OC.encodePath(filePath)}`)
@@ -677,7 +679,7 @@
 				}),
 				contentType: 'application/json',
 				dataType: 'json',
-				success(){
+				success() {
 					OCA.Onlyoffice.docEditor.setFavorite(event.data.favorite)
 				},
 			})
@@ -713,7 +715,7 @@
 	}
 
 	OCA.Onlyoffice.refreshHistory = function(response, version) {
-		let data = {};
+		let data = {}
 		if (response.error) {
 			data = { error: response.error }
 		} else {

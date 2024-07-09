@@ -26,6 +26,8 @@
  *
  */
 
+/* global _ */
+
 /**
  * @param {object} OCA Nextcloud OCA object
  */
@@ -75,7 +77,6 @@
 			callMobileMessage('loaded')
 		}
 	}
-
 
 	window.onload = function() {
 		const directEditorError = document.getElementById('directEditorError')

@@ -26,6 +26,8 @@
  *
  */
 
+/* global _, $, _oc_appswebroots */
+
 import { FileAction,
 	registerFileAction,
 	Permission,

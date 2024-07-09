@@ -26,6 +26,8 @@
  *
  */
 
+/* global _, $ */
+
 /**
  * @param {object} OCA Nextcloud OCA object
  */
@@ -83,10 +85,10 @@
 		let title
 		switch (documentSelectionType) {
 		case 'combine':
-			title =  t(OCA.Onlyoffice.AppName, 'Select file to combine')
+			title = t(OCA.Onlyoffice.AppName, 'Select file to combine')
 			break
 		default:
-			title =  t(OCA.Onlyoffice.AppName, 'Select file to compare')
+			title = t(OCA.Onlyoffice.AppName, 'Select file to compare')
 		}
 		OC.dialogs.filepicker(title,
 			$(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.editorSetRequested.bind({documentSelectionType: documentSelectionType}),

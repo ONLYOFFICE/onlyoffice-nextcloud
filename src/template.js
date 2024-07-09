@@ -26,6 +26,8 @@
  *
  */
 
+/* global _, jQuery */
+
 /**
  * @param {object} $ JQueryStatic object
  * @param {object} OC Nextcloud OCA object
