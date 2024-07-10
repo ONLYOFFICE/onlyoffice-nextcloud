@@ -76,8 +76,8 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 		OCA.Onlyoffice.CreateFileProcess(name, context.dir, templateId, targetId, open, async (response) => {
 			const viewContents = await context.view.getContents(context.dir)
 
-			if (viewContents.folder && (viewContents.folder.fileid == response.parentId)) {
-				const newFile = viewContents.contents.find(node => node.fileid == response.id)
+			if (viewContents.folder && (viewContents.folder.fileid === response.parentId)) {
+				const newFile = viewContents.contents.find(node => node.fileid === response.id)
 				if (newFile) emit('files:node:created', newFile)
 			}
 		})
@@ -250,7 +250,7 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 		const fileId = context.$file ? context.$file[0].dataset.id : fileInfoModel.id
 
 		OCA.Onlyoffice.FileConvert(fileId, (response) => {
-			if (response.parentId == fileList.dirInfo.id) {
+			if (response.parentId === fileList.dirInfo.id) {
 				fileList.add(response, { animate: true })
 			}
 		})
@@ -260,8 +260,8 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 		OCA.Onlyoffice.FileConvert(file.fileid, async (response) => {
 			const viewContents = await view.getContents(dir)
 
-			if (viewContents.folder && (viewContents.folder.fileid == response.parentId)) {
-				const newFile = viewContents.contents.find(node => node.fileid == response.id)
+			if (viewContents.folder && (viewContents.folder.fileid === response.parentId)) {
+				const newFile = viewContents.contents.find(node => node.fileid === response.id)
 				if (newFile) emit('files:node:created', newFile)
 			}
 		})

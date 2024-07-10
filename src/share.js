@@ -85,7 +85,7 @@ import AppDarkSvg from '!!raw-loader!../img/app-dark.svg';
 
 					if (($('#sharing').hasClass('active') || $('#tab-button-sharing').hasClass('active'))
                         && tabcontext.fileInfo
-                        && tabcontext.fileInfo.id == fileInfo.id) {
+                        && tabcontext.fileInfo.id === fileInfo.id) {
 						this.update(fileInfo)
 					}
 				}
@@ -138,17 +138,17 @@ import AppDarkSvg from '!!raw-loader!../img/app-dark.svg';
 
 					let avatarSrc = '/index.php/avatar/' + extra.shareWith + '/32?v=0'
 					let label = extra.shareWithName
-					if (extra.type == OC.Share.SHARE_TYPE_GROUP
-                        || extra.type == OC.Share.SHARE_TYPE_ROOM) {
+					if (extra.type === OC.Share.SHARE_TYPE_GROUP
+                        || extra.type === OC.Share.SHARE_TYPE_ROOM) {
 						avatarSrc = '/index.php/avatar/guest/' + extra.shareWith + '/32?v=0'
 						label = extra.shareWith + ' (' + t(OCA.Onlyoffice.AppName, 'group') + ')'
 					}
 
-					if (extra.type == OC.Share.SHARE_TYPE_ROOM) {
+					if (extra.type === OC.Share.SHARE_TYPE_ROOM) {
 						label = extra.shareWith + ' (' + t(OCA.Onlyoffice.AppName, 'conversation') + ')'
 					}
 
-					if (extra.type == OC.Share.SHARE_TYPE_LINK) {
+					if (extra.type === OC.Share.SHARE_TYPE_LINK) {
 						label = t(OCA.Onlyoffice.AppName, 'Share link')
 
 						const avatarWrapper = itemNode.find('.avatardiv')
@@ -173,30 +173,30 @@ import AppDarkSvg from '!!raw-loader!../img/app-dark.svg';
 			const permissionValues = permissionsMenu.getValues()
 			const shareId = permissionsMenu.getTargetId()
 			const fileId = fileInfo.id
-			const extra = collection.find(item => item.share_id == shareId)
+			const extra = collection.find(item => item.share_id === shareId)
 
 			let permissions = OCA.Onlyoffice.Permissions.None
 			if (permissionValues[OCA.Onlyoffice.Permissions.Review]) {
 				permissions |= OCA.Onlyoffice.Permissions.Review
 			}
 			if (permissionValues[OCA.Onlyoffice.Permissions.Comment]
-                && (permissions & OCA.Onlyoffice.Permissions.Review) != OCA.Onlyoffice.Permissions.Review
-                && (permissions & OCA.Onlyoffice.Permissions.ModifyFilter) != OCA.Onlyoffice.Permissions.ModifyFilter) {
+                && (permissions & OCA.Onlyoffice.Permissions.Review) !== OCA.Onlyoffice.Permissions.Review
+                && (permissions & OCA.Onlyoffice.Permissions.ModifyFilter) !== OCA.Onlyoffice.Permissions.ModifyFilter) {
 				permissions |= OCA.Onlyoffice.Permissions.Comment
 			}
 			if (permissionValues[OCA.Onlyoffice.Permissions.FillForms]
-                && (permissions & OCA.Onlyoffice.Permissions.Review) != OCA.Onlyoffice.Permissions.Review) {
+                && (permissions & OCA.Onlyoffice.Permissions.Review) !== OCA.Onlyoffice.Permissions.Review) {
 				permissions |= OCA.Onlyoffice.Permissions.FillForms
 			}
 			if (permissionValues[OCA.Onlyoffice.Permissions.ModifyFilter]
-                && (permissions & OCA.Onlyoffice.Permissions.Comment) != OCA.Onlyoffice.Permissions.Comment) {
+                && (permissions & OCA.Onlyoffice.Permissions.Comment) !== OCA.Onlyoffice.Permissions.Comment) {
 				permissions |= OCA.Onlyoffice.Permissions.ModifyFilter
 			}
 
 			permissionsMenu.block(true)
 			OCA.Onlyoffice.SetShares(extra.id, shareId, fileId, permissions, (extra) => {
 				collection.forEach(item => {
-					if (item.share_id == extra.share_id) {
+					if (item.share_id === extra.share_id) {
 						item.id = extra.id
 						item.permissions = extra.permissions
 						item.available = extra.available
@@ -236,10 +236,10 @@ import AppDarkSvg from '!!raw-loader!../img/app-dark.svg';
 				const previousId = permissionsMenu.getTargetId()
 				permissionsMenu.close()
 
-				if (previousId == shareId) return
+				if (previousId === shareId) return
 			}
 
-			const extra = collection.find(item => item.share_id == shareId)
+			const extra = collection.find(item => item.share_id === shareId)
 
 			const attributes = getPermissionAttributes(extra)
 
@@ -256,8 +256,8 @@ import AppDarkSvg from '!!raw-loader!../img/app-dark.svg';
 							const target = $(e.target)[0]
 							if (!permissionsMenu
                                 || !permissionsMenu.isOpen()
-                                || target.id == 'onlyoffice-share-action'
-                                || target.className == 'onlyoffice-share-label'
+                                || target.id === 'onlyoffice-share-action'
+                                || target.className === 'onlyoffice-share-label'
                                 || target.closest('.onlyoffice-share-action')) {
 								return
 							}

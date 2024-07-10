@@ -55,7 +55,7 @@
 
 		$('#onlyofficeAdv').click(advToogle)
 
-		$('#onlyofficeGroups').prop('checked', $('#onlyofficeLimitGroups').val() != '')
+		$('#onlyofficeGroups').prop('checked', $('#onlyofficeLimitGroups').val() !== '')
 
 		const groupListToggle = function() {
 			if ($('#onlyofficeGroups').prop('checked')) {
@@ -331,7 +331,7 @@
 		})
 
 		$('#onlyofficeSecret-show').click(function() {
-			if ($('#onlyofficeSecret').attr('type') == 'password') {
+			if ($('#onlyofficeSecret').attr('type') === 'password') {
 				$('#onlyofficeSecret').attr('type', 'text')
 			} else {
 				$('#onlyofficeSecret').attr('type', 'password')
