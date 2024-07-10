@@ -26,6 +26,9 @@
  *
  */
 
+/* eslint-disable import/no-webpack-loader-syntax */
+/* eslint-disable import/no-unresolved */
+
 /* global _, jQuery */
 
 import AppDarkSvg from '!!raw-loader!../img/app-dark.svg';

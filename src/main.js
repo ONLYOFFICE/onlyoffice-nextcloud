@@ -26,6 +26,9 @@
  *
  */
 
+/* eslint-disable import/no-webpack-loader-syntax */
+/* eslint-disable import/no-unresolved */
+
 /* global _, $, _oc_appswebroots */
 
 import {
@@ -33,7 +36,6 @@ import {
 	registerFileAction,
 	Permission,
 	DefaultType,
-	File,
 	addNewFileMenuEntry,
 	davGetClient,
 	davRootPath,
