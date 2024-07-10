@@ -179,7 +179,7 @@
 					}
 
 					if ((OCA.Onlyoffice.inframe && !OCA.Onlyoffice.shareToken)
-                        || (OCA.Onlyoffice.currentUser.uid)) {
+						|| (OCA.Onlyoffice.currentUser.uid)) {
 						config.events.onRequestSaveAs = OCA.Onlyoffice.onRequestSaveAs
 						config.events.onRequestInsertImage = OCA.Onlyoffice.onRequestInsertImage
 						config.events.onRequestMailMergeRecipients = OCA.Onlyoffice.onRequestMailMergeRecipients
@@ -212,14 +212,14 @@
 					}
 
 					if (OCA.Onlyoffice.inframe
-                        && config._files_sharing && !OCA.Onlyoffice.shareToken
-                        && window.parent.OCA.Onlyoffice.context) {
+						&& config._files_sharing && !OCA.Onlyoffice.shareToken
+						&& window.parent.OCA.Onlyoffice.context) {
 						config.events.onRequestSharingSettings = OCA.Onlyoffice.onRequestSharingSettings
 					}
 
 					if (!config.document.permissions.edit
-                        && config.document.permissions.fillForms
-                        && config.canEdit) {
+						&& config.document.permissions.fillForms
+						&& config.canEdit) {
 						config.events.onRequestEditRights = OCA.Onlyoffice.onRequestEditRights
 					}
 
@@ -230,7 +230,7 @@
 					}
 
 					if (!OCA.Onlyoffice.directEditor
-                        && config.type === 'mobile' && $('#app > iframe').css('position') === 'fixed') {
+						&& config.type === 'mobile' && $('#app > iframe').css('position') === 'fixed') {
 						$('#app > iframe').css('height', 'calc(100% - 50px)')
 					}
 

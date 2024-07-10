@@ -60,7 +60,7 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 
 	OCA.Onlyoffice.setting = OCP.InitialState.loadState(OCA.Onlyoffice.AppName, 'settings')
 	OCA.Onlyoffice.mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini|Macintosh/i.test(navigator.userAgent)
-                            && navigator.maxTouchPoints && navigator.maxTouchPoints > 1
+							&& navigator.maxTouchPoints && navigator.maxTouchPoints > 1
 
 	OCA.Onlyoffice.CreateFile = function(name, fileList, templateId, targetId, open = true) {
 		const dir = fileList.getCurrentDirectory()
@@ -737,8 +737,8 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 			const editorUrl = OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/s/' + encodeURIComponent($('#sharingToken').val()))
 
 			if (_oc_appswebroots.richdocuments
-                || (_oc_appswebroots.files_pdfviewer && extension === 'pdf')
-                || (_oc_appswebroots.text && extension === 'txt')) {
+				|| (_oc_appswebroots.files_pdfviewer && extension === 'pdf')
+				|| (_oc_appswebroots.text && extension === 'txt')) {
 
 				const button = document.createElement('a')
 				button.href = editorUrl

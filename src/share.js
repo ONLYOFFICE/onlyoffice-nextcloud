@@ -81,14 +81,14 @@ import AppDarkSvg from '!!raw-loader!../img/app-dark.svg';
 				const ext = OCA.Onlyoffice.getFileExtension(fileInfo.name)
 				const format = OCA.Onlyoffice.setting.formats[ext]
 				if (format && (format.review
-                    || format.comment
-                    || format.fillForms
-                    || format.modifyFilter)) {
+					|| format.comment
+					|| format.fillForms
+					|| format.modifyFilter)) {
 					canDisplay = true
 
 					if (($('#sharing').hasClass('active') || $('#tab-button-sharing').hasClass('active'))
-                        && tabcontext.fileInfo
-                        && tabcontext.fileInfo.id === fileInfo.id) {
+						&& tabcontext.fileInfo
+						&& tabcontext.fileInfo.id === fileInfo.id) {
 						this.update(fileInfo)
 					}
 				}
@@ -142,7 +142,7 @@ import AppDarkSvg from '!!raw-loader!../img/app-dark.svg';
 					let avatarSrc = '/index.php/avatar/' + extra.shareWith + '/32?v=0'
 					let label = extra.shareWithName
 					if (extra.type === OC.Share.SHARE_TYPE_GROUP
-                        || extra.type === OC.Share.SHARE_TYPE_ROOM) {
+						|| extra.type === OC.Share.SHARE_TYPE_ROOM) {
 						avatarSrc = '/index.php/avatar/guest/' + extra.shareWith + '/32?v=0'
 						label = extra.shareWith + ' (' + t(OCA.Onlyoffice.AppName, 'group') + ')'
 					}
@@ -183,16 +183,16 @@ import AppDarkSvg from '!!raw-loader!../img/app-dark.svg';
 				permissions |= OCA.Onlyoffice.Permissions.Review
 			}
 			if (permissionValues[OCA.Onlyoffice.Permissions.Comment]
-                && (permissions & OCA.Onlyoffice.Permissions.Review) !== OCA.Onlyoffice.Permissions.Review
-                && (permissions & OCA.Onlyoffice.Permissions.ModifyFilter) !== OCA.Onlyoffice.Permissions.ModifyFilter) {
+				&& (permissions & OCA.Onlyoffice.Permissions.Review) !== OCA.Onlyoffice.Permissions.Review
+				&& (permissions & OCA.Onlyoffice.Permissions.ModifyFilter) !== OCA.Onlyoffice.Permissions.ModifyFilter) {
 				permissions |= OCA.Onlyoffice.Permissions.Comment
 			}
 			if (permissionValues[OCA.Onlyoffice.Permissions.FillForms]
-                && (permissions & OCA.Onlyoffice.Permissions.Review) !== OCA.Onlyoffice.Permissions.Review) {
+				&& (permissions & OCA.Onlyoffice.Permissions.Review) !== OCA.Onlyoffice.Permissions.Review) {
 				permissions |= OCA.Onlyoffice.Permissions.FillForms
 			}
 			if (permissionValues[OCA.Onlyoffice.Permissions.ModifyFilter]
-                && (permissions & OCA.Onlyoffice.Permissions.Comment) !== OCA.Onlyoffice.Permissions.Comment) {
+				&& (permissions & OCA.Onlyoffice.Permissions.Comment) !== OCA.Onlyoffice.Permissions.Comment) {
 				permissions |= OCA.Onlyoffice.Permissions.ModifyFilter
 			}
 
@@ -258,10 +258,10 @@ import AppDarkSvg from '!!raw-loader!../img/app-dark.svg';
 						$('#content').on('click', function(e) {
 							const target = $(e.target)[0]
 							if (!permissionsMenu
-                                || !permissionsMenu.isOpen()
-                                || target.id === 'onlyoffice-share-action'
-                                || target.className === 'onlyoffice-share-label'
-                                || target.closest('.onlyoffice-share-action')) {
+								|| !permissionsMenu.isOpen()
+								|| target.id === 'onlyoffice-share-action'
+								|| target.className === 'onlyoffice-share-label'
+								|| target.closest('.onlyoffice-share-action')) {
 								return
 							}
 
@@ -278,7 +278,7 @@ import AppDarkSvg from '!!raw-loader!../img/app-dark.svg';
 			const attributes = []
 
 			if (format.review
-                && (OCA.Onlyoffice.Permissions.Review & extra.available) === OCA.Onlyoffice.Permissions.Review) {
+				&& (OCA.Onlyoffice.Permissions.Review & extra.available) === OCA.Onlyoffice.Permissions.Review) {
 				const review = (OCA.Onlyoffice.Permissions.Review & extra.permissions) === OCA.Onlyoffice.Permissions.Review
 				attributes.push({
 					checked: review,
@@ -287,7 +287,7 @@ import AppDarkSvg from '!!raw-loader!../img/app-dark.svg';
 				})
 			}
 			if (format.comment
-                && (OCA.Onlyoffice.Permissions.Comment & extra.available) === OCA.Onlyoffice.Permissions.Comment) {
+				&& (OCA.Onlyoffice.Permissions.Comment & extra.available) === OCA.Onlyoffice.Permissions.Comment) {
 				const comment = (OCA.Onlyoffice.Permissions.Comment & extra.permissions) === OCA.Onlyoffice.Permissions.Comment
 				attributes.push({
 					checked: comment,
@@ -296,7 +296,7 @@ import AppDarkSvg from '!!raw-loader!../img/app-dark.svg';
 				})
 			}
 			if (format.fillForms
-                && (OCA.Onlyoffice.Permissions.FillForms & extra.available) === OCA.Onlyoffice.Permissions.FillForms) {
+				&& (OCA.Onlyoffice.Permissions.FillForms & extra.available) === OCA.Onlyoffice.Permissions.FillForms) {
 				const fillForms = (OCA.Onlyoffice.Permissions.FillForms & extra.permissions) === OCA.Onlyoffice.Permissions.FillForms
 				attributes.push({
 					checked: fillForms,
@@ -306,7 +306,7 @@ import AppDarkSvg from '!!raw-loader!../img/app-dark.svg';
 			}
 
 			if (format.modifyFilter
-                && (OCA.Onlyoffice.Permissions.ModifyFilter & extra.available) === OCA.Onlyoffice.Permissions.ModifyFilter) {
+				&& (OCA.Onlyoffice.Permissions.ModifyFilter & extra.available) === OCA.Onlyoffice.Permissions.ModifyFilter) {
 				const modifyFilter = (OCA.Onlyoffice.Permissions.ModifyFilter & extra.permissions) === OCA.Onlyoffice.Permissions.ModifyFilter
 				attributes.push({
 					checked: modifyFilter,
