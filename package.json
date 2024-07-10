@@ -11,6 +11,7 @@
         "dev": "NODE_ENV=development webpack --progress --config webpack.js"
     },
     "dependencies": {
+        "@nextcloud/event-bus": "^3.3.1",
         "@nextcloud/files": "^3.0.0"
     },
     "devDependencies": {
