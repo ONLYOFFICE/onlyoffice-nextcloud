@@ -3,12 +3,12 @@ name: ESLint
 on:
   workflow_dispatch:
   push:
-    branches: [master, develop, refactor/eslint]
+    branches: [master, develop, refactor/eslint, refactor/stylelint]
   pull_request:
-    branches: [master, develop, refactor/eslint]
+    branches: [master, develop, refactor/eslint, refactor/stylelint]
 
 env:
-  NODE_VERSION: 16
+  NODE_VERSION: 20
 
 jobs:
   lint:
@@ -31,3 +31,6 @@ jobs:
         
       - name: Code Linting
         run: npx eslint *.js
+
+      - name: CSS Linting
+        run: npx stylelint ../css/*.css
