@@ -61,6 +61,9 @@ use OCP\IUserSession;
 use OCP\Share\IManager;
 use OCP\Share\IShare;
 
+/**
+ * Controller with the main functions
+ */
 class EditorController extends Controller {
 
 	private FileUtility $fileUtility;
