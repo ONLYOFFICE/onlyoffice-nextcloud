@@ -49,9 +49,11 @@
 #body-user.onlyoffice-inline .files-list__header {
     display: none;
 }
+
 #body-user.onlyoffice-inline #app-navigation-toggle {
     display: none !important;
 }
+
 #body-public.onlyoffice-inline #content #app-content,
 #body-user.onlyoffice-inline #content #app-content,
 #body-user.onlyoffice-inline #content #app-content-vue,
@@ -61,6 +63,7 @@
     overflow: hidden;
     overscroll-behavior-y: none;
 }
+
 #body-public.onlyoffice-inline footer {
     display: none !important;
 }
@@ -84,32 +87,40 @@
 .AscDesktopEditor #body-user #header {
     display: none;
 }
+
 .AscDesktopEditor #body-user #content {
     padding-top: 0;
     margin-top: 0px;
     height: 100%;
 }
+
 .AscDesktopEditor #body-user #app-navigation,
 .AscDesktopEditor #body-user #controls,
 .AscDesktopEditor #body-user #app-sidebar {
     top: 0;
 }
+
 .AscDesktopEditor #body-user #app-navigation {
     height: 100%;
 }
+
 .AscDesktopEditor #body-user #app-sidebar {
     height: 100vh;
 }
+
 .AscDesktopEditor #body-user table.multiselect thead,
 .AscDesktopEditor #app-content-files thead {
     top: 44px;
 }
+
 .AscDesktopEditor #body-user #gallery-button {
     display: none;
 }
+
 .onlyoffice-download-container {
     display: flex;
 }
+
 .onlyoffice-download-container p {
     margin-right: 10px;
     padding-top: 10px;

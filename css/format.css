@@ -21,16 +21,19 @@
     background-position: 12px !important;
     background-image: url("../img/new-docx.svg");
 }
+
 .icon-onlyoffice-new-xlsx {
     background-size: 20px !important;
     background-position: 12px !important;
     background-image: url("../img/new-xlsx.svg");
 }
+
 .icon-onlyoffice-new-pptx {
     background-size: 20px !important;
     background-position: 12px !important;
     background-image: url("../img/new-pptx.svg");
 }
+
 .icon-onlyoffice-new-pdf {
     background-size: 20px !important;
     background-position: 12px !important;

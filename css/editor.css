@@ -55,11 +55,13 @@
 .AscDesktopEditor #body-user #header {
     display: none;
 }
+
 .AscDesktopEditor #body-user #content {
     min-height: 100%;
     padding-top: 0;
     margin-top: 0px;
 }
+
 .AscDesktopEditor #app > iframe {
     height: 100% !important;
 }
