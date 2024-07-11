@@ -66,53 +66,52 @@ use OCP\Share\IShare;
  */
 class EditorController extends Controller {
 
-	private FileUtility $fileUtility;
-	private ?IVersionManager $versionManager = null;
-	private IAvatarManager $avatarManager;
+    private FileUtility $fileUtility;
+    private ?IVersionManager $versionManager = null;
+    private IAvatarManager $avatarManager;
 
-	/**
-	 * @param string $AppName - application name
-	 * @param IRequest $request - request object
-	 * @param IRootFolder $root - root folder
-	 * @param IUserSession $userSession - current user session
-	 * @param IUserManager $userManager - user manager
-	 * @param IURLGenerator $urlGenerator - url generator service
-	 * @param IL10N $trans - l10n service
-	 * @param ILogger $logger - logger
-	 * @param AppConfig $config - application configuration
-	 * @param Crypt $crypt - hash generator
-	 * @param IManager $shareManager - Share manager
-	 * @param ISession $session - Session
-	 * @param IGroupManager $groupManager - group Manager
-	 */
-	public function __construct(
-		string $AppName,
-		IRequest $request,
-		private IRootFolder $root,
-		private IUserSession $userSession,
-		private IUserManager $userManager,
-		private IURLGenerator $urlGenerator,
-		private IL10N $trans,
-		private ILogger $logger,
-		private AppConfig $config,
-		private Crypt $crypt,
-		private IManager $shareManager,
-		ISession $session,
-		private IGroupManager $groupManager
-	) {
-		parent::__construct($AppName, $request);
+    /**
+     * @param string $AppName - application name
+     * @param IRequest $request - request object
+     * @param IRootFolder $root - root folder
+     * @param IUserSession $userSession - current user session
+     * @param IUserManager $userManager - user manager
+     * @param IURLGenerator $urlGenerator - url generator service
+     * @param IL10N $trans - l10n service
+     * @param ILogger $logger - logger
+     * @param AppConfig $config - application configuration
+     * @param Crypt $crypt - hash generator
+     * @param IManager $shareManager - Share manager
+     * @param ISession $session - Session
+     * @param IGroupManager $groupManager - group Manager
+     */
+    public function __construct(
+        string $AppName,
+        IRequest $request,
+        private IRootFolder $root,
+        private IUserSession $userSession,
+        private IUserManager $userManager,
+        private IURLGenerator $urlGenerator,
+        private IL10N $trans,
+        private ILogger $logger,
+        private AppConfig $config,
+        private Crypt $crypt,
+        private IManager $shareManager,
+        ISession $session,
+        private IGroupManager $groupManager
+    ) {
+        parent::__construct($AppName, $request);
+        if (\OC::$server->getAppManager()->isInstalled("files_versions")) {
+            try {
+                $this->versionManager = \OC::$server->query(IVersionManager::class);
+            } catch (QueryException $e) {
+                $this->logger->logException($e, ["message" => "VersionManager init error", "app" => $this->appName]);
+            }
+        }
 
-		if (\OC::$server->getAppManager()->isInstalled("files_versions")) {
-			try {
-				$this->versionManager = \OC::$server->query(IVersionManager::class);
-			} catch (QueryException $e) {
-				$this->logger->logException($e, ["message" => "VersionManager init error", "app" => $this->appName]);
-			}
-		}
-
-		$this->fileUtility = new FileUtility($AppName, $trans, $logger, $config, $shareManager, $session);
-		$this->avatarManager = \OC::$server->getAvatarManager();
-	}
+        $this->fileUtility = new FileUtility($AppName, $trans, $logger, $config, $shareManager, $session);
+        $this->avatarManager = \OC::$server->getAvatarManager();
+    }
 
     /**
      * Create new file in folder
