@@ -378,7 +378,7 @@
 	OCA.Onlyoffice.onRequestInsertImage = function(event) {
 		const imageMimes = [
 			'image/bmp', 'image/x-bmp', 'image/x-bitmap', 'application/bmp',
-			'image/gif',
+			'image/gif', 'image/tiff',
 			'image/jpeg', 'image/jpg', 'application/jpg', 'application/x-jpg',
 			'image/png', 'image/x-png', 'application/png', 'application/x-png',
 		]
