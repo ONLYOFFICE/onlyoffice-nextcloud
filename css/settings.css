@@ -30,31 +30,39 @@
     box-sizing: content-box;
     padding-top: 6px;
 }
+
 .onlyoffice-header {
     display: inline-block;
     margin-top: 16px;
 }
+
 .section-onlyoffice input {
     display: block;
     width: 250px;
 }
+
 .onlyoffice-hide {
     display: none;
 }
+
 #onlyofficeAdv {
     cursor: pointer;
     text-decoration: none;
 }
+
 #onlyofficeAdv .icon {
     display: inline-block;
     margin-bottom: -3px;
 }
+
 #onlyofficeAddrSave {
     float: left;
 }
+
 .onlyoffice-demo {
     margin-left: 90px;
 }
+
 #s2id_onlyofficeLimitGroups,
 #s2id_onlyofficeWatermark_allGroupsList,
 #s2id_onlyofficeWatermark_allTagsList,
@@ -64,11 +72,13 @@
     margin-top: 6px;
     width: 250px;
 }
+
 .onlyoffice-exts {
     column-width: 100px;
     -moz-column-width: 100px;
     -webkit-column-width: 100px;
 }
+
 .onlyoffice-tables {
     margin-top: 4px;
     line-height: initial;
@@ -76,6 +86,7 @@
     -moz-column-width: 140px;
     -webkit-column-width: 140px;
 }
+
 #onlyofficeSecret-show {
     left: 205px;
 }

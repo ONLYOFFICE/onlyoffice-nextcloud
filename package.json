@@ -17,7 +17,10 @@
     "devDependencies": {
         "@nextcloud/browserslist-config": "^3.0.0",
         "@nextcloud/eslint-config": "^8.4.1",
+        "@nextcloud/stylelint-config": "^3.0.1",
         "@nextcloud/webpack-vue-config": "^6.0.0",
-        "raw-loader": "^4.0.2"
+        "raw-loader": "^4.0.2",
+        "stylelint": "^16.6.1",
+        "stylelint-config-standard": "^36.0.1"
     }
 }
