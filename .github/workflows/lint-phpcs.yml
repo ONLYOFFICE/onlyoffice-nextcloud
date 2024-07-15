@@ -1,11 +1,11 @@
-name: Lint
+name: Lint-phpcs
 
 on:
   workflow_dispatch:
   push:
     branches: [master, develop]
   pull_request:
-    branches: [master, develop, feature/nc-27]
+    branches: [master, develop]
 
 permissions:
   contents: read

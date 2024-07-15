@@ -3,9 +3,9 @@ name: ESLint
 on:
   workflow_dispatch:
   push:
-    branches: [master, develop, refactor/eslint, refactor/stylelint]
+    branches: [master, develop]
   pull_request:
-    branches: [master, develop, refactor/eslint, refactor/stylelint]
+    branches: [master, develop]
 
 env:
   NODE_VERSION: 20
