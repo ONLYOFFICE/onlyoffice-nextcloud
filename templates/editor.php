@@ -52,7 +52,7 @@ if (!empty($_["directToken"])) {
         data-forceedit="<?php p($_["forceEdit"]) ?>"></div>
 
     <?php if (!empty($_["documentServerUrl"])) { ?>
-        <script nonce="<?php p(base64_encode($_["requesttoken"])) ?>"
+        <script nonce="<?php p(\OC::$server->get(\OC\Security\CSP\ContentSecurityPolicyNonceManager::class)->getNonce()) ?>"
             src="<?php p($_["documentServerUrl"]) ?>web-apps/apps/api/documents/api.js" type="text/javascript"></script>
     <?php } ?>
 
