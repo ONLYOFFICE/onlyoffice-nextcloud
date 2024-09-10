@@ -36,7 +36,7 @@ jobs:
           rm -rf ./node_modules/
           rm -rf ./src/
           rm ./package.json
-          rm ./package-lock.json
+          rm ./npm-shrinkwrap.json
           rm ./webpack.js
           rm -rf ./assets/document-templates/.git
           rm -rf ./assets/document-formats/.git
