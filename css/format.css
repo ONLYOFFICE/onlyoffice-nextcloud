@@ -16,22 +16,30 @@
  *
  */
 
-.icon-onlyoffice-new-docx {
-    background-size: 20px !important;
-    background-position: 12px !important;
-    background-image: url("../img/new-docx.svg");
+.icon-onlyoffice-new-docx:after,
+.icon-onlyoffice-new-xlsx:after,
+.icon-onlyoffice-new-pptx:after {
+    display: block;
+    margin-top: 5px;
 }
 
-.icon-onlyoffice-new-xlsx {
-    background-size: 20px !important;
-    background-position: 12px !important;
-    background-image: url("../img/new-xlsx.svg");
-}
-
+.icon-onlyoffice-new-docx,
+.icon-onlyoffice-new-xlsx,
 .icon-onlyoffice-new-pptx {
-    background-size: 20px !important;
-    background-position: 12px !important;
-    background-image: url("../img/new-pptx.svg");
+    display: flex;
+    justify-content: center;
+}
+
+.icon-onlyoffice-new-docx:after {
+    content: url("../img/new-docx.svg");
+}
+
+.icon-onlyoffice-new-xlsx:after {
+    content: url("../img/new-xlsx.svg");
+}
+
+.icon-onlyoffice-new-pptx:after {
+    content: url("../img/new-pptx.svg");
 }
 
 .icon-onlyoffice-new-pdf {
