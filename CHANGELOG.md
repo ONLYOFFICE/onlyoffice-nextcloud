@@ -5,6 +5,7 @@
 - support tiff format for inserting
 
 ## Changed
+- compatible with Nextcloud 30
 - Nextcloud v27 is no longer supported
 
 ## 9.3.0
