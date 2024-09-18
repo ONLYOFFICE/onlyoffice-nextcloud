@@ -7,6 +7,7 @@
 ## Changed
 - compatible with Nextcloud 30
 - Nextcloud v27 is no longer supported
+- using user's timezone for watermark
 
 ## 9.3.0
 ## Changed
