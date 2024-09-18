@@ -38,6 +38,7 @@ use OCA\Onlyoffice\TemplateManager;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\AppFramework\OCSController;
 use OCP\AppFramework\QueryException;
+use OCA\DAV\CalDAV\TimezoneService;
 use OCP\Constants;
 use OCP\Files\File;
 use OCP\Files\Folder;
@@ -156,6 +157,13 @@ class EditorApiController extends OCSController {
     private $avatarManager;
 
     /**
+     * Timezone service
+     *
+     * @var TimezoneService
+     */
+    private $timezoneService;
+
+    /**
      * Mobile regex from https://github.com/ONLYOFFICE/CommunityServer/blob/v9.1.1/web/studio/ASC.Web.Studio/web.appsettings.config#L35
      */
     public const USER_AGENT_MOBILE = "/android|avantgo|playbook|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od|ad)|iris|kindle|lge |maemo|midp|mmp|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\\/|plucker|pocket|psp|symbian|treo|up\\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i";
@@ -175,6 +183,7 @@ class EditorApiController extends OCSController {
      * @param ISession $ISession - Session
      * @param ITagManager $tagManager - Tag manager
      * @param ILockManager $lockManager - Lock manager
+     * @param TimezoneService $timezoneService - Timezone service
      */
     public function __construct(
         $AppName,
@@ -190,7 +199,8 @@ class EditorApiController extends OCSController {
         IManager $shareManager,
         ISession $session,
         ITagManager $tagManager,
-        ILockManager $lockManager
+        ILockManager $lockManager,
+        TimezoneService $timezoneService
     ) {
         parent::__construct($AppName, $request);
 
@@ -204,6 +214,7 @@ class EditorApiController extends OCSController {
         $this->crypt = $crypt;
         $this->tagManager = $tagManager;
         $this->lockManager = $lockManager;
+        $this->timezoneService = $timezoneService;
 
         if ($this->config->getAdvanced()
             && \OC::$server->getAppManager()->isInstalled("files_sharing")) {
@@ -833,9 +844,10 @@ class EditorApiController extends OCSController {
         );
 
         if ($watermarkTemplate !== false) {
+            $timezone = $this->timezoneService->getUserTimezone($userId) ?? $this->timezoneService->getDefaultTimezone();
             $replacements = [
                 "userId" => isset($userId) ? $userId : $this->trans->t('Anonymous'),
-                "date" => (new \DateTime())->format("Y-m-d H:i:s"),
+                "date" => (new \DateTime("now", new \DateTimeZone($timezone)))->format("Y-m-d H:i:s"),
                 "themingName" => \OC::$server->getThemingDefaults()->getName()
             ];
             $watermarkTemplate = preg_replace_callback("/{(.+?)}/", function ($matches) use ($replacements) {
