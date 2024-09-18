@@ -157,6 +157,13 @@ class EditorApiController extends OCSController {
     private $avatarManager;
 
     /**
+     * Timezone service
+     *
+     * @var TimezoneService
+     */
+    private $timezoneService;
+
+    /**
      * Mobile regex from https://github.com/ONLYOFFICE/CommunityServer/blob/v9.1.1/web/studio/ASC.Web.Studio/web.appsettings.config#L35
      */
     public const USER_AGENT_MOBILE = "/android|avantgo|playbook|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od|ad)|iris|kindle|lge |maemo|midp|mmp|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\\/|plucker|pocket|psp|symbian|treo|up\\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i";
@@ -176,6 +183,7 @@ class EditorApiController extends OCSController {
      * @param ISession $ISession - Session
      * @param ITagManager $tagManager - Tag manager
      * @param ILockManager $lockManager - Lock manager
+     * @param TimezoneService $timezoneService - Timezone service
      */
     public function __construct(
         $AppName,
