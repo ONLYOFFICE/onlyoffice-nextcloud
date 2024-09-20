@@ -31,8 +31,10 @@ jobs:
           cd onlyoffice
           rm -rf ./.github/
           rm -rf ./.git/
+          rm ./.eslintrc.js
           rm ./.gitignore
           rm ./.gitmodules
+          rm ./.stylelintrc.json
           rm -rf ./node_modules/
           rm -rf ./src/
           rm ./package.json
