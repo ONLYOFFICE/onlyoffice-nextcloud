@@ -89,7 +89,12 @@ class FileSharingListener implements IEventListener {
             && empty($this->appConfig->getLimitGroups())) {
             Util::addScript("onlyoffice", "onlyoffice-main");
 
-            if ($this->appConfig->getSameTab()) {
+            $shareType = "";
+            if (method_exists($event, "getShare")) {
+                $share = $event->getShare();
+                $shareType = $share->getNodeType();
+            }
+            if ($this->appConfig->getSameTab() || $shareType === "file") {
                 Util::addScript("onlyoffice", "onlyoffice-listener");
             }
 

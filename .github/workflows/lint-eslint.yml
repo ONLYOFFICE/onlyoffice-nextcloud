@@ -1,0 +1,36 @@
+name: ESLint
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master, develop]
+  pull_request:
+    branches: [master, develop]
+
+env:
+  NODE_VERSION: 20
+
+jobs:
+  lint:
+    name: Lint 
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./src
+    steps:
+      - name: Install NodeJS
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      
+      - name: Code Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Dependencies
+        run: npm ci
+        
+      - name: Code Linting
+        run: npx eslint *.js
+
+      - name: CSS Linting
+        run: npx stylelint ../css/*.css

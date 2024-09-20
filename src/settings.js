@@ -26,396 +26,404 @@
  *
  */
 
-(function ($, OC) {
+/* global _, jQuery */
 
-    $(document).ready(function () {
-        OCA.Onlyoffice = _.extend({}, OCA.Onlyoffice);
-        if (!OCA.Onlyoffice.AppName) {
-            OCA.Onlyoffice = {
-                AppName: "onlyoffice"
-            };
-        }
+/**
+ * @param {object} $ JQueryStatic object
+ * @param {object} OC Nextcloud OCA object
+ */
+(function($, OC) {
 
-        var advToogle = function () {
-            $("#onlyofficeSecretPanel").toggleClass("onlyoffice-hide");
-            $("#onlyofficeAdv .icon").toggleClass("icon-triangle-s icon-triangle-n");
-        };
+	$(document).ready(function() {
+		OCA.Onlyoffice = _.extend({}, OCA.Onlyoffice)
+		if (!OCA.Onlyoffice.AppName) {
+			OCA.Onlyoffice = {
+				AppName: 'onlyoffice',
+			}
+		}
 
-        if ($("#onlyofficeInternalUrl").val().length
-            || $("#onlyofficeStorageUrl").val().length
-            || $("#onlyofficeJwtHeader").val().length) {
-            advToogle();
-        }
+		const advToogle = function() {
+			$('#onlyofficeSecretPanel').toggleClass('onlyoffice-hide')
+			$('#onlyofficeAdv .icon').toggleClass('icon-triangle-s icon-triangle-n')
+		}
 
-        $("#onlyofficeAdv").click(advToogle);
+		if ($('#onlyofficeInternalUrl').val().length
+			|| $('#onlyofficeStorageUrl').val().length
+			|| $('#onlyofficeJwtHeader').val().length) {
+			advToogle()
+		}
 
-        $("#onlyofficeGroups").prop("checked", $("#onlyofficeLimitGroups").val() != "");
+		$('#onlyofficeAdv').click(advToogle)
 
-        var groupListToggle = function () {
-            if ($("#onlyofficeGroups").prop("checked")) {
-                OC.Settings.setupGroupsSelect($("#onlyofficeLimitGroups"));
-            } else {
-                $("#onlyofficeLimitGroups").select2("destroy");
-            }
-        };
+		$('#onlyofficeGroups').prop('checked', $('#onlyofficeLimitGroups').val() !== '')
 
-        $("#onlyofficeGroups").click(groupListToggle);
-        groupListToggle();
+		const groupListToggle = function() {
+			if ($('#onlyofficeGroups').prop('checked')) {
+				OC.Settings.setupGroupsSelect($('#onlyofficeLimitGroups'))
+			} else {
+				$('#onlyofficeLimitGroups').select2('destroy')
+			}
+		}
 
-        var demoToggle = function () {
-            $("#onlyofficeAddrSettings input:not(#onlyofficeStorageUrl)").prop("disabled", $("#onlyofficeDemo").prop("checked"));
-        };
+		$('#onlyofficeGroups').click(groupListToggle)
+		groupListToggle()
 
-        $("#onlyofficeDemo").click(demoToggle);
-        demoToggle();
+		const demoToggle = function() {
+			$('#onlyofficeAddrSettings input:not(#onlyofficeStorageUrl)').prop('disabled', $('#onlyofficeDemo').prop('checked'))
+		}
 
-        var watermarkToggle = function () {
-            $("#onlyofficeWatermarkSettings").toggleClass("onlyoffice-hide", !$("#onlyofficeWatermark_enabled").prop("checked"));
-        };
+		$('#onlyofficeDemo').click(demoToggle)
+		demoToggle()
 
-        $("#onlyofficeWatermark_enabled").click(watermarkToggle)
+		const watermarkToggle = function() {
+			$('#onlyofficeWatermarkSettings').toggleClass('onlyoffice-hide', !$('#onlyofficeWatermark_enabled').prop('checked'))
+		}
 
-        $("#onlyofficeWatermark_shareAll").click(function () {
-            $("#onlyofficeWatermark_shareRead").parent().toggleClass("onlyoffice-hide");
-        });
+		$('#onlyofficeWatermark_enabled').click(watermarkToggle)
 
-        $("#onlyofficeWatermark_linkAll").click(function () {
-            $("#onlyofficeWatermark_link_sensitive").toggleClass("onlyoffice-hide");
-        });
+		$('#onlyofficeWatermark_shareAll').click(function() {
+			$('#onlyofficeWatermark_shareRead').parent().toggleClass('onlyoffice-hide')
+		})
 
-        var watermarkGroupLists = [
-            "allGroups"
-        ];
+		$('#onlyofficeWatermark_linkAll').click(function() {
+			$('#onlyofficeWatermark_link_sensitive').toggleClass('onlyoffice-hide')
+		})
 
-        var watermarkTagLists = [
-            "allTags",
-            "linkTags",
-        ];
+		const watermarkGroupLists = [
+			'allGroups',
+		]
 
-        var watermarkNodeBehaviour = function (watermark){
-            var watermarkListToggle = function () {
-                if ($("#onlyofficeWatermark_" + watermark).prop("checked")) {
-                    if (watermark.indexOf("Group") >= 0) {
-                        OC.Settings.setupGroupsSelect($("#onlyofficeWatermark_" + watermark + "List"));
-                    } else {
-                        $("#onlyofficeWatermark_" + watermark + "List").select2({
-                            allowClear: true,
-                            closeOnSelect: false,
-                            multiple: true,
-                            separator: "|",
-                            toggleSelect: true,
-                            placeholder: t(OCA.Onlyoffice.AppName, "Select tag"),
-                            query: _.debounce(function (query) {
-                                query.callback({
-                                    results: OC.SystemTags.collection.filterByName(query.term)
-                                });
-                            }, 100, true),
-                            initSelection: function (element, callback) {
-                                var selection = ($(element).val() || []).split("|").map(function (tagId) {
-                                    return OC.SystemTags.collection.get(tagId);
-                                });
-                                callback(selection);
-                            },
-                            formatResult: function (tag) {
-                                return OC.SystemTags.getDescriptiveTag(tag);
-                            },
-                            formatSelection: function (tag) {
-                                return tag.get("name");
-                            },
-                            sortResults: function (results) {
-                                results.sort(function (a, b) {
-                                    return OC.Util.naturalSortCompare(a.get("name"), b.get("name"));
-                                });
-                                return results;
-                            }
-                        });
-                    }
-                } else {
-                    $("#onlyofficeWatermark_" + watermark + "List").select2("destroy");
-                }
-            };
+		const watermarkTagLists = [
+			'allTags',
+			'linkTags',
+		]
 
-            $("#onlyofficeWatermark_" + watermark).click(watermarkListToggle);
-            watermarkListToggle();
-        };
+		const watermarkNodeBehaviour = function(watermark) {
+			const watermarkListToggle = function() {
+				if ($('#onlyofficeWatermark_' + watermark).prop('checked')) {
+					if (watermark.indexOf('Group') >= 0) {
+						OC.Settings.setupGroupsSelect($('#onlyofficeWatermark_' + watermark + 'List'))
+					} else {
+						$('#onlyofficeWatermark_' + watermark + 'List').select2({
+							allowClear: true,
+							closeOnSelect: false,
+							multiple: true,
+							separator: '|',
+							toggleSelect: true,
+							placeholder: t(OCA.Onlyoffice.AppName, 'Select tag'),
+							query: _.debounce(function(query) {
+								query.callback({
+									results: OC.SystemTags.collection.filterByName(query.term),
+								})
+							}, 100, true),
+							initSelection(element, callback) {
+								const selection = ($(element).val() || []).split('|').map(function(tagId) {
+									return OC.SystemTags.collection.get(tagId)
+								})
+								callback(selection)
+							},
+							formatResult(tag) {
+								return OC.SystemTags.getDescriptiveTag(tag)
+							},
+							formatSelection(tag) {
+								return tag.get('name')
+							},
+							sortResults(results) {
+								results.sort(function(a, b) {
+									return OC.Util.naturalSortCompare(a.get('name'), b.get('name'))
+								})
+								return results
+							},
+						})
+					}
+				} else {
+					$('#onlyofficeWatermark_' + watermark + 'List').select2('destroy')
+				}
+			}
 
-        $.each(watermarkGroupLists, function (i, watermarkGroup) {
-            watermarkNodeBehaviour(watermarkGroup);
-        });
+			$('#onlyofficeWatermark_' + watermark).click(watermarkListToggle)
+			watermarkListToggle()
+		}
 
-        if (OC.SystemTags && OC.SystemTags.collection) {
-            OC.SystemTags.collection.fetch({
-                success: function () {
-                    $.each(watermarkTagLists, function (i, watermarkTag) {
-                        watermarkNodeBehaviour(watermarkTag);
-                    });
-                }
-            });
-        }
+		$.each(watermarkGroupLists, function(i, watermarkGroup) {
+			watermarkNodeBehaviour(watermarkGroup)
+		})
 
-        $("#onlyofficeAddrSave").click(function () {
-            $(".section-onlyoffice").addClass("icon-loading");
-            var onlyofficeUrl = $("#onlyofficeUrl").val().trim();
+		if (OC.SystemTags && OC.SystemTags.collection) {
+			OC.SystemTags.collection.fetch({
+				success() {
+					$.each(watermarkTagLists, function(i, watermarkTag) {
+						watermarkNodeBehaviour(watermarkTag)
+					})
+				},
+			})
+		}
 
-            if (!onlyofficeUrl.length) {
-                $("#onlyofficeInternalUrl, #onlyofficeStorageUrl, #onlyofficeSecret, #onlyofficeJwtHeader").val("");
-            }
+		$('#onlyofficeAddrSave').click(function() {
+			$('.section-onlyoffice').addClass('icon-loading')
+			const onlyofficeUrl = $('#onlyofficeUrl').val().trim()
 
-            var onlyofficeInternalUrl = ($("#onlyofficeInternalUrl:visible").val() || "").trim();
-            var onlyofficeStorageUrl = ($("#onlyofficeStorageUrl:visible").val() || "").trim();
-            var onlyofficeVerifyPeerOff = $("#onlyofficeVerifyPeerOff").prop("checked");
-            var onlyofficeSecret = ($("#onlyofficeSecret:visible").val() || "").trim();
-            var jwtHeader = ($("#onlyofficeJwtHeader:visible").val() || "").trim();
-            var demo = $("#onlyofficeDemo").prop("checked");
+			if (!onlyofficeUrl.length) {
+				$('#onlyofficeInternalUrl, #onlyofficeStorageUrl, #onlyofficeSecret, #onlyofficeJwtHeader').val('')
+			}
 
-            $.ajax({
-                method: "PUT",
-                url: OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/settings/address"),
-                data: {
-                    documentserver: onlyofficeUrl,
-                    documentserverInternal: onlyofficeInternalUrl,
-                    storageUrl: onlyofficeStorageUrl,
-                    verifyPeerOff: onlyofficeVerifyPeerOff,
-                    secret: onlyofficeSecret,
-                    jwtHeader: jwtHeader,
-                    demo: demo
-                },
-                success: function onSuccess(response) {
-                    $(".section-onlyoffice").removeClass("icon-loading");
-                    if (response && (response.documentserver != null || demo)) {
-                        $("#onlyofficeUrl").val(response.documentserver);
-                        $("#onlyofficeInternalUrl").val(response.documentserverInternal);
-                        $("#onlyofficeStorageUrl").val(response.storageUrl);
-                        $("#onlyofficeSecret").val(response.secret);
-                        $("#onlyofficeJwtHeader").val(response.jwtHeader);
+			const onlyofficeInternalUrl = ($('#onlyofficeInternalUrl:visible').val() || '').trim()
+			const onlyofficeStorageUrl = ($('#onlyofficeStorageUrl:visible').val() || '').trim()
+			const onlyofficeVerifyPeerOff = $('#onlyofficeVerifyPeerOff').prop('checked')
+			const onlyofficeSecret = ($('#onlyofficeSecret:visible').val() || '').trim()
+			const jwtHeader = ($('#onlyofficeJwtHeader:visible').val() || '').trim()
+			const demo = $('#onlyofficeDemo').prop('checked')
 
-                        $(".section-onlyoffice-common, .section-onlyoffice-templates, .section-onlyoffice-watermark").toggleClass("onlyoffice-hide", (response.documentserver == null && !demo) || !!response.error.length);
+			$.ajax({
+				method: 'PUT',
+				url: OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/settings/address'),
+				data: {
+					documentserver: onlyofficeUrl,
+					documentserverInternal: onlyofficeInternalUrl,
+					storageUrl: onlyofficeStorageUrl,
+					verifyPeerOff: onlyofficeVerifyPeerOff,
+					secret: onlyofficeSecret,
+					jwtHeader,
+					demo,
+				},
+				success: function onSuccess(response) {
+					$('.section-onlyoffice').removeClass('icon-loading')
+					if (response && (response.documentserver != null || demo)) {
+						$('#onlyofficeUrl').val(response.documentserver)
+						$('#onlyofficeInternalUrl').val(response.documentserverInternal)
+						$('#onlyofficeStorageUrl').val(response.storageUrl)
+						$('#onlyofficeSecret').val(response.secret)
+						$('#onlyofficeJwtHeader').val(response.jwtHeader)
 
-                        var versionMessage = response.version ? (" (" + t(OCA.Onlyoffice.AppName, "version") + " " + response.version + ")") : "";
+						$('.section-onlyoffice-common, .section-onlyoffice-templates, .section-onlyoffice-watermark').toggleClass('onlyoffice-hide', (response.documentserver == null && !demo) || !!response.error.length)
 
-                        if (response.error) {
-                            OCP.Toast.error(t(OCA.Onlyoffice.AppName, "Error when trying to connect") + " (" + response.error + ")" + versionMessage);
-                        } else {
-                            OCP.Toast.success(t(OCA.Onlyoffice.AppName, "Settings have been successfully updated") + versionMessage);
-                        }
-                    } else {
-                        $(".section-onlyoffice-common, .section-onlyoffice-templates, .section-onlyoffice-watermark").addClass("onlyoffice-hide")
-                    }
-                }
-            });
-        });
+						const versionMessage = response.version ? (' (' + t(OCA.Onlyoffice.AppName, 'version') + ' ' + response.version + ')') : ''
 
-        $("#onlyofficeSave").click(function () {
-            $(".section-onlyoffice").addClass("icon-loading");
+						if (response.error) {
+							OCP.Toast.error(t(OCA.Onlyoffice.AppName, 'Error when trying to connect') + ' (' + response.error + ')' + versionMessage)
+						} else {
+							OCP.Toast.success(t(OCA.Onlyoffice.AppName, 'Settings have been successfully updated') + versionMessage)
+						}
+					} else {
+						$('.section-onlyoffice-common, .section-onlyoffice-templates, .section-onlyoffice-watermark').addClass('onlyoffice-hide')
+					}
+				},
+			})
+		})
 
-            var defFormats = {};
-            $("input[id^=\"onlyofficeDefFormat\"]").each(function () {
-                defFormats[this.name] = this.checked;
-            });
+		$('#onlyofficeSave').click(function() {
+			$('.section-onlyoffice').addClass('icon-loading')
 
-            var editFormats = {};
-            $("input[id^=\"onlyofficeEditFormat\"]").each(function () {
-                editFormats[this.name] = this.checked;
-            });
+			const defFormats = {}
+			$('input[id^="onlyofficeDefFormat"]').each(function() {
+				defFormats[this.name] = this.checked
+			})
 
-            var sameTab = $("#onlyofficeSameTab").is(":checked");
-            var preview = $("#onlyofficePreview").is(":checked");
-            var advanced = $("#onlyofficeAdvanced").is(":checked");
-            var cronChecker = $("#onlyofficeCronChecker").is(":checked");
-            var versionHistory = $("#onlyofficeVersionHistory").is(":checked");
+			const editFormats = {}
+			$('input[id^="onlyofficeEditFormat"]').each(function() {
+				editFormats[this.name] = this.checked
+			})
 
-            var limitGroupsString = $("#onlyofficeGroups").prop("checked") ? $("#onlyofficeLimitGroups").val() : "";
-            var limitGroups = limitGroupsString ? limitGroupsString.split("|") : [];
+			const sameTab = $('#onlyofficeSameTab').is(':checked')
+			const preview = $('#onlyofficePreview').is(':checked')
+			const advanced = $('#onlyofficeAdvanced').is(':checked')
+			const cronChecker = $('#onlyofficeCronChecker').is(':checked')
+			const versionHistory = $('#onlyofficeVersionHistory').is(':checked')
 
-            var chat = $("#onlyofficeChat").is(":checked");
-            var compactHeader = $("#onlyofficeCompactHeader").is(":checked");
-            var feedback = $("#onlyofficeFeedback").is(":checked");
-            var forcesave = $("#onlyofficeForcesave").is(":checked");
-            var help = $("#onlyofficeHelp").is(":checked");
-            var toolbarNoTabs = $("#onlyofficeToolbarNoTabs").is(":checked");
-            var reviewDisplay = $("input[type='radio'][name='reviewDisplay']:checked").attr("id").replace("onlyofficeReviewDisplay_", "");
-            var theme = $("input[type='radio'][name='theme']:checked").attr("id").replace("onlyofficeTheme_", "");
+			const limitGroupsString = $('#onlyofficeGroups').prop('checked') ? $('#onlyofficeLimitGroups').val() : ''
+			const limitGroups = limitGroupsString ? limitGroupsString.split('|') : []
 
-            $.ajax({
-                method: "PUT",
-                url: OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/settings/common"),
-                data: {
-                    defFormats: defFormats,
-                    editFormats: editFormats,
-                    sameTab: sameTab,
-                    preview: preview,
-                    advanced: advanced,
-                    cronChecker: cronChecker,
-                    versionHistory: versionHistory,
-                    limitGroups: limitGroups,
-                    chat: chat,
-                    compactHeader: compactHeader,
-                    feedback: feedback,
-                    forcesave: forcesave,
-                    help: help,
-                    toolbarNoTabs: toolbarNoTabs,
-                    reviewDisplay: reviewDisplay,
-                    theme: theme
-                },
-                success: function onSuccess(response) {
-                    $(".section-onlyoffice").removeClass("icon-loading");
-                    if (response) {
-                        OCP.Toast.success(t(OCA.Onlyoffice.AppName, "Settings have been successfully updated"));
-                    }
-                }
-            });
-        });
+			const chat = $('#onlyofficeChat').is(':checked')
+			const compactHeader = $('#onlyofficeCompactHeader').is(':checked')
+			const feedback = $('#onlyofficeFeedback').is(':checked')
+			const forcesave = $('#onlyofficeForcesave').is(':checked')
+			const help = $('#onlyofficeHelp').is(':checked')
+			const toolbarNoTabs = $('#onlyofficeToolbarNoTabs').is(':checked')
+			const reviewDisplay = $("input[type='radio'][name='reviewDisplay']:checked").attr('id').replace('onlyofficeReviewDisplay_', '')
+			const theme = $("input[type='radio'][name='theme']:checked").attr('id').replace('onlyofficeTheme_', '')
 
-        $("#onlyofficeSecuritySave").click(function () {
-            $(".section-onlyoffice").addClass("icon-loading");
+			$.ajax({
+				method: 'PUT',
+				url: OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/settings/common'),
+				data: {
+					defFormats,
+					editFormats,
+					sameTab,
+					preview,
+					advanced,
+					cronChecker,
+					versionHistory,
+					limitGroups,
+					chat,
+					compactHeader,
+					feedback,
+					forcesave,
+					help,
+					toolbarNoTabs,
+					reviewDisplay,
+					theme,
+				},
+				success: function onSuccess(response) {
+					$('.section-onlyoffice').removeClass('icon-loading')
+					if (response) {
+						OCP.Toast.success(t(OCA.Onlyoffice.AppName, 'Settings have been successfully updated'))
+					}
+				},
+			})
+		})
 
-            var plugins = $("#onlyofficePlugins").is(":checked");
-            var macros = $("#onlyofficeMacros").is(":checked");
-            var protection = $("input[type='radio'][name='protection']:checked").attr("id").replace("onlyofficeProtection_", "");
+		$('#onlyofficeSecuritySave').click(function() {
+			$('.section-onlyoffice').addClass('icon-loading')
 
-            var watermarkSettings = {
-                enabled: $("#onlyofficeWatermark_enabled").is(":checked")
-            };
-            if (watermarkSettings.enabled) {
-                watermarkSettings.text = ($("#onlyofficeWatermark_text").val() || "").trim();
+			const plugins = $('#onlyofficePlugins').is(':checked')
+			const macros = $('#onlyofficeMacros').is(':checked')
+			const protection = $("input[type='radio'][name='protection']:checked").attr('id').replace('onlyofficeProtection_', '')
 
-                var watermarkLabels = [
-                    "allGroups",
-                    "allTags",
-                    "linkAll",
-                    "linkRead",
-                    "linkSecure",
-                    "linkTags",
-                    "shareAll",
-                    "shareRead"
-                ];
-                $.each(watermarkLabels, function (i, watermarkLabel) {
-                    watermarkSettings[watermarkLabel] = $("#onlyofficeWatermark_" + watermarkLabel).is(":checked");
-                });
+			const watermarkSettings = {
+				enabled: $('#onlyofficeWatermark_enabled').is(':checked'),
+			}
+			if (watermarkSettings.enabled) {
+				watermarkSettings.text = ($('#onlyofficeWatermark_text').val() || '').trim()
 
-                $.each(watermarkGroupLists.concat(watermarkTagLists), function (i, watermarkList) {
-                    var list = $("#onlyofficeWatermark_" + watermarkList).is(":checked") ? $("#onlyofficeWatermark_" + watermarkList + "List").val() : "";
-                    watermarkSettings[watermarkList + "List"] = list ? list.split("|") : [];
-                });
-            }
+				const watermarkLabels = [
+					'allGroups',
+					'allTags',
+					'linkAll',
+					'linkRead',
+					'linkSecure',
+					'linkTags',
+					'shareAll',
+					'shareRead',
+				]
+				$.each(watermarkLabels, function(i, watermarkLabel) {
+					watermarkSettings[watermarkLabel] = $('#onlyofficeWatermark_' + watermarkLabel).is(':checked')
+				})
 
-            $.ajax({
-                method: "PUT",
-                url: OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/settings/security"),
-                data: {
-                    watermarks: watermarkSettings,
-                    plugins: plugins,
-                    macros: macros,
-                    protection: protection
-                },
-                success: function onSuccess(response) {
-                    $(".section-onlyoffice").removeClass("icon-loading");
-                    if (response) {
-                        OCP.Toast.success(t(OCA.Onlyoffice.AppName, "Settings have been successfully updated"));
-                    }
-                }
-            });
-        });
+				$.each(watermarkGroupLists.concat(watermarkTagLists), function(i, watermarkList) {
+					const list = $('#onlyofficeWatermark_' + watermarkList).is(':checked') ? $('#onlyofficeWatermark_' + watermarkList + 'List').val() : ''
+					watermarkSettings[watermarkList + 'List'] = list ? list.split('|') : []
+				})
+			}
 
-        $(".section-onlyoffice-addr input").keypress(function (e) {
-            var code = e.keyCode || e.which;
-            if (code === 13) {
-                $("#onlyofficeAddrSave").click();
-            }
-        });
+			$.ajax({
+				method: 'PUT',
+				url: OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/settings/security'),
+				data: {
+					watermarks: watermarkSettings,
+					plugins,
+					macros,
+					protection,
+				},
+				success: function onSuccess(response) {
+					$('.section-onlyoffice').removeClass('icon-loading')
+					if (response) {
+						OCP.Toast.success(t(OCA.Onlyoffice.AppName, 'Settings have been successfully updated'))
+					}
+				},
+			})
+		})
 
-        $("#onlyofficeSecret-show").click(function () {
-            if ($("#onlyofficeSecret").attr("type") == "password") {
-                $("#onlyofficeSecret").attr("type", "text");
-            } else {
-                $("#onlyofficeSecret").attr("type", "password");
-            }
-        });
+		$('.section-onlyoffice-addr input').keypress(function(e) {
+			const code = e.keyCode || e.which
+			if (code === 13) {
+				$('#onlyofficeAddrSave').click()
+			}
+		})
 
-        $("#onlyofficeClearVersionHistory").click(function () {
-            $(".section-onlyoffice").addClass("icon-loading");
+		$('#onlyofficeSecret-show').click(function() {
+			if ($('#onlyofficeSecret').attr('type') === 'password') {
+				$('#onlyofficeSecret').attr('type', 'text')
+			} else {
+				$('#onlyofficeSecret').attr('type', 'password')
+			}
+		})
 
-            $.ajax({
-                method: "DELETE",
-                url: OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/ajax/settings/history"),
-                success: function onSuccess(response) {
-                    $(".section-onlyoffice").removeClass("icon-loading");
-                    if (response) {
-                        OCP.Toast.success(t(OCA.Onlyoffice.AppName, "All history successfully deleted"));
-                    }
-                }
-            });
-        });
+		$('#onlyofficeClearVersionHistory').click(function() {
+			$('.section-onlyoffice').addClass('icon-loading')
 
-        $("#onlyofficeAddTemplate").change(function () {
-            var file = this.files[0];
-            var data = new FormData();
+			$.ajax({
+				method: 'DELETE',
+				url: OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/settings/history'),
+				success: function onSuccess(response) {
+					$('.section-onlyoffice').removeClass('icon-loading')
+					if (response) {
+						OCP.Toast.success(t(OCA.Onlyoffice.AppName, 'All history successfully deleted'))
+					}
+				},
+			})
+		})
 
-            data.append("file", file);
+		$('#onlyofficeAddTemplate').change(function() {
+			const file = this.files[0]
+			const data = new FormData()
 
-            $(".section-onlyoffice").addClass("icon-loading");
-            OCA.Onlyoffice.AddTemplate(file, (template, error) => {
+			data.append('file', file)
 
-                $(".section-onlyoffice").removeClass("icon-loading");
-                var message = error ? t(OCA.Onlyoffice.AppName, "Error") + ": " + error
-                                    : t(OCA.Onlyoffice.AppName, "Template successfully added");
+			$('.section-onlyoffice').addClass('icon-loading')
+			OCA.Onlyoffice.AddTemplate(file, (template, error) => {
 
-                if (error) {
-                    OCP.Toast.error(message);
-                    return;
-                }
+				$('.section-onlyoffice').removeClass('icon-loading')
+				const message = error
+					? t(OCA.Onlyoffice.AppName, 'Error') + ': ' + error
+					: t(OCA.Onlyoffice.AppName, 'Template successfully added')
 
-                if (template) {
-                    OCA.Onlyoffice.AttachItemTemplate(template);
-                }
-                OCP.Toast.success(message);
-            });
-        });
+				if (error) {
+					OCP.Toast.error(message)
+					return
+				}
 
-        $(document).on("click", ".onlyoffice-template-delete", function (event) {
-            var item = $(event.target).parents(".onlyoffice-template-item");
-            var templateId = $(item).attr("data-id");
+				if (template) {
+					OCA.Onlyoffice.AttachItemTemplate(template)
+				}
+				OCP.Toast.success(message)
+			})
+		})
 
-            $(".section-onlyoffice").addClass("icon-loading");
-            OCA.Onlyoffice.DeleteTemplate(templateId, (response) => {
-                $(".section-onlyoffice").removeClass("icon-loading");
+		$(document).on('click', '.onlyoffice-template-delete', function(event) {
+			const item = $(event.target).parents('.onlyoffice-template-item')
+			const templateId = $(item).attr('data-id')
 
-                var message = response.error ? t(OCA.Onlyoffice.AppName, "Error") + ": " + response.error
-                                             : t(OCA.Onlyoffice.AppName, "Template successfully deleted");
-                if (response.error) {
-                    OCP.Toast.error(message);
-                    return;
-                }
+			$('.section-onlyoffice').addClass('icon-loading')
+			OCA.Onlyoffice.DeleteTemplate(templateId, (response) => {
+				$('.section-onlyoffice').removeClass('icon-loading')
 
-                $(item).detach();
-                OCP.Toast.success(message);
-            });
-        });
+				const message = response.error
+					? t(OCA.Onlyoffice.AppName, 'Error') + ': ' + response.error
+					: t(OCA.Onlyoffice.AppName, 'Template successfully deleted')
+				if (response.error) {
+					OCP.Toast.error(message)
+					return
+				}
 
-        $(document).on("click", ".onlyoffice-template-item p", function (event) {
-            var item = $(event.target).parents(".onlyoffice-template-item");
-            var templateId = $(item).attr("data-id");
+				$(item).detach()
+				OCP.Toast.success(message)
+			})
+		})
 
-            var url = OC.generateUrl("/apps/" + OCA.Onlyoffice.AppName + "/{fileId}?template={template}",
-            {
-                fileId: templateId,
-                template: "true"
-            });
+		$(document).on('click', '.onlyoffice-template-item p', function(event) {
+			const item = $(event.target).parents('.onlyoffice-template-item')
+			const templateId = $(item).attr('data-id')
 
-            window.open(url);
-        });
+			const url = OC.generateUrl('/apps/' + OCA.Onlyoffice.AppName + '/{fileId}?template={template}',
+				{
+					fileId: templateId,
+					template: 'true',
+				})
 
-        $(document).on("click", ".onlyoffice-template-download", function (event) {
-            var item = $(event.target).parents(".onlyoffice-template-item");
-            var templateId = $(item).attr("data-id");
+			window.open(url)
+		})
 
-            var downloadLink = OC.generateUrl("apps/" + OCA.Onlyoffice.AppName + "/downloadas?fileId={fileId}&template={template}",{
-                fileId: templateId,
-                template: "true"
-            });
+		$(document).on('click', '.onlyoffice-template-download', function(event) {
+			const item = $(event.target).parents('.onlyoffice-template-item')
+			const templateId = $(item).attr('data-id')
 
-            location.href = downloadLink;
-        });
-    });
+			const downloadLink = OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/downloadas?fileId={fileId}&template={template}', {
+				fileId: templateId,
+				template: 'true',
+			})
 
-})(jQuery, OC);
+			location.href = downloadLink
+		})
+	})
+
+})(jQuery, OC)
