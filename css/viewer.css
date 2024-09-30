@@ -39,3 +39,9 @@
 .modal-wrapper--full #onlyofficeViewerFrame {
     top: 0;
 }
+
+.widget-custom #onlyofficeViewerFrame {
+    position: unset;
+    top: unset;
+    min-height: 300px;
+}
