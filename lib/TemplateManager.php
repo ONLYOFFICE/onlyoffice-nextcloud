@@ -230,7 +230,7 @@ class TemplateManager {
      */
     public static function getEmptyTemplatePath($lang, $ext) {
         if (!array_key_exists($lang, self::$localPath)) {
-            $lang = "en";
+            $lang = "default";
         }
 
         return dirname(__DIR__) . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . "document-templates" . DIRECTORY_SEPARATOR . self::$localPath[$lang] . DIRECTORY_SEPARATOR . "new" . $ext;
@@ -248,6 +248,7 @@ class TemplateManager {
         "cs" => "cs-CZ",
         "de" => "de-DE",
         "de_DE" => "de-DE",
+        "default" => "default",
         "el" => "el-GR",
         "en" => "en-US",
         "en_GB" => "en-GB",
