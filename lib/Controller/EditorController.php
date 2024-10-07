@@ -433,7 +433,7 @@ class EditorController extends Controller {
             if ($user->getUID() != $currentUserId && (!empty($email) || $operationType === "protect")) {
                 $userElement = [
                     "name" => $user->getDisplayName(),
-                    "id" => $user->getUID()
+                    "id" => $operationType === "protect" ? $this->buildUserId($user->getUID()) : $user->getUID()
                 ];
                 if (!empty($email)) {
                     $userElement["email"] = $email;
