@@ -196,7 +196,8 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 
 		OCA.Onlyoffice.context = null
 
-		const url = OCA.Onlyoffice.folderUrl
+		let url = OCA.Onlyoffice.folderUrl
+		url = url.replace(new RegExp('&?openfile=true','g'),'')
 		if (url) {
 			window.history.pushState(null, null, url)
 			OCA.Onlyoffice.folderUrl = null
