@@ -2,6 +2,7 @@
 
 ## Added
 - default empty templates
+- fi-FI, Hebrew (Israel), nb-NO, sl-SI empty file templates
 
 ## Changed
 - update en-US empty templates
