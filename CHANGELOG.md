@@ -2,6 +2,7 @@
 
 ## Added
 - default empty templates
+- Finnish, Hebrew, Norwegian, Slovenian empty file templates
 
 ## Changed
 - update en-US empty templates
