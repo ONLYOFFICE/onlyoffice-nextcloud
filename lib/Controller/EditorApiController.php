@@ -409,7 +409,7 @@ class EditorApiController extends OCSController {
                     && !$isTempLock
                     && (empty($shareToken) || ($share->getPermissions() & Constants::PERMISSION_UPDATE) === Constants::PERMISSION_UPDATE)
                     && !$restrictedEditing;
-        $params["document"]["permissions"]["edit"] = $editable && ($forceEdit || !$canFillForms);
+        $params["document"]["permissions"]["edit"] = $editable;
         if (($editable || $restrictedEditing) && ($canEdit || $canFillForms)) {
             $ownerId = null;
             $owner = $file->getOwner();
