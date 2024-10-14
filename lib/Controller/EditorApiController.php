@@ -238,14 +238,13 @@ class EditorApiController extends OCSController {
      * @param string $guestName - nickname not logged user
      * @param bool $template - file is template
      * @param string $anchor - anchor for file content
-     * @param bool $forceEdit - open editing
      *
      * @return JSONResponse
      *
      * @NoAdminRequired
      * @PublicPage
      */
-    public function config($fileId, $filePath = null, $shareToken = null, $directToken = null, $inframe = false, $inviewer = false, $desktop = false, $guestName = null, $template = false, $anchor = null, $forceEdit = false) {
+    public function config($fileId, $filePath = null, $shareToken = null, $directToken = null, $inframe = false, $inviewer = false, $desktop = false, $guestName = null, $template = false, $anchor = null) {
 
         if (!empty($directToken)) {
             list($directData, $error) = $this->crypt->readHash($directToken);
