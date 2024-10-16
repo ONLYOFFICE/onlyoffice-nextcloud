@@ -2,9 +2,11 @@
 
 ## Added
 - default empty templates
+- Finnish, Hebrew, Norwegian, Slovenian empty file templates
 
 ## Changed
 - update en-US empty templates
+- demo server address changed
 
 ## 9.4.0
 ## Added
