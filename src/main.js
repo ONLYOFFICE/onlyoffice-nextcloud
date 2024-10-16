@@ -124,7 +124,6 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 
 				if (open) {
 					const fileName = response.name
-					const extension = OCA.Onlyoffice.getFileExtension(fileName)
 					OCA.Onlyoffice.OpenEditor(response.id, dir, fileName, winEditor)
 
 					OCA.Onlyoffice.context = {
