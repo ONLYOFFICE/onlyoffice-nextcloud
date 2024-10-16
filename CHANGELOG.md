@@ -1,6 +1,6 @@
 # Change Log
 
-##
+## 9.5.0
 ## Added
 - default empty templates
 - Finnish, Hebrew, Norwegian, Slovenian empty file templates
