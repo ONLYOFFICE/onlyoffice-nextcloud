@@ -262,7 +262,7 @@ class TemplateManager {
         "ja" => "ja-JP",
         "ko" => "ko-KR",
         "lv" => "lv-LV",
-        "nb_NO" => "nb-NO",
+        "nb" => "nb-NO",
         "nl" => "nl-NL",
         "pl" => "pl-PL",
         "pt_BR" => "pt-BR",
