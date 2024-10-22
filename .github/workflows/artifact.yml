@@ -41,6 +41,7 @@ jobs:
           rm -rf ./src/
           rm ./package.json
           rm ./npm-shrinkwrap.json
+          rm ./stylelint.config.js
           rm ./webpack.js
           rm -rf ./assets/document-templates/.git
           rm -rf ./assets/document-formats/.git
