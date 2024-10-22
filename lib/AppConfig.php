@@ -1473,7 +1473,7 @@ class AppConfig {
      * DEMO DATA
      */
     private $DEMO_PARAM = [
-        "ADDR" => "https://onlinedocs.onlyoffice.com/",
+        "ADDR" => "https://onlinedocs.docs.onlyoffice.com/",
         "HEADER" => "AuthorizationJWT",
         "SECRET" => "sn2puSUF7muF5Jas",
         "TRIAL" => 30

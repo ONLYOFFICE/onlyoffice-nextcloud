@@ -128,10 +128,6 @@
 		}
 	}
 
-	OCA.Onlyoffice.onRequestEditRights = function() {
-		$(OCA.Onlyoffice.frameSelector).attr('src', $(OCA.Onlyoffice.frameSelector).attr('src') + '&forceEdit=true')
-	}
-
 	window.addEventListener('message', function(event) {
 		if (!$(OCA.Onlyoffice.frameSelector).length
 			|| $(OCA.Onlyoffice.frameSelector)[0].contentWindow !== event.source
@@ -176,8 +172,6 @@
 		case 'onShowMessage':
 			OCA.Onlyoffice.onShowMessage(event.data.param)
 			break
-		case 'onRequestEditRights':
-			OCA.Onlyoffice.onRequestEditRights()
 		}
 	}, false)
 

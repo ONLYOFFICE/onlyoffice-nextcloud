@@ -124,9 +124,7 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 
 				if (open) {
 					const fileName = response.name
-					const extension = OCA.Onlyoffice.getFileExtension(fileName)
-					const forceEdit = OCA.Onlyoffice.setting.formats[extension].fillForms
-					OCA.Onlyoffice.OpenEditor(response.id, dir, fileName, winEditor, forceEdit)
+					OCA.Onlyoffice.OpenEditor(response.id, dir, fileName, winEditor)
 
 					OCA.Onlyoffice.context = {
 						fileName: response.name,
@@ -139,7 +137,7 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 		)
 	}
 
-	OCA.Onlyoffice.OpenEditor = function(fileId, fileDir, fileName, winEditor, forceEdit) {
+	OCA.Onlyoffice.OpenEditor = function(fileId, fileDir, fileName, winEditor) {
 		let filePath = ''
 		if (fileName) {
 			filePath = fileDir.replace(/\/$/, '') + '/' + fileName
@@ -156,10 +154,6 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 					shareToken: encodeURIComponent($('#sharingToken').val()),
 					fileId,
 				})
-		}
-
-		if (forceEdit) {
-			url += '&forceEdit=true'
 		}
 
 		if (winEditor && winEditor.location) {
@@ -196,7 +190,8 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 
 		OCA.Onlyoffice.context = null
 
-		const url = OCA.Onlyoffice.folderUrl
+		let url = OCA.Onlyoffice.folderUrl
+		url = url.replace(/&?openfile=true/, '')
 		if (url) {
 			window.history.pushState(null, null, url)
 			OCA.Onlyoffice.folderUrl = null
