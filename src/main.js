@@ -512,8 +512,8 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 				enabled: (files) => {
 					const config = getConfig(files[0])
 
-					if (!config) return
-					if (!config.def) return
+					if (!config) return false
+					if (!config.def) return false
 
 					if (Permission.READ !== (files[0].permissions & Permission.READ)) { return false }
 
@@ -547,7 +547,7 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 				enabled: (files) => {
 					const config = getConfig(files[0])
 
-					if (!config) return
+					if (!config) return false
 					if (!config.conv) return false
 
 					const required = $('#isPublic').val() ? Permission.UPDATE : Permission.READ
@@ -573,7 +573,7 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 				enabled: (files) => {
 					const config = getConfig(files[0])
 
-					if (!config) return
+					if (!config) return false
 					if (!config.createForm) return false
 
 					const required = $('#isPublic').val() ? Permission.UPDATE : Permission.READ
@@ -600,7 +600,7 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 					enabled: (files) => {
 						const config = getConfig(files[0])
 
-						if (!config) return
+						if (!config) return false
 						if (!config.saveas) return false
 
 						if (Permission.READ !== (files[0].permissions & Permission.READ)) { return false }
