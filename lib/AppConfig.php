@@ -121,6 +121,13 @@ class AppConfig {
     private $_sameTab = "sameTab";
 
     /**
+     * The config key for the setting full screen mode
+     *
+     * @var string
+     */
+    private $_fullScreen = "fullScreen";
+
+    /**
      * The config key for the generate preview
      *
      * @var string
@@ -706,6 +713,26 @@ class AppConfig {
      */
     public function getSameTab() {
         return $this->config->getAppValue($this->appName, $this->_sameTab, "true") === "true";
+    }
+
+    /**
+     * Save the full screen mode setting
+     *
+     * @param bool $value - same tab
+     */
+    public function setFullScreen($value) {
+        $this->logger->info("Set full screen: " . json_encode($value), ["app" => $this->appName]);
+
+        $this->config->setAppValue($this->appName, $this->_fullScreen, json_encode($value));
+    }
+
+    /**
+     * Get the full screen mode setting
+     *
+     * @return bool
+     */
+    public function getFullScreen() {
+        return $this->config->getAppValue($this->appName, $this->_fullScreen, "true") === "true";
     }
 
     /**

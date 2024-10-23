@@ -225,6 +225,7 @@
 			})
 
 			const sameTab = $('#onlyofficeSameTab').is(':checked')
+			const fullScreen = $('#onlyofficeFullScreen').is(':checked')
 			const preview = $('#onlyofficePreview').is(':checked')
 			const advanced = $('#onlyofficeAdvanced').is(':checked')
 			const cronChecker = $('#onlyofficeCronChecker').is(':checked')
@@ -249,6 +250,7 @@
 					defFormats,
 					editFormats,
 					sameTab,
+					fullScreen,
 					preview,
 					advanced,
 					cronChecker,

@@ -127,6 +127,12 @@ if ($_["tagsEnabled"]) {
     </p>
 
     <p>
+        <input type="checkbox" class="checkbox" id="onlyofficeFullScreen"
+            <?php if ($_["fullScreen"]) { ?>checked="checked"<?php } ?> />
+        <label for="onlyofficeFullScreen"><?php p($l->t("Hide Nextcloud UI when opening editors")) ?></label>
+    </p>
+
+    <p>
         <input type="checkbox" class="checkbox" id="onlyofficeAdvanced"
             <?php if ($_["advanced"]) { ?>checked="checked"<?php } ?> />
         <label for="onlyofficeAdvanced"><?php p($l->t("Provide advanced document permissions using ONLYOFFICE Docs")) ?></label>
