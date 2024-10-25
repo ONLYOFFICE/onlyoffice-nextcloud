@@ -521,6 +521,7 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 				},
 				exec: OCA.Onlyoffice.FileClickExec,
 				default: DefaultType.HIDDEN,
+				order: -1,
 			}))
 
 			registerFileAction(new FileAction({
