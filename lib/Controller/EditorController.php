@@ -674,7 +674,7 @@ class EditorController extends Controller {
             "path" => $userFolder->getRelativePath($file->getPath()),
             "key" => $key,
             "referenceData" => [
-                "fileKey" => $file->getId(),
+                "fileKey" => (string)$file->getId(),
                 "instanceId" => $this->config->getSystemValue("instanceid", true),
             ],
             "url" => $this->getUrl($file, $user),
