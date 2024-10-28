@@ -36,6 +36,7 @@
 	OCA.Onlyoffice = _.extend({
 		AppName: 'onlyoffice',
 		frameSelector: null,
+		fullScreen: false,
 	}, OCA.Onlyoffice)
 
 	OCA.Onlyoffice.onRequestClose = function() {
@@ -49,6 +50,8 @@
 		if (OCA.Onlyoffice.CloseEditor) {
 			OCA.Onlyoffice.CloseEditor()
 		}
+
+		OCA.Onlyoffice.showNcUI()
 	}
 
 	OCA.Onlyoffice.onRequestSaveAs = function(saveData) {
@@ -105,8 +108,12 @@
 			true)
 	}
 
-	OCA.Onlyoffice.onDocumentReady = function() {
+	OCA.Onlyoffice.onDocumentReady = function(fullScreen) {
 		OCA.Onlyoffice.setViewport()
+		const fullScreenMode = Boolean(fullScreen)
+		if (fullScreenMode) {
+			OCA.Onlyoffice.setFullScreen()
+		}
 	}
 
 	OCA.Onlyoffice.changeFavicon = function(favicon) {
@@ -115,6 +122,20 @@
 
 	OCA.Onlyoffice.setViewport = function() {
 		document.querySelector('meta[name="viewport"]').setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0')
+	}
+
+	OCA.Onlyoffice.setFullScreen = function() {
+		$('#onlyofficeFrame').css('position', 'fixed')
+		$('#onlyofficeFrame').css('left', 0)
+		OCA.Onlyoffice.hideNcUI()
+	}
+
+	OCA.Onlyoffice.hideNcUI = function() {
+		$('#header').css('display', 'none')
+	}
+
+	OCA.Onlyoffice.showNcUI = function() {
+		$('#header').css('display', 'inline-flex')
 	}
 
 	OCA.Onlyoffice.onShowMessage = function(messageObj) {

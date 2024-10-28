@@ -41,6 +41,7 @@
 		fileId: null,
 		shareToken: null,
 		insertImageType: null,
+		fullScreen: false,
 	}, OCA.Onlyoffice)
 
 	OCA.Onlyoffice.InitEditor = function() {
@@ -53,6 +54,7 @@
 		OCA.Onlyoffice.inviewer = !!$('#iframeEditor').data('inviewer')
 		OCA.Onlyoffice.filePath = $('#iframeEditor').data('path')
 		OCA.Onlyoffice.anchor = $('#iframeEditor').attr('data-anchor')
+		OCA.Onlyoffice.fullScreen = $('#iframeEditor').attr('data-fullscreen')
 		const guestName = localStorage.getItem('nick')
 		OCA.Onlyoffice.currentWindow = window
 		OCA.Onlyoffice.currentUser = OC.getCurrentUser()
@@ -297,15 +299,20 @@
 
 	OCA.Onlyoffice.onDocumentReady = function() {
 		if (OCA.Onlyoffice.inframe) {
+			const fullScreen = OCA.Onlyoffice.fullScreen
 			window.parent.postMessage({
 				method: 'onDocumentReady',
-				param: {},
+				param: fullScreen,
 			},
 			'*')
 		}
 
 		OCA.Onlyoffice.resize()
 		OCA.Onlyoffice.setViewport()
+
+		if (OCA.Onlyoffice.fullScreen) {
+			OCA.Onlyoffice.setFullScreen()
+		}
 	}
 
 	OCA.Onlyoffice.onRequestSaveAs = function(event) {
@@ -751,6 +758,16 @@
 
 	OCA.Onlyoffice.setViewport = function() {
 		document.querySelector('meta[name="viewport"]').setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0')
+	}
+
+	OCA.Onlyoffice.setFullScreen = function() {
+		$('#app > iframe').css('margin-top', '-50px')
+		$('#app > iframe').css('height', '100%')
+		OCA.Onlyoffice.hideNcUI()
+	}
+
+	OCA.Onlyoffice.hideNcUI = function() {
+		$('#header').css('display', 'none')
 	}
 
 	OCA.Onlyoffice.InitEditor()
