@@ -48,7 +48,8 @@ if (!empty($_["directToken"])) {
         data-template="<?php p($_["isTemplate"]) ?>"
         data-anchor="<?php p($_["anchor"]) ?>"
         data-inframe="<?php p($_["inframe"]) ?>"
-        data-inviewer="<?php p($_["inviewer"]) ?>"></div>
+        data-inviewer="<?php p($_["inviewer"]) ?>"
+        data-fullscreen="<?php p($_["fullScreen"]) ?>"></div>
 
     <?php if (!empty($_["documentServerUrl"])) { ?>
         <script nonce="<?php p(\OC::$server->get(\OC\Security\CSP\ContentSecurityPolicyNonceManager::class)->getNonce()) ?>"

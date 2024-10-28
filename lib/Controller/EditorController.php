@@ -1322,6 +1322,8 @@ class EditorController extends Controller {
             return $this->renderError($this->trans->t("ONLYOFFICE app is not configured. Please contact admin"));
         }
 
+        $fullScreen = $this->config->getFullScreen() === true;
+
         $params = [
             "documentServerUrl" => $documentServerUrl,
             "fileId" => $fileId,
@@ -1331,7 +1333,8 @@ class EditorController extends Controller {
             "isTemplate" => $template,
             "inframe" => false,
             "inviewer" => $inviewer === true,
-            "anchor" => $anchor
+            "anchor" => $anchor,
+            "fullScreen" => $fullScreen
         ];
 
         $response = null;

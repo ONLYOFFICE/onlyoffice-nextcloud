@@ -250,7 +250,8 @@ class DirectEditor implements IEditor {
                 "isTemplate" => false,
                 "inframe" => false,
                 "inviewer" => false,
-                "anchor" => null
+                "anchor" => null,
+                "fullScreen" => false
             ];
 
             $response = new TemplateResponse($this->appName, "editor", $params, "base");
