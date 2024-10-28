@@ -718,7 +718,7 @@ class AppConfig {
     /**
      * Save the full screen mode setting
      *
-     * @param bool $value - same tab
+     * @param bool $value - full screen mode
      */
     public function setFullScreen($value) {
         $this->logger->info("Set full screen: " . json_encode($value), ["app" => $this->appName]);
