@@ -37,6 +37,7 @@
 		AppName: 'onlyoffice',
 		frameSelector: null,
 		fullScreen: false,
+		fullScreenSupportedApps: ['app-files'],
 	}, OCA.Onlyoffice)
 
 	OCA.Onlyoffice.onRequestClose = function() {
@@ -111,7 +112,7 @@
 	OCA.Onlyoffice.onDocumentReady = function(fullScreen) {
 		OCA.Onlyoffice.setViewport()
 		const fullScreenMode = Boolean(fullScreen)
-		if (fullScreenMode) {
+		if (fullScreenMode && OCA.Onlyoffice.isFullscreenSupported()) {
 			OCA.Onlyoffice.setFullScreen()
 		}
 	}
@@ -131,11 +132,27 @@
 	}
 
 	OCA.Onlyoffice.hideNcUI = function() {
-		$('#header').css('display', 'none')
+		if ($('#content-vue').length) {
+			$('#content-vue').css('z-index', 2500)
+		}
 	}
 
 	OCA.Onlyoffice.showNcUI = function() {
-		$('#header').css('display', 'inline-flex')
+		if ($('#content-vue').length) {
+			$('#content-vue').css('z-index', 'auto')
+		}
+	}
+
+	OCA.Onlyoffice.isFullscreenSupported = function() {
+		const appContentClassList = document.getElementById('content-vue').className.split(/\s+/)
+		if (!appContentClassList) {
+			return false
+		}
+		const intersection = appContentClassList.filter(value => OCA.Onlyoffice.fullScreenSupportedApps.includes(value))
+		if (intersection.length > 0) {
+			return true
+		}
+		return false
 	}
 
 	OCA.Onlyoffice.onShowMessage = function(messageObj) {

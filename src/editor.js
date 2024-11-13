@@ -767,7 +767,9 @@
 	}
 
 	OCA.Onlyoffice.hideNcUI = function() {
-		$('#header').css('display', 'none')
+		if ($('#content').length) {
+			$('#content').css('z-index', 2500)
+		}
 	}
 
 	OCA.Onlyoffice.InitEditor()
