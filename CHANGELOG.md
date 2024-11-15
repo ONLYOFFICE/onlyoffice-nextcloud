@@ -1,4 +1,6 @@
 # Change Log
+## Added
+- setting for launch editors in full screen mode
 
 ## 9.5.0
 ## Added
