@@ -41,7 +41,7 @@ if ($_["tagsEnabled"]) {
 <div class="section section-onlyoffice section-onlyoffice-addr">
     <h2>
         ONLYOFFICE
-        <a target="_blank" class="icon-info svg" title="" href="https://api.onlyoffice.com/editors/nextcloud" data-original-title="<?php p($l->t("Documentation")) ?>"></a>
+        <a target="_blank" class="icon-info svg" title="" href="https://helpcenter.onlyoffice.com/integration/nextcloud.aspx" data-original-title="<?php p($l->t("Documentation")) ?>"></a>
     </h2>
 
     <h2><?php p($l->t("Server settings")) ?></h2>
