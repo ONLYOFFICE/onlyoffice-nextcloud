@@ -41,7 +41,6 @@ OC.L10N.register(
     "Open file in the same tab" : "Apri il file nella stessa scheda",
     "The default application for opening the format": "L'applicazione predefinita per l'apertura del formato",
     "Open the file for editing (due to format restrictions, the data might be lost when saving to the formats from the list below)" : "Apri il file per la modifica (a causa di restrizioni di formato, i dati potrebbero andare persi durante il salvataggio nei formati della lista sottostante)",
-    "View details" : "Vedi dettagli",
     "Save" : "Salva",
     "Mixed Active Content is not allowed. HTTPS address for ONLYOFFICE Docs is required." : "Il contenuto attivo misto non è consentito. È richiesto l'indirizzo HTTPS per ONLYOFFICE Docs.",
     "Allow the following groups to access the editors": "Consenti ai seguenti gruppi di accedere agli editor",

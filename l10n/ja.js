@@ -41,7 +41,6 @@ OC.L10N.register(
     "Open file in the same tab" : "ファイルを同じタブで開く",
     "The default application for opening the format": "以下のファイルフォーマットをデフォルトで開く",
     "Open the file for editing (due to format restrictions, the data might be lost when saving to the formats from the list below)" : "編集できるファイルフォーマット (フォーマットの制限により、以下のフォーマットを保存する時にデータが失われる可能性があります)",
-    "View details" : "詳細表示",
     "Save" : "保存",
     "Mixed Active Content is not allowed. HTTPS address for ONLYOFFICE Docs is required." : "アクティブコンテンツの混在は許可されていません。ONLYOFFICE DocsにはHTTPSアドレスが必要です",
     "Allow the following groups to access the editors": "以下のグループにエディタへのアクセスを許可する",

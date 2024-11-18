@@ -162,7 +162,6 @@ if ($_["tagsEnabled"]) {
 
     <p class="onlyoffice-header">
         <?php p($l->t("Open the file for editing (due to format restrictions, the data might be lost when saving to the formats from the list below)")) ?>
-        <a target="_blank" class="icon-info svg" title="" href="https://api.onlyoffice.com/editors/nextcloud#editable" data-original-title="<?php p($l->t("View details")) ?>"></a>
     </p>
     <div class="onlyoffice-exts">
         <?php foreach ($_["formats"] as $format => $setting) { ?>
@@ -181,7 +180,6 @@ if ($_["tagsEnabled"]) {
 
     <h2>
         <?php p($l->t("Editor customization settings")) ?>
-        <a target="_blank" class="icon-info svg" title="" href="https://api.onlyoffice.com/editors/config/editor/customization" data-original-title="<?php p($l->t("View details")) ?>"></a>
     </h2>
 
     <p>
