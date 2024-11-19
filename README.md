@@ -61,7 +61,7 @@ There are several ways to do that:
     cd onlyoffice
     git submodule update --init --recursive
     ```
-3. Build webpack:
+3. Build webpack (only if you chose to clone on the previous step):
     ```bash
     npm install
     npm run build
