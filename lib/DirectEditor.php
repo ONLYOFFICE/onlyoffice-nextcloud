@@ -35,8 +35,8 @@ use OCP\AppFramework\Http\TemplateResponse;
 use OCP\DirectEditing\IEditor;
 use OCP\DirectEditing\IToken;
 use OCP\IL10N;
-use OCP\ILogger;
 use OCP\IURLGenerator;
+use Psr\Log\LoggerInterface;
 
 /**
  * Direct Editor
@@ -69,7 +69,7 @@ class DirectEditor implements IEditor {
     /**
      * Logger
      *
-     * @var ILogger
+     * @var LoggerInterface
      */
     private $logger;
 
@@ -91,7 +91,7 @@ class DirectEditor implements IEditor {
      * @param string $AppName - application name
      * @param IURLGenerator $urlGenerator - url generator service
      * @param IL10N $trans - l10n service
-     * @param ILogger $logger - logger
+     * @param LoggerInterface $logger - logger
      * @param AppConfig $config - application configuration
      * @param Crypt $crypt - hash generator
      */
@@ -99,7 +99,7 @@ class DirectEditor implements IEditor {
         $AppName,
         IURLGenerator $urlGenerator,
         IL10N $trans,
-        ILogger $logger,
+        LoggerInterface $logger,
         AppConfig $config,
         Crypt $crypt
     ) {
@@ -217,7 +217,7 @@ class DirectEditor implements IEditor {
             $fileId = $file->getId();
             $userId = $token->getUser();
 
-            $this->logger->debug("DirectEditor open: $fileId", ["app" => $this->appName]);
+            $this->logger->debug("DirectEditor open: $fileId");
 
             if (!$this->config->isUserAllowedToUse($userId)) {
                 return $this->renderError($this->trans->t("Not permitted"));
@@ -226,7 +226,7 @@ class DirectEditor implements IEditor {
             $documentServerUrl = $this->config->getDocumentServerUrl();
 
             if (empty($documentServerUrl)) {
-                $this->logger->error("documentServerUrl is empty", ["app" => $this->appName]);
+                $this->logger->error("documentServerUrl is empty");
                 return $this->renderError($this->trans->t("ONLYOFFICE app is not configured. Please contact admin"));
             }
 
@@ -267,7 +267,7 @@ class DirectEditor implements IEditor {
 
             return $response;
         } catch (\Exception $e) {
-            $this->logger->logException($e, ["message" => "DirectEditor open", "app" => $this->appName]);
+            $this->logger->error($e->getMessage(), ["exception" => $e]);
             return $this->renderError($e->getMessage());
         }
     }
