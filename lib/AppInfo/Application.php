@@ -252,7 +252,6 @@ class Application extends App implements IBootstrap {
         });
 
         $context->registerEventListener(FileCreatedFromTemplateEvent::class, CreateFromTemplateListener::class);
-        $context->registerEventListener(LoadAdditionalScriptsEvent::class, FilesListener::class);
         $context->registerEventListener(RegisterDirectEditorEvent::class, DirectEditorListener::class);
         $context->registerEventListener(LoadViewer::class, ViewerListener::class);
         $context->registerEventListener(BeforeTemplateRenderedEvent::class, FileSharingListener::class);
