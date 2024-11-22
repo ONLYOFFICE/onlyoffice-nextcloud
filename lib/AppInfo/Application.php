@@ -46,6 +46,7 @@ use OCP\Files\Lock\ILockManager;
 use OCP\IL10N;
 use OCP\IPreview;
 use OCP\ITagManager;
+use OCP\Preview\IMimeIconProvider;
 use OCP\Notification\IManager;
 use OCA\Files_Sharing\Event\BeforeTemplateRenderedEvent;
 use OCA\Viewer\Event\LoadViewer;
@@ -168,7 +169,8 @@ class Application extends App implements IBootstrap {
                 $c->get("L10N"),
                 $c->get(LoggerInterface::class),
                 $this->appConfig,
-                $this->crypt
+                $this->crypt,
+                $c->get(IMimeIconProvider::class)
             );
         });
 
@@ -244,7 +246,8 @@ class Application extends App implements IBootstrap {
                 $c->get("Request"),
                 $c->get("L10N"),
                 $c->get(LoggerInterface::class),
-                $c->get(IPreview::class)
+                $c->get(IPreview::class),
+                $c->get(IMimeIconProvider::class)
             );
         });
 

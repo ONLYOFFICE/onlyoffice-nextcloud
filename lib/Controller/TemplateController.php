@@ -38,6 +38,7 @@ use OCP\Files\NotFoundException;
 use OCP\IL10N;
 use OCP\IPreview;
 use OCP\IRequest;
+use OCP\Preview\IMimeIconProvider;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -67,22 +68,32 @@ class TemplateController extends Controller {
     private $preview;
 
     /**
+     * Mime icon provider
+     *
+     * @var IMimeIconProvider
+     */
+    private $mimeIconProvider;
+
+    /**
      * @param string $AppName - application name
      * @param LoggerInterface $logger - logger
      * @param IL10N $trans - l10n service
+     * @param IMimeIconProvider $mimeIconProvider - mime icon provider
      */
     public function __construct(
         $AppName,
         IRequest $request,
         IL10N $trans,
         LoggerInterface $logger,
-        IPreview $preview
+        IPreview $preview,
+        IMimeIconProvider $mimeIconProvider,
     ) {
         parent::__construct($AppName, $request);
 
         $this->trans = $trans;
         $this->logger = $logger;
         $this->preview = $preview;
+        $this->mimeIconProvider = $mimeIconProvider;
     }
 
     /**
@@ -100,7 +111,8 @@ class TemplateController extends Controller {
             $template = [
                 "id" => $templatesItem->getId(),
                 "name" => $templatesItem->getName(),
-                "type" => TemplateManager::getTypeTemplate($templatesItem->getMimeType())
+                "type" => TemplateManager::getTypeTemplate($templatesItem->getMimeType()),
+                "icon" => $this->mimeIconProvider->getMimeIconUrl($templatesItem->getMimeType())
             ];
             array_push($templates, $template);
         }
@@ -141,7 +153,8 @@ class TemplateController extends Controller {
                 $result = [
                     "id" => $fileInfo->getId(),
                     "name" => $fileInfo->getName(),
-                    "type" => TemplateManager::getTypeTemplate($fileInfo->getMimeType())
+                    "type" => TemplateManager::getTypeTemplate($fileInfo->getMimeType()),
+                    "icon" => $this->mimeIconProvider->getMimeIconUrl($fileInfo->getMimeType())
                 ];
 
                 return $result;
