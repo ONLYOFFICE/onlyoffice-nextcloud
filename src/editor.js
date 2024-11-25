@@ -58,9 +58,7 @@
 		OCA.Onlyoffice.currentUser = OC.getCurrentUser()
 
 		if (OCA.Onlyoffice.inframe) {
-			OCA.Onlyoffice.faviconBase = $('link[rel="icon"]').attr('href')
 			OCA.Onlyoffice.currentWindow = window.parent
-			OCA.Onlyoffice.titleBase = OCA.Onlyoffice.currentWindow.document.title
 			OCA.Onlyoffice.currentUser = OCA.Onlyoffice.currentWindow.OC.getCurrentUser()
 		}
 
