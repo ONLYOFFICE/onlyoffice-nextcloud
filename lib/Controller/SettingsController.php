@@ -144,7 +144,8 @@ class SettingsController extends Controller {
             "tagsEnabled" => \OC::$server->getAppManager()->isEnabledForUser("systemtags"),
             "reviewDisplay" => $this->config->getCustomizationReviewDisplay(),
             "theme" => $this->config->getCustomizationTheme(),
-            "templates" => $this->getGlobalTemplates()
+            "templates" => $this->getGlobalTemplates(),
+            "unknownAuthor" => $this->config->getUnknownAuthor()
         ];
         return new TemplateResponse($this->appName, "settings", $data, "blank");
     }
@@ -224,6 +225,7 @@ class SettingsController extends Controller {
      * @param bool $help - display help
      * @param bool $toolbarNoTabs - display toolbar tab
      * @param string $reviewDisplay - review viewing mode
+     * @param string $unknownAuthor - display unknown author
      *
      * @return array
      */
@@ -243,7 +245,8 @@ class SettingsController extends Controller {
         $help,
         $toolbarNoTabs,
         $reviewDisplay,
-        $theme
+        $theme,
+        $unknownAuthor
     ) {
 
         $this->config->setDefaultFormats($defFormats);
@@ -262,6 +265,7 @@ class SettingsController extends Controller {
         $this->config->setCustomizationToolbarNoTabs($toolbarNoTabs);
         $this->config->setCustomizationReviewDisplay($reviewDisplay);
         $this->config->setCustomizationTheme($theme);
+        $this->config->setUnknownAuthor($unknownAuthor);
 
         return [
         ];
