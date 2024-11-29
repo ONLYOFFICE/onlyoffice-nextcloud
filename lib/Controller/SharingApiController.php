@@ -36,12 +36,12 @@ use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\OCSController;
 use OCP\Files\File;
 use OCP\Files\IRootFolder;
-use OCP\ILogger;
 use OCP\IRequest;
 use OCP\IUserManager;
 use OCP\IUserSession;
 use OCP\Share\IManager;
 use OCP\Share\IShare;
+use Psr\Log\LoggerInterface;
 
 /**
  * OCS handler
@@ -72,7 +72,7 @@ class SharingApiController extends OCSController {
     /**
      * Logger
      *
-     * @var ILogger
+     * @var LoggerInterface
      */
     private $logger;
 
@@ -101,7 +101,7 @@ class SharingApiController extends OCSController {
      * @param string $AppName - application name
      * @param IRequest $request - request object
      * @param IRootFolder $root - root folder
-     * @param ILogger $logger - logger
+     * @param LoggerInterface $logger - logger
      * @param IUserSession $userSession - current user session
      * @param IUserManager $userManager - user manager
      * @param IManager $shareManager - Share manager
@@ -111,7 +111,7 @@ class SharingApiController extends OCSController {
         $AppName,
         IRequest $request,
         IRootFolder $root,
-        ILogger $logger,
+        LoggerInterface $logger,
         IUserSession $userSession,
         IUserManager $userManager,
         IManager $shareManager,
@@ -144,7 +144,7 @@ class SharingApiController extends OCSController {
      */
     public function getShares($fileId) {
         if ($this->extraPermissions === null) {
-            $this->logger->debug("extraPermissions isn't init", ["app" => $this->appName]);
+            $this->logger->debug("extraPermissions isn't init");
             return new DataResponse([], Http::STATUS_BAD_REQUEST);
         }
 
@@ -182,7 +182,7 @@ class SharingApiController extends OCSController {
      */
     public function setShares($extraId, $shareId, $fileId, $permissions) {
         if ($this->extraPermissions === null) {
-            $this->logger->debug("extraPermissions isn't init", ["app" => $this->appName]);
+            $this->logger->debug("extraPermissions isn't init");
             return new DataResponse([], Http::STATUS_BAD_REQUEST);
         }
 
@@ -196,7 +196,7 @@ class SharingApiController extends OCSController {
         }
 
         if (!$this->extraPermissions->setExtra($shareId, $permissions, $extraId)) {
-            $this->logger->error("setShares: couldn't set extra permissions for: " . $shareId, ["app" => $this->appName]);
+            $this->logger->error("setShares: couldn't set extra permissions for: " . $shareId);
             return new DataResponse([], Http::STATUS_BAD_REQUEST);
         }
 
@@ -218,12 +218,12 @@ class SharingApiController extends OCSController {
             $folder = $this->root->getUserFolder($userId);
             $files = $folder->getById($fileId);
         } catch (\Exception $e) {
-            $this->logger->logException($e, ["message" => "getFile: $fileId", "app" => $this->appName]);
+            $this->logger->error("getFile: $fileId", ["exception" => $e]);
             return null;
         }
 
         if (empty($files)) {
-            $this->logger->error("getFile: file not found: " . $fileId, ["app" => $this->appName]);
+            $this->logger->error("getFile: file not found: " . $fileId);
             return null;
         }
 

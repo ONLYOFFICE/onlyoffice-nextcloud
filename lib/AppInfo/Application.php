@@ -71,6 +71,7 @@ use OCA\Onlyoffice\Preview;
 use OCA\Onlyoffice\TemplateProvider;
 use OCA\Onlyoffice\SettingsData;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
 class Application extends App implements IBootstrap {
 
@@ -139,10 +140,6 @@ class Application extends App implements IBootstrap {
             return $c->get("ServerContainer")->getUserManager();
         });
 
-        $context->registerService("Logger", function (ContainerInterface $c) {
-            return $c->get("ServerContainer")->getLogger();
-        });
-
         $context->registerService("URLGenerator", function (ContainerInterface $c) {
             return $c->get("ServerContainer")->getURLGenerator();
         });
@@ -152,7 +149,7 @@ class Application extends App implements IBootstrap {
                 $c->get("AppName"),
                 $c->get("URLGenerator"),
                 $c->get("L10N"),
-                $c->get("Logger"),
+                $c->get(LoggerInterface::class),
                 $this->appConfig,
                 $this->crypt
             );
@@ -169,7 +166,7 @@ class Application extends App implements IBootstrap {
                 $c->get("Request"),
                 $c->get("URLGenerator"),
                 $c->get("L10N"),
-                $c->get("Logger"),
+                $c->get(LoggerInterface::class),
                 $this->appConfig,
                 $this->crypt
             );
@@ -184,7 +181,7 @@ class Application extends App implements IBootstrap {
                 $c->get("UserManager"),
                 $c->get("URLGenerator"),
                 $c->get("L10N"),
-                $c->get("Logger"),
+                $c->get(LoggerInterface::class),
                 $this->appConfig,
                 $this->crypt,
                 $c->get("IManager"),
@@ -198,7 +195,7 @@ class Application extends App implements IBootstrap {
                 $c->get("AppName"),
                 $c->get("Request"),
                 $c->get("RootStorage"),
-                $c->get("Logger"),
+                $c->get(LoggerInterface::class),
                 $c->get("UserSession"),
                 $c->get("UserManager"),
                 $c->get("IManager"),
@@ -215,7 +212,7 @@ class Application extends App implements IBootstrap {
                 $c->get("UserManager"),
                 $c->get("URLGenerator"),
                 $c->get("L10N"),
-                $c->get("Logger"),
+                $c->get(LoggerInterface::class),
                 $this->appConfig,
                 $this->crypt,
                 $c->get("IManager"),
@@ -233,7 +230,7 @@ class Application extends App implements IBootstrap {
                 $c->get("UserSession"),
                 $c->get("UserManager"),
                 $c->get("L10N"),
-                $c->get("Logger"),
+                $c->get(LoggerInterface::class),
                 $this->appConfig,
                 $this->crypt,
                 $c->get("IManager"),
@@ -246,7 +243,7 @@ class Application extends App implements IBootstrap {
                 $c->get("AppName"),
                 $c->get("Request"),
                 $c->get("L10N"),
-                $c->get("Logger"),
+                $c->get(LoggerInterface::class),
                 $c->get(IPreview::class)
             );
         });

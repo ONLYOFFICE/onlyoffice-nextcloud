@@ -36,9 +36,9 @@ use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Http\FileDisplayResponse;
 use OCP\Files\NotFoundException;
 use OCP\IL10N;
-use OCP\ILogger;
 use OCP\IPreview;
 use OCP\IRequest;
+use Psr\Log\LoggerInterface;
 
 /**
  * OCS handler
@@ -55,7 +55,7 @@ class TemplateController extends Controller {
     /**
      * Logger
      *
-     * @var ILogger
+     * @var LoggerInterface
      */
     private $logger;
 
@@ -68,14 +68,14 @@ class TemplateController extends Controller {
 
     /**
      * @param string $AppName - application name
-     * @param ILogger $logger - logger
+     * @param LoggerInterface $logger - logger
      * @param IL10N $trans - l10n service
      */
     public function __construct(
         $AppName,
         IRequest $request,
         IL10N $trans,
-        ILogger $logger,
+        LoggerInterface $logger,
         IPreview $preview
     ) {
         parent::__construct($AppName, $request);
@@ -166,14 +166,14 @@ class TemplateController extends Controller {
         try {
             $templates = $templateDir->getById($templateId);
         } catch (\Exception $e) {
-            $this->logger->logException($e, ["message" => "deleteTemplate: $templateId", "app" => $this->AppName]);
+            $this->logger->error("deleteTemplate: $templateId", ["exception" => $e]);
             return [
                 "error" => $this->trans->t("Failed to delete template")
             ];
         }
 
         if (empty($templates)) {
-            $this->logger->info("Template not found: $templateId", ["app" => $this->AppName]);
+            $this->logger->info("Template not found: $templateId");
             return [
                 "error" => $this->trans->t("Failed to delete template")
             ];
@@ -181,7 +181,7 @@ class TemplateController extends Controller {
 
         $templates[0]->delete();
 
-        $this->logger->debug("Template: deleted " . $templates[0]->getName(), ["app" => $this->appName]);
+        $this->logger->debug("Template: deleted " . $templates[0]->getName());
         return [];
     }
 
@@ -206,7 +206,7 @@ class TemplateController extends Controller {
 
         $template = TemplateManager::getTemplate($fileId);
         if (empty($template)) {
-            $this->logger->error("Template not found: $fileId", ["app" => $this->appName]);
+            $this->logger->error("Template not found: $fileId");
             return new DataResponse([], Http::STATUS_NOT_FOUND);
         }
 

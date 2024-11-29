@@ -39,6 +39,7 @@ use OCP\IGroup;
 use OCP\IGroupManager;
 use OCP\IL10N;
 use OCP\IURLGenerator;
+use Psr\Log\LoggerInterface;
 
 /**
  * Editors availability check background job
@@ -63,7 +64,7 @@ class EditorsCheck extends TimedJob {
     /**
      * Logger
      *
-     * @var OCP\ILogger
+     * @var LoggerInterface
      */
     private $logger;
 
@@ -116,7 +117,7 @@ class EditorsCheck extends TimedJob {
         $this->appName = $AppName;
         $this->urlGenerator = $urlGenerator;
 
-        $this->logger = \OC::$server->getLogger();
+        $this->logger = \OC::$server->get(LoggerInterface::class);
         $this->config = $config;
         $this->trans = $trans;
         $this->crypt = $crypt;
@@ -132,11 +133,11 @@ class EditorsCheck extends TimedJob {
      */
     protected function run($argument) {
         if (empty($this->config->getDocumentServerUrl())) {
-            $this->logger->debug("Settings are empty", ["app" => $this->appName]);
+            $this->logger->debug("Settings are empty");
             return;
         }
         if (!$this->config->settingsAreSuccessful()) {
-            $this->logger->debug("Settings are not correct", ["app" => $this->appName]);
+            $this->logger->debug("Settings are not correct");
             return;
         }
         $fileUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.emptyfile");
@@ -145,21 +146,21 @@ class EditorsCheck extends TimedJob {
         }
         $host = parse_url($fileUrl)["host"];
         if ($host === "localhost" || $host === "127.0.0.1") {
-            $this->logger->debug("Localhost is not alowed for cron editors availability check. Please provide server address for internal requests from ONLYOFFICE Docs", ["app" => $this->appName]);
+            $this->logger->debug("Localhost is not alowed for cron editors availability check. Please provide server address for internal requests from ONLYOFFICE Docs");
             return;
         }
 
-        $this->logger->debug("ONLYOFFICE check started by cron", ["app" => $this->appName]);
+        $this->logger->debug("ONLYOFFICE check started by cron");
 
         $documentService = new DocumentService($this->trans, $this->config);
         list($error, $version) = $documentService->checkDocServiceUrl($this->urlGenerator, $this->crypt);
 
         if (!empty($error)) {
-            $this->logger->info("ONLYOFFICE server is not available", ["app" => $this->appName]);
+            $this->logger->info("ONLYOFFICE server is not available");
             $this->config->setSettingsError($error);
             $this->notifyAdmins();
         } else {
-            $this->logger->debug("ONLYOFFICE server availability check is finished successfully", ["app" => $this->appName]);
+            $this->logger->debug("ONLYOFFICE server availability check is finished successfully");
         }
     }
 

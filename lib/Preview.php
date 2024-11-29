@@ -37,11 +37,11 @@ use OCP\AppFramework\QueryException;
 use OCP\Files\FileInfo;
 use OCP\Files\IRootFolder;
 use OCP\IL10N;
-use OCP\ILogger;
 use OCP\Image;
 use OCP\ISession;
 use OCP\IURLGenerator;
 use OCP\Share\IManager;
+use Psr\Log\LoggerInterface;
 
 /**
  * Preview provider
@@ -67,7 +67,7 @@ class Preview extends Provider {
     /**
      * Logger
      *
-     * @var ILogger
+     * @var LoggerInterface
      */
     private $logger;
 
@@ -159,7 +159,7 @@ class Preview extends Provider {
     /**
      * @param string $appName - application name
      * @param IRootFolder $root - root folder
-     * @param ILogger $logger - logger
+     * @param LoggerInterface $logger - logger
      * @param IL10N $trans - l10n service
      * @param AppConfig $config - application configuration
      * @param IURLGenerator $urlGenerator - url generator service
@@ -170,7 +170,7 @@ class Preview extends Provider {
     public function __construct(
         string $appName,
         IRootFolder $root,
-        ILogger $logger,
+        LoggerInterface $logger,
         IL10N $trans,
         AppConfig $config,
         IURLGenerator $urlGenerator,
@@ -190,7 +190,7 @@ class Preview extends Provider {
             try {
                 $this->versionManager = \OC::$server->query(IVersionManager::class);
             } catch (QueryException $e) {
-                $this->logger->logException($e, ["message" => "VersionManager init error", "app" => $this->appName]);
+                $this->logger->error("VersionManager init error", ["exception" => $e]);
             }
         }
 
@@ -258,7 +258,7 @@ class Preview extends Provider {
      * @return Image|bool false if no preview was generated
      */
     public function getThumbnail($path, $maxX, $maxY, $scalingup, $view) {
-        $this->logger->debug("getThumbnail $path $maxX $maxY", ["app" => $this->appName]);
+        $this->logger->debug("getThumbnail $path $maxX $maxY");
 
         list($fileUrl, $extension, $key) = $this->getFileParam($path, $view);
         if ($fileUrl === null || $extension === null || $key === null) {
@@ -270,14 +270,14 @@ class Preview extends Provider {
         try {
             $imageUrl = $documentService->getConvertedUri($fileUrl, $extension, self::THUMBEXTENSION, $key);
         } catch (\Exception $e) {
-            $this->logger->logException($e, ["message" => "getConvertedUri: from $extension to " . self::THUMBEXTENSION, "app" => $this->appName]);
+            $this->logger->error("getConvertedUri: from $extension to " . self::THUMBEXTENSION, ["exception" => $e]);
             return false;
         }
 
         try {
             $thumbnail = $documentService->request($imageUrl);
         } catch (\Exception $e) {
-            $this->logger->logException($e, ["message" => "Failed to download thumbnail", "app" => $this->appName]);
+            $this->logger->error("Failed to download thumbnail", ["exception" => $e]);
             return false;
         }
 

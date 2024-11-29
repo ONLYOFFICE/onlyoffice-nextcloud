@@ -34,7 +34,7 @@ use \DateTime;
 use OCP\ICache;
 use OCP\ICacheFactory;
 use OCP\IConfig;
-use OCP\ILogger;
+use Psr\Log\LoggerInterface;
 
 /**
  * Application configutarion
@@ -60,7 +60,7 @@ class AppConfig {
     /**
      * Logger
      *
-     * @var ILogger
+     * @var LoggerInterface
      */
     private $logger;
 
@@ -359,7 +359,7 @@ class AppConfig {
         $this->appName = $AppName;
 
         $this->config = \OC::$server->getConfig();
-        $this->logger = \OC::$server->getLogger();
+        $this->logger = \OC::$server->get(LoggerInterface::class);
         $cacheFactory = \OC::$server->get(ICacheFactory::class);
         $this->cache = $cacheFactory->createLocal($this->appName);
     }
