@@ -843,7 +843,11 @@ class EditorApiController extends OCSController {
         );
 
         if ($watermarkTemplate !== false) {
-            $timezone = $this->timezoneService->getUserTimezone($userId) ?? $this->timezoneService->getDefaultTimezone();
+            if (empty($userId)) {
+                $timezone = $this->timezoneService->getDefaultTimezone();
+            } else {
+                $timezone = $this->timezoneService->getUserTimezone($userId) ?? $this->timezoneService->getDefaultTimezone();
+            }
             $replacements = [
                 "userId" => isset($userId) ? $userId : $this->trans->t('Anonymous'),
                 "date" => (new \DateTime("now", new \DateTimeZone($timezone)))->format("Y-m-d H:i:s"),
