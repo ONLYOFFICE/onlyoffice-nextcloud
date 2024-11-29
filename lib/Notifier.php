@@ -29,13 +29,13 @@
 
 namespace OCA\Onlyoffice;
 
-use OCP\ILogger;
 use OCP\IURLGenerator;
 use OCP\IUserManager;
 use OCP\L10N\IFactory;
 use OCP\Notification\IAction;
 use OCP\Notification\INotification;
 use OCP\Notification\INotifier;
+use Psr\Log\LoggerInterface;
 
 class Notifier implements INotifier {
 
@@ -63,7 +63,7 @@ class Notifier implements INotifier {
     /**
      * Logger
      *
-     * @var ILogger
+     * @var LoggerInterface
      */
     private $logger;
 
@@ -78,14 +78,14 @@ class Notifier implements INotifier {
      * @param string $AppName - application name
      * @param IFactory $l10NFactory - l10n
      * @param IURLGenerator $urlGenerator - url generator service
-     * @param ILogger $logger - logger
+     * @param LoggerInterface $logger - logger
      * @param IUserManager $userManager - user manager
      */
     public function __construct(
         string $appName,
         IFactory $l10nFactory,
         IURLGenerator $urlGenerator,
-        ILogger $logger,
+        LoggerInterface $logger,
         IUserManager $userManager
     ) {
         $this->appName = $appName;
@@ -146,7 +146,7 @@ class Notifier implements INotifier {
                 $fileName = $parameters["fileName"];
                 $anchor = $parameters["anchor"];
 
-                $this->logger->info("Notify prepare: from $notifierId about $fileId ", ["app" => $this->appName]);
+                $this->logger->info("Notify prepare: from $notifierId about $fileId ");
 
                 $notifier = $this->userManager->get($notifierId);
                 $notifierName = $notifier->getDisplayName();
@@ -173,7 +173,7 @@ class Notifier implements INotifier {
                 ]);
                 // no break
             default:
-                $this->logger->info("Unsupported notification object: ".$notification->getObjectType(), ["app" => $this->appName]);
+                $this->logger->info("Unsupported notification object: ".$notification->getObjectType());
         }
         return $notification;
     }
