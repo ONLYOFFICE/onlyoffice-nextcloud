@@ -36,150 +36,150 @@
 	OCA.Onlyoffice = _.extend({
 		AppName: 'onlyoffice',
 		frameSelector: null,
-	}, OCA.Onlyoffice);
+	}, OCA.Onlyoffice)
 
 	OCA.Onlyoffice.onRequestClose = function() {
 
-		$(OCA.Onlyoffice.frameSelector).remove();
+		$(OCA.Onlyoffice.frameSelector).remove()
 
 		if (OCA.Viewer && OCA.Viewer.close) {
-			OCA.Viewer.close();
+			OCA.Viewer.close()
 		}
 
 		if (OCA.Onlyoffice.CloseEditor) {
-			OCA.Onlyoffice.CloseEditor();
+			OCA.Onlyoffice.CloseEditor()
 		}
-	};
+	}
 
 	OCA.Onlyoffice.onRequestSaveAs = function(saveData) {
 
 		OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, 'Save as'),
 			function(fileDir) {
-				saveData.dir = fileDir;
-				$(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.editorSaveAs(saveData);
+				saveData.dir = fileDir
+				$(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.editorSaveAs(saveData)
 			},
 			false,
 			'httpd/unix-directory',
 			true,
 			OC.dialogs.FILEPICKER_TYPE_CHOOSE,
-			saveData.dir);
-	};
+			saveData.dir)
+	}
 
 	OCA.Onlyoffice.onRequestInsertImage = function(imageMimes) {
 		OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, 'Insert image'),
 			$(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.editorInsertImage,
 			false,
 			imageMimes,
-			true);
-	};
+			true)
+	}
 
 	OCA.Onlyoffice.onRequestMailMergeRecipients = function(recipientMimes) {
 		OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, 'Select recipients'),
 			$(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.editorSetRecipient,
 			false,
 			recipientMimes,
-			true);
-	};
+			true)
+	}
 
 	OCA.Onlyoffice.onRequestSelectDocument = function(revisedMimes, documentSelectionType) {
-		let title;
+		let title
 		switch (documentSelectionType) {
 		case 'combine':
-			title = t(OCA.Onlyoffice.AppName, 'Select file to combine');
-			break;
+			title = t(OCA.Onlyoffice.AppName, 'Select file to combine')
+			break
 		default:
-			title = t(OCA.Onlyoffice.AppName, 'Select file to compare');
+			title = t(OCA.Onlyoffice.AppName, 'Select file to compare')
 		}
 		OC.dialogs.filepicker(title,
 			$(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.editorSetRequested.bind({ documentSelectionType }),
 			false,
 			revisedMimes,
-			true);
-	};
+			true)
+	}
 
 	OCA.Onlyoffice.onRequestReferenceSource = function(referenceSourceMimes) {
 		OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, 'Select data source'),
 			$(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.editorReferenceSource,
 			false,
 			referenceSourceMimes,
-			true);
-	};
+			true)
+	}
 
 	OCA.Onlyoffice.onDocumentReady = function() {
-		OCA.Onlyoffice.setViewport();
-	};
+		OCA.Onlyoffice.setViewport()
+	}
 
 	OCA.Onlyoffice.changeFavicon = function(favicon) {
-		$('link[rel="icon"]').attr('href', favicon);
-	};
+		$('link[rel="icon"]').attr('href', favicon)
+	}
 
 	OCA.Onlyoffice.setViewport = function() {
-		document.querySelector('meta[name="viewport"]').setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0');
-	};
+		document.querySelector('meta[name="viewport"]').setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0')
+	}
 
 	OCA.Onlyoffice.onShowMessage = function(messageObj) {
 		switch (messageObj.type) {
 		case 'success':
-			OCP.Toast.success(messageObj.message, messageObj.props);
-			break;
+			OCP.Toast.success(messageObj.message, messageObj.props)
+			break
 		case 'error':
-			OCP.Toast.error(messageObj.message, messageObj.props);
-			break;
+			OCP.Toast.error(messageObj.message, messageObj.props)
+			break
 		}
-	};
+	}
 
 	window.addEventListener('message', function(event) {
 		if (!$(OCA.Onlyoffice.frameSelector).length
 			|| $(OCA.Onlyoffice.frameSelector)[0].contentWindow !== event.source
 			|| !event.data.method) {
-			return;
+			return
 		}
 		switch (event.data.method) {
 		case 'editorRequestClose':
-			OCA.Onlyoffice.onRequestClose();
-			break;
+			OCA.Onlyoffice.onRequestClose()
+			break
 		case 'editorRequestSharingSettings':
 			if (OCA.Onlyoffice.OpenShareDialog) {
-				OCA.Onlyoffice.OpenShareDialog();
+				OCA.Onlyoffice.OpenShareDialog()
 			}
-			break;
+			break
 		case 'onRefreshVersionsDialog':
 			if (OCA.Onlyoffice.RefreshVersionsDialog) {
-				OCA.Onlyoffice.RefreshVersionsDialog();
+				OCA.Onlyoffice.RefreshVersionsDialog()
 			}
-			break;
+			break
 		case 'editorRequestSaveAs':
-			OCA.Onlyoffice.onRequestSaveAs(event.data.param);
-			break;
+			OCA.Onlyoffice.onRequestSaveAs(event.data.param)
+			break
 		case 'editorRequestInsertImage':
-			OCA.Onlyoffice.onRequestInsertImage(event.data.param);
-			break;
+			OCA.Onlyoffice.onRequestInsertImage(event.data.param)
+			break
 		case 'editorRequestMailMergeRecipients':
-			OCA.Onlyoffice.onRequestMailMergeRecipients(event.data.param);
-			break;
+			OCA.Onlyoffice.onRequestMailMergeRecipients(event.data.param)
+			break
 		case 'editorRequestSelectDocument':
-			OCA.Onlyoffice.onRequestSelectDocument(event.data.param, event.data.documentSelectionType);
-			break;
+			OCA.Onlyoffice.onRequestSelectDocument(event.data.param, event.data.documentSelectionType)
+			break
 		case 'editorRequestReferenceSource':
-			OCA.Onlyoffice.onRequestReferenceSource(event.data.param);
-			break;
+			OCA.Onlyoffice.onRequestReferenceSource(event.data.param)
+			break
 		case 'onDocumentReady':
-			OCA.Onlyoffice.onDocumentReady(event.data.param);
-			break;
+			OCA.Onlyoffice.onDocumentReady(event.data.param)
+			break
 		case 'changeFavicon':
-			OCA.Onlyoffice.changeFavicon(event.data.param);
-			break;
+			OCA.Onlyoffice.changeFavicon(event.data.param)
+			break
 		case 'onShowMessage':
-			OCA.Onlyoffice.onShowMessage(event.data.param);
-			break;
+			OCA.Onlyoffice.onShowMessage(event.data.param)
+			break
 		}
-	}, false);
+	}, false)
 
 	window.addEventListener('popstate', function(event) {
 		if ($(OCA.Onlyoffice.frameSelector).length) {
-			OCA.Onlyoffice.onRequestClose();
+			OCA.Onlyoffice.onRequestClose()
 		}
-	});
+	})
 
 	const observerCallback = function(mutationsList) {
 		for (const mutation of mutationsList) {
@@ -194,13 +194,12 @@
 						OCA.Onlyoffice.changeFavicon($(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.faviconBase);
 						window.document.title = $(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.titleBase;
 					}
-				});
+				})
 			}
 		}
-	};
+	}
 
-	const observer = new MutationObserver(observerCallback);
-	const targetNode = document.body;
-	observer.observe(targetNode, { childList: true, subtree: true });
-
-})(OCA);
+	const observer = new MutationObserver(observerCallback)
+	const targetNode = document.body
+	observer.observe(targetNode, { childList: true, subtree: true })
+})(OCA)
