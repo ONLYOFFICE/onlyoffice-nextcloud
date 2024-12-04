@@ -1,4 +1,6 @@
 # Change Log
+## Added
+- setting for setup unknown author display name
 
 ## 9.5.0
 ## Added
