@@ -732,7 +732,7 @@ class AppConfig {
      * @return bool
      */
     public function getFullScreen() {
-        return $this->config->getAppValue($this->appName, $this->_fullScreen, "true") === "true";
+        return $this->config->getAppValue($this->appName, $this->_fullScreen, "false") === "true";
     }
 
     /**
