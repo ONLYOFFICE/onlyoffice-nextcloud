@@ -35,6 +35,9 @@ use OCA\Onlyoffice\FileUtility;
 use OCA\Onlyoffice\KeyManager;
 use OCA\Onlyoffice\RemoteInstance;
 use OCP\AppFramework\Http\DataResponse;
+use OCP\AppFramework\Http\Attribute\NoAdminRequired;
+use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
+use OCP\AppFramework\Http\Attribute\PublicPage;
 use OCP\AppFramework\OCSController;
 use OCP\IL10N;
 use OCP\IRequest;
@@ -99,11 +102,10 @@ class FederationController extends OCSController {
      * @param string $path - file path
      *
      * @return DataResponse
-     *
-     * @NoAdminRequired
-     * @NoCSRFRequired
-     * @PublicPage
      */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
+    #[PublicPage]
     public function key($shareToken, $path) {
         list($file, $error, $share) = $this->fileUtility->getFileByToken(null, $shareToken, $path);
 
@@ -130,11 +132,10 @@ class FederationController extends OCSController {
      * @param bool $fs - status
      *
      * @return DataResponse
-     *
-     * @NoAdminRequired
-     * @NoCSRFRequired
-     * @PublicPage
      */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
+    #[PublicPage]
     public function keylock($shareToken, $path, $lock, $fs) {
         list($file, $error, $share) = $this->fileUtility->getFileByToken(null, $shareToken, $path);
 
@@ -165,11 +166,10 @@ class FederationController extends OCSController {
      * Health check instance
      *
      * @return DataResponse
-     *
-     * @NoAdminRequired
-     * @NoCSRFRequired
-     * @PublicPage
      */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
+    #[PublicPage]
     public function healthcheck() {
         $this->logger->debug("Federated healthcheck");
 

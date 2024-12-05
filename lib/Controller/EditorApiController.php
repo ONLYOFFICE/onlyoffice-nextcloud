@@ -36,6 +36,8 @@ use OCA\Onlyoffice\ExtraPermissions;
 use OCA\Onlyoffice\FileUtility;
 use OCA\Onlyoffice\TemplateManager;
 use OCP\AppFramework\Http\JSONResponse;
+use OCP\AppFramework\Http\Attribute\NoAdminRequired;
+use OCP\AppFramework\Http\Attribute\PublicPage;
 use OCP\AppFramework\OCSController;
 use OCP\AppFramework\QueryException;
 use OCA\DAV\CalDAV\TimezoneService;
@@ -240,10 +242,9 @@ class EditorApiController extends OCSController {
      * @param string $anchor - anchor for file content
      *
      * @return JSONResponse
-     *
-     * @NoAdminRequired
-     * @PublicPage
      */
+    #[NoAdminRequired]
+    #[PublicPage]
     public function config($fileId, $filePath = null, $shareToken = null, $directToken = null, $inframe = false, $inviewer = false, $desktop = false, $guestName = null, $template = false, $anchor = null) {
 
         if (!empty($directToken)) {

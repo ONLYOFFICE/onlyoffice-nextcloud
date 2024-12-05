@@ -34,6 +34,8 @@ use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Http\FileDisplayResponse;
+use OCP\AppFramework\Http\Attribute\NoAdminRequired;
+use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
 use OCP\Files\NotFoundException;
 use OCP\IL10N;
 use OCP\IPreview;
@@ -100,9 +102,8 @@ class TemplateController extends Controller {
      * Get templates
      *
      * @return array
-     *
-     * @NoAdminRequired
      */
+    #[NoAdminRequired]
     public function getTemplates() {
         $templatesList = TemplateManager::getGlobalTemplates();
 
@@ -208,10 +209,9 @@ class TemplateController extends Controller {
      * @param string $mode - mode
      *
      * @return DataResponse|FileDisplayResponse
-     *
-     * @NoAdminRequired
-     * @NoCSRFRequired
      */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
     public function preview($fileId, $x = 256, $y = 256, $crop = false, $mode = IPreview::MODE_FILL) {
         if (empty($fileId) || $x === 0 || $y === 0) {
             return new DataResponse([], Http::STATUS_BAD_REQUEST);

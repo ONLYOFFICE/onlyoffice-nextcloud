@@ -43,6 +43,10 @@ use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataDownloadResponse;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\AppFramework\Http\StreamResponse;
+use OCP\AppFramework\Http\Attribute\CORS;
+use OCP\AppFramework\Http\Attribute\NoAdminRequired;
+use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
+use OCP\AppFramework\Http\Attribute\PublicPage;
 use OCP\AppFramework\QueryException;
 use OCP\Files\File;
 use OCP\Files\Folder;
@@ -205,12 +209,11 @@ class CallbackController extends Controller {
      * @param string $doc - verification token with the file identifier
      *
      * @return StreamResponse|JSONResponse
-     *
-     * @NoAdminRequired
-     * @NoCSRFRequired
-     * @PublicPage
-     * @CORS
      */
+    #[CORS]
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
+    #[PublicPage]
     public function download($doc) {
 
         list($hashData, $error) = $this->crypt->readHash($doc);
@@ -347,12 +350,11 @@ class CallbackController extends Controller {
      * @param string $doc - verification token with the file identifier
      *
      * @return DataDownloadResponse|JSONResponse
-     *
-     * @NoAdminRequired
-     * @NoCSRFRequired
-     * @PublicPage
-     * @CORS
      */
+    #[CORS]
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
+    #[PublicPage]
     public function emptyfile($doc) {
         $this->logger->debug("Download empty");
 
@@ -416,12 +418,11 @@ class CallbackController extends Controller {
      * @param string $filetype - extension of the document that is downloaded from the link specified with the url parameter
      *
      * @return array
-     *
-     * @NoAdminRequired
-     * @NoCSRFRequired
-     * @PublicPage
-     * @CORS
      */
+    #[CORS]
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
+    #[PublicPage]
     public function track($doc, $users, $key, $status, $url, $token, $history, $changesurl, $forcesavetype, $actions, $filetype) {
 
         list($hashData, $error) = $this->crypt->readHash($doc);

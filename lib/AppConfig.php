@@ -31,6 +31,7 @@ namespace OCA\Onlyoffice;
 
 use \DateInterval;
 use \DateTime;
+use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\ICache;
 use OCP\ICacheFactory;
 use OCP\IConfig;
@@ -1265,9 +1266,8 @@ class AppConfig {
      * Get supported formats
      *
      * @return array
-     *
-     * @NoAdminRequired
      */
+    #[NoAdminRequired]
     public function formatsSetting() {
         $result = $this->buildOnlyofficeFormats();
 

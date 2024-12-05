@@ -42,6 +42,9 @@ use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\ContentSecurityPolicy;
 use OCP\AppFramework\Http\DataDownloadResponse;
 use OCP\AppFramework\Http\RedirectResponse;
+use OCP\AppFramework\Http\Attribute\NoAdminRequired;
+use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
+use OCP\AppFramework\Http\Attribute\PublicPage;
 use OCP\AppFramework\Http\Template\PublicTemplateResponse;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\QueryException;
@@ -222,10 +225,9 @@ class EditorController extends Controller {
      * @param string $shareToken - access token
      *
      * @return array
-     *
-     * @NoAdminRequired
-     * @PublicPage
      */
+    #[NoAdminRequired]
+    #[PublicPage]
     public function create($name, $dir, $templateId = null, $targetId = 0, $shareToken = null) {
         $this->logger->debug("Create: $name");
 
@@ -333,10 +335,9 @@ class EditorController extends Controller {
      * @param string $templateId - file identifier
      *
      * @return TemplateResponse|RedirectResponse
-     *
-     * @NoAdminRequired
-     * @NoCSRFRequired
      */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
     public function createNew($name, $dir, $templateId = null) {
         $this->logger->debug("Create from editor: $name in $dir");
 
@@ -356,10 +357,9 @@ class EditorController extends Controller {
      * @param $operationType - type of operation
      *
      * @return array
-     *
-     * @NoAdminRequired
-     * @NoCSRFRequired
      */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
     public function users($fileId, $operationType = null) {
         $this->logger->debug("Search users");
         $result = [];
@@ -451,10 +451,9 @@ class EditorController extends Controller {
      * @param string $userIds - users identifiers
      *
      * @return array
-     *
-     * @NoAdminRequired
-     * @NoCSRFRequired
      */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
     public function userInfo($userIds) {
         $result = [];
         $userIds = json_decode($userIds, true);
@@ -494,10 +493,9 @@ class EditorController extends Controller {
      * @param array $emails - emails array to whom to send notify
      *
      * @return array
-     *
-     * @NoAdminRequired
-     * @NoCSRFRequired
      */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
     public function mention($fileId, $anchor, $comment, $emails) {
         $this->logger->debug("mention: from $fileId to " . json_encode($emails));
 
@@ -623,10 +621,9 @@ class EditorController extends Controller {
      * @param string $path - file path
      *
      * @return array
-     *
-     * @NoAdminRequired
-     * @PublicPage
      */
+    #[NoAdminRequired]
+    #[PublicPage]
     public function reference($referenceData, $path = null) {
         $this->logger->debug("reference: " . json_encode($referenceData) . " $path");
 
@@ -695,10 +692,9 @@ class EditorController extends Controller {
      * @param string $shareToken - access token
      *
      * @return array
-     *
-     * @NoAdminRequired
-     * @PublicPage
      */
+    #[NoAdminRequired]
+    #[PublicPage]
     public function convert($fileId, $shareToken = null) {
         $this->logger->debug("Convert: $fileId");
 
@@ -797,9 +793,8 @@ class EditorController extends Controller {
      * @param string $url - file url
      *
      * @return array
-     *
-     * @NoAdminRequired
      */
+    #[NoAdminRequired]
     public function save($name, $dir, $url) {
         $this->logger->debug("Save: $name");
 
@@ -865,9 +860,8 @@ class EditorController extends Controller {
      * @param integer $fileId - file identifier
      *
      * @return array
-     *
-     * @NoAdminRequired
      */
+    #[NoAdminRequired]
     public function history($fileId) {
         $this->logger->debug("Request history for: $fileId");
 
@@ -983,9 +977,8 @@ class EditorController extends Controller {
      * @param integer $version - file version
      *
      * @return array
-     *
-     * @NoAdminRequired
      */
+    #[NoAdminRequired]
     public function version($fileId, $version) {
         $this->logger->debug("Request version for: $fileId ($version)");
 
@@ -1084,9 +1077,8 @@ class EditorController extends Controller {
      * @param integer $version - file version
      *
      * @return array
-     *
-     * @NoAdminRequired
      */
+    #[NoAdminRequired]
     public function restore($fileId, $version) {
         $this->logger->debug("Request restore version for: $fileId ($version)");
 
@@ -1139,9 +1131,8 @@ class EditorController extends Controller {
      * @param string $filePath - file path
      *
      * @return array
-     *
-     * @NoAdminRequired
      */
+    #[NoAdminRequired]
     public function url($filePath) {
         $this->logger->debug("Request url for: $filePath");
 
@@ -1198,10 +1189,9 @@ class EditorController extends Controller {
      * @param bool $template - file extension to download
      *
      * @return DataDownloadResponse|TemplateResponse
-     *
-     * @NoAdminRequired
-     * @NoCSRFRequired
      */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
     public function download($fileId, $toExtension = null, $template = false) {
         $this->logger->debug("Download: $fileId $toExtension");
 
@@ -1288,10 +1278,9 @@ class EditorController extends Controller {
      * @param string $anchor - anchor for file content
      *
      * @return TemplateResponse|RedirectResponse
-     *
-     * @NoAdminRequired
-     * @NoCSRFRequired
      */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
     public function index($fileId, $filePath = null, $shareToken = null, $inframe = false, $inviewer = false, $template = false, $anchor = null) {
         $this->logger->debug("Open: $fileId $filePath ");
 
@@ -1374,11 +1363,10 @@ class EditorController extends Controller {
      * @param bool $inframe - open in frame
      *
      * @return TemplateResponse
-     *
-     * @NoAdminRequired
-     * @NoCSRFRequired
-     * @PublicPage
      */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
+    #[PublicPage]
     public function publicPage($fileId, $shareToken, $inframe = false) {
         return $this->index($fileId, null, $shareToken, $inframe);
     }

@@ -33,6 +33,8 @@ use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\ExtraPermissions;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataResponse;
+use OCP\AppFramework\Http\Attribute\NoAdminRequired;
+use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
 use OCP\AppFramework\OCSController;
 use OCP\Files\File;
 use OCP\Files\IRootFolder;
@@ -138,10 +140,9 @@ class SharingApiController extends OCSController {
      * @param integer $fileId - file identifier
      *
      * @return DataResponse
-     *
-     * @NoAdminRequired
-     * @NoCSRFRequired
      */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
     public function getShares($fileId) {
         if ($this->extraPermissions === null) {
             $this->logger->debug("extraPermissions isn't init");
@@ -176,10 +177,9 @@ class SharingApiController extends OCSController {
      * @param integer $permissions - permissions value
      *
      * @return DataResponse
-     *
-     * @NoAdminRequired
-     * @NoCSRFRequired
      */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
     public function setShares($extraId, $shareId, $fileId, $permissions) {
         if ($this->extraPermissions === null) {
             $this->logger->debug("extraPermissions isn't init");
