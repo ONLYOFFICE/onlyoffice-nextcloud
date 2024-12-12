@@ -52,6 +52,7 @@ use OCP\Constants;
 use OCP\Files\File;
 use OCP\Files\IRootFolder;
 use OCP\Files\NotPermittedException;
+use OCP\Mail\IMailer;
 use OCP\IGroupManager;
 use OCP\IL10N;
 use OCP\IRequest;
@@ -159,6 +160,13 @@ class EditorController extends Controller {
      * @var IAvatarManager
      */
     private $avatarManager;
+    
+    /**
+     * Mailer
+     *
+     * @var IMailer
+     */
+    private $mailer;
 
     /**
      * @param string $AppName - application name
@@ -174,6 +182,7 @@ class EditorController extends Controller {
      * @param IManager $shareManager - Share manager
      * @param ISession $session - Session
      * @param IGroupManager $groupManager - group Manager
+     * @param IMailer $mailer - mailer
      */
     public function __construct(
         $AppName,
@@ -188,7 +197,8 @@ class EditorController extends Controller {
         Crypt $crypt,
         IManager $shareManager,
         ISession $session,
-        IGroupManager $groupManager
+        IGroupManager $groupManager,
+        IMailer $mailer
     ) {
         parent::__construct($AppName, $request);
 
@@ -202,6 +212,7 @@ class EditorController extends Controller {
         $this->crypt = $crypt;
         $this->shareManager = $shareManager;
         $this->groupManager = $groupManager;
+        $this->mailer = $mailer;
 
         if (\OC::$server->getAppManager()->isInstalled("files_versions")) {
             try {
@@ -609,6 +620,7 @@ class EditorController extends Controller {
             $notification->setUser($recipientId);
 
             $notificationManager->notify($notification);
+            $this->notifyMentionEmail($userId, $recipientId, $file->getId(), $file->getName(), $anchor, $notification->getObjectId());
         }
 
         return ["message" => $this->trans->t("Notification sent successfully")];
@@ -1530,5 +1542,58 @@ class EditorController extends Controller {
                 ]
             ]
         ], "error");
+    }
+
+    /**
+     * Send notifivation about mention via email
+     *
+     * @return bool
+     */
+    public function notifyMentionEmail(
+        string $notifierId,
+        string $recipientId,
+        string $fileId,
+        string $fileName,
+        string $anchor,
+        string $notificationObjectId
+        ) {
+        $recipient = $this->userManager->get($recipientId);
+        $email = $recipient->getEMailAddress();
+        if (empty($email)) {
+            $this->logger->info("Mention notification was not sent by e-mail");
+            return false;
+        }
+        $notifier = $this->userManager->get($notifierId);
+        $recipientName = $recipient->getDisplayName();
+        $notifierName = $notifier->getDisplayName();
+        $editorLink = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".editor.index", [
+            "fileId" => $fileId,
+            "anchor" => $anchor
+        ]);
+        $this->logger->debug("EMAIL: $editorLink");
+        $template = $this->mailer->createEMailTemplate("onlyoffice.NotifyEmail", [
+            "recipientName" => $recipientName,
+        ]);
+        $template->setSubject($this->trans->t("You were mentioned in the document"));
+        $template->addHeader();
+        $template->addHeading($this->trans->t("%1\$s mentioned in the %2\$s: \"%3\$s\".", [$notifierName, $fileName, $notificationObjectId]));
+        $html = vsprintf("<small><a href=\"%s\">%s</a></small>", [
+			$editorLink, $this->trans->t("Go to the file")
+		]);
+		$text = $this->trans->t("File located at %s", [$editorLink]);
+
+		$template->addBodyText($html, $text);
+        $template->addFooter();
+        $message = $this->mailer->createMessage();
+        $message->setTo([$email => $recipientName]);
+        $message->useTemplate($template);
+        $errors = $this->mailer->send($message);
+
+        if (!empty($errors)) {
+            $this->logger->info("SMTP error");
+            return false;
+        }
+
+        return true;
     }
 }
