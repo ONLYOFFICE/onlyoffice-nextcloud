@@ -145,7 +145,7 @@ if ($_["tagsEnabled"]) {
         <label for="onlyofficeCronChecker"><?php p($l->t("Enable background connection check to the editors")) ?></label>
     </p>
 
-    <p>
+    <p class="onlyoffice-header">
         <?php p($l->t("Unknown author display name")) ?>
     </p>
     <p><input id="onlyofficeUnknownAuthor" value="<?php p($_["unknownAuthor"]) ?>" placeholder="" type="text"></p>
