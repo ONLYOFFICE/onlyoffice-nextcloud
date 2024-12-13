@@ -177,7 +177,7 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 			const scrollTop = $('#app-content').scrollTop()
 			$(OCA.Onlyoffice.frameSelector).css('top', scrollTop)
 
-			window.OCP.Files.Router.goToRoute(
+			window.OCP?.Files?.Router?.goToRoute(
 				null, // use default route
 				{ view: 'files', fileid: fileId },
 				{ ...OCP.Files.Router.query, openfile: 'true' },
@@ -190,7 +190,7 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 
 		OCA.Onlyoffice.context = null
 
-		window.OCP.Files.Router.goToRoute(
+		window.OCP?.Files?.Router?.goToRoute(
 			null, // use default route
 			{ view: 'files', fileid: undefined },
 			{ ...OCP.Files.Router.query, openfile: 'false' },
