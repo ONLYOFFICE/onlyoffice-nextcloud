@@ -32,7 +32,7 @@ namespace OCA\Onlyoffice;
 use OCP\DirectEditing\ACreateEmpty;
 use OCP\Files\File;
 use OCP\IL10N;
-use OCP\ILogger;
+use Psr\Log\LoggerInterface;
 
 /**
  * File creator
@@ -58,7 +58,7 @@ class FileCreator extends ACreateEmpty {
     /**
      * Logger
      *
-     * @var ILogger
+     * @var LoggerInterface
      */
     private $logger;
 
@@ -72,13 +72,13 @@ class FileCreator extends ACreateEmpty {
     /**
      * @param string $AppName - application name
      * @param IL10N $trans - l10n service
-     * @param ILogger $logger - logger
+     * @param LoggerInterface $logger - logger
      * @param string $format - format for creation
      */
     public function __construct(
         $AppName,
         IL10N $trans,
-        ILogger $logger,
+        LoggerInterface $logger,
         $format
     ) {
         $this->appName = $AppName;
@@ -143,20 +143,20 @@ class FileCreator extends ACreateEmpty {
      * @param string $templateId - teamplate id
      */
     public function create(File $file, string $creatorId = null, string $templateId = null): void {
-        $this->logger->debug("FileCreator: " . $file->getId() . " " . $file->getName() . " $creatorId $templateId", ["app" => $this->appName]);
+        $this->logger->debug("FileCreator: " . $file->getId() . " " . $file->getName() . " $creatorId $templateId");
 
         $fileName = $file->getName();
         $template = TemplateManager::getEmptyTemplate($fileName);
 
         if (!$template) {
-            $this->logger->error("FileCreator: Template for file creation not found: $templateId", ["app" => $this->appName]);
+            $this->logger->error("FileCreator: Template for file creation not found: $templateId");
             return;
         }
 
         try {
             $file->putContent($template);
         } catch (NotPermittedException $e) {
-            $this->logger->logException($e, ["message" => "FileCreator: Can't create file: $fileName", "app" => $this->appName]);
+            $this->logger->error("FileCreator: Can't create file: $fileName", ["exception" => $e]);
         }
     }
 }

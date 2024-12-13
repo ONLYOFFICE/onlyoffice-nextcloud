@@ -186,8 +186,6 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 	}
 
 	OCA.Onlyoffice.CloseEditor = function() {
-		OCA.Onlyoffice.frameSelector = null
-
 		$('body').removeClass('onlyoffice-inline')
 
 		OCA.Onlyoffice.context = null

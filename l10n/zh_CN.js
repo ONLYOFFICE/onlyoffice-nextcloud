@@ -41,7 +41,6 @@ OC.L10N.register(
     "Open file in the same tab" : "在相同的标签页中打开",
     "The default application for opening the format": "默认关联的文件格式",
     "Open the file for editing (due to format restrictions, the data might be lost when saving to the formats from the list below)" : "默认的文件编辑器 (由于文件格式限制，保存为下列格式时，数据可能会缺失)",
-    "View details" : "查看详情",
     "Save" : "保存",
     "Mixed Active Content is not allowed. HTTPS address for ONLYOFFICE Docs is required." : "不允许混合活动内容，请使用HTTPS连接ONLYOFFICE Docs。",
     "Allow the following groups to access the editors": "让以下用户组访问编辑器",

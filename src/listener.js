@@ -36,6 +36,8 @@
 	OCA.Onlyoffice = _.extend({
 		AppName: 'onlyoffice',
 		frameSelector: null,
+		titleBase: window.document.title,
+		favIconBase: $('link[rel="icon"]').attr('href'),
 	}, OCA.Onlyoffice)
 
 	OCA.Onlyoffice.onRequestClose = function() {
@@ -181,15 +183,22 @@
 		}
 	})
 
-	window.addEventListener('DOMNodeRemoved', function(event) {
-		if ($(event.target).length
-			&& $(OCA.Onlyoffice.frameSelector).length > 0
-			&& $(OCA.Onlyoffice.frameSelector)[0].contentWindow
-			&& $(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA
-			&& ($(event.target)[0].id === 'viewer' || $(event.target)[0].id === $(OCA.Onlyoffice.frameSelector)[0].id)) {
-
-			OCA.Onlyoffice.changeFavicon($(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.faviconBase)
-			window.document.title = $(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.titleBase
+	const mutationObserver = new MutationObserver(mutationRecords => {
+		if (mutationRecords[0] && mutationRecords[0].removedNodes) {
+			mutationRecords[0].removedNodes.forEach((node) => {
+				if (node.id && '#' + node.id === OCA.Onlyoffice.frameSelector) {
+					OCA.Onlyoffice.changeFavicon(OCA.Onlyoffice.favIconBase)
+					window.document.title = OCA.Onlyoffice.titleBase
+					OCA.Onlyoffice.frameSelector = null
+				}
+			  })
 		}
-	})
+	  })
+
+	mutationObserver.observe($('#app-content-vue')[0], {
+		childList: true,
+		subtree: true,
+		characterDataOldValue: true,
+	  })
+
 })(OCA)

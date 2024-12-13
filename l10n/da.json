@@ -39,7 +39,6 @@
     "Open file in the same tab" : "Åbn filen i samme fane",
     "The default application for opening the format" : "Standardapplikationen til at åbne formatet",
     "Open the file for editing (due to format restrictions, the data might be lost when saving to the formats from the list below)" : "Åbn filen til redigering (på grund af formatbegrænsninger kan data gå tabt, når du gemmer i formaterne fra listen nedenfor)",
-    "View details" : "Se detaljer",
     "Save" : "Gem",
     "Mixed Active Content is not allowed. HTTPS address for ONLYOFFICE Docs is required." : "Blandet aktivt indhold er ikke tilladt. HTTPS-adresse for ONLYOFFICE Docs er påkrævet.",
     "Server settings" : "Serverindstillinger",

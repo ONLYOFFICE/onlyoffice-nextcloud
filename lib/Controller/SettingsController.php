@@ -37,9 +37,10 @@ use OCA\Onlyoffice\TemplateManager;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IL10N;
-use OCP\ILogger;
 use OCP\IRequest;
 use OCP\IURLGenerator;
+use OCP\Preview\IMimeIconProvider;
+use Psr\Log\LoggerInterface;
 
 /**
  * Settings controller for the administration page
@@ -56,7 +57,7 @@ class SettingsController extends Controller {
     /**
      * Logger
      *
-     * @var ILogger
+     * @var LoggerInterface
      */
     private $logger;
 
@@ -82,22 +83,31 @@ class SettingsController extends Controller {
     private $crypt;
 
     /**
+     * Mime icon provider
+     *
+     * @var IMimeIconProvider
+     */
+    private $mimeIconProvider;
+
+    /**
      * @param string $AppName - application name
      * @param IRequest $request - request object
      * @param IURLGenerator $urlGenerator - url generator service
      * @param IL10N $trans - l10n service
-     * @param ILogger $logger - logger
+     * @param LoggerInterface $logger - logger
      * @param AppConfig $config - application configuration
      * @param Crypt $crypt - hash generator
+     * @param IMimeIconProvider $mimeIconProvider - mime icon provider
      */
     public function __construct(
         $AppName,
         IRequest $request,
         IURLGenerator $urlGenerator,
         IL10N $trans,
-        ILogger $logger,
+        LoggerInterface $logger,
         AppConfig $config,
-        Crypt $crypt
+        Crypt $crypt,
+        IMimeIconProvider $mimeIconProvider,
     ) {
         parent::__construct($AppName, $request);
 
@@ -106,6 +116,7 @@ class SettingsController extends Controller {
         $this->logger = $logger;
         $this->config = $config;
         $this->crypt = $crypt;
+        $this->mimeIconProvider = $mimeIconProvider;
     }
 
     /**
@@ -326,7 +337,8 @@ class SettingsController extends Controller {
             $template = [
                 "id" => $templatesItem->getId(),
                 "name" => $templatesItem->getName(),
-                "type" => TemplateManager::getTypeTemplate($templatesItem->getMimeType())
+                "type" => TemplateManager::getTypeTemplate($templatesItem->getMimeType()),
+                "icon" => $this->mimeIconProvider->getMimeIconUrl($templatesItem->getMimeType())
             ];
             array_push($templates, $template);
         }

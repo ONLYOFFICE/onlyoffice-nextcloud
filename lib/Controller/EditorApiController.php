@@ -36,6 +36,8 @@ use OCA\Onlyoffice\ExtraPermissions;
 use OCA\Onlyoffice\FileUtility;
 use OCA\Onlyoffice\TemplateManager;
 use OCP\AppFramework\Http\JSONResponse;
+use OCP\AppFramework\Http\Attribute\NoAdminRequired;
+use OCP\AppFramework\Http\Attribute\PublicPage;
 use OCP\AppFramework\OCSController;
 use OCP\AppFramework\QueryException;
 use OCA\DAV\CalDAV\TimezoneService;
@@ -47,7 +49,6 @@ use OCP\Files\Lock\ILock;
 use OCP\Files\Lock\ILockManager;
 use OCP\Files\Lock\NoLockProviderException;
 use OCP\IL10N;
-use OCP\ILogger;
 use OCP\IRequest;
 use OCP\ISession;
 use OCP\ITagManager;
@@ -59,6 +60,7 @@ use OCP\IUserSession;
 use OCP\PreConditionNotMetException;
 use OCP\Share\IManager;
 use OCP\Share\IShare;
+use Psr\Log\LoggerInterface;
 
 /**
  * Controller with the main functions
@@ -103,7 +105,7 @@ class EditorApiController extends OCSController {
     /**
      * Logger
      *
-     * @var ILogger
+     * @var LoggerInterface
      */
     private $logger;
 
@@ -176,7 +178,7 @@ class EditorApiController extends OCSController {
      * @param IUserManager $userManager - user manager
      * @param IURLGenerator $urlGenerator - url generator service
      * @param IL10N $trans - l10n service
-     * @param ILogger $logger - logger
+     * @param LoggerInterface $logger - logger
      * @param AppConfig $config - application configuration
      * @param Crypt $crypt - hash generator
      * @param IManager $shareManager - Share manager
@@ -193,7 +195,7 @@ class EditorApiController extends OCSController {
         IUserManager $userManager,
         IURLGenerator $urlGenerator,
         IL10N $trans,
-        ILogger $logger,
+        LoggerInterface $logger,
         AppConfig $config,
         Crypt $crypt,
         IManager $shareManager,
@@ -240,20 +242,19 @@ class EditorApiController extends OCSController {
      * @param string $anchor - anchor for file content
      *
      * @return JSONResponse
-     *
-     * @NoAdminRequired
-     * @PublicPage
      */
+    #[NoAdminRequired]
+    #[PublicPage]
     public function config($fileId, $filePath = null, $shareToken = null, $directToken = null, $inframe = false, $inviewer = false, $desktop = false, $guestName = null, $template = false, $anchor = null) {
 
         if (!empty($directToken)) {
             list($directData, $error) = $this->crypt->readHash($directToken);
             if ($directData === null) {
-                $this->logger->error("Config for directEditor with empty or not correct hash: $error", ["app" => $this->appName]);
+                $this->logger->error("Config for directEditor with empty or not correct hash: $error");
                 return new JSONResponse(["error" => $this->trans->t("Not permitted")]);
             }
             if ($directData->action !== "direct") {
-                $this->logger->error("Config for directEditor with other data", ["app" => $this->appName]);
+                $this->logger->error("Config for directEditor with other data");
                 return new JSONResponse(["error" => $this->trans->t("Invalid request")]);
             }
 
@@ -286,7 +287,7 @@ class EditorApiController extends OCSController {
         list($file, $error, $share) = empty($shareToken) ? $this->getFile($userId, $fileId, $filePath, $template) : $this->fileUtility->getFileByToken($fileId, $shareToken);
 
         if (isset($error)) {
-            $this->logger->error("Config: $fileId $error", ["app" => $this->appName]);
+            $this->logger->error("Config: $fileId $error");
             return new JSONResponse(["error" => $error]);
         }
 
@@ -302,7 +303,7 @@ class EditorApiController extends OCSController {
         $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
         $format = !empty($ext) && array_key_exists($ext, $this->config->formatsSetting()) ? $this->config->formatsSetting()[$ext] : null;
         if (!isset($format)) {
-            $this->logger->info("Format is not supported for editing: $fileName", ["app" => $this->appName]);
+            $this->logger->info("Format is not supported for editing: $fileName");
             return new JSONResponse(["error" => $this->trans->t("Format is not supported")]);
         }
 
@@ -394,7 +395,7 @@ class EditorApiController extends OCSController {
                     if (($lockType === ILock::TYPE_APP) && $lockOwner !== $this->appName
                         || ($lockType === ILock::TYPE_USER || $lockType === ILock::TYPE_TOKEN) && $lockOwner !== $userId) {
                         $isTempLock = true;
-                        $this->logger->debug("File" . $file->getId() . "is locked by $lockOwner", ["app" => $this->appName]);
+                        $this->logger->debug("File" . $file->getId() . "is locked by $lockOwner");
                     }
                 }
             } catch (PreConditionNotMetException | NoLockProviderException $e) {
@@ -607,7 +608,7 @@ class EditorApiController extends OCSController {
 
                 $params["editorConfig"]["actionLink"] = $actionLink;
             } catch (\Exception $e) {
-                $this->logger->logException($e, ["message" => "Config: $fileId decode $anchor", "app" => $this->appName]);
+                $this->logger->error("Config: $fileId decode $anchor", ["exception" => $e]);
             }
         }
 
@@ -616,7 +617,7 @@ class EditorApiController extends OCSController {
             $params["token"] = $token;
         }
 
-        $this->logger->debug("Config is generated for: $fileId with key $key", ["app" => $this->appName]);
+        $this->logger->debug("Config is generated for: $fileId with key $key");
 
         return new JSONResponse($params);
     }
@@ -644,12 +645,12 @@ class EditorApiController extends OCSController {
             $folder = !$template ? $this->root->getUserFolder($userId) : TemplateManager::getGlobalTemplateDir();
             $files = $folder->getById($fileId);
         } catch (\Exception $e) {
-            $this->logger->logException($e, ["message" => "getFile: $fileId", "app" => $this->appName]);
+            $this->logger->error("getFile: $fileId", ["exception" => $e]);
             return [null, $this->trans->t("Invalid request"), null];
         }
 
         if (empty($files)) {
-            $this->logger->info("Files not found: $fileId", ["app" => $this->appName]);
+            $this->logger->info("Files not found: $fileId");
             return [null, $this->trans->t("File not found"), null];
         }
 
@@ -843,7 +844,11 @@ class EditorApiController extends OCSController {
         );
 
         if ($watermarkTemplate !== false) {
-            $timezone = $this->timezoneService->getUserTimezone($userId) ?? $this->timezoneService->getDefaultTimezone();
+            if (empty($userId)) {
+                $timezone = $this->timezoneService->getDefaultTimezone();
+            } else {
+                $timezone = $this->timezoneService->getUserTimezone($userId) ?? $this->timezoneService->getDefaultTimezone();
+            }
             $replacements = [
                 "userId" => isset($userId) ? $userId : $this->trans->t('Anonymous'),
                 "date" => (new \DateTime("now", new \DateTimeZone($timezone)))->format("Y-m-d H:i:s"),

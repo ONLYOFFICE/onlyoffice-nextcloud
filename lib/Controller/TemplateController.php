@@ -34,11 +34,14 @@ use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Http\FileDisplayResponse;
+use OCP\AppFramework\Http\Attribute\NoAdminRequired;
+use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
 use OCP\Files\NotFoundException;
 use OCP\IL10N;
-use OCP\ILogger;
 use OCP\IPreview;
 use OCP\IRequest;
+use OCP\Preview\IMimeIconProvider;
+use Psr\Log\LoggerInterface;
 
 /**
  * OCS handler
@@ -55,7 +58,7 @@ class TemplateController extends Controller {
     /**
      * Logger
      *
-     * @var ILogger
+     * @var LoggerInterface
      */
     private $logger;
 
@@ -67,31 +70,40 @@ class TemplateController extends Controller {
     private $preview;
 
     /**
+     * Mime icon provider
+     *
+     * @var IMimeIconProvider
+     */
+    private $mimeIconProvider;
+
+    /**
      * @param string $AppName - application name
-     * @param ILogger $logger - logger
+     * @param LoggerInterface $logger - logger
      * @param IL10N $trans - l10n service
+     * @param IMimeIconProvider $mimeIconProvider - mime icon provider
      */
     public function __construct(
         $AppName,
         IRequest $request,
         IL10N $trans,
-        ILogger $logger,
-        IPreview $preview
+        LoggerInterface $logger,
+        IPreview $preview,
+        IMimeIconProvider $mimeIconProvider,
     ) {
         parent::__construct($AppName, $request);
 
         $this->trans = $trans;
         $this->logger = $logger;
         $this->preview = $preview;
+        $this->mimeIconProvider = $mimeIconProvider;
     }
 
     /**
      * Get templates
      *
      * @return array
-     *
-     * @NoAdminRequired
      */
+    #[NoAdminRequired]
     public function getTemplates() {
         $templatesList = TemplateManager::getGlobalTemplates();
 
@@ -100,7 +112,8 @@ class TemplateController extends Controller {
             $template = [
                 "id" => $templatesItem->getId(),
                 "name" => $templatesItem->getName(),
-                "type" => TemplateManager::getTypeTemplate($templatesItem->getMimeType())
+                "type" => TemplateManager::getTypeTemplate($templatesItem->getMimeType()),
+                "icon" => $this->mimeIconProvider->getMimeIconUrl($templatesItem->getMimeType())
             ];
             array_push($templates, $template);
         }
@@ -141,7 +154,8 @@ class TemplateController extends Controller {
                 $result = [
                     "id" => $fileInfo->getId(),
                     "name" => $fileInfo->getName(),
-                    "type" => TemplateManager::getTypeTemplate($fileInfo->getMimeType())
+                    "type" => TemplateManager::getTypeTemplate($fileInfo->getMimeType()),
+                    "icon" => $this->mimeIconProvider->getMimeIconUrl($fileInfo->getMimeType())
                 ];
 
                 return $result;
@@ -166,14 +180,14 @@ class TemplateController extends Controller {
         try {
             $templates = $templateDir->getById($templateId);
         } catch (\Exception $e) {
-            $this->logger->logException($e, ["message" => "deleteTemplate: $templateId", "app" => $this->AppName]);
+            $this->logger->error("deleteTemplate: $templateId", ["exception" => $e]);
             return [
                 "error" => $this->trans->t("Failed to delete template")
             ];
         }
 
         if (empty($templates)) {
-            $this->logger->info("Template not found: $templateId", ["app" => $this->AppName]);
+            $this->logger->info("Template not found: $templateId");
             return [
                 "error" => $this->trans->t("Failed to delete template")
             ];
@@ -181,7 +195,7 @@ class TemplateController extends Controller {
 
         $templates[0]->delete();
 
-        $this->logger->debug("Template: deleted " . $templates[0]->getName(), ["app" => $this->appName]);
+        $this->logger->debug("Template: deleted " . $templates[0]->getName());
         return [];
     }
 
@@ -195,10 +209,9 @@ class TemplateController extends Controller {
      * @param string $mode - mode
      *
      * @return DataResponse|FileDisplayResponse
-     *
-     * @NoAdminRequired
-     * @NoCSRFRequired
      */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
     public function preview($fileId, $x = 256, $y = 256, $crop = false, $mode = IPreview::MODE_FILL) {
         if (empty($fileId) || $x === 0 || $y === 0) {
             return new DataResponse([], Http::STATUS_BAD_REQUEST);
@@ -206,7 +219,7 @@ class TemplateController extends Controller {
 
         $template = TemplateManager::getTemplate($fileId);
         if (empty($template)) {
-            $this->logger->error("Template not found: $fileId", ["app" => $this->appName]);
+            $this->logger->error("Template not found: $fileId");
             return new DataResponse([], Http::STATUS_NOT_FOUND);
         }
 

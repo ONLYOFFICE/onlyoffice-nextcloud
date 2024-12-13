@@ -12,9 +12,9 @@
         <prevent_group_restriction/>
     </types>
     <documentation>
-        <admin>https://api.onlyoffice.com/editors/nextcloud</admin>
+        <admin>https://helpcenter.onlyoffice.com/integration/nextcloud.aspx</admin>
+        <user>https://helpcenter.onlyoffice.com/integration/nextcloud.aspx</user>
         <developer>https://github.com/ONLYOFFICE/onlyoffice-nextcloud</developer>
-        <user>https://api.onlyoffice.com/editors/nextcloud</user>
     </documentation>
     <category>files</category>
     <category>integration</category>
