@@ -213,6 +213,13 @@ class AppConfig {
     private $_customizationTheme = "customizationTheme";
 
     /**
+     * Display name of the unknown author
+     *
+     * @var string
+     */
+    private $_unknownAuthor = "unknownAuthor";
+
+    /**
      * The config key for the setting limit groups
      *
      * @var string
@@ -985,6 +992,25 @@ class AppConfig {
             return "theme-dark";
         }
         return "theme-classic-light";
+    }
+
+    /**
+     * Save unknownAuthor setting
+     *
+     * @param string $value - unknown author
+     */
+    public function setUnknownAuthor($value) {
+        $this->logger->info("Set unknownAuthor: " . trim($value), ["app" => $this->appName]);
+        $this->config->setAppValue($this->appName, $this->_unknownAuthor, trim($value));
+    }
+
+    /**
+     * Get unknownAuthor setting
+     *
+     * @return string
+     */
+    public function getUnknownAuthor() {
+        return $this->config->getAppValue($this->appName, $this->_unknownAuthor, "");
     }
 
     /**
