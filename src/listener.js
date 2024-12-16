@@ -195,7 +195,7 @@
 		}
 	  })
 
-	mutationObserver.observe($('#app-content-vue')[0], {
+	mutationObserver.observe(document.querySelector('body'), {
 		childList: true,
 		subtree: true,
 		characterDataOldValue: true,
