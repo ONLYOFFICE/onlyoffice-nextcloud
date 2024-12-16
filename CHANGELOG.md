@@ -1,6 +1,10 @@
 # Change Log
+
 ## Added
 - setting for setup unknown author display name
+
+## Changed
+- fix address when opening editor
 
 ## 9.5.0
 ## Added
