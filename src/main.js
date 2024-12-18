@@ -54,7 +54,6 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 	OCA.Onlyoffice = _.extend({
 		AppName: 'onlyoffice',
 		context: null,
-		folderUrl: null,
 		frameSelector: null,
 	}, OCA.Onlyoffice)
 
@@ -178,8 +177,11 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 			const scrollTop = $('#app-content').scrollTop()
 			$(OCA.Onlyoffice.frameSelector).css('top', scrollTop)
 
-			OCA.Onlyoffice.folderUrl = location.href
-			window.history.pushState(null, null, url)
+			window.OCP?.Files?.Router?.goToRoute(
+				null, // use default route
+				{ view: 'files', fileid: fileId },
+				{ ...OCP.Files.Router.query, openfile: 'true' },
+			)
 		}
 	}
 
@@ -188,12 +190,11 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 
 		OCA.Onlyoffice.context = null
 
-		let url = OCA.Onlyoffice.folderUrl
-		url = url.replace(/&?openfile=true/, '')
-		if (url) {
-			window.history.pushState(null, null, url)
-			OCA.Onlyoffice.folderUrl = null
-		}
+		window.OCP?.Files?.Router?.goToRoute(
+			null, // use default route
+			{ view: 'files', fileid: undefined },
+			{ ...OCP.Files.Router.query, openfile: 'false' },
+		)
 	}
 
 	OCA.Onlyoffice.OpenShareDialog = function() {
@@ -229,6 +230,10 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 	}
 
 	OCA.Onlyoffice.FileClickExec = async function(file, view, dir) {
+		if (OCA.Onlyoffice.context !== null && OCA.Onlyoffice.setting.sameTab) {
+			return null
+		}
+
 		OCA.Onlyoffice.OpenEditor(file.fileid, dir, file.basename, 0)
 
 		OCA.Onlyoffice.context = {

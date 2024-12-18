@@ -929,13 +929,18 @@ class EditorController extends Controller {
             $versionId = $version->getRevisionId();
 
             $author = FileVersions::getAuthor($ownerId, $file->getFileInfo(), $versionId);
-            $authorId = $author !== null ? $author["id"] : $ownerId;
-            $authorName = $author !== null ? $author["name"] : $owner->getDisplayName();
 
-            $historyItem["user"] = [
-                "id" => $this->buildUserId($authorId),
-                "name" => $authorName
-            ];
+            if ($author !== null) {
+                $historyItem["user"] = [
+                    "id" => $this->buildUserId($author["id"]),
+                    "name" => $author["name"],
+                ];
+            } else {
+                $authorName = !empty($this->config->getUnknownAuthor()) ? $this->config->getUnknownAuthor() : $owner->getDisplayName();
+                $historyItem["user"] = [
+                    "name" => $authorName,
+                ];
+            }
 
             $historyData = FileVersions::getHistoryData($ownerId, $file->getFileInfo(), $versionId, $prevVersion);
             if ($historyData !== null) {

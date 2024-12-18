@@ -145,6 +145,11 @@ if ($_["tagsEnabled"]) {
         <label for="onlyofficeCronChecker"><?php p($l->t("Enable background connection check to the editors")) ?></label>
     </p>
 
+    <p class="onlyoffice-header">
+        <?php p($l->t("Unknown author display name")) ?>
+    </p>
+    <p><input id="onlyofficeUnknownAuthor" value="<?php p($_["unknownAuthor"]) ?>" placeholder="" type="text"></p>
+
     <p class="onlyoffice-header"><?php p($l->t("The default application for opening the format")) ?></p>
     <div class="onlyoffice-exts">
         <?php foreach ($_["formats"] as $format => $setting) { ?>
