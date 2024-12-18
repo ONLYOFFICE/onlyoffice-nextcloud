@@ -32,13 +32,16 @@ namespace OCA\Onlyoffice\Cron;
 use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\Crypt;
 use OCA\Onlyoffice\DocumentService;
+use OCA\Onlyoffice\EmailManager;
 use OCP\AppFramework\Utility\ITimeFactory;
 use OCP\BackgroundJob\IJob;
 use OCP\BackgroundJob\TimedJob;
+use OCP\Mail\IMailer;
 use OCP\IGroup;
 use OCP\IGroupManager;
 use OCP\IL10N;
 use OCP\IURLGenerator;
+use OCP\IUserManager;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -97,6 +100,13 @@ class EditorsCheck extends TimedJob {
     private $groupManager;
 
     /**
+     * Email manager
+     *
+     * @var EmailManager
+     */
+    private $emailManager;
+
+    /**
      * @param string $AppName - application name
      * @param IURLGenerator $urlGenerator - url generator service
      * @param ITimeFactory $time - time
@@ -124,6 +134,9 @@ class EditorsCheck extends TimedJob {
         $this->groupManager = $groupManager;
         $this->setInterval($this->config->getEditorsCheckInterval());
         $this->setTimeSensitivity(IJob::TIME_SENSITIVE);
+        $mailer = \OC::$server->get(IMailer::class);
+        $userManager = \OC::$server->get(IUserManager::class);
+        $this->emailManager = new EmailManager($AppName, $trans, $logger, $config, $mailer, $userManager, $urlGenerator);
     }
 
     /**
@@ -200,6 +213,7 @@ class EditorsCheck extends TimedJob {
         foreach ($this->getUsersToNotify() as $uid) {
             $notification->setUser($uid);
             $notificationManager->notify($notification);
+            $this->emailManager->notifyEditorsCheckEmail($uid);
         }
     }
 }
