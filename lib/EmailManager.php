@@ -123,6 +123,12 @@ class EmailManager {
     /**
      * Send notification about mention via email
      *
+     * @param string $notifierId - id of notifier user
+     * @param string $recipientId - id of recipient user
+     * @param string $fileId - file id
+     * @param string $fileName - file name
+     * @param string $anchor - anchor
+     * @param string $notificationObjectId - object of notification
      * @return bool
      */
     public function notifyMentionEmail(
@@ -157,6 +163,30 @@ class EmailManager {
         $button = [$this->trans->t("Open file"), $editorLink];
         $template = $this->buildEmailTemplate($subject, $heading, $bodyHtml, $button);
         return $this->sendEmailNotification($template, $email, $recipientName);
+    }
+
+    /**
+     * Send notification about editors unsuccessfull check via email
+     * 
+     * @param string $uid - user id
+     * 
+     * @return bool
+     */
+    public function notifyEditorsCheckEmail(string $uid) {
+        $user = $this->userManager->get($uid);
+        $email = $user->getEMailAddress();
+        if (empty($email)) {
+            $this->logger->info("Editors check notification was not sent by e-mail");
+            return false;
+        }
+        $userName = $user->getDisplayName();
+        $subject = $this->trans->t("ONLYOFFICE Document Server is unavailable");
+        $bodyHtml = $this->trans->t("This is a mail message to notify that the connection with the ONLYOFFICE Document Server has been lost. 
+        Please check the connection settings:");
+        $appSettingsLink = $this->urlGenerator->getAbsoluteURL("/settings/admin/".$this->appName);
+        $button = [$this->trans->t("Go to Settings"), $appSettingsLink];
+        $template = $this->buildEmailTemplate($subject, $subject, $bodyHtml, $button);
+        return $this->sendEmailNotification($template, $email, $userName);
     }
 
     /**
