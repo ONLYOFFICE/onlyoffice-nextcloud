@@ -147,20 +147,40 @@ class EmailManager {
             "anchor" => $anchor
         ]);
         $notifierLink =$this->urlGenerator->linkToRouteAbsolute('core.ProfilePage.index', ['targetUserId' => $notifierId]);
-        $template = $this->mailer->createEMailTemplate("onlyoffice.NotifyEmail");
-        $template->setSubject($this->trans->t("You were mentioned in the document"));
-        $template->addHeader();
-        $headingHtml = $this->trans->t("%1\$s mentioned you in the document comment", [$notifierName]);
-        $template->addHeading($headingHtml);
+        $subject = $this->trans->t("You were mentioned in the document");
+        $heading = $this->trans->t("%1\$s mentioned you in the document comment", [$notifierName]);
         $bodyHtml = $this->trans->t(
             "This is a mail message to notify that you have been mentioned by
             <a href=\"%1\$s\">%2\$s</a> in the comment to the <a href=\"%3\$s\">%4\$s</a>:<br>\"%5\$s\"",
             [$notifierLink, $notifierName, $editorLink, $fileName, $notificationObjectId]
         );
-        $template->addBodyText($bodyHtml, true);
-        $template->addBodyButton($this->trans->t("Open file"), $editorLink);
-        $template->addFooter();
+        $button = [$this->trans->t("Open file"), $editorLink];
+        $template = $this->buildEmailTemplate($subject, $heading, $bodyHtml, $button);
         return $this->sendEmailNotification($template, $email, $recipientName);
+    }
+
+    /**
+     * Build email template
+     * 
+     * @param string $subject - e-mail subject text
+     * @param string $heading - e-mail heading text
+     * @param string $body - e-mail body html
+     * @param array $button - params for NC-button (0-text, 1-link)
+     * 
+     * @return IEMailTemplate
+     */
+    public function buildEmailTemplate(string $subject, string $heading, string $body, array $button = []) {
+        $template = $this->mailer->createEMailTemplate("onlyoffice.NotifyEmail");
+        $template->setSubject($subject);
+        $template->addHeader();
+        $template->addHeading($heading);
+        $template->addBodyText($body, true);
+
+        if (!empty($button) && isset($button[0]) && isset($button[1]) && is_string($button[0]) && is_string($button[1])) {
+            $template->addBodyButton($button[0], $button[1]); 
+        }
+        $template->addFooter();
+        return $template;
     }
 
     /**
