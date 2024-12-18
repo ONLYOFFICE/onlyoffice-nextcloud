@@ -52,6 +52,7 @@ use OCP\Constants;
 use OCP\Files\File;
 use OCP\Files\IRootFolder;
 use OCP\Files\NotPermittedException;
+use OCP\Mail\IEMailTemplate;
 use OCP\Mail\IMailer;
 use OCP\IGroupManager;
 use OCP\IL10N;
@@ -1550,7 +1551,7 @@ class EditorController extends Controller {
     }
 
     /**
-     * Send notifivation about mention via email
+     * Send notification about mention via email
      *
      * @return bool
      */
@@ -1575,27 +1576,40 @@ class EditorController extends Controller {
             "fileId" => $fileId,
             "anchor" => $anchor
         ]);
-        $this->logger->debug("EMAIL: $editorLink");
-        $template = $this->mailer->createEMailTemplate("onlyoffice.NotifyEmail", [
-            "recipientName" => $recipientName,
-        ]);
+        $notifierLink =$this->urlGenerator->linkToRouteAbsolute('core.ProfilePage.index', ['targetUserId' => $notifierId]);
+        $template = $this->mailer->createEMailTemplate("onlyoffice.NotifyEmail");
         $template->setSubject($this->trans->t("You were mentioned in the document"));
         $template->addHeader();
-        $template->addHeading($this->trans->t("%1\$s mentioned in the %2\$s: \"%3\$s\".", [$notifierName, $fileName, $notificationObjectId]));
-        $html = vsprintf("<small><a href=\"%s\">%s</a></small>", [
-			$editorLink, $this->trans->t("Go to the file")
-		]);
-		$text = $this->trans->t("File located at %s", [$editorLink]);
-
-		$template->addBodyText($html, $text);
+        $headingHtml = $this->trans->t("%1\$s mentioned you in the document comment", [$notifierName]);
+        $template->addHeading($headingHtml);
+        $bodyHtml = $this->trans->t(
+            "This is a mail message to notify that you have been mentioned by
+            <a href=\"%1\$s\">%2\$s</a> in the comment to the <a href=\"%3\$s\">%4\$s</a>:<br>\"%5\$s\"",
+            [$notifierLink, $notifierName, $editorLink, $fileName, $notificationObjectId]
+        );
+        $template->addBodyText($bodyHtml, true);
+        $template->addBodyButton($this->trans->t("Open file"), $editorLink);
         $template->addFooter();
+        return $this->sendEmailNotification($template, $email, $recipientName);
+    }
+
+    /**
+     * Send email
+     * 
+     * @param IEMailTemplate $template - e-mail template
+     * @param string $email - e-mail address
+     * @param string $recipientName - recipient name
+     * 
+     * @return bool
+     */
+    public function sendEmailNotification(IEMailTemplate $template, string $email, string $recipientName) {
         $message = $this->mailer->createMessage();
         $message->setTo([$email => $recipientName]);
         $message->useTemplate($template);
         $errors = $this->mailer->send($message);
 
         if (!empty($errors)) {
-            $this->logger->info("SMTP error");
+            $this->logger->debug("Email service error");
             return false;
         }
 
