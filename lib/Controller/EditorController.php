@@ -34,6 +34,7 @@ use OCA\Files_Versions\Versions\IVersionManager;
 use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\Crypt;
 use OCA\Onlyoffice\DocumentService;
+use OCA\Onlyoffice\EmailManager;
 use OCA\Onlyoffice\FileUtility;
 use OCA\Onlyoffice\FileVersions;
 use OCA\Onlyoffice\KeyManager;
@@ -52,7 +53,6 @@ use OCP\Constants;
 use OCP\Files\File;
 use OCP\Files\IRootFolder;
 use OCP\Files\NotPermittedException;
-use OCP\Mail\IEMailTemplate;
 use OCP\Mail\IMailer;
 use OCP\IGroupManager;
 use OCP\IL10N;
@@ -170,6 +170,13 @@ class EditorController extends Controller {
     private $mailer;
 
     /**
+     * Email manager
+     *
+     * @var EmailManager
+     */
+    private $emailManager;
+
+    /**
      * @param string $AppName - application name
      * @param IRequest $request - request object
      * @param IRootFolder $root - root folder
@@ -213,7 +220,6 @@ class EditorController extends Controller {
         $this->crypt = $crypt;
         $this->shareManager = $shareManager;
         $this->groupManager = $groupManager;
-        $this->mailer = $mailer;
 
         if (\OC::$server->getAppManager()->isInstalled("files_versions")) {
             try {
@@ -225,6 +231,7 @@ class EditorController extends Controller {
 
         $this->fileUtility = new FileUtility($AppName, $trans, $logger, $config, $shareManager, $session);
         $this->avatarManager = \OC::$server->getAvatarManager();
+        $this->emailManager = new EmailManager($AppName, $trans, $logger, $config, $mailer, $userManager, $urlGenerator);
     }
 
     /**
@@ -621,7 +628,8 @@ class EditorController extends Controller {
             $notification->setUser($recipientId);
 
             $notificationManager->notify($notification);
-            $this->notifyMentionEmail($userId, $recipientId, $file->getId(), $file->getName(), $anchor, $notification->getObjectId());
+            $this->emailManager->notifyMentionEmail($userId, $recipientId, $file->getId(), $file->getName(), $anchor, $notification->getObjectId());
+            //$this->notifyMentionEmail($userId, $recipientId, $file->getId(), $file->getName(), $anchor, $notification->getObjectId());
         }
 
         return ["message" => $this->trans->t("Notification sent successfully")];
@@ -1548,71 +1556,5 @@ class EditorController extends Controller {
                 ]
             ]
         ], "error");
-    }
-
-    /**
-     * Send notification about mention via email
-     *
-     * @return bool
-     */
-    public function notifyMentionEmail(
-        string $notifierId,
-        string $recipientId,
-        string $fileId,
-        string $fileName,
-        string $anchor,
-        string $notificationObjectId
-        ) {
-        $recipient = $this->userManager->get($recipientId);
-        $email = $recipient->getEMailAddress();
-        if (empty($email)) {
-            $this->logger->info("Mention notification was not sent by e-mail");
-            return false;
-        }
-        $notifier = $this->userManager->get($notifierId);
-        $recipientName = $recipient->getDisplayName();
-        $notifierName = $notifier->getDisplayName();
-        $editorLink = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".editor.index", [
-            "fileId" => $fileId,
-            "anchor" => $anchor
-        ]);
-        $notifierLink =$this->urlGenerator->linkToRouteAbsolute('core.ProfilePage.index', ['targetUserId' => $notifierId]);
-        $template = $this->mailer->createEMailTemplate("onlyoffice.NotifyEmail");
-        $template->setSubject($this->trans->t("You were mentioned in the document"));
-        $template->addHeader();
-        $headingHtml = $this->trans->t("%1\$s mentioned you in the document comment", [$notifierName]);
-        $template->addHeading($headingHtml);
-        $bodyHtml = $this->trans->t(
-            "This is a mail message to notify that you have been mentioned by
-            <a href=\"%1\$s\">%2\$s</a> in the comment to the <a href=\"%3\$s\">%4\$s</a>:<br>\"%5\$s\"",
-            [$notifierLink, $notifierName, $editorLink, $fileName, $notificationObjectId]
-        );
-        $template->addBodyText($bodyHtml, true);
-        $template->addBodyButton($this->trans->t("Open file"), $editorLink);
-        $template->addFooter();
-        return $this->sendEmailNotification($template, $email, $recipientName);
-    }
-
-    /**
-     * Send email
-     * 
-     * @param IEMailTemplate $template - e-mail template
-     * @param string $email - e-mail address
-     * @param string $recipientName - recipient name
-     * 
-     * @return bool
-     */
-    public function sendEmailNotification(IEMailTemplate $template, string $email, string $recipientName) {
-        $message = $this->mailer->createMessage();
-        $message->setTo([$email => $recipientName]);
-        $message->useTemplate($template);
-        $errors = $this->mailer->send($message);
-
-        if (!empty($errors)) {
-            $this->logger->debug("Email service error");
-            return false;
-        }
-
-        return true;
     }
 }
