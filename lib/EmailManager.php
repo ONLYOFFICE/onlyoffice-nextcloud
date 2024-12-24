@@ -152,14 +152,15 @@ class EmailManager {
             "fileId" => $fileId,
             "anchor" => $anchor
         ]);
-        $notifierLink =$this->urlGenerator->linkToRouteAbsolute('core.ProfilePage.index', ['targetUserId' => $notifierId]);
+        $notifierLink = $this->urlGenerator->linkToRouteAbsolute('core.ProfilePage.index', ['targetUserId' => $notifierId]);
         $subject = $this->trans->t("You were mentioned in the document");
+        $this->logger->info($subject);
         $heading = $this->trans->t("%1\$s mentioned you in the document comment", [$notifierName]);
         $bodyHtml = $this->trans->t(
-            "This is a mail message to notify that you have been mentioned by
-            <a href=\"%1\$s\">%2\$s</a> in the comment to the <a href=\"%3\$s\">%4\$s</a>:<br>\"%5\$s\"",
+            "This is a mail message to notify that you have been mentioned by <a href=\"%1\$s\">%2\$s</a> in the comment to the <a href=\"%3\$s\">%4\$s</a>:<br>\"%5\$s\"",
             [$notifierLink, $notifierName, $editorLink, $fileName, $notificationObjectId]
         );
+        $this->logger->info($bodyHtml);
         $button = [$this->trans->t("Open file"), $editorLink];
         $template = $this->buildEmailTemplate($subject, $heading, $bodyHtml, $button);
         return $this->sendEmailNotification($template, $email, $recipientName);
@@ -181,8 +182,7 @@ class EmailManager {
         }
         $userName = $user->getDisplayName();
         $subject = $this->trans->t("ONLYOFFICE Document Server is unavailable");
-        $bodyHtml = $this->trans->t("This is a mail message to notify that the connection with the ONLYOFFICE Document Server has been lost. 
-        Please check the connection settings:");
+        $bodyHtml = $this->trans->t("This is a mail message to notify that the connection with the ONLYOFFICE Document Server has been lost. Please check the connection settings:");
         $appSettingsLink = $this->urlGenerator->getAbsoluteURL("/settings/admin/".$this->appName);
         $button = [$this->trans->t("Go to Settings"), $appSettingsLink];
         $template = $this->buildEmailTemplate($subject, $subject, $bodyHtml, $button);
