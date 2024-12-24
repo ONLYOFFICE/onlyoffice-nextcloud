@@ -228,6 +228,7 @@
 			const preview = $('#onlyofficePreview').is(':checked')
 			const advanced = $('#onlyofficeAdvanced').is(':checked')
 			const cronChecker = $('#onlyofficeCronChecker').is(':checked')
+			const emailNotifications = $('#onlyofficeEmailNotifications').is(':checked')
 			const versionHistory = $('#onlyofficeVersionHistory').is(':checked')
 
 			const limitGroupsString = $('#onlyofficeGroups').prop('checked') ? $('#onlyofficeLimitGroups').val() : ''
@@ -253,6 +254,7 @@
 					preview,
 					advanced,
 					cronChecker,
+					emailNotifications,
 					versionHistory,
 					limitGroups,
 					chat,

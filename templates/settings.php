@@ -145,6 +145,12 @@ if ($_["tagsEnabled"]) {
         <label for="onlyofficeCronChecker"><?php p($l->t("Enable background connection check to the editors")) ?></label>
     </p>
 
+    <p>
+        <input type="checkbox" class="checkbox" id="onlyofficeEmailNotifications"
+            <?php if ($_["emailNotifications"]) { ?>checked="checked"<?php } ?> />
+        <label for="onlyofficeEmailNotifications"><?php p($l->t("Enable e-mail notifications")) ?></label>
+    </p>
+
     <p class="onlyoffice-header">
         <?php p($l->t("Unknown author display name")) ?>
     </p>

@@ -139,6 +139,7 @@ class SettingsController extends Controller {
             "preview" => $this->config->getPreview(),
             "advanced" => $this->config->getAdvanced(),
             "cronChecker" => $this->config->getCronChecker(),
+            "emailNotifications" => $this->config->getEmailNotifications(),
             "versionHistory" => $this->config->getVersionHistory(),
             "protection" => $this->config->getProtection(),
             "limitGroups" => $this->config->getLimitGroups(),
@@ -227,6 +228,7 @@ class SettingsController extends Controller {
      * @param bool $preview - generate preview files
      * @param bool $advanced - use advanced tab
      * @param bool $cronChecker - disable cron checker
+     * @param bool $emailNotifications - notifications via e-mail
      * @param bool $versionHistory - keep version history
      * @param array $limitGroups - list of groups
      * @param bool $chat - display chat
@@ -247,6 +249,7 @@ class SettingsController extends Controller {
         $preview,
         $advanced,
         $cronChecker,
+        $emailNotifications,
         $versionHistory,
         $limitGroups,
         $chat,
@@ -266,6 +269,7 @@ class SettingsController extends Controller {
         $this->config->setPreview($preview);
         $this->config->setAdvanced($advanced);
         $this->config->setCronChecker($cronChecker);
+        $this->config->setEmailNotifications($emailNotifications);
         $this->config->setVersionHistory($versionHistory);
         $this->config->setLimitGroups($limitGroups);
         $this->config->setCustomizationChat($chat);
