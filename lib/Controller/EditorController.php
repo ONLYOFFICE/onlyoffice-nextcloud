@@ -628,7 +628,9 @@ class EditorController extends Controller {
             $notification->setUser($recipientId);
 
             $notificationManager->notify($notification);
-            $this->emailManager->notifyMentionEmail($userId, $recipientId, $file->getId(), $file->getName(), $anchor, $notification->getObjectId());
+            if ($this->config->getEmailNotifications()) {
+                $this->emailManager->notifyMentionEmail($userId, $recipientId, $file->getId(), $file->getName(), $anchor, $notification->getObjectId());
+            }
         }
 
         return ["message" => $this->trans->t("Notification sent successfully")];

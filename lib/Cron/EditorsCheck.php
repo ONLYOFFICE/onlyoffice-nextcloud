@@ -213,7 +213,9 @@ class EditorsCheck extends TimedJob {
         foreach ($this->getUsersToNotify() as $uid) {
             $notification->setUser($uid);
             $notificationManager->notify($notification);
-            $this->emailManager->notifyEditorsCheckEmail($uid);
+            if ($this->config->getEmailNotifications()) {
+                $this->emailManager->notifyEditorsCheckEmail($uid);
+            }
         }
     }
 }
