@@ -143,6 +143,14 @@ OC.L10N.register(
     "The data source must not be the current document": "Источником данных не должен быть текущий документ",
     "Enable background connection check to the editors": "Включить фоновую проверку подключения к редакторам",
     "The domain in the file url does not match the domain of the Document server": "Домен в адресе файла не соответствует домену сервера документов",
-    "Unknown author display name" : "Отображаемое имя неизвестного автора"
+    "Unknown author display name" : "Отображаемое имя неизвестного автора",
+    "Enable e-mail notifications" : "Включить уведомления по электронной почте",
+    "You were mentioned in the document" : "Вы были упомянуты в документе",
+    "%1\$s mentioned you in the document comment" : "%1\$s упомянул вас в комментарии к документу",
+    "This is a mail message to notify that you have been mentioned by <a href=\"%1\$s\">%2\$s</a> in the comment to the <a href=\"%3\$s\">%4\$s</a>:<br>\"%5\$s\"" : "Это почтовое сообщение, уведомляющее о том, что вас упомянул <a href=\"%1\$s\">%2\$s</a> в комментарии к <a href=\"%3\$s\">%4\$s</a>:<br>\"%5\$s\"",
+    "Open file" : "Открыть документ",
+    "ONLYOFFICE Document Server is unavailable" : "Сервер документов ONLYOFFICE недоступен",
+    "This is a mail message to notify that the connection with the ONLYOFFICE Document Server has been lost. Please check the connection settings:" : "Это почтовое сообщение, уведомляющее о том, что соединение с сервером документов ONLYOFFICE потеряно. Пожалуйста, проверьте настройки подключения:",
+    "Go to Settings" : "Перейти в настройки"
 },
 "nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);");
