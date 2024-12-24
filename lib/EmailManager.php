@@ -138,7 +138,7 @@ class EmailManager {
         string $fileName,
         string $anchor,
         string $notificationObjectId
-        ) {
+    ) {
         $recipient = $this->userManager->get($recipientId);
         $email = $recipient->getEMailAddress();
         if (empty($email)) {
@@ -168,9 +168,9 @@ class EmailManager {
 
     /**
      * Send notification about editors unsuccessfull check via email
-     * 
+     *
      * @param string $uid - user id
-     * 
+     *
      * @return bool
      */
     public function notifyEditorsCheckEmail(string $uid) {
@@ -191,12 +191,12 @@ class EmailManager {
 
     /**
      * Build email template
-     * 
+     *
      * @param string $subject - e-mail subject text
      * @param string $heading - e-mail heading text
      * @param string $body - e-mail body html
      * @param array $button - params for NC-button (0-text, 1-link)
-     * 
+     *
      * @return IEMailTemplate
      */
     public function buildEmailTemplate(string $subject, string $heading, string $body, array $button = []) {
@@ -207,7 +207,7 @@ class EmailManager {
         $template->addBodyText($body, true);
 
         if (!empty($button) && isset($button[0]) && isset($button[1]) && is_string($button[0]) && is_string($button[1])) {
-            $template->addBodyButton($button[0], $button[1]); 
+            $template->addBodyButton($button[0], $button[1]);
         }
         $template->addFooter();
         return $template;
@@ -215,11 +215,11 @@ class EmailManager {
 
     /**
      * Send email
-     * 
+     *
      * @param IEMailTemplate $template - e-mail template
      * @param string $email - e-mail address
      * @param string $recipientName - recipient name
-     * 
+     *
      * @return bool
      */
     public function sendEmailNotification(IEMailTemplate $template, string $email, string $recipientName) {
@@ -235,5 +235,4 @@ class EmailManager {
 
         return true;
     }
-
 }
