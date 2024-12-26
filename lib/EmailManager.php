@@ -29,7 +29,6 @@
 
 namespace OCA\Onlyoffice;
 
-use OCA\Onlyoffice\AppConfig;
 use OCP\Mail\IEMailTemplate;
 use OCP\Mail\IMailer;
 use OCP\IL10N;
@@ -66,13 +65,6 @@ class EmailManager {
     private $logger;
 
     /**
-     * Application configuration
-     *
-     * @var AppConfig
-     */
-    private $config;
-
-    /**
      * Mailer
      *
      * @var IMailer
@@ -97,7 +89,6 @@ class EmailManager {
      * @param string $appName - application name
      * @param IL10N $trans - l10n service
      * @param LoggerInterface $logger - logger
-     * @param AppConfig $config - application configuration
      * @param IMailer $mailer - mailer
      * @param IUserManager $userManager - user manager
      * @param IURLGenerator $urlGenerator - URL generator
@@ -106,7 +97,6 @@ class EmailManager {
         $appName,
         IL10N $trans,
         LoggerInterface $logger,
-        AppConfig $config,
         IMailer $mailer,
         IUserManager $userManager,
         IURLGenerator $urlGenerator,
@@ -114,7 +104,6 @@ class EmailManager {
         $this->appName = $appName;
         $this->trans = $trans;
         $this->logger = $logger;
-        $this->config = $config;
         $this->mailer = $mailer;
         $this->userManager = $userManager;
         $this->urlGenerator = $urlGenerator;

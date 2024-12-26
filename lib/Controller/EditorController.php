@@ -231,7 +231,7 @@ class EditorController extends Controller {
 
         $this->fileUtility = new FileUtility($AppName, $trans, $logger, $config, $shareManager, $session);
         $this->avatarManager = \OC::$server->getAvatarManager();
-        $this->emailManager = new EmailManager($AppName, $trans, $logger, $config, $mailer, $userManager, $urlGenerator);
+        $this->emailManager = new EmailManager($AppName, $trans, $logger, $mailer, $userManager, $urlGenerator);
     }
 
     /**
