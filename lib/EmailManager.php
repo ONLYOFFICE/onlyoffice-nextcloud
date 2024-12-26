@@ -188,7 +188,7 @@ class EmailManager {
      *
      * @return IEMailTemplate
      */
-    public function buildEmailTemplate(string $subject, string $heading, string $body, array $button = []) {
+    private function buildEmailTemplate(string $subject, string $heading, string $body, array $button = []) {
         $template = $this->mailer->createEMailTemplate("onlyoffice.NotifyEmail");
         $template->setSubject($subject);
         $template->addHeader();
@@ -211,7 +211,7 @@ class EmailManager {
      *
      * @return bool
      */
-    public function sendEmailNotification(IEMailTemplate $template, string $email, string $recipientName) {
+    private function sendEmailNotification(IEMailTemplate $template, string $email, string $recipientName) {
         $message = $this->mailer->createMessage();
         $message->setTo([$email => $recipientName]);
         $message->useTemplate($template);
