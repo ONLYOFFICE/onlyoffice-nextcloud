@@ -47,6 +47,7 @@ use OCP\IL10N;
 use OCP\IPreview;
 use OCP\ITagManager;
 use OCP\Preview\IMimeIconProvider;
+use OCP\Mail\IMailer;
 use OCP\Notification\IManager;
 use OCA\Files_Sharing\Event\BeforeTemplateRenderedEvent;
 use OCA\Viewer\Event\LoadViewer;
@@ -188,7 +189,8 @@ class Application extends App implements IBootstrap {
                 $this->crypt,
                 $c->get("IManager"),
                 $c->get("Session"),
-                $c->get("GroupManager")
+                $c->get("GroupManager"),
+                $c->get(IMailer::class)
             );
         });
 

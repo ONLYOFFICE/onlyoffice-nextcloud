@@ -143,6 +143,13 @@ class AppConfig {
     private $_cronChecker = "cronChecker";
 
     /**
+     * The config key for the e-mail notifications
+     *
+     * @var string
+     */
+    private $_emailNotifications = "emailNotifications";
+
+    /**
      * The config key for the keep versions history
      *
      * @var string
@@ -765,6 +772,26 @@ class AppConfig {
         $this->logger->info("Set cron checker: " . json_encode($value), ["app" => $this->appName]);
 
         $this->config->setAppValue($this->appName, $this->_cronChecker, json_encode($value));
+    }
+
+    /**
+     * Get e-mail notifications setting
+     *
+     * @return bool
+     */
+    public function getEmailNotifications() {
+        return $this->config->getAppValue($this->appName, $this->_emailNotifications, "true") !== "false";
+    }
+
+    /**
+     * Save e-mail notifications setting
+     *
+     * @param bool $value - emailNotifications
+     */
+    public function setEmailNotifications($value) {
+        $this->logger->info("Set e-mail notifications: " . json_encode($value), ["app" => $this->appName]);
+
+        $this->config->setAppValue($this->appName, $this->_emailNotifications, json_encode($value));
     }
 
     /**

@@ -2,6 +2,7 @@
 
 ## Added
 - setting for setup unknown author display name
+- setting for sending notifications by email
 
 ## Changed
 - fix address when opening editor

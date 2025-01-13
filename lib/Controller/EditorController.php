@@ -34,6 +34,7 @@ use OCA\Files_Versions\Versions\IVersionManager;
 use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\Crypt;
 use OCA\Onlyoffice\DocumentService;
+use OCA\Onlyoffice\EmailManager;
 use OCA\Onlyoffice\FileUtility;
 use OCA\Onlyoffice\FileVersions;
 use OCA\Onlyoffice\KeyManager;
@@ -52,6 +53,7 @@ use OCP\Constants;
 use OCP\Files\File;
 use OCP\Files\IRootFolder;
 use OCP\Files\NotPermittedException;
+use OCP\Mail\IMailer;
 use OCP\IGroupManager;
 use OCP\IL10N;
 use OCP\IRequest;
@@ -159,6 +161,20 @@ class EditorController extends Controller {
      * @var IAvatarManager
      */
     private $avatarManager;
+    
+    /**
+     * Mailer
+     *
+     * @var IMailer
+     */
+    private $mailer;
+
+    /**
+     * Email manager
+     *
+     * @var EmailManager
+     */
+    private $emailManager;
 
     /**
      * @param string $AppName - application name
@@ -174,6 +190,7 @@ class EditorController extends Controller {
      * @param IManager $shareManager - Share manager
      * @param ISession $session - Session
      * @param IGroupManager $groupManager - group Manager
+     * @param IMailer $mailer - mailer
      */
     public function __construct(
         $AppName,
@@ -188,7 +205,8 @@ class EditorController extends Controller {
         Crypt $crypt,
         IManager $shareManager,
         ISession $session,
-        IGroupManager $groupManager
+        IGroupManager $groupManager,
+        IMailer $mailer
     ) {
         parent::__construct($AppName, $request);
 
@@ -213,6 +231,7 @@ class EditorController extends Controller {
 
         $this->fileUtility = new FileUtility($AppName, $trans, $logger, $config, $shareManager, $session);
         $this->avatarManager = \OC::$server->getAvatarManager();
+        $this->emailManager = new EmailManager($AppName, $trans, $logger, $mailer, $userManager, $urlGenerator);
     }
 
     /**
@@ -609,6 +628,9 @@ class EditorController extends Controller {
             $notification->setUser($recipientId);
 
             $notificationManager->notify($notification);
+            if ($this->config->getEmailNotifications()) {
+                $this->emailManager->notifyMentionEmail($userId, $recipientId, $file->getId(), $file->getName(), $anchor, $notification->getObjectId());
+            }
         }
 
         return ["message" => $this->trans->t("Notification sent successfully")];
