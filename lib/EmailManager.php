@@ -129,30 +129,44 @@ class EmailManager {
         string $notificationObjectId
     ) {
         $recipient = $this->userManager->get($recipientId);
-        $email = $recipient->getEMailAddress();
-        if (empty($email)) {
-            $this->logger->info("Mention notification was not sent by e-mail");
+        if (empty($recipient)) {
+            $this->logger->error("recipient $recipientId is null");
             return false;
         }
-        $notifier = $this->userManager->get($notifierId);
+        $email = $recipient->getEMailAddress();
+        if (empty($email)) {
+            $this->logger->info("The mentioned recipient $recipientId does not have an email");
+            return false;
+        }
         $recipientName = $recipient->getDisplayName();
+
+        $notifier = $this->userManager->get($notifierId);
+        if (empty($notifier)) {
+            $this->logger->error("notifier $notifierId is null");
+            return false;
+        }
         $notifierName = $notifier->getDisplayName();
+
         $editorLink = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".editor.index", [
             "fileId" => $fileId,
             "anchor" => $anchor
         ]);
         $notifierLink = $this->urlGenerator->linkToRouteAbsolute('core.ProfilePage.index', ['targetUserId' => $notifierId]);
         $subject = $this->trans->t("You were mentioned in the document");
-        $this->logger->info($subject);
         $heading = $this->trans->t("%1\$s mentioned you in the document comment", [$notifierName]);
         $bodyHtml = $this->trans->t(
             "This is a mail message to notify that you have been mentioned by <a href=\"%1\$s\">%2\$s</a> in the comment to the <a href=\"%3\$s\">%4\$s</a>:<br>\"%5\$s\"",
             [$notifierLink, $notifierName, $editorLink, $fileName, $notificationObjectId]
         );
-        $this->logger->info($bodyHtml);
+        $this->logger->debug($bodyHtml);
         $button = [$this->trans->t("Open file"), $editorLink];
         $template = $this->buildEmailTemplate($subject, $heading, $bodyHtml, $button);
-        return $this->sendEmailNotification($template, $email, $recipientName);
+
+        $result = $this->sendEmailNotification($template, $email, $recipientName);
+        if ($result) {
+            $this->logger->info("Email to $recipientId was sent");
+        }
+        return $result;
     }
 
     /**
@@ -164,18 +178,28 @@ class EmailManager {
      */
     public function notifyEditorsCheckEmail(string $uid) {
         $user = $this->userManager->get($uid);
+        if (empty($user)) {
+            $this->logger->error("recipient $uid is null");
+            return false;
+        }
         $email = $user->getEMailAddress();
         if (empty($email)) {
-            $this->logger->info("Editors check notification was not sent by e-mail");
+            $this->logger->info("The notification recipient $uid does not have an email");
             return false;
         }
         $userName = $user->getDisplayName();
+
         $subject = $this->trans->t("ONLYOFFICE Document Server is unavailable");
         $bodyHtml = $this->trans->t("This is a mail message to notify that the connection with the ONLYOFFICE Document Server has been lost. Please check the connection settings:");
         $appSettingsLink = $this->urlGenerator->getAbsoluteURL("/settings/admin/".$this->appName);
         $button = [$this->trans->t("Go to Settings"), $appSettingsLink];
         $template = $this->buildEmailTemplate($subject, $subject, $bodyHtml, $button);
-        return $this->sendEmailNotification($template, $email, $userName);
+
+        $result = $this->sendEmailNotification($template, $email, $userName);
+        if ($result) {
+            $this->logger->info("Email to $uid was sent");
+        }
+        return $result;
     }
 
     /**
@@ -212,13 +236,18 @@ class EmailManager {
      * @return bool
      */
     private function sendEmailNotification(IEMailTemplate $template, string $email, string $recipientName) {
-        $message = $this->mailer->createMessage();
-        $message->setTo([$email => $recipientName]);
-        $message->useTemplate($template);
-        $errors = $this->mailer->send($message);
+        try {
+            $message = $this->mailer->createMessage();
+            $message->setTo([$email => $recipientName]);
+            $message->useTemplate($template);
+            $errors = $this->mailer->send($message);
 
-        if (!empty($errors)) {
-            $this->logger->debug("Email service error");
+            if (!empty($errors)) {
+                $this->logger->error("Email service error: " . json_encode($errors));
+                return false;
+            }
+        } catch (\Exception $e) {
+            $this->logger->logException($e, ["message" => "Send email", "app" => $this->appName]);
             return false;
         }
 
