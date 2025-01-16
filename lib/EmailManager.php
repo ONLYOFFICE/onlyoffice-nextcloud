@@ -37,7 +37,7 @@ use OCP\IURLGenerator;
 use OCP\IUserManager;
 
 /**
- * Template manager
+ * Email manager
  *
  * @package OCA\Onlyoffice
  */
