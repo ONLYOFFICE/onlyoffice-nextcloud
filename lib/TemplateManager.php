@@ -101,7 +101,7 @@ class TemplateManager {
      * @return File
      */
     public static function getTemplate($templateId) {
-        $logger = \OC::$server->getLogger();
+        $logger = \OCP\Log\logger('onlyoffice');
 
         if (empty($templateId)) {
             $logger->info("templateId is empty", ["app" => self::$appName]);

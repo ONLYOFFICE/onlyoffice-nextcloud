@@ -1195,7 +1195,7 @@ class AppConfig {
             // group unknown -> error and allow nobody
             $group = \OC::$server->getGroupManager()->get($groupName);
             if ($group === null) {
-                \OC::$server->getLogger()->error("Group is unknown $groupName", ["app" => $this->appName]);
+                \OCP\Log\logger('onlyoffice')->error("Group is unknown $groupName", ["app" => $this->appName]);
                 $this->setLimitGroups(array_diff($groups, [$groupName]));
             } else {
                 if ($group->inGroup($user)) {

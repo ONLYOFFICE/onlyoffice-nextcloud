@@ -97,7 +97,7 @@ class Hooks {
 
         KeyManager::delete($fileId);
 
-        \OC::$server->getLogger()->debug("Hook fileUpdate " . json_encode($params), ["app" => self::$appName]);
+        \OCP\Log\logger('onlyoffice')->debug("Hook fileUpdate " . json_encode($params), ["app" => self::$appName]);
     }
 
     /**
@@ -129,7 +129,7 @@ class Hooks {
 
             FileVersions::deleteAllVersions($ownerId, $fileInfo);
         } catch (\Exception $e) {
-            \OC::$server->getLogger()->logException($e, ["message" => "Hook: fileDelete " . json_encode($params), "app" => self::$appName]);
+            \OCP\Log\logger('onlyoffice')->logException($e, ["message" => "Hook: fileDelete " . json_encode($params), "app" => self::$appName]);
         }
     }
 
@@ -165,7 +165,7 @@ class Hooks {
             FileVersions::deleteVersion($ownerId, $fileInfo, $versionId);
             FileVersions::deleteAuthor($ownerId, $fileInfo, $versionId);
         } catch (\Exception $e) {
-            \OC::$server->getLogger()->logException($e, ["message" => "Hook: fileVersionDelete " . json_encode($params), "app" => self::$appName]);
+            \OCP\Log\logger('onlyoffice')->logException($e, ["message" => "Hook: fileVersionDelete " . json_encode($params), "app" => self::$appName]);
         }
     }
 
@@ -200,7 +200,7 @@ class Hooks {
 
             FileVersions::deleteVersion($ownerId, $fileInfo, $versionId);
         } catch (\Exception $e) {
-            \OC::$server->getLogger()->logException($e, ["message" => "Hook: fileVersionRestore " . json_encode($params), "app" => self::$appName]);
+            \OCP\Log\logger('onlyoffice')->logException($e, ["message" => "Hook: fileVersionRestore " . json_encode($params), "app" => self::$appName]);
         }
     }
 
@@ -223,7 +223,7 @@ class Hooks {
 
             ExtraPermissions::deleteList($shareIds);
         } catch (\Exception $e) {
-            \OC::$server->getLogger()->logException($e, ["message" => "Hook: extraPermissionsDelete " . json_encode($params), "app" => self::$appName]);
+            \OCP\Log\logger('onlyoffice')->logException($e, ["message" => "Hook: extraPermissionsDelete " . json_encode($params), "app" => self::$appName]);
         }
     }
 }

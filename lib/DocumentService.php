@@ -402,7 +402,7 @@ class DocumentService {
      * @return array
      */
     public function checkDocServiceUrl($urlGenerator, $crypt) {
-        $logger = \OC::$server->getLogger();
+        $logger = \OCP\Log\logger('onlyoffice');
         $version = null;
 
         try {

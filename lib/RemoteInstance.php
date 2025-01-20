@@ -124,7 +124,7 @@ class RemoteInstance {
      * @return bool
      */
     public static function healthCheck($remote) {
-        $logger = \OC::$server->getLogger();
+        $logger = \OCP\Log\logger('onlyoffice');
         $remote = rtrim($remote, "/") . "/";
 
         if (array_key_exists($remote, self::$healthRemote)) {
@@ -177,7 +177,7 @@ class RemoteInstance {
      * @return string
      */
     public static function getRemoteKey($file) {
-        $logger = \OC::$server->getLogger();
+        $logger = \OCP\Log\logger('onlyoffice');
 
         $remote = rtrim($file->getStorage()->getRemote(), "/") . "/";
         $shareToken = $file->getStorage()->getToken();
@@ -229,7 +229,7 @@ class RemoteInstance {
      * @return bool
      */
     public static function lockRemoteKey($file, $lock, $fs) {
-        $logger = \OC::$server->getLogger();
+        $logger = \OCP\Log\logger('onlyoffice');
         $action = $lock ? "lock" : "unlock";
 
         $remote = rtrim($file->getStorage()->getRemote(), "/") . "/";
