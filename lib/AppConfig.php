@@ -36,6 +36,7 @@ use OCP\ICache;
 use OCP\ICacheFactory;
 use OCP\IConfig;
 use Psr\Log\LoggerInterface;
+use OCA\Onlyoffice\AppInfo\Application;
 
 /**
  * Application configutarion
@@ -43,28 +44,6 @@ use Psr\Log\LoggerInterface;
  * @package OCA\Onlyoffice
  */
 class AppConfig {
-
-    /**
-     * Application name
-     *
-     * @var string
-     */
-    private $appName;
-
-    /**
-     * Config service
-     *
-     * @var IConfig
-     */
-    private $config;
-
-    /**
-     * Logger
-     *
-     * @var LoggerInterface
-     */
-    private $logger;
-
     /**
      * The config key for the demo server
      *
@@ -361,22 +340,16 @@ class AppConfig {
 
     /**
      * The config key for store cache
-     *
-     * @var ICache
      */
-    private $cache;
+    private ICache $cache;
 
-    /**
-     * @param string $AppName - application name
-     */
-    public function __construct($AppName) {
-
-        $this->appName = $AppName;
-
-        $this->config = \OC::$server->getConfig();
-        $this->logger = \OCP\Server::get(LoggerInterface::class);
-        $cacheFactory = \OCP\Server::get(ICacheFactory::class);
-        $this->cache = $cacheFactory->createLocal($this->appName);
+    public function __construct(
+        private string $appName,
+        private IConfig $config,
+        private LoggerInterface $logger,
+        ICacheFactory $cacheFactory,
+    ) {
+        $this->cache = $cacheFactory->createLocal(Application::APP_ID);
     }
 
     /**
