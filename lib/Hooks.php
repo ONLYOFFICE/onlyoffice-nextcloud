@@ -129,7 +129,7 @@ class Hooks {
 
             FileVersions::deleteAllVersions($ownerId, $fileInfo);
         } catch (\Exception $e) {
-            \OCP\Log\logger('onlyoffice')->logException($e, ["message" => "Hook: fileDelete " . json_encode($params), "app" => self::$appName]);
+            \OCP\Log\logger('onlyoffice')->error("Hook: fileDelete " . json_encode($params), ['exception' => $e]);
         }
     }
 
@@ -165,7 +165,7 @@ class Hooks {
             FileVersions::deleteVersion($ownerId, $fileInfo, $versionId);
             FileVersions::deleteAuthor($ownerId, $fileInfo, $versionId);
         } catch (\Exception $e) {
-            \OCP\Log\logger('onlyoffice')->logException($e, ["message" => "Hook: fileVersionDelete " . json_encode($params), "app" => self::$appName]);
+            \OCP\Log\logger('onlyoffice')->error("Hook: fileVersionDelete " . json_encode($params), ['exception' => $e]);
         }
     }
 
@@ -200,7 +200,7 @@ class Hooks {
 
             FileVersions::deleteVersion($ownerId, $fileInfo, $versionId);
         } catch (\Exception $e) {
-            \OCP\Log\logger('onlyoffice')->logException($e, ["message" => "Hook: fileVersionRestore " . json_encode($params), "app" => self::$appName]);
+            \OCP\Log\logger('onlyoffice')->error("Hook: fileVersionRestore " . json_encode($params), ['exception' => $e]);
         }
     }
 
@@ -223,7 +223,7 @@ class Hooks {
 
             ExtraPermissions::deleteList($shareIds);
         } catch (\Exception $e) {
-            \OCP\Log\logger('onlyoffice')->logException($e, ["message" => "Hook: extraPermissionsDelete " . json_encode($params), "app" => self::$appName]);
+            \OCP\Log\logger('onlyoffice')->error("Hook: extraPermissionsDelete " . json_encode($params), ['exception' => $e]);
         }
     }
 }

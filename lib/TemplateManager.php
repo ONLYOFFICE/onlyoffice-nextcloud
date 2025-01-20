@@ -112,7 +112,7 @@ class TemplateManager {
         try {
             $templates = $templateDir->getById($templateId);
         } catch (\Exception $e) {
-            $logger->logException($e, ["message" => "getTemplate: $templateId", "app" => self::$appName]);
+            $logger->error("getTemplate: $templateId", ['exception' => $e]);
             return null;
         }
 

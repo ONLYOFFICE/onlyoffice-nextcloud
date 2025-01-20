@@ -1437,7 +1437,7 @@ class AppConfig {
             }
             return $result;
         } catch (\Exception $e) {
-            $this->logger->logException($e, ["message" => "Format matrix error", "app" => $this->appName]);
+            $this->logger->error("Format matrix error", ['exception' => $e]);
             return [];
         }
     }

@@ -204,7 +204,7 @@ class FileVersions {
 
             return $historyData;
         } catch (\Exception $e) {
-            $logger->logException($e, ["message" => "getHistoryData: $fileId $versionId", "app" => self::$appName]);
+            $logger->error("getHistoryData: $fileId $versionId", ['exception' => $e]);
             return null;
         }
     }
@@ -313,7 +313,7 @@ class FileVersions {
 
             $logger->debug("saveHistory: $fileId for $ownerId stored changes $changesPath history $historyPath", ["app" => self::$appName]);
         } catch (\Exception $e) {
-            $logger->logException($e, ["message" => "saveHistory: save $fileId history error", "app" => self::$appName]);
+            $logger->error("saveHistory: save $fileId history error", ['exception' => $e]);
         }
     }
 
@@ -448,7 +448,7 @@ class FileVersions {
 
             $logger->debug("saveAuthor: $fileId for $ownerId stored author $authorPath", ["app" => self::$appName]);
         } catch (\Exception $e) {
-            $logger->logException($e, ["message" => "saveAuthor: save $fileId author error", "app" => self::$appName]);
+            $logger->error("saveAuthor: save $fileId author error", ['exception' => $e]);
         }
     }
 

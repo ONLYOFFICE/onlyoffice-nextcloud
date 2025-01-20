@@ -411,7 +411,7 @@ class DocumentService {
                 throw new \Exception($this->trans->t("Mixed Active Content is not allowed. HTTPS address for ONLYOFFICE Docs is required."));
             }
         } catch (\Exception $e) {
-            $logger->logException($e, ["message" => "Protocol on check error", "app" => self::$appName]);
+            $logger->error("Protocol on check error", ['exception' => $e]);
             return [$e->getMessage(), $version];
         }
 
@@ -421,7 +421,7 @@ class DocumentService {
                 throw new \Exception($this->trans->t("Bad healthcheck status"));
             }
         } catch (\Exception $e) {
-            $logger->logException($e, ["message" => "healthcheckRequest on check error", "app" => self::$appName]);
+            $logger->error("healthcheckRequest on check error", ['exception' => $e]);
             return [$e->getMessage(), $version];
         }
 
@@ -437,7 +437,7 @@ class DocumentService {
                 throw new \Exception($this->trans->t("Not supported version"));
             }
         } catch (\Exception $e) {
-            $logger->logException($e, ["message" => "commandRequest on check error", "app" => self::$appName]);
+            $logger->error("commandRequest on check error", ['exception' => $e]);
             return [$e->getMessage(), $version];
         }
 
@@ -455,14 +455,14 @@ class DocumentService {
                 $logger->debug("getConvertedUri skipped", ["app" => self::$appName]);
             }
         } catch (\Exception $e) {
-            $logger->logException($e, ["message" => "getConvertedUri on check error", "app" => self::$appName]);
+            $logger->error("getConvertedUri on check error", ['exception' => $e]);
             return [$e->getMessage(), $version];
         }
 
         try {
             $this->request($convertedFileUri);
         } catch (\Exception $e) {
-            $logger->logException($e, ["message" => "Request converted file on check error", "app" => self::$appName]);
+            $logger->error("Request converted file on check error", ['exception' => $e]);
             return [$e->getMessage(), $version];
         }
 

@@ -153,7 +153,7 @@ class RemoteInstance {
                 $status = $data["alive"] === true;
             }
         } catch (\Exception $e) {
-            $logger->logException($e, ["message" => "Failed to request federated health check for" . $remote, "app" => self::APP_NAME]);
+            $logger->error("Failed to request federated health check for" . $remote, ['exception' => $e]);
         }
 
         if (empty($dbremote)) {
@@ -208,7 +208,7 @@ class RemoteInstance {
 
             return $key;
         } catch (\Exception $e) {
-            $logger->logException($e, ["message" => "Failed to request federated key " . $file->getId(), "app" => self::APP_NAME]);
+            $logger->error("Failed to request federated key " . $file->getId(), ['exception' => $e]);
 
             if ($e->getResponse()->getStatusCode() === 404) {
                 self::update($remote, false);
@@ -266,7 +266,7 @@ class RemoteInstance {
                 return false;
             }
         } catch (\Exception $e) {
-            $logger->logException($e, ["message" => "Failed to request federated " . $action . " for " . $file->getFileInfo()->getId(), "app" => self::APP_NAME]);
+            $logger->error("Failed to request federated " . $action . " for " . $file->getFileInfo()->getId(), ['exception' => $e]);
             return false;
         }
     }
