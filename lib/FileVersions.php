@@ -258,8 +258,8 @@ class FileVersions {
         }
 
         $changesInfo = $view->getFileInfo($changesPath);
-        $rootView = \OC::$server->get(View::class);
-        $root = \OC::$server->get(IRootFolder::class);
+        $rootView = \OCP\Server::get(View::class);
+        $root = \OCP\Server::get(IRootFolder::class);
 
         $changes = new File($root, $rootView, $view->getAbsolutePath($changesPath), $changesInfo);
         \OCP\Log\logger('onlyoffice')->debug("getChangesFile: $fileId for $ownerId get changes $changesPath", ["app" => self::$appName]);

@@ -374,8 +374,8 @@ class AppConfig {
         $this->appName = $AppName;
 
         $this->config = \OC::$server->getConfig();
-        $this->logger = \OC::$server->get(LoggerInterface::class);
-        $cacheFactory = \OC::$server->get(ICacheFactory::class);
+        $this->logger = \OCP\Server::get(LoggerInterface::class);
+        $cacheFactory = \OCP\Server::get(ICacheFactory::class);
         $this->cache = $cacheFactory->createLocal($this->appName);
     }
 
