@@ -6,6 +6,7 @@
 
 ## Changed
 - fix address when opening editor
+- URL for requests to Conversion API
 
 ## 9.5.0
 ## Added
