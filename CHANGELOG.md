@@ -3,6 +3,7 @@
 ## Added
 - setting for setup unknown author display name
 - setting for sending notifications by email
+- shardKey param to url for requests to Conversion API
 
 ## Changed
 - fix address when opening editor
