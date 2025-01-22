@@ -1338,6 +1338,24 @@ class EditorController extends Controller {
             return $this->renderError($this->trans->t("ONLYOFFICE app is not configured. Please contact admin"));
         }
 
+        $user = $this->userSession->getUser();
+        $userId = null;
+        if (!empty($user)) {
+            $userId = $user->getUID();
+        }
+
+        if ($userId !== null) {
+            list($file, $error, $share) = $this->getFile($userId, $fileId);
+        } elseif (!empty($shareToken)) {
+            list($file, $error, $share) = $this->fileUtility->getFileByToken($fileId, $shareToken);
+        }
+
+        $shardKey = "";
+        if (isset($file) && !empty($file)) {
+            $key = $this->fileUtility->getKey($file);
+            $shardKey = DocumentService::generateRevisionId($key);
+        }
+
         $params = [
             "documentServerUrl" => $documentServerUrl,
             "fileId" => $fileId,
@@ -1349,6 +1367,10 @@ class EditorController extends Controller {
             "inviewer" => $inviewer === true,
             "anchor" => $anchor
         ];
+
+        if (!empty($shardKey)) {
+            $params["shardKey"] = $shardKey;
+        }
 
         $response = null;
         if ($inframe === true) {

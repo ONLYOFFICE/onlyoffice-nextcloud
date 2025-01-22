@@ -33,6 +33,10 @@ if (!empty($_["directToken"])) {
     script("onlyoffice", "onlyoffice-directeditor");
 }
     script("onlyoffice", "onlyoffice-editor");
+$apiUrl = $_["documentServerUrl"] . "web-apps/apps/api/documents/api.js";
+if (isset($_["shardKey"])) {
+    $apiUrl .= "?shardKey=" . $_["shardKey"];
+}
 ?>
 
 <div id="app"
@@ -52,7 +56,7 @@ if (!empty($_["directToken"])) {
 
     <?php if (!empty($_["documentServerUrl"])) { ?>
         <script nonce="<?php p(\OC::$server->get(\OC\Security\CSP\ContentSecurityPolicyNonceManager::class)->getNonce()) ?>"
-            src="<?php p($_["documentServerUrl"]) ?>web-apps/apps/api/documents/api.js" type="text/javascript"></script>
+            src="<?php p($apiUrl) ?>" type="text/javascript"></script>
     <?php } ?>
 
 </div>
