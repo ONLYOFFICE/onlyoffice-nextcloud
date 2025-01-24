@@ -194,7 +194,7 @@ class DocumentService {
             throw new \Exception($exc);
         }
 
-        return $response_data;
+        return $responseData;
     }
 
     /**
