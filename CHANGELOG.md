@@ -7,6 +7,7 @@
 ## Changed
 - fix address when opening editor
 - URL for requests to Conversion API
+- reading JSON instead of XML from Conversion API
 
 ## 9.5.0
 ## Added
