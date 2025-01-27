@@ -3,6 +3,7 @@
 ## Added
 - setting for setup unknown author display name
 - setting for sending notifications by email
+- link in IMPORTRANGE support
 
 ## Changed
 - fix address when opening editor
