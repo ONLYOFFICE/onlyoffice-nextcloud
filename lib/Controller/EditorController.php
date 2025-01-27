@@ -1564,13 +1564,18 @@ class EditorController extends Controller {
             return null;
         }
 
-        $documentServerUrl = $this->config->getDocumentServerUrl();
-        if (parse_url($link, PHP_URL_HOST) !== parse_url($documentServerUrl, PHP_URL_HOST)) {
+        if (!empty($this->config->getStorageUrl())) {
+            $storageUrl = $this->config->getStorageUrl();
+        } else {
+            $storageUrl = $this->urlGenerator->getAbsoluteURL("/");
+        }
+        
+        if (parse_url($link, PHP_URL_HOST) !== parse_url($storageUrl, PHP_URL_HOST)) {
             return null;
         }
 
-        if (preg_match('/\/files\/(\d+)/', $link, $matches) || preg_match('/\/f\/(\d+)/', $link, $matches)) {
-            return $matches[1];
+        if (preg_match('/\/(files|f|onlyoffice)\/(\d+)/', $link, $matches)) {
+            return $matches[2];
         }
 
         return null;
