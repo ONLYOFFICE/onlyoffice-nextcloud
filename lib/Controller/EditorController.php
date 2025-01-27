@@ -660,32 +660,33 @@ class EditorController extends Controller {
         }
 
         $userId = $user->getUID();
-        $userFolder = $this->root->getUserFolder($userId);
+
         $file = null;
         $fileId = (integer)($referenceData["fileKey"] ?? 0);
-        if (empty($fileId) && !empty($link)) {
+        if (!empty($fileId)
+            && $referenceData["instanceId"] === $this->config->getSystemValue("instanceid", true)) {
+            list($file, $error, $share) = $this->getFile($userId, $fileId);
+        }
+
+        $userFolder = $this->root->getUserFolder($userId);
+        if ($file === null
+            && $path !== null
+            && $userFolder->nodeExists($path)) {
+            $node = $userFolder->get($path);
+            if ($node instanceof File
+                && $node->isReadable()) {
+                $file = $node;
+            }
+        }
+
+        if ($file === null
+            && !empty($link)) {
             $fileId = $this->getFileIdByLink($link);
             if (!empty($fileId)) {
                 list($file, $error, $share) = $this->getFile($userId, $fileId);
             }
         }
 
-        if ($file === null) {
-            if (!empty($fileId)
-                && $referenceData["instanceId"] === $this->config->getSystemValue("instanceid", true)) {
-                list($file, $error, $share) = $this->getFile($userId, $fileId);
-            }
-
-            if ($file === null
-                && $path !== null
-                && $userFolder->nodeExists($path)) {
-                $node = $userFolder->get($path);
-                if ($node instanceof File
-                    && $node->isReadable()) {
-                    $file = $node;
-                }
-            }
-        }
         if ($file === null) {
             $this->logger->error("Reference not found: $fileId $path");
             return ["error" => $this->trans->t("File not found")];
