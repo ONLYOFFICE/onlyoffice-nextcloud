@@ -641,12 +641,13 @@ class EditorController extends Controller {
      *
      * @param array $referenceData - reference data
      * @param string $path - file path
+     * @param string $link - file link
      *
      * @return array
      */
     #[NoAdminRequired]
     #[PublicPage]
-    public function reference($referenceData, $path = null) {
+    public function reference($referenceData, $path = null, $link = null) {
         $this->logger->debug("reference: " . json_encode($referenceData) . " $path");
 
         if (!$this->config->isUserAllowedToUse()) {
@@ -659,25 +660,32 @@ class EditorController extends Controller {
         }
 
         $userId = $user->getUID();
-
+        $userFolder = $this->root->getUserFolder($userId);
         $file = null;
         $fileId = (integer)($referenceData["fileKey"] ?? 0);
-        if (!empty($fileId)
-            && $referenceData["instanceId"] === $this->config->getSystemValue("instanceid", true)) {
-            list($file, $error, $share) = $this->getFile($userId, $fileId);
-        }
-
-        $userFolder = $this->root->getUserFolder($userId);
-        if ($file === null
-            && $path !== null
-            && $userFolder->nodeExists($path)) {
-            $node = $userFolder->get($path);
-            if ($node instanceof File
-                && $node->isReadable()) {
-                $file = $node;
+        if (empty($fileId) && !empty($link)) {
+            $fileId = $this->getFileIdByLink($link);
+            if (!empty($fileId)) {
+                list($file, $error, $share) = $this->getFile($userId, $fileId);
             }
         }
 
+        if ($file === null) {
+            if (!empty($fileId)
+                && $referenceData["instanceId"] === $this->config->getSystemValue("instanceid", true)) {
+                list($file, $error, $share) = $this->getFile($userId, $fileId);
+            }
+
+            if ($file === null
+                && $path !== null
+                && $userFolder->nodeExists($path)) {
+                $node = $userFolder->get($path);
+                if ($node instanceof File
+                    && $node->isReadable()) {
+                    $file = $node;
+                }
+            }
+        }
         if ($file === null) {
             $this->logger->error("Reference not found: $fileId $path");
             return ["error" => $this->trans->t("File not found")];
@@ -1538,6 +1546,33 @@ class EditorController extends Controller {
             $userId = end($userIdExp);
         }
         return $userId;
+    }
+
+    /**
+     * Get File id from by link
+     *
+     * @param string $link - link to the file
+     *
+     * @return string|null
+     */
+    private function getFileIdByLink(string $link) {
+        $path = parse_url($link, PHP_URL_PATH);
+        $encodedPath = array_map("urlencode", explode("/", $path));
+        $link = str_replace($path, implode("/", $encodedPath), $link);
+        if (filter_var($link, FILTER_VALIDATE_URL) === false) {
+            return null;
+        }
+
+        $documentServerUrl = $this->config->getDocumentServerUrl();
+        if (parse_url($link, PHP_URL_HOST) !== parse_url($documentServerUrl, PHP_URL_HOST)) {
+            return null;
+        }
+
+        if (preg_match('/\/files\/(\d+)/', $link, $matches) || preg_match('/\/f\/(\d+)/', $link, $matches)) {
+            return $matches[1];
+        }
+
+        return null;
     }
 
     /**
