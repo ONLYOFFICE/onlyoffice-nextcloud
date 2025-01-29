@@ -1569,7 +1569,7 @@ class EditorController extends Controller {
         } else {
             $storageUrl = $this->urlGenerator->getAbsoluteURL("/");
         }
-        
+
         if (parse_url($link, PHP_URL_HOST) !== parse_url($storageUrl, PHP_URL_HOST)) {
             return null;
         }
