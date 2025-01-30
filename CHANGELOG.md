@@ -10,6 +10,7 @@
 - URL for requests to Conversion API
 - reading JSON instead of XML from Conversion API
 - Nextcloud v28 is no longer supported
+- skip dashboard when opening from desktop
 
 ## 9.5.0
 ## Added
