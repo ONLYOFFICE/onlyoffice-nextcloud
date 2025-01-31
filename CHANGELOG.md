@@ -1,5 +1,6 @@
 # Change Log
 
+## 9.6.0
 ## Added
 - setting for setup unknown author display name
 - setting for sending notifications by email
