@@ -140,6 +140,15 @@
     "Select data source": "Datenquelle auswählen",
     "The data source must not be the current document": "Die Datenquelle darf nicht das aktuelle Dokument sein",
     "Enable background connection check to the editors": "Die Hintergrund-Verbindungsprüfung zu den Editoren erlauben",
-    "The domain in the file url does not match the domain of the Document server": "Die Domäne in der Datei-URL stimmt nicht mit der Domäne von Document Server überein"
+    "The domain in the file url does not match the domain of the Document server": "Die Domäne in der Datei-URL stimmt nicht mit der Domäne von Document Server überein",
+    "Unknown author display name" : "Anzeigename des unbekannten Autors",
+    "Enable e-mail notifications" : "E-Mail-Benachrichtigungen aktivieren",
+    "You were mentioned in the document" : "Sie wurden im Dokument erwähnt",
+    "%1$s mentioned you in the document comment" : "%1$s hat Sie im Dokumentkommentar erwähnt",
+    "This is a mail message to notify that you have been mentioned by <a href=\"%1$s\">%2$s</a> in the comment to the <a href=\"%3$s\">%4$s</a>:<br>\"%5$s\"" : "Dies ist eine E-Mail-Nachricht, um Sie darüber zu informieren, dass Sie von <a href=\"%1$s\">%2$s</a> im Kommentar zu <a href=\"%3$s\">%4$s</a>:<br>\"%5$s\" erwähnt wurden.",
+    "Open file" : "Datei öffnen",
+    "ONLYOFFICE Document Server is unavailable" : "ONLYOFFICE Document Server ist nicht verfügbar",
+    "This is a mail message to notify that the connection with the ONLYOFFICE Document Server has been lost. Please check the connection settings:" : "Dies ist eine E-Mail-Nachricht, die Sie darüber informiert, dass die Verbindung mit dem ONLYOFFICE Document Server unterbrochen wurde. Bitte überprüfen Sie die Verbindungseinstellungen:",
+    "Go to Settings" : "Zu den Einstellungen gehen"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }
