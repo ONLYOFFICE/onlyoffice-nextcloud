@@ -156,8 +156,10 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 		}
 
 		if (winEditor && winEditor.location) {
+			OCA.Onlyoffice.RevertUrl()
 			winEditor.location.href = url
 		} else if (!OCA.Onlyoffice.setting.sameTab || OCA.Onlyoffice.mobile || OCA.Onlyoffice.Desktop) {
+			OCA.Onlyoffice.RevertUrl()
 			winEditor = window.open(url, '_blank')
 		} else if ($('#isPublic').val() === '1' && $('#mimetype').val() !== 'httpd/unix-directory') {
 			location.href = url
@@ -187,9 +189,11 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 
 	OCA.Onlyoffice.CloseEditor = function() {
 		$('body').removeClass('onlyoffice-inline')
-
 		OCA.Onlyoffice.context = null
+		OCA.Onlyoffice.RevertUrl()
+	}
 
+	OCA.Onlyoffice.RevertUrl = function() {
 		window.OCP?.Files?.Router?.goToRoute(
 			null, // use default route
 			{ view: 'files', fileid: undefined },
