@@ -142,6 +142,15 @@ OC.L10N.register(
     "Select data source": "选择数据源",
     "The data source must not be the current document": "数据源不应该是当前文档",
     "Enable background connection check to the editors": "启用编辑器后台连接检查",
-    "The domain in the file url does not match the domain of the Document server": "文件 URL 中的域与文档服务器的域不匹配"
+    "The domain in the file url does not match the domain of the Document server": "文件 URL 中的域与文档服务器的域不匹配",
+    "Unknown author display name": "未知作者显示名称",
+    "Enable e-mail notifications": "启用电子邮件通知",
+    "You were mentioned in the document": "您在文档中被提及",
+    "%1\$s mentioned you in the document comment": "%1\$s 在文档的批注中提及了您",
+    "This is a mail message to notify that you have been mentioned by <a href=\"%1\$s\">%2\$s</a> in the comment to the <a href=\"%3\$s\">%4\$s</a>:<br>\"%5\$s\"": "此邮件是为了通知您，<a href=\"%1\$s\">%2\$s</a> 在<a href=\"%3\$s\">%4\$s</a>:<br>\"%5\$s\"的批注中提及了您",
+    "Open file": "打开文件",
+    "ONLYOFFICE Document Server is unavailable": "ONLYOFFICE 文档服务器不可用",
+    "This is a mail message to notify that the connection with the ONLYOFFICE Document Server has been lost. Please check the connection settings:": "此邮件是为了通知您，您与 ONLYOFFICE 文档服务器的连接已丢失。请检查连接设置",
+    "Go to Settings": "转到设置"
 },
 "nplurals=1; plural=0;");
