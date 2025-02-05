@@ -955,10 +955,19 @@ class EditorController extends Controller {
                     "name" => $author["name"],
                 ];
             } else {
-                $authorName = !empty($this->config->getUnknownAuthor()) ? $this->config->getUnknownAuthor() : $owner->getDisplayName();
-                $historyItem["user"] = [
-                    "name" => $authorName,
-                ];
+                if (!empty($this->config->getUnknownAuthor()) && $versionNum !== 1) {
+                    $authorName = $this->config->getUnknownAuthor();
+                    $historyItem["user"] = [
+                        "name" => $authorName,
+                    ];
+                } else {
+                    $authorName = $owner->getDisplayName();
+                    $authorId = $owner->getUID();
+                    $historyItem["user"] = [
+                        "id" => $this->buildUserId($authorId),
+                        "name" => $authorName,
+                    ];
+                }
             }
 
             $historyData = FileVersions::getHistoryData($ownerId, $file->getFileInfo(), $versionId, $prevVersion);
@@ -984,15 +993,17 @@ class EditorController extends Controller {
         $versionId = $file->getFileInfo()->getMtime();
 
         $author = FileVersions::getAuthor($ownerId, $file->getFileInfo(), $versionId);
-        if ($author !== null) {
+        if (!empty($this->config->getUnknownAuthor()) && $versionNum !== 1) {
+            $authorName = $this->config->getUnknownAuthor();
             $historyItem["user"] = [
-                "id" => $this->buildUserId($author["id"]),
-                "name" => $author["name"]
+                "name" => $authorName,
             ];
-        } elseif ($owner !== null) {
+        } else {
+            $authorName = $owner->getDisplayName();
+            $authorId = $owner->getUID();
             $historyItem["user"] = [
-                "id" => $this->buildUserId($ownerId),
-                "name" => $owner->getDisplayName()
+                "id" => $this->buildUserId($authorId),
+                "name" => $authorName,
             ];
         }
 
