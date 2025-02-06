@@ -1,5 +1,8 @@
 # Change Log
 
+## Added
+- support hwp, hwpx, pages, numbers, key formats
+
 ## 9.6.0
 ## Added
 - setting for setup unknown author display name
