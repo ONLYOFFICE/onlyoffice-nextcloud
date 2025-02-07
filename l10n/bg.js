@@ -142,6 +142,15 @@ OC.L10N.register(
     "Select data source": "Избери източник на данни",
     "The data source must not be the current document": "Източникът на данни не трябва да е текущият документ",
     "Enable background connection check to the editors": "Активиране на проверката на фоновата връзка към редакторите",
-    "The domain in the file url does not match the domain of the Document server": "Домейнът в URL адреса на файла не съвпада с домейна на сървъра за документи"
+    "The domain in the file url does not match the domain of the Document server": "Домейнът в URL адреса на файла не съвпада с домейна на сървъра за документи",
+    "Unknown author display name": "Показано име на неизвестен автор",
+    "Enable e-mail notifications": "Активирайте имейл известия",
+    "You were mentioned in the document": "Бяхте споменати в документа",
+    "%1\$s mentioned you in the document comment": "%1\$s ви спомена в коментара на документа",
+    "This is a mail message to notify that you have been mentioned by <a href=\"%1\$s\">%2\$s</a> in the comment to the <a href=\"%3\$s\">%4\$s</a>:<br>\"%5\$s\"": "Това е имейл съобщение, известяващо, че бяхте споменати от <a href=\"%1$s\">%2$s</a> в коментара на <a href=\"%3$s\">%4$s</a>:<br>\"%5$s\"",
+    "Open file": "Отвори файл",
+    "ONLYOFFICE Document Server is unavailable": "ONLYOFFICE Сървъра за документи не е достъпен",
+    "This is a mail message to notify that the connection with the ONLYOFFICE Document Server has been lost. Please check the connection settings:": "Това е имейл съобщение, известяващо, че връзката с ONLYOFFICE сървъра за документи беше прекъсната. Моля, проверете настройките на свързване:",
+    "Go to Settings": "Отиди в настройки"
 },
 "nplurals=2; plural=(n != 1);");
