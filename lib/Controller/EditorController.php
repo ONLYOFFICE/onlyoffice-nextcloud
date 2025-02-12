@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System SIA 2024
+ * (c) Copyright Ascensio System SIA 2025
  *
  * This program is a free software product.
  * You can redistribute it and/or modify it under the terms of the GNU Affero General Public License
@@ -34,6 +34,7 @@ use OCA\Files_Versions\Versions\IVersionManager;
 use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\Crypt;
 use OCA\Onlyoffice\DocumentService;
+use OCA\Onlyoffice\EmailManager;
 use OCA\Onlyoffice\FileUtility;
 use OCA\Onlyoffice\FileVersions;
 use OCA\Onlyoffice\KeyManager;
@@ -42,6 +43,9 @@ use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\ContentSecurityPolicy;
 use OCP\AppFramework\Http\DataDownloadResponse;
 use OCP\AppFramework\Http\RedirectResponse;
+use OCP\AppFramework\Http\Attribute\NoAdminRequired;
+use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
+use OCP\AppFramework\Http\Attribute\PublicPage;
 use OCP\AppFramework\Http\Template\PublicTemplateResponse;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\QueryException;
@@ -49,9 +53,9 @@ use OCP\Constants;
 use OCP\Files\File;
 use OCP\Files\IRootFolder;
 use OCP\Files\NotPermittedException;
+use OCP\Mail\IMailer;
 use OCP\IGroupManager;
 use OCP\IL10N;
-use OCP\ILogger;
 use OCP\IRequest;
 use OCP\ISession;
 use OCP\IURLGenerator;
@@ -60,6 +64,7 @@ use OCP\IUserManager;
 use OCP\IUserSession;
 use OCP\Share\IManager;
 use OCP\Share\IShare;
+use Psr\Log\LoggerInterface;
 
 /**
  * Controller with the main functions
@@ -104,7 +109,7 @@ class EditorController extends Controller {
     /**
      * Logger
      *
-     * @var ILogger
+     * @var LoggerInterface
      */
     private $logger;
 
@@ -156,6 +161,20 @@ class EditorController extends Controller {
      * @var IAvatarManager
      */
     private $avatarManager;
+    
+    /**
+     * Mailer
+     *
+     * @var IMailer
+     */
+    private $mailer;
+
+    /**
+     * Email manager
+     *
+     * @var EmailManager
+     */
+    private $emailManager;
 
     /**
      * @param string $AppName - application name
@@ -165,12 +184,13 @@ class EditorController extends Controller {
      * @param IUserManager $userManager - user manager
      * @param IURLGenerator $urlGenerator - url generator service
      * @param IL10N $trans - l10n service
-     * @param ILogger $logger - logger
+     * @param LoggerInterface $logger - logger
      * @param AppConfig $config - application configuration
      * @param Crypt $crypt - hash generator
      * @param IManager $shareManager - Share manager
      * @param ISession $session - Session
      * @param IGroupManager $groupManager - group Manager
+     * @param IMailer $mailer - mailer
      */
     public function __construct(
         $AppName,
@@ -180,12 +200,13 @@ class EditorController extends Controller {
         IUserManager $userManager,
         IURLGenerator $urlGenerator,
         IL10N $trans,
-        ILogger $logger,
+        LoggerInterface $logger,
         AppConfig $config,
         Crypt $crypt,
         IManager $shareManager,
         ISession $session,
-        IGroupManager $groupManager
+        IGroupManager $groupManager,
+        IMailer $mailer
     ) {
         parent::__construct($AppName, $request);
 
@@ -204,12 +225,13 @@ class EditorController extends Controller {
             try {
                 $this->versionManager = \OC::$server->query(IVersionManager::class);
             } catch (QueryException $e) {
-                $this->logger->logException($e, ["message" => "VersionManager init error", "app" => $this->appName]);
+                $this->logger->error("VersionManager init error", ["exception" => $e]);
             }
         }
 
         $this->fileUtility = new FileUtility($AppName, $trans, $logger, $config, $shareManager, $session);
         $this->avatarManager = \OC::$server->getAvatarManager();
+        $this->emailManager = new EmailManager($AppName, $trans, $logger, $mailer, $userManager, $urlGenerator);
     }
 
     /**
@@ -222,19 +244,18 @@ class EditorController extends Controller {
      * @param string $shareToken - access token
      *
      * @return array
-     *
-     * @NoAdminRequired
-     * @PublicPage
      */
+    #[NoAdminRequired]
+    #[PublicPage]
     public function create($name, $dir, $templateId = null, $targetId = 0, $shareToken = null) {
-        $this->logger->debug("Create: $name", ["app" => $this->appName]);
+        $this->logger->debug("Create: $name");
 
         if (empty($shareToken) && !$this->config->isUserAllowedToUse()) {
             return ["error" => $this->trans->t("Not permitted")];
         }
 
         if (empty($name)) {
-            $this->logger->error("File name for creation was not found: $name", ["app" => $this->appName]);
+            $this->logger->error("File name for creation was not found: $name");
             return ["error" => $this->trans->t("Template not found")];
         }
 
@@ -247,7 +268,7 @@ class EditorController extends Controller {
             list($userFolder, $error, $share) = $this->fileUtility->getNodeByToken($shareToken);
 
             if (isset($error)) {
-                $this->logger->error("Create: $error", ["app" => $this->appName]);
+                $this->logger->error("Create: $error");
                 return ["error" => $error];
             }
 
@@ -256,7 +277,7 @@ class EditorController extends Controller {
             }
 
             if (!empty($shareToken) && ($share->getPermissions() & Constants::PERMISSION_CREATE) === 0) {
-                $this->logger->error("Create in public folder without access", ["app" => $this->appName]);
+                $this->logger->error("Create in public folder without access");
                 return ["error" => $this->trans->t("You do not have enough permissions to view the file")];
             }
         }
@@ -264,11 +285,11 @@ class EditorController extends Controller {
         $folder = $userFolder->get($dir);
 
         if ($folder === null) {
-            $this->logger->error("Folder for file creation was not found: $dir", ["app" => $this->appName]);
+            $this->logger->error("Folder for file creation was not found: $dir");
             return ["error" => $this->trans->t("The required folder was not found")];
         }
         if (!($folder->isCreatable() && $folder->isUpdateable())) {
-            $this->logger->error("Folder for file creation without permission: $dir", ["app" => $this->appName]);
+            $this->logger->error("Folder for file creation without permission: $dir");
             return ["error" => $this->trans->t("You don't have enough permission to create")];
         }
 
@@ -291,7 +312,7 @@ class EditorController extends Controller {
             try {
                 $newFileUri = $documentService->getConvertedUri($fileUrl, $targetExt, $ext, $targetKey, $region, $ext === "pdf");
             } catch (\Exception $e) {
-                $this->logger->logException($e, ["message" => "getConvertedUri: " . $targetFile->getId(), "app" => $this->appName]);
+                $this->logger->error("getConvertedUri: " . $targetFile->getId(), ["exception" => $e]);
                 return ["error" => $e->getMessage()];
             }
             $template = $documentService->request($newFileUri);
@@ -300,7 +321,7 @@ class EditorController extends Controller {
         }
 
         if (!$template) {
-            $this->logger->error("Template for file creation not found: $name ($templateId)", ["app" => $this->appName]);
+            $this->logger->error("Template for file creation not found: $name ($templateId)");
             return ["error" => $this->trans->t("Template not found")];
         }
 
@@ -315,7 +336,7 @@ class EditorController extends Controller {
                 $file = $folder->newFile($name, $template);
             }
         } catch (NotPermittedException $e) {
-            $this->logger->logException($e, ["message" => "Can't create file: $name", "app" => $this->appName]);
+            $this->logger->error("Can't create file: $name", ["exception" => $e]);
             return ["error" => $this->trans->t("Can't create file")];
         }
 
@@ -333,12 +354,11 @@ class EditorController extends Controller {
      * @param string $templateId - file identifier
      *
      * @return TemplateResponse|RedirectResponse
-     *
-     * @NoAdminRequired
-     * @NoCSRFRequired
      */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
     public function createNew($name, $dir, $templateId = null) {
-        $this->logger->debug("Create from editor: $name in $dir", ["app" => $this->appName]);
+        $this->logger->debug("Create from editor: $name in $dir");
 
         $result = $this->create($name, $dir, $templateId);
         if (isset($result["error"])) {
@@ -356,12 +376,11 @@ class EditorController extends Controller {
      * @param $operationType - type of operation
      *
      * @return array
-     *
-     * @NoAdminRequired
-     * @NoCSRFRequired
      */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
     public function users($fileId, $operationType = null) {
-        $this->logger->debug("Search users", ["app" => $this->appName]);
+        $this->logger->debug("Search users");
         $result = [];
         $currentUserGroups = [];
 
@@ -391,7 +410,7 @@ class EditorController extends Controller {
 
         list($file, $error, $share) = $this->getFile($currentUserId, $fileId);
         if (isset($error)) {
-            $this->logger->error("Users: $fileId $error", ["app" => $this->appName]);
+            $this->logger->error("Users: $fileId $error");
             return $result;
         }
 
@@ -451,10 +470,9 @@ class EditorController extends Controller {
      * @param string $userIds - users identifiers
      *
      * @return array
-     *
-     * @NoAdminRequired
-     * @NoCSRFRequired
      */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
     public function userInfo($userIds) {
         $result = [];
         $userIds = json_decode($userIds, true);
@@ -494,12 +512,11 @@ class EditorController extends Controller {
      * @param array $emails - emails array to whom to send notify
      *
      * @return array
-     *
-     * @NoAdminRequired
-     * @NoCSRFRequired
      */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
     public function mention($fileId, $anchor, $comment, $emails) {
-        $this->logger->debug("mention: from $fileId to " . json_encode($emails), ["app" => $this->appName]);
+        $this->logger->debug("mention: from $fileId to " . json_encode($emails));
 
         if (!$this->config->isUserAllowedToUse()) {
             return ["error" => $this->trans->t("Not permitted")];
@@ -536,7 +553,7 @@ class EditorController extends Controller {
 
         list($file, $error, $share) = $this->getFile($userId, $fileId);
         if (isset($error)) {
-            $this->logger->error("Mention: $fileId $error", ["app" => $this->appName]);
+            $this->logger->error("Mention: $fileId $error");
             return ["error" => $this->trans->t("Failed to send notification")];
         }
 
@@ -605,12 +622,15 @@ class EditorController extends Controller {
 
                 $this->shareManager->createShare($share);
 
-                $this->logger->debug("mention: share $fileId to $recipientId", ["app" => $this->appName]);
+                $this->logger->debug("mention: share $fileId to $recipientId");
             }
 
             $notification->setUser($recipientId);
 
             $notificationManager->notify($notification);
+            if ($this->config->getEmailNotifications()) {
+                $this->emailManager->notifyMentionEmail($userId, $recipientId, $file->getId(), $file->getName(), $anchor, $notification->getObjectId());
+            }
         }
 
         return ["message" => $this->trans->t("Notification sent successfully")];
@@ -621,14 +641,14 @@ class EditorController extends Controller {
      *
      * @param array $referenceData - reference data
      * @param string $path - file path
+     * @param string $link - file link
      *
      * @return array
-     *
-     * @NoAdminRequired
-     * @PublicPage
      */
-    public function reference($referenceData, $path = null) {
-        $this->logger->debug("reference: " . json_encode($referenceData) . " $path", ["app" => $this->appName]);
+    #[NoAdminRequired]
+    #[PublicPage]
+    public function reference($referenceData, $path = null, $link = null) {
+        $this->logger->debug("reference: " . json_encode($referenceData) . " $path");
 
         if (!$this->config->isUserAllowedToUse()) {
             return ["error" => $this->trans->t("Not permitted")];
@@ -659,8 +679,16 @@ class EditorController extends Controller {
             }
         }
 
+        if ($file === null
+            && !empty($link)) {
+            $fileId = $this->getFileIdByLink($link);
+            if (!empty($fileId)) {
+                list($file, $error, $share) = $this->getFile($userId, $fileId);
+            }
+        }
+
         if ($file === null) {
-            $this->logger->error("Reference not found: $fileId $path", ["app" => $this->appName]);
+            $this->logger->error("Reference not found: $fileId $path");
             return ["error" => $this->trans->t("File not found")];
         }
 
@@ -674,7 +702,7 @@ class EditorController extends Controller {
             "path" => $userFolder->getRelativePath($file->getPath()),
             "key" => $key,
             "referenceData" => [
-                "fileKey" => $file->getId(),
+                "fileKey" => (string)$file->getId(),
                 "instanceId" => $this->config->getSystemValue("instanceid", true),
             ],
             "url" => $this->getUrl($file, $user),
@@ -695,12 +723,11 @@ class EditorController extends Controller {
      * @param string $shareToken - access token
      *
      * @return array
-     *
-     * @NoAdminRequired
-     * @PublicPage
      */
+    #[NoAdminRequired]
+    #[PublicPage]
     public function convert($fileId, $shareToken = null) {
-        $this->logger->debug("Convert: $fileId", ["app" => $this->appName]);
+        $this->logger->debug("Convert: $fileId");
 
         if (empty($shareToken) && !$this->config->isUserAllowedToUse()) {
             return ["error" => $this->trans->t("Not permitted")];
@@ -715,12 +742,12 @@ class EditorController extends Controller {
         list($file, $error, $share) = empty($shareToken) ? $this->getFile($userId, $fileId) : $this->fileUtility->getFileByToken($fileId, $shareToken);
 
         if (isset($error)) {
-            $this->logger->error("Convertion: $fileId $error", ["app" => $this->appName]);
+            $this->logger->error("Convertion: $fileId $error");
             return ["error" => $error];
         }
 
         if (!empty($shareToken) && ($share->getPermissions() & Constants::PERMISSION_CREATE) === 0) {
-            $this->logger->error("Convertion in public folder without access: $fileId", ["app" => $this->appName]);
+            $this->logger->error("Convertion in public folder without access: $fileId");
             return ["error" => $this->trans->t("You do not have enough permissions to view the file")];
         }
 
@@ -728,12 +755,12 @@ class EditorController extends Controller {
         $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
         $format = $this->config->formatsSetting()[$ext];
         if (!isset($format)) {
-            $this->logger->info("Format for convertion not supported: $fileName", ["app" => $this->appName]);
+            $this->logger->info("Format for convertion not supported: $fileName");
             return ["error" => $this->trans->t("Format is not supported")];
         }
 
         if (!isset($format["conv"]) || $format["conv"] !== true) {
-            $this->logger->info("Conversion is not required: $fileName", ["app" => $this->appName]);
+            $this->logger->info("Conversion is not required: $fileName");
             return ["error" => $this->trans->t("Conversion is not required")];
         }
 
@@ -755,7 +782,7 @@ class EditorController extends Controller {
         try {
             $newFileUri = $documentService->getConvertedUri($fileUrl, $ext, $internalExtension, $key, $region);
         } catch (\Exception $e) {
-            $this->logger->logException($e, ["message" => "getConvertedUri: " . $file->getId(), "app" => $this->appName]);
+            $this->logger->error("getConvertedUri: " . $file->getId(), ["exception" => $e]);
             return ["error" => $e->getMessage()];
         }
 
@@ -767,7 +794,7 @@ class EditorController extends Controller {
         try {
             $newData = $documentService->request($newFileUri);
         } catch (\Exception $e) {
-            $this->logger->logException($e, ["message" => "Failed to download converted file", "app" => $this->appName]);
+            $this->logger->error("Failed to download converted file", ["exception" => $e]);
             return ["error" => $this->trans->t("Failed to download converted file")];
         }
 
@@ -779,7 +806,7 @@ class EditorController extends Controller {
 
             $file->putContent($newData);
         } catch (NotPermittedException $e) {
-            $this->logger->logException($e, ["message" => "Can't create file: $newFileName", "app" => $this->appName]);
+            $this->logger->error("Can't create file: $newFileName", ["exception" => $e]);
             return ["error" => $this->trans->t("Can't create file")];
         }
 
@@ -797,11 +824,10 @@ class EditorController extends Controller {
      * @param string $url - file url
      *
      * @return array
-     *
-     * @NoAdminRequired
      */
+    #[NoAdminRequired]
     public function save($name, $dir, $url) {
-        $this->logger->debug("Save: $name", ["app" => $this->appName]);
+        $this->logger->debug("Save: $name");
 
         if (!$this->config->isUserAllowedToUse()) {
             return ["error" => $this->trans->t("Not permitted")];
@@ -813,22 +839,22 @@ class EditorController extends Controller {
         $folder = $userFolder->get($dir);
 
         if ($folder === null) {
-            $this->logger->error("Folder for saving file was not found: $dir", ["app" => $this->appName]);
+            $this->logger->error("Folder for saving file was not found: $dir");
             return ["error" => $this->trans->t("The required folder was not found")];
         }
         if (!($folder->isCreatable() && $folder->isUpdateable())) {
-            $this->logger->error("Folder for saving file without permission: $dir", ["app" => $this->appName]);
+            $this->logger->error("Folder for saving file without permission: $dir");
             return ["error" => $this->trans->t("You don't have enough permission to create")];
         }
         $documentServerUrl = $this->config->getDocumentServerUrl();
 
         if (empty($documentServerUrl)) {
-            $this->logger->error("documentServerUrl is empty", ["app" => $this->appName]);
+            $this->logger->error("documentServerUrl is empty");
             return ["error" => $this->trans->t("ONLYOFFICE app is not configured. Please contact admin")];
         }
 
         if (parse_url($url, PHP_URL_HOST) !== parse_url($documentServerUrl, PHP_URL_HOST)) {
-            $this->logger->error("Incorrect domain in file url", ["app" => $this->appName]);
+            $this->logger->error("Incorrect domain in file url");
             return ["error" => $this->trans->t("The domain in the file url does not match the domain of the Document server")];
         }
 
@@ -838,7 +864,7 @@ class EditorController extends Controller {
             $documentService = new DocumentService($this->trans, $this->config);
             $newData = $documentService->request($url);
         } catch (\Exception $e) {
-            $this->logger->logException($e, ["message" => "Failed to download file for saving: $url", "app" => $this->appName]);
+            $this->logger->error("Failed to download file for saving: $url", ["exception" => $e]);
             return ["error" => $this->trans->t("Download failed")];
         }
 
@@ -849,7 +875,7 @@ class EditorController extends Controller {
 
             $file->putContent($newData);
         } catch (NotPermittedException $e) {
-            $this->logger->logException($e, ["message" => "Can't save file: $name", "app" => $this->appName]);
+            $this->logger->error("Can't save file: $name", ["exception" => $e]);
             return ["error" => $this->trans->t("Can't create file")];
         }
 
@@ -865,11 +891,10 @@ class EditorController extends Controller {
      * @param integer $fileId - file identifier
      *
      * @return array
-     *
-     * @NoAdminRequired
      */
+    #[NoAdminRequired]
     public function history($fileId) {
-        $this->logger->debug("Request history for: $fileId", ["app" => $this->appName]);
+        $this->logger->debug("Request history for: $fileId");
 
         if (!$this->config->isUserAllowedToUse()) {
             return ["error" => $this->trans->t("Not permitted")];
@@ -886,7 +911,7 @@ class EditorController extends Controller {
         list($file, $error, $share) = $this->getFile($userId, $fileId);
 
         if (isset($error)) {
-            $this->logger->error("History: $fileId $error", ["app" => $this->appName]);
+            $this->logger->error("History: $fileId $error");
             return ["error" => $error];
         }
 
@@ -923,13 +948,27 @@ class EditorController extends Controller {
             $versionId = $version->getRevisionId();
 
             $author = FileVersions::getAuthor($ownerId, $file->getFileInfo(), $versionId);
-            $authorId = $author !== null ? $author["id"] : $ownerId;
-            $authorName = $author !== null ? $author["name"] : $owner->getDisplayName();
 
-            $historyItem["user"] = [
-                "id" => $this->buildUserId($authorId),
-                "name" => $authorName
-            ];
+            if ($author !== null) {
+                $historyItem["user"] = [
+                    "id" => $this->buildUserId($author["id"]),
+                    "name" => $author["name"],
+                ];
+            } else {
+                if (!empty($this->config->getUnknownAuthor()) && $versionNum !== 1) {
+                    $authorName = $this->config->getUnknownAuthor();
+                    $historyItem["user"] = [
+                        "name" => $authorName,
+                    ];
+                } else {
+                    $authorName = $owner->getDisplayName();
+                    $authorId = $owner->getUID();
+                    $historyItem["user"] = [
+                        "id" => $this->buildUserId($authorId),
+                        "name" => $authorName,
+                    ];
+                }
+            }
 
             $historyData = FileVersions::getHistoryData($ownerId, $file->getFileInfo(), $versionId, $prevVersion);
             if ($historyData !== null) {
@@ -957,13 +996,22 @@ class EditorController extends Controller {
         if ($author !== null) {
             $historyItem["user"] = [
                 "id" => $this->buildUserId($author["id"]),
-                "name" => $author["name"]
+                "name" => $author["name"],
             ];
-        } elseif ($owner !== null) {
-            $historyItem["user"] = [
-                "id" => $this->buildUserId($ownerId),
-                "name" => $owner->getDisplayName()
-            ];
+        } else {
+            if (!empty($this->config->getUnknownAuthor()) && $versionNum !== 0) {
+                $authorName = $this->config->getUnknownAuthor();
+                $historyItem["user"] = [
+                    "name" => $authorName,
+                ];
+            } else {
+                $authorName = $owner->getDisplayName();
+                $authorId = $owner->getUID();
+                $historyItem["user"] = [
+                    "id" => $this->buildUserId($authorId),
+                    "name" => $authorName,
+                ];
+            }
         }
 
         $historyData = FileVersions::getHistoryData($ownerId, $file->getFileInfo(), $versionId, $prevVersion);
@@ -983,11 +1031,10 @@ class EditorController extends Controller {
      * @param integer $version - file version
      *
      * @return array
-     *
-     * @NoAdminRequired
      */
+    #[NoAdminRequired]
     public function version($fileId, $version) {
-        $this->logger->debug("Request version for: $fileId ($version)", ["app" => $this->appName]);
+        $this->logger->debug("Request version for: $fileId ($version)");
 
         if (!$this->config->isUserAllowedToUse()) {
             return ["error" => $this->trans->t("Not permitted")];
@@ -1004,7 +1051,7 @@ class EditorController extends Controller {
         list($file, $error, $share) = $this->getFile($userId, $fileId);
 
         if (isset($error)) {
-            $this->logger->error("History: $fileId $error", ["app" => $this->appName]);
+            $this->logger->error("History: $fileId $error");
             return ["error" => $error];
         }
 
@@ -1084,11 +1131,10 @@ class EditorController extends Controller {
      * @param integer $version - file version
      *
      * @return array
-     *
-     * @NoAdminRequired
      */
+    #[NoAdminRequired]
     public function restore($fileId, $version) {
-        $this->logger->debug("Request restore version for: $fileId ($version)", ["app" => $this->appName]);
+        $this->logger->debug("Request restore version for: $fileId ($version)");
 
         if (!$this->config->isUserAllowedToUse()) {
             return ["error" => $this->trans->t("Not permitted")];
@@ -1105,7 +1151,7 @@ class EditorController extends Controller {
         list($file, $error, $share) = $this->getFile($userId, $fileId);
 
         if (isset($error)) {
-            $this->logger->error("Restore: $fileId $error", ["app" => $this->appName]);
+            $this->logger->error("Restore: $fileId $error");
             return ["error" => $error];
         }
 
@@ -1139,11 +1185,10 @@ class EditorController extends Controller {
      * @param string $filePath - file path
      *
      * @return array
-     *
-     * @NoAdminRequired
      */
+    #[NoAdminRequired]
     public function url($filePath) {
-        $this->logger->debug("Request url for: $filePath", ["app" => $this->appName]);
+        $this->logger->debug("Request url for: $filePath");
 
         if (!$this->config->isUserAllowedToUse()) {
             return ["error" => $this->trans->t("Not permitted")];
@@ -1156,7 +1201,7 @@ class EditorController extends Controller {
         $file = $userFolder->get($filePath);
 
         if ($file === null) {
-            $this->logger->error("File for generate presigned url was not found: $filePath", ["app" => $this->appName]);
+            $this->logger->error("File for generate presigned url was not found: $filePath");
             return ["error" => $this->trans->t("File not found")];
         }
 
@@ -1169,7 +1214,7 @@ class EditorController extends Controller {
         }
 
         if (!$file->isReadable() || !$canDownload) {
-            $this->logger->error("File without permission: $filePath", ["app" => $this->appName]);
+            $this->logger->error("File without permission: $filePath");
             return ["error" => $this->trans->t("You do not have enough permissions to view the file")];
         }
 
@@ -1198,12 +1243,11 @@ class EditorController extends Controller {
      * @param bool $template - file extension to download
      *
      * @return DataDownloadResponse|TemplateResponse
-     *
-     * @NoAdminRequired
-     * @NoCSRFRequired
      */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
     public function download($fileId, $toExtension = null, $template = false) {
-        $this->logger->debug("Download: $fileId $toExtension", ["app" => $this->appName]);
+        $this->logger->debug("Download: $fileId $toExtension");
 
         if (!$this->config->isUserAllowedToUse()) {
             return $this->renderError($this->trans->t("Not permitted"));
@@ -1212,7 +1256,7 @@ class EditorController extends Controller {
         if ($template) {
             $templateFile = TemplateManager::getTemplate($fileId);
             if (empty($templateFile)) {
-                $this->logger->info("Download: template not found: $fileId", ["app" => $this->appName]);
+                $this->logger->info("Download: template not found: $fileId");
                 return $this->renderError($this->trans->t("File not found"));
             }
 
@@ -1227,7 +1271,7 @@ class EditorController extends Controller {
             list($file, $error, $share) = $this->getFile($userId, $fileId);
 
             if (isset($error)) {
-                $this->logger->error("Download: $fileId $error", ["app" => $this->appName]);
+                $this->logger->error("Download: $fileId $error");
                 return $this->renderError($error);
             }
         }
@@ -1257,14 +1301,14 @@ class EditorController extends Controller {
         try {
             $newFileUri = $documentService->getConvertedUri($fileUrl, $ext, $toExtension, $key);
         } catch (\Exception $e) {
-            $this->logger->logException($e, ["message" => "getConvertedUri: " . $file->getId(), "app" => $this->appName]);
+            $this->logger->error("getConvertedUri: " . $file->getId(), ["exception" => $e]);
             return $this->renderError($e->getMessage());
         }
 
         try {
             $newData = $documentService->request($newFileUri);
         } catch (\Exception $e) {
-            $this->logger->logException($e, ["message" => "Failed to download converted file", "app" => $this->appName]);
+            $this->logger->error("Failed to download converted file", ["exception" => $e]);
             return $this->renderError($this->trans->t("Failed to download converted file"));
         }
 
@@ -1288,12 +1332,11 @@ class EditorController extends Controller {
      * @param string $anchor - anchor for file content
      *
      * @return TemplateResponse|RedirectResponse
-     *
-     * @NoAdminRequired
-     * @NoCSRFRequired
      */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
     public function index($fileId, $filePath = null, $shareToken = null, $inframe = false, $inviewer = false, $template = false, $anchor = null) {
-        $this->logger->debug("Open: $fileId $filePath ", ["app" => $this->appName]);
+        $this->logger->debug("Open: $fileId $filePath ");
 
         $isLoggedIn = $this->userSession->isLoggedIn();
         if (empty($shareToken) && !$isLoggedIn) {
@@ -1318,7 +1361,7 @@ class EditorController extends Controller {
         $documentServerUrl = $this->config->getDocumentServerUrl();
 
         if (empty($documentServerUrl)) {
-            $this->logger->error("documentServerUrl is empty", ["app" => $this->appName]);
+            $this->logger->error("documentServerUrl is empty");
             return $this->renderError($this->trans->t("ONLYOFFICE app is not configured. Please contact admin"));
         }
 
@@ -1374,11 +1417,10 @@ class EditorController extends Controller {
      * @param bool $inframe - open in frame
      *
      * @return TemplateResponse
-     *
-     * @NoAdminRequired
-     * @NoCSRFRequired
-     * @PublicPage
      */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
+    #[PublicPage]
     public function publicPage($fileId, $shareToken, $inframe = false) {
         return $this->index($fileId, null, $shareToken, $inframe);
     }
@@ -1406,12 +1448,12 @@ class EditorController extends Controller {
             $folder = !$template ? $this->root->getUserFolder($userId) : TemplateManager::getGlobalTemplateDir();
             $files = $folder->getById($fileId);
         } catch (\Exception $e) {
-            $this->logger->logException($e, ["message" => "getFile: $fileId", "app" => $this->appName]);
+            $this->logger->error("getFile: $fileId", ["exception" => $e]);
             return [null, $this->trans->t("Invalid request"), null];
         }
 
         if (empty($files)) {
-            $this->logger->info("Files not found: $fileId", ["app" => $this->appName]);
+            $this->logger->info("Files not found: $fileId");
             return [null, $this->trans->t("File not found"), null];
         }
 
@@ -1523,6 +1565,38 @@ class EditorController extends Controller {
             $userId = end($userIdExp);
         }
         return $userId;
+    }
+
+    /**
+     * Get File id from by link
+     *
+     * @param string $link - link to the file
+     *
+     * @return string|null
+     */
+    private function getFileIdByLink(string $link) {
+        $path = parse_url($link, PHP_URL_PATH);
+        $encodedPath = array_map("urlencode", explode("/", $path));
+        $link = str_replace($path, implode("/", $encodedPath), $link);
+        if (filter_var($link, FILTER_VALIDATE_URL) === false) {
+            return null;
+        }
+
+        if (!empty($this->config->getStorageUrl())) {
+            $storageUrl = $this->config->getStorageUrl();
+        } else {
+            $storageUrl = $this->urlGenerator->getAbsoluteURL("/");
+        }
+
+        if (parse_url($link, PHP_URL_HOST) !== parse_url($storageUrl, PHP_URL_HOST)) {
+            return null;
+        }
+
+        if (preg_match('/\/(files|f|onlyoffice)\/(\d+)/', $link, $matches)) {
+            return $matches[2];
+        }
+
+        return null;
     }
 
     /**

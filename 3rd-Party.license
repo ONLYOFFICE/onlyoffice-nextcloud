@@ -1,4 +1,4 @@
-Nextcloud ONLYOFFICE integration app uses code from the following 3rd party projects:
+ONLYOFFICE app for Nextcloud uses code from the following 3rd party projects:
 
 @nextcloud/webpack-vue-config - Base config package (https://github.com/nextcloud-libraries/webpack-vue-config/blob/master/LICENSE)
 License:        AGPL-3.0

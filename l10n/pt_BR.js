@@ -41,7 +41,6 @@ OC.L10N.register(
     "Open file in the same tab" : "Abrir arquivo na mesma aba",
     "The default application for opening the format" : "Aplicação padrão para os formatos",
     "Open the file for editing (due to format restrictions, the data might be lost when saving to the formats from the list below)" : "Habilitar edição (devido à restrição dos formatos, dados podem ser perdidos ao salvar nos formatos abaixo)",
-    "View details" : "Ver detalhes",
     "Save" : "Salvar",
     "Mixed Active Content is not allowed. HTTPS address for ONLYOFFICE Docs is required." : "Conteúdo Misto não é permitido. É necessário um endereço HTTPS para o ONLYOFFICE Docs.",
     "Allow the following groups to access the editors": "Permitir que os seguintes grupos acessem os editores",
@@ -143,6 +142,15 @@ OC.L10N.register(
     "Select data source": "Selecionar fonte de dados",
     "The data source must not be the current document": "A fonte de dados não deve ser o documento atual",
     "Enable background connection check to the editors": "Ativar verificação de conexão em segundo plano para os editores",
-    "The domain in the file url does not match the domain of the Document server": "O domínio no URL do arquivo não corresponde ao domínio do servidor de documentos"
+    "The domain in the file url does not match the domain of the Document server": "O domínio no URL do arquivo não corresponde ao domínio do servidor de documentos",
+    "Unknown author display name": "Nome de exibição do autor desconhecido",
+    "Enable e-mail notifications": "Habilitar notificações por e-mail",
+    "You were mentioned in the document": "Você foi mencionado no documento",
+    "%1\$s mentioned you in the document comment": "%1\$s mencionou você no comentário do documento",
+    "This is a mail message to notify that you have been mentioned by <a href=\"%1\$s\">%2\$s</a> in the comment to the <a href=\"%3\$s\">%4\$s</a>:<br>\"%5\$s\"": "Esta é uma mensagem de e-mail para notificar que você foi mencionado por <a href=\"%1\$s\">%2\$s</a> no comentário para <a href=\"%3\$s\">%4\$s</a>:<br>\"%5\$s\"",
+    "Open file": "Abrir arquivo",
+    "ONLYOFFICE Document Server is unavailable": "O servidor de documentos ONLYOFFICE não está disponível",
+    "This is a mail message to notify that the connection with the ONLYOFFICE Document Server has been lost. Please check the connection settings:": "Esta é uma mensagem de e-mail para notificar que a conexão com o servidor de documentos ONLYOFFICE foi perdida. Verifique as configurações de conexão:",
+    "Go to Settings": "Ir para configurações"
 },
 "nplurals=2; plural=(n > 1);");

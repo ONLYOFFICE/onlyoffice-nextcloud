@@ -41,7 +41,6 @@ OC.L10N.register(
     "Open file in the same tab": "Bestand in dezelfde tabblad openen",
     "The default application for opening the format": "De standaardtoepassing voor het openen van het formaat",
     "Open the file for editing (due to format restrictions, the data might be lost when saving to the formats from the list below)": "Open het bestand om het te bewerken (wegens formaatbeperkingen kunnen de gegevens verloren gaan bij het opslaan in de formaten van de onderstaande lijst)",
-    "View details": "Bekijk details",
     "Save": "Opslaan",
     "Mixed Active Content is not allowed. HTTPS address for ONLYOFFICE Docs is required.": "Gemende Actieve Inhoud is niet toegestaan. HTTPS-adres voor ONLYOFFICE Docs is vereist.",
     "Allow the following groups to access the editors": "Geef de volgende groepen toegang tot de redactie",

@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System SIA 2024
+ * (c) Copyright Ascensio System SIA 2025
  *
  * This program is a free software product.
  * You can redistribute it and/or modify it under the terms of the GNU Affero General Public License
@@ -34,8 +34,8 @@ use OCP\AppFramework\App;
 use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
+use OCP\AppFramework\Http\Events\BeforeTemplateRenderedEvent as HttpBeforeTemplateRenderedEvent;
 use OCP\BackgroundJob\IJobList;
-use OCP\Dashboard\RegisterWidgetEvent;
 use OCP\DirectEditing\RegisterDirectEditorEvent;
 use OCP\Files\Template\FileCreatedFromTemplateEvent;
 use OCP\Files\Template\ITemplateManager;
@@ -46,6 +46,8 @@ use OCP\Files\Lock\ILockManager;
 use OCP\IL10N;
 use OCP\IPreview;
 use OCP\ITagManager;
+use OCP\Preview\IMimeIconProvider;
+use OCP\Mail\IMailer;
 use OCP\Notification\IManager;
 use OCA\Files_Sharing\Event\BeforeTemplateRenderedEvent;
 use OCA\Viewer\Event\LoadViewer;
@@ -71,6 +73,7 @@ use OCA\Onlyoffice\Preview;
 use OCA\Onlyoffice\TemplateProvider;
 use OCA\Onlyoffice\SettingsData;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
 class Application extends App implements IBootstrap {
 
@@ -139,10 +142,6 @@ class Application extends App implements IBootstrap {
             return $c->get("ServerContainer")->getUserManager();
         });
 
-        $context->registerService("Logger", function (ContainerInterface $c) {
-            return $c->get("ServerContainer")->getLogger();
-        });
-
         $context->registerService("URLGenerator", function (ContainerInterface $c) {
             return $c->get("ServerContainer")->getURLGenerator();
         });
@@ -152,7 +151,7 @@ class Application extends App implements IBootstrap {
                 $c->get("AppName"),
                 $c->get("URLGenerator"),
                 $c->get("L10N"),
-                $c->get("Logger"),
+                $c->get(LoggerInterface::class),
                 $this->appConfig,
                 $this->crypt
             );
@@ -169,9 +168,10 @@ class Application extends App implements IBootstrap {
                 $c->get("Request"),
                 $c->get("URLGenerator"),
                 $c->get("L10N"),
-                $c->get("Logger"),
+                $c->get(LoggerInterface::class),
                 $this->appConfig,
-                $this->crypt
+                $this->crypt,
+                $c->get(IMimeIconProvider::class)
             );
         });
 
@@ -184,12 +184,13 @@ class Application extends App implements IBootstrap {
                 $c->get("UserManager"),
                 $c->get("URLGenerator"),
                 $c->get("L10N"),
-                $c->get("Logger"),
+                $c->get(LoggerInterface::class),
                 $this->appConfig,
                 $this->crypt,
                 $c->get("IManager"),
                 $c->get("Session"),
-                $c->get("GroupManager")
+                $c->get("GroupManager"),
+                $c->get(IMailer::class)
             );
         });
 
@@ -198,7 +199,7 @@ class Application extends App implements IBootstrap {
                 $c->get("AppName"),
                 $c->get("Request"),
                 $c->get("RootStorage"),
-                $c->get("Logger"),
+                $c->get(LoggerInterface::class),
                 $c->get("UserSession"),
                 $c->get("UserManager"),
                 $c->get("IManager"),
@@ -215,7 +216,7 @@ class Application extends App implements IBootstrap {
                 $c->get("UserManager"),
                 $c->get("URLGenerator"),
                 $c->get("L10N"),
-                $c->get("Logger"),
+                $c->get(LoggerInterface::class),
                 $this->appConfig,
                 $this->crypt,
                 $c->get("IManager"),
@@ -233,7 +234,7 @@ class Application extends App implements IBootstrap {
                 $c->get("UserSession"),
                 $c->get("UserManager"),
                 $c->get("L10N"),
-                $c->get("Logger"),
+                $c->get(LoggerInterface::class),
                 $this->appConfig,
                 $this->crypt,
                 $c->get("IManager"),
@@ -246,8 +247,9 @@ class Application extends App implements IBootstrap {
                 $c->get("AppName"),
                 $c->get("Request"),
                 $c->get("L10N"),
-                $c->get("Logger"),
-                $c->get(IPreview::class)
+                $c->get(LoggerInterface::class),
+                $c->get(IPreview::class),
+                $c->get(IMimeIconProvider::class)
             );
         });
 
@@ -256,7 +258,7 @@ class Application extends App implements IBootstrap {
         $context->registerEventListener(RegisterDirectEditorEvent::class, DirectEditorListener::class);
         $context->registerEventListener(LoadViewer::class, ViewerListener::class);
         $context->registerEventListener(BeforeTemplateRenderedEvent::class, FileSharingListener::class);
-        $context->registerEventListener(RegisterWidgetEvent::class, WidgetListener::class);
+        $context->registerEventListener(HttpBeforeTemplateRenderedEvent::class, WidgetListener::class);
 
         if (interface_exists("OCP\Files\Template\ICustomTemplateProvider")) {
             $context->registerTemplateProvider(TemplateProvider::class);

@@ -1,6 +1,6 @@
 /**
  *
- * (c) Copyright Ascensio System SIA 2024
+ * (c) Copyright Ascensio System SIA 2025
  *
  * This program is a free software product.
  * You can redistribute it and/or modify it under the terms of the GNU Affero General Public License
@@ -58,9 +58,7 @@
 		OCA.Onlyoffice.currentUser = OC.getCurrentUser()
 
 		if (OCA.Onlyoffice.inframe) {
-			OCA.Onlyoffice.faviconBase = $('link[rel="icon"]').attr('href')
 			OCA.Onlyoffice.currentWindow = window.parent
-			OCA.Onlyoffice.titleBase = OCA.Onlyoffice.currentWindow.document.title
 			OCA.Onlyoffice.currentUser = OCA.Onlyoffice.currentWindow.OC.getCurrentUser()
 		}
 
@@ -603,6 +601,7 @@
 	}
 
 	OCA.Onlyoffice.onRequestReferenceData = function(event) {
+		const link = event.data.link
 		const referenceData = event.data.referenceData
 		const path = event.data.path
 
@@ -610,6 +609,7 @@
 			{
 				referenceData,
 				path,
+				link,
 			},
 			function onSuccess(response) {
 				if (response.error) {

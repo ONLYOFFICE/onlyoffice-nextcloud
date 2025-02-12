@@ -41,7 +41,6 @@ OC.L10N.register(
     "Open file in the same tab" : "Ouvrir le fichier dans le même onglet",
     "The default application for opening the format" : "Application par défaut pour ouvrir le format",
     "Open the file for editing (due to format restrictions, the data might be lost when saving to the formats from the list below)" : "Ouvrir le fichier pour édition (en raison de restrictions de format, des données peuvent être perdues lors de l'enregistrement dans les formats de la liste ci-dessous)",
-    "View details" : "Voir les détails",
     "Save" : "Enregistrer",
     "Mixed Active Content is not allowed. HTTPS address for ONLYOFFICE Docs is required." : "Le contenu mixte actif n'est pas autorisé. Une adresse HTTPS pour le ONLYOFFICE Docs est requise",
     "Allow the following groups to access the editors": "Autoriser les groupes suivants à accéder aux éditeurs",
@@ -143,6 +142,15 @@ OC.L10N.register(
     "Select data source": "Sélectionner la source de données",
     "The data source must not be the current document": "La source de données ne doit pas être le document actuel",
     "Enable background connection check to the editors": "Activer la vérification des connexions en arrière-plan avec les éditeurs",
-    "The domain in the file url does not match the domain of the Document server": "Le domaine dans l'URL du fichier ne correspond pas au domaine de Document Server"
+    "The domain in the file url does not match the domain of the Document server": "Le domaine dans l'URL du fichier ne correspond pas au domaine de Document Server",
+    "Unknown author display name": "Nom d'affichage de l'auteur inconnu",
+    "Enable e-mail notifications": "Activer les notifications par e-mail",
+    "You were mentioned in the document": "Vous avez été mentionné dans le document",
+    "%1\$s mentioned you in the document comment": "%1\$s vous a mentionné dans le commentaire du document",
+    "This is a mail message to notify that you have been mentioned by <a href=\"%1\$s\">%2\$s</a> in the comment to the <a href=\"%3\$s\">%4\$s</a>:<br>\"%5\$s\"": "Ceci est un message pour vous notifier que vous avez été mentionné par <a href=\"%1\$s\">%2\$s</a> dans le commentaire à <a href=\"%3\$s\">%4\$s</a>:<br>\"%5\$s\"",
+    "Open file": "Ouvrir le fichier",
+    "ONLYOFFICE Document Server is unavailable": "ONLYOFFICE Document Server n'est pas disponible",
+    "This is a mail message to notify that the connection with the ONLYOFFICE Document Server has been lost. Please check the connection settings:": "Ceci est un message pour vous informer que la connexion avec ONLYOFFICE Document Server a été interrompue. Veuillez vérifier les paramètres de connexion :",
+    "Go to Settings": "Aller dans Paramètres"
 },
 "nplurals=2; plural=(n > 1);");

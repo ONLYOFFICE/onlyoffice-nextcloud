@@ -1,6 +1,6 @@
 /**
  *
- * (c) Copyright Ascensio System SIA 2024
+ * (c) Copyright Ascensio System SIA 2025
  *
  * This program is a free software product.
  * You can redistribute it and/or modify it under the terms of the GNU Affero General Public License
@@ -228,6 +228,7 @@
 			const preview = $('#onlyofficePreview').is(':checked')
 			const advanced = $('#onlyofficeAdvanced').is(':checked')
 			const cronChecker = $('#onlyofficeCronChecker').is(':checked')
+			const emailNotifications = $('#onlyofficeEmailNotifications').is(':checked')
 			const versionHistory = $('#onlyofficeVersionHistory').is(':checked')
 
 			const limitGroupsString = $('#onlyofficeGroups').prop('checked') ? $('#onlyofficeLimitGroups').val() : ''
@@ -241,6 +242,7 @@
 			const toolbarNoTabs = $('#onlyofficeToolbarNoTabs').is(':checked')
 			const reviewDisplay = $("input[type='radio'][name='reviewDisplay']:checked").attr('id').replace('onlyofficeReviewDisplay_', '')
 			const theme = $("input[type='radio'][name='theme']:checked").attr('id').replace('onlyofficeTheme_', '')
+			const unknownAuthor = $('#onlyofficeUnknownAuthor').val().trim()
 
 			$.ajax({
 				method: 'PUT',
@@ -252,6 +254,7 @@
 					preview,
 					advanced,
 					cronChecker,
+					emailNotifications,
 					versionHistory,
 					limitGroups,
 					chat,
@@ -262,6 +265,7 @@
 					toolbarNoTabs,
 					reviewDisplay,
 					theme,
+					unknownAuthor,
 				},
 				success: function onSuccess(response) {
 					$('.section-onlyoffice').removeClass('icon-loading')

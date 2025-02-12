@@ -1,6 +1,6 @@
 /**
  *
- * (c) Copyright Ascensio System SIA 2024
+ * (c) Copyright Ascensio System SIA 2025
  *
  * This program is a free software product.
  * You can redistribute it and/or modify it under the terms of the GNU Affero General Public License
@@ -54,7 +54,6 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 	OCA.Onlyoffice = _.extend({
 		AppName: 'onlyoffice',
 		context: null,
-		folderUrl: null,
 		frameSelector: null,
 	}, OCA.Onlyoffice)
 
@@ -157,8 +156,10 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 		}
 
 		if (winEditor && winEditor.location) {
+			OCA.Onlyoffice.SetDefaultUrl()
 			winEditor.location.href = url
 		} else if (!OCA.Onlyoffice.setting.sameTab || OCA.Onlyoffice.mobile || OCA.Onlyoffice.Desktop) {
+			OCA.Onlyoffice.SetDefaultUrl()
 			winEditor = window.open(url, '_blank')
 		} else if ($('#isPublic').val() === '1' && $('#mimetype').val() !== 'httpd/unix-directory') {
 			location.href = url
@@ -178,24 +179,28 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 			const scrollTop = $('#app-content').scrollTop()
 			$(OCA.Onlyoffice.frameSelector).css('top', scrollTop)
 
-			OCA.Onlyoffice.folderUrl = location.href
-			window.history.pushState(null, null, url)
+			window.OCP?.Files?.Router?.goToRoute(
+				null, // use default route
+				{ view: 'files', fileid: fileId },
+				{ ...OCP.Files.Router.query, openfile: 'true' },
+			)
 		}
 	}
 
 	OCA.Onlyoffice.CloseEditor = function() {
-		OCA.Onlyoffice.frameSelector = null
-
 		$('body').removeClass('onlyoffice-inline')
 
 		OCA.Onlyoffice.context = null
 
-		let url = OCA.Onlyoffice.folderUrl
-		url = url.replace(/&?openfile=true/, '')
-		if (url) {
-			window.history.pushState(null, null, url)
-			OCA.Onlyoffice.folderUrl = null
-		}
+		OCA.Onlyoffice.SetDefaultUrl()
+	}
+
+	OCA.Onlyoffice.SetDefaultUrl = function() {
+		window.OCP?.Files?.Router?.goToRoute(
+			null, // use default route
+			{ view: 'files', fileid: undefined },
+			{ ...OCP.Files.Router.query, openfile: 'false' },
+		)
 	}
 
 	OCA.Onlyoffice.OpenShareDialog = function() {
@@ -231,6 +236,10 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 	}
 
 	OCA.Onlyoffice.FileClickExec = async function(file, view, dir) {
+		if (OCA.Onlyoffice.context !== null && OCA.Onlyoffice.setting.sameTab) {
+			return null
+		}
+
 		OCA.Onlyoffice.OpenEditor(file.fileid, dir, file.basename, 0)
 
 		OCA.Onlyoffice.context = {
@@ -512,8 +521,8 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 				enabled: (files) => {
 					const config = getConfig(files[0])
 
-					if (!config) return
-					if (!config.def) return
+					if (!config) return false
+					if (!config.def) return false
 
 					if (Permission.READ !== (files[0].permissions & Permission.READ)) { return false }
 
@@ -521,6 +530,7 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 				},
 				exec: OCA.Onlyoffice.FileClickExec,
 				default: DefaultType.HIDDEN,
+				order: -1,
 			}))
 
 			registerFileAction(new FileAction({
@@ -547,7 +557,7 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 				enabled: (files) => {
 					const config = getConfig(files[0])
 
-					if (!config) return
+					if (!config) return false
 					if (!config.conv) return false
 
 					const required = $('#isPublic').val() ? Permission.UPDATE : Permission.READ
@@ -573,7 +583,7 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 				enabled: (files) => {
 					const config = getConfig(files[0])
 
-					if (!config) return
+					if (!config) return false
 					if (!config.createForm) return false
 
 					const required = $('#isPublic').val() ? Permission.UPDATE : Permission.READ
@@ -600,7 +610,7 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 					enabled: (files) => {
 						const config = getConfig(files[0])
 
-						if (!config) return
+						if (!config) return false
 						if (!config.saveas) return false
 
 						if (Permission.READ !== (files[0].permissions & Permission.READ)) { return false }

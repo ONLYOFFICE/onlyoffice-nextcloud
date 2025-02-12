@@ -41,7 +41,6 @@ OC.L10N.register(
     "Open file in the same tab" : "Відкривати файл у тій саме вкладці",
     "The default application for opening the format" : "Типовий застосунок для для відкриття файлу формату",
     "Open the file for editing (due to format restrictions, the data might be lost when saving to the formats from the list below)" : "Відкрити файл для редагування (через обмеження формату дані може бути втрачено при збереженні у нижче наведених форматах файлів)",
-    "View details" : "Докладно",
     "Save" : "Зберегти",
     "Mixed Active Content is not allowed. HTTPS address for ONLYOFFICE Docs is required." : "Змішаний активний вміст заборонено. Для користування ONLYOFFICE Docs потрібно використовувати безпечне з'єднання HTTPS.",
     "Allow the following groups to access the editors" : "Надати доступ до редагування лише таким групам",

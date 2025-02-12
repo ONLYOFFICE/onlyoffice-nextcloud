@@ -1,4 +1,4 @@
-# ![](screenshots/icon.png) Nextcloud ONLYOFFICE integration app
+# ![](screenshots/icon.png) ONLYOFFICE app for Nextcloud
 
 This app enables users to edit office documents from [Nextcloud](https://nextcloud.com) using ONLYOFFICE Docs packaged as Document Server - [Community or Enterprise Edition](#onlyoffice-docs-editions).
 
@@ -7,14 +7,16 @@ This app enables users to edit office documents from [Nextcloud](https://nextclo
 The app allows to:
 
 * Create and edit text documents, spreadsheets, and presentations.
+* Create and edit PDF forms.
+* Edit PDF files.
 * Share files to other users.
 * Protect documents with watermarks.
 * Co-edit documents in real-time: use two co-editing modes (Fast and Strict), Track Changes, comments, and built-in chat. Co-editing is also available between several federated Nextcloud instances connected to one Document Server.
 
 Supported formats:
 
-* For editing: DOCM, DOCX, DOCXF, DOTM, DOTX, EPUB, FB2, HTML, ODT, OTT, RTF, TXT, CSV, ODS, OTS, XLSM, XLSX, XLTM, XLTX, ODP, OTP, POTM, POTX, PPSM, PPSX, PPTM, PPTX.
-* For viewing only: DJVU, DOC, DOT, FODT, HTM, MHT, MHTML, OFORM, PDF, STW, SXW, WPS, WPT, XML, XPS, ET, ETT, FODS, SXC, XLS, XLSB, XLT, DPS, DPT, FODP, POT, PPS, PPT, SXI.
+* For editing: DOCM, DOCX, DOTM, DOTX, PDF, EPUB, FB2, HTML, ODT, OTT, RTF, TXT, CSV, ODS, OTS, XLSM, XLSX, XLTM, XLTX, ODP, OTP, POTM, POTX, PPSM, PPSX, PPTM, PPTX.
+* For viewing only: DJVU, DOC, DOT, FODT, HTM, MHT, MHTML, STW, SXW, WPS, WPT, XML, XPS, ET, ETT, FODS, SXC, XLS, XLSB, XLT, DPS, DPT, FODP, POT, PPS, PPT, SXI.
 
 ## Installing ONLYOFFICE Docs
 
@@ -34,9 +36,9 @@ To use ONLYOFFICE behind a proxy, please refer to [this article](https://helpcen
 
 You can also use our **[Docker installation](https://github.com/ONLYOFFICE/docker-onlyoffice-nextcloud)** to install pre-configured Document Server (free version) and Nextcloud with a couple of commands.
 
-## Installing Nextcloud ONLYOFFICE integration app
+## Installing ONLYOFFICE app for Nextcloud
 
-The Nextcloud administrator can install the integration app from the in-built application market.
+The Nextcloud administrator can install the app from the in-built application market.
 For that go to the user name and select **Apps**.
 
 After that find **ONLYOFFICE** in the list of available applications and install it.
@@ -48,7 +50,7 @@ To start using ONLYOFFICE Document Server with Nextcloud, the following steps mu
     ```bash
     cd apps/
     ```
-2. Get the Nextcloud ONLYOFFICE integration app.
+2. Get the ONLYOFFICE app for Nextcloud.
 There are several ways to do that:
 
     a. Download the latest signed version from the official store for [Nextcloud](https://apps.nextcloud.com/apps/onlyoffice).
@@ -61,7 +63,7 @@ There are several ways to do that:
     cd onlyoffice
     git submodule update --init --recursive
     ```
-3. Build webpack:
+3. Build webpack (only if you chose to clone on the previous step):
     ```bash
     npm install
     npm run build
@@ -72,7 +74,7 @@ There are several ways to do that:
     ```
 5. In Nextcloud open the `~/settings/apps/disabled` page with _Not enabled_ apps by administrator and click _Enable_ for the **ONLYOFFICE** application.
 
-## Configuring Nextcloud ONLYOFFICE integration app
+## Configuring ONLYOFFICE app for Nextcloud
 
 In Nextcloud open the `~/settings/admin/onlyoffice` page with administrative settings for **ONLYOFFICE** section.
 Enter the following address to connect ONLYOFFICE Document Server:
@@ -117,7 +119,7 @@ The Advanced tab allows you to grant additional access rights only to those user
 
 ## How it works
 
-The ONLYOFFICE integration follows the API documented here https://api.onlyoffice.com/editors/basic:
+The ONLYOFFICE app follows the API documented here https://api.onlyoffice.com/editors/basic:
 
 * When creating a new file, the user navigates to a document folder within Nextcloud and clicks the **Document**, **Spreadsheet** or **Presentation** item in the _new_ (+) menu.
 
@@ -176,7 +178,7 @@ When the _Log-in credentials, save in session_ authentication type is used, the 
     
     To solve this, we added an asynchronous background task which runs on the server to check availability of the editors. It allows testing the connection between your **Nextcloud instance** and **ONLYOFFICE Document Server**, namely availability of server addresses and the validity of the JWT secret are being checked.
  
-    If any issue is detected, the ONLYOFFICE integration connector (consequently, the ability to create and open files) will be disabled. As a Nextcloud admin, you will get the corresponding notification. 
+    If any issue is detected, the ONLYOFFICE app for Nextcloud (consequently, the ability to create and open files) will be disabled. As a Nextcloud admin, you will get the corresponding notification. 
 
     This option allows you to avoid issues when the server settings become incorrect and require changes.
 

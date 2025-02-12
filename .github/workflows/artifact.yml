@@ -2,8 +2,9 @@ name: Artifact
 
 on:
   workflow_dispatch:
+  push:
+    branches: [master]
   pull_request:
-    types: [opened, reopened]
     branches: [master]
 
 jobs:
@@ -11,8 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+        uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 20
       - name: Get Info
@@ -39,6 +40,7 @@ jobs:
           rm -rf ./src/
           rm ./package.json
           rm ./npm-shrinkwrap.json
+          rm ./stylelint.config.js
           rm ./webpack.js
           rm -rf ./assets/document-templates/.git
           rm -rf ./assets/document-formats/.git
@@ -46,7 +48,7 @@ jobs:
           cd $cwd
           tar -czvf onlyoffice.tar.gz onlyoffice
       - name: Upload Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: onlyoffice
           path: onlyoffice.tar.gz

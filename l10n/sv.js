@@ -41,7 +41,6 @@ OC.L10N.register(
     "Open file in the same tab" : "Öppna dokument i samma flik",
     "The default application for opening the format" : "Standardprogram for att öppna format",
     "Open the file for editing (due to format restrictions, the data might be lost when saving to the formats from the list below)" : "Öppna filen för redigering (på grund av formatrestriktioner kan data gå förlorade när du sparar i format från listan nedan)",
-    "View details" : "Visa detaljer",
     "Save" : "Spara",
     "Mixed Active Content is not allowed. HTTPS address for ONLYOFFICE Docs is required." : "Blandat aktivt innehåll är inte tillåtet. HTTPS-adress till ONLYOFFICE Docs krävs.",
     "Server settings" : "Serverinställningar",

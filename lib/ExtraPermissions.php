@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System SIA 2024
+ * (c) Copyright Ascensio System SIA 2025
  *
  * This program is a free software product.
  * You can redistribute it and/or modify it under the terms of the GNU Affero General Public License
@@ -32,10 +32,10 @@ namespace OCA\Onlyoffice;
 use OCA\Talk\Manager as TalkManager;
 use OCP\Constants;
 use OCP\Files\File;
-use OCP\ILogger;
 use OCP\Share\Exceptions\ShareNotFound;
 use OCP\Share\IManager;
 use OCP\Share\IShare;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class expands base permissions
@@ -54,7 +54,7 @@ class ExtraPermissions {
     /**
      * Logger
      *
-     * @var ILogger
+     * @var LoggerInterface
      */
     private $logger;
 
@@ -97,13 +97,13 @@ class ExtraPermissions {
 
     /**
      * @param string $AppName - application name
-     * @param ILogger $logger - logger
+     * @param LoggerInterface $logger - logger
      * @param AppConfig $config - application configuration
      * @param IManager $shareManager - Share manager
      */
     public function __construct(
         $AppName,
-        ILogger $logger,
+        LoggerInterface $logger,
         IManager $shareManager,
         AppConfig $config
     ) {
@@ -116,7 +116,7 @@ class ExtraPermissions {
             try {
                 $this->talkManager = \OC::$server->query(TalkManager::class);
             } catch (QueryException $e) {
-                $this->logger->logException($e, ["message" => "TalkManager init error", "app" => $this->appName]);
+                $this->logger->error("TalkManager init error", ["exception" => $e]);
             }
         }
     }
@@ -147,7 +147,7 @@ class ExtraPermissions {
                 self::delete($shareId);
             }
 
-            $this->logger->debug("Share " . $shareId . " does not support extra permissions", ["app" => $this->appName]);
+            $this->logger->debug("Share " . $shareId . " does not support extra permissions");
             return null;
         }
 
@@ -259,7 +259,7 @@ class ExtraPermissions {
 
         list($availableExtra, $defaultPermissions) = $this->validation($share, $permissions);
         if (($availableExtra & $permissions) !== $permissions) {
-            $this->logger->debug("Share " . $shareId . " does not available to extend permissions", ["app" => $this->appName]);
+            $this->logger->debug("Share " . $shareId . " does not available to extend permissions");
             return $result;
         }
 
@@ -493,7 +493,7 @@ class ExtraPermissions {
             return $share;
         } catch (ShareNotFound $e) {}
 
-        $this->logger->error("getShare: share not found: " . $shareId, ["app" => $this->appName]);
+        $this->logger->error("getShare: share not found: " . $shareId);
 
         return null;
     }

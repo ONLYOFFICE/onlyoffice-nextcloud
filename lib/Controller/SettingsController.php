@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System SIA 2024
+ * (c) Copyright Ascensio System SIA 2025
  *
  * This program is a free software product.
  * You can redistribute it and/or modify it under the terms of the GNU Affero General Public License
@@ -37,9 +37,10 @@ use OCA\Onlyoffice\TemplateManager;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IL10N;
-use OCP\ILogger;
 use OCP\IRequest;
 use OCP\IURLGenerator;
+use OCP\Preview\IMimeIconProvider;
+use Psr\Log\LoggerInterface;
 
 /**
  * Settings controller for the administration page
@@ -56,7 +57,7 @@ class SettingsController extends Controller {
     /**
      * Logger
      *
-     * @var ILogger
+     * @var LoggerInterface
      */
     private $logger;
 
@@ -82,22 +83,31 @@ class SettingsController extends Controller {
     private $crypt;
 
     /**
+     * Mime icon provider
+     *
+     * @var IMimeIconProvider
+     */
+    private $mimeIconProvider;
+
+    /**
      * @param string $AppName - application name
      * @param IRequest $request - request object
      * @param IURLGenerator $urlGenerator - url generator service
      * @param IL10N $trans - l10n service
-     * @param ILogger $logger - logger
+     * @param LoggerInterface $logger - logger
      * @param AppConfig $config - application configuration
      * @param Crypt $crypt - hash generator
+     * @param IMimeIconProvider $mimeIconProvider - mime icon provider
      */
     public function __construct(
         $AppName,
         IRequest $request,
         IURLGenerator $urlGenerator,
         IL10N $trans,
-        ILogger $logger,
+        LoggerInterface $logger,
         AppConfig $config,
-        Crypt $crypt
+        Crypt $crypt,
+        IMimeIconProvider $mimeIconProvider,
     ) {
         parent::__construct($AppName, $request);
 
@@ -106,6 +116,7 @@ class SettingsController extends Controller {
         $this->logger = $logger;
         $this->config = $config;
         $this->crypt = $crypt;
+        $this->mimeIconProvider = $mimeIconProvider;
     }
 
     /**
@@ -128,6 +139,7 @@ class SettingsController extends Controller {
             "preview" => $this->config->getPreview(),
             "advanced" => $this->config->getAdvanced(),
             "cronChecker" => $this->config->getCronChecker(),
+            "emailNotifications" => $this->config->getEmailNotifications(),
             "versionHistory" => $this->config->getVersionHistory(),
             "protection" => $this->config->getProtection(),
             "limitGroups" => $this->config->getLimitGroups(),
@@ -144,7 +156,8 @@ class SettingsController extends Controller {
             "tagsEnabled" => \OC::$server->getAppManager()->isEnabledForUser("systemtags"),
             "reviewDisplay" => $this->config->getCustomizationReviewDisplay(),
             "theme" => $this->config->getCustomizationTheme(),
-            "templates" => $this->getGlobalTemplates()
+            "templates" => $this->getGlobalTemplates(),
+            "unknownAuthor" => $this->config->getUnknownAuthor()
         ];
         return new TemplateResponse($this->appName, "settings", $data, "blank");
     }
@@ -215,6 +228,7 @@ class SettingsController extends Controller {
      * @param bool $preview - generate preview files
      * @param bool $advanced - use advanced tab
      * @param bool $cronChecker - disable cron checker
+     * @param bool $emailNotifications - notifications via e-mail
      * @param bool $versionHistory - keep version history
      * @param array $limitGroups - list of groups
      * @param bool $chat - display chat
@@ -224,6 +238,7 @@ class SettingsController extends Controller {
      * @param bool $help - display help
      * @param bool $toolbarNoTabs - display toolbar tab
      * @param string $reviewDisplay - review viewing mode
+     * @param string $unknownAuthor - display unknown author
      *
      * @return array
      */
@@ -234,6 +249,7 @@ class SettingsController extends Controller {
         $preview,
         $advanced,
         $cronChecker,
+        $emailNotifications,
         $versionHistory,
         $limitGroups,
         $chat,
@@ -243,7 +259,8 @@ class SettingsController extends Controller {
         $help,
         $toolbarNoTabs,
         $reviewDisplay,
-        $theme
+        $theme,
+        $unknownAuthor
     ) {
 
         $this->config->setDefaultFormats($defFormats);
@@ -252,6 +269,7 @@ class SettingsController extends Controller {
         $this->config->setPreview($preview);
         $this->config->setAdvanced($advanced);
         $this->config->setCronChecker($cronChecker);
+        $this->config->setEmailNotifications($emailNotifications);
         $this->config->setVersionHistory($versionHistory);
         $this->config->setLimitGroups($limitGroups);
         $this->config->setCustomizationChat($chat);
@@ -262,6 +280,7 @@ class SettingsController extends Controller {
         $this->config->setCustomizationToolbarNoTabs($toolbarNoTabs);
         $this->config->setCustomizationReviewDisplay($reviewDisplay);
         $this->config->setCustomizationTheme($theme);
+        $this->config->setUnknownAuthor($unknownAuthor);
 
         return [
         ];
@@ -326,7 +345,8 @@ class SettingsController extends Controller {
             $template = [
                 "id" => $templatesItem->getId(),
                 "name" => $templatesItem->getName(),
-                "type" => TemplateManager::getTypeTemplate($templatesItem->getMimeType())
+                "type" => TemplateManager::getTypeTemplate($templatesItem->getMimeType()),
+                "icon" => $this->mimeIconProvider->getMimeIconUrl($templatesItem->getMimeType())
             ];
             array_push($templates, $template);
         }

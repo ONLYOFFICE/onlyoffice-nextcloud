@@ -1,6 +1,6 @@
 /**
  *
- * (c) Copyright Ascensio System SIA 2024
+ * (c) Copyright Ascensio System SIA 2025
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,34 +16,50 @@
  *
  */
 
-.icon-onlyoffice-new-docx:after,
-.icon-onlyoffice-new-xlsx:after,
-.icon-onlyoffice-new-pptx:after {
+.action-button > .icon-onlyoffice-new-docx:after,
+.action-button > .icon-onlyoffice-new-xlsx:after,
+.action-button > .icon-onlyoffice-new-pptx:after {
     display: block;
     margin-top: 5px;
 }
 
-.icon-onlyoffice-new-docx,
-.icon-onlyoffice-new-xlsx,
-.icon-onlyoffice-new-pptx {
+.action-button > .icon-onlyoffice-new-docx,
+.action-button > .icon-onlyoffice-new-xlsx,
+.action-button > .icon-onlyoffice-new-pptx {
     display: flex;
     justify-content: center;
 }
 
-.icon-onlyoffice-new-docx:after {
+.action-button > .icon-onlyoffice-new-docx:after {
     content: url("../img/new-docx.svg");
 }
 
-.icon-onlyoffice-new-xlsx:after {
+.action-button > .icon-onlyoffice-new-xlsx:after {
     content: url("../img/new-xlsx.svg");
 }
 
-.icon-onlyoffice-new-pptx:after {
+.action-button > .icon-onlyoffice-new-pptx:after {
     content: url("../img/new-pptx.svg");
 }
 
-.icon-onlyoffice-new-pdf {
+.action-button > .icon-onlyoffice-new-pdf {
     background-size: 20px !important;
     background-position: 12px !important;
+    background-image: url("../img/new-pdf.svg");
+}
+
+a.menuitem > .icon-onlyoffice-new-docx {
+    background-image: url("../img/new-docx.svg");
+}
+
+a.menuitem > .icon-onlyoffice-new-xlsx {
+    background-image: url("../img/new-xlsx.svg");
+}
+
+a.menuitem > .icon-onlyoffice-new-pptx {
+    background-image: url("../img/new-pptx.svg");
+}
+
+a.menuitem > .icon-onlyoffice-new-pdf {
     background-image: url("../img/new-pdf.svg");
 }

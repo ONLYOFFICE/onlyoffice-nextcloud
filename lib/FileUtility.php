@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System SIA 2024
+ * (c) Copyright Ascensio System SIA 2025
  *
  * This program is a free software product.
  * You can redistribute it and/or modify it under the terms of the GNU Affero General Public License
@@ -33,11 +33,11 @@ use OCP\Constants;
 use OCP\Files\Folder;
 use OCP\Files\NotFoundException;
 use OCP\IL10N;
-use OCP\ILogger;
 use OCP\ISession;
 use OCP\Share\Exceptions\ShareNotFound;
 use OCP\Share\IManager;
 use OCP\Share\IShare;
+use Psr\Log\LoggerInterface;
 
 /**
  * File utility
@@ -63,7 +63,7 @@ class FileUtility {
     /**
      * Logger
      *
-     * @var ILogger
+     * @var LoggerInterface
      */
     private $logger;
 
@@ -91,7 +91,7 @@ class FileUtility {
     /**
      * @param string $AppName - application name
      * @param IL10N $trans - l10n service
-     * @param ILogger $logger - logger
+     * @param LoggerInterface $logger - logger
      * @param AppConfig $config - application configuration
      * @param IManager $shareManager - Share manager
      * @param IManager $ISession - Session
@@ -99,7 +99,7 @@ class FileUtility {
     public function __construct(
         $AppName,
         IL10N $trans,
-        ILogger $logger,
+        LoggerInterface $logger,
         AppConfig $config,
         IManager $shareManager,
         ISession $session
@@ -133,12 +133,12 @@ class FileUtility {
                 try {
                     $files = $node->getById($fileId);
                 } catch (\Exception $e) {
-                    $this->logger->logException($e, ["message" => "getFileByToken: $fileId", "app" => $this->appName]);
+                    $this->logger->error("getFileByToken: $fileId", ["exception" => $e]);
                     return [null, $this->trans->t("Invalid request"), null];
                 }
 
                 if (empty($files)) {
-                    $this->logger->info("Files not found: $fileId", ["app" => $this->appName]);
+                    $this->logger->info("Files not found: $fileId");
                     return [null, $this->trans->t("File not found"), null];
                 }
                 $file = $files[0];
@@ -146,7 +146,7 @@ class FileUtility {
                 try {
                     $file = $node->get($path);
                 } catch (\Exception $e) {
-                    $this->logger->logException($e, ["message" => "getFileByToken for path: $path", "app" => $this->appName]);
+                    $this->logger->error("getFileByToken for path: $path", ["exception" => $e]);
                     return [null, $this->trans->t("Invalid request"), null];
                 }
             }
@@ -178,7 +178,7 @@ class FileUtility {
         try {
             $node = $share->getNode();
         } catch (NotFoundException $e) {
-            $this->logger->logException($e, ["message" => "getNodeByToken error", "app" => $this->appName]);
+            $this->logger->error("getNodeByToken error", ["exception" => $e]);
             return [null, $this->trans->t("File not found"), null];
         }
 
@@ -200,7 +200,7 @@ class FileUtility {
         try {
             $share = $this->shareManager->getShareByToken($shareToken);
         } catch (ShareNotFound $e) {
-            $this->logger->logException($e, ["message" => "getShare error", "app" => $this->appName]);
+            $this->logger->error("getShare error", ["exception" => $e]);
             $share = null;
         }
 

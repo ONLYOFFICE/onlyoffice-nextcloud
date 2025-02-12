@@ -39,7 +39,6 @@
     "Open file in the same tab": "Obrir arxiu en la mateixa pestanya",
     "The default application for opening the format": "L'aplicació predeterminada per a obrir el format",
     "Open the file for editing (due to format restrictions, the data might be lost when saving to the formats from the list below)": "Obrir arxiu per a editar (a causa de les restriccions de format les dades podrien perdre's en guardar en els formats de la següent llista)",
-    "View details": "Veure detalls",
     "Save": "Guardar",
     "Mixed Active Content is not allowed. HTTPS address for ONLYOFFICE Docs is required.": "Contingut Mixt Actiu no està permès. Es requereix la direcció HTTPS per a ONLYOFFICE Docs.",
     "Server settings": "Ajustos de servidor",

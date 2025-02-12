@@ -41,7 +41,6 @@ OC.L10N.register(
     "Open file in the same tab" : "ファイルを同じタブで開く",
     "The default application for opening the format": "以下のファイルフォーマットをデフォルトで開く",
     "Open the file for editing (due to format restrictions, the data might be lost when saving to the formats from the list below)" : "編集できるファイルフォーマット (フォーマットの制限により、以下のフォーマットを保存する時にデータが失われる可能性があります)",
-    "View details" : "詳細表示",
     "Save" : "保存",
     "Mixed Active Content is not allowed. HTTPS address for ONLYOFFICE Docs is required." : "アクティブコンテンツの混在は許可されていません。ONLYOFFICE DocsにはHTTPSアドレスが必要です",
     "Allow the following groups to access the editors": "以下のグループにエディタへのアクセスを許可する",
@@ -143,6 +142,15 @@ OC.L10N.register(
     "Select data source": "データソースの選択",
     "The data source must not be the current document": "データソースは現在の文書であってはなりません",
     "Enable background connection check to the editors": "エディタへのバックグラウンド接続チェックを有効にする",
-    "The domain in the file url does not match the domain of the Document server": "ファイルURLのドメインがドキュメントサーバーのドメインと一致しません"
+    "The domain in the file url does not match the domain of the Document server": "ファイルURLのドメインがドキュメントサーバーのドメインと一致しません",
+    "Unknown author display name": "不明の作成者表示名",
+    "Enable e-mail notifications": "電子メール通知を有効にする",
+    "You were mentioned in the document": "あなたがドキュメントでメンションされました",
+    "%1\$s mentioned you in the document comment": "%1\$s さんは文書コメントであなたをメンションしました",
+    "This is a mail message to notify that you have been mentioned by <a href=\"%1\$s\">%2\$s</a> in the comment to the <a href=\"%3\$s\">%4\$s</a>:<br>\"%5\$s\"": "これは、 <a href=\"%1\$s\">%2\$s</a> さんが <a href=\"%3\$s\">%4\$s</a> へのコメントであなたをメンションしたことを通知するメッセージです:<br>\"%5\$s\"",
+    "Open file": "ファイルを開く",
+    "ONLYOFFICE Document Server is unavailable": "ONLYOFFICEドキュメントサーバーは只今ご利用いただけません",
+    "This is a mail message to notify that the connection with the ONLYOFFICE Document Server has been lost. Please check the connection settings:": "これは、ONLYOFFICEドキュメントサーバーとの接続が失われたことを通知するメッセージです。接続設定をご確認ください：",
+    "Go to Settings": "設定に進む"
 },
 "nplurals=1; plural=0;");

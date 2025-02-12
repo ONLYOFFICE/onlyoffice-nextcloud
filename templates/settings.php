@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System SIA 2024
+ * (c) Copyright Ascensio System SIA 2025
  *
  * This program is a free software product.
  * You can redistribute it and/or modify it under the terms of the GNU Affero General Public License
@@ -41,7 +41,7 @@ if ($_["tagsEnabled"]) {
 <div class="section section-onlyoffice section-onlyoffice-addr">
     <h2>
         ONLYOFFICE
-        <a target="_blank" class="icon-info svg" title="" href="https://api.onlyoffice.com/editors/nextcloud" data-original-title="<?php p($l->t("Documentation")) ?>"></a>
+        <a target="_blank" class="icon-info svg" title="" href="https://helpcenter.onlyoffice.com/integration/nextcloud.aspx" data-original-title="<?php p($l->t("Documentation")) ?>"></a>
     </h2>
 
     <h2><?php p($l->t("Server settings")) ?></h2>
@@ -145,6 +145,17 @@ if ($_["tagsEnabled"]) {
         <label for="onlyofficeCronChecker"><?php p($l->t("Enable background connection check to the editors")) ?></label>
     </p>
 
+    <p>
+        <input type="checkbox" class="checkbox" id="onlyofficeEmailNotifications"
+            <?php if ($_["emailNotifications"]) { ?>checked="checked"<?php } ?> />
+        <label for="onlyofficeEmailNotifications"><?php p($l->t("Enable e-mail notifications")) ?></label>
+    </p>
+
+    <p class="onlyoffice-header">
+        <?php p($l->t("Unknown author display name")) ?>
+    </p>
+    <p><input id="onlyofficeUnknownAuthor" value="<?php p($_["unknownAuthor"]) ?>" placeholder="" type="text"></p>
+
     <p class="onlyoffice-header"><?php p($l->t("The default application for opening the format")) ?></p>
     <div class="onlyoffice-exts">
         <?php foreach ($_["formats"] as $format => $setting) { ?>
@@ -162,7 +173,6 @@ if ($_["tagsEnabled"]) {
 
     <p class="onlyoffice-header">
         <?php p($l->t("Open the file for editing (due to format restrictions, the data might be lost when saving to the formats from the list below)")) ?>
-        <a target="_blank" class="icon-info svg" title="" href="https://api.onlyoffice.com/editors/nextcloud#editable" data-original-title="<?php p($l->t("View details")) ?>"></a>
     </p>
     <div class="onlyoffice-exts">
         <?php foreach ($_["formats"] as $format => $setting) { ?>
@@ -181,7 +191,6 @@ if ($_["tagsEnabled"]) {
 
     <h2>
         <?php p($l->t("Editor customization settings")) ?>
-        <a target="_blank" class="icon-info svg" title="" href="https://api.onlyoffice.com/editors/config/editor/customization" data-original-title="<?php p($l->t("View details")) ?>"></a>
     </h2>
 
     <p>
@@ -292,7 +301,7 @@ if ($_["tagsEnabled"]) {
     <ul class="onlyoffice-template-container">
         <?php foreach ($_["templates"] as $template) { ?>
             <li data-id=<?php p($template["id"]) ?> class="onlyoffice-template-item" >
-                <img src="../../core/img/filetypes/x-office-<?php p($template["type"]) ?>.svg" />
+                <img src="<?php p($template["icon"]) ?>" />
                 <p><?php p($template["name"]) ?></p>
                 <span class="onlyoffice-template-download"></span>
                 <span class="onlyoffice-template-delete icon-delete"></span>

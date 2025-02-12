@@ -1,6 +1,6 @@
 /**
  *
- * (c) Copyright Ascensio System SIA 2024
+ * (c) Copyright Ascensio System SIA 2025
  *
  * This program is a free software product.
  * You can redistribute it and/or modify it under the terms of the GNU Affero General Public License
@@ -145,7 +145,7 @@
 
 			$(item.querySelector('label')).attr('for', 'template_picker-' + template.id)
 			item.querySelector('input').id = 'template_picker-' + template.id
-			item.querySelector('img').src = '../../core/img/filetypes/x-office-' + template.type + '.svg'
+			item.querySelector('img').src = template.icon
 			item.querySelector('p').textContent = template.name
 			item.onclick = function() {
 				dialog[0].dataset.templateId = template.id
@@ -156,7 +156,7 @@
 		$(emptyItem.querySelector('label')).attr('for', 'template_picker-0')
 		emptyItem.querySelector('input').id = 'template_picker-0'
 		emptyItem.querySelector('input').checked = true
-		emptyItem.querySelector('img').src = '../../core/img/filetypes/x-office-' + type + '.svg'
+		emptyItem.querySelector('img').src = OC.generateUrl('/core/img/filetypes/x-office-' + type + '.svg')
 		emptyItem.querySelector('p').textContent = t(OCA.Onlyoffice.AppName, 'Empty')
 		emptyItem.onclick = function() {
 			dialog[0].dataset.templateId = '0'
@@ -169,7 +169,7 @@
 				item = $(item)
 
 				item.attr('data-id', template.id)
-				item.children('img').attr('src', '../../core/img/filetypes/x-office-' + template.type + '.svg')
+				item.children('img').attr('src', template.icon)
 				item.children('p').text(template.name)
 
 				$('.onlyoffice-template-container').append(item)

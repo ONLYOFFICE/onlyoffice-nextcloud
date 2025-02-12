@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System SIA 2024
+ * (c) Copyright Ascensio System SIA 2025
  *
  * This program is a free software product.
  * You can redistribute it and/or modify it under the terms of the GNU Affero General Public License
@@ -29,8 +29,8 @@
 
 namespace OCA\Onlyoffice\Listeners;
 
+use OCP\AppFramework\Http\Events\BeforeTemplateRenderedEvent as HttpBeforeTemplateRenderedEvent;
 use OCA\Onlyoffice\AppConfig;
-use OCP\Dashboard\RegisterWidgetEvent;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 use OCP\Util;
@@ -55,7 +55,11 @@ class WidgetListener implements IEventListener {
     }
 
     public function handle(Event $event): void {
-        if (!$event instanceof RegisterWidgetEvent) {
+        if (!($event instanceof HttpBeforeTemplateRenderedEvent)) {
+            return;
+        }
+
+        if ($event->getResponse()->getApp() !== "dashboard") {
             return;
         }
 
