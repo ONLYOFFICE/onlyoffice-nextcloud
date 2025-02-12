@@ -36,6 +36,7 @@ use OCP\ICache;
 use OCP\ICacheFactory;
 use OCP\IConfig;
 use Psr\Log\LoggerInterface;
+use OCA\Onlyoffice\AppInfo\Application;
 
 /**
  * Application configutarion
@@ -43,28 +44,6 @@ use Psr\Log\LoggerInterface;
  * @package OCA\Onlyoffice
  */
 class AppConfig {
-
-    /**
-     * Application name
-     *
-     * @var string
-     */
-    private $appName;
-
-    /**
-     * Config service
-     *
-     * @var IConfig
-     */
-    private $config;
-
-    /**
-     * Logger
-     *
-     * @var LoggerInterface
-     */
-    private $logger;
-
     /**
      * The config key for the demo server
      *
@@ -361,22 +340,16 @@ class AppConfig {
 
     /**
      * The config key for store cache
-     *
-     * @var ICache
      */
-    private $cache;
+    private ICache $cache;
 
-    /**
-     * @param string $AppName - application name
-     */
-    public function __construct($AppName) {
-
-        $this->appName = $AppName;
-
-        $this->config = \OC::$server->getConfig();
-        $this->logger = \OC::$server->get(LoggerInterface::class);
-        $cacheFactory = \OC::$server->get(ICacheFactory::class);
-        $this->cache = $cacheFactory->createLocal($this->appName);
+    public function __construct(
+        private string $appName,
+        private IConfig $config,
+        private LoggerInterface $logger,
+        ICacheFactory $cacheFactory,
+    ) {
+        $this->cache = $cacheFactory->createLocal(Application::APP_ID);
     }
 
     /**
@@ -1195,7 +1168,7 @@ class AppConfig {
             // group unknown -> error and allow nobody
             $group = \OC::$server->getGroupManager()->get($groupName);
             if ($group === null) {
-                \OC::$server->getLogger()->error("Group is unknown $groupName", ["app" => $this->appName]);
+                \OCP\Log\logger('onlyoffice')->error("Group is unknown $groupName", ["app" => $this->appName]);
                 $this->setLimitGroups(array_diff($groups, [$groupName]));
             } else {
                 if ($group->inGroup($user)) {
@@ -1437,7 +1410,7 @@ class AppConfig {
             }
             return $result;
         } catch (\Exception $e) {
-            $this->logger->logException($e, ["message" => "Format matrix error", "app" => $this->appName]);
+            $this->logger->error("Format matrix error", ['exception' => $e]);
             return [];
         }
     }

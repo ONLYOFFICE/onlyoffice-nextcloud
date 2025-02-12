@@ -247,7 +247,7 @@ class EmailManager {
                 return false;
             }
         } catch (\Exception $e) {
-            $this->logger->logException($e, ["message" => "Send email", "app" => $this->appName]);
+            $this->logger->error("Send email", ['exception' => $e]);
             return false;
         }
 
