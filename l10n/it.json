@@ -140,6 +140,15 @@
     "Select data source": "Seleziona fonte dati",
     "The data source must not be the current document": "La fonte dei dati non deve essere il documento corrente",
     "Enable background connection check to the editors": "Abilita il controllo della connessione in background per gli editor",
-    "The domain in the file url does not match the domain of the Document server": "Il dominio nell'URL del file non corrisponde al dominio del Document server"
+    "The domain in the file url does not match the domain of the Document server": "Il dominio nell'URL del file non corrisponde al dominio del Document server",
+    "Unknown author display name" : "Nome dell'autore sconosciuto",
+    "Enable e-mail notifications" : "Attiva le notifiche via e-mail",
+    "You were mentioned in the document" : "Sei stato menzionato nel documento",
+    "%1$s mentioned you in the document comment" : "%1$s ti ha menzionato in un commento del documento",
+    "This is a mail message to notify that you have been mentioned by <a href=\"%1$s\">%2$s</a> in the comment to the <a href=\"%3$s\">%4$s</a>:<br>\"%5$s\"" : "Questo è un messaggio per notificare che sei stato menzionato da <a href=\"%1$s\">%2$s</a> in un commento al <a href=\"%3$s\">%4$s</a>:<br>\"%5$s\"",
+    "Open file" : "Apri file",
+    "ONLYOFFICE Document Server is unavailable" : "ONLYOFFICE Document Server non è disponibile",
+    "This is a mail message to notify that the connection with the ONLYOFFICE Document Server has been lost. Please check the connection settings:" : "Questo è un messaggio di posta elettronica per notificare che la connessione con ONLYOFFICE Document Server è stata persa. Si prega di controllare le impostazioni di connessione:",
+    "Go to Settings" : "Vai alle impostazioni"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

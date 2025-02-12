@@ -171,7 +171,7 @@ class Notifier implements INotifier {
                         "link" => $editorLink
                     ]
                 ]);
-                // no break
+                break;
             default:
                 $this->logger->info("Unsupported notification object: ".$notification->getObjectType());
         }

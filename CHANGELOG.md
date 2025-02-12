@@ -1,11 +1,20 @@
 # Change Log
 
 ## Added
+- support hwp, hwpx, pages, numbers, key formats
+
+## 9.6.0
+## Added
 - setting for setup unknown author display name
 - setting for sending notifications by email
+- support IMPORTRANGE
 
 ## Changed
 - fix address when opening editor
+- URL for requests to Conversion API
+- reading JSON instead of XML from Conversion API
+- Nextcloud v28 is no longer supported
+- skip dashboard when opening from desktop
 
 ## 9.5.0
 ## Added

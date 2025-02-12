@@ -142,6 +142,15 @@ OC.L10N.register(
     "Select data source": "Seleccionar fuente de datos",
     "The data source must not be the current document": "La fuente de datos no debe ser el documento actual",
     "Enable background connection check to the editors": "Activar la comprobación de conexión en segundo plano con los editores",
-    "The domain in the file url does not match the domain of the Document server": "El dominio de la URL del archivo no coincide con el dominio del Servidor de documentos"
+    "The domain in the file url does not match the domain of the Document server": "El dominio de la URL del archivo no coincide con el dominio del Servidor de documentos",
+    "Unknown author display name": "Nombre de autor desconocido",
+    "Enable e-mail notifications": "Activar notificaciones por correo electrónico",
+    "You were mentioned in the document": "Se le ha mencionado en el documento",
+    "%1\$s mentioned you in the document comment": "%1\$s le ha mencionado en el comentario del documento",
+    "This is a mail message to notify that you have been mentioned by <a href=\"%1\$s\">%2\$s</a> in the comment to the <a href=\"%3\$s\">%4\$s</a>:<br>\"%5\$s\"": "Este es un mensaje de correo electrónico para notificarle que ha sido mencionado por <a href=\"%1\$s\">%2\$s</a> en el comentario del <a href=\"%3\$s\">%4\$s</a>:<br>\"%5\$s\"",
+    "Open file": "Abrir archivo",
+    "ONLYOFFICE Document Server is unavailable": "El Servidor de documentos ONLYOFFICE no está disponible",
+    "This is a mail message to notify that the connection with the ONLYOFFICE Document Server has been lost. Please check the connection settings:": "Este es un mensaje de correo electrónico para notificarle que la conexión con el Servidor de documentos ONLYOFFICE se ha perdido. Por favor, compruebe los ajustes de conexión:",
+    "Go to Settings": "Перейти в настройки"
 },
 "nplurals=2; plural=(n != 1);");

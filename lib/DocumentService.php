@@ -99,15 +99,12 @@ class DocumentService {
     public function getConvertedUri($document_uri, $from_extension, $to_extension, $document_revision_id, $region = null, $toForm = false) {
         $responceFromConvertService = $this->sendRequestToConvertService($document_uri, $from_extension, $to_extension, $document_revision_id, false, $region, $toForm);
 
-        $errorElement = $responceFromConvertService->Error;
-        if ($errorElement->count() > 0) {
-            $this->processConvServResponceError($errorElement . "");
+        if (isset($responceFromConvertService->error)) {
+            $this->processConvServResponceError($responceFromConvertService->error);
         }
 
-        $isEndConvert = $responceFromConvertService->EndConvert;
-
-        if ($isEndConvert !== null && strtolower($isEndConvert) === "true") {
-            return $responceFromConvertService->FileUrl;
+        if (isset($responceFromConvertService->endConvert) && $responceFromConvertService->endConvert === true) {
+            return (string)$responceFromConvertService->fileUrl;
         }
 
         return "";
@@ -133,7 +130,7 @@ class DocumentService {
             throw new \Exception($this->trans->t("ONLYOFFICE app is not configured. Please contact admin"));
         }
 
-        $urlToConverter = $documentServerUrl . "ConvertService.ashx";
+        $urlToConverter = $documentServerUrl . "converter";
 
         if (empty($document_revision_id)) {
             $document_revision_id = $document_uri;
@@ -190,22 +187,14 @@ class DocumentService {
             $opts["body"] = json_encode($data);
         }
 
-        $response_xml_data = $this->request($urlToConverter, "post", $opts);
-
-        libxml_use_internal_errors(true);
-        if (!function_exists("simplexml_load_file")) {
-            throw new \Exception($this->trans->t("Server can't read xml"));
-        }
-        $response_data = simplexml_load_string($response_xml_data);
-        if (!$response_data) {
-            $exc = $this->trans->t("Bad Response. Errors: ");
-            foreach (libxml_get_errors() as $error) {
-                $exc = $exc . "\t" . $error->message;
-            }
+        $responseJsonData = $this->request($urlToConverter, "post", $opts);
+        $responseData = json_decode($responseJsonData);
+        if (json_last_error() !== 0) {
+            $exc = $this->trans->t("Bad Response. JSON error: " . json_last_error_msg());
             throw new \Exception($exc);
         }
 
-        return $response_data;
+        return $responseData;
     }
 
     /**

@@ -34,8 +34,8 @@ use OCP\AppFramework\App;
 use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
+use OCP\AppFramework\Http\Events\BeforeTemplateRenderedEvent as HttpBeforeTemplateRenderedEvent;
 use OCP\BackgroundJob\IJobList;
-use OCP\Dashboard\RegisterWidgetEvent;
 use OCP\DirectEditing\RegisterDirectEditorEvent;
 use OCP\Files\Template\FileCreatedFromTemplateEvent;
 use OCP\Files\Template\ITemplateManager;
@@ -116,7 +116,7 @@ class Application extends App implements IBootstrap {
         $context->registerEventListener(RegisterDirectEditorEvent::class, DirectEditorListener::class);
         $context->registerEventListener(LoadViewer::class, ViewerListener::class);
         $context->registerEventListener(BeforeTemplateRenderedEvent::class, FileSharingListener::class);
-        $context->registerEventListener(RegisterWidgetEvent::class, WidgetListener::class);
+        $context->registerEventListener(HttpBeforeTemplateRenderedEvent::class, WidgetListener::class);
 
         if (interface_exists("OCP\Files\Template\ICustomTemplateProvider")) {
             $context->registerTemplateProvider(TemplateProvider::class);
