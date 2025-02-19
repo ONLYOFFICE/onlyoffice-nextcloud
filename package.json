@@ -12,7 +12,8 @@
     },
     "dependencies": {
         "@nextcloud/event-bus": "^3.3.1",
-        "@nextcloud/files": "^3.0.0"
+        "@nextcloud/files": "^3.0.0",
+        "@nextcloud/sharing": "^0.2.4"
     },
     "devDependencies": {
         "@nextcloud/browserslist-config": "^3.0.0",
