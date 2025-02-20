@@ -40,11 +40,11 @@ import {
 	davGetClient,
 	davRootPath,
 	davGetDefaultPropfind,
-	davResultToNode,
+	davResultToNode
 } from '@nextcloud/files'
 import { emit } from '@nextcloud/event-bus'
 import AppDarkSvg from '!!raw-loader!../img/app-dark.svg'
-import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
+import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg'
 import { isPublicShare, getSharingToken } from '@nextcloud/sharing/public'
 import { loadState } from '@nextcloud/initial-state'
 
@@ -163,7 +163,7 @@ import { loadState } from '@nextcloud/initial-state'
 		} else if (!OCA.Onlyoffice.setting.sameTab || OCA.Onlyoffice.mobile || OCA.Onlyoffice.Desktop) {
 			OCA.Onlyoffice.SetDefaultUrl()
 			winEditor = window.open(url, '_blank')
-		} else if (isPublicShare() && $('#mimetype').val() !== 'httpd/unix-directory') {
+		} else if (isPublicShare() && OCA.Onlyoffice.isViewIsFile()) {
 			location.href = url
 		} else {
 			OCA.Onlyoffice.frameSelector = '#onlyofficeFrame'
@@ -659,7 +659,7 @@ import { loadState } from '@nextcloud/initial-state'
 				return
 			}
 
-			if (isPublicShare() && $('#mimetype').val() === 'httpd/unix-directory') {
+			if (isPublicShare() && !OCA.Onlyoffice.isViewIsFile()) {
 				menu.addMenuEntry({
 					id: 'onlyofficeDocx',
 					displayName: t(OCA.Onlyoffice.AppName, 'New document'),
@@ -728,8 +728,21 @@ import { loadState } from '@nextcloud/initial-state'
 		return extension
 	}
 
+	OCA.Onlyoffice.isViewIsFile = function() {
+		const mimetype = document.getElementById('mimetype')?.value
+		if (mimetype !== undefined) {
+			return mimetype !== 'httpd/unix-directory'
+		}
+
+		try {
+			return loadState('files_sharing', 'view') === 'public-file-share'
+		} catch {
+			return false
+		}
+	}
+
 	const initPage = function() {
-		if (isPublicShare() && $('#mimetype').val() !== 'httpd/unix-directory') {
+		if (isPublicShare() && OCA.Onlyoffice.isViewIsFile()) {
 			// file by shared link
 			const fileName = loadState('files_sharing', 'filename')
 			const extension = OCA.Onlyoffice.getFileExtension(fileName)
