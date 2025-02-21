@@ -65,7 +65,6 @@ use OCA\Onlyoffice\Listeners\FileSharingListener;
 use OCA\Onlyoffice\Listeners\DirectEditorListener;
 use OCA\Onlyoffice\Listeners\ViewerListener;
 use OCA\Onlyoffice\Listeners\WidgetListener;
-use OCA\Onlyoffice\Crypt;
 use OCA\Onlyoffice\DirectEditor;
 use OCA\Onlyoffice\Hooks;
 use OCA\Onlyoffice\Notifier;
@@ -76,28 +75,14 @@ use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 
 class Application extends App implements IBootstrap {
+    public const APP_ID = "onlyoffice";
 
-    /**
-     * Application configuration
-     *
-     * @var AppConfig
-     */
-    public $appConfig;
-
-    /**
-     * Hash generator
-     *
-     * @var Crypt
-     */
-    public $crypt;
+    private AppConfig $appConfig;
 
     public function __construct(array $urlParams = []) {
-        $appName = "onlyoffice";
+        parent::__construct(self::APP_ID, $urlParams);
 
-        parent::__construct($appName, $urlParams);
-
-        $this->appConfig = new AppConfig($appName);
-        $this->crypt = new Crypt($this->appConfig);
+        $this->appConfig = \OCP\Server::get(AppConfig::class);
     }
 
     public function register(IRegistrationContext $context): void {
@@ -125,133 +110,6 @@ class Application extends App implements IBootstrap {
 
         // Set the leeway for the JWT library in case the system clock is a second off
         \Firebase\JWT\JWT::$leeway = $this->appConfig->getJwtLeeway();
-
-        $context->registerService("L10N", function (ContainerInterface $c) {
-            return $c->get("ServerContainer")->getL10N($c->get("AppName"));
-        });
-
-        $context->registerService("RootStorage", function (ContainerInterface $c) {
-            return $c->get("ServerContainer")->getRootFolder();
-        });
-
-        $context->registerService("UserSession", function (ContainerInterface $c) {
-            return $c->get("ServerContainer")->getUserSession();
-        });
-
-        $context->registerService("UserManager", function (ContainerInterface $c) {
-            return $c->get("ServerContainer")->getUserManager();
-        });
-
-        $context->registerService("URLGenerator", function (ContainerInterface $c) {
-            return $c->get("ServerContainer")->getURLGenerator();
-        });
-
-        $context->registerService("DirectEditor", function (ContainerInterface $c) {
-            return new DirectEditor(
-                $c->get("AppName"),
-                $c->get("URLGenerator"),
-                $c->get("L10N"),
-                $c->get(LoggerInterface::class),
-                $this->appConfig,
-                $this->crypt
-            );
-        });
-
-        $context->registerService("SettingsData", function (ContainerInterface $c) {
-            return new SettingsData($this->appConfig);
-        });
-
-        // Controllers
-        $context->registerService("SettingsController", function (ContainerInterface $c) {
-            return new SettingsController(
-                $c->get("AppName"),
-                $c->get("Request"),
-                $c->get("URLGenerator"),
-                $c->get("L10N"),
-                $c->get(LoggerInterface::class),
-                $this->appConfig,
-                $this->crypt,
-                $c->get(IMimeIconProvider::class)
-            );
-        });
-
-        $context->registerService("EditorController", function (ContainerInterface $c) {
-            return new EditorController(
-                $c->get("AppName"),
-                $c->get("Request"),
-                $c->get("RootStorage"),
-                $c->get("UserSession"),
-                $c->get("UserManager"),
-                $c->get("URLGenerator"),
-                $c->get("L10N"),
-                $c->get(LoggerInterface::class),
-                $this->appConfig,
-                $this->crypt,
-                $c->get("IManager"),
-                $c->get("Session"),
-                $c->get("GroupManager"),
-                $c->get(IMailer::class)
-            );
-        });
-
-        $context->registerService("SharingApiController", function (ContainerInterface $c) {
-            return new SharingApiController(
-                $c->get("AppName"),
-                $c->get("Request"),
-                $c->get("RootStorage"),
-                $c->get(LoggerInterface::class),
-                $c->get("UserSession"),
-                $c->get("UserManager"),
-                $c->get("IManager"),
-                $this->appConfig
-            );
-        });
-
-        $context->registerService("EditorApiController", function (ContainerInterface $c) {
-            return new EditorApiController(
-                $c->get("AppName"),
-                $c->get("Request"),
-                $c->get("RootStorage"),
-                $c->get("UserSession"),
-                $c->get("UserManager"),
-                $c->get("URLGenerator"),
-                $c->get("L10N"),
-                $c->get(LoggerInterface::class),
-                $this->appConfig,
-                $this->crypt,
-                $c->get("IManager"),
-                $c->get("Session"),
-                $c->get(ITagManager::class),
-                $c->get(ILockManager::class)
-            );
-        });
-
-        $context->registerService("CallbackController", function (ContainerInterface $c) {
-            return new CallbackController(
-                $c->get("AppName"),
-                $c->get("Request"),
-                $c->get("RootStorage"),
-                $c->get("UserSession"),
-                $c->get("UserManager"),
-                $c->get("L10N"),
-                $c->get(LoggerInterface::class),
-                $this->appConfig,
-                $this->crypt,
-                $c->get("IManager"),
-                $c->get(ILockManager::class)
-            );
-        });
-
-        $context->registerService("TemplateController", function (ContainerInterface $c) {
-            return new TemplateController(
-                $c->get("AppName"),
-                $c->get("Request"),
-                $c->get("L10N"),
-                $c->get(LoggerInterface::class),
-                $c->get(IPreview::class),
-                $c->get(IMimeIconProvider::class)
-            );
-        });
 
         $context->registerEventListener(FileCreatedFromTemplateEvent::class, CreateFromTemplateListener::class);
         $context->registerEventListener(LoadAdditionalScriptsEvent::class, FilesListener::class);

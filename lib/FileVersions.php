@@ -166,7 +166,7 @@ class FileVersions {
      * @return array
      */
     public static function getHistoryData($ownerId, $fileInfo, $versionId, $prevVersion) {
-        $logger = \OC::$server->getLogger();
+        $logger = \OCP\Log\logger('onlyoffice');
 
         if ($ownerId === null || $fileInfo === null) {
             return null;
@@ -204,7 +204,7 @@ class FileVersions {
 
             return $historyData;
         } catch (\Exception $e) {
-            $logger->logException($e, ["message" => "getHistoryData: $fileId $versionId", "app" => self::$appName]);
+            $logger->error("getHistoryData: $fileId $versionId", ['exception' => $e]);
             return null;
         }
     }
@@ -258,11 +258,11 @@ class FileVersions {
         }
 
         $changesInfo = $view->getFileInfo($changesPath);
-        $rootView = \OC::$server->get(View::class);
-        $root = \OC::$server->get(IRootFolder::class);
+        $rootView = \OCP\Server::get(View::class);
+        $root = \OCP\Server::get(IRootFolder::class);
 
         $changes = new File($root, $rootView, $view->getAbsolutePath($changesPath), $changesInfo);
-        \OC::$server->getLogger()->debug("getChangesFile: $fileId for $ownerId get changes $changesPath", ["app" => self::$appName]);
+        \OCP\Log\logger('onlyoffice')->debug("getChangesFile: $fileId for $ownerId get changes $changesPath", ["app" => self::$appName]);
 
         return $changes;
     }
@@ -276,7 +276,7 @@ class FileVersions {
      * @param string $prevVersion - previous version for check
      */
     public static function saveHistory($fileInfo, $history, $changes, $prevVersion) {
-        $logger = \OC::$server->getLogger();
+        $logger = \OCP\Log\logger('onlyoffice');
 
         if ($fileInfo === null) {
             return;
@@ -313,7 +313,7 @@ class FileVersions {
 
             $logger->debug("saveHistory: $fileId for $ownerId stored changes $changesPath history $historyPath", ["app" => self::$appName]);
         } catch (\Exception $e) {
-            $logger->logException($e, ["message" => "saveHistory: save $fileId history error", "app" => self::$appName]);
+            $logger->error("saveHistory: save $fileId history error", ['exception' => $e]);
         }
     }
 
@@ -324,7 +324,7 @@ class FileVersions {
      * @param FileInfo $fileInfo - file info
      */
     public static function deleteAllVersions($ownerId, $fileInfo = null) {
-        $logger = \OC::$server->getLogger();
+        $logger = \OCP\Log\logger('onlyoffice');
         $fileId = null;
         if ($fileInfo !== null) {
             $fileId = $fileInfo->getId();
@@ -359,7 +359,7 @@ class FileVersions {
             return;
         }
 
-        $logger = \OC::$server->getLogger();
+        $logger = \OCP\Log\logger('onlyoffice');
         $fileId = $fileInfo->getId();
         $logger->debug("deleteVersion $fileId ($versionId)", ["app" => self::$appName]);
 
@@ -385,7 +385,7 @@ class FileVersions {
      * Clear all version history
      */
     public static function clearHistory() {
-        $logger = \OC::$server->getLogger();
+        $logger = \OCP\Log\logger('onlyoffice');
 
         $userDatabase = new Database();
         $userIds = $userDatabase->getUsers();
@@ -415,7 +415,7 @@ class FileVersions {
      * @param IUser $author - version author
      */
     public static function saveAuthor($fileInfo, $author) {
-        $logger = \OC::$server->getLogger();
+        $logger = \OCP\Log\logger('onlyoffice');
 
         if ($fileInfo === null || $author === null) {
             return;
@@ -448,7 +448,7 @@ class FileVersions {
 
             $logger->debug("saveAuthor: $fileId for $ownerId stored author $authorPath", ["app" => self::$appName]);
         } catch (\Exception $e) {
-            $logger->logException($e, ["message" => "saveAuthor: save $fileId author error", "app" => self::$appName]);
+            $logger->error("saveAuthor: save $fileId author error", ['exception' => $e]);
         }
     }
 
@@ -480,7 +480,7 @@ class FileVersions {
         $authorDataString = $view->file_get_contents($authorPath);
         $author = json_decode($authorDataString, true);
 
-        \OC::$server->getLogger()->debug("getAuthor: $fileId v.$versionId for $ownerId get author $authorPath", ["app" => self::$appName]);
+        \OCP\Log\logger('onlyoffice')->debug("getAuthor: $fileId v.$versionId for $ownerId get author $authorPath", ["app" => self::$appName]);
 
         return $author;
     }
@@ -493,7 +493,7 @@ class FileVersions {
      * @param string $versionId - file version
      */
     public static function deleteAuthor($ownerId, $fileInfo, $versionId) {
-        $logger = \OC::$server->getLogger();
+        $logger = \OCP\Log\logger('onlyoffice');
 
         $fileId = $fileInfo->getId();
 

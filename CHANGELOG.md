@@ -3,6 +3,9 @@
 ## Added
 - support hwp, hwpx, pages, numbers, key formats
 
+## Changed
+- compatible with Nextcloud 31
+
 ## 9.6.0
 ## Added
 - setting for setup unknown author display name
