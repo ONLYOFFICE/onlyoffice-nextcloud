@@ -44,6 +44,9 @@ import {
 } from '@nextcloud/files'
 import { emit } from '@nextcloud/event-bus'
 import AppDarkSvg from '!!raw-loader!../img/app-dark.svg'
+import NewDocxSvg from '!!raw-loader!../img/new-docx.svg'
+import NewXlsxSvg from '!!raw-loader!../img/new-xlsx.svg'
+import NewPptxSvg from '!!raw-loader!../img/new-pptx.svg'
 import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg'
 import { isPublicShare, getSharingToken } from '@nextcloud/sharing/public'
 import { loadState } from '@nextcloud/initial-state'
@@ -632,23 +635,91 @@ import { loadState } from '@nextcloud/initial-state'
 	}
 
 	OCA.Onlyoffice.registerNewFileMenu = function() {
+
+		if (isPublicShare() && !OCA.Onlyoffice.isViewIsFile()) {
+			if (OCA.Onlyoffice.GetTemplates) {
+				OCA.Onlyoffice.GetTemplates()
+			}
+			// Document
+			addNewFileMenuEntry({
+				id: 'new-onlyoffice-docx',
+				displayName: t(OCA.Onlyoffice.AppName, 'New document'),
+				enabled: (folder) => {
+					return (folder.permissions & Permission.CREATE) !== 0
+				},
+				iconSvgInline: NewDocxSvg,
+				order: -30,
+				handler: (folder) => {
+					const name = t(OCA.Onlyoffice.AppName, 'New document')
+					if (!isPublicShare() && OCA.Onlyoffice.TemplateExist('document')) {
+						OCA.Onlyoffice.OpenTemplatePicker(name, '.docx', 'document')
+					} else {
+						const context = { dir: folder.path }
+						OCA.Onlyoffice.CreateFileOverload(name + '.docx', context)
+					}
+				},
+			})
+
+			// Spreadsheet
+			addNewFileMenuEntry({
+				id: 'new-onlyoffice-xlsx',
+				displayName: t(OCA.Onlyoffice.AppName, 'New spreadsheet'),
+				enabled: (folder) => {
+					return (folder.permissions & Permission.CREATE) !== 0
+				},
+				iconSvgInline: NewXlsxSvg,
+				order: -29,
+				handler: (folder) => {
+					const name = t(OCA.Onlyoffice.AppName, 'New spreadsheet')
+					if (!isPublicShare() && OCA.Onlyoffice.TemplateExist('spreadsheet')) {
+						OCA.Onlyoffice.OpenTemplatePicker(name, '.xlsx', 'spreadsheet')
+					} else {
+						const context = { dir: folder.path }
+						OCA.Onlyoffice.CreateFileOverload(name + '.xlsx', context)
+					}
+				},
+			})
+
+			// Presentation
+			addNewFileMenuEntry({
+				id: 'new-onlyoffice-pptx',
+				displayName: t(OCA.Onlyoffice.AppName, 'New presentation'),
+				enabled: (folder) => {
+					return (folder.permissions & Permission.CREATE) !== 0
+				},
+				iconSvgInline: NewPptxSvg,
+				order: -28,
+				handler: (folder) => {
+					const name = t(OCA.Onlyoffice.AppName, 'New presentation')
+					if (!isPublicShare() && OCA.Onlyoffice.TemplateExist('presentation')) {
+						OCA.Onlyoffice.OpenTemplatePicker(name, '.pptx', 'presentation')
+					} else {
+						const context = { dir: folder.path }
+						OCA.Onlyoffice.CreateFileOverload(name + '.pptx', context)
+					}
+				},
+			})
+		}
+
+		// PDF Form
 		addNewFileMenuEntry({
 			id: 'new-onlyoffice-pdf',
 			displayName: t(OCA.Onlyoffice.AppName, 'New PDF form'),
-			enabled: (folder) => {
-				if (Permission.CREATE !== (folder.permissions & Permission.CREATE)) { return false }
-				if (Permission.CREATE !== (folder.attributes['share-permissions'] & Permission.CREATE)) { return false }
-
-				return true
+			enabled: folder => {
+				return (folder.permissions & Permission.CREATE) !== 0
 			},
 			iconSvgInline: NewPdfSvg,
-			handler: (folder) => {
+			order: -27,
+			handler: folder => {
 				const name = t(OCA.Onlyoffice.AppName, 'New PDF form')
 				const context = { dir: folder.path }
-
 				OCA.Onlyoffice.OpenFormPicker(name + '.pdf', context)
 			},
 		})
+
+		if (!isPublicShare() && OCA.Onlyoffice.GetTemplates) {
+			OCA.Onlyoffice.GetTemplates()
+		}
 	}
 
 	OCA.Onlyoffice.NewFileMenu = {
@@ -782,6 +853,7 @@ import { loadState } from '@nextcloud/initial-state'
 				$('body').addClass('onlyoffice-inline')
 			}
 		} else {
+			console.log('register new file menu')
 			OC.Plugins.register('OCA.Files.NewFileMenu', OCA.Onlyoffice.NewFileMenu)
 
 			OCA.Onlyoffice.registerNewFileMenu()
