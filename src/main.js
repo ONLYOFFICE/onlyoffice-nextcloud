@@ -32,6 +32,7 @@
 /* global _, $, _oc_appswebroots */
 
 import {
+	File,
 	FileAction,
 	registerFileAction,
 	Permission,
@@ -74,17 +75,31 @@ import { loadState } from '@nextcloud/initial-state'
 		})
 	}
 
-	OCA.Onlyoffice.CreateFileOverload = function(name, context, templateId, targetId, open = true) {
+	OCA.Onlyoffice.CreateFileOverload = function(name, context, templateId, targetId, open = true, filesContext = null) {
 		if (!context.view) {
 			context.view = OCP.Files.Router._router.app.currentView
 		}
 
 		OCA.Onlyoffice.CreateFileProcess(name, context.dir, templateId, targetId, open, async (response) => {
-			const viewContents = await context.view.getContents(context.dir)
-
-			if (viewContents.folder && (viewContents.folder.fileid === response.parentId)) {
-				const newFile = viewContents.contents.find(node => node.fileid === response.id)
-				if (newFile) emit('files:node:created', newFile)
+			if (!context.view && filesContext !== null) {
+				const file = new File({
+					source: filesContext.source + '/' + response.name,
+					id: response.id,
+					mtime: new Date(),
+					mime: response.mimetype,
+					name: response.name,
+					owner: OC.getCurrentUser().uid || null,
+					permissions: Permission.ALL,
+					type: 'file',
+					root: filesContext?.root || '/files/' + OC.getCurrentUser().uid,
+				})
+				emit('files:node:created', file)
+			} else {
+				const viewContents = await context.view.getContents(context.dir)
+				if (viewContents.folder && (viewContents.folder.fileid === response.parentId)) {
+					const newFile = viewContents.contents.find(node => node.fileid === response.id)
+					if (newFile) emit('files:node:created', newFile)
+				}
 			}
 		})
 	}
@@ -375,7 +390,7 @@ import { loadState } from '@nextcloud/initial-state'
 			})
 	}
 
-	OCA.Onlyoffice.OpenFormPicker = function(name, filelist) {
+	OCA.Onlyoffice.OpenFormPicker = function(name, filelist, filesContext = null) {
 		const filterMimes = [
 			'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 		]
@@ -416,11 +431,10 @@ import { loadState } from '@nextcloud/initial-state'
 						}
 					})
 				}
-
 				if (filelist.getCurrentDirectory) {
 					OCA.Onlyoffice.CreateFile(name, filelist, 0, targetId)
 				} else {
-					OCA.Onlyoffice.CreateFileOverload(name, filelist, 0, targetId)
+					OCA.Onlyoffice.CreateFileOverload(name, filelist, 0, targetId, true, filesContext)
 				}
 			},
 			false,
@@ -649,13 +663,13 @@ import { loadState } from '@nextcloud/initial-state'
 				},
 				iconSvgInline: NewDocxSvg,
 				order: 21,
-				handler: (folder) => {
+				handler: (context) => {
 					const name = t(OCA.Onlyoffice.AppName, 'New document')
 					if (!isPublicShare() && OCA.Onlyoffice.TemplateExist('document')) {
 						OCA.Onlyoffice.OpenTemplatePicker(name, '.docx', 'document')
 					} else {
-						const context = { dir: folder.path }
-						OCA.Onlyoffice.CreateFileOverload(name + '.docx', context)
+						const dirContext = { dir: context.path }
+						OCA.Onlyoffice.CreateFileOverload(name + '.docx', dirContext, null, null, true, context)
 					}
 				},
 			})
@@ -669,13 +683,13 @@ import { loadState } from '@nextcloud/initial-state'
 				},
 				iconSvgInline: NewXlsxSvg,
 				order: 22,
-				handler: (folder) => {
+				handler: (context) => {
 					const name = t(OCA.Onlyoffice.AppName, 'New spreadsheet')
 					if (!isPublicShare() && OCA.Onlyoffice.TemplateExist('spreadsheet')) {
 						OCA.Onlyoffice.OpenTemplatePicker(name, '.xlsx', 'spreadsheet')
 					} else {
-						const context = { dir: folder.path }
-						OCA.Onlyoffice.CreateFileOverload(name + '.xlsx', context)
+						const dirContext = { dir: context.path }
+						OCA.Onlyoffice.CreateFileOverload(name + '.xlsx', dirContext, null, null, true, context)
 					}
 				},
 			})
@@ -684,18 +698,18 @@ import { loadState } from '@nextcloud/initial-state'
 			addNewFileMenuEntry({
 				id: 'new-onlyoffice-pptx',
 				displayName: t(OCA.Onlyoffice.AppName, 'New presentation'),
-				enabled: (folder) => {
-					return (folder.permissions & Permission.CREATE) !== 0
+				enabled: (context) => {
+					return (context.permissions & Permission.CREATE) !== 0
 				},
 				iconSvgInline: NewPptxSvg,
 				order: 23,
-				handler: (folder) => {
+				handler: (context) => {
 					const name = t(OCA.Onlyoffice.AppName, 'New presentation')
 					if (!isPublicShare() && OCA.Onlyoffice.TemplateExist('presentation')) {
 						OCA.Onlyoffice.OpenTemplatePicker(name, '.pptx', 'presentation')
 					} else {
-						const context = { dir: folder.path }
-						OCA.Onlyoffice.CreateFileOverload(name + '.pptx', context)
+						const dirContext = { dir: context.path }
+						OCA.Onlyoffice.CreateFileOverload(name + '.pptx', dirContext, null, null, true, context)
 					}
 				},
 			})
@@ -710,10 +724,10 @@ import { loadState } from '@nextcloud/initial-state'
 			},
 			iconSvgInline: NewPdfSvg,
 			order: 24,
-			handler: folder => {
+			handler: context => {
 				const name = t(OCA.Onlyoffice.AppName, 'New PDF form')
-				const context = { dir: folder.path }
-				OCA.Onlyoffice.OpenFormPicker(name + '.pdf', context)
+				const dirContext = { dir: context.path }
+				OCA.Onlyoffice.OpenFormPicker(name + '.pdf', dirContext, context)
 			},
 		})
 
