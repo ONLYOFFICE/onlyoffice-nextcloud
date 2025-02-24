@@ -40,7 +40,7 @@ import {
 	davGetClient,
 	davRootPath,
 	davGetDefaultPropfind,
-	davResultToNode
+	davResultToNode,
 } from '@nextcloud/files'
 import { emit } from '@nextcloud/event-bus'
 import AppDarkSvg from '!!raw-loader!../img/app-dark.svg'
@@ -648,7 +648,7 @@ import { loadState } from '@nextcloud/initial-state'
 					return (folder.permissions & Permission.CREATE) !== 0
 				},
 				iconSvgInline: NewDocxSvg,
-				order: -30,
+				order: 21,
 				handler: (folder) => {
 					const name = t(OCA.Onlyoffice.AppName, 'New document')
 					if (!isPublicShare() && OCA.Onlyoffice.TemplateExist('document')) {
@@ -668,7 +668,7 @@ import { loadState } from '@nextcloud/initial-state'
 					return (folder.permissions & Permission.CREATE) !== 0
 				},
 				iconSvgInline: NewXlsxSvg,
-				order: -29,
+				order: 22,
 				handler: (folder) => {
 					const name = t(OCA.Onlyoffice.AppName, 'New spreadsheet')
 					if (!isPublicShare() && OCA.Onlyoffice.TemplateExist('spreadsheet')) {
@@ -688,7 +688,7 @@ import { loadState } from '@nextcloud/initial-state'
 					return (folder.permissions & Permission.CREATE) !== 0
 				},
 				iconSvgInline: NewPptxSvg,
-				order: -28,
+				order: 23,
 				handler: (folder) => {
 					const name = t(OCA.Onlyoffice.AppName, 'New presentation')
 					if (!isPublicShare() && OCA.Onlyoffice.TemplateExist('presentation')) {
@@ -709,7 +709,7 @@ import { loadState } from '@nextcloud/initial-state'
 				return (folder.permissions & Permission.CREATE) !== 0
 			},
 			iconSvgInline: NewPdfSvg,
-			order: -27,
+			order: 24,
 			handler: folder => {
 				const name = t(OCA.Onlyoffice.AppName, 'New PDF form')
 				const context = { dir: folder.path }
