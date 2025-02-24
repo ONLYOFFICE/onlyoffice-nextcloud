@@ -853,7 +853,6 @@ import { loadState } from '@nextcloud/initial-state'
 				$('body').addClass('onlyoffice-inline')
 			}
 		} else {
-			console.log('register new file menu')
 			OC.Plugins.register('OCA.Files.NewFileMenu', OCA.Onlyoffice.NewFileMenu)
 
 			OCA.Onlyoffice.registerNewFileMenu()
