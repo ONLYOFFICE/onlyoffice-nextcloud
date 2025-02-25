@@ -101,7 +101,7 @@ class TemplateManager {
      * @return File
      */
     public static function getTemplate($templateId) {
-        $logger = \OC::$server->getLogger();
+        $logger = \OCP\Log\logger('onlyoffice');
 
         if (empty($templateId)) {
             $logger->info("templateId is empty", ["app" => self::$appName]);
@@ -112,7 +112,7 @@ class TemplateManager {
         try {
             $templates = $templateDir->getById($templateId);
         } catch (\Exception $e) {
-            $logger->logException($e, ["message" => "getTemplate: $templateId", "app" => self::$appName]);
+            $logger->error("getTemplate: $templateId", ['exception' => $e]);
             return null;
         }
 

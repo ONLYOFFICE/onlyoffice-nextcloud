@@ -127,15 +127,15 @@ class EditorsCheck extends TimedJob {
         $this->appName = $AppName;
         $this->urlGenerator = $urlGenerator;
 
-        $this->logger = \OC::$server->get(LoggerInterface::class);
+        $this->logger = \OCP\Server::get(LoggerInterface::class);
         $this->config = $config;
         $this->trans = $trans;
         $this->crypt = $crypt;
         $this->groupManager = $groupManager;
         $this->setInterval($this->config->getEditorsCheckInterval());
         $this->setTimeSensitivity(IJob::TIME_SENSITIVE);
-        $mailer = \OC::$server->get(IMailer::class);
-        $userManager = \OC::$server->get(IUserManager::class);
+        $mailer = \OCP\Server::get(IMailer::class);
+        $userManager = \OCP\Server::get(IUserManager::class);
         $this->emailManager = new EmailManager($AppName, $trans, $this->logger, $mailer, $userManager, $urlGenerator);
     }
 

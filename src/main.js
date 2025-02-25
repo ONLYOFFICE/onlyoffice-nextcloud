@@ -32,6 +32,7 @@
 /* global _, $, _oc_appswebroots */
 
 import {
+	File,
 	FileAction,
 	registerFileAction,
 	Permission,
@@ -44,7 +45,12 @@ import {
 } from '@nextcloud/files'
 import { emit } from '@nextcloud/event-bus'
 import AppDarkSvg from '!!raw-loader!../img/app-dark.svg'
-import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
+import NewDocxSvg from '!!raw-loader!../img/new-docx.svg'
+import NewXlsxSvg from '!!raw-loader!../img/new-xlsx.svg'
+import NewPptxSvg from '!!raw-loader!../img/new-pptx.svg'
+import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg'
+import { isPublicShare, getSharingToken } from '@nextcloud/sharing/public'
+import { loadState } from '@nextcloud/initial-state'
 
 /**
  * @param {object} OCA Nextcloud OCA object
@@ -69,17 +75,31 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 		})
 	}
 
-	OCA.Onlyoffice.CreateFileOverload = function(name, context, templateId, targetId, open = true) {
+	OCA.Onlyoffice.CreateFileOverload = function(name, context, templateId, targetId, open = true, filesContext = null) {
 		if (!context.view) {
 			context.view = OCP.Files.Router._router.app.currentView
 		}
 
 		OCA.Onlyoffice.CreateFileProcess(name, context.dir, templateId, targetId, open, async (response) => {
-			const viewContents = await context.view.getContents(context.dir)
-
-			if (viewContents.folder && (viewContents.folder.fileid === response.parentId)) {
-				const newFile = viewContents.contents.find(node => node.fileid === response.id)
-				if (newFile) emit('files:node:created', newFile)
+			if (!context.view && filesContext !== null) {
+				const file = new File({
+					source: filesContext.source + '/' + response.name,
+					id: response.id,
+					mtime: new Date(),
+					mime: response.mimetype,
+					name: response.name,
+					owner: OC.getCurrentUser().uid || null,
+					permissions: Permission.ALL,
+					type: 'file',
+					root: filesContext?.root || '/files/' + OC.getCurrentUser().uid,
+				})
+				emit('files:node:created', file)
+			} else {
+				const viewContents = await context.view.getContents(context.dir)
+				if (viewContents.folder && (viewContents.folder.fileid === response.parentId)) {
+					const newFile = viewContents.contents.find(node => node.fileid === response.id)
+					if (newFile) emit('files:node:created', newFile)
+				}
 			}
 		})
 	}
@@ -104,8 +124,8 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 			createData.targetId = targetId
 		}
 
-		if ($('#isPublic').val()) {
-			createData.shareToken = encodeURIComponent($('#sharingToken').val())
+		if (isPublicShare()) {
+			createData.shareToken = encodeURIComponent(getSharingToken())
 		}
 
 		$.post(OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/new'),
@@ -147,10 +167,10 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 				filePath,
 			})
 
-		if ($('#isPublic').val()) {
+		if (isPublicShare()) {
 			url = OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/s/{shareToken}?fileId={fileId}',
 				{
-					shareToken: encodeURIComponent($('#sharingToken').val()),
+					shareToken: encodeURIComponent(getSharingToken()),
 					fileId,
 				})
 		}
@@ -161,7 +181,7 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 		} else if (!OCA.Onlyoffice.setting.sameTab || OCA.Onlyoffice.mobile || OCA.Onlyoffice.Desktop) {
 			OCA.Onlyoffice.SetDefaultUrl()
 			winEditor = window.open(url, '_blank')
-		} else if ($('#isPublic').val() === '1' && $('#mimetype').val() !== 'httpd/unix-directory') {
+		} else if (isPublicShare() && OCA.Onlyoffice.isViewIsFile()) {
 			location.href = url
 		} else {
 			OCA.Onlyoffice.frameSelector = '#onlyofficeFrame'
@@ -280,8 +300,8 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 			fileId,
 		}
 
-		if ($('#isPublic').val()) {
-			convertData.shareToken = encodeURIComponent($('#sharingToken').val())
+		if (isPublicShare()) {
+			convertData.shareToken = encodeURIComponent(getSharingToken())
 		}
 
 		$.post(OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/convert'),
@@ -370,7 +390,7 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 			})
 	}
 
-	OCA.Onlyoffice.OpenFormPicker = function(name, filelist) {
+	OCA.Onlyoffice.OpenFormPicker = function(name, filelist, filesContext = null) {
 		const filterMimes = [
 			'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 		]
@@ -411,11 +431,10 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 						}
 					})
 				}
-
 				if (filelist.getCurrentDirectory) {
 					OCA.Onlyoffice.CreateFile(name, filelist, 0, targetId)
 				} else {
-					OCA.Onlyoffice.CreateFileOverload(name, filelist, 0, targetId)
+					OCA.Onlyoffice.CreateFileOverload(name, filelist, 0, targetId, true, filesContext)
 				}
 			},
 			false,
@@ -484,7 +503,7 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 							name: 'onlyofficeConvert',
 							displayName: t(OCA.Onlyoffice.AppName, 'Convert with ONLYOFFICE'),
 							mime,
-							permissions: ($('#isPublic').val() ? OC.PERMISSION_UPDATE : OC.PERMISSION_READ),
+							permissions: (isPublicShare() ? OC.PERMISSION_UPDATE : OC.PERMISSION_READ),
 							iconClass: 'icon-onlyoffice-convert',
 							actionHandler: OCA.Onlyoffice.FileConvertClick,
 						})
@@ -495,13 +514,13 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 							name: 'onlyofficeCreateForm',
 							displayName: t(OCA.Onlyoffice.AppName, 'Create form'),
 							mime,
-							permissions: ($('#isPublic').val() ? OC.PERMISSION_UPDATE : OC.PERMISSION_READ),
+							permissions: (isPublicShare() ? OC.PERMISSION_UPDATE : OC.PERMISSION_READ),
 							iconClass: 'icon-onlyoffice-create',
 							actionHandler: OCA.Onlyoffice.CreateFormClick,
 						})
 					}
 
-					if (config.saveas && !$('#isPublic').val()) {
+					if (config.saveas && !isPublicShare()) {
 						OCA.Files.fileActions.registerAction({
 							name: 'onlyofficeDownload',
 							displayName: t(OCA.Onlyoffice.AppName, 'Download as'),
@@ -560,7 +579,7 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 					if (!config) return false
 					if (!config.conv) return false
 
-					const required = $('#isPublic').val() ? Permission.UPDATE : Permission.READ
+					const required = isPublicShare() ? Permission.UPDATE : Permission.READ
 					if (required !== (files[0].permissions & required)) { return false }
 
 					if (files[0].attributes['mount-type'] === 'shared') {
@@ -586,7 +605,7 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 					if (!config) return false
 					if (!config.createForm) return false
 
-					const required = $('#isPublic').val() ? Permission.UPDATE : Permission.READ
+					const required = isPublicShare() ? Permission.UPDATE : Permission.READ
 					if (required !== (files[0].permissions & required)) { return false }
 
 					if (files[0].attributes['mount-type'] === 'shared') {
@@ -602,7 +621,7 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 				exec: OCA.Onlyoffice.CreateFormClickExec,
 			}))
 
-			if (!$('#isPublic').val()) {
+			if (!isPublicShare()) {
 				registerFileAction(new FileAction({
 					id: 'onlyoffice-download-as',
 					displayName: () => t(OCA.Onlyoffice.AppName, 'Download as'),
@@ -630,23 +649,91 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 	}
 
 	OCA.Onlyoffice.registerNewFileMenu = function() {
+
+		if (isPublicShare() && !OCA.Onlyoffice.isViewIsFile()) {
+			if (OCA.Onlyoffice.GetTemplates) {
+				OCA.Onlyoffice.GetTemplates()
+			}
+			// Document
+			addNewFileMenuEntry({
+				id: 'new-onlyoffice-docx',
+				displayName: t(OCA.Onlyoffice.AppName, 'New document'),
+				enabled: (folder) => {
+					return (folder.permissions & Permission.CREATE) !== 0
+				},
+				iconSvgInline: NewDocxSvg,
+				order: 21,
+				handler: (context) => {
+					const name = t(OCA.Onlyoffice.AppName, 'New document')
+					if (!isPublicShare() && OCA.Onlyoffice.TemplateExist('document')) {
+						OCA.Onlyoffice.OpenTemplatePicker(name, '.docx', 'document')
+					} else {
+						const dirContext = { dir: context.path }
+						OCA.Onlyoffice.CreateFileOverload(name + '.docx', dirContext, null, null, true, context)
+					}
+				},
+			})
+
+			// Spreadsheet
+			addNewFileMenuEntry({
+				id: 'new-onlyoffice-xlsx',
+				displayName: t(OCA.Onlyoffice.AppName, 'New spreadsheet'),
+				enabled: (folder) => {
+					return (folder.permissions & Permission.CREATE) !== 0
+				},
+				iconSvgInline: NewXlsxSvg,
+				order: 22,
+				handler: (context) => {
+					const name = t(OCA.Onlyoffice.AppName, 'New spreadsheet')
+					if (!isPublicShare() && OCA.Onlyoffice.TemplateExist('spreadsheet')) {
+						OCA.Onlyoffice.OpenTemplatePicker(name, '.xlsx', 'spreadsheet')
+					} else {
+						const dirContext = { dir: context.path }
+						OCA.Onlyoffice.CreateFileOverload(name + '.xlsx', dirContext, null, null, true, context)
+					}
+				},
+			})
+
+			// Presentation
+			addNewFileMenuEntry({
+				id: 'new-onlyoffice-pptx',
+				displayName: t(OCA.Onlyoffice.AppName, 'New presentation'),
+				enabled: (context) => {
+					return (context.permissions & Permission.CREATE) !== 0
+				},
+				iconSvgInline: NewPptxSvg,
+				order: 23,
+				handler: (context) => {
+					const name = t(OCA.Onlyoffice.AppName, 'New presentation')
+					if (!isPublicShare() && OCA.Onlyoffice.TemplateExist('presentation')) {
+						OCA.Onlyoffice.OpenTemplatePicker(name, '.pptx', 'presentation')
+					} else {
+						const dirContext = { dir: context.path }
+						OCA.Onlyoffice.CreateFileOverload(name + '.pptx', dirContext, null, null, true, context)
+					}
+				},
+			})
+		}
+
+		// PDF Form
 		addNewFileMenuEntry({
 			id: 'new-onlyoffice-pdf',
 			displayName: t(OCA.Onlyoffice.AppName, 'New PDF form'),
-			enabled: (folder) => {
-				if (Permission.CREATE !== (folder.permissions & Permission.CREATE)) { return false }
-				if (Permission.CREATE !== (folder.attributes['share-permissions'] & Permission.CREATE)) { return false }
-
-				return true
+			enabled: folder => {
+				return (folder.permissions & Permission.CREATE) !== 0
 			},
 			iconSvgInline: NewPdfSvg,
-			handler: (folder) => {
+			order: 24,
+			handler: context => {
 				const name = t(OCA.Onlyoffice.AppName, 'New PDF form')
-				const context = { dir: folder.path }
-
-				OCA.Onlyoffice.OpenFormPicker(name + '.pdf', context)
+				const dirContext = { dir: context.path }
+				OCA.Onlyoffice.OpenFormPicker(name + '.pdf', dirContext, context)
 			},
 		})
+
+		if (!isPublicShare() && OCA.Onlyoffice.GetTemplates) {
+			OCA.Onlyoffice.GetTemplates()
+		}
 	}
 
 	OCA.Onlyoffice.NewFileMenu = {
@@ -657,7 +744,7 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 				return
 			}
 
-			if ($('#isPublic').val() === '1' && $('#mimetype').val() === 'httpd/unix-directory') {
+			if (isPublicShare() && !OCA.Onlyoffice.isViewIsFile()) {
 				menu.addMenuEntry({
 					id: 'onlyofficeDocx',
 					displayName: t(OCA.Onlyoffice.AppName, 'New document'),
@@ -665,7 +752,7 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 					iconClass: 'icon-onlyoffice-new-docx',
 					fileType: 'docx',
 					actionHandler(name) {
-						if (!$('#isPublic').val() && OCA.Onlyoffice.TemplateExist('document')) {
+						if (!isPublicShare() && OCA.Onlyoffice.TemplateExist('document')) {
 							OCA.Onlyoffice.OpenTemplatePicker(name, '.docx', 'document')
 						} else {
 							OCA.Onlyoffice.CreateFile(name + '.docx', fileList)
@@ -680,7 +767,7 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 					iconClass: 'icon-onlyoffice-new-xlsx',
 					fileType: 'xlsx',
 					actionHandler(name) {
-						if (!$('#isPublic').val() && OCA.Onlyoffice.TemplateExist('spreadsheet')) {
+						if (!isPublicShare() && OCA.Onlyoffice.TemplateExist('spreadsheet')) {
 							OCA.Onlyoffice.OpenTemplatePicker(name, '.xlsx', 'spreadsheet')
 						} else {
 							OCA.Onlyoffice.CreateFile(name + '.xlsx', fileList)
@@ -695,7 +782,7 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 					iconClass: 'icon-onlyoffice-new-pptx',
 					fileType: 'pptx',
 					actionHandler(name) {
-						if (!$('#isPublic').val() && OCA.Onlyoffice.TemplateExist('presentation')) {
+						if (!isPublicShare() && OCA.Onlyoffice.TemplateExist('presentation')) {
 							OCA.Onlyoffice.OpenTemplatePicker(name, '.pptx', 'presentation')
 						} else {
 							OCA.Onlyoffice.CreateFile(name + '.pptx', fileList)
@@ -726,12 +813,24 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 		return extension
 	}
 
-	const initPage = function() {
-		if ($('#isPublic').val() === '1' && $('#mimetype').val() !== 'httpd/unix-directory') {
-			// file by shared link
-			const fileName = $('#filename').val()
-			const extension = OCA.Onlyoffice.getFileExtension(fileName)
+	OCA.Onlyoffice.isViewIsFile = function() {
+		const mimetype = document.getElementById('mimetype')?.value
+		if (mimetype !== undefined) {
+			return mimetype !== 'httpd/unix-directory'
+		}
 
+		try {
+			return loadState('files_sharing', 'view') === 'public-file-share'
+		} catch {
+			return false
+		}
+	}
+
+	const initPage = function() {
+		if (isPublicShare() && OCA.Onlyoffice.isViewIsFile()) {
+			// file by shared link
+			const fileName = loadState('files_sharing', 'filename')
+			const extension = OCA.Onlyoffice.getFileExtension(fileName)
 			const formats = OCA.Onlyoffice.setting.formats
 
 			const config = formats[extension]
@@ -739,7 +838,7 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 				return
 			}
 
-			const editorUrl = OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/s/' + encodeURIComponent($('#sharingToken').val()))
+			const editorUrl = OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/s/' + encodeURIComponent(getSharingToken()))
 
 			if (_oc_appswebroots.richdocuments
 				|| (_oc_appswebroots.files_pdfviewer && extension === 'pdf')
@@ -757,8 +856,14 @@ import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg';
 				$('#preview').prepend(button)
 			} else {
 				OCA.Onlyoffice.frameSelector = '#onlyofficeFrame'
-				const $iframe = $('<iframe id="onlyofficeFrame" nonce="' + btoa(OC.requestToken) + '" scrolling="no" allowfullscreen src="' + editorUrl + '?inframe=true" />')
-				$('#app-content').append($iframe)
+				const iframe = document.createElement('iframe')
+				iframe.id = 'onlyofficeFrame'
+				iframe.nonce = btoa(OC.requestToken)
+				iframe.scrolling = 'no'
+				iframe.allowFullscreen = true
+				iframe.src = `${editorUrl}?inframe=true`
+				const appContent = document.querySelector('#app-content') || document.querySelector('#app-content-vue')
+				appContent.appendChild(iframe)
 				$('body').addClass('onlyoffice-inline')
 			}
 		} else {
