@@ -1,5 +1,6 @@
 # Change Log
 
+## 9.7.0
 ## Added
 - support hwp, hwpx, pages, numbers, key formats
 
