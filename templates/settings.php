@@ -44,9 +44,8 @@ if ($_["tagsEnabled"]) {
         <a target="_blank" class="icon-info svg" title="" href="https://helpcenter.onlyoffice.com/integration/nextcloud.aspx" data-original-title="<?php p($l->t("Documentation")) ?>"></a>
     </h2>
 
-    <h2><?php p($l->t("Server settings")) ?></h2>
-
     <div id="onlyofficeAddrSettings">
+        <h2><?php p($l->t("Server settings")) ?></h2>
         <p class="settings-hint"><?php p($l->t("ONLYOFFICE Docs Location specifies the address of the server with the document services installed. Please change the '<documentserver>' for the server address in the below line.")) ?></p>
 
         <p><?php p($l->t("ONLYOFFICE Docs address")) ?></p>
