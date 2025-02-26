@@ -256,7 +256,7 @@ import { loadState } from '@nextcloud/initial-state'
 	}
 
 	OCA.Onlyoffice.FileClickExec = async function(file, view, dir) {
-		if (OCA.Onlyoffice.context !== null && OCA.Onlyoffice.setting.sameTab) {
+		if (OCA.Onlyoffice.context !== null && OCA.Onlyoffice.setting.sameTab && !OCA.Onlyoffice.Desktop) {
 			return null
 		}
 
