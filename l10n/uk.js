@@ -142,6 +142,15 @@ OC.L10N.register(
     "Select data source": "Вибрати джерело даних",
     "The data source must not be the current document": "Джерело даних не має бути поточним документом",
     "Enable background connection check to the editors": "Увімкніть фонову перевірку з’єднання з редакторами",
-    "The domain in the file url does not match the domain of the Document server": "Домен у посиланні на файл не збігається з доменом сервера документів"
+    "The domain in the file url does not match the domain of the Document server": "Домен у посиланні на файл не збігається з доменом сервера документів",
+    "Unknown author display name": "Відображуване ім'я невідомого автора",
+    "Enable e-mail notifications": "Увімкнути сповіщення електронною поштою",
+    "You were mentioned in the document": "Вас згадали в документі",
+    "%1\$s mentioned you in the document comment": "%1\$s згадав(ла) вас у коментарі до документа",
+    "This is a mail message to notify that you have been mentioned by <a href=\"%1\$s\">%2\$s</a> in the comment to the <a href=\"%3\$s\">%4\$s</a>:<br>\"%5\$s\"": "Цим листом повідомляємо вам, що <a href=\"%1$s\">%2$s</a> згадав(ла) вас у коментарі до <a href=\"%3$s\">%4$s</a>:<br>\"%5$s\"",
+    "Open file": "Відкрити файл",
+    "ONLYOFFICE Document Server is unavailable": "Сервер документів ONLYOFFICE недоступний",
+    "This is a mail message to notify that the connection with the ONLYOFFICE Document Server has been lost. Please check the connection settings:": "Цим листом повідомляємо вам, що з'єднання з сервером документів ONLYOFFICE втрачено. Перевірте параметри з'єднання:",
+    "Go to Settings": "Перейти до Параметрів"
 },
 "nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != 11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || (n % 100 >=11 && n % 100 <=14 )) ? 2: 3);");

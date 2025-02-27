@@ -491,8 +491,14 @@
 			case 'combine':
 				title = t(OCA.Onlyoffice.AppName, 'Select file to combine')
 				break
-			default:
+			case 'compare':
 				title = t(OCA.Onlyoffice.AppName, 'Select file to compare')
+				break
+			case 'insert-text':
+				title = t(OCA.Onlyoffice.AppName, 'Select file to insert text')
+				break
+			default:
+				title = t(OCA.Onlyoffice.AppName, 'Select file')
 			}
 			OC.dialogs.filepicker(title,
 				OCA.Onlyoffice.editorSetRequested.bind({ documentSelectionType: event.data.c }),
