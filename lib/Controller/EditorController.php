@@ -382,9 +382,12 @@ class EditorController extends Controller {
     public function users($fileId, $operationType = null) {
         $this->logger->debug("Search users");
         $result = [];
-        $currentUserGroups = [];
 
         if (!$this->config->isUserAllowedToUse()) {
+            return $result;
+        }
+
+        if (!$this->config->isMentionsEnabled()) {
             return $result;
         }
 
@@ -520,6 +523,10 @@ class EditorController extends Controller {
 
         if (!$this->config->isUserAllowedToUse()) {
             return ["error" => $this->trans->t("Not permitted")];
+        }
+
+        if (!$this->config->isMentionsEnabled()) {
+            return ["error" => $this->trans->t("Mentions are not enabled")];
         }
 
         if (empty($emails)) {
