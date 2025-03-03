@@ -178,12 +178,23 @@ import { loadState } from '@nextcloud/initial-state'
 		if (winEditor && winEditor.location) {
 			OCA.Onlyoffice.SetDefaultUrl()
 			winEditor.location.href = url
-		} else if (!OCA.Onlyoffice.setting.sameTab || OCA.Onlyoffice.mobile || OCA.Onlyoffice.Desktop) {
+		} else if ((!OCA.Onlyoffice.setting.sameTab && !OCA.Onlyoffice.setting.enableSharing) || OCA.Onlyoffice.mobile || OCA.Onlyoffice.Desktop) {
 			OCA.Onlyoffice.SetDefaultUrl()
 			winEditor = window.open(url, '_blank')
 		} else if (isPublicShare() && OCA.Onlyoffice.isViewIsFile()) {
 			location.href = url
 		} else {
+			if (OCA.Onlyoffice.setting.enableSharing && !window.OCP?.Files?.Router?.query?.enableSharing) {
+				window.OCP?.Files?.Router?.goToRoute(
+					null, // use default route
+					{ view: 'files', fileid: fileId },
+					{ ...OCP.Files.Router.query, openfile: 'true', enableSharing: 'true' },
+				)
+				url = window.location.href
+				OCA.Onlyoffice.SetDefaultUrl()
+				window.open(url, '_blank')
+				return
+			}
 			OCA.Onlyoffice.frameSelector = '#onlyofficeFrame'
 			const $iframe = $('<iframe id="onlyofficeFrame" nonce="' + btoa(OC.requestToken) + '" scrolling="no" allowfullscreen src="' + url + '&inframe=true" />')
 
@@ -219,7 +230,7 @@ import { loadState } from '@nextcloud/initial-state'
 		window.OCP?.Files?.Router?.goToRoute(
 			null, // use default route
 			{ view: 'files', fileid: undefined },
-			{ ...OCP.Files.Router.query, openfile: 'false' },
+			{ ...OCP.Files.Router.query, openfile: 'false', enableSharing: undefined },
 		)
 	}
 
