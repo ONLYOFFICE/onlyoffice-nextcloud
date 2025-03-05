@@ -691,7 +691,7 @@ class AppConfig {
     public function setSameTab($value) {
         $this->logger->info("Set opening in a same tab: " . json_encode($value), ["app" => $this->appName]);
 
-        if ($value === false) {
+        if ($value === true) {
             $this->setEnableSharing(false);
         }
 
