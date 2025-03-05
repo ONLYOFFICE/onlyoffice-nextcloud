@@ -178,13 +178,15 @@ import { loadState } from '@nextcloud/initial-state'
 		if (winEditor && winEditor.location) {
 			OCA.Onlyoffice.SetDefaultUrl()
 			winEditor.location.href = url
-		} else if ((!OCA.Onlyoffice.setting.sameTab && !OCA.Onlyoffice.setting.enableSharing) || OCA.Onlyoffice.mobile || OCA.Onlyoffice.Desktop) {
+		} else if ((!OCA.Onlyoffice.setting.sameTab && !OCA.Onlyoffice.setting.enableSharing)
+			|| OCA.Onlyoffice.mobile || OCA.Onlyoffice.Desktop || (isPublicShare() && !OCA.Onlyoffice.isViewIsFile()
+			&& !OCA.Onlyoffice.setting.sameTab && OCA.Onlyoffice.setting.enableSharing)) {
 			OCA.Onlyoffice.SetDefaultUrl()
 			winEditor = window.open(url, '_blank')
 		} else if (isPublicShare() && OCA.Onlyoffice.isViewIsFile()) {
 			location.href = url
 		} else {
-			if (OCA.Onlyoffice.setting.enableSharing && !window.OCP?.Files?.Router?.query?.enableSharing) {
+			if (OCA.Onlyoffice.setting.enableSharing && !window.OCP?.Files?.Router?.query?.enableSharing && !isPublicShare()) {
 				window.OCP?.Files?.Router?.goToRoute(
 					null, // use default route
 					{ view: 'files', fileid: fileId },
