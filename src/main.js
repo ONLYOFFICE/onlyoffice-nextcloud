@@ -186,7 +186,10 @@ import { loadState } from '@nextcloud/initial-state'
 		} else if (isPublicShare() && OCA.Onlyoffice.isViewIsFile()) {
 			location.href = url
 		} else {
-			if (OCA.Onlyoffice.setting.enableSharing && !window.OCP?.Files?.Router?.query?.enableSharing && !isPublicShare()) {
+			if (OCA.Onlyoffice.setting.enableSharing
+				&& !window.OCP?.Files?.Router?.query?.enableSharing
+				&& !isPublicShare()
+				&& (window.OCP?.Files?.Router?.query?.openfile === undefined || window.OCP?.Files?.Router?.query?.openfile === 'false')) {
 				window.OCP?.Files?.Router?.goToRoute(
 					null, // use default route
 					{ view: 'files', fileid: fileId },
