@@ -829,7 +829,18 @@ import { loadState } from '@nextcloud/initial-state'
 	const initPage = function() {
 		if (isPublicShare() && OCA.Onlyoffice.isViewIsFile()) {
 			// file by shared link
-			const fileName = loadState('files_sharing', 'filename')
+			let fileName = ''
+			const fileNameDomElement = document.getElementById('filename')
+			if (fileNameDomElement !== null && fileNameDomElement.value) {
+				fileName = fileNameDomElement.value
+			} else {
+				try {
+					fileName = loadState('files_sharing', 'filename')
+				} catch {
+					return
+				}
+			}
+
 			const extension = OCA.Onlyoffice.getFileExtension(fileName)
 			const formats = OCA.Onlyoffice.setting.formats
 
