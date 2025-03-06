@@ -187,13 +187,12 @@ import { loadState } from '@nextcloud/initial-state'
 			location.href = url
 		} else {
 			if (OCA.Onlyoffice.setting.enableSharing
-				&& !window.OCP?.Files?.Router?.query?.enableSharing
 				&& !isPublicShare()
 				&& (window.OCP?.Files?.Router?.query?.openfile === undefined || window.OCP?.Files?.Router?.query?.openfile === 'false')) {
 				window.OCP?.Files?.Router?.goToRoute(
 					null, // use default route
 					{ view: 'files', fileid: fileId },
-					{ ...OCP.Files.Router.query, openfile: 'true', enableSharing: 'true' },
+					{ ...OCP.Files.Router.query, openfile: 'true' },
 				)
 				url = window.location.href
 				OCA.Onlyoffice.SetDefaultUrl()
@@ -235,7 +234,7 @@ import { loadState } from '@nextcloud/initial-state'
 		window.OCP?.Files?.Router?.goToRoute(
 			null, // use default route
 			{ view: 'files', fileid: undefined },
-			{ ...OCP.Files.Router.query, openfile: 'false', enableSharing: undefined },
+			{ ...OCP.Files.Router.query, openfile: 'false' },
 		)
 	}
 
@@ -890,7 +889,6 @@ import { loadState } from '@nextcloud/initial-state'
 			OCA.Onlyoffice.registerAction()
 		}
 	}
-
 	initPage()
 
 })(OCA)
