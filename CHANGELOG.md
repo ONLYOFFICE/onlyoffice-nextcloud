@@ -1,4 +1,6 @@
 # Change Log
+## Added
+- shardKey param to url for requests to Conversion API
 
 ## 9.7.0
 ## Added
