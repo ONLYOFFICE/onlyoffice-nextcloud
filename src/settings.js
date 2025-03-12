@@ -436,9 +436,9 @@
 		const sharingCheckbox = document.getElementById('onlyofficeEnableSharing')
 
 		sameTabCheckbox.onclick = function() {
-		  const isChecked = sameTabCheckbox.checked
-		  sharingBlock.style.display = isChecked ? 'none' : 'block'
-		  sharingCheckbox.checked = isChecked ? sharingCheckbox.checked : false
+			const isChecked = sameTabCheckbox.checked
+			sharingBlock.style.display = isChecked ? 'none' : 'block'
+			sharingCheckbox.checked = isChecked ? sharingCheckbox.checked : false
 		}
 	})
 
