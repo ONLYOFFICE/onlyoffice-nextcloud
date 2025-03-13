@@ -132,6 +132,7 @@
 
 					const script = document.createElement('script')
 					script.src = config.documentServerUrl + 'web-apps/apps/api/documents/api.js?shardKey=' + config.document.key
+					script.setAttribute('nonce', btoa(OC.requestToken))
 					script.onerror = function() {
 						OCA.Onlyoffice.showMessage(t(OCA.Onlyoffice.AppName, 'ONLYOFFICE cannot be reached. Please contact admin'), 'error', { timeout: -1 })
 					}
