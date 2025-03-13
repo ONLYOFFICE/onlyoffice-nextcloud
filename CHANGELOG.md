@@ -1,5 +1,9 @@
 # Change Log
 
+##
+## Added
+- sharing panel when editing in a new tab
+
 ## 9.7.0
 ## Added
 - support hwp, hwpx, pages, numbers, key formats
