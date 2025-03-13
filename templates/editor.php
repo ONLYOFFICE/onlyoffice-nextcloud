@@ -49,12 +49,6 @@ if (!empty($_["directToken"])) {
         data-anchor="<?php p($_["anchor"]) ?>"
         data-inframe="<?php p($_["inframe"]) ?>"
         data-inviewer="<?php p($_["inviewer"]) ?>"></div>
-
-    <?php if (!empty($_["documentServerUrl"])) { ?>
-        <script nonce="<?php p(\OCP\Server::get(\OC\Security\CSP\ContentSecurityPolicyNonceManager::class)->getNonce()) ?>"
-            src="<?php p($_["documentServerUrl"]) ?>web-apps/apps/api/documents/api.js" type="text/javascript"></script>
-    <?php } ?>
-
 </div>
 
 <?php if (!empty($_["directToken"])) { ?>
