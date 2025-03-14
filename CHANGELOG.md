@@ -3,6 +3,7 @@
 ##
 ## Added
 - sharing panel when editing in a new tab
+- shardKey param to url for requests to Docs
 
 ## 9.7.0
 ## Added
