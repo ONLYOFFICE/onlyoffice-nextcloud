@@ -1393,9 +1393,10 @@ class EditorController extends Controller {
                 }
             }
         }
-
+        $app = $this->appName.'_'.$this->getExt($fileId);
+        \OC::$server->getNavigationManager()->setActiveEntry($app);
         \OCP\Util::addHeader("meta", ["name" => "apple-touch-fullscreen", "content" => "yes"]);
-
+        
         $csp = new ContentSecurityPolicy();
 
         if (preg_match("/^https?:\/\//i", $documentServerUrl)) {
@@ -1408,7 +1409,19 @@ class EditorController extends Controller {
 
         return $response;
     }
-
+    private function getExt($fileId)
+    {
+        $user = $this->userSession->getUser();
+        $userId = null;
+        if (empty($user)) {
+            return '';
+        }
+        $userId = $user->getUID();
+        list($file, $error, $share) = $this->getFile($userId, $fileId);
+        $fileName = $file->getName();
+        $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+        return $ext;
+    }
     /**
      * Print public editor section
      *
