@@ -1,6 +1,6 @@
 # Change Log
 
-##
+## 9.8.0
 ## Added
 - sharing panel when editing in a new tab
 - shardKey param to url for requests to Docs
