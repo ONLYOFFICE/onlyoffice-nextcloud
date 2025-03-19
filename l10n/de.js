@@ -151,6 +151,9 @@ OC.L10N.register(
     "Open file": "Datei öffnen",
     "ONLYOFFICE Document Server is unavailable": "ONLYOFFICE Document Server ist nicht verfügbar",
     "This is a mail message to notify that the connection with the ONLYOFFICE Document Server has been lost. Please check the connection settings:": "Dies ist eine E-Mail-Nachricht, die Sie darüber informiert, dass die Verbindung mit dem ONLYOFFICE Document Server unterbrochen wurde. Bitte überprüfen Sie die Verbindungseinstellungen:",
-    "Go to Settings": "Zu den Einstellungen gehen"
+    "Go to Settings": "Zu den Einstellungen gehen",
+    "Select file to insert text": "Wählen Sie die Datei aus, um Text einzufügen",
+    "Select file": "Datei auswählen",
+    "Enable sharing (might increase editors loading time)": "Freigabe aktivieren (kann die Ladezeit des Editors verlängern)"
 },
 "nplurals=2; plural=(n != 1);");
