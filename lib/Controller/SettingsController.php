@@ -268,8 +268,8 @@ class SettingsController extends Controller {
 
         $this->config->setDefaultFormats($defFormats);
         $this->config->setEditableFormats($editFormats);
-        $this->config->setSameTab($sameTab);
         $this->config->setEnableSharing($enableSharing);
+        $this->config->setSameTab($sameTab);
         $this->config->setPreview($preview);
         $this->config->setAdvanced($advanced);
         $this->config->setCronChecker($cronChecker);
