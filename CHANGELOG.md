@@ -1,4 +1,6 @@
 # Change Log
+## Added
+- disable download setting
 
 ## 9.8.0
 ## Added
