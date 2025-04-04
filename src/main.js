@@ -156,7 +156,7 @@ import { loadState } from '@nextcloud/initial-state'
 		)
 	}
 
-	OCA.Onlyoffice.OpenEditor = function(fileId, fileDir, fileName, winEditor) {
+	OCA.Onlyoffice.OpenEditor = function(fileId, fileDir, fileName, winEditor, isDefault = true) {
 		let filePath = ''
 		if (fileName) {
 			filePath = fileDir.replace(/\/$/, '') + '/' + fileName
@@ -180,7 +180,8 @@ import { loadState } from '@nextcloud/initial-state'
 			winEditor.location.href = url
 		} else if ((!OCA.Onlyoffice.setting.sameTab && !OCA.Onlyoffice.setting.enableSharing)
 			|| OCA.Onlyoffice.mobile || OCA.Onlyoffice.Desktop || (isPublicShare() && !OCA.Onlyoffice.isViewIsFile()
-			&& !OCA.Onlyoffice.setting.sameTab && OCA.Onlyoffice.setting.enableSharing)) {
+			&& !OCA.Onlyoffice.setting.sameTab && OCA.Onlyoffice.setting.enableSharing)
+			|| (!OCA.Onlyoffice.setting.sameTab && !isDefault)) {
 			OCA.Onlyoffice.SetDefaultUrl()
 			winEditor = window.open(url, '_blank')
 		} else if (isPublicShare() && OCA.Onlyoffice.isViewIsFile()) {
@@ -272,12 +273,12 @@ import { loadState } from '@nextcloud/initial-state'
 		OCA.Onlyoffice.context.fileName = fileName
 	}
 
-	OCA.Onlyoffice.FileClickExec = async function(file, view, dir) {
+	OCA.Onlyoffice.FileClickExec = async function(file, view, dir, isDefault = true) {
 		if (OCA.Onlyoffice.context !== null && OCA.Onlyoffice.setting.sameTab && !OCA.Onlyoffice.Desktop) {
 			return null
 		}
 
-		OCA.Onlyoffice.OpenEditor(file.fileid, dir, file.basename, 0)
+		OCA.Onlyoffice.OpenEditor(file.fileid, dir, file.basename, 0, isDefault)
 
 		OCA.Onlyoffice.context = {
 			fileName: file.basename,
@@ -583,7 +584,9 @@ import { loadState } from '@nextcloud/initial-state'
 
 					return true
 				},
-				exec: OCA.Onlyoffice.FileClickExec,
+				exec(file, view, dir) {
+					OCA.Onlyoffice.FileClickExec(file, view, dir, false)
+				},
 			}))
 
 			registerFileAction(new FileAction({
