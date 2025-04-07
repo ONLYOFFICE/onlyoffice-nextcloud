@@ -156,7 +156,7 @@ import { loadState } from '@nextcloud/initial-state'
 		)
 	}
 
-	OCA.Onlyoffice.OpenEditor = function(fileId, fileDir, fileName, winEditor) {
+	OCA.Onlyoffice.OpenEditor = function(fileId, fileDir, fileName, winEditor, isDefault = true) {
 		let filePath = ''
 		if (fileName) {
 			filePath = fileDir.replace(/\/$/, '') + '/' + fileName
@@ -178,12 +178,30 @@ import { loadState } from '@nextcloud/initial-state'
 		if (winEditor && winEditor.location) {
 			OCA.Onlyoffice.SetDefaultUrl()
 			winEditor.location.href = url
-		} else if (!OCA.Onlyoffice.setting.sameTab || OCA.Onlyoffice.mobile || OCA.Onlyoffice.Desktop) {
+		} else if ((!OCA.Onlyoffice.setting.sameTab && !OCA.Onlyoffice.setting.enableSharing)
+			|| OCA.Onlyoffice.mobile || OCA.Onlyoffice.Desktop || (isPublicShare() && !OCA.Onlyoffice.isViewIsFile()
+			&& !OCA.Onlyoffice.setting.sameTab && OCA.Onlyoffice.setting.enableSharing)
+			|| (!OCA.Onlyoffice.setting.sameTab && !isDefault)) {
 			OCA.Onlyoffice.SetDefaultUrl()
 			winEditor = window.open(url, '_blank')
 		} else if (isPublicShare() && OCA.Onlyoffice.isViewIsFile()) {
 			location.href = url
 		} else {
+			if (OCA.Onlyoffice.setting.enableSharing
+				&& !isPublicShare()
+				&& (window.OCP?.Files?.Router?.query?.openfile === undefined || window.OCP?.Files?.Router?.query?.openfile === 'false'
+					|| window.OCP?.Files?.Router?.query?.enableSharing === undefined
+				)) {
+				window.OCP?.Files?.Router?.goToRoute(
+					null, // use default route
+					{ view: 'files', fileid: fileId },
+					{ ...OCP.Files.Router.query, openfile: 'true', enableSharing: 'true' },
+				)
+				url = window.location.href
+				OCA.Onlyoffice.SetDefaultUrl()
+				window.open(url, '_blank')
+				return
+			}
 			OCA.Onlyoffice.frameSelector = '#onlyofficeFrame'
 			const $iframe = $('<iframe id="onlyofficeFrame" nonce="' + btoa(OC.requestToken) + '" scrolling="no" allowfullscreen src="' + url + '&inframe=true" />')
 
@@ -219,7 +237,7 @@ import { loadState } from '@nextcloud/initial-state'
 		window.OCP?.Files?.Router?.goToRoute(
 			null, // use default route
 			{ view: 'files', fileid: undefined },
-			{ ...OCP.Files.Router.query, openfile: 'false' },
+			{ ...OCP.Files.Router.query, openfile: 'false', enableSharing: undefined },
 		)
 	}
 
@@ -255,12 +273,12 @@ import { loadState } from '@nextcloud/initial-state'
 		OCA.Onlyoffice.context.fileName = fileName
 	}
 
-	OCA.Onlyoffice.FileClickExec = async function(file, view, dir) {
+	OCA.Onlyoffice.FileClickExec = async function(file, view, dir, isDefault = true) {
 		if (OCA.Onlyoffice.context !== null && OCA.Onlyoffice.setting.sameTab && !OCA.Onlyoffice.Desktop) {
 			return null
 		}
 
-		OCA.Onlyoffice.OpenEditor(file.fileid, dir, file.basename, 0)
+		OCA.Onlyoffice.OpenEditor(file.fileid, dir, file.basename, 0, isDefault)
 
 		OCA.Onlyoffice.context = {
 			fileName: file.basename,
@@ -566,7 +584,9 @@ import { loadState } from '@nextcloud/initial-state'
 
 					return true
 				},
-				exec: OCA.Onlyoffice.FileClickExec,
+				exec(file, view, dir) {
+					OCA.Onlyoffice.FileClickExec(file, view, dir, false)
+				},
 			}))
 
 			registerFileAction(new FileAction({
@@ -829,7 +849,18 @@ import { loadState } from '@nextcloud/initial-state'
 	const initPage = function() {
 		if (isPublicShare() && OCA.Onlyoffice.isViewIsFile()) {
 			// file by shared link
-			const fileName = loadState('files_sharing', 'filename')
+			let fileName = ''
+			const fileNameDomElement = document.getElementById('filename')
+			if (fileNameDomElement !== null && fileNameDomElement.value) {
+				fileName = fileNameDomElement.value
+			} else {
+				try {
+					fileName = loadState('files_sharing', 'filename')
+				} catch {
+					return
+				}
+			}
+
 			const extension = OCA.Onlyoffice.getFileExtension(fileName)
 			const formats = OCA.Onlyoffice.setting.formats
 
@@ -874,7 +905,6 @@ import { loadState } from '@nextcloud/initial-state'
 			OCA.Onlyoffice.registerAction()
 		}
 	}
-
 	initPage()
 
 })(OCA)

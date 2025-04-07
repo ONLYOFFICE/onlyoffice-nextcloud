@@ -149,6 +149,9 @@
     "Open file" : "Ouvrir le fichier",
     "ONLYOFFICE Document Server is unavailable" : "ONLYOFFICE Document Server n'est pas disponible",
     "This is a mail message to notify that the connection with the ONLYOFFICE Document Server has been lost. Please check the connection settings:" : "Ceci est un message pour vous informer que la connexion avec ONLYOFFICE Document Server a été interrompue. Veuillez vérifier les paramètres de connexion :",
-    "Go to Settings" : "Aller dans Paramètres"
+    "Go to Settings": "Aller dans Paramètres",
+    "Select file to insert text" : "Sélectionner le fichier pour insérer le texte",
+    "Select file" : "Sélectionner un fichier",
+    "Enable sharing (might increase editors loading time)" : "Activer le panneau de partage (le temps de chargement des éditeurs peut être augmenté)"
 },"pluralForm" :"nplurals=2; plural=(n > 1);"
 }

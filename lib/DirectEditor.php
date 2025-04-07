@@ -242,7 +242,6 @@ class DirectEditor implements IEditor {
             $filePath = preg_replace("/^\/" . $userId . "\/files/", "", $filePath);
 
             $params = [
-                "documentServerUrl" => $documentServerUrl,
                 "fileId" => null,
                 "filePath" => $filePath,
                 "shareToken" => null,

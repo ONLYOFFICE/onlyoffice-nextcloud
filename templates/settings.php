@@ -125,6 +125,12 @@ if ($_["tagsEnabled"]) {
         <label for="onlyofficeSameTab"><?php p($l->t("Open file in the same tab")) ?></label>
     </p>
 
+    <p <?php if ($_["sameTab"]) { ?> style="display: none" <?php } ?> id="onlyofficeEnableSharingBlock">
+        <input type="checkbox" class="checkbox" id="onlyofficeEnableSharing"
+            <?php if ($_["enableSharing"]) { ?>checked="checked"<?php } ?> />
+        <label for="onlyofficeEnableSharing"><?php p($l->t("Enable sharing (might increase editors loading time)")) ?></label>
+    </p>
+
     <p>
         <input type="checkbox" class="checkbox" id="onlyofficeAdvanced"
             <?php if ($_["advanced"]) { ?>checked="checked"<?php } ?> />

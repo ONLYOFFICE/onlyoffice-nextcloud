@@ -1,5 +1,13 @@
 # Change Log
 
+## 9.8.0
+## Added
+- sharing panel when editing in a new tab
+- shardKey param to url for requests to Docs
+
+## Changed
+- fix opening share link on Nextcloud 29
+
 ## 9.7.0
 ## Added
 - support hwp, hwpx, pages, numbers, key formats
