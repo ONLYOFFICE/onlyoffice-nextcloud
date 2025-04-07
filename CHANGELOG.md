@@ -1,5 +1,9 @@
 # Change Log
 
+##
+## Added
+- jwt expire configuration
+
 ## 9.8.0
 ## Added
 - sharing panel when editing in a new tab
