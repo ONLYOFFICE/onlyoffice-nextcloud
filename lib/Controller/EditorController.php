@@ -176,6 +176,11 @@ class EditorController extends Controller {
      */
     private $emailManager;
 
+    private const CACHE_KEY_ALL_LDAP_USERS = 'all_mention_ldap_users';
+
+    // @todo: probably configure via configs
+    private const CACHE_KEY_LDAP_USERS_TTL = 3600;
+
     /**
      * @param string $AppName - application name
      * @param IRequest $request - request object
@@ -432,6 +437,11 @@ class EditorController extends Controller {
                     }
                 }
             } else {
+                if (apcu_exists(self::CACHE_KEY_ALL_LDAP_USERS)) {
+                    $result = apcu_fetch(self::CACHE_KEY_ALL_LDAP_USERS);
+                    return $result;
+                }
+
                 $users = $this->userManager->search("");
                 $all = true;
             }
@@ -459,6 +469,10 @@ class EditorController extends Controller {
                 }
                 array_push($result, $userElement);
             }
+        }
+
+        if ($all) {
+          apcu_store(self::CACHE_KEY_ALL_LDAP_USERS, $result, self::CACHE_KEY_ALL_LDAP_USERS_TTL);
         }
 
         return $result;
