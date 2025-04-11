@@ -30,7 +30,7 @@
     <screenshot>https://raw.githubusercontent.com/ONLYOFFICE/onlyoffice-nextcloud/master/screenshots/open.png</screenshot>
     <screenshot>https://raw.githubusercontent.com/ONLYOFFICE/onlyoffice-nextcloud/master/screenshots/open_form.png</screenshot>
     <dependencies>
-        <nextcloud min-version="29" max-version="31"/>
+        <nextcloud min-version="30" max-version="31"/>
     </dependencies>
     <settings>
         <admin>OCA\Onlyoffice\AdminSettings</admin>

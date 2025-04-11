@@ -4,6 +4,9 @@
 ## Added
 - jwt expire configuration
 
+## Changed
+- Nextcloud v29 is no longer supported
+
 ## 9.8.0
 ## Added
 - sharing panel when editing in a new tab
