@@ -77,6 +77,7 @@
     column-width: 100px;
     -moz-column-width: 100px;
     -webkit-column-width: 100px;
+    margin-bottom: 1em;
 }
 
 .onlyoffice-tables {
@@ -85,6 +86,7 @@
     column-width: 140px;
     -moz-column-width: 140px;
     -webkit-column-width: 140px;
+    margin-bottom: 1em;
 }
 
 #onlyofficeSecret-show {
