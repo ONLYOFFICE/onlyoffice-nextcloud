@@ -1,6 +1,7 @@
 # Change Log
 ## Added
 - disable download setting
+- system and contrast-dark themes
 
 ##
 ## Added
