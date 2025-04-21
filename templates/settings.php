@@ -271,6 +271,13 @@ if ($_["tagsEnabled"]) {
     <div class="onlyoffice-tables">
         <div>
             <input type="radio" class="radio"
+                id="onlyofficeTheme_theme-system"
+                name="theme"
+                <?php if ($_["theme"] === "theme-system") { ?>checked="checked"<?php } ?> />
+            <label for="onlyofficeTheme_theme-system"><?php p($l->t("Same as system")) ?></label>
+        </div>
+        <div>
+            <input type="radio" class="radio"
                 id="onlyofficeTheme_theme-light"
                 name="theme"
                 <?php if ($_["theme"] === "theme-light") { ?>checked="checked"<?php } ?> />
@@ -289,6 +296,13 @@ if ($_["tagsEnabled"]) {
                 name="theme"
                 <?php if ($_["theme"] === "theme-dark") { ?>checked="checked"<?php } ?> />
             <label for="onlyofficeTheme_theme-dark"><?php p($l->t("Dark")) ?></label>
+        </div>
+        <div>
+            <input type="radio" class="radio"
+                id="onlyofficeTheme_theme-contrast-dark"
+                name="theme"
+                <?php if ($_["theme"] === "theme-contrast-dark") { ?>checked="checked"<?php } ?> />
+            <label for="onlyofficeTheme_theme-contrast-dark"><?php p($l->t("Contrast dark")) ?></label>
         </div>
     </div>
 
