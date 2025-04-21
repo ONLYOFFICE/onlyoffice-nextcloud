@@ -1,4 +1,6 @@
 # Change Log
+## Added
+- disable download setting
 
 ##
 ## Added

@@ -538,7 +538,7 @@ import { loadState } from '@nextcloud/initial-state'
 						})
 					}
 
-					if (config.saveas && !isPublicShare()) {
+					if (config.saveas && !isPublicShare() && !OCA.Onlyoffice.setting.disableDownload) {
 						OCA.Files.fileActions.registerAction({
 							name: 'onlyofficeDownload',
 							displayName: t(OCA.Onlyoffice.AppName, 'Download as'),
@@ -647,6 +647,9 @@ import { loadState } from '@nextcloud/initial-state'
 					displayName: () => t(OCA.Onlyoffice.AppName, 'Download as'),
 					iconSvgInline: () => AppDarkSvg,
 					enabled: (files) => {
+						if (OCA.Onlyoffice.setting.disableDownload) {
+							return false
+						}
 						const config = getConfig(files[0])
 
 						if (!config) return false

@@ -1264,7 +1264,7 @@ class EditorController extends Controller {
     public function download($fileId, $toExtension = null, $template = false) {
         $this->logger->debug("Download: $fileId $toExtension");
 
-        if (!$this->config->isUserAllowedToUse()) {
+        if (!$this->config->isUserAllowedToUse() || $this->config->getDisableDownload()) {
             return $this->renderError($this->trans->t("Not permitted"));
         }
 

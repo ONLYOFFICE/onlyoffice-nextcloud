@@ -584,7 +584,7 @@ class EditorApiController extends OCSController {
             }
         }
 
-        if (!$canDownload) {
+        if (!$canDownload || $this->config->getDisableDownload()) {
             $params["document"]["permissions"]["download"] = false;
             $params["document"]["permissions"]["print"] = false;
             $params["document"]["permissions"]["copy"] = false;

@@ -339,6 +339,13 @@ class AppConfig {
     public $_customizationPlugins = "customization_plugins";
 
     /**
+     * The config key for the disable downloading
+     *
+     * @var string
+     */
+    public $_disableDownload = "disable_download";
+
+    /**
      * The config key for the interval of editors availability check by cron
      *
      * @var string
@@ -1392,6 +1399,16 @@ class AppConfig {
         return $this->config->getAppValue($this->appName, $this->_customizationPlugins, "true") === "true";
     }
 
+    /**
+     * Get the disable download value
+     *
+     * @return bool
+     */
+    public function getDisableDownload() {
+        $disableDownload = (bool)$this->getSystemValue($this->_disableDownload);
+
+        return $disableDownload;
+    }
     /**
      * Get the editors check interval
      *
