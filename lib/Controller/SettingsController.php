@@ -156,7 +156,7 @@ class SettingsController extends Controller {
             "macros" => $this->config->getCustomizationMacros(),
             "tagsEnabled" => \OC::$server->getAppManager()->isEnabledForUser("systemtags"),
             "reviewDisplay" => $this->config->getCustomizationReviewDisplay(),
-            "theme" => $this->config->getCustomizationTheme(),
+            "theme" => $this->config->getCustomizationTheme(true),
             "templates" => $this->getGlobalTemplates(),
             "unknownAuthor" => $this->config->getUnknownAuthor()
         ];

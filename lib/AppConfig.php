@@ -1026,19 +1026,49 @@ class AppConfig {
     /**
      * Get theme setting
      *
+     * @param bool $realValue - get real value (for example, for settings)
      * @return string
      */
-    public function getCustomizationTheme() {
+    public function getCustomizationTheme($realValue = false) {
         $value = $this->config->getAppValue($this->appName, $this->_customizationTheme, "theme-system");
         $validThemes = [
-            "theme-system",
-            "theme-light",
-            "theme-classic-light",
-            "theme-dark",
-            "theme-contrast-dark"
+            "default" => "theme-system",
+            "light" => "theme-light",
+            "light-highcontrast" => "theme-classic-light",
+            "dark" => "theme-dark",
+            "dark-highcontrast" => "theme-contrast-dark"
         ];
-        
-        return in_array($value, $validThemes) ? $value : "theme-system";
+
+        if (!in_array($value, $validThemes)) {
+            $value = "theme-system";
+        }
+
+        if ($realValue) {
+            return $value;
+        }
+
+        if ($value === "theme-system") {
+            $user = \OC::$server->getUserSession()->getUser();
+
+            if ($user !== null) {
+                $themingMode = $this->config->getUserValue($user->getUID(), "theming", "enabled-themes", "");
+
+                if ($themingMode !== "") {
+                    try {
+                        $themingModeArray = json_decode($themingMode, true);
+                        $themingMode = $themingModeArray[0] ?? "";
+
+                        if (isset($validThemes[$themingMode])) {
+                            return $validThemes[$themingMode];
+                        }
+                    } catch (Exception $e) {
+                        $this->logger->error("Error decoding theming mode: " . $e->getMessage());
+                    }
+                }
+            }
+        }
+
+        return $value;
     }
 
     /**
