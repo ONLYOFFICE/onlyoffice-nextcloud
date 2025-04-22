@@ -304,6 +304,13 @@ if ($_["tagsEnabled"]) {
                 <?php if ($_["theme"] === "theme-contrast-dark") { ?>checked="checked"<?php } ?> />
             <label for="onlyofficeTheme_theme-contrast-dark"><?php p($l->t("Contrast dark")) ?></label>
         </div>
+        <div>
+            <input type="radio" class="radio"
+                id="onlyofficeTheme_theme-gray"
+                name="theme"
+                <?php if ($_["theme"] === "theme-gray") { ?>checked="checked"<?php } ?> />
+            <label for="onlyofficeTheme_theme-gray"><?php p($l->t("Gray")) ?></label>
+        </div>
     </div>
 
     <br />

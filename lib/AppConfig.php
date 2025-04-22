@@ -1036,7 +1036,8 @@ class AppConfig {
             "light" => "theme-light",
             "light-highcontrast" => "theme-classic-light",
             "dark" => "theme-dark",
-            "dark-highcontrast" => "theme-contrast-dark"
+            "dark-highcontrast" => "theme-contrast-dark",
+            "theme-gray"
         ];
 
         if (!in_array($value, $validThemes)) {
