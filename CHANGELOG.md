@@ -2,6 +2,7 @@
 ## Added
 - disable download setting
 - system and contrast-dark themes
+- close button
 
 ##
 ## Added
