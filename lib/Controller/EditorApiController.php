@@ -567,7 +567,7 @@ class EditorApiController extends OCSController {
             $params["_file_path"] = $userFolder->getRelativePath($file->getPath());
         }
 
-        if ($this->config->getSameTab() || $this->config->getEnableSharing()) {
+        if (($this->config->getSameTab() || $this->config->getEnableSharing()) && !$inviewer) {
             $params["editorConfig"]["customization"]["close"]["visible"] = true;
             $params["editorConfig"]["customization"]["close"]["text"] = $this->trans->t("Close file");
         }
