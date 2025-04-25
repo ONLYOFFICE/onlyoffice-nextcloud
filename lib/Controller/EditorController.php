@@ -1599,7 +1599,7 @@ class EditorController extends Controller {
         $encodedPath = array_map("urlencode", explode("/", $path));
         $parsedLink = str_replace($path, implode("/", $encodedPath), $link);
         if (filter_var($parsedLink, FILTER_VALIDATE_URL) === false) {
-            return [null, false];
+            return [null, true];
         }
 
         $storageUrl = $this->urlGenerator->getAbsoluteURL("/");
