@@ -9,5 +9,5 @@ License:        AGPL-3.0
 License File:   licenses/@nextcloud.browserslist-config
 
 JWT           - JSON Web Token implementation (https://github.com/firebase/php-jwt/blob/master/LICENSE)
-License:        BSD
-License File:   3rdparty/jwt/LICENSE
+License:        BSD-3-Clause
+License File:   php-jwt/LICENSE
