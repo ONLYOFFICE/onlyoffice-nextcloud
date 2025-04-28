@@ -27,6 +27,7 @@ jobs:
           git submodule update --init --recursive
           npm install
           npm run build
+          composer install --no-dev --optimize-autoloader
           mkdir -p onlyoffice
           rsync -av --exclude='onlyoffice' . onlyoffice
           cd onlyoffice
