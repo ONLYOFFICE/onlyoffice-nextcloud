@@ -567,16 +567,17 @@ class EditorApiController extends OCSController {
             $params["_file_path"] = $userFolder->getRelativePath($file->getPath());
         }
 
-        if (($this->config->getSameTab() || $this->config->getEnableSharing()) && !$inviewer) {
+        if (($this->config->getSameTab() || $this->config->getEnableSharing()) && !$inviewer && !$desktop) {
             $params["editorConfig"]["customization"]["close"]["visible"] = true;
             $params["editorConfig"]["customization"]["close"]["text"] = $this->trans->t("Close file");
         }
 
         if ($folderLink !== null
-            && $this->config->getSystemValue($this->config->_customization_goback) !== false && !$this->config->getSameTab() && !$this->config->getEnableSharing()) {
-            $params["editorConfig"]["customization"]["goback"] = [
+            && $this->config->getSystemValue($this->config->_customization_goback) !== false
+            && ($desktop || $inviewer || (!$this->config->getSameTab() && !$this->config->getEnableSharing()))) {
+                $params["editorConfig"]["customization"]["goback"] = [
                 "url" => $folderLink
-            ];
+                ];
         }
 
         if (!$canDownload || $this->config->getDisableDownload()) {
