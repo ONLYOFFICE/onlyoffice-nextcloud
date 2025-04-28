@@ -8,10 +8,10 @@
         }
     ],
     "autoload": {
-		"psr-4": {
-			"OCA\\Onlyoffice\\": "./lib/"
-		}
-	},
+        "psr-4": {
+            "OCA\\Onlyoffice\\": "./lib/"
+        }
+    },
     "require": {
         "firebase/php-jwt": "^6.0"
     }
