@@ -10,4 +10,4 @@ License File:   licenses/@nextcloud.browserslist-config
 
 JWT           - JSON Web Token implementation (https://github.com/firebase/php-jwt/blob/master/LICENSE)
 License:        BSD-3-Clause
-License File:   php-jwt/LICENSE
+License File:   licenses/php-jwt-license
