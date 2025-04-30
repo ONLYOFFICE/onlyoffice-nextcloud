@@ -68,11 +68,15 @@ There are several ways to do that:
     npm install
     npm run build
     ```
-4. Change the owner to update the application right from Nextcloud web interface:
+4. Install Composer dependencies (only if you chose to clone on the step 2):
+    ```bash
+    composer install
+    ```
+5. Change the owner to update the application right from Nextcloud web interface:
     ```bash
     chown -R www-data:www-data onlyoffice
     ```
-5. In Nextcloud open the `~/settings/apps/disabled` page with _Not enabled_ apps by administrator and click _Enable_ for the **ONLYOFFICE** application.
+6. In Nextcloud open the `~/settings/apps/disabled` page with _Not enabled_ apps by administrator and click _Enable_ for the **ONLYOFFICE** application.
 
 ## Configuring ONLYOFFICE app for Nextcloud
 

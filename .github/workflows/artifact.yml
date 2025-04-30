@@ -27,24 +27,27 @@ jobs:
           git submodule update --init --recursive
           npm install
           npm run build
+          composer install --no-dev --optimize-autoloader
           mkdir -p onlyoffice
           rsync -av --exclude='onlyoffice' . onlyoffice
           cd onlyoffice
           rm -rf ./.github/
           rm -rf ./.git/
+          rm -rf ./assets/document-templates/.git
+          rm -rf ./assets/document-formats/.git
+          rm -rf ./node_modules/
+          rm -rf ./src/
           rm ./.eslintrc.js
           rm ./.gitignore
           rm ./.gitmodules
           rm ./.stylelintrc.json
-          rm -rf ./node_modules/
-          rm -rf ./src/
-          rm ./package.json
+          rm ./composer.json
+          rm ./composer.lock
           rm ./npm-shrinkwrap.json
+          rm ./package.json
+          rm ./ruleset.xml
           rm ./stylelint.config.js
           rm ./webpack.js
-          rm -rf ./assets/document-templates/.git
-          rm -rf ./assets/document-formats/.git
-          rm ./ruleset.xml
           cd $cwd
           tar -czvf onlyoffice.tar.gz onlyoffice
       - name: Upload Artifact

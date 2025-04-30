@@ -1,11 +1,11 @@
 # Change Log
-## Added
-- disable download setting
-- system and contrast-dark themes
-- close button
 
 ##
 ## Added
+- support external link for reference data
+- disable download setting
+- system and contrast-dark themes
+- close button
 - jwt expire configuration
 
 ## Changed

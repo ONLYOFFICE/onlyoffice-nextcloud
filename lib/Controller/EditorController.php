@@ -681,9 +681,15 @@ class EditorController extends Controller {
 
         if ($file === null
             && !empty($link)) {
-            $fileId = $this->getFileIdByLink($link);
+            [$fileId, $redirect] = $this->getFileIdByLink($link);
             if (!empty($fileId)) {
                 list($file, $error, $share) = $this->getFile($userId, $fileId);
+            } elseif ($redirect) {
+                $response = [
+                    "url" => $link,
+                ];
+
+                return $response;
             }
         }
 
@@ -1586,31 +1592,26 @@ class EditorController extends Controller {
      *
      * @param string $link - link to the file
      *
-     * @return string|null
+     * @return array
      */
     private function getFileIdByLink(string $link) {
         $path = parse_url($link, PHP_URL_PATH);
         $encodedPath = array_map("urlencode", explode("/", $path));
-        $link = str_replace($path, implode("/", $encodedPath), $link);
-        if (filter_var($link, FILTER_VALIDATE_URL) === false) {
-            return null;
+        $parsedLink = str_replace($path, implode("/", $encodedPath), $link);
+        if (filter_var($parsedLink, FILTER_VALIDATE_URL) === false) {
+            return [null, true];
         }
 
-        if (!empty($this->config->getStorageUrl())) {
-            $storageUrl = $this->config->getStorageUrl();
-        } else {
-            $storageUrl = $this->urlGenerator->getAbsoluteURL("/");
+        $storageUrl = $this->urlGenerator->getAbsoluteURL("/");
+        if (parse_url($parsedLink, PHP_URL_HOST) !== parse_url($storageUrl, PHP_URL_HOST)) {
+            return [null, true];
         }
 
-        if (parse_url($link, PHP_URL_HOST) !== parse_url($storageUrl, PHP_URL_HOST)) {
-            return null;
+        if (preg_match('/\/(files|f|onlyoffice)\/(\d+)/', $parsedLink, $matches)) {
+            return [$matches[2], false];
         }
 
-        if (preg_match('/\/(files|f|onlyoffice)\/(\d+)/', $link, $matches)) {
-            return $matches[2];
-        }
-
-        return null;
+        return [null, false];
     }
 
     /**
