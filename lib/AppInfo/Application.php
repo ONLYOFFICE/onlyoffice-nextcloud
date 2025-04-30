@@ -86,27 +86,7 @@ class Application extends App implements IBootstrap {
     }
 
     public function register(IRegistrationContext $context): void {
-        if (!class_exists('\\Firebase\\JWT\\BeforeValidException')) {
-            require_once __DIR__ . "/../../3rdparty/jwt/BeforeValidException.php";
-        }
-        if (!class_exists('\\Firebase\\JWT\\ExpiredException')) {
-            require_once __DIR__ . "/../../3rdparty/jwt/ExpiredException.php";
-        }
-        if (!class_exists('\\Firebase\\JWT\\SignatureInvalidException')) {
-            require_once __DIR__ . "/../../3rdparty/jwt/SignatureInvalidException.php";
-        }
-        if (!class_exists('\\Firebase\\JWT\\CachedKeySet')) {
-            require_once __DIR__ . "/../../3rdparty/jwt/CachedKeySet.php";
-        }
-        if (!class_exists('\\Firebase\\JWT\\JWT')) {
-            require_once __DIR__ . "/../../3rdparty/jwt/JWT.php";
-        }
-        if (!class_exists('\\Firebase\\JWT\\JWK')) {
-            require_once __DIR__ . "/../../3rdparty/jwt/JWK.php";
-        }
-        if (!class_exists('\\Firebase\\JWT\\Key')) {
-            require_once __DIR__ . "/../../3rdparty/jwt/Key.php";
-        }
+        require_once __DIR__ . "/../../vendor/autoload.php";
 
         // Set the leeway for the JWT library in case the system clock is a second off
         \Firebase\JWT\JWT::$leeway = $this->appConfig->getJwtLeeway();

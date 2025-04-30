@@ -1,13 +1,21 @@
 ONLYOFFICE app for Nextcloud uses code from the following 3rd party projects:
 
-@nextcloud/webpack-vue-config - Base config package (https://github.com/nextcloud-libraries/webpack-vue-config/blob/master/LICENSE)
-License:        AGPL-3.0
-License File:   licenses/@nextcloud.webpack-vue-config
+@nextcloud/event-bus - A simple event bus to communicate between Nextcloud components. (https://github.com/nextcloud-libraries/nextcloud-event-bus/blob/main/LICENSE)
+License:        GPL-3.0-or-later
+License File:   licenses/@nextcloud.event-bus.license
 
-@nextcloud/browserslist-config - Shared browserslist config for Nextcloud (https://github.com/nextcloud-libraries/browserslist-config/blob/master/LICENSE)
-License:        AGPL-3.0
-License File:   licenses/@nextcloud.browserslist-config
+@nextcloud/files - Nextcloud files utils (https://github.com/nextcloud-libraries/nextcloud-files/blob/main/LICENSE)
+License:        GPL-3.0-or-later
+License File:   licenses/@nextcloud.files.license
 
-JWT           - JSON Web Token implementation (https://github.com/firebase/php-jwt/blob/master/LICENSE)
-License:        BSD
-License File:   3rdparty/jwt/LICENSE
+@nextcloud/sharing - Front-end utilities for Nextcloud files sharing
+License:        GPL-3.0-or-later
+License File:   licenses/@nextcloud.sharing.license
+
+@nextcloud/initial-state - Access data from the nextcloud server-side initial state API within apps. (https://github.com/nextcloud-libraries/nextcloud-initial-state/blob/main/LICENSE)
+License:        GPL-3.0-or-later
+License File:   licenses/@nextcloud.initial-state.license
+
+JWT           - A simple library to encode and decode JSON Web Tokens (JWT) in PHP. Should conform to the current spec. (https://github.com/firebase/php-jwt/blob/master/LICENSE)
+License:        BSD-3-Clause
+License File:   licenses/php-jwt-license.license
