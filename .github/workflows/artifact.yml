@@ -39,6 +39,8 @@ jobs:
           rm ./.stylelintrc.json
           rm -rf ./node_modules/
           rm -rf ./src/
+          rm ./composer.json
+          rm ./composer.lock
           rm ./package.json
           rm ./npm-shrinkwrap.json
           rm ./stylelint.config.js
