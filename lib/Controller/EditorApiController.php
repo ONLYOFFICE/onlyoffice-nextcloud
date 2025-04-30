@@ -567,20 +567,24 @@ class EditorApiController extends OCSController {
             $params["_file_path"] = $userFolder->getRelativePath($file->getPath());
         }
 
-        if ($folderLink !== null
-            && $this->config->getSystemValue($this->config->_customization_goback) !== false) {
+        $isGoBackNeeded = $folderLink !== null && $this->config->getSystemValue($this->config->_customization_goback) !== false;
+        $shouldShowGoBack = $desktop || $inviewer || (!$this->config->getSameTab() && !$this->config->getEnableSharing()) || (!empty($shareToken) && $this->config->getEnableSharing());
+
+        if ($isGoBackNeeded && $shouldShowGoBack) {
             $params["editorConfig"]["customization"]["goback"] = [
                 "url" => $folderLink
             ];
+        }
 
-            if (!$desktop && !$inviewer) {
-                if ($this->config->getSameTab()) {
-                    $params["editorConfig"]["customization"]["goback"]["blank"] = false;
-                }
+        if (!$desktop && !$inviewer) {
+            $hasSameTabWithoutShare = $this->config->getSameTab() && empty($shareToken);
+            $hasEnableSharingWithoutShare = $this->config->getEnableSharing() && empty($shareToken);
+            $hasSameTabWithShareAndFolder = !empty($shareToken) && $this->config->getSameTab() && $folderLink !== null;
+            $shouldShowCloseButton = $hasSameTabWithoutShare || $hasEnableSharingWithoutShare || $hasSameTabWithShareAndFolder;
 
-                if ($inframe === true || !empty($directToken)) {
-                    $params["editorConfig"]["customization"]["goback"]["requestClose"] = true;
-                }
+            if ($shouldShowCloseButton) {
+                $params["editorConfig"]["customization"]["close"]["visible"] = true;
+                $params["editorConfig"]["customization"]["close"]["text"] = $this->trans->t("Close file");
             }
         }
 
