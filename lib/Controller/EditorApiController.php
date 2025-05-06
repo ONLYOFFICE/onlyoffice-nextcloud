@@ -584,7 +584,6 @@ class EditorApiController extends OCSController {
 
             if ($shouldShowCloseButton) {
                 $params["editorConfig"]["customization"]["close"]["visible"] = true;
-                $params["editorConfig"]["customization"]["close"]["text"] = $this->trans->t("Close file");
             }
         }
 
