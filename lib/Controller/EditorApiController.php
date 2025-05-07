@@ -395,7 +395,7 @@ class EditorApiController extends OCSController {
                     if (($lockType === ILock::TYPE_APP) && $lockOwner !== $this->appName
                         || ($lockType === ILock::TYPE_USER || $lockType === ILock::TYPE_TOKEN) && $lockOwner !== $userId) {
                         $isTempLock = true;
-                        $this->logger->debug("File" . $file->getId() . "is locked by $lockOwner");
+                        $this->logger->debug("File " . $file->getId() . " is locked by $lockOwner");
                     }
                 }
             } catch (PreConditionNotMetException | NoLockProviderException $e) {
@@ -406,11 +406,10 @@ class EditorApiController extends OCSController {
         $canFillForms = isset($format["fillForms"]) && $format["fillForms"];
         $editable = !$template
                     && $file->isUpdateable()
-                    && !$isTempLock
                     && (empty($shareToken) || ($share->getPermissions() & Constants::PERMISSION_UPDATE) === Constants::PERMISSION_UPDATE)
                     && !$restrictedEditing;
-        $params["document"]["permissions"]["edit"] = $editable;
-        if (($editable || $restrictedEditing) && ($canEdit || $canFillForms)) {
+        $params["document"]["permissions"]["edit"] = $editable && !$isTempLock;
+        if (($editable || $restrictedEditing) && ($canEdit || $canFillForms) && !$isTempLock) {
             $ownerId = null;
             $owner = $file->getOwner();
             if (!empty($owner)) {
