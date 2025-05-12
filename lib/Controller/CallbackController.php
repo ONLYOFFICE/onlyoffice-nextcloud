@@ -527,7 +527,7 @@ class CallbackController extends Controller {
             }
         }
 
-        if (!empty($userId)) {
+        if (!empty($userId) && empty($shareToken)) {
             \OC_Util::setupFS($userId);
         }
 
