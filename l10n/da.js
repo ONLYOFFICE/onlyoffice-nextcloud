@@ -125,6 +125,9 @@ OC.L10N.register(
     "Advanced": "Avanceret",
     "Provide advanced document permissions using ONLYOFFICE Docs": "Giv avancerede dokumenttilladelser ved brug af ONLYOFFICE",
     "Share link": "Share link",
-    "conversation": "samtale"
+    "conversation": "samtale",
+    "Same as system": "Samme som system",
+    "Contrast dark": "Mørk kontrast",
+    "Gray": "Gråt"
 },
 "nplurals=2; plural=(n != 1);");
