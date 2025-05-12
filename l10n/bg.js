@@ -152,6 +152,7 @@ OC.L10N.register(
     "ONLYOFFICE Document Server is unavailable": "ONLYOFFICE Сървъра за документи не е достъпен",
     "This is a mail message to notify that the connection with the ONLYOFFICE Document Server has been lost. Please check the connection settings:": "Това е имейл съобщение, известяващо, че връзката с ONLYOFFICE сървъра за документи беше прекъсната. Моля, проверете настройките на свързване:",
     "Go to Settings": "Отиди в настройки",
+    "Select file": "Избери файл",
     "Same as system": "Същото като в системата",
     "Contrast dark": "Контрастна тъмна",
     "Gray": "Сива"

@@ -151,6 +151,7 @@ OC.L10N.register(
     "Open file": "Відкрити файл",
     "ONLYOFFICE Document Server is unavailable": "Сервер документів ONLYOFFICE недоступний",
     "This is a mail message to notify that the connection with the ONLYOFFICE Document Server has been lost. Please check the connection settings:": "Цим листом повідомляємо вам, що з'єднання з сервером документів ONLYOFFICE втрачено. Перевірте параметри з'єднання:",
+    "Select file": "Вибрати файл",
     "Go to Settings": "Перейти до Параметрів",
     "Same as system": "Системна",
     "Contrast dark": "Контрастно-чорний",

@@ -126,6 +126,7 @@ OC.L10N.register(
     "Provide advanced document permissions using ONLYOFFICE Docs": "Giv avancerede dokumenttilladelser ved brug af ONLYOFFICE",
     "Share link": "Share link",
     "conversation": "samtale",
+    "Select file": "Vælg fil",
     "Same as system": "Samme som system",
     "Contrast dark": "Mørk kontrast",
     "Gray": "Gråt"
