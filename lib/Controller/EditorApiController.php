@@ -566,24 +566,24 @@ class EditorApiController extends OCSController {
             $params["_file_path"] = $userFolder->getRelativePath($file->getPath());
         }
 
-        $isGoBackNeeded = $folderLink !== null && $this->config->getSystemValue($this->config->_customization_goback) !== false;
-        $shouldShowGoBack = $desktop || $inviewer || (!$this->config->getSameTab() && !$this->config->getEnableSharing()) || (!empty($shareToken) && $this->config->getEnableSharing());
-
-        if ($isGoBackNeeded && $shouldShowGoBack) {
+        $canGoBack = $folderLink !== null && $this->config->getSystemValue($this->config->_customization_goback) !== false;
+        if ($inviewer) {
+            if ($canGoBack) {
+                $params["editorConfig"]["customization"]["goback"] = [
+                    "url" => $folderLink
+                ];
+            }
+        } elseif (!$desktop
+            && ($this->config->getSameTab()
+                || !empty($directToken)
+                || $this->config->getEnableSharing() && empty($shareToken))) {
+                $params["editorConfig"]["customization"]["close"]["visible"] = true;
+        } elseif ($canGoBack) {
             $params["editorConfig"]["customization"]["goback"] = [
                 "url" => $folderLink
             ];
-        }
-
-        if (!$desktop && !$inviewer) {
-            $hasSameTabWithoutShare = $this->config->getSameTab() && empty($shareToken);
-            $hasEnableSharingWithoutShare = $this->config->getEnableSharing() && empty($shareToken);
-            $hasSameTabWithShareAndFolder = !empty($shareToken) && $this->config->getSameTab() && $folderLink !== null;
-            $shouldShowCloseButton = $hasSameTabWithoutShare || $hasEnableSharingWithoutShare || $hasSameTabWithShareAndFolder;
-
-            if ($shouldShowCloseButton) {
-                $params["editorConfig"]["customization"]["close"]["visible"] = true;
-            }
+        } elseif ($inframe === true && !empty($shareToken)) {
+            $params["editorConfig"]["customization"]["close"]["visible"] = true;
         }
 
         if (!$canDownload || $this->config->getDisableDownload()) {
