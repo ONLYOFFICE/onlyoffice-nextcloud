@@ -697,7 +697,7 @@ class CallbackController extends Controller {
 
         if (!($file instanceof File)) {
             $this->logger->error("File not found: $fileId");
-            return [null, new JSONResponse(["message" => $this->trans->t("File not found")], Http::STATUS_NOT_FOUND)];
+            return [null, new JSONResponse(["message" => $this->trans->t("File not found")], Http::STATUS_NOT_FOUND), null];
         }
 
         if ($version > 0 && $this->versionManager !== null) {
