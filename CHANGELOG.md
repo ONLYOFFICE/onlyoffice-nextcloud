@@ -1,5 +1,9 @@
 # Change Log
 
+##
+## Added
+- insert svg to editor
+
 ## 9.9.0
 ## Added
 - support external link for reference data
