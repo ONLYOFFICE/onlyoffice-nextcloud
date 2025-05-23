@@ -574,6 +574,7 @@ class EditorApiController extends OCSController {
                 ];
             }
         } elseif (!$desktop
+            && $inframe
             && ($this->config->getSameTab()
                 || !empty($directToken)
                 || $this->config->getEnableSharing() && empty($shareToken))) {
@@ -582,7 +583,7 @@ class EditorApiController extends OCSController {
             $params["editorConfig"]["customization"]["goback"] = [
                 "url" => $folderLink
             ];
-        } elseif ($inframe === true && !empty($shareToken)) {
+        } elseif ($inframe && !empty($shareToken)) {
             $params["editorConfig"]["customization"]["close"]["visible"] = true;
         }
 
@@ -592,7 +593,7 @@ class EditorApiController extends OCSController {
             $params["document"]["permissions"]["copy"] = false;
         }
 
-        if ($inframe === true) {
+        if ($inframe) {
             $params["_files_sharing"] = \OC::$server->getAppManager()->isInstalled("files_sharing");
         }
 
