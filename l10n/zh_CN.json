@@ -152,6 +152,9 @@
     "Go to Settings": "转到设置",
     "Select file to insert text": "选择文件以插入文本",
     "Select file": "选择文件",
-    "Enable sharing (might increase editors loading time)": "启用共享功能(可能会延长编辑器加载时间）"
+    "Enable sharing (might increase editors loading time)": "启用共享功能(可能会延长编辑器加载时间）",
+    "Same as system": "和系統一致",
+    "Contrast dark": "深色对比",
+    "Gray": "灰色"
 },"pluralForm" :"nplurals=1; plural=0;"
 }

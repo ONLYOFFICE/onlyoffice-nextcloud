@@ -122,6 +122,10 @@ OC.L10N.register(
     "group": "agrupa",
     "Advanced": "Avançat",
     "Share link": "Comparteix un enllaç",
-    "conversation": "conversa"
+    "conversation": "conversa",
+    "Select file": "Seleccioneu un fitxer",
+    "Same as system": "Igual que el sistema",
+    "Contrast dark": "Contrast fosc",
+    "Gray": "Gris"
 },
 "nplurals=2; plural=(n != 1);");

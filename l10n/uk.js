@@ -151,6 +151,10 @@ OC.L10N.register(
     "Open file": "Відкрити файл",
     "ONLYOFFICE Document Server is unavailable": "Сервер документів ONLYOFFICE недоступний",
     "This is a mail message to notify that the connection with the ONLYOFFICE Document Server has been lost. Please check the connection settings:": "Цим листом повідомляємо вам, що з'єднання з сервером документів ONLYOFFICE втрачено. Перевірте параметри з'єднання:",
-    "Go to Settings": "Перейти до Параметрів"
+    "Select file": "Вибрати файл",
+    "Go to Settings": "Перейти до Параметрів",
+    "Same as system": "Системна",
+    "Contrast dark": "Контрастно-чорний",
+    "Gray": "Сірий"
 },
 "nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != 11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || (n % 100 >=11 && n % 100 <=14 )) ? 2: 3);");

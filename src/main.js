@@ -106,7 +106,7 @@ import { loadState } from '@nextcloud/initial-state'
 
 	OCA.Onlyoffice.CreateFileProcess = function(name, dir, templateId, targetId, open, callback) {
 		let winEditor = null
-		if ((!OCA.Onlyoffice.setting.sameTab || OCA.Onlyoffice.mobile || OCA.Onlyoffice.Desktop) && open) {
+		if (((!OCA.Onlyoffice.setting.sameTab && !OCA.Onlyoffice.setting.enableSharing) || OCA.Onlyoffice.mobile || OCA.Onlyoffice.Desktop) && open) {
 			const loaderUrl = OCA.Onlyoffice.Desktop ? '' : OC.filePath(OCA.Onlyoffice.AppName, 'templates', 'loader.html')
 			winEditor = window.open(loaderUrl)
 		}
@@ -538,7 +538,7 @@ import { loadState } from '@nextcloud/initial-state'
 						})
 					}
 
-					if (config.saveas && !isPublicShare()) {
+					if (config.saveas && !isPublicShare() && !OCA.Onlyoffice.setting.disableDownload) {
 						OCA.Files.fileActions.registerAction({
 							name: 'onlyofficeDownload',
 							displayName: t(OCA.Onlyoffice.AppName, 'Download as'),
@@ -647,6 +647,9 @@ import { loadState } from '@nextcloud/initial-state'
 					displayName: () => t(OCA.Onlyoffice.AppName, 'Download as'),
 					iconSvgInline: () => AppDarkSvg,
 					enabled: (files) => {
+						if (OCA.Onlyoffice.setting.disableDownload) {
+							return false
+						}
 						const config = getConfig(files[0])
 
 						if (!config) return false

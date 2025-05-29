@@ -1,5 +1,16 @@
 # Change Log
 
+## 9.9.0
+## Added
+- support external link for reference data
+- disable download setting
+- system and contrast-dark themes
+- close button
+- jwt expire configuration
+
+## Changed
+- Nextcloud v29 is no longer supported
+
 ## 9.8.0
 ## Added
 - sharing panel when editing in a new tab

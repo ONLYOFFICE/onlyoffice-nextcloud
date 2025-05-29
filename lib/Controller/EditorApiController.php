@@ -395,7 +395,7 @@ class EditorApiController extends OCSController {
                     if (($lockType === ILock::TYPE_APP) && $lockOwner !== $this->appName
                         || ($lockType === ILock::TYPE_USER || $lockType === ILock::TYPE_TOKEN) && $lockOwner !== $userId) {
                         $isTempLock = true;
-                        $this->logger->debug("File" . $file->getId() . "is locked by $lockOwner");
+                        $this->logger->debug("File " . $file->getId() . " is locked by $lockOwner");
                     }
                 }
             } catch (PreConditionNotMetException | NoLockProviderException $e) {
@@ -406,11 +406,10 @@ class EditorApiController extends OCSController {
         $canFillForms = isset($format["fillForms"]) && $format["fillForms"];
         $editable = !$template
                     && $file->isUpdateable()
-                    && !$isTempLock
                     && (empty($shareToken) || ($share->getPermissions() & Constants::PERMISSION_UPDATE) === Constants::PERMISSION_UPDATE)
                     && !$restrictedEditing;
-        $params["document"]["permissions"]["edit"] = $editable;
-        if (($editable || $restrictedEditing) && ($canEdit || $canFillForms)) {
+        $params["document"]["permissions"]["edit"] = $editable && !$isTempLock;
+        if (($editable || $restrictedEditing) && ($canEdit || $canFillForms) && !$isTempLock) {
             $ownerId = null;
             $owner = $file->getOwner();
             if (!empty($owner)) {
@@ -567,30 +566,34 @@ class EditorApiController extends OCSController {
             $params["_file_path"] = $userFolder->getRelativePath($file->getPath());
         }
 
-        if ($folderLink !== null
-            && $this->config->getSystemValue($this->config->_customization_goback) !== false) {
+        $canGoBack = $folderLink !== null && $this->config->getSystemValue($this->config->_customization_goback) !== false;
+        if ($inviewer) {
+            if ($canGoBack) {
+                $params["editorConfig"]["customization"]["goback"] = [
+                    "url" => $folderLink
+                ];
+            }
+        } elseif (!$desktop
+            && $inframe
+            && ($this->config->getSameTab()
+                || !empty($directToken)
+                || $this->config->getEnableSharing() && empty($shareToken))) {
+                $params["editorConfig"]["customization"]["close"]["visible"] = true;
+        } elseif ($canGoBack) {
             $params["editorConfig"]["customization"]["goback"] = [
                 "url" => $folderLink
             ];
-
-            if (!$desktop && !$inviewer) {
-                if ($this->config->getSameTab()) {
-                    $params["editorConfig"]["customization"]["goback"]["blank"] = false;
-                }
-
-                if ($inframe === true || !empty($directToken)) {
-                    $params["editorConfig"]["customization"]["goback"]["requestClose"] = true;
-                }
-            }
+        } elseif ($inframe && !empty($shareToken)) {
+            $params["editorConfig"]["customization"]["close"]["visible"] = true;
         }
 
-        if (!$canDownload) {
+        if (!$canDownload || $this->config->getDisableDownload()) {
             $params["document"]["permissions"]["download"] = false;
             $params["document"]["permissions"]["print"] = false;
             $params["document"]["permissions"]["copy"] = false;
         }
 
-        if ($inframe === true) {
+        if ($inframe) {
             $params["_files_sharing"] = \OC::$server->getAppManager()->isInstalled("files_sharing");
         }
 
@@ -617,6 +620,11 @@ class EditorApiController extends OCSController {
         }
 
         if (!empty($this->config->getDocumentServerSecret())) {
+            $now = time();
+            $iat = $now;
+            $exp = $now + $this->config->getJwtExpiration() * 60;
+            $params["iat"] = $iat;
+            $params["exp"] = $exp;
             $token = \Firebase\JWT\JWT::encode($params, $this->config->getDocumentServerSecret(), "HS256");
             $params["token"] = $token;
         }

@@ -142,6 +142,10 @@ OC.L10N.register(
     "Select data source": "Selecteer gegevensbron",
     "The data source must not be the current document": "De gegevensbron mag niet het huidige document zijn",
     "Enable background connection check to the editors": "Verbindingscontrole op de achtergrond met de editors inschakelen",
-    "The domain in the file url does not match the domain of the Document server": "Het domein in de bestandsurl komt niet overeen met het domein van de Document Server"
+    "The domain in the file url does not match the domain of the Document server": "Het domein in de bestandsurl komt niet overeen met het domein van de Document Server",
+    "Select file": "Bestand selecteren",
+    "Same as system": "Zelfde als systeem",
+    "Contrast dark": "Contrast donker",
+    "Gray": "Grijs"
 },
 "nplurals=2; plural=(n != 1);");

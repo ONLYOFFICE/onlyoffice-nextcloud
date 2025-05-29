@@ -339,11 +339,25 @@ class AppConfig {
     public $_customizationPlugins = "customization_plugins";
 
     /**
+     * The config key for the disable downloading
+     *
+     * @var string
+     */
+    public $_disableDownload = "disable_download";
+
+    /**
      * The config key for the interval of editors availability check by cron
      *
      * @var string
      */
     private $_editors_check_interval = "editors_check_interval";
+
+    /**
+     * The config key for the JWT expiration
+     *
+     * @var string
+     */
+    private $_jwt_expiration = "jwt_expiration";
 
     /**
      * The config key for store cache
@@ -1012,17 +1026,50 @@ class AppConfig {
     /**
      * Get theme setting
      *
+     * @param bool $realValue - get real value (for example, for settings)
      * @return string
      */
-    public function getCustomizationTheme() {
-        $value = $this->config->getAppValue($this->appName, $this->_customizationTheme, "theme-classic-light");
-        if ($value === "theme-light") {
-            return "theme-light";
+    public function getCustomizationTheme($realValue = false) {
+        $value = $this->config->getAppValue($this->appName, $this->_customizationTheme, "theme-system");
+        $validThemes = [
+            "default" => "theme-system",
+            "light" => "theme-light",
+            "light-highcontrast" => "theme-classic-light",
+            "dark" => "theme-dark",
+            "dark-highcontrast" => "theme-contrast-dark",
+            "theme-gray"
+        ];
+
+        if (!in_array($value, $validThemes)) {
+            $value = "theme-system";
         }
-        if ($value === "theme-dark") {
-            return "theme-dark";
+
+        if ($realValue) {
+            return $value;
         }
-        return "theme-classic-light";
+
+        if ($value === "theme-system") {
+            $user = \OC::$server->getUserSession()->getUser();
+
+            if ($user !== null) {
+                $themingMode = $this->config->getUserValue($user->getUID(), "theming", "enabled-themes", "");
+
+                if ($themingMode !== "") {
+                    try {
+                        $themingModeArray = json_decode($themingMode, true);
+                        $themingMode = $themingModeArray[0] ?? "";
+
+                        if (isset($validThemes[$themingMode])) {
+                            return $validThemes[$themingMode];
+                        }
+                    } catch (Exception $e) {
+                        $this->logger->error("Error decoding theming mode: " . $e->getMessage());
+                    }
+                }
+            }
+        }
+
+        return $value;
     }
 
     /**
@@ -1386,6 +1433,16 @@ class AppConfig {
     }
 
     /**
+     * Get the disable download value
+     *
+     * @return bool
+     */
+    public function getDisableDownload() {
+        $disableDownload = (bool)$this->getSystemValue($this->_disableDownload);
+
+        return $disableDownload;
+    }
+    /**
      * Get the editors check interval
      *
      * @return int
@@ -1404,6 +1461,20 @@ class AppConfig {
             $interval = 60 * 60 * 24;
         }
         return (integer)$interval;
+    }
+
+    /**
+     * Get the JWT expiration
+     *
+     * @return int
+     */
+    public function getJwtExpiration() {
+        $jwtExp = $this->getSystemValue($this->_jwt_expiration);
+
+        if (empty($jwtExp)) {
+            return 5;
+        }
+        return (integer)$jwtExp;
     }
 
     /**

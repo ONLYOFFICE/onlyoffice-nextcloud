@@ -154,6 +154,9 @@ OC.L10N.register(
     "Go to Settings": "Zu den Einstellungen gehen",
     "Select file to insert text": "Wählen Sie die Datei aus, um Text einzufügen",
     "Select file": "Datei auswählen",
-    "Enable sharing (might increase editors loading time)": "Freigabe aktivieren (kann die Ladezeit des Editors verlängern)"
+    "Enable sharing (might increase editors loading time)": "Freigabe aktivieren (kann die Ladezeit des Editors verlängern)",
+    "Same as system": "Wie im System",
+    "Contrast dark": "Dunkler Kontrast",
+    "Gray": "Grau"
 },
 "nplurals=2; plural=(n != 1);");

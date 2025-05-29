@@ -230,6 +230,7 @@ class CallbackController extends Controller {
         $version = isset($hashData->version) ? $hashData->version : null;
         $changes = isset($hashData->changes) ? $hashData->changes : false;
         $template = isset($hashData->template) ? $hashData->template : false;
+        $filePath = $hashData->filePath ?? null;
         $this->logger->debug("Download: $fileId ($version)" . ($changes ? " changes" : ""));
 
         if (!empty($this->config->getDocumentServerSecret())) {
@@ -268,7 +269,7 @@ class CallbackController extends Controller {
         }
 
         $shareToken = isset($hashData->shareToken) ? $hashData->shareToken : null;
-        list($file, $error, $share) = empty($shareToken) ? $this->getFile($userId, $fileId, null, $changes ? null : $version, $template) : $this->getFileByToken($fileId, $shareToken, $changes ? null : $version);
+        list($file, $error, $share) = empty($shareToken) ? $this->getFile($userId, $fileId, $filePath, $changes ? null : $version, $template) : $this->getFileByToken($fileId, $shareToken, $changes ? null : $version);
 
         if (isset($error)) {
             return $error;
@@ -472,7 +473,7 @@ class CallbackController extends Controller {
         }
 
         $shareToken = isset($hashData->shareToken) ? $hashData->shareToken : null;
-        $filePath = null;
+        $filePath = $hashData->filePath;
 
         \OC_Util::tearDownFS();
 
@@ -526,7 +527,7 @@ class CallbackController extends Controller {
             }
         }
 
-        if (!empty($userId)) {
+        if (!empty($userId) && empty($shareToken)) {
             \OC_Util::setupFS($userId);
         }
 
@@ -697,7 +698,7 @@ class CallbackController extends Controller {
 
         if (!($file instanceof File)) {
             $this->logger->error("File not found: $fileId");
-            return [null, new JSONResponse(["message" => $this->trans->t("File not found")], Http::STATUS_NOT_FOUND)];
+            return [null, new JSONResponse(["message" => $this->trans->t("File not found")], Http::STATUS_NOT_FOUND), null];
         }
 
         if ($version > 0 && $this->versionManager !== null) {

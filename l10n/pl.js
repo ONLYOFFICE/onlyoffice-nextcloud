@@ -142,6 +142,10 @@ OC.L10N.register(
     "Select data source": "Wybierz źródło danych",
     "The data source must not be the current document": "Źródło danych nie może być bieżącym dokumentem",
     "Enable background connection check to the editors": "Włącz sprawdzanie połączenia z edytorami w tle",
-    "The domain in the file url does not match the domain of the Document server": "Domena w adresie URL pliku nie pasuje do domeny serwera dokumentów"
+    "The domain in the file url does not match the domain of the Document server": "Domena w adresie URL pliku nie pasuje do domeny serwera dokumentów",
+    "Select file": "Wybrać plik",
+    "Same as system": "Taki sam jak systemu",
+    "Contrast dark": "Ciemny kontrast",
+    "Gray": "Szary"
 },
 "nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);");

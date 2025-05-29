@@ -6,7 +6,7 @@
     <description>ONLYOFFICE app allows you to view, edit and collaborate on text documents, spreadsheets and presentations within Nextcloud using ONLYOFFICE Docs. This will create a new Edit in ONLYOFFICE action within the document library for Office documents. This allows multiple users to co-author documents in real time from the familiar web interface and save the changes back to your file storage.</description>
     <licence>agpl</licence>
     <author mail="dev@onlyoffice.com" homepage="https://www.onlyoffice.com/">Ascensio System SIA</author>
-    <version>9.8.0</version>
+    <version>9.9.0</version>
     <namespace>Onlyoffice</namespace>
     <types>
         <prevent_group_restriction/>
@@ -30,7 +30,7 @@
     <screenshot>https://raw.githubusercontent.com/ONLYOFFICE/onlyoffice-nextcloud/master/screenshots/open.png</screenshot>
     <screenshot>https://raw.githubusercontent.com/ONLYOFFICE/onlyoffice-nextcloud/master/screenshots/open_form.png</screenshot>
     <dependencies>
-        <nextcloud min-version="29" max-version="31"/>
+        <nextcloud min-version="30" max-version="31"/>
     </dependencies>
     <settings>
         <admin>OCA\Onlyoffice\AdminSettings</admin>
