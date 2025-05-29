@@ -372,6 +372,7 @@
 			'image/gif', 'image/tiff',
 			'image/jpeg', 'image/jpg', 'application/jpg', 'application/x-jpg',
 			'image/png', 'image/x-png', 'application/png', 'application/x-png',
+			'image/svg+xml',
 		]
 
 		if (event.data) {
