@@ -379,7 +379,7 @@ class EditorController extends Controller {
      */
     #[NoAdminRequired]
     #[NoCSRFRequired]
-    public function users($fileId, $operationType = null) {
+    public function users($fileId, $operationType = null, $from = null, $count = null, $search = null) {
         $this->logger->debug("Search users");
         $result = [];
         $currentUserGroups = [];
@@ -421,6 +421,7 @@ class EditorController extends Controller {
 
         $all = false;
         $users = [];
+        $total = null;
         if ($canShare && $operationType !== "protect") {
             if ($shareMemberGroups || $autocompleteMemberGroup) {
                 foreach ($currentUserGroups as $currentUserGroup) {
@@ -432,8 +433,21 @@ class EditorController extends Controller {
                     }
                 }
             } else {
-                $users = $this->userManager->search("");
-                $all = true;
+                if ($from !== null || $count !== null || $search !== null) {
+                    $searchString = $search !== null ? $search : "";
+                    $offset = $from !== null ? (int)$from : 0;
+                    $limit = $count !== null ? (int)$count : null;
+                    $users = $this->userManager->search($searchString, $limit, $offset);
+                    $all = true;
+                    $allCount = $this->userManager->countUsers();
+                    $total = 0;
+                    foreach ($allCount as $backend => $count) {
+                        $total += $count;
+                    }
+                } else {
+                    $users = $this->userManager->search("");
+                    $all = true;
+                }
             }
         }
 
@@ -459,6 +473,11 @@ class EditorController extends Controller {
                 }
                 array_push($result, $userElement);
             }
+        }
+
+        $result["usersData"] = $result;
+        if ($total !== null) {
+            $result["total"] = $total;
         }
 
         return $result;
