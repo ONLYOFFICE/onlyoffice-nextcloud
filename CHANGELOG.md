@@ -2,6 +2,7 @@
 
 ##
 ## Added
+- pagination support in getUser
 - insert svg to editor
 
 ## 9.9.0
