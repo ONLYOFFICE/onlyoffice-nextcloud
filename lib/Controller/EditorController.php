@@ -379,7 +379,7 @@ class EditorController extends Controller {
      */
     #[NoAdminRequired]
     #[NoCSRFRequired]
-    public function users($fileId, $operationType = null) {
+    public function users($fileId, $operationType = null, $from = null, $count = null, $search = null) {
         $this->logger->debug("Search users");
         $result = [];
         $currentUserGroups = [];
@@ -421,47 +421,89 @@ class EditorController extends Controller {
 
         $all = false;
         $users = [];
+        $searchString = $search !== null ? $search : "";
+        $offset = $from !== null ? (int)$from : 0;
+        $limit = $count !== null ? (int)$count : null;
         if ($canShare && $operationType !== "protect") {
+            // who can be given access
             if ($shareMemberGroups || $autocompleteMemberGroup) {
                 foreach ($currentUserGroups as $currentUserGroup) {
                     $group = $this->groupManager->get($currentUserGroup);
                     foreach ($group->getUsers() as $user) {
-                        if (!in_array($user, $users)) {
-                            array_push($users, $user);
+                        if ($this->filterUser($user, $currentUserId, $operationType, $searchString)) {
+                            $users[$user->getUID()] = $user;
                         }
                     }
                 }
             } else {
-                $users = $this->userManager->search("");
+                // all users
                 $all = true;
+                $allUsers = $this->userManager->search($searchString);
+
+                foreach ($allUsers as $user) {
+                    if ($this->filterUser($user, $currentUserId, $operationType, $searchString)) {
+                        $users[$user->getUID()] = $user;
+                    }
+                }
             }
         }
 
         if (!$all) {
+            // who has access
             $accessList = $this->shareManager->getAccessList($file);
             foreach ($accessList["users"] as $accessUser) {
                 $user = $this->userManager->get($accessUser);
-                if (!in_array($user, $users)) {
-                    array_push($users, $this->userManager->get($accessUser));
+                if ($this->filterUser($user, $currentUserId, $operationType, $searchString)) {
+                    $users[$user->getUID()] = $user;
                 }
             }
+        }
+
+        if ($limit !== null) {
+            $users = array_slice($users, $offset, $limit);
         }
 
         foreach ($users as $user) {
-            $email = $user->getEMailAddress();
-            if ($user->getUID() != $currentUserId && (!empty($email) || $operationType === "protect")) {
-                $userElement = [
-                    "name" => $user->getDisplayName(),
-                    "id" => $operationType === "protect" ? $this->buildUserId($user->getUID()) : $user->getUID()
-                ];
-                if (!empty($email)) {
-                    $userElement["email"] = $email;
-                }
-                array_push($result, $userElement);
-            }
+            $userElement = [
+                "name" => $user->getDisplayName(),
+                "id" => $operationType === "protect" ? $this->buildUserId($user->getUID()) : $user->getUID(),
+                "email" => $user->getEMailAddress()
+            ];
+            array_push($result, $userElement);
         }
 
         return $result;
+    }
+
+    /**
+     * Checking if the user matches the filter
+     *
+     * @param IUser $user - user
+     * @param string $currentUserId - id of current user
+     * @param string $operationType - type of the get user operation
+     * @param int $searchString - string for searching
+     *
+     * @return bool
+     */
+    private function filterUser($user, $currentUserId, $operationType, $searchString) {
+        return $user->getUID() != $currentUserId
+            && (!empty($user->getEMailAddress()) || $operationType === "protect")
+            && $this->searchInUser($user, $searchString);
+    }
+
+    /**
+     * Check if the user contains the search string
+     *
+     * @param IUser $user - user
+     * @param int $searchString - string for searching
+     *
+     * @return bool
+     */
+    private function searchInUser($user, $searchString) {
+        return empty($searchString)
+            || stripos($user->getUID(), $searchString) !== false
+            || stripos($user->getDisplayName(), $searchString) !== false
+            || !empty($user->getEMailAddress()) && stripos($user->getEMailAddress(), $searchString) !== false;
     }
 
     /**
