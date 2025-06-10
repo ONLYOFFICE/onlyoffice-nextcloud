@@ -452,8 +452,8 @@ class EditorController extends Controller {
             }
 
             if (!empty($searchString)) {
-                $users = array_filter($users, function($user) use ($searchString) {
-                    return stripos($user->getUID(), $searchString) !== false || 
+                $users = array_filter($users, function ($user) use ($searchString) {
+                    return stripos($user->getUID(), $searchString) !== false ||
                         stripos($user->getDisplayName(), $searchString) !== false ||
                         stripos($user->getEMailAddress(), $searchString) !== false;
                 });
