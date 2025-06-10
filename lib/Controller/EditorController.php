@@ -379,7 +379,7 @@ class EditorController extends Controller {
      */
     #[NoAdminRequired]
     #[NoCSRFRequired]
-    public function users($fileId, $operationType = null) {
+    public function users($fileId, $operationType = null, $from = null, $count = null, $search = null) {
         $this->logger->debug("Search users");
         $result = [];
         $currentUserGroups = [];
@@ -421,6 +421,10 @@ class EditorController extends Controller {
 
         $all = false;
         $users = [];
+        $total = null;
+        $searchString = $search !== null ? $search : "";
+        $offset = $from !== null ? (int)$from : 0;
+        $limit = $count !== null ? (int)$count : null;
         if ($canShare && $operationType !== "protect") {
             if ($shareMemberGroups || $autocompleteMemberGroup) {
                 foreach ($currentUserGroups as $currentUserGroup) {
@@ -432,7 +436,8 @@ class EditorController extends Controller {
                     }
                 }
             } else {
-                $users = $this->userManager->search("");
+                $users = $this->userManager->search($searchString, $limit, $offset);
+                $total = $this->userManager->countUsersTotal();
                 $all = true;
             }
         }
@@ -444,6 +449,20 @@ class EditorController extends Controller {
                 if (!in_array($user, $users)) {
                     array_push($users, $this->userManager->get($accessUser));
                 }
+            }
+
+            if (!empty($searchString)) {
+                $users = array_filter($users, function($user) use ($searchString) {
+                    return stripos($user->getUID(), $searchString) !== false || 
+                        stripos($user->getDisplayName(), $searchString) !== false ||
+                        stripos($user->getEMailAddress(), $searchString) !== false;
+                });
+            }
+
+            $total = count($users);
+
+            if ($offset !== null && $limit !== null) {
+                $users = array_slice($users, $offset, $limit);
             }
         }
 
@@ -459,6 +478,11 @@ class EditorController extends Controller {
                 }
                 array_push($result, $userElement);
             }
+        }
+
+        $result["usersData"] = $result;
+        if ($total !== null) {
+            $result["total"] = $total;
         }
 
         return $result;
