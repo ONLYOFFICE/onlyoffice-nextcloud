@@ -570,29 +570,37 @@
 
 	OCA.Onlyoffice.onRequestUsers = function(event) {
 		const operationType = typeof (event.data.c) !== 'undefined' ? event.data.c : null
+		let requestString = ''
+		const usersData = {}
+		usersData.c = operationType
 		switch (operationType) {
 		case 'info':
-			$.get(OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/userInfo?userIds={userIds}',
+			requestString = 'apps/' + OCA.Onlyoffice.AppName + '/ajax/userInfo?userIds={userIds}'
+			$.get(OC.generateUrl(requestString,
 				{
 					userIds: JSON.stringify(event.data.id),
 				}),
 			function onSuccess(response) {
-				OCA.Onlyoffice.docEditor.setUsers({
-					c: operationType,
-					users: response,
-				})
+				usersData.users = response.usersData
+				OCA.Onlyoffice.docEditor.setUsers(usersData)
 			})
 			break
 		default:
-			$.get(OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/users?fileId={fileId}&operationType=' + operationType,
+			requestString = 'apps/' + OCA.Onlyoffice.AppName + '/ajax/users?fileId={fileId}&operationType=' + operationType
+			if (typeof (event.data.from) !== 'undefined' && typeof (event.data.count) !== 'undefined' && typeof (event.data.search) !== 'undefined') {
+				requestString += '&from=' + event.data.from + '&count=' + event.data.count + '&search=' + encodeURIComponent(event.data.search)
+			}
+			$.get(OC.generateUrl(requestString,
 				{
 					fileId: OCA.Onlyoffice.fileId || 0,
 				}),
 			function onSuccess(response) {
-				OCA.Onlyoffice.docEditor.setUsers({
-					c: operationType,
-					users: response,
-				})
+				usersData.users = response.usersData
+				if (typeof (response.total) !== 'undefined') {
+					usersData.total = response.total
+				}
+
+				OCA.Onlyoffice.docEditor.setUsers(usersData)
 			})
 		}
 	}
