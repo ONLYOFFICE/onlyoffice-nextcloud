@@ -286,8 +286,8 @@ class CallbackController extends Controller {
         }
 
         if ((!empty($user) && !$file->isReadable()) || !$canDownload) {
-            if ($this->userSession->getUID() != $userId) {
-                $this->logger->error("Download error: expected $userId instead of " . $this->userSession->getUID());
+            if ($this->userSession->getUser()?->getUID() != $userId) {
+                $this->logger->error("Download error: expected $userId instead of " . $this->userSession->getUser()?->getUID());
             }
             $this->logger->error("Download without access right");
             return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
