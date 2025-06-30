@@ -64,6 +64,7 @@ use OCP\IUserManager;
 use OCP\IUserSession;
 use OCP\Share\IManager;
 use OCP\Share\IShare;
+use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -177,6 +178,13 @@ class EditorController extends Controller {
     private $emailManager;
 
     /**
+     * Folder manager
+     *
+     * @var FolderManager
+     */
+    private $folderManager;
+
+    /**
      * @param string $AppName - application name
      * @param IRequest $request - request object
      * @param IRootFolder $root - root folder
@@ -206,7 +214,8 @@ class EditorController extends Controller {
         IManager $shareManager,
         ISession $session,
         IGroupManager $groupManager,
-        IMailer $mailer
+        IMailer $mailer,
+        ContainerInterface $appContainer
     ) {
         parent::__construct($AppName, $request);
 
@@ -232,6 +241,10 @@ class EditorController extends Controller {
         $this->fileUtility = new FileUtility($AppName, $trans, $logger, $config, $shareManager, $session);
         $this->avatarManager = \OC::$server->getAvatarManager();
         $this->emailManager = new EmailManager($AppName, $trans, $logger, $mailer, $userManager, $urlGenerator);
+
+        $this->folderManager = \OC::$server->getAppManager()->isInstalled("groupfolders")
+            ? $appContainer->get(\OCA\GroupFolders\Folder\FolderManager::class)
+            : null;
     }
 
     /**
@@ -455,6 +468,22 @@ class EditorController extends Controller {
                 $user = $this->userManager->get($accessUser);
                 if ($this->filterUser($user, $currentUserId, $operationType, $searchString)) {
                     $users[$user->getUID()] = $user;
+                }
+            }
+
+            $fileInfo = $file->getFileInfo();
+            if ($fileInfo->getStorage()->instanceOfStorage(\OCA\GroupFolders\Mount\GroupFolderStorage::class)) {
+                if ($this->folderManager !== null) {
+                    $folderId = $this->folderManager->getFolderByPath($fileInfo->getPath());
+                    $folderUsers = $this->folderManager->searchUsers($folderId);
+                    foreach ($folderUsers as $folderUser) {
+                        $user = $this->userManager->get($folderUser["uid"]);
+                        if ($this->filterUser($user, $currentUserId, $operationType, $searchString)) {
+                            $users[$user->getUID()] = $user;
+                        }
+                    }
+                } else {
+                    $this->logger->error("Group folder manager is not available");
                 }
             }
         }
