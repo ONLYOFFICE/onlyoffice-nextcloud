@@ -2,7 +2,11 @@
 
 ##
 ## Added
+- pagination support in getUser
 - insert svg to editor
+
+## Changed
+- select user for protected region in team folder
 
 ## 9.9.0
 ## Added
