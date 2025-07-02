@@ -475,7 +475,7 @@ class EditorController extends Controller {
             if ($fileInfo->getStorage()->instanceOfStorage(\OCA\GroupFolders\Mount\GroupFolderStorage::class)) {
                 if ($this->folderManager !== null) {
                     $folderId = $this->folderManager->getFolderByPath($fileInfo->getPath());
-                    $folderUsers = $this->folderManager->searchUsers($folderId);
+                    $folderUsers = $this->folderManager->searchUsers($folderId, "", -1);
                     foreach ($folderUsers as $folderUser) {
                         $user = $this->userManager->get($folderUser["uid"]);
                         if ($this->filterUser($user, $currentUserId, $operationType, $searchString)) {
