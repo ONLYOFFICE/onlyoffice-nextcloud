@@ -82,7 +82,7 @@ There are several ways to do that:
 
 There are three ways to configure ONLYOFFICE integration settings in Nextcloud.
 
-### UI access
+### User interface (UI)
 
 Settings can be modified directly via the Nextcloud admin panel.
 
