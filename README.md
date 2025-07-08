@@ -91,6 +91,86 @@ Where the **documentserver** is the name of the server with the ONLYOFFICE Docum
 The address must be accessible for the user browser and from the Nextcloud server.
 The Nextcloud server address must also be accessible from ONLYOFFICE Document Server for correct work.
 
+There are three ways to configure ONLYOFFICE integration settings in Nextcloud:
+
+1. **UI access**. Settings can be modified directly via the Nextcloud admin panel.
+2. **occ commands**. Use the occ commands to set ONLYOFFICE settings for Nextcloud in the following way:
+
+    ```sh
+    php occ config:app:set onlyoffice {setting_key} --value={setting_value}
+    ```
+
+    where `{setting_key}` is the key of the ONLYOFFICE integration setting, and `{setting_value}` is the corresponding value.
+
+3. **config.php**. Directly define settings in the `config/config.php` file under the `'onlyoffice'` array.
+
+    ``` php
+    "onlyoffice" =>
+        array (
+            {setting_key} => {setting_value},
+        ),
+    ```
+
+    where `{setting_key}` is the key of the ONLYOFFICE integration setting, and `{setting_value}` is the corresponding value.
+
+The tables below list all available Nextcloud settings along with the supported configuration methods.
+
+### Common settings
+
+| Setting key                 | Description                                                    | Example                                                                   | UI | occ                                                                                                                                          | config.php                                                                                                             |
+|-----------------------------|----------------------------------------------------------------|---------------------------------------------------------------------------|----|----------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------|
+| `demo`                      | Connect to demo ONLYOFFICE Docs server.                        | -                                                                         | +  | -                                                                                                                                            | -                                                                                                                      |
+| `DocumentServerUrl`         | ONLYOFFICE Docs address.                                       | "http://\<documentserver>/"                                               | +  | +                                                                                                                                            | +<br /> The connector uses this value if no value is specified in the application configuration via UI or occ command. |
+| `DocumentServerInternalUrl` | ONLYOFFICE Docs address for internal requests from the server. | "http://<documentserver_internal>/"                                       | +  | +                                                                                                                                            | +<br /> The connector uses this value if no value is specified in the application configuration via UI or occ command. |
+| `StorageUrl`                | Nextcloud address available from document server.              | "http://\<storage_url>/"                                                  | +  | +                                                                                                                                            | +<br /> The connector uses this value if no value is specified in the application configuration via UI or occ command. |
+| `jwt_secret`                | Secret key (leave blank to disable).                           | "your_secret_key"                                                         | +  | +                                                                                                                                            | +                                                                                                                      |
+| `jwt_header`                | JWT header.                                                    | "AuthorizationJWT"                                                        | +  | +                                                                                                                                            | +                                                                                                                      |
+| `sameTab`                   | Open file in the same tab.                                     | false                                                                     | +  | +                                                                                                                                            | -                                                                                                                      |
+| `enableSharing`             | Enable sharing.                                                | true                                                                      | +  | +<br />If you forcibly enable this setting, will open editors in a new tab even when `sameTab === true`, which is not the intended behavior. | -                                                                                                                      |
+| `preview`                   | Use ONLYOFFICE to generate a document preview.                 | true                                                                      | +  | +                                                                                                                                            | -                                                                                                                      |
+| `advanced`                  | Provide advanced document permissions using ONLYOFFICE Docs.   | true                                                                      | +  | +                                                                                                                                            | -                                                                                                                      |
+| `cronChecker`               | Enable background connection check to the editors.             | true                                                                      | +  | +                                                                                                                                            | -                                                                                                                      |
+| `emailNotifications`        | Enable e-mail notifications.                                   | true                                                                      | +  | +                                                                                                                                            | -                                                                                                                      |
+| `versionHistory`            | Keep metadata for each version once the document is edited.    | true                                                                      | +  | +                                                                                                                                            | -                                                                                                                      |
+| `protection`                | Enable document protection.                                    | Possible values: `owner,` `all`. Any other value will default to `owner`. | +  | +                                                                                                                                            | -                                                                                                                      |
+| `groups`                    | Allow the following groups to access the editors.              | "['admin', 'editors']"                                                    | +  | +                                                                                                                                            | -                                                                                                                      |
+| `verify_peer_off`           | Disable certificate verification.                              | true                                                                      | +  | +                                                                                                                                            | +                                                                                                                      |
+| `unknownAuthor`             | Unknown author display name.                                   | "Guest User"                                                              | +  | +                                                                                                                                            | -                                                                                                                      |
+| `jwt_leeway`                | jwt_leeway                                                     | 60                                                                        | -  | -                                                                                                                                            | +                                                                                                                      |
+| `limit_thumb_size`          | limit_thumb_size                                               | 104857600                                                                 | -  | -                                                                                                                                            | +                                                                                                                      |
+| `disable_download`          | disable_download                                               | true                                                                      | -  | -                                                                                                                                            | +                                                                                                                      |
+| `editors_check_interval`    | editors_check_interval                                         | 86400                                                                     | -  | -                                                                                                                                            | +                                                                                                                      |
+| `jwt_expiration`            | jwt_expiration                                                 | 5                                                                         | -  | -                                                                                                                                            | +                                                                                                                      |
+
+### Editor customization settings
+
+| Setting key                  | Description                                          | Example                                                                                                                   | UI | occ | config.php |
+|------------------------------|------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------|----|-----|------------|
+| `customizationChat`          | Display Chat menu button.                            | false                                                                                                                     | +  | +   | -          |
+| `customizationCompactHeader` | Display the header more compact.                     | true                                                                                                                      | +  | +   | -          |
+| `customizationFeedback`      | Display Feedback & Support menu button.              | false                                                                                                                     | +  | +   | -          |
+| `customizationForcesave`     | Keep intermediate versions when editing (forcesave). | false                                                                                                                     | +  | +   | -          |
+| `customizationHelp`          | Display Help menu button.                            | false                                                                                                                     | +  | +   | -          |
+| `customizationToolbarNoTabs` | Display monochrome toolbar header.                   | false                                                                                                                     | +  | +   | -          |
+| `customizationReviewDisplay` | Review mode for viewing.                             | Possible values: `original`, `markup`, `final`. The default value is `original`.                                          | +  | +   | -          |
+| `customizationTheme`         | Default editor theme.                                | Possible values: `theme-system`, `theme-light`, `theme-classic-light`, `theme-dark`, `theme-contrast-dark`, `theme-gray`. | +  | +   | -          |
+| `customization_macros`       | Run document macros.                                 | false                                                                                                                     | +  | +   | -          |
+| `customization_plugins`      | Enable plugins.                                      | false                                                                                                                     | +  | +   | -          |
+
+### Watermark settings
+
+| Setting key            | Description                                              | Example                                                                        | UI | occ | config.php |
+|------------------------|----------------------------------------------------------|--------------------------------------------------------------------------------|----|-----|------------|
+| `watermark_enabled`    | Enable watermarking.                                     | yes                                                                            | +  | +   | -          |
+| `watermark_text`       | Watermark text.                                          | "{userId}, {date}"<br />Supported tags: `{userId}`, `{date}`, `{themingName}`. | +  | +   | -          |
+| `watermark_allGroups`  | Show watermark for users of groups.                      | -                                                                              | +  | -   | -          |
+| `watermark_allTags`    | Show watermark on tagged files.                          | -                                                                              | +  | -   | -          |
+| `watermark_linkAll`    | Show watermark for all shares.                           | yes                                                                            | +  | +   | -          |
+| `watermark_shareAll`   | Show watermark for all shares.                           | yes                                                                            | +  | +   | -          |
+| `watermark_linkSecure` | Show watermark for download hidden shares.               | -                                                                              | +  | -   | -          |
+| `watermark_linkRead`   | Show watermark for read only link shares.                | -                                                                              | +  | -   | -          |
+| `watermark_linkTags`   | Show watermark on link shares with specific system tags. | -                                                                              | +  | -   | -          |
+
 Sometimes your network configuration might not allow the requests between installed Nextcloud and ONLYOFFICE Document Server using the public addresses.
 The _Advanced server settings_ allows to set the ONLYOFFICE Document Server address for internal requests from Nextcloud server and the returning Nextcloud address for the internal requests from ONLYOFFICE Document Server.
 You need to enter them in the appropriate fields.
@@ -206,73 +286,73 @@ ONLYOFFICE offers different versions of its online document editors that can be 
 
 The table below will help you to make the right choice.
 
-| Pricing and licensing | Community Edition | Enterprise Edition |
-| ------------- | ------------- | ------------- |
-| | [Get it now](https://www.onlyoffice.com/download-docs.aspx?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud#docs-community)  | [Start Free Trial](https://www.onlyoffice.com/download-docs.aspx?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud#docs-enterprise)  |
-| Cost  | FREE  | [Go to the pricing page](https://www.onlyoffice.com/docs-enterprise-prices.aspx?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud)  |
-| Simultaneous connections | up to 20 maximum  | As in chosen pricing plan |
-| Number of users | up to 20 recommended | As in chosen pricing plan |
-| License | GNU AGPL v.3 | Proprietary |
-| **Support** | **Community Edition** | **Enterprise Edition** |
-| Documentation | [Help Center](https://helpcenter.onlyoffice.com/installation/docs-community-index.aspx) | [Help Center](https://helpcenter.onlyoffice.com/installation/docs-enterprise-index.aspx) |
-| Standard support | [GitHub](https://github.com/ONLYOFFICE/DocumentServer/issues) or paid | One year support included |
-| Premium support | [Contact us](mailto:sales@onlyoffice.com) | [Contact us](mailto:sales@onlyoffice.com) |
-| **Services** | **Community Edition** | **Enterprise Edition** |
-| Conversion Service                | + | + |
-| Document Builder Service          | + | + |
-| **Interface** | **Community Edition** | **Enterprise Edition** |
-| Tabbed interface                  | + | + |
-| Dark theme                        | + | + |
-| 125%, 150%, 175%, 200% scaling    | + | + |
-| White Label                       | - | - |
-| Integrated test example (node.js) | + | + |
-| Mobile web editors                | - | +* |
-| **Plugins & Macros** | **Community Edition** | **Enterprise Edition** |
-| Plugins                           | + | + |
-| Macros                            | + | + |
-| **Collaborative capabilities** | **Community Edition** | **Enterprise Edition** |
-| Two co-editing modes              | + | + |
-| Comments                          | + | + |
-| Built-in chat                     | + | + |
-| Review and tracking changes       | + | + |
-| Display modes of tracking changes | + | + |
-| Version history                   | + | + |
-| **Document Editor features** | **Community Edition** | **Enterprise Edition** |
-| Font and paragraph formatting   | + | + |
-| Object insertion                | + | + |
-| Adding Content control          | + | + | 
-| Editing Content control         | + | + | 
-| Layout tools                    | + | + |
-| Table of contents               | + | + |
-| Navigation panel                | + | + |
-| Mail Merge                      | + | + |
-| Comparing Documents             | + | + |
-| **Spreadsheet Editor features** | **Community Edition** | **Enterprise Edition** |
-| Font and paragraph formatting   | + | + |
-| Object insertion                | + | + |
-| Functions, formulas, equations  | + | + |
-| Table templates                 | + | + |
-| Pivot tables                    | + | + |
-| Data validation                 | + | + |
-| Conditional formatting          | + | + |
-| Sparklines                      | + | + |
-| Sheet Views                     | + | + |
-| **Presentation Editor features** | **Community Edition** | **Enterprise Edition** |
-| Font and paragraph formatting   | + | + |
-| Object insertion                | + | + |
-| Transitions                     | + | + |
-| Animations                      | + | + |
-| Presenter mode                  | + | + |
-| Notes                           | + | + |
-| **Form creator features** | **Community Edition** | **Enterprise Edition** |
-| Adding form fields	          | + | + |
-| Form preview                    | + | + |
-| Saving as PDF	                  | + | + |
-| **Working with PDF**      | **Community Edition** | **Enterprise Edition** |
-| Text annotations (highlight, underline, cross out) | + | + |
-| Comments                        | + | + |
-| Freehand drawings               | + | + |
-| Form filling                    | + | + |
-| | [Get it now](https://www.onlyoffice.com/download-docs.aspx?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud#docs-community)  | [Start Free Trial](https://www.onlyoffice.com/download-docs.aspx?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud#docs-enterprise)  |
+| Pricing and licensing                              | Community Edition                                                                                                                        | Enterprise Edition                                                                                                                              |
+|----------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------|
+|                                                    | [Get it now](https://www.onlyoffice.com/download-docs.aspx?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud#docs-community) | [Start Free Trial](https://www.onlyoffice.com/download-docs.aspx?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud#docs-enterprise) |
+| Cost                                               | FREE                                                                                                                                     | [Go to the pricing page](https://www.onlyoffice.com/docs-enterprise-prices.aspx?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud)  |
+| Simultaneous connections                           | up to 20 maximum                                                                                                                         | As in chosen pricing plan                                                                                                                       |
+| Number of users                                    | up to 20 recommended                                                                                                                     | As in chosen pricing plan                                                                                                                       |
+| License                                            | GNU AGPL v.3                                                                                                                             | Proprietary                                                                                                                                     |
+| **Support**                                        | **Community Edition**                                                                                                                    | **Enterprise Edition**                                                                                                                          |
+| Documentation                                      | [Help Center](https://helpcenter.onlyoffice.com/installation/docs-community-index.aspx)                                                  | [Help Center](https://helpcenter.onlyoffice.com/installation/docs-enterprise-index.aspx)                                                        |
+| Standard support                                   | [GitHub](https://github.com/ONLYOFFICE/DocumentServer/issues) or paid                                                                    | One year support included                                                                                                                       |
+| Premium support                                    | [Contact us](mailto:sales@onlyoffice.com)                                                                                                | [Contact us](mailto:sales@onlyoffice.com)                                                                                                       |
+| **Services**                                       | **Community Edition**                                                                                                                    | **Enterprise Edition**                                                                                                                          |
+| Conversion Service                                 | +                                                                                                                                        | +                                                                                                                                               |
+| Document Builder Service                           | +                                                                                                                                        | +                                                                                                                                               |
+| **Interface**                                      | **Community Edition**                                                                                                                    | **Enterprise Edition**                                                                                                                          |
+| Tabbed interface                                   | +                                                                                                                                        | +                                                                                                                                               |
+| Dark theme                                         | +                                                                                                                                        | +                                                                                                                                               |
+| 125%, 150%, 175%, 200% scaling                     | +                                                                                                                                        | +                                                                                                                                               |
+| White Label                                        | -                                                                                                                                        | -                                                                                                                                               |
+| Integrated test example (node.js)                  | +                                                                                                                                        | +                                                                                                                                               |
+| Mobile web editors                                 | -                                                                                                                                        | +*                                                                                                                                              |
+| **Plugins & Macros**                               | **Community Edition**                                                                                                                    | **Enterprise Edition**                                                                                                                          |
+| Plugins                                            | +                                                                                                                                        | +                                                                                                                                               |
+| Macros                                             | +                                                                                                                                        | +                                                                                                                                               |
+| **Collaborative capabilities**                     | **Community Edition**                                                                                                                    | **Enterprise Edition**                                                                                                                          |
+| Two co-editing modes                               | +                                                                                                                                        | +                                                                                                                                               |
+| Comments                                           | +                                                                                                                                        | +                                                                                                                                               |
+| Built-in chat                                      | +                                                                                                                                        | +                                                                                                                                               |
+| Review and tracking changes                        | +                                                                                                                                        | +                                                                                                                                               |
+| Display modes of tracking changes                  | +                                                                                                                                        | +                                                                                                                                               |
+| Version history                                    | +                                                                                                                                        | +                                                                                                                                               |
+| **Document Editor features**                       | **Community Edition**                                                                                                                    | **Enterprise Edition**                                                                                                                          |
+| Font and paragraph formatting                      | +                                                                                                                                        | +                                                                                                                                               |
+| Object insertion                                   | +                                                                                                                                        | +                                                                                                                                               |
+| Adding Content control                             | +                                                                                                                                        | +                                                                                                                                               |
+| Editing Content control                            | +                                                                                                                                        | +                                                                                                                                               |
+| Layout tools                                       | +                                                                                                                                        | +                                                                                                                                               |
+| Table of contents                                  | +                                                                                                                                        | +                                                                                                                                               |
+| Navigation panel                                   | +                                                                                                                                        | +                                                                                                                                               |
+| Mail Merge                                         | +                                                                                                                                        | +                                                                                                                                               |
+| Comparing Documents                                | +                                                                                                                                        | +                                                                                                                                               |
+| **Spreadsheet Editor features**                    | **Community Edition**                                                                                                                    | **Enterprise Edition**                                                                                                                          |
+| Font and paragraph formatting                      | +                                                                                                                                        | +                                                                                                                                               |
+| Object insertion                                   | +                                                                                                                                        | +                                                                                                                                               |
+| Functions, formulas, equations                     | +                                                                                                                                        | +                                                                                                                                               |
+| Table templates                                    | +                                                                                                                                        | +                                                                                                                                               |
+| Pivot tables                                       | +                                                                                                                                        | +                                                                                                                                               |
+| Data validation                                    | +                                                                                                                                        | +                                                                                                                                               |
+| Conditional formatting                             | +                                                                                                                                        | +                                                                                                                                               |
+| Sparklines                                         | +                                                                                                                                        | +                                                                                                                                               |
+| Sheet Views                                        | +                                                                                                                                        | +                                                                                                                                               |
+| **Presentation Editor features**                   | **Community Edition**                                                                                                                    | **Enterprise Edition**                                                                                                                          |
+| Font and paragraph formatting                      | +                                                                                                                                        | +                                                                                                                                               |
+| Object insertion                                   | +                                                                                                                                        | +                                                                                                                                               |
+| Transitions                                        | +                                                                                                                                        | +                                                                                                                                               |
+| Animations                                         | +                                                                                                                                        | +                                                                                                                                               |
+| Presenter mode                                     | +                                                                                                                                        | +                                                                                                                                               |
+| Notes                                              | +                                                                                                                                        | +                                                                                                                                               |
+| **Form creator features**                          | **Community Edition**                                                                                                                    | **Enterprise Edition**                                                                                                                          |
+| Adding form fields                                 | +                                                                                                                                        | +                                                                                                                                               |
+| Form preview                                       | +                                                                                                                                        | +                                                                                                                                               |
+| Saving as PDF                                      | +                                                                                                                                        | +                                                                                                                                               |
+| **Working with PDF**                               | **Community Edition**                                                                                                                    | **Enterprise Edition**                                                                                                                          |
+| Text annotations (highlight, underline, cross out) | +                                                                                                                                        | +                                                                                                                                               |
+| Comments                                           | +                                                                                                                                        | +                                                                                                                                               |
+| Freehand drawings                                  | +                                                                                                                                        | +                                                                                                                                               |
+| Form filling                                       | +                                                                                                                                        | +                                                                                                                                               |
+|                                                    | [Get it now](https://www.onlyoffice.com/download-docs.aspx?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud#docs-community) | [Start Free Trial](https://www.onlyoffice.com/download-docs.aspx?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud#docs-enterprise) |
 
 \* If supported by DMS.
