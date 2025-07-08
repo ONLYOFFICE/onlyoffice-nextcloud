@@ -120,10 +120,9 @@ where `{setting_key}` is the key of the ONLYOFFICE integration setting, and `{se
 Directly define settings in the `config/config.php` file under the `'onlyoffice'` array:
 
 ``` php
-"onlyoffice" =>
-    array (
-        {setting_key} => {setting_value},
-    ),
+"onlyoffice" => array (
+    {setting_key} => {setting_value},
+)
 ```
 
 where `{setting_key}` is the key of the ONLYOFFICE integration setting, and `{setting_value}` is the corresponding value.
