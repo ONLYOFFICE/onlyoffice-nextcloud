@@ -1555,6 +1555,9 @@ class AppConfig {
             "csv" => [
                 "edit" => true,
             ],
+            "vsdx" => [
+                "def" => true,
+            ],
         ];
         return $additionalFormatAttributes;
     }
