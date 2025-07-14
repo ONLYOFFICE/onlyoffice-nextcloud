@@ -4,9 +4,12 @@
 ## Added
 - pagination support in getUser
 - insert svg to editor
+- view vsdx, vssx, vstx, vsdm, vssm, vstm
+- view odg, md
 
 ## Changed
 - select user for protected region in team folder
+- edit xlsb
 
 ## 9.9.0
 ## Added
