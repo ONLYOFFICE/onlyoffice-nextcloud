@@ -1,11 +1,11 @@
 {
-    "name": "onlyoffice",
+    "name": "@onlyoffice/nextcloud",
     "version": "9.9.0",
     "lockfileVersion": 3,
     "requires": true,
     "packages": {
         "": {
-            "name": "onlyoffice",
+            "name": "@onlyoffice/nextcloud",
             "version": "9.9.0",
             "license": "AGPL-3.0",
             "dependencies": {
