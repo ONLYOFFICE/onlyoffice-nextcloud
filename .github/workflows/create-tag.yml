@@ -1,0 +1,27 @@
+name: Create Tag
+
+on:
+  push:
+    branches: [master]
+    paths-ignore:
+      - '.github/**'
+      - '**/AUTHORS.md'
+      - '**/LICENSE'
+      - '**/README.md'
+
+jobs:
+  create-tag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: Get Info
+        run: |
+          echo "version=$(grep -Eo '[0-9]+(\.[0-9]+)+' CHANGELOG.md | head -n 1)" >> $GITHUB_OUTPUT
+        id: info
+      - name: Create Tag
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+          git tag -a 'v${{ steps.info.outputs.version }}' -m 'Release/v${{ steps.info.outputs.version }}'
+          git push origin 'v${{ steps.info.outputs.version }}'
