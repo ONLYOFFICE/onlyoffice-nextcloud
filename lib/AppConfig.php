@@ -1033,11 +1033,8 @@ class AppConfig {
         $value = $this->config->getAppValue($this->appName, $this->_customizationTheme, "theme-system");
         $validThemes = [
             "default" => "theme-system",
-            "light" => "theme-light",
-            "light-highcontrast" => "theme-classic-light",
-            "dark" => "theme-dark",
-            "dark-highcontrast" => "theme-contrast-dark",
-            "theme-gray"
+            "light" => "default-light",
+            "dark" => "default-dark"
         ];
 
         if (!in_array($value, $validThemes)) {

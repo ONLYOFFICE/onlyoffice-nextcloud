@@ -278,38 +278,17 @@ if ($_["tagsEnabled"]) {
         </div>
         <div>
             <input type="radio" class="radio"
-                id="onlyofficeTheme_theme-light"
+                id="onlyofficeTheme_default-light"
                 name="theme"
-                <?php if ($_["theme"] === "theme-light") { ?>checked="checked"<?php } ?> />
-            <label for="onlyofficeTheme_theme-light"><?php p($l->t("Light")) ?></label>
+                <?php if ($_["theme"] === "default-light") { ?>checked="checked"<?php } ?> />
+            <label for="onlyofficeTheme_default-light"><?php p($l->t("Light")) ?></label>
         </div>
         <div>
             <input type="radio" class="radio"
-                id="onlyofficeTheme_theme-classic-light"
+                id="onlyofficeTheme_default-dark"
                 name="theme"
-                <?php if ($_["theme"] === "theme-classic-light") { ?>checked="checked"<?php } ?> />
-            <label for="onlyofficeTheme_theme-classic-light"><?php p($l->t("Classic Light")) ?></label>
-        </div>
-        <div>
-            <input type="radio" class="radio"
-                id="onlyofficeTheme_theme-dark"
-                name="theme"
-                <?php if ($_["theme"] === "theme-dark") { ?>checked="checked"<?php } ?> />
-            <label for="onlyofficeTheme_theme-dark"><?php p($l->t("Dark")) ?></label>
-        </div>
-        <div>
-            <input type="radio" class="radio"
-                id="onlyofficeTheme_theme-contrast-dark"
-                name="theme"
-                <?php if ($_["theme"] === "theme-contrast-dark") { ?>checked="checked"<?php } ?> />
-            <label for="onlyofficeTheme_theme-contrast-dark"><?php p($l->t("Contrast dark")) ?></label>
-        </div>
-        <div>
-            <input type="radio" class="radio"
-                id="onlyofficeTheme_theme-gray"
-                name="theme"
-                <?php if ($_["theme"] === "theme-gray") { ?>checked="checked"<?php } ?> />
-            <label for="onlyofficeTheme_theme-gray"><?php p($l->t("Gray")) ?></label>
+                <?php if ($_["theme"] === "default-dark") { ?>checked="checked"<?php } ?> />
+            <label for="onlyofficeTheme_default-dark"><?php p($l->t("Dark")) ?></label>
         </div>
     </div>
 
