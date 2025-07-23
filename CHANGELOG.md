@@ -10,6 +10,7 @@
 ## Changed
 - select user for protected region in team folder
 - edit xlsb
+- customization_goback setting removed
 
 ## 9.9.0
 ## Added
