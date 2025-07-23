@@ -119,7 +119,6 @@ OC.L10N.register(
     "Anonymous": "Anonym",
     "Default editor theme": "Standard editortema",
     "Light": "Ljus",
-    "Classic Light": "Klassiskt ljus",
     "Dark": "Mörk",
     "Review only": "Endast granskning",
     "Comment only": "Endast kommentar",
@@ -153,8 +152,6 @@ OC.L10N.register(
     "This is a mail message to notify that the connection with the ONLYOFFICE Document Server has been lost. Please check the connection settings:": "Detta är ett e-postmeddelande för att meddela att anslutningen till ONLYOFFICE Document Server har förlorats. Kontrollera anslutningsinställningarna:",
     "Go to Settings": "Gå till inställningar",
     "Select file": "Välj fil",
-    "Same as system": "Samma som systemet",
-    "Contrast dark": "Mörk kontrast",
-    "Gray": "Grå"
+    "Same as system": "Samma som systemet"
 },
 "nplurals=2; plural=(n != 1);");

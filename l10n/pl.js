@@ -119,7 +119,6 @@ OC.L10N.register(
     "Anonymous": "Anonimowy",
     "Default editor theme": "Domyślny motyw edytora",
     "Light": "Jasny",
-    "Classic Light": "Klasyczny jasny",
     "Dark": "Ciemny",
     "Review only": "Tylko recenzja",
     "Comment only": "Tylko komentarz",
@@ -144,8 +143,6 @@ OC.L10N.register(
     "Enable background connection check to the editors": "Włącz sprawdzanie połączenia z edytorami w tle",
     "The domain in the file url does not match the domain of the Document server": "Domena w adresie URL pliku nie pasuje do domeny serwera dokumentów",
     "Select file": "Wybrać plik",
-    "Same as system": "Taki sam jak systemu",
-    "Contrast dark": "Ciemny kontrast",
-    "Gray": "Szary"
+    "Same as system": "Taki sam jak systemu"
 },
 "nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);");

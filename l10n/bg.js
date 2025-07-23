@@ -119,7 +119,6 @@ OC.L10N.register(
     "Anonymous": "Анонимен",
     "Default editor theme": "Редакторска тема по подразбиране",
     "Light": "Светла",
-    "Classic Light": "Класически светла",
     "Dark": "Тъмна",
     "Review only": "Cамо преглед",
     "Comment only": "Cамо коментар",
@@ -153,8 +152,6 @@ OC.L10N.register(
     "This is a mail message to notify that the connection with the ONLYOFFICE Document Server has been lost. Please check the connection settings:": "Това е имейл съобщение, известяващо, че връзката с ONLYOFFICE сървъра за документи беше прекъсната. Моля, проверете настройките на свързване:",
     "Go to Settings": "Отиди в настройки",
     "Select file": "Избери файл",
-    "Same as system": "Същото като в системата",
-    "Contrast dark": "Контрастна тъмна",
-    "Gray": "Сива"
+    "Same as system": "Същото като в системата"
 },
 "nplurals=2; plural=(n != 1);");

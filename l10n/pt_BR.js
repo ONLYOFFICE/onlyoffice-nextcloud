@@ -119,7 +119,6 @@ OC.L10N.register(
     "Anonymous": "Anônimo",
     "Default editor theme": "Tema do editor padrão",
     "Light": "Claro",
-    "Classic Light": "Clássico claro",
     "Dark": "Escuro",
     "Review only": "Revisão apenas",
     "Comment only": "Comentar apenas",
@@ -155,8 +154,6 @@ OC.L10N.register(
     "Select file to insert text": "Selecionar arquivo para inserir texto",
     "Select file": "Selecionar arquivo",
     "Enable sharing (might increase editors loading time)": "Habilitar compartilhamento (pode aumentar o tempo de carregamento dos editores)",
-    "Same as system": "O mesmo que sistema",
-    "Contrast dark": "Contraste escuro",
-    "Gray": "Cinza"
+    "Same as system": "O mesmo que sistema"
 },
 "nplurals=2; plural=(n > 1);");

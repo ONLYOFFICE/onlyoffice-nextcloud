@@ -119,7 +119,6 @@ OC.L10N.register(
     "Anonymous": "Anoniem",
     "Default editor theme": "Standaard editor thema",
     "Light": "Licht",
-    "Classic Light": "Klassiek Licht",
     "Dark": "Donker",
     "Review only": "Aleen overzicht",
     "Comment only": "Alleen commentaar",
@@ -144,8 +143,6 @@ OC.L10N.register(
     "Enable background connection check to the editors": "Verbindingscontrole op de achtergrond met de editors inschakelen",
     "The domain in the file url does not match the domain of the Document server": "Het domein in de bestandsurl komt niet overeen met het domein van de Document Server",
     "Select file": "Bestand selecteren",
-    "Same as system": "Zelfde als systeem",
-    "Contrast dark": "Contrast donker",
-    "Gray": "Grijs"
+    "Same as system": "Zelfde als systeem"
 },
 "nplurals=2; plural=(n != 1);");
