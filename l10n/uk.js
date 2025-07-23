@@ -52,7 +52,6 @@ OC.L10N.register(
     "Display the header more compact" : "Зробити заголовок компактнішим",
     "Display Feedback & Support menu button" : "Показувати кнопку зворотнього зв'язку та підтримки",
     "Display Help menu button" : "Показувати пункт меню Довідка",
-    "Display monochrome toolbar header" : "Зробити заголовок панелі інструментів однотонним",
     "Save as" : "Зберегти як",
     "File saved" : "Файл збережено",
     "Insert image" : "Вставити зображення",

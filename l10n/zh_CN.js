@@ -52,7 +52,6 @@ OC.L10N.register(
     "Display the header more compact" : "更紧致的显示菜单栏",
     "Display Feedback & Support menu button" : "显示反馈&支持菜单按钮",
     "Display Help menu button" : "显示帮助菜单按钮",
-    "Display monochrome toolbar header" : "显示单色工具栏标题",
     "Save as" : "另存为",
     "File saved" : "文件已保存",
     "Insert image" : "插入图片",

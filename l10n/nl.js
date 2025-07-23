@@ -52,7 +52,6 @@ OC.L10N.register(
     "Display the header more compact": "De koptekst compacter weergeven",
     "Display Feedback & Support menu button": "Menuknop Terugkoppeling & Ondersteuning weergeven",
     "Display Help menu button": "Menuknop Help weergeven",
-    "Display monochrome toolbar header": "Toon de monochrome koptekst van de werkbalk",
     "Save as": "Opslaan als",
     "File saved": "Bestand opgeslagen",
     "Insert image": "Afbeelding invoegen",
