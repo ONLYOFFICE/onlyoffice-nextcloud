@@ -566,7 +566,7 @@ class EditorApiController extends OCSController {
             $params["_file_path"] = $userFolder->getRelativePath($file->getPath());
         }
 
-        $canGoBack = $folderLink !== null && $this->config->getSystemValue($this->config->_customization_goback) !== false;
+        $canGoBack = $folderLink !== null;
         if ($inviewer) {
             if ($canGoBack) {
                 $params["editorConfig"]["customization"]["goback"] = [

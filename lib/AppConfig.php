@@ -318,13 +318,6 @@ class AppConfig {
     public $_customization_autosave = "customization_autosave";
 
     /**
-     * The config key for the goback
-     *
-     * @var string
-     */
-    public $_customization_goback = "customization_goback";
-
-    /**
      * The config key for the macros
      *
      * @var string
