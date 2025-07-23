@@ -119,7 +119,6 @@ OC.L10N.register(
     "Anonymous": "匿名",
     "Default editor theme": "编辑器默认的主题",
     "Light": "光",
-    "Classic Light": "经典浅色",
     "Dark": "黑暗的",
     "Review only": "仅审阅",
     "Comment only": "仅评论",
@@ -155,8 +154,6 @@ OC.L10N.register(
     "Select file to insert text": "选择文件以插入文本",
     "Select file": "选择文件",
     "Enable sharing (might increase editors loading time)": "启用共享功能(可能会延长编辑器加载时间）",
-    "Same as system": "和系統一致",
-    "Contrast dark": "深色对比",
-    "Gray": "灰色"
+    "Same as system": "和系統一致"
 },
 "nplurals=1; plural=0;");

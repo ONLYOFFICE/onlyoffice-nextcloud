@@ -114,7 +114,6 @@ OC.L10N.register(
     "Security": "Seguretat",
     "Anonymous": "Anònim",
     "Light": "Llum",
-    "Classic Light": "Llum clàssica",
     "Dark": "Fosc",
     "Review only": "Només revisió",
     "Comment only": "Només comentari",
@@ -124,8 +123,6 @@ OC.L10N.register(
     "Share link": "Comparteix un enllaç",
     "conversation": "conversa",
     "Select file": "Seleccioneu un fitxer",
-    "Same as system": "Igual que el sistema",
-    "Contrast dark": "Contrast fosc",
-    "Gray": "Gris"
+    "Same as system": "Igual que el sistema"
 },
 "nplurals=2; plural=(n != 1);");

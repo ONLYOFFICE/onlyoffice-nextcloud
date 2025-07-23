@@ -116,7 +116,6 @@ OC.L10N.register(
     "Anonymous": "Anonym",
     "Default editor theme": "Standard editortema",
     "Light": "Lys",
-    "Classic Light": "Klassisk lys",
     "Dark": "Mørk",
     "Review only": "Kun anmeldelse",
     "Comment only": "Kun kommentar",
@@ -127,8 +126,6 @@ OC.L10N.register(
     "Share link": "Share link",
     "conversation": "samtale",
     "Select file": "Vælg fil",
-    "Same as system": "Samme som system",
-    "Contrast dark": "Mørk kontrast",
-    "Gray": "Gråt"
+    "Same as system": "Samme som system"
 },
 "nplurals=2; plural=(n != 1);");

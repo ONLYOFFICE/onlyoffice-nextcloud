@@ -119,7 +119,6 @@ OC.L10N.register(
     "Anonymous": "Anonimoa",
     "Default editor theme": "Editorearen lehenetsitako gaia",
     "Light": "Argia",
-    "Classic Light": "Klasiko argia",
     "Dark": "Iluna",
     "Review only": "Berrikuspena bakarrik",
     "Comment only": "Iruzkinak bakarrik",
@@ -153,8 +152,6 @@ OC.L10N.register(
     "This is a mail message to notify that the connection with the ONLYOFFICE Document Server has been lost. Please check the connection settings:": "Mezu elektroniko honen bidez jakinarazten dizugu ONLYOFFICE dokumentu-zerbitzariarekiko konexioa galdu dela. Mesedez, berrikusi konexio ezarpenak:",
     "Go to Settings": "Ezarpenetara joan",
     "Select file": "Hautatu fitxategia",
-    "Same as system": "Sistemako berdina",
-    "Contrast dark": "Kontraste iluna",
-    "Gray": "Grisa"
+    "Same as system": "Sistemako berdina"
 },
 "nplurals=2; plural=(n != 1);");

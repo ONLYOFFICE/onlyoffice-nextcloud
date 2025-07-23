@@ -119,7 +119,6 @@ OC.L10N.register(
     "Anonymous": "匿名",
     "Default editor theme": "エディターのデフォルトテーマ",
     "Light": "明るい",
-    "Classic Light": "ライト(クラシック)",
     "Dark": "ダーク",
     "Review only": "レビューのみ",
     "Comment only": "コメントのみ",
@@ -153,8 +152,6 @@ OC.L10N.register(
     "This is a mail message to notify that the connection with the ONLYOFFICE Document Server has been lost. Please check the connection settings:": "これは、ONLYOFFICEドキュメントサーバーとの接続が失われたことを通知するメッセージです。接続設定をご確認ください：",
     "Go to Settings": "設定に進む",
     "Select file": "ファイルを選択",
-    "Same as system": "システム設定と同じ",
-    "Contrast dark": "ダークコントラスト",
-    "Gray": "灰色"
+    "Same as system": "システム設定と同じ"
 },
 "nplurals=1; plural=0;");
