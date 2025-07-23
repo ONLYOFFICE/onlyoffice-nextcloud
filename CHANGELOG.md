@@ -10,6 +10,7 @@
 ## Changed
 - select user for protected region in team folder
 - edit xlsb
+- there are only system, light and dark themes
 
 ## 9.9.0
 ## Added
@@ -446,7 +447,6 @@
 ## Changed
 - fix editor size on mobile
 - fix php warning
-- there are only system, light and dark themes
 
 ## 2.1.2
 ## Added
