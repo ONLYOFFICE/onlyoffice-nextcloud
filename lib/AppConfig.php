@@ -185,13 +185,6 @@ class AppConfig {
     private $_customizationHelp = "customizationHelp";
 
     /**
-     * The config key for the no tabs setting
-     *
-     * @var string
-     */
-    private $_customizationToolbarNoTabs = "customizationToolbarNoTabs";
-
-    /**
      * The config key for the review mode setting
      *
      * @var string
@@ -956,26 +949,6 @@ class AppConfig {
      */
     public function getCustomizationHelp() {
         return $this->config->getAppValue($this->appName, $this->_customizationHelp, "true") === "true";
-    }
-
-    /**
-     * Save without tabs setting
-     *
-     * @param bool $value - without tabs
-     */
-    public function setCustomizationToolbarNoTabs($value) {
-        $this->logger->info("Set without tabs: " . json_encode($value), ["app" => $this->appName]);
-
-        $this->config->setAppValue($this->appName, $this->_customizationToolbarNoTabs, json_encode($value));
-    }
-
-    /**
-     * Get without tabs setting
-     *
-     * @return bool
-     */
-    public function getCustomizationToolbarNoTabs() {
-        return $this->config->getAppValue($this->appName, $this->_customizationToolbarNoTabs, "true") === "true";
     }
 
     /**
