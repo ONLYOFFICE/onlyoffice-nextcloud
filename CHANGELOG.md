@@ -6,6 +6,7 @@
 - insert svg to editor
 - view vsdx, vssx, vstx, vsdm, vssm, vstm
 - view odg, md
+- setting for enabling live-view for shared docs 
 
 ## Changed
 - select user for protected region in team folder
