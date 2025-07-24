@@ -51,7 +51,6 @@ OC.L10N.register(
     "Display the header more compact" : "Vis værktøjslinjen mere kompakt",
     "Display Feedback & Support menu button" : "Vis feedback- og supportmenuknap",
     "Display Help menu button" : "Vis menuknappen Hjælp",
-    "Display monochrome toolbar header" : "Vis monokrom værktøjslinje",
     "Save as" : "Gem som",
     "File saved" : "Filen er gemt",
     "Insert image" : "Indsæt billede",

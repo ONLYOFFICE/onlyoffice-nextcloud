@@ -786,11 +786,6 @@ class EditorApiController extends OCSController {
             $params["editorConfig"]["customization"]["uiTheme"] = $theme;
         }
 
-        //default is false
-        if ($this->config->getCustomizationToolbarNoTabs() === true) {
-            $params["editorConfig"]["customization"]["toolbarNoTabs"] = true;
-        }
-
         //default is true
         if ($this->config->getCustomizationMacros() === false) {
             $params["editorConfig"]["customization"]["macros"] = false;

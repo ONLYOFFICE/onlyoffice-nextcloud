@@ -150,7 +150,6 @@ class SettingsController extends Controller {
             "forcesave" => $this->config->getCustomizationForcesave(),
             "liveViewOnShare" => $this->config->getLiveViewOnShare(),
             "help" => $this->config->getCustomizationHelp(),
-            "toolbarNoTabs" => $this->config->getCustomizationToolbarNoTabs(),
             "successful" => $this->config->settingsAreSuccessful(),
             "watermark" => $this->config->getWatermarkSettings(),
             "plugins" => $this->config->getCustomizationPlugins(),
@@ -240,7 +239,6 @@ class SettingsController extends Controller {
      * @param bool $forcesave - forcesave
      * @param bool $liveViewOnShare - live view on share
      * @param bool $help - display help
-     * @param bool $toolbarNoTabs - display toolbar tab
      * @param string $reviewDisplay - review viewing mode
      * @param string $unknownAuthor - display unknown author
      *
@@ -263,7 +261,6 @@ class SettingsController extends Controller {
         $forcesave,
         $liveViewOnShare,
         $help,
-        $toolbarNoTabs,
         $reviewDisplay,
         $theme,
         $unknownAuthor
@@ -285,7 +282,6 @@ class SettingsController extends Controller {
         $this->config->setCustomizationForcesave($forcesave);
         $this->config->setLiveViewOnShare($liveViewOnShare);
         $this->config->setCustomizationHelp($help);
-        $this->config->setCustomizationToolbarNoTabs($toolbarNoTabs);
         $this->config->setCustomizationReviewDisplay($reviewDisplay);
         $this->config->setCustomizationTheme($theme);
         $this->config->setUnknownAuthor($unknownAuthor);
