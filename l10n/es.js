@@ -52,7 +52,6 @@ OC.L10N.register(
     "Display the header more compact" : "Mostrar el encabezado más compacto",
     "Display Feedback & Support menu button" : "Mostrar el botón de Feedback y Soporte",
     "Display Help menu button" : "Mostrar el botón de Ayuda",
-    "Display monochrome toolbar header" : "Mostrar el encabezado monocromático de la barra de herramientas",
     "Save as" : "Guardar como",
     "File saved" : "El archivo ha sido guardado",
     "Insert image" : "Insertar imagen",

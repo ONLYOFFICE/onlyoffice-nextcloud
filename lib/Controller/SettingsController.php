@@ -149,7 +149,6 @@ class SettingsController extends Controller {
             "feedback" => $this->config->getCustomizationFeedback(),
             "forcesave" => $this->config->getCustomizationForcesave(),
             "help" => $this->config->getCustomizationHelp(),
-            "toolbarNoTabs" => $this->config->getCustomizationToolbarNoTabs(),
             "successful" => $this->config->settingsAreSuccessful(),
             "watermark" => $this->config->getWatermarkSettings(),
             "plugins" => $this->config->getCustomizationPlugins(),
@@ -238,7 +237,6 @@ class SettingsController extends Controller {
      * @param bool $feedback - display feedback
      * @param bool $forcesave - forcesave
      * @param bool $help - display help
-     * @param bool $toolbarNoTabs - display toolbar tab
      * @param string $reviewDisplay - review viewing mode
      * @param string $unknownAuthor - display unknown author
      *
@@ -260,7 +258,6 @@ class SettingsController extends Controller {
         $feedback,
         $forcesave,
         $help,
-        $toolbarNoTabs,
         $reviewDisplay,
         $theme,
         $unknownAuthor
@@ -281,7 +278,6 @@ class SettingsController extends Controller {
         $this->config->setCustomizationFeedback($feedback);
         $this->config->setCustomizationForcesave($forcesave);
         $this->config->setCustomizationHelp($help);
-        $this->config->setCustomizationToolbarNoTabs($toolbarNoTabs);
         $this->config->setCustomizationReviewDisplay($reviewDisplay);
         $this->config->setCustomizationTheme($theme);
         $this->config->setUnknownAuthor($unknownAuthor);

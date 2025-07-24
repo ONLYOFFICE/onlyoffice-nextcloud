@@ -52,7 +52,6 @@ OC.L10N.register(
     "Display the header more compact": "ヘッダーをよりコンパクトに表示する",
     "Display Feedback & Support menu button": "フィードバックとサポートメニューボタンを表示する",
     "Display Help menu button": "ヘルプメニューボタンを表示する",
-    "Display monochrome toolbar header": "ツールバーヘッダーをモノクロで表示する",
     "Save as" : "別名で保存",
     "File saved" : "ファイルが保存されました",
     "Insert image" : "画像を挿入",

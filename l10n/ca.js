@@ -51,7 +51,6 @@ OC.L10N.register(
     "Display the header more compact": "Mostrar l'encapçalat més compacte",
     "Display Feedback & Support menu button": "Mostrar el botó de Feedback i Suport",
     "Display Help menu button": "Mostrar el botó d'Ajuda",
-    "Display monochrome toolbar header": "Mostrar l'encapçalat monocromàtic de la barra d'eines",
     "Save as": "Guardar com",
     "File saved": "L'arxiu ha estat desat",
     "Insert image": "Inserir imatge",
