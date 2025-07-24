@@ -443,7 +443,7 @@ class EditorApiController extends OCSController {
         } else {
             $params["editorConfig"]["mode"] = "view";
 
-            if (isset($shareToken) && empty($userId)) {
+            if (isset($shareToken) && empty($userId) && !$this->config->getLiveViewOnShare()) {
                 $params["editorConfig"]["coEditing"] = [
                     "mode" => "strict",
                     "change" => false
