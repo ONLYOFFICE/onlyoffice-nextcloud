@@ -159,6 +159,10 @@
 			})
 		}
 
+		if (!document.getElementById('onlyofficeSettingsState').value) {
+			OCP.Toast.error(t(OCA.Onlyoffice.AppName, 'Error when trying to connect'))
+		}
+
 		$('#onlyofficeAddrSave').click(function() {
 			$('.section-onlyoffice').addClass('icon-loading')
 			const onlyofficeUrl = $('#onlyofficeUrl').val().trim()

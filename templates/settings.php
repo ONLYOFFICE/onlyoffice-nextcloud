@@ -431,4 +431,5 @@ if ($_["tagsEnabled"]) {
     <br />
     <p><button id="onlyofficeSecuritySave" class="button"><?php p($l->t("Save")) ?></button></p>
 
+    <input type ="hidden" id="onlyofficeSettingsState" value="<?php $_["successful"] ?>" />
 </div>
