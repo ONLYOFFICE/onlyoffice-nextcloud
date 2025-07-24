@@ -52,7 +52,6 @@ OC.L10N.register(
     "Display the header more compact" : "Erakutsi goiburua trinkoago",
     "Display Feedback & Support menu button" : "Erakutsi Feedback eta Soporte menu botoia",
     "Display Help menu button" : "Erakusti Laguntza menu botoia",
-    "Display monochrome toolbar header" : "Erakutsi erreminta-barrako goiburu monokromatikoa",
     "Save as" : "Gorde honela",
     "File saved" : "Fitxategia gorde da",
     "Insert image" : "Txertatu irudia",

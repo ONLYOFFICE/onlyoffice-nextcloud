@@ -12,6 +12,7 @@
 - edit xlsb
 - customization_goback setting removed
 - there are only system, light and dark themes
+- toolbarNoTabs setting removed
 
 ## 9.9.0
 ## Added
