@@ -950,7 +950,7 @@ class AppConfig {
     }
 
     /**
-     * Get forcesave setting
+     * Get live view on share setting
      *
      * @return bool
      */
