@@ -159,8 +159,9 @@
 			})
 		}
 
-		if (!document.getElementById('onlyofficeSettingsState').value) {
-			OCP.Toast.error(t(OCA.Onlyoffice.AppName, 'Error when trying to connect'))
+		const connectionError = document.getElementById('onlyofficeSettingsState').value
+		if (connectionError !== '') {
+			OCP.Toast.error(t(OCA.Onlyoffice.AppName, 'Error when trying to connect') + ' (' + connectionError + ')')
 		}
 
 		$('#onlyofficeAddrSave').click(function() {
