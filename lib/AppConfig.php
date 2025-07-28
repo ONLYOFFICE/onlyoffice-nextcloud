@@ -1335,7 +1335,7 @@ class AppConfig {
      * @return bool
      */
     public function settingsAreSuccessful() {
-        return empty($this->config->getAppValue($this->appName, $this->_settingsError, ""));
+        return empty($this->getSettingsError());
     }
 
     /**
