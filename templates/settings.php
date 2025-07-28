@@ -204,6 +204,12 @@ if ($_["tagsEnabled"]) {
         <label for="onlyofficeForcesave"><?php p($l->t("Keep intermediate versions when editing (forcesave)")) ?></label>
     </p>
 
+    <p>
+        <input type="checkbox" class="checkbox" id="onlyofficeLiveViewOnShare"
+            <?php if ($_["liveViewOnShare"]) { ?>checked="checked"<?php } ?> />
+        <label for="onlyofficeLiveViewOnShare"><?php p($l->t("Enable live-viewing mode when accessing file by public link")) ?></label>
+    </p>
+
     <p class="onlyoffice-header">
         <?php p($l->t("The customization section allows personalizing the editor interface")) ?>
     </p>
