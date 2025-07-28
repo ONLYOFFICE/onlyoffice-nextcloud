@@ -6,7 +6,7 @@
 - insert svg to editor
 - view vsdx, vssx, vstx, vsdm, vssm, vstm
 - view odg, md
-- setting for enabling live-view for shared docs 
+- setting for enabling live-view for shared docs
 
 ## Changed
 - select user for protected region in team folder
@@ -417,7 +417,7 @@
 - inserting images from the folder
 - Mail Merge
 - connection to the demo server
-- embedding a watermark 
+- embedding a watermark
 
 ## Changed
 - updated files for compatibility with MS Office v2016
