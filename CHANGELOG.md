@@ -13,6 +13,7 @@
 - customization_goback setting removed
 - there are only system, light and dark themes
 - toolbarNoTabs setting removed
+- display error when opening settings page if it exists
 
 ## 9.9.0
 ## Added
