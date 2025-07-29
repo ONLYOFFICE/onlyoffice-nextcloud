@@ -196,6 +196,7 @@
 							config.events.onRequestOpen = OCA.Onlyoffice.onRequestOpen
 							config.events.onRequestReferenceSource = OCA.Onlyoffice.onRequestReferenceSource
 							config.events.onMetaChange = OCA.Onlyoffice.onMetaChange
+							config.events.onRequestRefreshFile = OCA.Onlyoffice.onRequestRefreshFile
 
 							if (OCA.Onlyoffice.currentUser.uid) {
 								config.events.onRequestUsers = OCA.Onlyoffice.onRequestUsers
@@ -694,6 +695,16 @@
 				},
 			})
 		}
+	}
+
+	OCA.Onlyoffice.onRequestRefreshFile = function() {
+		const configUrl = OC.linkToOCS('apps/' + OCA.Onlyoffice.AppName + '/api/v1/config', 2) + (OCA.Onlyoffice.fileId || 0)
+		$.ajax({
+			url: configUrl,
+			success: function onSuccess(config) {
+				OCA.Onlyoffice.docEditor.refreshFile(config)
+			},
+		})
 	}
 
 	OCA.Onlyoffice.showMessage = function(message, type = 'success', props = null) {
