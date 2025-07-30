@@ -7,6 +7,7 @@
 - view vsdx, vssx, vstx, vsdm, vssm, vstm
 - view odg, md
 - setting for enabling live-view for shared docs
+- refresh file when connection is restored
 
 ## Changed
 - select user for protected region in team folder
