@@ -47,13 +47,12 @@
 
 		OCA.Onlyoffice.fileId = $('#iframeEditor').data('id')
 		OCA.Onlyoffice.shareToken = $('#iframeEditor').data('sharetoken')
-		const directToken = $('#iframeEditor').data('directtoken')
+		OCA.Onlyoffice.directToken = $('#iframeEditor').data('directtoken')
 		OCA.Onlyoffice.template = $('#iframeEditor').data('template')
 		OCA.Onlyoffice.inframe = !!$('#iframeEditor').data('inframe')
 		OCA.Onlyoffice.inviewer = !!$('#iframeEditor').data('inviewer')
 		OCA.Onlyoffice.filePath = $('#iframeEditor').data('path')
 		OCA.Onlyoffice.anchor = $('#iframeEditor').attr('data-anchor')
-		const guestName = localStorage.getItem('nick')
 		OCA.Onlyoffice.currentWindow = window
 		OCA.Onlyoffice.currentUser = OC.getCurrentUser()
 
@@ -62,49 +61,12 @@
 			OCA.Onlyoffice.currentUser = OCA.Onlyoffice.currentWindow.OC.getCurrentUser()
 		}
 
-		if (!OCA.Onlyoffice.fileId && !OCA.Onlyoffice.shareToken && !directToken) {
+		if (!OCA.Onlyoffice.fileId && !OCA.Onlyoffice.shareToken && !OCA.Onlyoffice.directToken) {
 			OCA.Onlyoffice.showMessage(t(OCA.Onlyoffice.AppName, 'FileId is empty'), 'error', { timeout: -1 })
 			return
 		}
 
-		let configUrl = OC.linkToOCS('apps/' + OCA.Onlyoffice.AppName + '/api/v1/config', 2) + (OCA.Onlyoffice.fileId || 0)
-
-		const params = []
-		const filePath = $('#iframeEditor').data('path')
-		if (filePath) {
-			params.push('filePath=' + encodeURIComponent(filePath))
-		}
-		if (OCA.Onlyoffice.shareToken) {
-			params.push('shareToken=' + encodeURIComponent(OCA.Onlyoffice.shareToken))
-		}
-		if (directToken) {
-			$('html').addClass('onlyoffice-full-page')
-			params.push('directToken=' + encodeURIComponent(directToken))
-		}
-		if (OCA.Onlyoffice.template) {
-			params.push('template=true')
-		}
-		if (guestName && guestName !== 'null') {
-			params.push('guestName=' + encodeURIComponent(guestName))
-		}
-		if (OCA.Onlyoffice.anchor) {
-			params.push('anchor=' + encodeURIComponent(OCA.Onlyoffice.anchor))
-		}
-
-		if (OCA.Onlyoffice.inframe || directToken) {
-			params.push('inframe=true')
-		}
-
-		if (OCA.Onlyoffice.inviewer) {
-			params.push('inviewer=true')
-		}
-
-		if (OCA.Onlyoffice.Desktop) {
-			params.push('desktop=true')
-		}
-		if (params.length) {
-			configUrl += '?' + params.join('&')
-		}
+		const configUrl = OCA.Onlyoffice.getConfigUrl()
 
 		$.ajax({
 			url: configUrl,
@@ -196,6 +158,7 @@
 							config.events.onRequestOpen = OCA.Onlyoffice.onRequestOpen
 							config.events.onRequestReferenceSource = OCA.Onlyoffice.onRequestReferenceSource
 							config.events.onMetaChange = OCA.Onlyoffice.onMetaChange
+							config.events.onRequestRefreshFile = OCA.Onlyoffice.onRequestRefreshFile
 
 							if (OCA.Onlyoffice.currentUser.uid) {
 								config.events.onRequestUsers = OCA.Onlyoffice.onRequestUsers
@@ -696,6 +659,16 @@
 		}
 	}
 
+	OCA.Onlyoffice.onRequestRefreshFile = function() {
+		const configUrl = OCA.Onlyoffice.getConfigUrl()
+		$.ajax({
+			url: configUrl,
+			success: function onSuccess(config) {
+				OCA.Onlyoffice.docEditor.refreshFile(config)
+			},
+		})
+	}
+
 	OCA.Onlyoffice.showMessage = function(message, type = 'success', props = null) {
 		if (OCA.Onlyoffice.directEditor) {
 			OCA.Onlyoffice.directEditor.loaded()
@@ -782,6 +755,49 @@
 
 	OCA.Onlyoffice.setViewport = function() {
 		document.querySelector('meta[name="viewport"]').setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0')
+	}
+
+	OCA.Onlyoffice.getConfigUrl = function() {
+		const guestName = localStorage.getItem('nick')
+		let configUrl = OC.linkToOCS('apps/' + OCA.Onlyoffice.AppName + '/api/v1/config', 2) + (OCA.Onlyoffice.fileId || 0)
+
+		const params = []
+		if (OCA.Onlyoffice.filePath) {
+			params.push('filePath=' + encodeURIComponent(OCA.Onlyoffice.filePath))
+		}
+		if (OCA.Onlyoffice.shareToken) {
+			params.push('shareToken=' + encodeURIComponent(OCA.Onlyoffice.shareToken))
+		}
+		if (OCA.Onlyoffice.directToken) {
+			$('html').addClass('onlyoffice-full-page')
+			params.push('directToken=' + encodeURIComponent(OCA.Onlyoffice.directToken))
+		}
+		if (OCA.Onlyoffice.template) {
+			params.push('template=true')
+		}
+		if (guestName && guestName !== 'null') {
+			params.push('guestName=' + encodeURIComponent(guestName))
+		}
+		if (OCA.Onlyoffice.anchor) {
+			params.push('anchor=' + encodeURIComponent(OCA.Onlyoffice.anchor))
+		}
+
+		if (OCA.Onlyoffice.inframe || OCA.Onlyoffice.directToken) {
+			params.push('inframe=true')
+		}
+
+		if (OCA.Onlyoffice.inviewer) {
+			params.push('inviewer=true')
+		}
+
+		if (OCA.Onlyoffice.Desktop) {
+			params.push('desktop=true')
+		}
+		if (params.length) {
+			configUrl += '?' + params.join('&')
+		}
+
+		return configUrl
 	}
 
 	OCA.Onlyoffice.InitEditor()
