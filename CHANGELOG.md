@@ -1,6 +1,6 @@
 # Change Log
 
-##
+## 9.10.0
 ## Added
 - pagination support in getUser
 - insert svg to editor

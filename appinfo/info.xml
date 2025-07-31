@@ -15,7 +15,7 @@ Whether you’re working with internal teams or external collaborators, the ONLY
 ]]></description>
     <licence>agpl</licence>
     <author mail="dev@onlyoffice.com" homepage="https://www.onlyoffice.com/">Ascensio System SIA</author>
-    <version>9.9.0</version>
+    <version>9.10.0</version>
     <namespace>Onlyoffice</namespace>
     <types>
         <prevent_group_restriction/>
