@@ -141,7 +141,19 @@ OC.L10N.register(
     "The data source must not be the current document": "Źródło danych nie może być bieżącym dokumentem",
     "Enable background connection check to the editors": "Włącz sprawdzanie połączenia z edytorami w tle",
     "The domain in the file url does not match the domain of the Document server": "Domena w adresie URL pliku nie pasuje do domeny serwera dokumentów",
+    "Unknown author display name": "Nieznana wyświetlana nazwa autora",
+    "Enable e-mail notifications": "Włącz powiadomienia e-mail",
+    "You were mentioned in the document": "Zostałeś wspomniany w dokumencie",
+    "%1$s mentioned you in the document comment": "%1$s wspomniał(a) cię w komentarzu do dokumentu",
+    "This is a mail message to notify that you have been mentioned by <a href=\"%1$s\">%2$s</a> in the comment to the <a href=\"%3$s\">%4$s</a>:<br>\"%5$s\"": "To jest wiadomość e-mail, aby powiadomić, że zostałeś wspomniany przez <a href=\"%1$s\">%2$s</a> w komentarzu do <a href=\"%3$s\">%4$s</a>:<br>\"%5$s\"",
+    "Open file": "Otwórz dokument",
+    "ONLYOFFICE Document Server is unavailable": "Serwer dokumentów ONLYOFFICE jest niedostępny",
+    "This is a mail message to notify that the connection with the ONLYOFFICE Document Server has been lost. Please check the connection settings:": "To jest wiadomość e-mail informująca, że połączenie z serwerem dokumentów ONLYOFFICE zostało utracone. Proszę sprawdzić ustawienia połączenia:",
+    "Go to Settings": "Przejdź do Ustawień",
+    "Select file to insert text": "Wybrać plik, aby wstawić tekst",
     "Select file": "Wybrać plik",
-    "Same as system": "Taki sam jak systemu"
+    "Enable sharing (might increase editors loading time)": "Włącz udostępnianie (może wydłużyć czas ładowania edytorów)",
+    "Same as system": "Taki sam jak systemu",
+    "Enable live-viewing mode when accessing file by public link" : "Włącz tryb podglądu na żywo podczas uzyskiwania dostępu do pliku za pomocą łącza publicznego"
 },
 "nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);");

@@ -148,7 +148,10 @@
     "ONLYOFFICE Document Server is unavailable": "ONLYOFFICE dokumentu-zerbitzaria ez dago eskuragarri",
     "This is a mail message to notify that the connection with the ONLYOFFICE Document Server has been lost. Please check the connection settings:": "Mezu elektroniko honen bidez jakinarazten dizugu ONLYOFFICE dokumentu-zerbitzariarekiko konexioa galdu dela. Mesedez, berrikusi konexio ezarpenak:",
     "Go to Settings": "Ezarpenetara joan",
+    "Select file to insert text" : "Hautatu fitxategia testua txertatzeko",
     "Select file": "Hautatu fitxategia",
-    "Same as system": "Sistemako berdina"
+    "Enable sharing (might increase editors loading time)" : "Gaitu partekatzea (editoreen kargatzeko denbora handitu dezake)",
+    "Same as system": "Sistemako berdina",
+    "Enable live-viewing mode when accessing file by public link" : "Gaitu zuzeneko ikusteko modua fitxategira esteka publiko baten bidez sartzean"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

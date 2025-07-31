@@ -153,6 +153,7 @@ OC.L10N.register(
     "Select file to insert text": "选择文件以插入文本",
     "Select file": "选择文件",
     "Enable sharing (might increase editors loading time)": "启用共享功能(可能会延长编辑器加载时间）",
-    "Same as system": "和系統一致"
+    "Same as system": "和系統一致",
+    "Enable live-viewing mode when accessing file by public link" : "启用公共链接实时查看"
 },
 "nplurals=1; plural=0;");
