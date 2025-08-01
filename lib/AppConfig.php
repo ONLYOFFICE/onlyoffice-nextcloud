@@ -1526,7 +1526,6 @@ class AppConfig {
             "docx" => [
                 "def" => true,
                 "review" => true,
-                "comment" => true,
             ],
             "docxf" => [
                 "def" => true,
@@ -1541,11 +1540,9 @@ class AppConfig {
             ],
             "pptx" => [
                 "def" => true,
-                "comment" => true,
             ],
             "xlsx" => [
                 "def" => true,
-                "comment" => true,
                 "modifyFilter" => true,
             ],
             "txt" => [

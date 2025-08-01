@@ -81,7 +81,7 @@ import AppDarkSvg from '!!raw-loader!../img/app-dark.svg';
 				const ext = OCA.Onlyoffice.getFileExtension(fileInfo.name)
 				const format = OCA.Onlyoffice.setting.formats[ext]
 				if (format && (format.review
-					|| format.comment
+					|| format.edit
 					|| format.fillForms
 					|| format.modifyFilter)) {
 					canDisplay = true
@@ -286,7 +286,7 @@ import AppDarkSvg from '!!raw-loader!../img/app-dark.svg';
 					label: t(OCA.Onlyoffice.AppName, 'Review only'),
 				})
 			}
-			if (format.comment
+			if (format.edit
 				&& (OCA.Onlyoffice.Permissions.Comment & extra.available) === OCA.Onlyoffice.Permissions.Comment) {
 				const comment = (OCA.Onlyoffice.Permissions.Comment & extra.permissions) === OCA.Onlyoffice.Permissions.Comment
 				attributes.push({

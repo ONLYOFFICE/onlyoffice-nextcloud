@@ -455,7 +455,7 @@ class ExtraPermissions {
             if (isset($format["review"]) && $format["review"]) {
                 $availableExtra |= self::REVIEW;
             }
-            if (isset($format["comment"]) && $format["comment"]
+            if (isset($format["edit"]) && $format["edit"]
                 && ($checkExtra & self::REVIEW) !== self::REVIEW
                 && (($checkExtra & self::MODIFYFILTER) !== self::MODIFYFILTER)) {
                 $availableExtra |= self::COMMENT;
