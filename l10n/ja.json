@@ -148,7 +148,10 @@
     "ONLYOFFICE Document Server is unavailable" : "ONLYOFFICEドキュメントサーバーは只今ご利用いただけません",
     "This is a mail message to notify that the connection with the ONLYOFFICE Document Server has been lost. Please check the connection settings:" : "これは、ONLYOFFICEドキュメントサーバーとの接続が失われたことを通知するメッセージです。接続設定をご確認ください：",
     "Go to Settings": "設定に進む",
+    "Select file to insert text" : "テキストを挿入するファイルを選択",
     "Select file": "ファイルを選択",
-    "Same as system": "システム設定と同じ"
+    "Enable sharing (might increase editors loading time)" : "共有を有効にする（エディタの読み込み時間が増加する可能性があります）",
+    "Same as system": "システム設定と同じ",
+    "Enable live-viewing mode when accessing file by public link" : "公開リンクでファイルにアクセスする際にライブビューモードを有効にする"
 },"pluralForm" :"nplurals=1; plural=0;"
 }
