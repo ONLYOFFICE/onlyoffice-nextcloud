@@ -355,7 +355,7 @@ class EditorApiController extends OCSController {
                     }
                 }
 
-                if (isset($format["comment"]) && $format["comment"]) {
+                if (isset($format["edit"]) && $format["edit"]) {
                     $commentPermission = ($extraPermissions["permissions"] & ExtraPermissions::COMMENT) === ExtraPermissions::COMMENT;
                     if ($commentPermission) {
                         $restrictedEditing = true;
