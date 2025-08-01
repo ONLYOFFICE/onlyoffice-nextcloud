@@ -1504,6 +1504,7 @@ class AppConfig {
                             "comment" => in_array("comment", $onlyOfficeFormat["actions"]),
                             "saveas" => $onlyOfficeFormat["convert"],
                             "review" => in_array("review", $onlyOfficeFormat["actions"]),
+                            "modifyFilter" => in_array("customfilter", $onlyOfficeFormat["actions"]),
                         ];
                         if (isset($additionalFormats[$onlyOfficeFormat["name"]])) {
                             $result[$onlyOfficeFormat["name"]] = array_merge($result[$onlyOfficeFormat["name"]], $additionalFormats[$onlyOfficeFormat["name"]]);
@@ -1544,7 +1545,6 @@ class AppConfig {
             ],
             "xlsx" => [
                 "def" => true,
-                "modifyFilter" => true,
             ],
             "txt" => [
                 "edit" => true,
