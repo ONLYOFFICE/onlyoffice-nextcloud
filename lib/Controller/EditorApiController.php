@@ -513,6 +513,17 @@ class EditorApiController extends OCSController {
                 $folderLink = $this->urlGenerator->linkToRouteAbsolute("files.view.index", $linkAttr);
             }
 
+            $createParam = [
+                "dir" => "/"
+            ];
+
+            if (!empty($folderPath)) {
+                $folder = $userFolder->get($folderPath);
+                if (!empty($folder) && $folder->isCreatable()) {
+                    $createParam["dir"] = $folderPath;
+                }
+            }
+
             switch ($params["documentType"]) {
                 case "word":
                     $createName = $this->trans->t("New document") . ".docx";
@@ -528,20 +539,12 @@ class EditorApiController extends OCSController {
                     break;
             }
 
-            $createParam = [
-                "dir" => "/",
-                "name" => $createName
-            ];
+            if (!empty($createName)) {
+                $createParam["name"] = $createName;
 
-            if (!empty($folderPath)) {
-                $folder = $userFolder->get($folderPath);
-                if (!empty($folder) && $folder->isCreatable()) {
-                    $createParam["dir"] = $folderPath;
-                }
+                $createUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".editor.create_new", $createParam);
+                $params["editorConfig"]["createUrl"] = urldecode($createUrl);
             }
-
-            $createUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".editor.create_new", $createParam);
-            $params["editorConfig"]["createUrl"] = urldecode($createUrl);
 
             $templatesList = TemplateManager::getGlobalTemplates($file->getMimeType());
             if (!empty($templatesList)) {
