@@ -172,11 +172,11 @@
 				$('#onlyofficeInternalUrl, #onlyofficeStorageUrl, #onlyofficeSecret, #onlyofficeJwtHeader').val('')
 			}
 
-			const onlyofficeInternalUrl = ($('#onlyofficeInternalUrl:visible').val() || '').trim()
-			const onlyofficeStorageUrl = ($('#onlyofficeStorageUrl:visible').val() || '').trim()
+			const onlyofficeInternalUrl = ($('#onlyofficeInternalUrl').val() || '').trim()
+			const onlyofficeStorageUrl = ($('#onlyofficeStorageUrl').val() || '').trim()
 			const onlyofficeVerifyPeerOff = $('#onlyofficeVerifyPeerOff').prop('checked')
-			const onlyofficeSecret = ($('#onlyofficeSecret:visible').val() || '').trim()
-			const jwtHeader = ($('#onlyofficeJwtHeader:visible').val() || '').trim()
+			const onlyofficeSecret = ($('#onlyofficeSecret').val() || '').trim()
+			const jwtHeader = ($('#onlyofficeJwtHeader').val() || '').trim()
 			const demo = $('#onlyofficeDemo').prop('checked')
 
 			$.ajax({
