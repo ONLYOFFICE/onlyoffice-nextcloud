@@ -50,7 +50,6 @@
     "Display the header more compact" : "De koptekst compacter weergeven",
     "Display Feedback & Support menu button" : "Menuknop Terugkoppeling & Ondersteuning weergeven",
     "Display Help menu button" : "Menuknop Help weergeven",
-    "Display monochrome toolbar header" : "Toon de monochrome koptekst van de werkbalk",
     "Save as" : "Opslaan als",
     "File saved" : "Bestand opgeslagen",
     "Insert image" : "Afbeelding invoegen",
@@ -117,7 +116,6 @@
     "Anonymous": "Anoniem",
     "Default editor theme": "Standaard editor thema",
     "Light": "Licht",
-    "Classic Light": "Klassiek Licht",
     "Dark": "Donker",
     "Review only": "Aleen overzicht",
     "Comment only": "Alleen commentaar",
@@ -141,9 +139,19 @@
     "The data source must not be the current document": "De gegevensbron mag niet het huidige document zijn",
     "Enable background connection check to the editors": "Verbindingscontrole op de achtergrond met de editors inschakelen",
     "The domain in the file url does not match the domain of the Document server": "Het domein in de bestandsurl komt niet overeen met het domein van de Document Server",
+    "Unknown author display name" : "Onbekende auteursnaam",
+    "Enable e-mail notifications" : "E-mailmeldingen inschakelen",
+    "You were mentioned in the document" : "Je werd in het document genoemd.",
+    "%1$s mentioned you in the document comment" : "%1$s heeft je genoemd in de opmerking bij het document",
+    "This is a mail message to notify that you have been mentioned by <a href=\"%1$s\">%2$s</a> in the comment to the <a href=\"%3$s\">%4$s</a>:<br>\"%5$s\"" : "Dit is een e-mailbericht om te melden dat u bent genoemd door <a href=\"%1$s\">%2$s</a> in de reactie op <a href=\"%3$s\">%4$s</a>:<br>\"%5$s\"",
+    "Open file" : "Open bestand",
+    "ONLYOFFICE Document Server is unavailable" : "ONLYOFFICE Document Server is niet beschikbaar",
+    "This is a mail message to notify that the connection with the ONLYOFFICE Document Server has been lost. Please check the connection settings:" : "Dit is een e-mailbericht om te melden dat de verbinding met de ONLYOFFICE Document Server verbroken is. Controleer de verbindingsinstellingen:",
+    "Go to Settings" : "Ga naar Instellingen",
+    "Select file to insert text" : "Bestand selecteren om tekst in te voegen",
     "Select file": "Bestand selecteren",
+    "Enable sharing (might increase editors loading time)" : "Delen inschakelen (kan de laadtijd van editors verlengen)",
     "Same as system": "Zelfde als systeem",
-    "Contrast dark": "Contrast donker",
-    "Gray": "Grijs"
+    "Enable live-viewing mode when accessing file by public link" : "Live-weergavemodus inschakelen bij toegang tot bestanden via een openbare link"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

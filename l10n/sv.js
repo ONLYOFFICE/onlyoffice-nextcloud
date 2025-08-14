@@ -52,7 +52,6 @@ OC.L10N.register(
     "Display the header more compact" : "Visa kompakt sidhuvud",
     "Display Feedback & Support menu button" : "Visa Feedback & Support i menyn",
     "Display Help menu button" : "Visa hjälp i menyn",
-    "Display monochrome toolbar header" : "Visa svartvit verktygsfältshuvud",
     "Save as" : "Spara som",
     "File saved" : "Filen har sparats",
     "Insert image" : "Infoga bild",
@@ -119,7 +118,6 @@ OC.L10N.register(
     "Anonymous": "Anonym",
     "Default editor theme": "Standard editortema",
     "Light": "Ljus",
-    "Classic Light": "Klassiskt ljus",
     "Dark": "Mörk",
     "Review only": "Endast granskning",
     "Comment only": "Endast kommentar",
@@ -152,9 +150,10 @@ OC.L10N.register(
     "ONLYOFFICE Document Server is unavailable": "ONLYOFFICE Document Server är inte tillgänglig",
     "This is a mail message to notify that the connection with the ONLYOFFICE Document Server has been lost. Please check the connection settings:": "Detta är ett e-postmeddelande för att meddela att anslutningen till ONLYOFFICE Document Server har förlorats. Kontrollera anslutningsinställningarna:",
     "Go to Settings": "Gå till inställningar",
+    "Select file to insert text": "Välj fil för att infoga text",
     "Select file": "Välj fil",
+    "Enable sharing (might increase editors loading time)": "Aktivera delning (kan öka redigerarens laddningstid)",
     "Same as system": "Samma som systemet",
-    "Contrast dark": "Mörk kontrast",
-    "Gray": "Grå"
+    "Enable live-viewing mode when accessing file by public link" : "Aktivera livevisningsläge vid åtkomst till fil via offentlig länk"
 },
 "nplurals=2; plural=(n != 1);");

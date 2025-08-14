@@ -159,6 +159,11 @@
 			})
 		}
 
+		const connectionError = document.getElementById('onlyofficeSettingsState').value
+		if (connectionError !== '') {
+			OCP.Toast.error(t(OCA.Onlyoffice.AppName, 'Error when trying to connect') + ' (' + connectionError + ')')
+		}
+
 		$('#onlyofficeAddrSave').click(function() {
 			$('.section-onlyoffice').addClass('icon-loading')
 			const onlyofficeUrl = $('#onlyofficeUrl').val().trim()
@@ -167,11 +172,11 @@
 				$('#onlyofficeInternalUrl, #onlyofficeStorageUrl, #onlyofficeSecret, #onlyofficeJwtHeader').val('')
 			}
 
-			const onlyofficeInternalUrl = ($('#onlyofficeInternalUrl:visible').val() || '').trim()
-			const onlyofficeStorageUrl = ($('#onlyofficeStorageUrl:visible').val() || '').trim()
+			const onlyofficeInternalUrl = ($('#onlyofficeInternalUrl').val() || '').trim()
+			const onlyofficeStorageUrl = ($('#onlyofficeStorageUrl').val() || '').trim()
 			const onlyofficeVerifyPeerOff = $('#onlyofficeVerifyPeerOff').prop('checked')
-			const onlyofficeSecret = ($('#onlyofficeSecret:visible').val() || '').trim()
-			const jwtHeader = ($('#onlyofficeJwtHeader:visible').val() || '').trim()
+			const onlyofficeSecret = ($('#onlyofficeSecret').val() || '').trim()
+			const jwtHeader = ($('#onlyofficeJwtHeader').val() || '').trim()
 			const demo = $('#onlyofficeDemo').prop('checked')
 
 			$.ajax({
@@ -239,8 +244,8 @@
 			const compactHeader = $('#onlyofficeCompactHeader').is(':checked')
 			const feedback = $('#onlyofficeFeedback').is(':checked')
 			const forcesave = $('#onlyofficeForcesave').is(':checked')
+			const liveViewOnShare = $('#onlyofficeLiveViewOnShare').is(':checked')
 			const help = $('#onlyofficeHelp').is(':checked')
-			const toolbarNoTabs = $('#onlyofficeToolbarNoTabs').is(':checked')
 			const reviewDisplay = $("input[type='radio'][name='reviewDisplay']:checked").attr('id').replace('onlyofficeReviewDisplay_', '')
 			const theme = $("input[type='radio'][name='theme']:checked").attr('id').replace('onlyofficeTheme_', '')
 			const unknownAuthor = $('#onlyofficeUnknownAuthor').val().trim()
@@ -263,8 +268,8 @@
 					compactHeader,
 					feedback,
 					forcesave,
+					liveViewOnShare,
 					help,
-					toolbarNoTabs,
 					reviewDisplay,
 					theme,
 					unknownAuthor,

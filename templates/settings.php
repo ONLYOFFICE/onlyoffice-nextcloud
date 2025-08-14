@@ -204,6 +204,12 @@ if ($_["tagsEnabled"]) {
         <label for="onlyofficeForcesave"><?php p($l->t("Keep intermediate versions when editing (forcesave)")) ?></label>
     </p>
 
+    <p>
+        <input type="checkbox" class="checkbox" id="onlyofficeLiveViewOnShare"
+            <?php if ($_["liveViewOnShare"]) { ?>checked="checked"<?php } ?> />
+        <label for="onlyofficeLiveViewOnShare"><?php p($l->t("Enable live-viewing mode when accessing file by public link")) ?></label>
+    </p>
+
     <p class="onlyoffice-header">
         <?php p($l->t("The customization section allows personalizing the editor interface")) ?>
     </p>
@@ -230,12 +236,6 @@ if ($_["tagsEnabled"]) {
         <input type="checkbox" class="checkbox" id="onlyofficeHelp"
             <?php if ($_["help"]) { ?>checked="checked"<?php } ?> />
         <label for="onlyofficeHelp"><?php p($l->t("Display Help menu button")) ?></label>
-    </p>
-
-    <p>
-        <input type="checkbox" class="checkbox" id="onlyofficeToolbarNoTabs"
-            <?php if ($_["toolbarNoTabs"]) { ?>checked="checked"<?php } ?> />
-        <label for="onlyofficeToolbarNoTabs"><?php p($l->t("Display monochrome toolbar header")) ?></label>
     </p>
 
     <p class="onlyoffice-header">
@@ -278,38 +278,17 @@ if ($_["tagsEnabled"]) {
         </div>
         <div>
             <input type="radio" class="radio"
-                id="onlyofficeTheme_theme-light"
+                id="onlyofficeTheme_default-light"
                 name="theme"
-                <?php if ($_["theme"] === "theme-light") { ?>checked="checked"<?php } ?> />
-            <label for="onlyofficeTheme_theme-light"><?php p($l->t("Light")) ?></label>
+                <?php if ($_["theme"] === "default-light") { ?>checked="checked"<?php } ?> />
+            <label for="onlyofficeTheme_default-light"><?php p($l->t("Light")) ?></label>
         </div>
         <div>
             <input type="radio" class="radio"
-                id="onlyofficeTheme_theme-classic-light"
+                id="onlyofficeTheme_default-dark"
                 name="theme"
-                <?php if ($_["theme"] === "theme-classic-light") { ?>checked="checked"<?php } ?> />
-            <label for="onlyofficeTheme_theme-classic-light"><?php p($l->t("Classic Light")) ?></label>
-        </div>
-        <div>
-            <input type="radio" class="radio"
-                id="onlyofficeTheme_theme-dark"
-                name="theme"
-                <?php if ($_["theme"] === "theme-dark") { ?>checked="checked"<?php } ?> />
-            <label for="onlyofficeTheme_theme-dark"><?php p($l->t("Dark")) ?></label>
-        </div>
-        <div>
-            <input type="radio" class="radio"
-                id="onlyofficeTheme_theme-contrast-dark"
-                name="theme"
-                <?php if ($_["theme"] === "theme-contrast-dark") { ?>checked="checked"<?php } ?> />
-            <label for="onlyofficeTheme_theme-contrast-dark"><?php p($l->t("Contrast dark")) ?></label>
-        </div>
-        <div>
-            <input type="radio" class="radio"
-                id="onlyofficeTheme_theme-gray"
-                name="theme"
-                <?php if ($_["theme"] === "theme-gray") { ?>checked="checked"<?php } ?> />
-            <label for="onlyofficeTheme_theme-gray"><?php p($l->t("Gray")) ?></label>
+                <?php if ($_["theme"] === "default-dark") { ?>checked="checked"<?php } ?> />
+            <label for="onlyofficeTheme_default-dark"><?php p($l->t("Dark")) ?></label>
         </div>
     </div>
 
@@ -452,4 +431,5 @@ if ($_["tagsEnabled"]) {
     <br />
     <p><button id="onlyofficeSecuritySave" class="button"><?php p($l->t("Save")) ?></button></p>
 
+    <input type ="hidden" id="onlyofficeSettingsState" value="<?php p($_["settingsError"]) ?>" />
 </div>

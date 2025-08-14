@@ -50,7 +50,6 @@
     "Display the header more compact" : "Visa kompakt sidhuvud",
     "Display Feedback & Support menu button" : "Visa Feedback & Support i menyn",
     "Display Help menu button" : "Visa hjälp i menyn",
-    "Display monochrome toolbar header" : "Visa svartvit verktygsfältshuvud",
     "Save as" : "Spara som",
     "File saved" : "Filen har sparats",
     "Insert image" : "Infoga bild",
@@ -117,7 +116,6 @@
     "Anonymous": "Anonym",
     "Default editor theme": "Standard editortema",
     "Light": "Ljus",
-    "Classic Light": "Klassiskt ljus",
     "Dark": "Mörk",
     "Review only": "Endast granskning",
     "Comment only": "Endast kommentar",
@@ -146,13 +144,14 @@
     "You were mentioned in the document": "Du omnämndes i dokumentet",
     "%1$s mentioned you in the document comment" : "%1$s omnämnde dig i dokumentkommentaren",
     "This is a mail message to notify that you have been mentioned by <a href=\"%1$s\">%2$s</a> in the comment to the <a href=\"%3$s\">%4$s</a>:<br>\"%5$s\"" : "Det här är ett e-postmeddelande som meddelar att du har blivit omnämnd av <a href=\"%1$s\">%2$s</a> i kommentaren till <a href=\"%3$s\">%4$s</a>:<br>\"%5$s\"",
-    "Open file" : "Открыть документ",
+    "Open file" : "Öppna filen",
     "ONLYOFFICE Document Server is unavailable": "ONLYOFFICE Document Server är inte tillgänglig",
     "This is a mail message to notify that the connection with the ONLYOFFICE Document Server has been lost. Please check the connection settings:": "Detta är ett e-postmeddelande för att meddela att anslutningen till ONLYOFFICE Document Server har förlorats. Kontrollera anslutningsinställningarna:",
     "Go to Settings": "Gå till inställningar",
+    "Select file to insert text" : "Välj fil för att infoga text",
     "Select file": "Välj fil",
+    "Enable sharing (might increase editors loading time)" : "Aktivera delning (kan öka redigerarens laddningstid)",
     "Same as system": "Samma som systemet",
-    "Contrast dark": "Mörk kontrast",
-    "Gray": "Grå"
+    "Enable live-viewing mode when accessing file by public link" : "Aktivera livevisningsläge vid åtkomst till fil via offentlig länk"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

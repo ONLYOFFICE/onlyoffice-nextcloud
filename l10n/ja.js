@@ -52,7 +52,6 @@ OC.L10N.register(
     "Display the header more compact": "ヘッダーをよりコンパクトに表示する",
     "Display Feedback & Support menu button": "フィードバックとサポートメニューボタンを表示する",
     "Display Help menu button": "ヘルプメニューボタンを表示する",
-    "Display monochrome toolbar header": "ツールバーヘッダーをモノクロで表示する",
     "Save as" : "別名で保存",
     "File saved" : "ファイルが保存されました",
     "Insert image" : "画像を挿入",
@@ -119,7 +118,6 @@ OC.L10N.register(
     "Anonymous": "匿名",
     "Default editor theme": "エディターのデフォルトテーマ",
     "Light": "明るい",
-    "Classic Light": "ライト(クラシック)",
     "Dark": "ダーク",
     "Review only": "レビューのみ",
     "Comment only": "コメントのみ",
@@ -152,9 +150,10 @@ OC.L10N.register(
     "ONLYOFFICE Document Server is unavailable": "ONLYOFFICEドキュメントサーバーは只今ご利用いただけません",
     "This is a mail message to notify that the connection with the ONLYOFFICE Document Server has been lost. Please check the connection settings:": "これは、ONLYOFFICEドキュメントサーバーとの接続が失われたことを通知するメッセージです。接続設定をご確認ください：",
     "Go to Settings": "設定に進む",
+    "Select file to insert text": "テキストを挿入するファイルを選択",
     "Select file": "ファイルを選択",
+    "Enable sharing (might increase editors loading time)": "共有を有効にする（エディタの読み込み時間が増加する可能性があります）",
     "Same as system": "システム設定と同じ",
-    "Contrast dark": "ダークコントラスト",
-    "Gray": "灰色"
+    "Enable live-viewing mode when accessing file by public link" : "公開リンクでファイルにアクセスする際にライブビューモードを有効にする"
 },
 "nplurals=1; plural=0;");

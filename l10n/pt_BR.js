@@ -52,7 +52,6 @@ OC.L10N.register(
     "Display the header more compact" : "Exibir o cabeçalho mais compacto",
     "Display Feedback & Support menu button" : "Exibir o botão do menu de feedback e suporte",
     "Display Help menu button" : "Exibir o botão do menu Ajuda",
-    "Display monochrome toolbar header" : "Exibir cabeçalho da barra de ferramentas monocromático",
     "Save as" : "Salvar como",
     "File saved" : "O arquivo foi salvo",
     "Insert image" : "Inserir imagem",
@@ -119,7 +118,6 @@ OC.L10N.register(
     "Anonymous": "Anônimo",
     "Default editor theme": "Tema do editor padrão",
     "Light": "Claro",
-    "Classic Light": "Clássico claro",
     "Dark": "Escuro",
     "Review only": "Revisão apenas",
     "Comment only": "Comentar apenas",
@@ -156,7 +154,6 @@ OC.L10N.register(
     "Select file": "Selecionar arquivo",
     "Enable sharing (might increase editors loading time)": "Habilitar compartilhamento (pode aumentar o tempo de carregamento dos editores)",
     "Same as system": "O mesmo que sistema",
-    "Contrast dark": "Contraste escuro",
-    "Gray": "Cinza"
+    "Enable live-viewing mode when accessing file by public link" : "Habilitar o modo de visualização ao vivo ao acessar o arquivo por link público"
 },
 "nplurals=2; plural=(n > 1);");

@@ -52,7 +52,6 @@ OC.L10N.register(
     "Display the header more compact" : "Kompakten Header anzeigen",
     "Display Feedback & Support menu button" : "Feedback-& Support-Taste anzeigen",
     "Display Help menu button" : "Hilfetaste anzeigen",
-    "Display monochrome toolbar header" : "Monochromen Kopfbereich der Symbolleiste anzeigen",
     "Save as" : "Speichern als",
     "File saved" : "Datei wurde gespeichert",
     "Insert image" : "Bild einfügen",
@@ -119,7 +118,6 @@ OC.L10N.register(
     "Anonymous": "Anonym",
     "Default editor theme": "Standardmäßiges Thema des Editors",
     "Light": "Hell",
-    "Classic Light": "Klassisch Hell",
     "Dark": "Dunkel",
     "Review only": "Nur Überprüfung",
     "Comment only": "Nur Kommentieren",
@@ -156,7 +154,6 @@ OC.L10N.register(
     "Select file": "Datei auswählen",
     "Enable sharing (might increase editors loading time)": "Freigabe aktivieren (kann die Ladezeit des Editors verlängern)",
     "Same as system": "Wie im System",
-    "Contrast dark": "Dunkler Kontrast",
-    "Gray": "Grau"
+    "Enable live-viewing mode when accessing file by public link": "Live-Anzeigemodus aktivieren beim Zugriff auf die Datei über einen öffentlichen Link"
 },
 "nplurals=2; plural=(n != 1);");

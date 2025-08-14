@@ -443,7 +443,7 @@ class EditorApiController extends OCSController {
         } else {
             $params["editorConfig"]["mode"] = "view";
 
-            if (isset($shareToken) && empty($userId)) {
+            if (isset($shareToken) && empty($userId) && !$this->config->getLiveViewOnShare()) {
                 $params["editorConfig"]["coEditing"] = [
                     "mode" => "strict",
                     "change" => false
@@ -513,6 +513,17 @@ class EditorApiController extends OCSController {
                 $folderLink = $this->urlGenerator->linkToRouteAbsolute("files.view.index", $linkAttr);
             }
 
+            $createParam = [
+                "dir" => "/"
+            ];
+
+            if (!empty($folderPath)) {
+                $folder = $userFolder->get($folderPath);
+                if (!empty($folder) && $folder->isCreatable()) {
+                    $createParam["dir"] = $folderPath;
+                }
+            }
+
             switch ($params["documentType"]) {
                 case "word":
                     $createName = $this->trans->t("New document") . ".docx";
@@ -528,20 +539,12 @@ class EditorApiController extends OCSController {
                     break;
             }
 
-            $createParam = [
-                "dir" => "/",
-                "name" => $createName
-            ];
+            if (!empty($createName)) {
+                $createParam["name"] = $createName;
 
-            if (!empty($folderPath)) {
-                $folder = $userFolder->get($folderPath);
-                if (!empty($folder) && $folder->isCreatable()) {
-                    $createParam["dir"] = $folderPath;
-                }
+                $createUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".editor.create_new", $createParam);
+                $params["editorConfig"]["createUrl"] = urldecode($createUrl);
             }
-
-            $createUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".editor.create_new", $createParam);
-            $params["editorConfig"]["createUrl"] = urldecode($createUrl);
 
             $templatesList = TemplateManager::getGlobalTemplates($file->getMimeType());
             if (!empty($templatesList)) {
@@ -566,7 +569,7 @@ class EditorApiController extends OCSController {
             $params["_file_path"] = $userFolder->getRelativePath($file->getPath());
         }
 
-        $canGoBack = $folderLink !== null && $this->config->getSystemValue($this->config->_customization_goback) !== false;
+        $canGoBack = $folderLink !== null;
         if ($inviewer) {
             if ($canGoBack) {
                 $params["editorConfig"]["customization"]["goback"] = [
@@ -784,11 +787,6 @@ class EditorApiController extends OCSController {
         $theme = $this->config->getCustomizationTheme();
         if (isset($theme)) {
             $params["editorConfig"]["customization"]["uiTheme"] = $theme;
-        }
-
-        //default is false
-        if ($this->config->getCustomizationToolbarNoTabs() === true) {
-            $params["editorConfig"]["customization"]["toolbarNoTabs"] = true;
         }
 
         //default is true

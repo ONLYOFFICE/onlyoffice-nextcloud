@@ -50,7 +50,6 @@
     "Display the header more compact" : "更紧致的显示菜单栏",
     "Display Feedback & Support menu button" : "显示反馈&支持菜单按钮",
     "Display Help menu button" : "显示帮助菜单按钮",
-    "Display monochrome toolbar header" : "显示单色工具栏标题",
     "Save as" : "另存为",
     "File saved" : "文件已保存",
     "Insert image" : "插入图片",
@@ -117,7 +116,6 @@
     "Anonymous": "匿名",
     "Default editor theme": "编辑器默认的主题",
     "Light": "光",
-    "Classic Light": "经典浅色",
     "Dark": "黑暗的",
     "Review only": "仅审阅",
     "Comment only": "仅评论",
@@ -154,7 +152,6 @@
     "Select file": "选择文件",
     "Enable sharing (might increase editors loading time)": "启用共享功能(可能会延长编辑器加载时间）",
     "Same as system": "和系統一致",
-    "Contrast dark": "深色对比",
-    "Gray": "灰色"
+    "Enable live-viewing mode when accessing file by public link" : "启用公共链接实时查看"
 },"pluralForm" :"nplurals=1; plural=0;"
 }

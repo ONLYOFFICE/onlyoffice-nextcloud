@@ -52,7 +52,6 @@ OC.L10N.register(
     "Display the header more compact" : "Зробити заголовок компактнішим",
     "Display Feedback & Support menu button" : "Показувати кнопку зворотнього зв'язку та підтримки",
     "Display Help menu button" : "Показувати пункт меню Довідка",
-    "Display monochrome toolbar header" : "Зробити заголовок панелі інструментів однотонним",
     "Save as" : "Зберегти як",
     "File saved" : "Файл збережено",
     "Insert image" : "Вставити зображення",
@@ -119,7 +118,6 @@ OC.L10N.register(
     "Anonymous": "Гість",
     "Default editor theme": "Типова тема редактора",
     "Light": "Світла",
-    "Classic Light": "Світла класична",
     "Dark": "Темна",
     "Review": "Рецензії",
     "Comment": "Коментарі",
@@ -151,10 +149,11 @@ OC.L10N.register(
     "Open file": "Відкрити файл",
     "ONLYOFFICE Document Server is unavailable": "Сервер документів ONLYOFFICE недоступний",
     "This is a mail message to notify that the connection with the ONLYOFFICE Document Server has been lost. Please check the connection settings:": "Цим листом повідомляємо вам, що з'єднання з сервером документів ONLYOFFICE втрачено. Перевірте параметри з'єднання:",
-    "Select file": "Вибрати файл",
     "Go to Settings": "Перейти до Параметрів",
+    "Select file to insert text": "Виберіть файл для вставки тексту",
+    "Select file": "Вибрати файл",
+    "Enable sharing (might increase editors loading time)": "Увімкнути спільний доступ (може збільшити час завантаження редакторів)",
     "Same as system": "Системна",
-    "Contrast dark": "Контрастно-чорний",
-    "Gray": "Сірий"
+    "Enable live-viewing mode when accessing file by public link" : "Увімкніть режим перегляду в реальному часі під час доступу до файлу за публічним посиланням"
 },
 "nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != 11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || (n % 100 >=11 && n % 100 <=14 )) ? 2: 3);");

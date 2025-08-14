@@ -1,5 +1,22 @@
 # Change Log
 
+## 9.10.0
+## Added
+- pagination support in getUser
+- insert svg to editor
+- view vsdx, vssx, vstx, vsdm, vssm, vstm
+- view odg, md
+- setting for enabling live-view for shared docs
+- refresh file when connection is restored
+
+## Changed
+- select user for protected region in team folder
+- edit xlsb
+- customization_goback setting removed
+- there are only system, light and dark themes
+- toolbarNoTabs setting removed
+- display error when opening settings page if it exists
+
 ## 9.9.0
 ## Added
 - support external link for reference data
@@ -402,7 +419,7 @@
 - inserting images from the folder
 - Mail Merge
 - connection to the demo server
-- embedding a watermark 
+- embedding a watermark
 
 ## Changed
 - updated files for compatibility with MS Office v2016
