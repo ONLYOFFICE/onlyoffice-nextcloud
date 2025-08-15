@@ -175,7 +175,7 @@ class Hooks {
      * @param array $params - hook param
      */
     public static function fileVersionRestore($params) {
-        $filePath = $params["path"];
+        $filePath = preg_replace('/^\/\w+\/files\//', '', $params["node"]->getPath());
         if (empty($filePath)) {
             return;
         }
