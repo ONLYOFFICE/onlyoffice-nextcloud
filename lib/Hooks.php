@@ -30,6 +30,7 @@
 namespace OCA\Onlyoffice;
 
 use OC\Files\Filesystem;
+use OC\Files\Node\File;
 use OCP\Util;
 
 /**
@@ -175,6 +176,12 @@ class Hooks {
      * @param array $params - hook param
      */
     public static function fileVersionRestore($params) {
+        $node = $params["node"];
+
+        if (empty($node) || !($node instanceof File)) {
+            return;
+        }
+
         $filePath = preg_replace('/^\/\w+\/files\//', '', $params["node"]->getPath());
         if (empty($filePath)) {
             return;
