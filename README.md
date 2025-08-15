@@ -2,18 +2,22 @@
 
 This app enables users to edit office documents from [Nextcloud](https://nextcloud.com) using ONLYOFFICE Docs packaged as Document Server - [Community or Enterprise Edition](#onlyoffice-docs-editions).
 
-## Features
+## Features you'll love ✨
 
 The app allows to:
 
-* Create and edit text documents, spreadsheets, and presentations.
-* Create and edit PDF forms.
-* Edit PDF files.
-* Share files to other users.
-* Protect documents with watermarks.
-* Co-edit documents in real-time: use two co-editing modes (Fast and Strict), Track Changes, comments, and built-in chat. Co-editing is also available between several federated Nextcloud instances connected to one Document Server.
+* ✍️ Create and edit [text documents](https://www.onlyoffice.com/document-editor.aspx), [spreadsheets](https://www.onlyoffice.com/spreadsheet-editor.aspx), and [presentations](https://www.onlyoffice.com/slides.aspx).
+* 📝 Create and edit PDF forms.
+* ✂️ Edit [PDF](https://www.onlyoffice.com/pdf-editor.aspx) files.
+* 📊 View [diagram](https://www.onlyoffice.com/diagram-viewer.aspx) files.
+* 🤝 Share files to other users.
+* 🔒 Protect documents with watermarks.
+* 👥 Co-edit documents in [real time](https://www.onlyoffice.com/seamless-collaboration.aspx): two co-editing modes (Fast and Strict), Track Changes, comments, and built-in chat. Co-editing is also available between several federated Nextcloud instances connected to one Document Server.
+* 🤖 Enable [AI assistant](https://www.onlyoffice.com/ai-assistants.aspx) in the editors to work faster and more efficient (it's possible to connect any AI provider). 
 
-Supported formats:
+![](screenshots/ONLYOFFICE and Nextcloud.png)
+
+### Supported formats
 
 **For viewing:**
 
@@ -30,25 +34,27 @@ Supported formats:
 * **SLIDE**: POTM, POTX, PPSM, PPSX, PPTM, PPTX
 * **PDF**: PDF
 
-## Installing ONLYOFFICE Docs
+## Installing ONLYOFFICE Docs 📦
 
 You will need an instance of ONLYOFFICE Docs (Document Server) that is resolvable and connectable both from Nextcloud and any end clients. ONLYOFFICE Document Server must also be able to POST to Nextcloud directly.
 
 ONLYOFFICE Document Server and Nextcloud can be installed either on different computers, or on the same machine. If you use one machine, set up a custom port for Document Server as by default both ONLYOFFICE Document Server and Nextcloud work on port 80.
 
-You can install free Community version of ONLYOFFICE Docs or scalable Enterprise Edition with pro features.
+You can install free Community version of ONLYOFFICE Docs or scalable Enterprise Edition.
 
-To install free Community version, use [Docker](https://github.com/onlyoffice/Docker-DocumentServer) (recommended) or follow [these instructions](https://helpcenter.onlyoffice.com/installation/docs-community-install-ubuntu.aspx) for Debian, Ubuntu, or derivatives.  
+To install free Community version, use [Docker](https://github.com/onlyoffice/Docker-DocumentServer) (recommended) or follow [these instructions](https://helpcenter.onlyoffice.com/docs/installation/docs-community-install-ubuntu.aspx) for Debian, Ubuntu, or derivatives.  
 
-To install Enterprise Edition, follow instructions [here](https://helpcenter.onlyoffice.com/installation/docs-enterprise-index.aspx).
+To install Enterprise Edition, follow instructions [here](https://helpcenter.onlyoffice.com/docs/installation/enterprise).
 
 Community Edition vs Enterprise Edition comparison can be found [here](#onlyoffice-docs-editions).
 
-To use ONLYOFFICE behind a proxy, please refer to [this article](https://helpcenter.onlyoffice.com/installation/docs-community-proxy.aspx).
+To use ONLYOFFICE behind a proxy, please refer to [this article](https://helpcenter.onlyoffice.com/docs/installation/docs-community-proxy.aspx).
 
 You can also use our **[Docker installation](https://github.com/ONLYOFFICE/docker-onlyoffice-nextcloud)** to install pre-configured Document Server (free version) and Nextcloud with a couple of commands.
 
-## Installing ONLYOFFICE app for Nextcloud
+Alternatively, you can opt for ONLYOFFICE Docs Cloud which doesn't require downloading and installation. To get ONLYOFFICE Docs Cloud, get started [here](https://www.onlyoffice.com/docs-registration.aspx).
+
+## Installing ONLYOFFICE app for Nextcloud 📥
 
 The Nextcloud administrator can install the app from the in-built application market.
 For that go to the user name and select **Apps**.
@@ -90,7 +96,7 @@ There are several ways to do that:
     ```
 6. In Nextcloud open the `~/settings/apps/disabled` page with _Not enabled_ apps by administrator and click _Enable_ for the **ONLYOFFICE** application.
 
-## Configuring ONLYOFFICE app for Nextcloud
+## Configuring ONLYOFFICE app for Nextcloud 🛠️
 
 There are three ways to configure ONLYOFFICE integration settings in Nextcloud.
 
@@ -196,7 +202,7 @@ The tables below list all available Nextcloud settings along with the supported 
 | `watermark_linkRead`   | Show watermark for read only link shares                | -                                                                              | +  | -   | -          |
 | `watermark_linkTags`   | Show watermark on link shares with specific system tags | -                                                                              | +  | -   | -          |
 
-## Checking the connection 
+## Checking the connection ☑️ 
 
 You can check the connection to ONLYOFFICE Document Server by using the following occ command:
 
@@ -204,7 +210,7 @@ You can check the connection to ONLYOFFICE Document Server by using the followin
 
 You will see a text either with information about the successful connection or the cause of the error.
 
-## Advanced document permissions 
+## Advanced document permissions 🔒
 
 The Advanced tab allows you to grant additional access rights only to those users specified in the Sharing tab without the ability to re-share the file. Depending on the chosen Custom permission option and the file type (docx, pptx, xlsx), you can grant different additional rights.
 
@@ -213,7 +219,7 @@ The Advanced tab allows you to grant additional access rights only to those user
 * If the **PPTX** file is shared with the Custom permission (Edit enabled, Share disabled) in the Sharing tab, you can set the given rights to only commenting (**Comment only**) in the Advanced tab.
 * If the **PDF** file is shared with the Custom permission (Edit enabled, Share disabled) in the Sharing tab, you can set the given rights to only filling out (**Form Filling**) in the Advanced tab.
 
-## How it works
+## How it works ⚙️
 
 The ONLYOFFICE app follows the API documented here https://api.onlyoffice.com:
 
@@ -248,7 +254,7 @@ This method adds the copy of the file from the assets folder to the folder the u
 * Nextcloud downloads the new version of the document, replacing the old one.
 
 
-## Known issues
+## Known issues ❓
 
 * Adding the storage using the **External storages** app has issues with the co-editing in some cases.
 If the connection is made using the same authorization keys (the _Username and password_ or _Global credentials_ authentication type is selected), then the co-editing is available for the users.
@@ -295,8 +301,8 @@ When the _Log-in credentials, save in session_ authentication type is used, the 
 
 ONLYOFFICE offers different versions of its online document editors that can be deployed on your own servers.
 
-* Community Edition (`onlyoffice-documentserver` package)
-* Enterprise Edition (`onlyoffice-documentserver-ee` package)
+* Community Edition 🆓 (`onlyoffice-documentserver` package)
+* Enterprise Edition 🏢 (`onlyoffice-documentserver-ee` package)
 
 The table below will help you to make the right choice.
 
@@ -370,3 +376,9 @@ The table below will help you to make the right choice.
 |                                                    | [Get it now](https://www.onlyoffice.com/download-docs.aspx?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud#docs-community) | [Start Free Trial](https://www.onlyoffice.com/download-docs.aspx?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud#docs-enterprise) |
 
 \* If supported by DMS.
+
+## Need help? User Feedback and Support 💡 
+
+In case of technical problems, the best way to get help is to submit your issues [here](https://github.com/ONLYOFFICE/onlyoffice-nextcloud/issues).
+
+You are also welcome to visit our official forum: [community.onlyoffice.com](https://community.onlyoffice.com/), as well as share your thoughts and suggestions on [feedback.onlyoffice.com](https://feedback.onlyoffice.com/forums/966080-your-voice-matters).
