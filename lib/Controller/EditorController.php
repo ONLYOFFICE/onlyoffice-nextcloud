@@ -935,6 +935,10 @@ class EditorController extends Controller {
             return ["error" => $this->trans->t("ONLYOFFICE app is not configured. Please contact admin")];
         }
 
+        if (str_starts_with($documentServerUrl, "/")) {
+            $documentServerUrl = $this->urlGenerator->getAbsoluteURL($documentServerUrl);
+        }
+
         if (parse_url($url, PHP_URL_HOST) !== parse_url($documentServerUrl, PHP_URL_HOST)) {
             $this->logger->error("Incorrect domain in file url");
             return ["error" => $this->trans->t("The domain in the file url does not match the domain of the Document server")];
