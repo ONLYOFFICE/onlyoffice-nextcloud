@@ -162,7 +162,7 @@ class EditorController extends Controller {
      * @var IAvatarManager
      */
     private $avatarManager;
-    
+
     /**
      * Mailer
      *
