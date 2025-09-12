@@ -110,7 +110,7 @@ class RemoteInstance {
         $connection = \OC::$server->getDatabaseConnection();
         $update = $connection->prepare("
             UPDATE `*PREFIX*" . self::TABLENAME_KEY . "`
-            SET status = ?, expire = ? 
+            SET status = ?, expire = ?
             WHERE remote = ?
         ");
         return (bool)$update->execute([$status === true ? 1 : 0, time(), $remote]);
