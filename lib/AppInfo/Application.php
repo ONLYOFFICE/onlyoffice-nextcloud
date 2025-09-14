@@ -67,10 +67,12 @@ use OCA\Onlyoffice\Listeners\ViewerListener;
 use OCA\Onlyoffice\Listeners\WidgetListener;
 use OCA\Onlyoffice\DirectEditor;
 use OCA\Onlyoffice\Hooks;
+use OCA\Onlyoffice\Listeners\ContentSecurityPolicyListener;
 use OCA\Onlyoffice\Notifier;
 use OCA\Onlyoffice\Preview;
 use OCA\Onlyoffice\TemplateProvider;
 use OCA\Onlyoffice\SettingsData;
+use OCP\Security\CSP\AddContentSecurityPolicyEvent;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 
@@ -95,6 +97,7 @@ class Application extends App implements IBootstrap {
         $context->registerEventListener(LoadAdditionalScriptsEvent::class, FilesListener::class);
         $context->registerEventListener(RegisterDirectEditorEvent::class, DirectEditorListener::class);
         $context->registerEventListener(LoadViewer::class, ViewerListener::class);
+        $context->registerEventListener(AddContentSecurityPolicyEvent::class, ContentSecurityPolicyListener::class);
         $context->registerEventListener(BeforeTemplateRenderedEvent::class, FileSharingListener::class);
         $context->registerEventListener(HttpBeforeTemplateRenderedEvent::class, WidgetListener::class);
 
