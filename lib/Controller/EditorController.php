@@ -53,6 +53,7 @@ use OCP\Constants;
 use OCP\Files\File;
 use OCP\Files\IRootFolder;
 use OCP\Files\NotPermittedException;
+use OCP\IAvatarManager;
 use OCP\Mail\IMailer;
 use OCP\IGroupManager;
 use OCP\IL10N;
@@ -239,7 +240,7 @@ class EditorController extends Controller {
         }
 
         $this->fileUtility = new FileUtility($AppName, $trans, $logger, $config, $shareManager, $session);
-        $this->avatarManager = \OC::$server->getAvatarManager();
+        $this->avatarManager = \OC::$server->get(IAvatarManager::class);
         $this->emailManager = new EmailManager($AppName, $trans, $logger, $mailer, $userManager, $urlGenerator);
 
         $this->folderManager = \OC::$server->getAppManager()->isInstalled("groupfolders")

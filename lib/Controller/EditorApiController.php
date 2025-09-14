@@ -61,6 +61,7 @@ use OCP\PreConditionNotMetException;
 use OCP\Share\IManager;
 use OCP\Share\IShare;
 use Psr\Log\LoggerInterface;
+use OCP\IAvatarManager;
 
 /**
  * Controller with the main functions
@@ -224,7 +225,7 @@ class EditorApiController extends OCSController {
         }
 
         $this->fileUtility = new FileUtility($AppName, $trans, $logger, $config, $shareManager, $session);
-        $this->avatarManager = \OC::$server->getAvatarManager();
+        $this->avatarManager = \OC::$server->get(IAvatarManager::class);
     }
 
     /**
