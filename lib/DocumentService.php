@@ -30,6 +30,7 @@
 namespace OCA\Onlyoffice;
 
 use OCP\IL10N;
+use OCP\Http\Client\IClientService;
 
 /**
  * Class service connector to Document Service
@@ -372,7 +373,7 @@ class DocumentService {
      * @return string
      */
     public function request($url, $method = "get", $opts = null) {
-        $httpClientService = \OC::$server->getHTTPClientService();
+        $httpClientService = \OC::$server->get(IClientService::class);
         $client = $httpClientService->newClient();
 
         if (null === $opts) {
