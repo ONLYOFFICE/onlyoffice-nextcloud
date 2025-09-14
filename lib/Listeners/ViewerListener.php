@@ -32,7 +32,6 @@ namespace OCA\Onlyoffice\Listeners;
 use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\SettingsData;
 use OCA\Viewer\Event\LoadViewer;
-use OCP\AppFramework\Http\ContentSecurityPolicy;
 use OCP\AppFramework\Services\IInitialState;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
@@ -98,11 +97,6 @@ class ViewerListener implements IEventListener {
             $this->initialState->provideLazyInitialState("settings", function () use ($container) {
                 return $container->query(SettingsData::class);
             });
-
-            $csp = new ContentSecurityPolicy();
-            $csp->addAllowedFrameDomain("'self'");
-            $cspManager = \OC::$server->getContentSecurityPolicyManager();
-            $cspManager->addDefaultPolicy($csp);
         }
     }
 }
