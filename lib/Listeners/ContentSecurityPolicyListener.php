@@ -41,37 +41,37 @@ use OCP\Security\CSP\AddContentSecurityPolicyEvent;
  */
 class ContentSecurityPolicyListener implements IEventListener {
 
-	/**
-	 * Request object
-	 *
-	 * @var IRequest
-	 */
-	private $request;
+    /**
+     * Request object
+     *
+     * @var IRequest
+     */
+    private $request;
 
-	/**
-	 * @param IRequest $request - request object
-	 */
-	public function __construct(IRequest $request) {
-		$this->request = $request;
-	}
+    /**
+     * @param IRequest $request - request object
+     */
+    public function __construct(IRequest $request) {
+        $this->request = $request;
+    }
 
-	public function handle(Event $event): void {
-		if (!$event instanceof AddContentSecurityPolicyEvent) {
-			return;
-		}
+    public function handle(Event $event): void {
+        if (!$event instanceof AddContentSecurityPolicyEvent) {
+            return;
+        }
 
-		if (!$this->isMainPage()) {
-			return;
-		}
+        if (!$this->isMainPage()) {
+            return;
+        }
 
-		$policy = new ContentSecurityPolicy();
-		$policy->addAllowedFrameDomain("'self'");
+        $policy = new ContentSecurityPolicy();
+        $policy->addAllowedFrameDomain("'self'");
 
-		$event->addPolicy($policy);
-	}
+        $event->addPolicy($policy);
+    }
 
-	private function isMainPage(): bool {
-		$scriptName = explode('/', $this->request->getScriptName());
-		return end($scriptName) === 'index.php';
-	}
+    private function isMainPage(): bool {
+        $scriptName = explode('/', $this->request->getScriptName());
+        return end($scriptName) === 'index.php';
+    }
 }
