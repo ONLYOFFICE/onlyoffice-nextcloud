@@ -29,8 +29,8 @@
 
 namespace OCA\Onlyoffice;
 
-use OCP\IL10N;
 use OCP\Http\Client\IClientService;
+use OCP\IL10N;
 
 /**
  * Class service connector to Document Service
