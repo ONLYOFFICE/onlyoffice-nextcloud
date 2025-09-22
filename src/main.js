@@ -228,6 +228,11 @@ import { loadState } from '@nextcloud/initial-state'
 	OCA.Onlyoffice.CloseEditor = function() {
 		$('body').removeClass('onlyoffice-inline')
 
+		const iframeContainer = document.querySelector('.onlyoffice-iframe-container')
+		if (iframeContainer !== null) {
+			iframeContainer.remove()
+		}
+
 		OCA.Onlyoffice.context = null
 
 		OCA.Onlyoffice.SetDefaultUrl()
