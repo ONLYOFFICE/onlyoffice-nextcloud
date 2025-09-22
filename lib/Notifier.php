@@ -166,7 +166,7 @@ class Notifier implements INotifier {
                     ],
                     "file" => [
                         "type" => "highlight",
-                        "id" => $fileId,
+                        "id" => (string)$fileId,
                         "name" => $fileName,
                         "link" => $editorLink
                     ]
