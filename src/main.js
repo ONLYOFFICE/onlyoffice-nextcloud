@@ -228,6 +228,11 @@ import { loadState } from '@nextcloud/initial-state'
 	OCA.Onlyoffice.CloseEditor = function() {
 		$('body').removeClass('onlyoffice-inline')
 
+		const iframeContainer = document.querySelector('.onlyoffice-iframe-container')
+		if (iframeContainer !== null) {
+			iframeContainer.remove()
+		}
+
 		OCA.Onlyoffice.context = null
 
 		OCA.Onlyoffice.SetDefaultUrl()
@@ -890,14 +895,17 @@ import { loadState } from '@nextcloud/initial-state'
 				$('#preview').prepend(button)
 			} else {
 				OCA.Onlyoffice.frameSelector = '#onlyofficeFrame'
+				const container = document.createElement('div')
+				container.classList.add('onlyoffice-iframe-container')
 				const iframe = document.createElement('iframe')
 				iframe.id = 'onlyofficeFrame'
 				iframe.nonce = btoa(OC.requestToken)
 				iframe.scrolling = 'no'
 				iframe.allowFullscreen = true
 				iframe.src = `${editorUrl}?inframe=true`
+				container.appendChild(iframe)
 				const appContent = document.querySelector('#app-content') || document.querySelector('#app-content-vue')
-				appContent.appendChild(iframe)
+				appContent.appendChild(container)
 				$('body').addClass('onlyoffice-inline')
 			}
 		} else {
