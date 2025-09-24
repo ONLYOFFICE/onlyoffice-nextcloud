@@ -203,7 +203,7 @@ import { loadState } from '@nextcloud/initial-state'
 				return
 			}
 			OCA.Onlyoffice.frameSelector = '#onlyofficeFrame'
-			const $iframe = $('<iframe id="onlyofficeFrame" nonce="' + btoa(OC.requestToken) + '" scrolling="no" allowfullscreen src="' + url + '&inframe=true" />')
+			const $iframe = $('<div class="onlyoffice-iframe-container"><iframe id="onlyofficeFrame" nonce="' + btoa(OC.requestToken) + '" scrolling="no" allowfullscreen src="' + url + '&inframe=true" /></div>')
 
 			const frameContainer = $('#app-content').length > 0 ? $('#app-content') : $('#app-content-vue')
 			frameContainer.append($iframe)
