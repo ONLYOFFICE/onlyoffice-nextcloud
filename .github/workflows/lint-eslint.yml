@@ -12,7 +12,7 @@ env:
 
 jobs:
   lint:
-    name: Lint 
+    name: Lint
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -22,13 +22,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-      
+
       - name: Code Checkout
         uses: actions/checkout@v4
 
       - name: Install Dependencies
         run: npm ci
-        
+
       - name: Code Linting
         run: npx eslint *.js
 

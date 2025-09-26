@@ -1,12 +1,12 @@
 {
     "name": "onlyoffice",
-    "version": "9.10.0",
+    "version": "9.11.0",
     "lockfileVersion": 3,
     "requires": true,
     "packages": {
         "": {
             "name": "onlyoffice",
-            "version": "9.10.0",
+            "version": "9.11.0",
             "license": "AGPL-3.0",
             "dependencies": {
                 "@nextcloud/event-bus": "^3.3.1",

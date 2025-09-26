@@ -15,7 +15,7 @@ Whether you’re working with internal teams or external collaborators, the ONLY
 ]]></description>
     <licence>agpl</licence>
     <author mail="dev@onlyoffice.com" homepage="https://www.onlyoffice.com/">Ascensio System SIA</author>
-    <version>9.10.0</version>
+    <version>9.11.0</version>
     <namespace>Onlyoffice</namespace>
     <types>
         <prevent_group_restriction/>
@@ -39,7 +39,7 @@ Whether you’re working with internal teams or external collaborators, the ONLY
     <screenshot>https://raw.githubusercontent.com/ONLYOFFICE/onlyoffice-nextcloud/master/screenshots/open.png</screenshot>
     <screenshot>https://raw.githubusercontent.com/ONLYOFFICE/onlyoffice-nextcloud/master/screenshots/open_form.png</screenshot>
     <dependencies>
-        <nextcloud min-version="30" max-version="31"/>
+        <nextcloud min-version="30" max-version="32"/>
     </dependencies>
     <settings>
         <admin>OCA\Onlyoffice\AdminSettings</admin>

@@ -9,5 +9,4 @@
         <exclude name="Squiz.WhiteSpace.ScopeClosingBrace.ContentBefore"/>
         <exclude name="Generic.Formatting.DisallowMultipleStatements.SameLine"/>
     </rule>
-    
 </ruleset>

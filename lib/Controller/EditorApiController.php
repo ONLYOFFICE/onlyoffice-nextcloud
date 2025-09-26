@@ -29,6 +29,7 @@
 
 namespace OCA\Onlyoffice\Controller;
 
+use OCA\DAV\CalDAV\TimezoneService;
 use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\Crypt;
 use OCA\Onlyoffice\DocumentService;
@@ -40,7 +41,6 @@ use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\Attribute\PublicPage;
 use OCP\AppFramework\OCSController;
 use OCP\AppFramework\QueryException;
-use OCA\DAV\CalDAV\TimezoneService;
 use OCP\Constants;
 use OCP\Files\File;
 use OCP\Files\Folder;
@@ -48,6 +48,7 @@ use OCP\Files\IRootFolder;
 use OCP\Files\Lock\ILock;
 use OCP\Files\Lock\ILockManager;
 use OCP\Files\Lock\NoLockProviderException;
+use OCP\IAvatarManager;
 use OCP\IL10N;
 use OCP\IRequest;
 use OCP\ISession;
@@ -224,7 +225,7 @@ class EditorApiController extends OCSController {
         }
 
         $this->fileUtility = new FileUtility($AppName, $trans, $logger, $config, $shareManager, $session);
-        $this->avatarManager = \OC::$server->getAvatarManager();
+        $this->avatarManager = \OC::$server->get(IAvatarManager::class);
     }
 
     /**

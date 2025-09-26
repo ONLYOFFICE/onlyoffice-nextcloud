@@ -1,4 +1,5 @@
 <?php
+
 /**
  *
  * (c) Copyright Ascensio System SIA 2025
@@ -29,74 +30,48 @@
 
 namespace OCA\Onlyoffice\Listeners;
 
-use OCA\Onlyoffice\AppConfig;
-use OCA\Onlyoffice\SettingsData;
-use OCA\Viewer\Event\LoadViewer;
-use OCP\AppFramework\Services\IInitialState;
+use OCP\AppFramework\Http\ContentSecurityPolicy;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
-use OCP\IServerContainer;
-use OCP\Util;
+use OCP\IRequest;
+use OCP\Security\CSP\AddContentSecurityPolicyEvent;
 
 /**
- * Viewer listener
+ * Content Security Policy Listener
  */
-class ViewerListener implements IEventListener {
+class ContentSecurityPolicyListener implements IEventListener {
 
     /**
-     * Application configuration
+     * Request object
      *
-     * @var AppConfig
+     * @var IRequest
      */
-    private $appConfig;
+    private $request;
 
     /**
-     * Initial state
-     *
-     * @var IInitialState
+     * @param IRequest $request - request object
      */
-    private $initialState;
-
-    /**
-     * Server container
-     *
-     * @var IServerContainer
-     */
-    private $serverContainer;
-
-    /**
-     * @param AppConfig $config - application configuration
-     * @param IInitialState $initialState - initial state
-     * @param IServerContainer $serverContainer - server container
-     */
-    public function __construct(
-        AppConfig $appConfig,
-        IInitialState $initialState,
-        IServerContainer $serverContainer
-    ) {
-        $this->appConfig = $appConfig;
-        $this->initialState = $initialState;
-        $this->serverContainer = $serverContainer;
+    public function __construct(IRequest $request) {
+        $this->request = $request;
     }
 
     public function handle(Event $event): void {
-        if (!$event instanceof LoadViewer) {
+        if (!$event instanceof AddContentSecurityPolicyEvent) {
             return;
         }
 
-        if (!empty($this->appConfig->getDocumentServerUrl())
-            && $this->appConfig->settingsAreSuccessful()
-            && $this->appConfig->isUserAllowedToUse()) {
-            Util::addScript("onlyoffice", "onlyoffice-viewer", "viewer");
-            Util::addScript("onlyoffice", "onlyoffice-listener", "viewer");
-
-            Util::addStyle("onlyoffice", "viewer");
-            Util::addStyle("onlyoffice", "format");
-
-            $container = $this->serverContainer;
-            $this->initialState->provideLazyInitialState("settings", function () use ($container) {
-                return $container->query(SettingsData::class);
-            });
+        if (!$this->isMainPage()) {
+            return;
         }
+
+        $policy = new ContentSecurityPolicy();
+        $policy->addAllowedFrameDomain("'self'");
+
+        $event->addPolicy($policy);
+    }
+
+    private function isMainPage(): bool {
+        $scriptName = explode('/', $this->request->getScriptName());
+        return end($scriptName) === 'index.php';
     }
 }

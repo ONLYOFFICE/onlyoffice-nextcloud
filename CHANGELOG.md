@@ -1,5 +1,9 @@
 # Change Log
 
+## 9.11.0
+## Changed
+- compatible with Nextcloud 32
+
 ## 9.10.0
 ## Added
 - pagination support in getUser
@@ -39,7 +43,6 @@
 ## 9.7.0
 ## Added
 - support hwp, hwpx, pages, numbers, key formats
-
 ## Changed
 - compatible with Nextcloud 31
 

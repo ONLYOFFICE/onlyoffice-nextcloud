@@ -62,7 +62,7 @@ OC.L10N.register(
     "You are using public demo ONLYOFFICE Docs server. Please do not store private sensitive data." : "Estás usando el servidor de ONLYOFFICE Docs de demostración. Por favor, no almacenes tus datos confidenciales aquí.",
     "Secure view enables you to secure documents by embedding a watermark" : "La vista segura permite asegurar documentos mediante la inserción de una marca de agua en ellos",
     "Enable watermarking" : "Habilitar marcas de agua",
-    "Watermark text" : "Texto de marca de agua", 
+    "Watermark text" : "Texto de marca de agua",
     "DO NOT SHARE THIS" : "NO COMPARTIR ESTO",
     "Show watermark on tagged files" : "Mostrar marca de agua en archivos etiquetados",
     "Show watermark for users of groups" : "Mostrar marca de agua para usuarios del grupo",
