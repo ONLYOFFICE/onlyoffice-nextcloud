@@ -879,8 +879,7 @@ import { loadState } from '@nextcloud/initial-state'
 
 			const editorUrl = OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/s/' + encodeURIComponent(getSharingToken()))
 
-			if (_oc_appswebroots.richdocuments
-				|| (_oc_appswebroots.files_pdfviewer && extension === 'pdf')
+			if ((_oc_appswebroots.files_pdfviewer && extension === 'pdf')
 				|| (_oc_appswebroots.text && extension === 'txt')) {
 
 				const button = document.createElement('a')
