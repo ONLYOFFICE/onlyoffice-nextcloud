@@ -3,6 +3,7 @@
 ##
 ## Changed
 - Nextcloud v30 is no longer supported
+- show warning popup when jwt secret is empty and success message otherwise
 
 ## 9.11.0
 ## Changed
