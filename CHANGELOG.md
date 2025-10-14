@@ -4,6 +4,9 @@
 ## Changed
 - Nextcloud v30 is no longer supported
 
+## Added
+- plugin description and useful links in admin settings
+
 ## 9.11.0
 ## Changed
 - compatible with Nextcloud 32
