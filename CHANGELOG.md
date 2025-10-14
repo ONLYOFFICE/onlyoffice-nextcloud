@@ -3,6 +3,7 @@
 ##
 ## Changed
 - Nextcloud v30 is no longer supported
+- delete extra permissions on file delete
 
 ## 9.11.0
 ## Changed
