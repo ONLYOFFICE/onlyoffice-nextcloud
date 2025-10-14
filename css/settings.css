@@ -96,3 +96,14 @@
 #onlyofficeEnableSharingBlock {
     margin-left: 1.5em;
 }
+
+.onlyoffice-popup-info {
+    display: flex;
+    flex-direction: column;
+    row-gap: 12px;
+    padding: 13px;
+}
+
+.onlyoffice-popup-info a {
+    text-decoration: underline;
+}
