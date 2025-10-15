@@ -35,6 +35,7 @@ use OCA\Onlyoffice\DocumentService;
 use OCA\Onlyoffice\FileVersions;
 use OCA\Onlyoffice\TemplateManager;
 use OCP\AppFramework\Controller;
+use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IL10N;
 use OCP\IRequest;
@@ -175,7 +176,7 @@ class SettingsController extends Controller {
      * @param string $jwtHeader - jwt header
      * @param bool $demo - use demo server
      *
-     * @return array
+     * @return DataResponse
      */
     public function saveAddress(
         $documentserver,
@@ -209,7 +210,7 @@ class SettingsController extends Controller {
             }
         }
 
-        return [
+        return new DataResponse([
             "documentserver" => $this->config->getDocumentServerUrl(true),
             "verifyPeerOff" => $this->config->getVerifyPeerOff(),
             "documentserverInternal" => $this->config->getDocumentServerInternalUrl(true),
@@ -218,7 +219,7 @@ class SettingsController extends Controller {
             "jwtHeader" => $this->config->jwtHeader(true),
             "error" => $error,
             "version" => $version,
-        ];
+        ]);
     }
 
     /**
