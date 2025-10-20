@@ -350,18 +350,28 @@
 		})
 
 		$('#onlyofficeClearVersionHistory').click(function() {
-			$('.section-onlyoffice').addClass('icon-loading')
-
-			$.ajax({
-				method: 'DELETE',
-				url: OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/settings/history'),
-				success: function onSuccess(response) {
-					$('.section-onlyoffice').removeClass('icon-loading')
-					if (response) {
-						OCP.Toast.success(t(OCA.Onlyoffice.AppName, 'All history successfully deleted'))
+			OC.dialogs.confirm(
+				t(OCA.Onlyoffice.AppName, 'Are you sure you want to clear metadata?'),
+				t(OCA.Onlyoffice.AppName, 'Confirm metadata removal'),
+				(clicked) => {
+					if (!clicked) {
+						return;
 					}
-				},
-			})
+
+					$('.section-onlyoffice').addClass('icon-loading')
+
+					$.ajax({
+						method: 'DELETE',
+						url: OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/settings/history'),
+						success: function onSuccess(response) {
+							$('.section-onlyoffice').removeClass('icon-loading')
+							if (response) {
+								OCP.Toast.success(t(OCA.Onlyoffice.AppName, 'All history successfully deleted'))
+							}
+						},
+					})
+				}
+			)			
 		})
 
 		$('#onlyofficeAddTemplate').change(function() {
