@@ -207,7 +207,7 @@
 						if (response.error) {
 							OCP.Toast.error(t(OCA.Onlyoffice.AppName, 'Error when trying to connect') + ' (' + response.error + ')' + versionMessage)
 						} else {
-							OCP.Toast.success(t(OCA.Onlyoffice.AppName, 'Settings have been successfully updated') + versionMessage)
+							OCP.Toast.success(t(OCA.Onlyoffice.AppName, 'Server settings have been successfully updated') + versionMessage)
 						}
 					} else {
 						$('.section-onlyoffice-common, .section-onlyoffice-templates, .section-onlyoffice-watermark').addClass('onlyoffice-hide')
@@ -277,7 +277,7 @@
 				success: function onSuccess(response) {
 					$('.section-onlyoffice').removeClass('icon-loading')
 					if (response) {
-						OCP.Toast.success(t(OCA.Onlyoffice.AppName, 'Settings have been successfully updated'))
+						OCP.Toast.success(t(OCA.Onlyoffice.AppName, 'Common settings have been successfully updated'))
 					}
 				},
 			})
@@ -328,7 +328,7 @@
 				success: function onSuccess(response) {
 					$('.section-onlyoffice').removeClass('icon-loading')
 					if (response) {
-						OCP.Toast.success(t(OCA.Onlyoffice.AppName, 'Settings have been successfully updated'))
+						OCP.Toast.success(t(OCA.Onlyoffice.AppName, 'Security settings have been successfully updated'))
 					}
 				},
 			})
