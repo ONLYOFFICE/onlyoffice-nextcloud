@@ -84,7 +84,7 @@ if ($_["tagsEnabled"]) {
 
     <br />
     <div>
-        <button id="onlyofficeAddrSave" class="button"><?php p($l->t("Save")) ?></button>
+        <button id="onlyofficeAddrSave" class="button primary"><?php p($l->t("Save")) ?></button>
 
         <div class="onlyoffice-demo">
             <input type="checkbox" class="checkbox" id="onlyofficeDemo"
@@ -293,7 +293,7 @@ if ($_["tagsEnabled"]) {
     </div>
 
     <br />
-    <p><button id="onlyofficeSave" class="button"><?php p($l->t("Save")) ?></button></p>
+    <p><button id="onlyofficeSave" class="button primary"><?php p($l->t("Save")) ?></button></p>
 </div>
 
 <div class="section section-onlyoffice section-onlyoffice-templates <?php if (empty($_["documentserver"]) && !$_["demo"]["enabled"] || !$_["successful"]) { ?>onlyoffice-hide<?php } ?>">
@@ -429,7 +429,7 @@ if ($_["tagsEnabled"]) {
     </div>
 
     <br />
-    <p><button id="onlyofficeSecuritySave" class="button"><?php p($l->t("Save")) ?></button></p>
+    <p><button id="onlyofficeSecuritySave" class="button primary"><?php p($l->t("Save")) ?></button></p>
 
     <input type ="hidden" id="onlyofficeSettingsState" value="<?php p($_["settingsError"]) ?>" />
 </div>
