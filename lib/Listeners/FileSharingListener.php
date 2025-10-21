@@ -85,15 +85,19 @@ class FileSharingListener implements IEventListener {
         }
 
         if (!empty($this->appConfig->getDocumentServerUrl())
-            && $this->appConfig->settingsAreSuccessful()
-            && empty($this->appConfig->getLimitGroups())) {
-            Util::addScript("onlyoffice", "onlyoffice-main");
+            && $this->appConfig->settingsAreSuccessful()) {
 
             $shareType = "";
             if (method_exists($event, "getShare")) {
                 $share = $event->getShare();
                 $shareType = $share->getNodeType();
+
+                $sharedBy = $share->getSharedBy();
+                if (!$this->appConfig->isUserAllowedToUse($sharedBy)) {
+                    return;
+                }
             }
+
             if ($this->appConfig->getSameTab() || $shareType === "file") {
                 Util::addScript("onlyoffice", "onlyoffice-listener");
             }
@@ -103,6 +107,7 @@ class FileSharingListener implements IEventListener {
                 return $container->query(SettingsData::class);
             });
 
+            Util::addScript("onlyoffice", "onlyoffice-main");
             Util::addStyle("onlyoffice", "main");
             Util::addStyle("onlyoffice", "format");
         }
