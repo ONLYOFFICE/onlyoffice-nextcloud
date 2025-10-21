@@ -39,28 +39,28 @@ use OCP\EventDispatcher\Event;
  */
 class DocumentUnsavedEvent extends Event {
 
-	/**
-	 * @param string $userId
-	 * @param int $fileId
-	 * @param string $fileName
-	 */
-	public function __construct(
-		private string $userId,
-		private int $fileId,
-		private string $fileName,
-	) {
-		parent::__construct();
-	}
+    /**
+     * @param string $userId
+     * @param int $fileId
+     * @param string $fileName
+     */
+    public function __construct(
+        private string $userId,
+        private int $fileId,
+        private string $fileName,
+    ) {
+        parent::__construct();
+    }
 
-	public function getUserId(): string {
-		return $this->userId;
-	}
+    public function getUserId(): string {
+        return $this->userId;
+    }
 
-	public function getFileId(): int {
-		return $this->fileId;
-	}
+    public function getFileId(): int {
+        return $this->fileId;
+    }
 
-	public function getFileName(): string {
-		return $this->fileName;
-	}
+    public function getFileName(): string {
+        return $this->fileName;
+    }
 }

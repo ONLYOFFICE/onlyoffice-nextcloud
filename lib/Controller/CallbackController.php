@@ -189,7 +189,7 @@ class CallbackController extends Controller {
         Crypt $crypt,
         IManager $shareManager,
         ILockManager $lockManager,
-		IEventDispatcher $eventDispatcher,
+        IEventDispatcher $eventDispatcher,
     ) {
         parent::__construct($AppName, $request);
 
