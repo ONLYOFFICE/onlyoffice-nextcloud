@@ -4,6 +4,7 @@
 ## Changed
 - fix opening a shared link when group access to the app is restricted
 - Nextcloud v30 is no longer supported
+- replaced general save success message with dedicated messages for each settings section
 
 ## 9.11.0
 ## Changed
