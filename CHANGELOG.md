@@ -2,6 +2,11 @@
 
 ##
 ## Changed
+- fix opening a shared link when group access to the app is restricted
+- Nextcloud v30 is no longer supported
+
+## 9.11.0
+## Changed
 - compatible with Nextcloud 32
 
 ## 9.10.0
