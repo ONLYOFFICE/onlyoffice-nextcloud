@@ -355,7 +355,7 @@
 				t(OCA.Onlyoffice.AppName, 'Confirm metadata removal'),
 				(clicked) => {
 					if (!clicked) {
-						return;
+						return
 					}
 
 					$('.section-onlyoffice').addClass('icon-loading')
