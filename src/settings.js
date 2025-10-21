@@ -215,7 +215,6 @@
 									+ '<p>' + t(OCA.Onlyoffice.AppName, 'To ensure the security of important parameters in ONLYOFFICE Docs requests, please set a Secret Key on the Settings page. To learn more, <a href="{url}">click here</a>.', { url: securityUrl }) + '</p>'
 								OC.dialogs.message(content, t(OCA.Onlyoffice.AppName, t(OCA.Onlyoffice.AppName, 'Info')), null, OC.dialogs.OK_BUTTONS, () => {}, null, true)
 							}
-							
 						}
 					} else {
 						$('.section-onlyoffice-common, .section-onlyoffice-templates, .section-onlyoffice-watermark').addClass('onlyoffice-hide')
