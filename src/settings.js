@@ -211,8 +211,8 @@
 								OCP.Toast.success(t(OCA.Onlyoffice.AppName, 'Settings have been successfully updated') + versionMessage)
 							} else {
 								const securityUrl = 'https://api.onlyoffice.com/docs/docs-api/get-started/how-it-works/security/'
-								const content = "<div class='onlyoffice-popup-info'><p>" + t(OCA.Onlyoffice.AppName, 'Settings saved successfully!') + "</p>"
-									+ "<p>" + t(OCA.Onlyoffice.AppName, 'To ensure the security of important parameters in ONLYOFFICE Docs requests, please set a Secret Key on the Settings page. To learn more, <a href="{url}">click here</a>.', {url: securityUrl}) + "</p>"
+								const content = '<div class="onlyoffice-popup-info"><p>' + t(OCA.Onlyoffice.AppName, 'Settings saved successfully!') + '</p>'
+									+ '<p>' + t(OCA.Onlyoffice.AppName, 'To ensure the security of important parameters in ONLYOFFICE Docs requests, please set a Secret Key on the Settings page. To learn more, <a href="{url}">click here</a>.', {url: securityUrl}) + '</p>'
 								OC.dialogs.message(content, t(OCA.Onlyoffice.AppName, t(OCA.Onlyoffice.AppName, 'Info')), null, OC.dialogs.OK_BUTTONS, () => {}, null, true)
 							}
 							
