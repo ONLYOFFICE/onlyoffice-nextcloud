@@ -86,7 +86,6 @@ class FileSharingListener implements IEventListener {
 
         if (!empty($this->appConfig->getDocumentServerUrl())
             && $this->appConfig->settingsAreSuccessful()) {
-
             $shareType = "";
             if (method_exists($event, "getShare")) {
                 $share = $event->getShare();
