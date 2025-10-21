@@ -371,7 +371,7 @@
 						},
 					})
 				}
-			)			
+			)
 		})
 
 		$('#onlyofficeAddTemplate').change(function() {
