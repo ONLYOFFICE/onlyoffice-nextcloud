@@ -207,7 +207,14 @@
 						if (response.error) {
 							OCP.Toast.error(t(OCA.Onlyoffice.AppName, 'Error when trying to connect') + ' (' + response.error + ')' + versionMessage)
 						} else {
-							OCP.Toast.success(t(OCA.Onlyoffice.AppName, 'Server settings have been successfully updated') + versionMessage)
+							if (response.secret !== null) {
+								OCP.Toast.success(t(OCA.Onlyoffice.AppName, 'Server settings have been successfully updated') + versionMessage)
+							} else {
+								const securityUrl = 'https://api.onlyoffice.com/docs/docs-api/get-started/how-it-works/security/'
+								const content = '<div class="onlyoffice-popup-info"><p>' + t(OCA.Onlyoffice.AppName, 'Server settings have been successfully updated') + '</p>'
+									+ '<p>' + t(OCA.Onlyoffice.AppName, 'To ensure the security of important parameters in ONLYOFFICE Docs requests, please set a Secret Key on the Settings page. To learn more, <a href="{url}">click here</a>.', { url: securityUrl }) + '</p>'
+								OC.dialogs.message(content, t(OCA.Onlyoffice.AppName, t(OCA.Onlyoffice.AppName, 'Info')), null, OC.dialogs.OK_BUTTONS, () => {}, null, true)
+							}
 						}
 					} else {
 						$('.section-onlyoffice-common, .section-onlyoffice-templates, .section-onlyoffice-watermark').addClass('onlyoffice-hide')
