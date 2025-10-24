@@ -35,6 +35,7 @@ use OCP\L10N\IFactory;
 use OCP\Notification\IAction;
 use OCP\Notification\INotification;
 use OCP\Notification\INotifier;
+use OCP\Notification\UnknownNotificationException;
 use Psr\Log\LoggerInterface;
 
 class Notifier implements INotifier {
@@ -121,7 +122,7 @@ class Notifier implements INotifier {
      */
     public function prepare(INotification $notification, string $languageCode): INotification {
         if ($notification->getApp() !== $this->appName) {
-            throw new \InvalidArgumentException("Notification not from " . $this->appName);
+            throw new UnknownNotificationException("Notification not from " . $this->appName);
         }
 
         $parameters = $notification->getSubjectParameters();
