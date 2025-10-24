@@ -28,7 +28,6 @@ OC.L10N.register(
     "New spreadsheet" : "Новая электронная таблица",
     "New presentation" : "Новая презентация",
     "Error when trying to connect" : "При попытке соединения возникла ошибка",
-    "Settings have been successfully updated" : "Настройки были успешно обновлены",
     "Server can't read xml" : "Невозможно прочитать xml файл на сервере",
     "Bad Response. Errors: " : "Неправильный ответ. Ошибки:",
     "Documentation" : "Документация",

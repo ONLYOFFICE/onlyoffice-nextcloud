@@ -28,7 +28,6 @@ OC.L10N.register(
     "New spreadsheet": "Nieuwe spreadsheet",
     "New presentation": "Nieuwe presentatien",
     "Error when trying to connect": "Fout bij het verbinden",
-    "Settings have been successfully updated": "Instellingen zijn met succes bijgewerkt",
     "Server can't read xml": "Server kan xml niet lezen",
     "Bad Response. Errors: ": "Slechte Reactie. Fouten",
     "Documentation": "Documentatie",
