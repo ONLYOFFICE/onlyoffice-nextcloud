@@ -28,7 +28,6 @@ OC.L10N.register(
     "New spreadsheet" : "Nyt regneark",
     "New presentation" : "Ny præsentation",
     "Error when trying to connect" : "Fejl under forsøg på at oprette forbindelse",
-    "Settings have been successfully updated" : "Indstillingerne er blevet opdateret",
     "Server can't read xml" : "Serveren kan ikke læse xml",
     "Bad Response. Errors: " : "Ingen respons. Fejl:",
     "Documentation" : "Dokumentation",

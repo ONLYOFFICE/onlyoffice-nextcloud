@@ -5,6 +5,7 @@
 - fix opening a shared link when group access to the app is restricted
 - Nextcloud v30 is no longer supported
 - delete extra permissions on file delete
+- replaced general save success message with dedicated messages for each settings section
 
 ## Added
 - plugin description and useful links in admin settings

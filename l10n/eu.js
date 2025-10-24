@@ -28,7 +28,6 @@ OC.L10N.register(
     "New spreadsheet" : "Kalkulu-orri berria",
     "New presentation" : "Aurkezpen berria",
     "Error when trying to connect" : "Errorea konexioa ezartzeko saiakeran",
-    "Settings have been successfully updated" : "Ezarpenak ongi eguneratu dira",
     "Server can't read xml" : "Zerbitzariak ezin du xml irakurri",
     "Bad Response. Errors: " : "Erantzun okerra. Erroreak:",
     "Documentation" : "Dokumentazioa",

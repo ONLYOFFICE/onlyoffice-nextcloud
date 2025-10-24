@@ -28,7 +28,6 @@ OC.L10N.register(
     "New spreadsheet" : "Новая электронная таблица",
     "New presentation" : "Новая презентация",
     "Error when trying to connect" : "При попытке соединения возникла ошибка",
-    "Settings have been successfully updated" : "Настройки были успешно обновлены",
     "Server can't read xml" : "Невозможно прочитать xml файл на сервере",
     "Bad Response. Errors: " : "Неправильный ответ. Ошибки:",
     "Documentation" : "Документация",
@@ -160,6 +159,9 @@ OC.L10N.register(
     "Welcome to ONLYOFFICE Docs!": "",
     "Edit and collaborate on text documents, spreadsheets, presentations, and PDFs within Nextcloud using ONLYOFFICE Docs.": "",
     "Learn more": "",
-    "Suggest a feature": ""
+    "Suggest a feature": "",
+    "Server settings have been successfully updated": "",
+    "Common settings have been successfully updated": "",
+    "Security settings have been successfully updated": ""
 },
 "nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);");
