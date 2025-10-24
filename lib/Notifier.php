@@ -173,7 +173,7 @@ class Notifier implements INotifier {
                     ]
                 ]);
                 break;
-            case 'document_unsaved':
+            case "document_unsaved":
                 $fileId = $parameters["fileId"];
                 $fileName = $parameters["fileName"];
 
@@ -188,7 +188,7 @@ class Notifier implements INotifier {
                 $notification->addParsedAction($action);
                 $notification->setParsedSubject($trans->t("%1\$s could not be saved. Please open the file again.", [$fileName]))
                     ->setRichSubject($trans->t("{file} could not be saved. Please open the file again."), [
-                        'file' => [
+                        "file" => [
                             "type" => "highlight",
                             "id" => (string)$fileId,
                             "name" => $fileName,

@@ -35,11 +35,11 @@ use OCA\Onlyoffice\Events\DocumentUnsavedEvent;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 use OCP\IConfig;
-use Psr\Log\LoggerInterface;
 use OCP\L10N\IFactory;
 use OCP\Notification\IManager as NotificationIManager;
 use OCP\Notification\IncompleteNotificationException;
 use OCP\Notification\InvalidValueException;
+use Psr\Log\LoggerInterface;
 
 /**
  * Document Unsaved Event Listener
