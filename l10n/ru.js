@@ -155,6 +155,8 @@ OC.L10N.register(
     "Enable sharing (might increase editors loading time)" : "Включить панель общего доступа (может увеличить время загрузки редакторов)",
     "Same as system" : "Такая же, как в системе",
     "Enable live-viewing mode when accessing file by public link" : "Включить режим просмотра в реальном времени при доступе к файлу по публичной ссылке",
+    "Are you sure you want to clear metadata?": "",
+    "Confirm metadata removal": "",
     "Welcome to ONLYOFFICE Docs!": "",
     "Edit and collaborate on text documents, spreadsheets, presentations, and PDFs within Nextcloud using ONLYOFFICE Docs.": "",
     "Learn more": "",
