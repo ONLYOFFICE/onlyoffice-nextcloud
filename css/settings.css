@@ -97,6 +97,40 @@
     margin-left: 1.5em;
 }
 
+.onlyoffice-description {
+    display: flex;
+    flex-direction: column;
+    row-gap: 11px;
+    margin-bottom: 24px;
+}
+
+.onlyoffice-description h1 {
+    font-size: 32px;
+    font-weight: 600;
+}
+
+.onlyoffice-description p {
+    font-size: 15px;
+    font-weight: 400;
+    margin-bottom: 0 !important;
+}
+
+.onlyoffice-description .useful-links {
+    display: flex;
+    column-gap: 24px;
+}
+
+.onlyoffice-description .useful-links a {
+    display: flex;
+    gap: 4px;
+}
+
+.onlyoffice-description .useful-links a::after {
+    content: url('../img/top-right-arrow.svg');
+    width: 12px;
+    height: 12px;
+}
+
 .onlyoffice-popup-info {
     display: flex;
     flex-direction: column;

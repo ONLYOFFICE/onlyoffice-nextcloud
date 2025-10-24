@@ -31,6 +31,7 @@ namespace OCA\Onlyoffice;
 
 use OC\Files\Filesystem;
 use OC\Files\Node\File;
+use OCP\Share\IShare;
 use OCP\Util;
 
 /**
@@ -129,6 +130,29 @@ class Hooks {
             KeyManager::delete($fileId, true);
 
             FileVersions::deleteAllVersions($ownerId, $fileInfo);
+
+            $root = \OC::$server->get(\OCP\Files\IRootFolder::class);
+            $folder = $root->getUserFolder($ownerId);
+            $files = $folder->getById($fileId);
+            if (!empty($files)) {
+                $shares = [];
+                $shareTypes = [
+                    IShare::TYPE_USER,
+                    IShare::TYPE_GROUP,
+                    IShare::TYPE_LINK,
+                    IShare::TYPE_ROOM,
+                ];
+                $node = $files[0];
+                $shareManager = \OC::$server->get(\OCP\Share\IManager::class);
+
+                foreach ($shareTypes as $shareType) {
+                    $shares = array_merge($shares, $shareManager->getSharesBy($ownerId, $shareType, $node));
+                }
+                $shareIds = array_map(fn(IShare $share) => $share->getId(), $shares);
+                if (!empty($shareIds)) {
+                    ExtraPermissions::deleteList($shareIds);
+                }
+            }
         } catch (\Exception $e) {
             \OCP\Log\logger('onlyoffice')->error("Hook: fileDelete " . json_encode($params), ['exception' => $e]);
         }

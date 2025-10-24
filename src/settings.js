@@ -208,7 +208,7 @@
 							OCP.Toast.error(t(OCA.Onlyoffice.AppName, 'Error when trying to connect') + ' (' + response.error + ')' + versionMessage)
 						} else {
 							if (response.secret !== null) {
-								OCP.Toast.success(t(OCA.Onlyoffice.AppName, 'Settings have been successfully updated') + versionMessage)
+								OCP.Toast.success(t(OCA.Onlyoffice.AppName, 'Server settings have been successfully updated') + versionMessage)
 							} else {
 								const securityUrl = 'https://api.onlyoffice.com/docs/docs-api/get-started/how-it-works/security/'
 								const content = '<div class="onlyoffice-popup-info"><p>' + t(OCA.Onlyoffice.AppName, 'Settings saved successfully!') + '</p>'
@@ -284,7 +284,7 @@
 				success: function onSuccess(response) {
 					$('.section-onlyoffice').removeClass('icon-loading')
 					if (response) {
-						OCP.Toast.success(t(OCA.Onlyoffice.AppName, 'Settings have been successfully updated'))
+						OCP.Toast.success(t(OCA.Onlyoffice.AppName, 'Common settings have been successfully updated'))
 					}
 				},
 			})
@@ -335,7 +335,7 @@
 				success: function onSuccess(response) {
 					$('.section-onlyoffice').removeClass('icon-loading')
 					if (response) {
-						OCP.Toast.success(t(OCA.Onlyoffice.AppName, 'Settings have been successfully updated'))
+						OCP.Toast.success(t(OCA.Onlyoffice.AppName, 'Security settings have been successfully updated'))
 					}
 				},
 			})
@@ -357,18 +357,28 @@
 		})
 
 		$('#onlyofficeClearVersionHistory').click(function() {
-			$('.section-onlyoffice').addClass('icon-loading')
-
-			$.ajax({
-				method: 'DELETE',
-				url: OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/settings/history'),
-				success: function onSuccess(response) {
-					$('.section-onlyoffice').removeClass('icon-loading')
-					if (response) {
-						OCP.Toast.success(t(OCA.Onlyoffice.AppName, 'All history successfully deleted'))
+			OC.dialogs.confirm(
+				t(OCA.Onlyoffice.AppName, 'Are you sure you want to clear metadata?'),
+				t(OCA.Onlyoffice.AppName, 'Confirm metadata removal'),
+				(clicked) => {
+					if (!clicked) {
+						return
 					}
+
+					$('.section-onlyoffice').addClass('icon-loading')
+
+					$.ajax({
+						method: 'DELETE',
+						url: OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/settings/history'),
+						success: function onSuccess(response) {
+							$('.section-onlyoffice').removeClass('icon-loading')
+							if (response) {
+								OCP.Toast.success(t(OCA.Onlyoffice.AppName, 'All history successfully deleted'))
+							}
+						},
+					})
 				},
-			})
+			)
 		})
 
 		$('#onlyofficeAddTemplate').change(function() {

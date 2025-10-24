@@ -28,7 +28,6 @@ OC.L10N.register(
     "New spreadsheet" : "新建表格",
     "New presentation" : "新建幻灯片",
     "Error when trying to connect" : "连接时发生异常",
-    "Settings have been successfully updated" : "设置已保存",
     "Server can't read xml" : "服务器无法读取XML",
     "Bad Response. Errors: " : "错误的返回: ",
     "Documentation" : "文档集",
