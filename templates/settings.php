@@ -140,6 +140,12 @@ if ($_["tagsEnabled"]) {
     </p>
 
     <p>
+        <input type="checkbox" class="checkbox" id="onlyofficeFullScreenMode"
+            <?php if ($_["fullScreenMode"]) { ?>checked="checked"<?php } ?> />
+        <label for="onlyofficeFullScreenMode"><?php p($l->t("Open the editors in the full-screen mode")) ?></label>
+    </p>
+
+    <p>
         <input type="checkbox" class="checkbox" id="onlyofficeAdvanced"
             <?php if ($_["advanced"]) { ?>checked="checked"<?php } ?> />
         <label for="onlyofficeAdvanced"><?php p($l->t("Provide advanced document permissions using ONLYOFFICE Docs")) ?></label>
