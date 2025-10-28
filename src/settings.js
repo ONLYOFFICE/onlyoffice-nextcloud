@@ -238,6 +238,7 @@
 
 			const sameTab = $('#onlyofficeSameTab').is(':checked')
 			const enableSharing = $('#onlyofficeEnableSharing').is(':checked')
+			const fullScreenMode = $('#onlyofficeFullScreenMode').is(':checked')
 			const preview = $('#onlyofficePreview').is(':checked')
 			const advanced = $('#onlyofficeAdvanced').is(':checked')
 			const cronChecker = $('#onlyofficeCronChecker').is(':checked')
@@ -265,6 +266,7 @@
 					editFormats,
 					sameTab,
 					enableSharing,
+					fullScreenMode,
 					preview,
 					advanced,
 					cronChecker,
