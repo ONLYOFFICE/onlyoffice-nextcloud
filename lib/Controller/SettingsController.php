@@ -137,6 +137,7 @@ class SettingsController extends Controller {
             "formats" => $this->config->formatsSetting(),
             "sameTab" => $this->config->getSameTab(),
             "enableSharing" => $this->config->getEnableSharing(),
+            "fullScreenMode" => $this->config->getFullScreenMode(),
             "preview" => $this->config->getPreview(),
             "advanced" => $this->config->getAdvanced(),
             "cronChecker" => $this->config->getCronChecker(),
@@ -228,6 +229,7 @@ class SettingsController extends Controller {
      * @param array $editFormats - editable formats array
      * @param bool $sameTab - open in the same tab
      * @param bool $enableSharing - enable sharingsameTab
+     * @param bool $fullScreenMode - open in full-screen mode
      * @param bool $preview - generate preview files
      * @param bool $advanced - use advanced tab
      * @param bool $cronChecker - disable cron checker
@@ -250,6 +252,7 @@ class SettingsController extends Controller {
         $editFormats,
         $sameTab,
         $enableSharing,
+        $fullScreenMode,
         $preview,
         $advanced,
         $cronChecker,
@@ -271,6 +274,7 @@ class SettingsController extends Controller {
         $this->config->setEditableFormats($editFormats);
         $this->config->setEnableSharing($enableSharing);
         $this->config->setSameTab($sameTab);
+        $this->config->setFullScreenMode($fullScreenMode);
         $this->config->setPreview($preview);
         $this->config->setAdvanced($advanced);
         $this->config->setCronChecker($cronChecker);
