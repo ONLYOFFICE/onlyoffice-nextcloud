@@ -108,6 +108,13 @@ class AppConfig {
     private $_enableSharing = "enableSharing";
 
     /**
+     * The config key for the setting full-screen mode
+     *
+     * @var string
+     */
+    private $_fullScreenMode = "fullScreenMode";
+
+    /**
      * The config key for the generate preview
      *
      * @var string
@@ -732,6 +739,26 @@ class AppConfig {
      */
     public function getEnableSharing() {
         return $this->config->getAppValue($this->appName, $this->_enableSharing, "false") === "true";
+    }
+
+    /**
+     * Save the full-screen mode setting
+     *
+     * @param bool $value - full-screen mode
+     */
+    public function setFullScreenMode($value) {
+        $this->logger->info("Set opening in full-screen mode: " . json_encode($value), ["app" => $this->appName]);
+
+        $this->config->setAppValue($this->appName, $this->_fullScreenMode, json_encode($value));
+    }
+
+    /**
+     * Get the opening setting in full-screen mode
+     *
+     * @return bool
+     */
+    public function getFullScreenMode() {
+        return $this->config->getAppValue($this->appName, $this->_fullScreenMode, "false") === "true";
     }
 
     /**
