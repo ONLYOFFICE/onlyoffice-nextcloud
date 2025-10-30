@@ -173,6 +173,29 @@ class Notifier implements INotifier {
                     ]
                 ]);
                 break;
+            case "document_unsaved":
+                $fileId = $parameters["fileId"];
+                $fileName = $parameters["fileName"];
+
+                $this->logger->info("Notify prepare: unsaved document $fileId");
+
+                $link = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".editor.index", ["fileId" => $fileId]);
+                $action = $notification->createAction();
+                $action->setLabel($trans->t('Open'))
+                    ->setParsedLabel($trans->t('Open'))
+                    ->setLink($link, IAction::TYPE_WEB)
+                    ->setPrimary(true);
+                $notification->addParsedAction($action);
+                $notification->setParsedSubject($trans->t("%1\$s could not be saved. Please open the file again.", [$fileName]))
+                    ->setRichSubject($trans->t("{file} could not be saved. Please open the file again."), [
+                        "file" => [
+                            "type" => "highlight",
+                            "id" => (string)$fileId,
+                            "name" => $fileName,
+                        ]
+                    ])
+                    ->setIcon($this->urlGenerator->getAbsoluteURL($this->urlGenerator->imagePath($this->appName, 'app-dark.svg')));
+                break;
             default:
                 $this->logger->info("Unsupported notification object: ".$notification->getObjectType());
         }
