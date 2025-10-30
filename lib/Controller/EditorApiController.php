@@ -603,7 +603,7 @@ class EditorApiController extends OCSController {
 
         $params = $this->setCustomization($params);
 
-        $params = $this->setWatermark($params, !empty($shareToken), $userId, $file);
+        $params = $this->setWatermark($params, !empty($shareToken), $user, $file);
 
         if ($this->config->useDemo()) {
             $params["editorConfig"]["tenant"] = $this->config->getSystemValue("instanceid", true);
@@ -840,12 +840,12 @@ class EditorApiController extends OCSController {
      *
      * @param array params - file parameters
      * @param bool isPublic - with access token
-     * @param string userId - user identifier
+     * @param IUser $user - current user
      * @param string file - file
      *
      * @return array
      */
-    private function setWatermark($params, $isPublic, $userId, $file) {
+    private function setWatermark($params, $isPublic, $user, $file) {
         $watermarkTemplate = $this->getWatermarkText(
             $isPublic,
             $userId,
@@ -855,13 +855,23 @@ class EditorApiController extends OCSController {
         );
 
         if ($watermarkTemplate !== false) {
-            if (empty($userId)) {
+
+            if (empty($user)) {
+                $userId = $this->trans->t('Anonymous');
+                $userDisplayName = $this->trans->t('Anonymous');
+                $email = $this->trans->t('Anonymous');
                 $timezone = $this->timezoneService->getDefaultTimezone();
             } else {
+                $userId = $user->getUID();
+                $userDisplayName = $user->getDisplayName();
+                $email = $user->getEMailAddress();
                 $timezone = $this->timezoneService->getUserTimezone($userId) ?? $this->timezoneService->getDefaultTimezone();
             }
+
             $replacements = [
-                "userId" => isset($userId) ? $userId : $this->trans->t('Anonymous'),
+                "userId" => $userId,
+                "userDisplayName" => $userDisplayName,
+                "email" => $email,
                 "date" => (new \DateTime("now", new \DateTimeZone($timezone)))->format("Y-m-d H:i:s"),
                 "themingName" => \OC::$server->getThemingDefaults()->getName()
             ];
