@@ -7,6 +7,7 @@
 - delete extra permissions on file delete
 - replaced general save success message with dedicated messages for each settings section
 - show warning popup when jwt secret is empty and success message otherwise
+- download all document pages when converting to image types with Download As method
 
 ## Added
 - plugin description and useful links in admin settings
