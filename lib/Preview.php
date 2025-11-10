@@ -395,6 +395,6 @@ class Preview extends Provider {
 
         $fileExtension = $fileInfo->getExtension();
 
-        return [$fileUrl, $fileExtension, "thumb_" . $key];
+        return [$fileUrl, $fileExtension, "thumb_$key"];
     }
 }
