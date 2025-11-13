@@ -770,6 +770,7 @@ class CallbackController extends Controller {
             }
 
             if (empty($files)) {
+                $this->logger->error("getFileByToken Files not found: $fileId");
                 return [null, new JSONResponse(["message" => $this->trans->t("File not found")], Http::STATUS_NOT_FOUND), null];
             }
             $file = $files[0];
