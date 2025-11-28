@@ -9,6 +9,7 @@
 - show warning popup when jwt secret is empty and success message otherwise
 - download all document pages when converting to image types with Download As method
 - extend supported watermark placeholders
+- fix opening a shared folder link with password
 
 ## Added
 - plugin description and useful links in admin settings

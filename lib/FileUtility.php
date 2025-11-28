@@ -208,9 +208,12 @@ class FileUtility {
             return [null, $this->trans->t("You do not have enough permissions to view the file")];
         }
 
-        if ($share->getPassword()
-            && (!$this->session->exists("public_link_authenticated")
-                || $this->session->get("public_link_authenticated") !== (string) $share->getId())) {
+        $authenticatedLinks = $this->session->get('public_link_authenticated');
+
+        $isAuthenticated = is_array($authenticatedLinks) && in_array($share->getId(), $authenticatedLinks);
+        $isAuthenticated = $isAuthenticated || $authenticatedLinks === (string) $share->getId();
+
+        if ($share->getPassword() && !$isAuthenticated) {
             return [null, $this->trans->t("You do not have enough permissions to view the file")];
         }
 
