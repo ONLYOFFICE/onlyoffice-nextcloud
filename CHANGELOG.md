@@ -1,6 +1,6 @@
 # Change Log
 
-##
+## 9.12.0
 ## Changed
 - fix opening a shared link when group access to the app is restricted
 - Nextcloud v30 is no longer supported
