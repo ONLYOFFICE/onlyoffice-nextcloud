@@ -846,6 +846,7 @@ class EditorApiController extends OCSController {
      * @return array
      */
     private function setWatermark($params, $isPublic, $user, $file) {
+        $userId = !empty($user) ? $user->getUID() : null;
         $watermarkTemplate = $this->getWatermarkText(
             $isPublic,
             $userId,
@@ -861,7 +862,6 @@ class EditorApiController extends OCSController {
                 $email = $this->trans->t('Anonymous');
                 $timezone = $this->timezoneService->getDefaultTimezone();
             } else {
-                $userId = $user->getUID();
                 $userDisplayName = $user->getDisplayName();
                 $email = $user->getEMailAddress();
                 $timezone = $this->timezoneService->getUserTimezone($userId) ?? $this->timezoneService->getDefaultTimezone();
