@@ -153,6 +153,20 @@ OC.L10N.register(
     "Select file": "Datei auswählen",
     "Enable sharing (might increase editors loading time)": "Freigabe aktivieren (kann die Ladezeit des Editors verlängern)",
     "Same as system": "Wie im System",
-    "Enable live-viewing mode when accessing file by public link": "Live-Anzeigemodus aktivieren beim Zugriff auf die Datei über einen öffentlichen Link"
-},
+    "Enable live-viewing mode when accessing file by public link": "Live-Anzeigemodus aktivieren beim Zugriff auf die Datei über einen öffentlichen Link",
+    "Are you sure you want to clear metadata?": "Möchten Sie die Metadaten wirklich löschen?",
+    "Confirm metadata removal": "Metadatenlöschung bestätigen",
+    "Welcome to ONLYOFFICE Docs!": "Willkommen bei ONLYOFFICE Docs!",
+    "Edit and collaborate on text documents, spreadsheets, presentations, and PDFs within Nextcloud using ONLYOFFICE Docs.": "Mit ONLYOFFICE Docs können Sie Textdokumente, Tabellenkalkulationen, Präsentationen und PDFs innerhalb von Nextcloud gemeinsam bearbeiten.",
+    "Learn more": "Mehr erfahren",
+    "Suggest a feature": "Funktion vorschlagen",
+    "Server settings have been successfully updated": "Die Servereinstellungen erfolgreich aktualisiert",
+    "Common settings have been successfully updated": "Die allgemeinen Einstellungen erfolgreich aktualisiert",
+    "Security settings have been successfully updated": "Die Sicherheitseinstellungen erfolgreich aktualisiert",
+    "To ensure the security of important parameters in ONLYOFFICE Docs requests, please set a Secret Key on the Settings page. To learn more, <a href=\"{url}\">click here</a>.": "Um die Sicherheit wichtiger Parameter in ONLYOFFICE Docs-Anfragen zu gewährleisten, legen Sie bitte einen geheimen Schlüssel auf der Einstellungsseite fest. Weitere Informationen finden Sie <a href=\"{url}\">hier</a>.",
+    "Info": "Info",
+    "Open": "Öffnen",
+    "%1$s could not be saved. Please open the file again.": "%1$s konnte nicht gespeichert werden. Bitte öffnen Sie die Datei erneut.",
+    "{file} could not be saved. Please open the file again.": "{file} konnte nicht gespeichert werden. Bitte öffnen Sie die Datei erneut."
+    },
 "nplurals=2; plural=(n != 1);");

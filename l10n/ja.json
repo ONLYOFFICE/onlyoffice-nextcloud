@@ -152,5 +152,19 @@
     "Enable sharing (might increase editors loading time)" : "共有を有効にする（エディタの読み込み時間が増加する可能性があります）",
     "Same as system": "システム設定と同じ",
     "Enable live-viewing mode when accessing file by public link" : "公開リンクでファイルにアクセスする際にライブビューモードを有効にする"
+    "Are you sure you want to clear metadata?": "メタデータをクリアしてもよろしいですか？",
+    "Confirm metadata removal": "メタデータの削除をご確認ください",
+    "Welcome to ONLYOFFICE Docs!": "ONLYOFFICE Docsへようこそ！",
+    "Edit and collaborate on text documents, spreadsheets, presentations, and PDFs within Nextcloud using ONLYOFFICE Docs.": "ONLYOFFICE Docsを使用して、Nextcloud内でテキストドキュメント、スプレッドシート、プレゼンテーション、PDFを編集・共同作業できます。",
+    "Learn more": "詳細を見る",
+    "Suggest a feature": "機能を提案",
+     "Server settings have been successfully updated": "サーバー設定が正常に更新されました",
+    "Common settings have been successfully updated": "共通設定が正常に更新されました",
+    "Security settings have been successfully updated": "セキュリティ設定が正常に更新されました",
+    "To ensure the security of important parameters in ONLYOFFICE Docs requests, please set a Secret Key on the Settings page. To learn more, <a href=\"{url}\">click here</a>.": "ONLYOFFICE Docsリクエストの重要なパラメータのセキュリティを確保するため、設定ページでシークレットキーを設定してください。詳細については、<a href=\"{url}\">こちらをクリック</a>してください。",
+    "Info": "情報",
+    "Open": "開く",
+    "%1$s could not be saved. Please open the file again.": "%1$sを保存できませんでした。ファイルを再度開いてください。",
+    "{file} could not be saved. Please open the file again.": "{file}を保存できませんでした。ファイルを再度開いてください。"
 },"pluralForm" :"nplurals=1; plural=0;"
 }
