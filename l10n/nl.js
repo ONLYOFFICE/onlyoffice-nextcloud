@@ -153,6 +153,9 @@ OC.L10N.register(
     "Select file": "Bestand selecteren",
     "Enable sharing (might increase editors loading time)": "Delen inschakelen (kan de laadtijd van editors verlengen)",
     "Same as system": "Zelfde als systeem",
-    "Enable live-viewing mode when accessing file by public link" : "Aktivera livevisningsläge vid åtkomst till fil via offentlig länk"
+    "Enable live-viewing mode when accessing file by public link" : "Aktivera livevisningsläge vid åtkomst till fil via offentlig länk",
+    "Welcome to ONLYOFFICE Docs!": "Welkom bij ONLYOFFICE Docs!",
+    "Learn more": "Meer informatie",
+    "Suggest a feature": "Stel een functie voor"
 },
 "nplurals=2; plural=(n != 1);");

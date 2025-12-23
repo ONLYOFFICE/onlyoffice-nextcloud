@@ -151,7 +151,7 @@
     "Select file" : "Sélectionner un fichier",
     "Enable sharing (might increase editors loading time)": "Activer le panneau de partage (le temps de chargement des éditeurs peut être augmenté)",
     "Same as system": "Identique à système",
-    "Enable live-viewing mode when accessing file by public link" : "Activer le mode de visualisation en direct lors de l'accès au fichier via un lien public"
+    "Enable live-viewing mode when accessing file by public link" : "Activer le mode de visualisation en direct lors de l'accès au fichier via un lien public",
     "Are you sure you want to clear metadata?": "Voulez-vous vraiment effacer les métadonnées ?",
     "Confirm metadata removal": "Confirmer la suppression des métadonnées",
     "Welcome to ONLYOFFICE Docs!": "Bienvenue dans ONLYOFFICE Docs !",
@@ -166,5 +166,5 @@
     "Open": "Ouvrir",
     "%1$s could not be saved. Please open the file again.": "%1$s n'a pas pu être enregistré. Veuillez rouvrir le fichier.",
     "{file} could not be saved. Please open the file again.": "Impossible d'enregistrer le fichier {file}. Veuillez rouvrir le fichier."
-  },"pluralForm" :"nplurals=2; plural=(n > 1);"
+},"pluralForm" :"nplurals=2; plural=(n > 1);"
 }

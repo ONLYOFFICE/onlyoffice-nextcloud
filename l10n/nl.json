@@ -151,6 +151,9 @@
     "Select file": "Bestand selecteren",
     "Enable sharing (might increase editors loading time)" : "Delen inschakelen (kan de laadtijd van editors verlengen)",
     "Same as system": "Zelfde als systeem",
-    "Enable live-viewing mode when accessing file by public link" : "Live-weergavemodus inschakelen bij toegang tot bestanden via een openbare link"
+    "Enable live-viewing mode when accessing file by public link" : "Live-weergavemodus inschakelen bij toegang tot bestanden via een openbare link",
+    "Welcome to ONLYOFFICE Docs!": "Welkom bij ONLYOFFICE Docs!",
+    "Learn more": "Meer informatie",
+    "Suggest a feature": "Stel een functie voor"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }
