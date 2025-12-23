@@ -33,6 +33,7 @@ use OCA\Files_Versions\Versions\IVersionManager;
 use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\Crypt;
 use OCA\Onlyoffice\DocumentService;
+use OCA\Onlyoffice\Events\DocumentUnsavedEvent;
 use OCA\Onlyoffice\FileVersions;
 use OCA\Onlyoffice\FileUtility;
 use OCA\Onlyoffice\KeyManager;
@@ -48,6 +49,7 @@ use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
 use OCP\AppFramework\Http\Attribute\PublicPage;
 use OCP\AppFramework\QueryException;
+use OCP\EventDispatcher\IEventDispatcher;
 use OCP\Files\File;
 use OCP\Files\Folder;
 use OCP\Files\IRootFolder;
@@ -146,6 +148,13 @@ class CallbackController extends Controller {
     private $lockManager;
 
     /**
+     * Event dispatcher
+     *
+     * @var IEventDispatcher
+     */
+    private $eventDispatcher;
+
+    /**
      * Status of the document
      */
     private const TRACKERSTATUS_EDITING = 1;
@@ -179,7 +188,8 @@ class CallbackController extends Controller {
         AppConfig $config,
         Crypt $crypt,
         IManager $shareManager,
-        ILockManager $lockManager
+        ILockManager $lockManager,
+        IEventDispatcher $eventDispatcher,
     ) {
         parent::__construct($AppName, $request);
 
@@ -192,6 +202,7 @@ class CallbackController extends Controller {
         $this->crypt = $crypt;
         $this->shareManager = $shareManager;
         $this->lockManager = $lockManager;
+        $this->eventDispatcher = $eventDispatcher;
 
         if (\OC::$server->getAppManager()->isInstalled("files_versions")) {
             try {
@@ -634,6 +645,9 @@ class CallbackController extends Controller {
                     $result = 0;
                 } catch (\Exception $e) {
                     $this->logger->error("Track: $fileId status $status error", ["exception" => $e]);
+                    // if ($status === self::TRACKERSTATUS_MUSTSAVE) {
+                    //     $this->eventDispatcher->dispatchTyped(new DocumentUnsavedEvent($userId, $fileId, $file->getName()));
+                    // }
                 }
                 break;
 
@@ -756,6 +770,7 @@ class CallbackController extends Controller {
             }
 
             if (empty($files)) {
+                $this->logger->error("getFileByToken Files not found: $fileId");
                 return [null, new JSONResponse(["message" => $this->trans->t("File not found")], Http::STATUS_NOT_FOUND), null];
             }
             $file = $files[0];

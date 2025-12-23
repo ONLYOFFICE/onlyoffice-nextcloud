@@ -41,8 +41,16 @@ if ($_["tagsEnabled"]) {
 <div class="section section-onlyoffice section-onlyoffice-addr">
     <h2>
         ONLYOFFICE
-        <a target="_blank" class="icon-info svg" title="" href="https://helpcenter.onlyoffice.com/integration/nextcloud.aspx" data-original-title="<?php p($l->t("Documentation")) ?>"></a>
     </h2>
+
+    <div class="onlyoffice-description">
+        <h1><?php p($l->t("Welcome to ONLYOFFICE Docs!")) ?></h1>
+        <p><?php p($l->t("Edit and collaborate on text documents, spreadsheets, presentations, and PDFs within Nextcloud using ONLYOFFICE Docs.")) ?></p>
+        <div class="useful-links">
+            <a href="https://helpcenter.onlyoffice.com/integration/nextcloud.aspx" target="_blank"><?php p($l->t("Learn more")) ?></a>
+            <a href="https://feedback.onlyoffice.com/forums/966080-your-voice-matters?category_id=519288" target="_blank"><?php p($l->t("Suggest a feature")) ?></a>
+        </div>
+    </div>
 
     <div id="onlyofficeAddrSettings">
         <h2><?php p($l->t("Server settings")) ?></h2>
@@ -84,7 +92,7 @@ if ($_["tagsEnabled"]) {
 
     <br />
     <div>
-        <button id="onlyofficeAddrSave" class="button"><?php p($l->t("Save")) ?></button>
+        <button id="onlyofficeAddrSave" class="button primary"><?php p($l->t("Save")) ?></button>
 
         <div class="onlyoffice-demo">
             <input type="checkbox" class="checkbox" id="onlyofficeDemo"
@@ -293,7 +301,7 @@ if ($_["tagsEnabled"]) {
     </div>
 
     <br />
-    <p><button id="onlyofficeSave" class="button"><?php p($l->t("Save")) ?></button></p>
+    <p><button id="onlyofficeSave" class="button primary"><?php p($l->t("Save")) ?></button></p>
 </div>
 
 <div class="section section-onlyoffice section-onlyoffice-templates <?php if (empty($_["documentserver"]) && !$_["demo"]["enabled"] || !$_["successful"]) { ?>onlyoffice-hide<?php } ?>">
@@ -364,7 +372,7 @@ if ($_["tagsEnabled"]) {
         <br />
         <p><?php p($l->t("Watermark text")) ?></p>
         <br />
-        <p class="settings-hint"><?php p($l->t("Supported placeholders")) ?>: {userId}, {date}, {themingName}</p>
+        <p class="settings-hint"><?php p($l->t("Supported placeholders")) ?>: {userId}, {userDisplayName}, {email}, {date}, {themingName}</p>
         <p><input id="onlyofficeWatermark_text" value="<?php p($_["watermark"]["text"]) ?>" placeholder="<?php p($l->t("DO NOT SHARE THIS")) ?> {userId} {date}" type="text"></p>
 
         <br />
@@ -429,7 +437,7 @@ if ($_["tagsEnabled"]) {
     </div>
 
     <br />
-    <p><button id="onlyofficeSecuritySave" class="button"><?php p($l->t("Save")) ?></button></p>
+    <p><button id="onlyofficeSecuritySave" class="button primary"><?php p($l->t("Save")) ?></button></p>
 
     <input type ="hidden" id="onlyofficeSettingsState" value="<?php p($_["settingsError"]) ?>" />
 </div>

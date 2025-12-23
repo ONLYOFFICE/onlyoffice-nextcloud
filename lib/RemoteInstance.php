@@ -31,6 +31,7 @@ namespace OCA\Onlyoffice;
 
 use OCA\Files_Sharing\External\Storage as SharingExternalStorage;
 use OCP\Files\File;
+use OCP\Http\Client\IClientService;
 
 /**
  * Remote instance manager
@@ -139,7 +140,7 @@ class RemoteInstance {
             return self::$healthRemote[$remote];
         }
 
-        $httpClientService = \OC::$server->getHTTPClientService();
+        $httpClientService = \OC::$server->get(IClientService::class);
         $client = $httpClientService->newClient();
 
         $status = false;
@@ -183,7 +184,7 @@ class RemoteInstance {
         $shareToken = $file->getStorage()->getToken();
         $internalPath = $file->getInternalPath();
 
-        $httpClientService = \OC::$server->getHTTPClientService();
+        $httpClientService = \OC::$server->get(IClientService::class);
         $client = $httpClientService->newClient();
 
         try {
@@ -236,7 +237,7 @@ class RemoteInstance {
         $shareToken = $file->getStorage()->getToken();
         $internalPath = $file->getInternalPath();
 
-        $httpClientService = \OC::$server->getHTTPClientService();
+        $httpClientService = \OC::$server->get(IClientService::class);
         $client = $httpClientService->newClient();
         $data = [
             "timeout" => 5,

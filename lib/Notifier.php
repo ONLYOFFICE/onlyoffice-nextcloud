@@ -35,6 +35,7 @@ use OCP\L10N\IFactory;
 use OCP\Notification\IAction;
 use OCP\Notification\INotification;
 use OCP\Notification\INotifier;
+use OCP\Notification\UnknownNotificationException;
 use Psr\Log\LoggerInterface;
 
 class Notifier implements INotifier {
@@ -121,7 +122,7 @@ class Notifier implements INotifier {
      */
     public function prepare(INotification $notification, string $languageCode): INotification {
         if ($notification->getApp() !== $this->appName) {
-            throw new \InvalidArgumentException("Notification not from " . $this->appName);
+            throw new UnknownNotificationException("Notification not from " . $this->appName);
         }
 
         $parameters = $notification->getSubjectParameters();
@@ -171,6 +172,29 @@ class Notifier implements INotifier {
                         "link" => $editorLink
                     ]
                 ]);
+                break;
+            case "document_unsaved":
+                $fileId = $parameters["fileId"];
+                $fileName = $parameters["fileName"];
+
+                $this->logger->info("Notify prepare: unsaved document $fileId");
+
+                $link = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".editor.index", ["fileId" => $fileId]);
+                $action = $notification->createAction();
+                $action->setLabel($trans->t('Open'))
+                    ->setParsedLabel($trans->t('Open'))
+                    ->setLink($link, IAction::TYPE_WEB)
+                    ->setPrimary(true);
+                $notification->addParsedAction($action);
+                $notification->setParsedSubject($trans->t("%1\$s could not be saved. Please open the file again.", [$fileName]))
+                    ->setRichSubject($trans->t("{file} could not be saved. Please open the file again."), [
+                        "file" => [
+                            "type" => "highlight",
+                            "id" => (string)$fileId,
+                            "name" => $fileName,
+                        ]
+                    ])
+                    ->setIcon($this->urlGenerator->getAbsoluteURL($this->urlGenerator->imagePath($this->appName, 'app-dark.svg')));
                 break;
             default:
                 $this->logger->info("Unsupported notification object: ".$notification->getObjectType());

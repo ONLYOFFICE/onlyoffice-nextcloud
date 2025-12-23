@@ -26,7 +26,6 @@
     "New spreadsheet" : "Nueva hoja de cálculo",
     "New presentation" : "Nueva presentación",
     "Error when trying to connect" : "Error al intentar establecer la conexión",
-    "Settings have been successfully updated" : "Ajustes han sido actualizados con éxito",
     "Server can't read xml" : "Servidor no puede leer xml",
     "Bad Response. Errors: " : "Respuesta Mala. Errores:",
     "Documentation" : "Documentación",
@@ -152,6 +151,20 @@
     "Select file" : "Seleccionar archivo",
     "Enable sharing (might increase editors loading time)": "Habilitar el uso compartido (puede aumentar el tiempo de carga de los editores)",
     "Same as system": "Igual que el sistema",
-    "Enable live-viewing mode when accessing file by public link" : "Habilitar el modo de vista en vivo al acceder al archivo mediante un enlace público"
+    "Enable live-viewing mode when accessing file by public link" : "Habilitar el modo de vista en vivo al acceder al archivo mediante un enlace público",
+    "Are you sure you want to clear metadata?": "¿Está seguro(a) de que desea borrar los metadatos?",
+    "Confirm metadata removal": "Confirmar la eliminación de metadatos",
+    "Welcome to ONLYOFFICE Docs!": "¡Bienvenido(a) a ONLYOFFICE Docs!",
+    "Edit and collaborate on text documents, spreadsheets, presentations, and PDFs within Nextcloud using ONLYOFFICE Docs.": "Edite y colabore en documentos de texto, hojas de cálculo, presentaciones y archivos PDF dentro de Nextcloud usando ONLYOFFICE Docs.",
+    "Learn more": "Más información",
+    "Suggest a feature": "Sugerir una función",
+    "Server settings have been successfully updated": "La configuración del servidor se ha actualizado correctamente",
+    "Common settings have been successfully updated": "La configuración general se ha actualizado correctamente",
+    "Security settings have been successfully updated": "La configuración de seguridad se ha actualizado correctamente",
+    "To ensure the security of important parameters in ONLYOFFICE Docs requests, please set a Secret Key on the Settings page. To learn more, <a href=\"{url}\" target=\"_blank\">click here</a>.": "Para garantizar la seguridad de los parámetros importantes en las solicitudes de ONLYOFFICE Docs, establezca una clave secreta en la página de configuración. Para obtener más información, <a href=\"{url}\" target=\"_blank\">haga clic aquí</a>.",
+    "Info": "Información",
+    "Open": "Abrir",
+    "%1$s could not be saved. Please open the file again.": "%1$s no se pudo guardar. Por favor, abra el archivo de nuevo.",
+    "{file} could not be saved. Please open the file again.": "{file} no se pudo guardar. Por favor, abra el archivo de nuevo."
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

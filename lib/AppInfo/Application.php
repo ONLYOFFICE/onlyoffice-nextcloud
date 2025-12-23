@@ -67,8 +67,10 @@ use OCA\Onlyoffice\Listeners\DirectEditorListener;
 use OCA\Onlyoffice\Listeners\ViewerListener;
 use OCA\Onlyoffice\Listeners\WidgetListener;
 use OCA\Onlyoffice\DirectEditor;
+use OCA\Onlyoffice\Events\DocumentUnsavedEvent;
 use OCA\Onlyoffice\Hooks;
 use OCA\Onlyoffice\Listeners\ContentSecurityPolicyListener;
+use OCA\Onlyoffice\Listeners\DocumentUnsavedListener;
 use OCA\Onlyoffice\Notifier;
 use OCA\Onlyoffice\Preview;
 use OCA\Onlyoffice\TemplateProvider;
@@ -100,6 +102,7 @@ class Application extends App implements IBootstrap {
         $context->registerEventListener(AddContentSecurityPolicyEvent::class, ContentSecurityPolicyListener::class);
         $context->registerEventListener(BeforeTemplateRenderedEvent::class, FileSharingListener::class);
         $context->registerEventListener(HttpBeforeTemplateRenderedEvent::class, WidgetListener::class);
+        $context->registerEventListener(DocumentUnsavedEvent::class, DocumentUnsavedListener::class);
 
         if (interface_exists("OCP\Files\Template\ICustomTemplateProvider")) {
             $context->registerTemplateProvider(TemplateProvider::class);

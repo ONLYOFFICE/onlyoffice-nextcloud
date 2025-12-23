@@ -1,5 +1,19 @@
 # Change Log
 
+## 9.12.0
+## Added
+- plugin description and useful links in admin settings
+
+## Changed
+- fix opening a shared link when group access to the app is restricted
+- Nextcloud v30 is no longer supported
+- delete extra permissions on file delete
+- replaced general save success message with dedicated messages for each settings section
+- show warning popup when jwt secret is empty and success message otherwise
+- download all document pages when converting to image types with Download As method
+- extend supported watermark placeholders
+- fix opening a shared folder link with password
+
 ## 9.11.0
 ## Changed
 - compatible with Nextcloud 32

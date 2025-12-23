@@ -91,7 +91,7 @@ class FederationController extends OCSController {
 
         $this->logger = $logger;
 
-        $this->config = new AppConfig($this->appName);
+        $this->config = \OCP\Server::get(AppConfig::class);
         $this->fileUtility = new FileUtility($AppName, $trans, $logger, $this->config, $shareManager, $session);
     }
 
