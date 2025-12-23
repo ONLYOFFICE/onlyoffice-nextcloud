@@ -163,7 +163,7 @@ OC.L10N.register(
     "Server settings have been successfully updated": "Les paramètres du serveur ont été mis à jour avec succès",
     "Common settings have been successfully updated": "Les paramètres généraux ont été mis à jour avec succès",
     "Security settings have been successfully updated": "Les paramètres de sécurité ont été mis à jour avec succès",
-    "To ensure the security of important parameters in ONLYOFFICE Docs requests, please set a Secret Key on the Settings page. To learn more, <a href=\"{url}\">click here</a>.": "Pour garantir la sécurité des paramètres importants dans les requêtes ONLYOFFICE Docs, veuillez définir une clé secrète sur la page Paramètres. Pour en savoir plus, <a href=\"{url}\">cliquez ici</a>.",
+    "To ensure the security of important parameters in ONLYOFFICE Docs requests, please set a Secret Key on the Settings page. To learn more, <a href=\"{url}\" target=\"_blank\">click here</a>.": "Pour garantir la sécurité des paramètres importants dans les requêtes ONLYOFFICE Docs, veuillez définir une clé secrète sur la page Paramètres. Pour en savoir plus, <a href=\"{url}\" target=\"_blank\">cliquez ici</a>.",
     "Info": "Information",
     "Open": "Ouvrir",
     "%1$s could not be saved. Please open the file again.": "%1$s n'a pas pu être enregistré. Veuillez rouvrir le fichier.",

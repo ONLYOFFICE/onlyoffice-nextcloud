@@ -163,7 +163,7 @@ OC.L10N.register(
     "Server settings have been successfully updated": "服务器设置已成功更新",
     "Common settings have been successfully updated": "常用设置已成功更新",
     "Security settings have been successfully updated": "安全设置已成功更新",
-    "To ensure the security of important parameters in ONLYOFFICE Docs requests, please set a Secret Key on the Settings page. To learn more, <a href=\"{url}\">click here</a>.": "为确保 ONLYOFFICE 文档请求中重要参数的安全，请在“设置”页面设置密钥。要了解更多信息，请<a href=\"{url}\">点击此处</a>。",
+    "To ensure the security of important parameters in ONLYOFFICE Docs requests, please set a Secret Key on the Settings page. To learn more, <a href=\"{url}\" target=\"_blank\">click here</a>.": "为确保 ONLYOFFICE 文档请求中重要参数的安全，请在“设置”页面设置密钥。要了解更多信息，请<a href=\"{url}\" target=\"_blank\">点击此处</a>。",
     "Info": "信息",
     "Open": "打开",
     "%1$s could not be saved. Please open the file again.": "%1$s 无法保存。请重新打开文件。",
