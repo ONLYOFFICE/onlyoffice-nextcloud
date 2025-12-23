@@ -151,6 +151,20 @@
     "Select file" : "Seleziona file",
     "Enable sharing (might increase editors loading time)": "Abilita la condivisione (potrebbe aumentare il tempo di caricamento degli editor)",
     "Same as system": "Uguale al sistema",
-    "Enable live-viewing mode when accessing file by public link" : "Abilita la modalità di visualizzazione in tempo reale quando accedi al file tramite link pubblico"
+    "Enable live-viewing mode when accessing file by public link" : "Abilita la modalità di visualizzazione in tempo reale quando accedi al file tramite link pubblico",
+    "Are you sure you want to clear metadata?": "Sei sicuro di voler cancellare i metadati?",
+    "Confirm metadata removal": "Conferma rimozione metadati",
+    "Welcome to ONLYOFFICE Docs!": "Benvenuto in ONLYOFFICE Docs!",
+    "Edit and collaborate on text documents, spreadsheets, presentations, and PDFs within Nextcloud using ONLYOFFICE Docs.": "Modifica e collabora su documenti di testo, fogli di calcolo, presentazioni e PDF all'interno di Nextcloud usando ONLYOFFICE Docs.",
+    "Learn more": "Scopri di più",
+    "Suggest a feature": "Suggerisci una funzione",
+    "Server settings have been successfully updated": "Le impostazioni del server sono state aggiornate con successo",
+    "Common settings have been successfully updated": "Le impostazioni comuni sono state aggiornate con successo",
+    "Security settings have been successfully updated": "Le impostazioni di sicurezza sono state aggiornate con successo",
+    "To ensure the security of important parameters in ONLYOFFICE Docs requests, please set a Secret Key on the Settings page. To learn more, <a href=\"{url}\" target=\"_blank\">click here</a>.": "Per garantire la sicurezza dei parametri importanti nelle richieste di ONLYOFFICE Docs, imposta una Chiave Segreta nella pagina delle Impostazioni. Per saperne di più, <a href=\"{url}\" target=\"_blank\">clicca qui</a>.",
+    "Info": "Info",
+    "Open": "Apri",
+    "%1$s could not be saved. Please open the file again.": "Non è stato possibile salvare %1$s. Apri nuovamente il file.",
+    "{file} could not be saved. Please open the file again.": "Non è stato possibile salvare {file}. Apri nuovamente il file."
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }
