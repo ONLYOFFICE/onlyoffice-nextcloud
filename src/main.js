@@ -873,7 +873,7 @@ import { loadState } from '@nextcloud/initial-state'
 			const formats = OCA.Onlyoffice.setting.formats
 
 			const config = formats[extension]
-			if (!config) {
+			if (!config || !config.def) {
 				return
 			}
 
