@@ -144,6 +144,7 @@ class Application extends App implements IBootstrap {
                         $wordTemplate = new TemplateFileCreator($appName, $trans->t("New document"), ".docx");
                         $wordTemplate->addMimetype("application/vnd.openxmlformats-officedocument.wordprocessingml.document");
                         $wordTemplate->setIconClass("icon-onlyoffice-new-docx");
+                        $wordTemplate->setIconSvgInline(file_get_contents(__DIR__ . '/../../img/new-docx.svg'));
                         $wordTemplate->setRatio(21/29.7);
                         return $wordTemplate;
                     });
@@ -152,6 +153,7 @@ class Application extends App implements IBootstrap {
                         $cellTemplate = new TemplateFileCreator($appName, $trans->t("New spreadsheet"), ".xlsx");
                         $cellTemplate->addMimetype("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
                         $cellTemplate->setIconClass("icon-onlyoffice-new-xlsx");
+                        $cellTemplate->setIconSvgInline(file_get_contents(__DIR__ . '/../../img/new-xlsx.svg'));
                         $cellTemplate->setRatio(21/29.7);
                         return $cellTemplate;
                     });
@@ -160,6 +162,7 @@ class Application extends App implements IBootstrap {
                         $slideTemplate = new TemplateFileCreator($appName, $trans->t("New presentation"), ".pptx");
                         $slideTemplate->addMimetype("application/vnd.openxmlformats-officedocument.presentationml.presentation");
                         $slideTemplate->setIconClass("icon-onlyoffice-new-pptx");
+                        $slideTemplate->setIconSvgInline(file_get_contents(__DIR__ . '/../../img/new-pptx.svg'));
                         $slideTemplate->setRatio(16/9);
                         return $slideTemplate;
                     });
