@@ -34,6 +34,7 @@
 import {
 	File,
 	FileAction,
+	getSidebar,
 	registerFileAction,
 	Permission,
 	DefaultType,
@@ -212,8 +213,9 @@ import { loadState } from '@nextcloud/initial-state'
 
 			$('body').addClass('onlyoffice-inline')
 
-			if (OCA.Files.Sidebar) {
-				OCA.Files.Sidebar.close()
+			const sidebar = getSidebar()
+			if (sidebar) {
+				sidebar.close()
 			}
 
 			const scrollTop = $('#app-content').scrollTop()
@@ -250,21 +252,39 @@ import { loadState } from '@nextcloud/initial-state'
 
 	OCA.Onlyoffice.OpenShareDialog = function() {
 		if (OCA.Onlyoffice.context) {
+			const sidebar = getSidebar()
 			if (!$('#app-sidebar-vue').is(':visible')) {
-				OCA.Files.Sidebar.open(OCA.Onlyoffice.context.dir + '/' + OCA.Onlyoffice.context.fileName)
-				OCA.Files.Sidebar.setActiveTab('sharing')
+				const client = getClient()
+				client.stat(`${getRootPath()}${OCA.Onlyoffice.context.dir + '/' + OCA.Onlyoffice.context.fileName}`, {
+					details: true,
+					data: getDefaultPropfind(),
+				}).then((result) => {
+					const node = resultToNode(result.data)
+					emit('files:node:updated', node)
+					sidebar.open(node)
+					sidebar.setActiveTab('sharing')
+				})
 			} else {
-				OCA.Files.Sidebar.close()
+				sidebar.close()
 			}
 		}
 	}
 
 	OCA.Onlyoffice.RefreshVersionsDialog = function() {
 		if (OCA.Onlyoffice.context) {
+			const sidebar = getSidebar()
 			if ($('#app-sidebar-vue').is(':visible')) {
-				OCA.Files.Sidebar.close()
-				OCA.Files.Sidebar.open(OCA.Onlyoffice.context.dir + '/' + OCA.Onlyoffice.context.fileName)
-				OCA.Files.Sidebar.setActiveTab('versionsTabView')
+				sidebar.close()
+				const client = getClient()
+				client.stat(`${getRootPath()}${OCA.Onlyoffice.context.dir + '/' + OCA.Onlyoffice.context.fileName}`, {
+					details: true,
+					data: getDefaultPropfind(),
+				}).then((result) => {
+					const node = resultToNode(result.data)
+					emit('files:node:updated', node)
+					sidebar.open(node)
+					sidebar.setActiveTab('versionsTabView')
+				})
 			}
 		}
 	}
