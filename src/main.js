@@ -34,15 +34,18 @@
 import {
 	File,
 	FileAction,
+	getSidebar,
 	registerFileAction,
 	Permission,
 	DefaultType,
 	addNewFileMenuEntry,
-	davGetClient,
-	davRootPath,
-	davGetDefaultPropfind,
-	davResultToNode,
 } from '@nextcloud/files'
+import {
+	getClient,
+	getRootPath,
+	getDefaultPropfind,
+	resultToNode,
+} from '@nextcloud/files/dav'
 import { emit } from '@nextcloud/event-bus'
 import AppDarkSvg from '!!raw-loader!../img/app-dark.svg'
 import NewDocxSvg from '!!raw-loader!../img/new-docx.svg'
@@ -210,8 +213,9 @@ import { loadState } from '@nextcloud/initial-state'
 
 			$('body').addClass('onlyoffice-inline')
 
-			if (OCA.Files.Sidebar) {
-				OCA.Files.Sidebar.close()
+			const sidebar = getSidebar()
+			if (sidebar) {
+				sidebar.close()
 			}
 
 			const scrollTop = $('#app-content').scrollTop()
@@ -248,21 +252,39 @@ import { loadState } from '@nextcloud/initial-state'
 
 	OCA.Onlyoffice.OpenShareDialog = function() {
 		if (OCA.Onlyoffice.context) {
+			const sidebar = getSidebar()
 			if (!$('#app-sidebar-vue').is(':visible')) {
-				OCA.Files.Sidebar.open(OCA.Onlyoffice.context.dir + '/' + OCA.Onlyoffice.context.fileName)
-				OCA.Files.Sidebar.setActiveTab('sharing')
+				const client = getClient()
+				client.stat(`${getRootPath()}${OCA.Onlyoffice.context.dir + '/' + OCA.Onlyoffice.context.fileName}`, {
+					details: true,
+					data: getDefaultPropfind(),
+				}).then((result) => {
+					const node = resultToNode(result.data)
+					emit('files:node:updated', node)
+					sidebar.open(node)
+					sidebar.setActiveTab('sharing')
+				})
 			} else {
-				OCA.Files.Sidebar.close()
+				sidebar.close()
 			}
 		}
 	}
 
 	OCA.Onlyoffice.RefreshVersionsDialog = function() {
 		if (OCA.Onlyoffice.context) {
+			const sidebar = getSidebar()
 			if ($('#app-sidebar-vue').is(':visible')) {
-				OCA.Files.Sidebar.close()
-				OCA.Files.Sidebar.open(OCA.Onlyoffice.context.dir + '/' + OCA.Onlyoffice.context.fileName)
-				OCA.Files.Sidebar.setActiveTab('versionsTabView')
+				sidebar.close()
+				const client = getClient()
+				client.stat(`${getRootPath()}${OCA.Onlyoffice.context.dir + '/' + OCA.Onlyoffice.context.fileName}`, {
+					details: true,
+					data: getDefaultPropfind(),
+				}).then((result) => {
+					const node = resultToNode(result.data)
+					emit('files:node:updated', node)
+					sidebar.open(node)
+					sidebar.setActiveTab('versionsTabView')
+				})
 			}
 		}
 	}
@@ -278,16 +300,18 @@ import { loadState } from '@nextcloud/initial-state'
 		OCA.Onlyoffice.context.fileName = fileName
 	}
 
-	OCA.Onlyoffice.FileClickExec = async function(file, view, dir, isDefault = true) {
+	OCA.Onlyoffice.FileClickExec = async function({ nodes, view, dir, isDefault = true }) {
+		const file = nodes[0]
+
 		if (OCA.Onlyoffice.context !== null && OCA.Onlyoffice.setting.sameTab && !OCA.Onlyoffice.Desktop) {
 			return null
 		}
 
-		OCA.Onlyoffice.OpenEditor(file.fileid, dir, file.basename, 0, isDefault)
+		OCA.Onlyoffice.OpenEditor(file.fileid, file.dirname, file.basename, 0, isDefault)
 
 		OCA.Onlyoffice.context = {
 			fileName: file.basename,
-			dir,
+			dir: file.dirname,
 		}
 
 		return null
@@ -439,11 +463,11 @@ import { loadState } from '@nextcloud/initial-state'
 				const targetFolderPath = OC.dirname(filePath)
 
 				if (!dialogFileList) {
-					const results = await davGetClient().getDirectoryContents(davRootPath + targetFolderPath, {
+					const results = await getClient().getDirectoryContents(getRootPath() + targetFolderPath, {
 						details: true,
-						data: davGetDefaultPropfind(),
+						data: getDefaultPropfind(),
 					})
-					dialogFileList = results.data.map((result) => davResultToNode(result))
+					dialogFileList = results.data.map((result) => resultToNode(result))
 				}
 
 				if (type === 'target') {
@@ -560,13 +584,14 @@ import { loadState } from '@nextcloud/initial-state'
 				id: 'onlyoffice-open-def',
 				displayName: () => t(OCA.Onlyoffice.AppName, 'Open in ONLYOFFICE'),
 				iconSvgInline: () => AppDarkSvg,
-				enabled: (files) => {
-					const config = getConfig(files[0])
+				enabled: ({ nodes }) => {
+					const file = nodes[0]
+					const config = getConfig(file)
 
 					if (!config) return false
 					if (!config.def) return false
 
-					if (Permission.READ !== (files[0].permissions & Permission.READ)) { return false }
+					if (Permission.READ !== (file.permissions & Permission.READ)) { return false }
 
 					return true
 				},
@@ -579,18 +604,18 @@ import { loadState } from '@nextcloud/initial-state'
 				id: 'onlyoffice-open',
 				displayName: () => t(OCA.Onlyoffice.AppName, 'Open in ONLYOFFICE'),
 				iconSvgInline: () => AppDarkSvg,
-				enabled: (files) => {
-					const config = getConfig(files[0])
+				enabled: ({ nodes }) => {
+					const config = getConfig(nodes[0])
 
 					if (!config) return false
 					if (config.def) return false
 
-					if (Permission.READ !== (files[0].permissions & Permission.READ)) { return false }
+					if (Permission.READ !== (nodes[0].permissions & Permission.READ)) { return false }
 
 					return true
 				},
-				exec(file, view, dir) {
-					OCA.Onlyoffice.FileClickExec(file, view, dir, false)
+				exec({ nodes, view, dir }) {
+					OCA.Onlyoffice.FileClickExec(nodes[0], view, dir, false)
 				},
 			}))
 
@@ -598,19 +623,19 @@ import { loadState } from '@nextcloud/initial-state'
 				id: 'onlyoffice-convert',
 				displayName: () => t(OCA.Onlyoffice.AppName, 'Convert with ONLYOFFICE'),
 				iconSvgInline: () => AppDarkSvg,
-				enabled: (files) => {
-					const config = getConfig(files[0])
+				enabled: ({ nodes }) => {
+					const config = getConfig(nodes[0])
 
 					if (!config) return false
 					if (!config.conv) return false
 
 					const required = isPublicShare() ? Permission.UPDATE : Permission.READ
-					if (required !== (files[0].permissions & required)) { return false }
+					if (required !== (nodes[0].permissions & required)) { return false }
 
-					if (files[0].attributes['mount-type'] === 'shared') {
-						if (required !== (files[0].attributes['share-permissions'] & required)) { return false }
+					if (nodes[0].attributes['mount-type'] === 'shared') {
+						if (required !== (nodes[0].attributes['share-permissions'] & required)) { return false }
 
-						const attributes = JSON.parse(files[0].attributes['share-attributes'])
+						const attributes = JSON.parse(nodes[0].attributes['share-attributes'])
 						const downloadAttribute = attributes.find((attribute) => attribute.scope === 'permissions' && attribute.key === 'download')
 						if (downloadAttribute !== undefined && downloadAttribute.enabled === false) { return false }
 					}
@@ -624,19 +649,19 @@ import { loadState } from '@nextcloud/initial-state'
 				id: 'onlyoffice-create-form',
 				displayName: () => t(OCA.Onlyoffice.AppName, 'Create form'),
 				iconSvgInline: () => AppDarkSvg,
-				enabled: (files) => {
-					const config = getConfig(files[0])
+				enabled: ({ nodes }) => {
+					const config = getConfig(nodes[0])
 
 					if (!config) return false
 					if (!config.createForm) return false
 
 					const required = isPublicShare() ? Permission.UPDATE : Permission.READ
-					if (required !== (files[0].permissions & required)) { return false }
+					if (required !== (nodes[0].permissions & required)) { return false }
 
-					if (files[0].attributes['mount-type'] === 'shared') {
-						if (required !== (files[0].attributes['share-permissions'] & required)) { return false }
+					if (nodes[0].attributes['mount-type'] === 'shared') {
+						if (required !== (nodes[0].attributes['share-permissions'] & required)) { return false }
 
-						const attributes = JSON.parse(files[0].attributes['share-attributes'])
+						const attributes = JSON.parse(nodes[0].attributes['share-attributes'])
 						const downloadAttribute = attributes.find((attribute) => attribute.scope === 'permissions' && attribute.key === 'download')
 						if (downloadAttribute !== undefined && downloadAttribute.enabled === false) { return false }
 					}
