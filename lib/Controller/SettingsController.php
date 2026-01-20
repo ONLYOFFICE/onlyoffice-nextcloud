@@ -35,6 +35,7 @@ use OCA\Onlyoffice\DocumentService;
 use OCA\Onlyoffice\FileVersions;
 use OCA\Onlyoffice\TemplateManager;
 use OCP\AppFramework\Controller;
+use OCP\AppFramework\Http\JSONResponse;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IL10N;
 use OCP\IRequest;
@@ -175,7 +176,7 @@ class SettingsController extends Controller {
      * @param string $jwtHeader - jwt header
      * @param bool $demo - use demo server
      *
-     * @return array
+     * @return JSONResponse
      */
     public function saveAddress(
         $documentserver,
@@ -209,7 +210,7 @@ class SettingsController extends Controller {
             }
         }
 
-        return [
+        return new JSONResponse([
             "documentserver" => $this->config->getDocumentServerUrl(true),
             "verifyPeerOff" => $this->config->getVerifyPeerOff(),
             "documentserverInternal" => $this->config->getDocumentServerInternalUrl(true),
@@ -218,7 +219,7 @@ class SettingsController extends Controller {
             "jwtHeader" => $this->config->jwtHeader(true),
             "error" => $error,
             "version" => $version,
-        ];
+        ]);
     }
 
     /**
@@ -243,7 +244,7 @@ class SettingsController extends Controller {
      * @param string $reviewDisplay - review viewing mode
      * @param string $unknownAuthor - display unknown author
      *
-     * @return array
+     * @return JSONResponse
      */
     public function saveCommon(
         $defFormats,
@@ -287,8 +288,7 @@ class SettingsController extends Controller {
         $this->config->setCustomizationTheme($theme);
         $this->config->setUnknownAuthor($unknownAuthor);
 
-        return [
-        ];
+        return new JSONResponse();
     }
 
     /**
@@ -299,7 +299,7 @@ class SettingsController extends Controller {
      * @param bool $macros - run document macros
      * @param string $protection - protection
      *
-     * @return array
+     * @return JSONResponse
      */
     public function saveSecurity(
         $watermarks,
@@ -320,21 +320,19 @@ class SettingsController extends Controller {
         $this->config->setCustomizationMacros($macros);
         $this->config->setProtection($protection);
 
-        return [
-        ];
+        return new JSONResponse();
     }
 
     /**
      * Clear all version history
      *
-     * @return array
+     * @return JSONResponse
      */
     public function clearHistory() {
 
         FileVersions::clearHistory();
 
-        return [
-        ];
+        return new JSONResponse();
     }
 
     /**

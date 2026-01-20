@@ -36,6 +36,7 @@ use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Http\FileDisplayResponse;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
+use OCP\AppFramework\Http\JSONResponse;
 use OCP\Files\NotFoundException;
 use OCP\IL10N;
 use OCP\IPreview;
@@ -101,7 +102,7 @@ class TemplateController extends Controller {
     /**
      * Get templates
      *
-     * @return array
+     * @return JSONResponse
      */
     #[NoAdminRequired]
     public function getTemplates() {
@@ -118,13 +119,13 @@ class TemplateController extends Controller {
             array_push($templates, $template);
         }
 
-        return $templates;
+        return new JSONResponse($templates);
     }
 
     /**
      * Add global template
      *
-     * @return array
+     * @return JSONResponse
      */
     public function addTemplate() {
 
@@ -133,16 +134,16 @@ class TemplateController extends Controller {
         if (!is_null($file)) {
             if (is_uploaded_file($file["tmp_name"]) && $file["error"] === 0) {
                 if (!TemplateManager::isTemplateType($file["name"])) {
-                    return [
+                    return new JSONResponse([
                         "error" => $this->trans->t("Template must be in OOXML format")
-                    ];
+                    ]);
                 }
 
                 $templateDir = TemplateManager::getGlobalTemplateDir();
                 if ($templateDir->nodeExists($file["name"])) {
-                    return [
+                    return new JSONResponse([
                         "error" => $this->trans->t("Template already exists")
-                    ];
+                    ]);
                 }
 
                 $templateContent = file_get_contents($file["tmp_name"]);
@@ -158,13 +159,13 @@ class TemplateController extends Controller {
                     "icon" => $this->mimeIconProvider->getMimeIconUrl($fileInfo->getMimeType())
                 ];
 
-                return $result;
+                return new JSONResponse($result);
             }
         }
 
-        return [
+        return new JSONResponse([
             "error" => $this->trans->t("Invalid file provided")
-        ];
+        ]);
     }
 
     /**
@@ -172,7 +173,7 @@ class TemplateController extends Controller {
      *
      * @param string $templateId - file identifier
      *
-     * @return array
+     * @return JSONResponse
      */
     public function deleteTemplate($templateId) {
         $templateDir = TemplateManager::getGlobalTemplateDir();
@@ -181,22 +182,22 @@ class TemplateController extends Controller {
             $templates = $templateDir->getById($templateId);
         } catch (\Exception $e) {
             $this->logger->error("deleteTemplate: $templateId", ["exception" => $e]);
-            return [
+            return new JSONResponse([
                 "error" => $this->trans->t("Failed to delete template")
-            ];
+            ]);
         }
 
         if (empty($templates)) {
             $this->logger->info("Template not found: $templateId");
-            return [
+            return new JSONResponse([
                 "error" => $this->trans->t("Failed to delete template")
-            ];
+            ]);
         }
 
         $templates[0]->delete();
 
         $this->logger->debug("Template: deleted " . $templates[0]->getName());
-        return [];
+        return new JSONResponse();
     }
 
     /**
