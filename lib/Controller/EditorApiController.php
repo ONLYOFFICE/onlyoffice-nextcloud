@@ -61,6 +61,7 @@ use OCP\IUserSession;
 use OCP\PreConditionNotMetException;
 use OCP\Share\IManager;
 use OCP\Share\IShare;
+use OCP\SystemTag\ISystemTagObjectMapper;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -931,7 +932,7 @@ class EditorApiController extends OCSController {
             }
             if ($watermarkSettings["linkTags"]) {
                 $tags = $watermarkSettings["linkTagsList"];
-                $fileTags = \OC::$server->getSystemTagObjectMapper()->getTagIdsForObjects([$fileId], "files")[$fileId];
+                $fileTags = Server::get(ISystemTagObjectMapper::class)->getTagIdsForObjects([$fileId], "files")[$fileId];
                 foreach ($fileTags as $tagId) {
                     if (in_array($tagId, $tags, true)) {
                         return $watermarkText;
@@ -958,7 +959,7 @@ class EditorApiController extends OCSController {
         }
         if ($watermarkSettings["allTags"]) {
             $tags = $watermarkSettings["allTagsList"];
-            $fileTags = \OC::$server->getSystemTagObjectMapper()->getTagIdsForObjects([$fileId], "files")[$fileId];
+            $fileTags = Server::get(ISystemTagObjectMapper::class)->getTagIdsForObjects([$fileId], "files")[$fileId];
             foreach ($fileTags as $tagId) {
                 if (in_array($tagId, $tags)) {
                     return $watermarkText;
