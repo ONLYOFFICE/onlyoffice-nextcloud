@@ -59,6 +59,7 @@ use OCP\IUser;
 use OCP\IUserManager;
 use OCP\IUserSession;
 use OCP\PreConditionNotMetException;
+use OCP\Server;
 use OCP\Share\IManager;
 use OCP\Share\IShare;
 use OCP\SystemTag\ISystemTagObjectMapper;
