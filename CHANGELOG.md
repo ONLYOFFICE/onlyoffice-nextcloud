@@ -1,4 +1,6 @@
 # Change Log
+## Changed
+- replace deprecated TemplateFileCreator::setIconClass with TemplateFileCreator::setIconSvgInline method
 
 ## 9.12.0
 ## Added
