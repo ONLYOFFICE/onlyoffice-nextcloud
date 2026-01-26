@@ -30,7 +30,9 @@
 namespace OCA\Onlyoffice;
 
 use OC\Files\View;
-use OC\Preview\Provider;
+use OCP\Files\File;
+use OCP\IImage;
+use OCP\Preview\IProviderV2;
 use OCA\Files_Sharing\External\Storage as SharingExternalStorage;
 use OCA\Files_Versions\Versions\IVersionManager;
 use OCP\AppFramework\QueryException;
@@ -48,7 +50,7 @@ use Psr\Log\LoggerInterface;
  *
  * @package OCA\Onlyoffice
  */
-class Preview extends Provider {
+class Preview implements IProviderV2 {
 
     /**
      * Application name
@@ -216,7 +218,7 @@ class Preview extends Provider {
     /**
      * Return mime type
      */
-    public function getMimeType() {
+    public function getMimeType(): string {
         $m = self::getMimeTypeRegex();
         return $m;
     }
@@ -224,23 +226,23 @@ class Preview extends Provider {
     /**
      * The method checks if the file can be converted
      *
-     * @param FileInfo $fileInfo - File
+     * @param FileInfo $file - File
      *
      * @return bool
      */
-    public function isAvailable(FileInfo $fileInfo) {
+    public function isAvailable(FileInfo $file): bool {
         if ($this->config->getPreview() !== true) {
             return false;
         }
-        if (!$fileInfo
-            || $fileInfo->getSize() === 0
-            || $fileInfo->getSize() > $this->config->getLimitThumbSize()) {
+        if (!$file
+            || $file->getSize() === 0
+            || $file->getSize() > $this->config->getLimitThumbSize()) {
             return false;
         }
-        if (!in_array($fileInfo->getMimetype(), self::$capabilities, true)) {
+        if (!in_array($file->getMimetype(), self::$capabilities, true)) {
             return false;
         }
-        if ($fileInfo->getStorage()->instanceOfStorage(SharingExternalStorage::class)) {
+        if ($file->getStorage()->instanceOfStorage(SharingExternalStorage::class)) {
             return false;
         }
         return true;
@@ -257,7 +259,7 @@ class Preview extends Provider {
      *
      * @return Image|bool false if no preview was generated
      */
-    public function getThumbnail($path, $maxX, $maxY, $scalingup, $view) {
+    public function getThumbnail(File $file, int $maxX, int $maxY): ?IImage {
         $this->logger->debug("getThumbnail $path $maxX $maxY");
 
         list($fileUrl, $extension, $key) = $this->getFileParam($path, $view);
