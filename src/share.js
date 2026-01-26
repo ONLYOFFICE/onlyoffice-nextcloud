@@ -32,6 +32,7 @@
 /* global _, jQuery */
 
 import AppDarkSvg from '!!raw-loader!../img/app-dark.svg';
+import { registerSidebarTab, FileType } from '@nextcloud/files'
 
 /**
  * @param {object} $ JQueryStatic object
@@ -51,52 +52,60 @@ import AppDarkSvg from '!!raw-loader!../img/app-dark.svg';
 		ModifyFilter: 8,
 	}
 
-	let tabcontext = null
+	const tagName = 'onlyoffice-files-advanced-sidebar-tab'
 
-	const advancedTab = new OCA.Files.Sidebar.Tab({
-		id: 'onlyofficeSharingTabView',
-		name: t(OCA.Onlyoffice.AppName, 'Advanced'),
-		iconSvg: AppDarkSvg,
+	class OnlyofficeSidebarTab extends HTMLElement {
+		constructor() {
+			super()
+			this._context = null
+			this._node = null
+		}
 
-		mount(el, fileInfo, context) {
-			if (!tabcontext) {
-				tabcontext = advancedContext()
-			}
-
-			tabcontext.init(el, fileInfo)
-		},
-
-		update(fileInfo) {
-			tabcontext.update(fileInfo)
-		},
-
-		destroy() {
-			tabcontext.clear()
-		},
-
-		enabled(fileInfo) {
-			let canDisplay = false
-
-			if (!fileInfo.isDirectory()) {
-				const ext = OCA.Onlyoffice.getFileExtension(fileInfo.name)
-				const format = OCA.Onlyoffice.setting.formats[ext]
-				if (format && (format.review
-					|| format.comment
-					|| format.fillForms
-					|| format.modifyFilter)) {
-					canDisplay = true
-
-					if (($('#sharing').hasClass('active') || $('#tab-button-sharing').hasClass('active'))
-						&& tabcontext.fileInfo
-						&& tabcontext.fileInfo.id === fileInfo.id) {
-						this.update(fileInfo)
-					}
+		set node(value) {
+			this._node = value
+			if (this._context && value) {
+				const fileInfo = {
+					id: value.fileid,
+					name: value.basename,
+					path: value.path,
+					permissions: value.permissions,
+					mtime: value.mtime,
+					type: value.type,
+					etag: value.attributes?.etag,
 				}
+				this._context.update(fileInfo)
+			}
+		}
+
+		get node() {
+			return this._node
+		}
+
+		connectedCallback() {
+			if (!this._context) {
+				this._context = advancedContext()
 			}
 
-			return canDisplay
-		},
-	})
+			if (this._node) {
+				const fileInfo = {
+					id: this._node.fileid,
+					name: this._node.basename,
+					path: this._node.path,
+					permissions: this._node.permissions,
+					mtime: this._node.mtime,
+					type: this._node.type,
+					etag: this._node.attributes?.etag,
+				}
+				this._context.init(this, fileInfo)
+			}
+		}
+
+		disconnectedCallback() {
+			if (this._context) {
+				this._context.clear()
+			}
+		}
+	}
 
 	const advancedContext = function() {
 		let $el = null
@@ -487,8 +496,30 @@ import AppDarkSvg from '!!raw-loader!../img/app-dark.svg';
 		})
 	}
 
-	if (OCA.Files.Sidebar && OCA.Files.Sidebar.registerTab) {
-		OCA.Files.Sidebar.registerTab(advancedTab)
-	}
+	registerSidebarTab({
+		id: 'onlyofficeSharingTabView',
+		displayName: t(OCA.Onlyoffice.AppName, 'Advanced'),
+		iconSvgInline: AppDarkSvg,
+		tagName,
+		order: 0,
+
+		enabled({node}) {
+			if (node.type === FileType.File) {
+				const ext = OCA.Onlyoffice.getFileExtension(node.basename)
+				const format = OCA.Onlyoffice.setting.formats[ext]
+				if (format && (format.review
+					|| format.comment
+					|| format.fillForms
+					|| format.modifyFilter)) {
+					return true
+				}
+			}
+			return false
+		},
+
+		async onInit() {
+			window.customElements.define(tagName, OnlyofficeSidebarTab)
+		},
+	})
 
 })(jQuery, OC)
