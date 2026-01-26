@@ -1,4 +1,6 @@
 # Change Log
+## Change
+- OCA\Onlyoffice\Preview class now implements OCP\Preview\IProviderV2 interface
 
 ## 9.12.0
 ## Added
