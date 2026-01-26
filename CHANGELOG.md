@@ -1,5 +1,9 @@
 # Change Log
 
+##
+## Changed
+- fixed opening the editor with a watermark on tagged files
+
 ## 9.12.0
 ## Added
 - plugin description and useful links in admin settings
