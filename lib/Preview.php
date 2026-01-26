@@ -44,6 +44,7 @@ use OCP\ISession;
 use OCP\IURLGenerator;
 use OCP\Share\IManager;
 use Psr\Log\LoggerInterface;
+use OCP\IUser;
 
 /**
  * Preview provider
@@ -249,22 +250,14 @@ class Preview implements IProviderV2 {
     }
 
     /**
-     * The method is generated thumbnail for file and returned image object
-     *
-     * @param string $path - Path of file
-     * @param int $maxX - The maximum X size of the thumbnail
-     * @param int $maxY - The maximum Y size of the thumbnail
-     * @param bool $scalingup - Disable/Enable upscaling of previews
-     * @param View $view - view
-     *
-     * @return Image|bool false if no preview was generated
+     * {@inheritDoc}
      */
     public function getThumbnail(File $file, int $maxX, int $maxY): ?IImage {
-        $this->logger->debug("getThumbnail $path $maxX $maxY");
+        $this->logger->debug("getThumbnail {$file->getPath()} $maxX $maxY");
 
-        list($fileUrl, $extension, $key) = $this->getFileParam($path, $view);
+        [$fileUrl, $extension, $key] = $this->getFileParam($file);
         if ($fileUrl === null || $extension === null || $key === null) {
-            return false;
+            return null;
         }
 
         $imageUrl = null;
@@ -273,14 +266,14 @@ class Preview implements IProviderV2 {
             $imageUrl = $documentService->getConvertedUri($fileUrl, $extension, self::THUMBEXTENSION, $key);
         } catch (\Exception $e) {
             $this->logger->error("getConvertedUri: from $extension to " . self::THUMBEXTENSION, ["exception" => $e]);
-            return false;
+            return null;
         }
 
         try {
             $thumbnail = $documentService->request($imageUrl);
         } catch (\Exception $e) {
             $this->logger->error("Failed to download thumbnail", ["exception" => $e]);
-            return false;
+            return null;
         }
 
         $image = new Image();
@@ -291,7 +284,7 @@ class Preview implements IProviderV2 {
             return $image;
         }
 
-        return false;
+        return null;
     }
 
     /**
@@ -304,7 +297,7 @@ class Preview implements IProviderV2 {
      *
      * @return string
      */
-    private function getUrl($file, $user = null, $version = 0, $template = false) {
+    private function getUrl(File $file, ?IUser $user, int $version = 0, bool $template = false): string {
 
         $data = [
             "action" => "download",
@@ -337,41 +330,37 @@ class Preview implements IProviderV2 {
     /**
      * Generate array with file parameters
      *
-     * @param string $path - Path of file
-     * @param View $view - view
+     * @param File $file - file
      *
      * @return array
      */
-    private function getFileParam($path, $view) {
-        $fileInfo = $view->getFileInfo($path);
-
-        if (!$fileInfo || $fileInfo->getSize() === 0) {
+    private function getFileParam(File $file): array {
+        if ($file->getType() !== FileInfo::TYPE_FILE || $file->getSize() === 0) {
             return [null, null, null];
         }
 
-        $owner = $fileInfo->getOwner();
+        $owner = $file->getOwner();
 
         $key = null;
         $versionNum = 0;
         $template = false;
-        if (FileVersions::splitPathVersion($path) !== false) {
+        if (FileVersions::splitPathVersion($file->getPath()) !== false) {
             if ($this->versionManager === null || $owner === null) {
                 return [null, null, null];
             }
 
             $versionFolder = new View("/" . $owner->getUID() . "/files_versions");
-            $absolutePath = $fileInfo->getPath();
+            $absolutePath = $file->getPath();
             $relativePath = $versionFolder->getRelativePath($absolutePath);
 
-            list($filePath, $fileVersion) = FileVersions::splitPathVersion($relativePath);
+            [$filePath, $fileVersion] = FileVersions::splitPathVersion($relativePath);
             if ($filePath === null) {
                 return [null, null, null];
             }
 
-            $sourceFile = $this->root->getUserFolder($owner->getUID())->get($filePath);
+            $file = $this->root->getUserFolder($owner->getUID())->get($filePath);
 
-            $fileInfo = $sourceFile->getFileInfo();
-            $versions = FileVersions::processVersionsArray($this->versionManager->getVersionsForFile($owner, $fileInfo));
+            $versions = FileVersions::processVersionsArray($this->versionManager->getVersionsForFile($owner, $file));
 
             foreach ($versions as $version) {
                 $versionNum = $versionNum + 1;
@@ -385,17 +374,17 @@ class Preview implements IProviderV2 {
                 }
             }
         } else {
-            $key = $this->fileUtility->getKey($fileInfo);
+            $key = $this->fileUtility->getKey($file);
             $key = DocumentService::generateRevisionId($key);
         }
 
-        if (TemplateManager::isTemplate($fileInfo->getId())) {
+        if (TemplateManager::isTemplate($file->getId())) {
             $template = true;
         }
 
-        $fileUrl = $this->getUrl($fileInfo, $owner, $versionNum, $template);
+        $fileUrl = $this->getUrl($file, $owner, $versionNum, $template);
 
-        $fileExtension = $fileInfo->getExtension();
+        $fileExtension = $file->getExtension();
 
         return [$fileUrl, $fileExtension, "thumb_$key"];
     }
