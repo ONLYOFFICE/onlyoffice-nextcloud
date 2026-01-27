@@ -3,6 +3,7 @@
 ##
 ## Changed
 - fixed opening the editor with a watermark on tagged files
+- fixed invalid IManager::getSharesBy() method call when building share list for advanced sidebar tab
 
 ## 9.12.0
 ## Added
