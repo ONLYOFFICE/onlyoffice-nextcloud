@@ -603,7 +603,7 @@ class EditorController extends Controller {
             $recipients = $this->userManager->getByEmail($email);
             foreach ($recipients as $recipient) {
                 $recipientId = $recipient->getUID();
-                if (!in_array($recipientId, $recipientIds)) {
+                if (!in_array($recipientId, $recipientIds, true)) {
                     array_push($recipientIds, $recipientId);
                 }
             }
@@ -661,7 +661,7 @@ class EditorController extends Controller {
         $accessList = $this->shareManager->getAccessList($file);
 
         foreach ($recipientIds as $recipientId) {
-            $isAvailable = in_array($recipientId, $accessList["users"]);
+            $isAvailable = in_array($recipientId, $accessList["users"], true);
 
             if (!$isAvailable
                 && ($file->getFileInfo()->getStorage()->instanceOfStorage("\OCA\GroupFolders\Mount\GroupFolderStorage")

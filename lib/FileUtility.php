@@ -210,7 +210,7 @@ class FileUtility {
 
         $authenticatedLinks = $this->session->get('public_link_authenticated');
 
-        $isAuthenticated = is_array($authenticatedLinks) && in_array($share->getId(), $authenticatedLinks);
+        $isAuthenticated = is_array($authenticatedLinks) && in_array($share->getId(), $authenticatedLinks, true);
         $isAuthenticated = $isAuthenticated || $authenticatedLinks === (string) $share->getId();
 
         if ($share->getPassword() && !$isAuthenticated) {

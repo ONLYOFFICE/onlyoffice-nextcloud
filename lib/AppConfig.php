@@ -1030,7 +1030,7 @@ class AppConfig {
             "dark" => "default-dark"
         ];
 
-        if (!in_array($value, $validThemes)) {
+        if (!in_array($value, $validThemes, true)) {
             $value = "theme-system";
         }
 
@@ -1154,7 +1154,7 @@ class AppConfig {
         $trueResult = array("on", "yes", "true");
         foreach ($watermarkLabels as $key) {
             $value = $this->config->getAppValue(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_" . $key, "no");
-            $result[$key] = in_array($value, $trueResult);
+            $result[$key] = in_array($value, $trueResult, true);
         }
 
         $watermarkLists = [
@@ -1497,14 +1497,14 @@ class AppConfig {
                         $result[$onlyOfficeFormat["name"]] = [
                             "mime" => $onlyOfficeFormat["mime"],
                             "type" => $onlyOfficeFormat["type"],
-                            "edit" => in_array("edit", $onlyOfficeFormat["actions"]),
-                            "editable" => in_array("lossy-edit", $onlyOfficeFormat["actions"]),
-                            "conv" => in_array("auto-convert", $onlyOfficeFormat["actions"]),
-                            "fillForms" => in_array("fill", $onlyOfficeFormat["actions"]),
-                            "comment" => in_array("comment", $onlyOfficeFormat["actions"]),
+                            "edit" => in_array("edit", $onlyOfficeFormat["actions"], true),
+                            "editable" => in_array("lossy-edit", $onlyOfficeFormat["actions"], true),
+                            "conv" => in_array("auto-convert", $onlyOfficeFormat["actions"], true),
+                            "fillForms" => in_array("fill", $onlyOfficeFormat["actions"], true),
+                            "comment" => in_array("comment", $onlyOfficeFormat["actions"], true),
                             "saveas" => $onlyOfficeFormat["convert"],
-                            "review" => in_array("review", $onlyOfficeFormat["actions"]),
-                            "modifyFilter" => in_array("customfilter", $onlyOfficeFormat["actions"]),
+                            "review" => in_array("review", $onlyOfficeFormat["actions"], true),
+                            "modifyFilter" => in_array("customfilter", $onlyOfficeFormat["actions"], true),
                         ];
                         if (isset($additionalFormats[$onlyOfficeFormat["name"]])) {
                             $result[$onlyOfficeFormat["name"]] = array_merge($result[$onlyOfficeFormat["name"]], $additionalFormats[$onlyOfficeFormat["name"]]);
