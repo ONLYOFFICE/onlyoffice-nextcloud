@@ -2,6 +2,7 @@
 
 ##
 ## Changed
+- fixed watermark not applying to link shares with system tags
 - fixed opening the editor with a watermark on tagged files
 
 ## 9.12.0
