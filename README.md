@@ -2,20 +2,24 @@
 
 This app enables users to edit office documents from [Nextcloud](https://nextcloud.com) using ONLYOFFICE Docs packaged as Document Server - [Community or Enterprise Edition](#onlyoffice-docs-editions).
 
-## Features you'll love ✨
+## Features ✨
 
 The app allows to:
 
-* ✍️ Create and edit [text documents](https://www.onlyoffice.com/document-editor.aspx), [spreadsheets](https://www.onlyoffice.com/spreadsheet-editor.aspx), and [presentations](https://www.onlyoffice.com/slides.aspx).
+* ✍️ Create and edit [text documents](https://www.onlyoffice.com/word-processor?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud), [spreadsheets](https://www.onlyoffice.com/spreadsheet-editor?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud), and [presentations](https://www.onlyoffice.com/slides?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud).
 * 📝 Create and edit PDF forms.
-* ✂️ Edit [PDF](https://www.onlyoffice.com/pdf-editor.aspx) files.
-* 📊 View [diagram](https://www.onlyoffice.com/diagram-viewer.aspx) files.
+* ✂️ Edit [PDF](https://www.onlyoffice.com/pdf-editor?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud) files.
+* 📊 View [diagram](https://www.onlyoffice.com/diagram-viewer?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud) files.
 * 🤝 Share files to other users.
 * 🔒 Protect documents with watermarks.
-* 👥 Co-edit documents in [real time](https://www.onlyoffice.com/seamless-collaboration.aspx): two co-editing modes (Fast and Strict), Track Changes, comments, and built-in chat. Co-editing is also available between several federated Nextcloud instances connected to one Document Server.
-* 🤖 Enable [AI assistant](https://www.onlyoffice.com/ai-assistants.aspx) in the editors to work faster and more efficient (it's possible to connect any AI provider).
+* 👥 Co-edit documents in [real time](https://www.onlyoffice.com/seamless-collaboration?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud): two co-editing modes (Fast and Strict), Track Changes, comments, and built-in chat. Co-editing is also available between several federated Nextcloud instances connected to one Document Server.
+* 🤖 Enable [AI assistants](https://www.onlyoffice.com/ai-assistants?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud) in the editors to work faster and more efficient (it's possible to connect any AI provider).
 
-![](screenshots/ONLYOFFICE and Nextcloud.png)
+<p align="center">
+  <a href="https://www.onlyoffice.com/office-for-nextcloud?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud">
+    <img width="840" src="https://static-site.onlyoffice.com/public/images/templates/office-for-nextcloud/documents/documents-4@2x.png" alt="ONLYOFFICE Docs for Nextcloud">
+  </a>
+</p>
 
 ### Supported formats
 
@@ -52,7 +56,7 @@ To use ONLYOFFICE behind a proxy, please refer to [this article](https://helpcen
 
 You can also use our **[Docker installation](https://github.com/ONLYOFFICE/docker-onlyoffice-nextcloud)** to install pre-configured Document Server (free version) and Nextcloud with a couple of commands.
 
-Alternatively, you can opt for ONLYOFFICE Docs Cloud which doesn't require downloading and installation. To get ONLYOFFICE Docs Cloud, get started [here](https://www.onlyoffice.com/docs-registration.aspx).
+Alternatively, you can opt for ONLYOFFICE Docs Cloud which doesn't require downloading and installation. To get ONLYOFFICE Docs Cloud, get started [here](https://www.onlyoffice.com/docs-registration?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud).
 
 ## Installing ONLYOFFICE app for Nextcloud 📥
 
@@ -221,7 +225,7 @@ The Advanced tab allows you to grant additional access rights only to those user
 
 ## How it works ⚙️
 
-The ONLYOFFICE app follows the API documented here https://api.onlyoffice.com:
+The ONLYOFFICE app follows the API documented here [api.onlyoffice.com](https://api.onlyoffice.com/?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud):
 
 * When creating a new file, the user navigates to a document folder within Nextcloud and clicks the **Document**, **Spreadsheet** or **Presentation** item in the _new_ (+) menu.
 
@@ -308,8 +312,8 @@ The table below will help you to make the right choice.
 
 | Pricing and licensing                              | Community Edition                                                                                                                        | Enterprise Edition                                                                                                                              |
 |----------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------|
-|                                                    | [Get it now](https://www.onlyoffice.com/download-docs.aspx?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud#docs-community) | [Start Free Trial](https://www.onlyoffice.com/download-docs.aspx?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud#docs-enterprise) |
-| Cost                                               | FREE                                                                                                                                     | [Go to the pricing page](https://www.onlyoffice.com/docs-enterprise-prices.aspx?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud)  |
+|                                                    | [Get it now](https://www.onlyoffice.com/download-community?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud#docs-community) | [Start Free Trial](https://www.onlyoffice.com/download?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud#docs-enterprise) |
+| Cost                                               | FREE                                                                                                                                     | [Go to the pricing page](https://www.onlyoffice.com/docs-enterprise-prices?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud)  |
 | Simultaneous connections                           | up to 20 maximum                                                                                                                         | As in chosen pricing plan                                                                                                                       |
 | Number of users                                    | up to 20 recommended                                                                                                                     | As in chosen pricing plan                                                                                                                       |
 | License                                            | GNU AGPL v.3                                                                                                                             | Proprietary                                                                                                                                     |
@@ -368,17 +372,21 @@ The table below will help you to make the right choice.
 | Adding form fields                                 | +                                                                                                                                        | +                                                                                                                                               |
 | Form preview                                       | +                                                                                                                                        | +                                                                                                                                               |
 | Saving as PDF                                      | +                                                                                                                                        | +                                                                                                                                               |
-| **Working with PDF**                               | **Community Edition**                                                                                                                    | **Enterprise Edition**                                                                                                                          |
-| Text annotations (highlight, underline, cross out) | +                                                                                                                                        | +                                                                                                                                               |
+| **PDF Editor features**                            | **Community Edition**                                                                                                                    | **Enterprise Edition**                                                                                                                     |
+| Text editing and co-editing                        | +                                                                                                                                        | +                   
+| Work with pages (adding, deleting, rotating)                                           | +                                                                                                                                        | +  
+| Inserting objects (shapes, images, hyperlinks, etc.)                                           | +                                                                                                                                        | +  
+| Text annotations (highlight, underline, cross out, stamps) | +                                                                                                                                        | +                                                                                                                                               |
 | Comments                                           | +                                                                                                                                        | +                                                                                                                                               |
 | Freehand drawings                                  | +                                                                                                                                        | +                                                                                                                                               |
 | Form filling                                       | +                                                                                                                                        | +                                                                                                                                               |
-|                                                    | [Get it now](https://www.onlyoffice.com/download-docs.aspx?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud#docs-community) | [Start Free Trial](https://www.onlyoffice.com/download-docs.aspx?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud#docs-enterprise) |
+|                                                    | [Get it now](https://www.onlyoffice.com/download-community?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud#docs-community) | [Start Free Trial](https://www.onlyoffice.com/download?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud#docs-enterprise) |
 
 \* If supported by DMS.
 
 ## Need help? User Feedback and Support 💡
 
-In case of technical problems, the best way to get help is to submit your issues [here](https://github.com/ONLYOFFICE/onlyoffice-nextcloud/issues).
-
-You are also welcome to visit our official forum: [community.onlyoffice.com](https://community.onlyoffice.com/), as well as share your thoughts and suggestions on [feedback.onlyoffice.com](https://feedback.onlyoffice.com/forums/966080-your-voice-matters).
+* **🐞 Found a bug?** Please report it by creating an [issue](https://github.com/ONLYOFFICE/onlyoffice-nextcloud/issues).  
+* **❓ Have a question?** Ask our community and developers on the [ONLYOFFICE Forum](https://community.onlyoffice.com/).  
+* **👨‍💻 Need help for developers?** Check our [API documentation](https://api.onlyoffice.com/?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud). 
+* **💡 Want to suggest a feature?** Share your ideas on our [feedback platform](https://feedback.onlyoffice.com/forums/966080-your-voice-matters).
