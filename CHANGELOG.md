@@ -5,6 +5,7 @@
 - fixed opening the editor with a watermark on tagged files
 - replace deprecated TemplateFileCreator::setIconClass with TemplateFileCreator::setIconSvgInline method
 - OCA\Onlyoffice\Preview class now implements OCP\Preview\IProviderV2 interface
+- fixed invalid IManager::getSharesBy() method call when building share list for advanced sidebar tab
 
 ## 9.12.0
 ## Added
