@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System SIA 2025
+ * (c) Copyright Ascensio System SIA 2026
  *
  * This program is a free software product.
  * You can redistribute it and/or modify it under the terms of the GNU Affero General Public License
@@ -30,16 +30,19 @@
 namespace OCA\Onlyoffice;
 
 use OC\Files\View;
-use OC\Preview\Provider;
 use OCA\Files_Sharing\External\Storage as SharingExternalStorage;
 use OCA\Files_Versions\Versions\IVersionManager;
 use OCP\AppFramework\QueryException;
+use OCP\Files\File;
+use OCP\IImage;
 use OCP\Files\FileInfo;
 use OCP\Files\IRootFolder;
 use OCP\IL10N;
 use OCP\Image;
 use OCP\ISession;
 use OCP\IURLGenerator;
+use OCP\IUser;
+use OCP\Preview\IProviderV2;
 use OCP\Share\IManager;
 use Psr\Log\LoggerInterface;
 
@@ -48,7 +51,7 @@ use Psr\Log\LoggerInterface;
  *
  * @package OCA\Onlyoffice
  */
-class Preview extends Provider {
+class Preview implements IProviderV2 {
 
     /**
      * Application name
@@ -216,7 +219,7 @@ class Preview extends Provider {
     /**
      * Return mime type
      */
-    public function getMimeType() {
+    public function getMimeType(): string {
         $m = self::getMimeTypeRegex();
         return $m;
     }
@@ -224,45 +227,37 @@ class Preview extends Provider {
     /**
      * The method checks if the file can be converted
      *
-     * @param FileInfo $fileInfo - File
+     * @param FileInfo $file - File
      *
      * @return bool
      */
-    public function isAvailable(FileInfo $fileInfo) {
+    public function isAvailable(FileInfo $file): bool {
         if ($this->config->getPreview() !== true) {
             return false;
         }
-        if (!$fileInfo
-            || $fileInfo->getSize() === 0
-            || $fileInfo->getSize() > $this->config->getLimitThumbSize()) {
+        if (!$file
+            || $file->getSize() === 0
+            || $file->getSize() > $this->config->getLimitThumbSize()) {
             return false;
         }
-        if (!in_array($fileInfo->getMimetype(), self::$capabilities, true)) {
+        if (!in_array($file->getMimetype(), self::$capabilities, true)) {
             return false;
         }
-        if ($fileInfo->getStorage()->instanceOfStorage(SharingExternalStorage::class)) {
+        if ($file->getStorage()->instanceOfStorage(SharingExternalStorage::class)) {
             return false;
         }
         return true;
     }
 
     /**
-     * The method is generated thumbnail for file and returned image object
-     *
-     * @param string $path - Path of file
-     * @param int $maxX - The maximum X size of the thumbnail
-     * @param int $maxY - The maximum Y size of the thumbnail
-     * @param bool $scalingup - Disable/Enable upscaling of previews
-     * @param View $view - view
-     *
-     * @return Image|bool false if no preview was generated
+     * {@inheritDoc}
      */
-    public function getThumbnail($path, $maxX, $maxY, $scalingup, $view) {
-        $this->logger->debug("getThumbnail $path $maxX $maxY");
+    public function getThumbnail(File $file, int $maxX, int $maxY): ?IImage {
+        $this->logger->debug("getThumbnail {$file->getId()} $maxX $maxY");
 
-        list($fileUrl, $extension, $key) = $this->getFileParam($path, $view);
+        [$fileUrl, $extension, $key] = $this->getFileParam($file);
         if ($fileUrl === null || $extension === null || $key === null) {
-            return false;
+            return null;
         }
 
         $imageUrl = null;
@@ -271,14 +266,14 @@ class Preview extends Provider {
             $imageUrl = $documentService->getConvertedUri($fileUrl, $extension, self::THUMBEXTENSION, $key);
         } catch (\Exception $e) {
             $this->logger->error("getConvertedUri: from $extension to " . self::THUMBEXTENSION, ["exception" => $e]);
-            return false;
+            return null;
         }
 
         try {
             $thumbnail = $documentService->request($imageUrl);
         } catch (\Exception $e) {
             $this->logger->error("Failed to download thumbnail", ["exception" => $e]);
-            return false;
+            return null;
         }
 
         $image = new Image();
@@ -289,7 +284,7 @@ class Preview extends Provider {
             return $image;
         }
 
-        return false;
+        return null;
     }
 
     /**
@@ -302,7 +297,7 @@ class Preview extends Provider {
      *
      * @return string
      */
-    private function getUrl($file, $user = null, $version = 0, $template = false) {
+    private function getUrl(File $file, ?IUser $user, int $version = 0, bool $template = false): string {
 
         $data = [
             "action" => "download",
@@ -335,41 +330,37 @@ class Preview extends Provider {
     /**
      * Generate array with file parameters
      *
-     * @param string $path - Path of file
-     * @param View $view - view
+     * @param File $file - file
      *
      * @return array
      */
-    private function getFileParam($path, $view) {
-        $fileInfo = $view->getFileInfo($path);
-
-        if (!$fileInfo || $fileInfo->getSize() === 0) {
+    private function getFileParam(File $file): array {
+        if ($file->getType() !== FileInfo::TYPE_FILE || $file->getSize() === 0) {
             return [null, null, null];
         }
 
-        $owner = $fileInfo->getOwner();
+        $owner = $file->getOwner();
 
         $key = null;
         $versionNum = 0;
         $template = false;
-        if (FileVersions::splitPathVersion($path) !== false) {
+        if (FileVersions::splitPathVersion($file->getPath()) !== false) {
             if ($this->versionManager === null || $owner === null) {
                 return [null, null, null];
             }
 
             $versionFolder = new View("/" . $owner->getUID() . "/files_versions");
-            $absolutePath = $fileInfo->getPath();
+            $absolutePath = $file->getPath();
             $relativePath = $versionFolder->getRelativePath($absolutePath);
 
-            list($filePath, $fileVersion) = FileVersions::splitPathVersion($relativePath);
+            [$filePath, $fileVersion] = FileVersions::splitPathVersion($relativePath);
             if ($filePath === null) {
                 return [null, null, null];
             }
 
-            $sourceFile = $this->root->getUserFolder($owner->getUID())->get($filePath);
+            $file = $this->root->getUserFolder($owner->getUID())->get($filePath);
 
-            $fileInfo = $sourceFile->getFileInfo();
-            $versions = FileVersions::processVersionsArray($this->versionManager->getVersionsForFile($owner, $fileInfo));
+            $versions = FileVersions::processVersionsArray($this->versionManager->getVersionsForFile($owner, $file));
 
             foreach ($versions as $version) {
                 $versionNum = $versionNum + 1;
@@ -383,17 +374,17 @@ class Preview extends Provider {
                 }
             }
         } else {
-            $key = $this->fileUtility->getKey($fileInfo);
+            $key = $this->fileUtility->getKey($file);
             $key = DocumentService::generateRevisionId($key);
         }
 
-        if (TemplateManager::isTemplate($fileInfo->getId())) {
+        if (TemplateManager::isTemplate($file->getId())) {
             $template = true;
         }
 
-        $fileUrl = $this->getUrl($fileInfo, $owner, $versionNum, $template);
+        $fileUrl = $this->getUrl($file, $owner, $versionNum, $template);
 
-        $fileExtension = $fileInfo->getExtension();
+        $fileExtension = $file->getExtension();
 
         return [$fileUrl, $fileExtension, "thumb_$key"];
     }
