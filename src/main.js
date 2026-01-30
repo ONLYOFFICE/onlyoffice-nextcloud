@@ -217,10 +217,17 @@ import { loadState } from '@nextcloud/initial-state'
 			const scrollTop = $('#app-content').scrollTop()
 			$(OCA.Onlyoffice.frameSelector).css('top', scrollTop)
 
+			const currentQuery = { ...OCP.Files.Router.query }
+			if (isDefault) {
+				currentQuery.openfile = 'true'
+			} else {
+				delete currentQuery.openfile
+			}
+
 			window.OCP?.Files?.Router?.goToRoute(
 				null, // use default route
 				{ view: 'files', fileid: fileId },
-				{ ...OCP.Files.Router.query, openfile: 'true' },
+				currentQuery,
 			)
 		}
 	}
@@ -242,7 +249,7 @@ import { loadState } from '@nextcloud/initial-state'
 		window.OCP?.Files?.Router?.goToRoute(
 			null, // use default route
 			{ view: 'files', fileid: undefined },
-			{ ...OCP.Files.Router.query, openfile: 'false', enableSharing: undefined },
+			{ ...OCP.Files.Router.query, openfile: undefined, enableSharing: undefined },
 		)
 	}
 
