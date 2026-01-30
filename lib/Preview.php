@@ -30,21 +30,21 @@
 namespace OCA\Onlyoffice;
 
 use OC\Files\View;
-use OCP\Files\File;
-use OCP\IImage;
-use OCP\Preview\IProviderV2;
 use OCA\Files_Sharing\External\Storage as SharingExternalStorage;
 use OCA\Files_Versions\Versions\IVersionManager;
 use OCP\AppFramework\QueryException;
+use OCP\Files\File;
+use OCP\IImage;
 use OCP\Files\FileInfo;
 use OCP\Files\IRootFolder;
 use OCP\IL10N;
 use OCP\Image;
 use OCP\ISession;
 use OCP\IURLGenerator;
+use OCP\IUser;
+use OCP\Preview\IProviderV2;
 use OCP\Share\IManager;
 use Psr\Log\LoggerInterface;
-use OCP\IUser;
 
 /**
  * Preview provider
@@ -253,7 +253,7 @@ class Preview implements IProviderV2 {
      * {@inheritDoc}
      */
     public function getThumbnail(File $file, int $maxX, int $maxY): ?IImage {
-        $this->logger->debug("getThumbnail {$file->getPath()} $maxX $maxY");
+        $this->logger->debug("getThumbnail {$file->getId()} $maxX $maxY");
 
         [$fileUrl, $extension, $key] = $this->getFileParam($file);
         if ($fileUrl === null || $extension === null || $key === null) {
