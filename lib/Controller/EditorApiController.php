@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System SIA 2025
+ * (c) Copyright Ascensio System SIA 2026
  *
  * This program is a free software product.
  * You can redistribute it and/or modify it under the terms of the GNU Affero General Public License
@@ -59,8 +59,10 @@ use OCP\IUser;
 use OCP\IUserManager;
 use OCP\IUserSession;
 use OCP\PreConditionNotMetException;
+use OCP\Server;
 use OCP\Share\IManager;
 use OCP\Share\IShare;
+use OCP\SystemTag\ISystemTagObjectMapper;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -931,7 +933,7 @@ class EditorApiController extends OCSController {
             }
             if ($watermarkSettings["linkTags"]) {
                 $tags = $watermarkSettings["linkTagsList"];
-                $fileTags = \OC::$server->getSystemTagObjectMapper()->getTagIdsForObjects([$fileId], "files")[$fileId];
+                $fileTags = Server::get(ISystemTagObjectMapper::class)->getTagIdsForObjects([$fileId], "files")[$fileId];
                 foreach ($fileTags as $tagId) {
                     if (in_array($tagId, $tags, true)) {
                         return $watermarkText;
@@ -958,7 +960,7 @@ class EditorApiController extends OCSController {
         }
         if ($watermarkSettings["allTags"]) {
             $tags = $watermarkSettings["allTagsList"];
-            $fileTags = \OC::$server->getSystemTagObjectMapper()->getTagIdsForObjects([$fileId], "files")[$fileId];
+            $fileTags = Server::get(ISystemTagObjectMapper::class)->getTagIdsForObjects([$fileId], "files")[$fileId];
             foreach ($fileTags as $tagId) {
                 if (in_array($tagId, $tags)) {
                     return $watermarkText;
