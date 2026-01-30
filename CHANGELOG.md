@@ -1,10 +1,10 @@
 # Change Log
-## Changed
-- replace deprecated TemplateFileCreator::setIconClass with TemplateFileCreator::setIconSvgInline method
 
 ##
 ## Changed
 - fixed opening the editor with a watermark on tagged files
+- replace deprecated TemplateFileCreator::setIconClass with TemplateFileCreator::setIconSvgInline method
+- OCA\Onlyoffice\Preview class now implements OCP\Preview\IProviderV2 interface
 
 ## 9.12.0
 ## Added
