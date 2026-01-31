@@ -28,6 +28,9 @@
 
 /* global _, jQuery */
 
+import { spawnDialog } from '@nextcloud/vue/functions/dialog'
+import { defineAsyncComponent } from 'vue'
+
 /**
  * @param {object} $ JQueryStatic object
  * @param {object} OC Nextcloud OCA object
@@ -210,10 +213,7 @@
 							if (response.secret !== null) {
 								OCP.Toast.success(t(OCA.Onlyoffice.AppName, 'Server settings have been successfully updated') + versionMessage)
 							} else {
-								const securityUrl = 'https://api.onlyoffice.com/docs/docs-api/get-started/how-it-works/security/'
-								const content = '<div class="onlyoffice-popup-info"><p>' + t(OCA.Onlyoffice.AppName, 'Server settings have been successfully updated') + '</p>'
-									+ '<p>' + t(OCA.Onlyoffice.AppName, 'To ensure the security of important parameters in ONLYOFFICE Docs requests, please set a Secret Key on the Settings page. To learn more, <a href="{url}" target="_blank">click here</a>.', { url: securityUrl }) + '</p>'
-								OC.dialogs.message(content, t(OCA.Onlyoffice.AppName, t(OCA.Onlyoffice.AppName, 'Info')), null, OC.dialogs.OK_BUTTONS, () => {}, null, true)
+								spawnDialog(defineAsyncComponent(() => import('./views/EmptyJwtInfoDialog.vue')))
 							}
 						}
 					} else {
