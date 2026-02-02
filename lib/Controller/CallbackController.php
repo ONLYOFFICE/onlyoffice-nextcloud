@@ -345,10 +345,13 @@ class CallbackController extends Controller {
         }
 
         try {
-            $response = new StreamResponse($file->fopen('rb'));
-            $response->addHeader('Content-Disposition', 'attachment; filename="' . rawurldecode($file->getName()) . '"');
-            $response->addHeader('Content-Type', $file->getMimeType());
-            return $response;
+            $handle = $file->fopen('rb');
+            if ($handle !== false && $handle !== null) {
+                $response = new StreamResponse($handle);
+                $response->addHeader('Content-Disposition', 'attachment; filename="' . rawurldecode($file->getName()) . '"');
+                $response->addHeader('Content-Type', $file->getMimeType());
+                return $response;
+            }
         } catch (NotPermittedException  $e) {
             $this->logger->error("Download Not permitted: $fileId ($version)", ["exception" => $e]);
             return new JSONResponse(["message" => $this->trans->t("Not permitted")], Http::STATUS_FORBIDDEN);
