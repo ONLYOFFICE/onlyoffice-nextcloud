@@ -962,7 +962,7 @@ class EditorApiController extends OCSController {
             $tags = $watermarkSettings["allTagsList"];
             $fileTags = Server::get(ISystemTagObjectMapper::class)->getTagIdsForObjects([$fileId], "files")[$fileId];
             foreach ($fileTags as $tagId) {
-                if (in_array($tagId, $tags)) {
+                if (in_array($tagId, $tags, true)) {
                     return $watermarkText;
                 }
             }
@@ -982,7 +982,7 @@ class EditorApiController extends OCSController {
     private function isFavorite($fileId, $userId = null) {
         $currentTags = $this->tagManager->load("files", [], false, $userId)->getTagsForObjects([$fileId]);
         if ($currentTags) {
-            return in_array(ITags::TAG_FAVORITE, $currentTags[$fileId]);
+            return in_array(ITags::TAG_FAVORITE, $currentTags[$fileId], true);
         }
 
         return false;
