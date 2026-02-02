@@ -41,7 +41,7 @@ const SystemTagsService = {
 			headers: {
 				'Content-Type': 'application/xml',
 				'X-Requested-With': 'XMLHttpRequest',
-				'requesttoken': OC.requestToken,
+				requesttoken: OC.requestToken,
 			},
 			body: `<?xml version="1.0"?>
 				<d:propfind xmlns:d="DAV:" xmlns:oc="http://owncloud.org/ns" xmlns:nc="http://nextcloud.org/ns">

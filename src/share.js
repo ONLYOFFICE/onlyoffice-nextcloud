@@ -31,7 +31,7 @@
 
 /* global _, jQuery */
 
-import AppDarkSvg from '!!raw-loader!../img/app-dark.svg';
+import AppDarkSvg from '!!raw-loader!../img/app-dark.svg'
 import { registerSidebarTab, FileType } from '@nextcloud/files'
 
 /**
@@ -55,6 +55,7 @@ import { registerSidebarTab, FileType } from '@nextcloud/files'
 	const tagName = 'onlyoffice-files-advanced-sidebar-tab'
 
 	class OnlyofficeSidebarTab extends HTMLElement {
+
 		constructor() {
 			super()
 			this._context = null
@@ -105,6 +106,7 @@ import { registerSidebarTab, FileType } from '@nextcloud/files'
 				this._context.clear()
 			}
 		}
+
 	}
 
 	const advancedContext = function() {
@@ -503,7 +505,7 @@ import { registerSidebarTab, FileType } from '@nextcloud/files'
 		tagName,
 		order: 0,
 
-		enabled({node}) {
+		enabled({ node }) {
 			if (node.type === FileType.File) {
 				const ext = OCA.Onlyoffice.getFileExtension(node.basename)
 				const format = OCA.Onlyoffice.setting.formats[ext]
