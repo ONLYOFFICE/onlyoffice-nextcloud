@@ -329,7 +329,8 @@ import { loadState } from '@nextcloud/initial-state'
 		})
 	}
 
-	OCA.Onlyoffice.FileConvertClickExec = async function(file, view, dir) {
+	OCA.Onlyoffice.FileConvertClickExec = async function({ nodes, view, dir }) {
+		const file = nodes[0]
 		OCA.Onlyoffice.FileConvert(file.fileid, async (response) => {
 			const viewContents = await view.getContents(dir)
 
@@ -371,7 +372,8 @@ import { loadState } from '@nextcloud/initial-state'
 		OCA.Onlyoffice.Download(fileName, fileId)
 	}
 
-	OCA.Onlyoffice.DownloadClickExec = async function(file) {
+	OCA.Onlyoffice.DownloadClickExec = async function({ nodes }) {
+		const file = nodes[0]
 		OCA.Onlyoffice.Download(file.basename, file.fileid)
 
 		return null
@@ -502,10 +504,11 @@ import { loadState } from '@nextcloud/initial-state'
 		OCA.Onlyoffice.CreateFile(name, fileList, 0, targetId, false)
 	}
 
-	OCA.Onlyoffice.CreateFormClickExec = async function(file, view, dir) {
+	OCA.Onlyoffice.CreateFormClickExec = async function({ nodes, view, dir }) {
+		const file = nodes[0]
 		const name = file.basename.replace(/\.[^.]+$/, '.pdf')
 		const context = {
-			dir,
+			dir: file.dirname,
 			view,
 		}
 
@@ -615,7 +618,7 @@ import { loadState } from '@nextcloud/initial-state'
 					return true
 				},
 				exec({ nodes, view, dir }) {
-					OCA.Onlyoffice.FileClickExec(nodes[0], view, dir, false)
+					OCA.Onlyoffice.FileClickExec({ nodes, view, dir, isDefault: false })
 				},
 			}))
 
@@ -676,19 +679,19 @@ import { loadState } from '@nextcloud/initial-state'
 					id: 'onlyoffice-download-as',
 					displayName: () => t(OCA.Onlyoffice.AppName, 'Download as'),
 					iconSvgInline: () => AppDarkSvg,
-					enabled: (files) => {
+					enabled: ({ nodes }) => {
 						if (OCA.Onlyoffice.setting.disableDownload) {
 							return false
 						}
-						const config = getConfig(files[0])
+						const config = getConfig(nodes[0])
 
 						if (!config) return false
 						if (!config.saveas) return false
 
-						if (Permission.READ !== (files[0].permissions & Permission.READ)) { return false }
+						if (Permission.READ !== (nodes[0].permissions & Permission.READ)) { return false }
 
-						if (files[0].attributes['mount-type'] === 'shared') {
-							const attributes = JSON.parse(files[0].attributes['share-attributes'])
+						if (nodes[0].attributes['mount-type'] === 'shared') {
+							const attributes = JSON.parse(nodes[0].attributes['share-attributes'])
 							const downloadAttribute = attributes.find((attribute) => attribute.scope === 'permissions' && attribute.key === 'download')
 							if (downloadAttribute !== undefined && downloadAttribute.enabled === false) { return false }
 						}
