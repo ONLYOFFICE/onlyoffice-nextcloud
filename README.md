@@ -85,9 +85,9 @@ There are several ways to do that:
     cd onlyoffice
     git submodule update --init --recursive
     ```
-3. Build webpack (only if you chose to clone on the previous step):
+3. Run the build (only if you chose to clone on the previous step):
     ```bash
-    npm install
+    npm ci
     npm run build
     ```
 4. Install Composer dependencies (only if you chose to clone on the step 2):
