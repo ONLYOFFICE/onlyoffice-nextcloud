@@ -29,8 +29,6 @@
 /* global _, jQuery */
 
 import { spawnDialog } from '@nextcloud/vue/functions/dialog'
-import { getRequestToken } from '@nextcloud/auth'
-import { generateFilePath } from '@nextcloud/router'
 import { defineAsyncComponent } from 'vue'
 import SystemTagsService from './systemtags.js'
 
@@ -39,12 +37,6 @@ import SystemTagsService from './systemtags.js'
  * @param {object} OC Nextcloud OCA object
  */
 (function($, OC) {
-	// eslint-disable-next-line
-	__webpack_nonce__ = btoa(getRequestToken())
-
-	// eslint-disable-next-line
-	__webpack_public_path__ = generateFilePath('onlyoffice', '', 'js/')
-
 	$(document).ready(function() {
 		OCA.Onlyoffice = _.extend({}, OCA.Onlyoffice)
 		if (!OCA.Onlyoffice.AppName) {

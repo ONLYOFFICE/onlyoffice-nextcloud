@@ -26,12 +26,11 @@
  *
  */
 
-/* eslint-disable import/no-webpack-loader-syntax */
 /* eslint-disable import/no-unresolved */
 
 /* global _, jQuery */
 
-import AppDarkSvg from '!!raw-loader!../img/app-dark.svg'
+import AppDarkSvg from '../img/app-dark.svg?raw'
 import { registerSidebarTab, FileType } from '@nextcloud/files'
 
 /**
