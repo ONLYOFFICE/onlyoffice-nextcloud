@@ -26,23 +26,21 @@
         "dev": "NODE_ENV=development webpack --progress --config webpack.js"
     },
     "dependencies": {
-        "@nextcloud/auth": "^2.5.1",
-        "@nextcloud/event-bus": "^3.3.1",
-        "@nextcloud/files": "^4.0.0-beta.8",
-        "@nextcloud/initial-state": "^2.2.0",
+        "@nextcloud/auth": "^2.5.3",
+        "@nextcloud/event-bus": "^3.3.3",
+        "@nextcloud/files": "^4.0.0-rc.0",
+        "@nextcloud/initial-state": "^3.0.0",
         "@nextcloud/l10n": "^3.4.1",
         "@nextcloud/router": "^3.1.0",
-        "@nextcloud/sharing": "^0.2.4",
-        "@nextcloud/vue": "^8.0.0",
-        "vue": "^2.7.16"
+        "@nextcloud/sharing": "^0.3.0",
+        "@nextcloud/vue": "^9.4.0",
+        "vue": "^3.5.27"
     },
     "devDependencies": {
-        "@nextcloud/browserslist-config": "^3.0.0",
-        "@nextcloud/eslint-config": "^8.4.1",
-        "@nextcloud/stylelint-config": "^3.0.1",
-        "@nextcloud/webpack-vue-config": "^6.0.0",
-        "raw-loader": "^4.0.2",
-        "stylelint": "^16.6.1",
-        "stylelint-config-standard": "^36.0.1"
+        "@nextcloud/browserslist-config": "^3.1.2",
+        "@nextcloud/eslint-config": "^9.0.0-rc.8",
+        "@nextcloud/stylelint-config": "^3.2.0",
+        "stylelint": "^17.1.0",
+        "stylelint-config-standard": "^40.0.0"
     }
 }
