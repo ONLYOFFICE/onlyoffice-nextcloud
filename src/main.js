@@ -26,7 +26,6 @@
  *
  */
 
-/* eslint-disable import/no-webpack-loader-syntax */
 /* eslint-disable import/no-unresolved */
 
 /* global _, $, _oc_appswebroots */
@@ -47,11 +46,11 @@ import {
 	resultToNode,
 } from '@nextcloud/files/dav'
 import { emit } from '@nextcloud/event-bus'
-import AppDarkSvg from '!!raw-loader!../img/app-dark.svg'
-import NewDocxSvg from '!!raw-loader!../img/new-docx.svg'
-import NewXlsxSvg from '!!raw-loader!../img/new-xlsx.svg'
-import NewPptxSvg from '!!raw-loader!../img/new-pptx.svg'
-import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg'
+import AppDarkSvg from '../img/app-dark.svg?raw'
+import NewDocxSvg from '../img/new-docx.svg?raw'
+import NewXlsxSvg from '../img/new-xlsx.svg?raw'
+import NewPptxSvg from '../img/new-pptx.svg?raw'
+import NewPdfSvg from '../img/new-pdf.svg?raw'
 import { isPublicShare, getSharingToken } from '@nextcloud/sharing/public'
 import { loadState } from '@nextcloud/initial-state'
 
