@@ -30,7 +30,9 @@
 namespace OCA\Onlyoffice\Controller;
 
 use OCA\Files\Helper;
+use OCA\Files_Sharing\SharedStorage;
 use OCA\Files_Versions\Versions\IVersionManager;
+use OCA\GroupFolders\Mount\GroupFolderStorage;
 use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\Crypt;
 use OCA\Onlyoffice\DocumentService;
@@ -354,7 +356,7 @@ class EditorController extends Controller {
             }
 
             $fileInfo = $file->getFileInfo();
-            if ($fileInfo->getStorage()->instanceOfStorage("OCA\\GroupFolders\\Mount\\GroupFolderStorage")) {
+            if ($fileInfo->getStorage()->instanceOfStorage(GroupFolderStorage::class)) {
                 if ($this->folderManager !== null) {
                     $folderId = $this->folderManager->getFolderByPath($fileInfo->getPath());
                     $folderUsers = $this->folderManager->searchUsers($folderId, "", -1);
@@ -545,7 +547,7 @@ class EditorController extends Controller {
             $isAvailable = in_array($recipientId, $accessList["users"]);
 
             if (!$isAvailable
-                && ($file->getFileInfo()->getStorage()->instanceOfStorage("\OCA\GroupFolders\Mount\GroupFolderStorage")
+                && ($file->getFileInfo()->getStorage()->instanceOfStorage(GroupFolderStorage::class)
                 || $file->getFileInfo()->getMountPoint() instanceof \OCA\Files_External\Config\ExternalMountPoint)) {
                 $recipientFolder = $this->root->getUserFolder($recipientId);
                 $recipientFile = $recipientFolder->getById($file->getId());
@@ -793,12 +795,16 @@ class EditorController extends Controller {
         $userId = $this->userSession->getUser()->getUID();
         $userFolder = $this->root->getUserFolder($userId);
 
-        $folder = $userFolder->get($dir);
-
-        if ($folder === null) {
-            $this->logger->error("Folder for saving file was not found: $dir");
+        try {
+            /**
+             * @var \OC\Files\Node\Folder
+             */
+            $folder = $userFolder->get($dir);
+        } catch(\OCP\Files\NotFoundException $e) {
+            $this->logger->error("Folder for saving file was not found: $dir", ['exception' => $e]);
             return new DataResponse(["error" => $this->trans->t("The required folder was not found")]);
         }
+
         if (!($folder->isCreatable() && $folder->isUpdateable())) {
             $this->logger->error("Folder for saving file without permission: $dir");
             return new DataResponse(["error" => $this->trans->t("You don't have enough permission to create")]);
@@ -1133,7 +1139,7 @@ class EditorController extends Controller {
             if (count($versions) >= $version) {
                 $fileVersion = array_values($versions)[$version - 1];
                 $this->versionManager->rollback($fileVersion);
-                if ($fileVersion->getSourceFile()->getFileInfo()->getStorage()->instanceOfStorage("\OCA\GroupFolders\Mount\GroupFolderStorage")) {
+                if ($fileVersion->getSourceFile()->getFileInfo()->getStorage()->instanceOfStorage(GroupFolderStorage::class)) {
                     KeyManager::delete($fileVersion->getSourceFile()->getId());
                 }
             }
@@ -1170,8 +1176,11 @@ class EditorController extends Controller {
 
         $canDownload = true;
 
+        /**
+         * @var \OCP\Files\Storage\IStorage|\OCA\Files_Sharing\SharedStorage
+         */
         $fileStorage = $file->getStorage();
-        if ($fileStorage->instanceOfStorage("\OCA\Files_Sharing\SharedStorage")) {
+        if ($fileStorage->instanceOfStorage(SharedStorage::class)) {
             $share = $fileStorage->getShare();
             $canDownload = FileUtility::canShareDownload($share);
         }
@@ -1245,7 +1254,7 @@ class EditorController extends Controller {
         }
 
         $fileStorage = $file->getStorage();
-        if ($fileStorage->instanceOfStorage("\OCA\Files_Sharing\SharedStorage")) {
+        if ($fileStorage->instanceOfStorage(SharedStorage::class)) {
             $share = empty($share) ? $fileStorage->getShare() : $share;
             if (!FileUtility::canShareDownload($share)) {
                 return $this->renderError($this->trans->t("Not permitted"));

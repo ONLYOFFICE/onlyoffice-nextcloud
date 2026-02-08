@@ -259,7 +259,7 @@ class CallbackController extends Controller {
         $canDownload = true;
 
         $fileStorage = $file->getStorage();
-        if ($fileStorage->instanceOfStorage("\OCA\Files_Sharing\SharedStorage") || !empty($shareToken)) {
+        if ($fileStorage->instanceOfStorage(\OCA\Files_Sharing\SharedStorage::class) || !empty($shareToken)) {
             $share = empty($share) ? $fileStorage->getShare() : $share;
             $canDownload = FileUtility::canShareDownload($share);
             if (!$canDownload && !empty($this->config->getDocumentServerSecret())) {
@@ -687,7 +687,7 @@ class CallbackController extends Controller {
         }
 
         if ($version > 0 && $this->versionManager !== null) {
-            $owner = $file->getFileInfo()->getOwner();
+            $owner = $file->getOwner();
 
             if ($owner !== null) {
                 if ($owner->getUID() !== $userId) {

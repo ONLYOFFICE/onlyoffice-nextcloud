@@ -105,7 +105,7 @@ class Application extends App implements IBootstrap {
         $context->registerEventListener(HttpBeforeTemplateRenderedEvent::class, WidgetListener::class);
         $context->registerEventListener(DocumentUnsavedEvent::class, DocumentUnsavedListener::class);
 
-        if (interface_exists("OCP\Files\Template\ICustomTemplateProvider")) {
+        if (interface_exists(\OCP\Files\Template\ICustomTemplateProvider::class)) {
             $context->registerTemplateProvider(TemplateProvider::class);
         }
 
@@ -117,7 +117,7 @@ class Application extends App implements IBootstrap {
     }
 
     public function boot(IBootContext $context): void {
-        if (class_exists("OCP\Files\Template\TemplateFileCreator")) {
+        if (class_exists(TemplateFileCreator::class)) {
             $context->injectFn(function (ITemplateManager $templateManager, IL10N $trans, $appName) {
                 if (!empty($this->appConfig->getDocumentServerUrl())
                     && $this->appConfig->settingsAreSuccessful()

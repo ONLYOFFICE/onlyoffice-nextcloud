@@ -31,6 +31,7 @@ namespace OCA\Onlyoffice;
 
 use OCP\DirectEditing\ACreateEmpty;
 use OCP\Files\File;
+use OCP\Files\NotPermittedException;
 use OCP\IL10N;
 use Psr\Log\LoggerInterface;
 

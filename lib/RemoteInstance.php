@@ -256,16 +256,16 @@ class RemoteInstance {
             $data = $body["ocs"]["data"];
 
             if (empty($data)) {
-                $logger->debug("Federated request " . $action . " for " . $file->getFileInfo()->getId() . " is successful", ["app" => self::APP_NAME]);
+                $logger->debug("Federated request " . $action . " for " . $file->getId() . " is successful", ["app" => self::APP_NAME]);
                 return true;
             }
 
             if (!empty($data["error"])) {
-                $logger->error("Error " . $action . " federated key for " . $file->getFileInfo()->getId() . ": " . $data["error"], ["app" => self::APP_NAME]);
+                $logger->error("Error " . $action . " federated key for " . $file->getId() . ": " . $data["error"], ["app" => self::APP_NAME]);
                 return false;
             }
         } catch (\Exception $e) {
-            $logger->error("Failed to request federated " . $action . " for " . $file->getFileInfo()->getId(), ['exception' => $e]);
+            $logger->error("Failed to request federated " . $action . " for " . $file->getId(), ['exception' => $e]);
             return false;
         }
     }
@@ -278,15 +278,15 @@ class RemoteInstance {
      * @return bool
      */
     public static function isRemoteFile($file) {
+        /**
+         * @var \OCP\Files\Storage\IStorage|SharingExternalStorage
+         */
         $storage = $file->getStorage();
 
-        $alive = false;
-        $isFederated = $storage->instanceOfStorage(SharingExternalStorage::class);
-        if (!$isFederated) {
+        if (!$storage->instanceOfStorage(SharingExternalStorage::class)) {
             return false;
         }
 
-        $alive = RemoteInstance::healthCheck($storage->getRemote());
-        return $alive;
+        return RemoteInstance::healthCheck($storage->getRemote());
     }
 }

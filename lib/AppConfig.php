@@ -31,6 +31,7 @@ namespace OCA\Onlyoffice;
 
 use \DateInterval;
 use \DateTime;
+use Exception;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\ICache;
 use OCP\ICacheFactory;

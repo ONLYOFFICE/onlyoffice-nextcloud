@@ -29,6 +29,7 @@
 
 namespace OCA\Onlyoffice\Controller;
 
+use OCA\Files_Sharing\SharedStorage;
 use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\ExtraPermissions;
 use OCP\AppFramework\Http;
@@ -105,7 +106,7 @@ class SharingApiController extends OCSController {
 
         $sourceFile = $this->getFile($fileId, $userId);
         $fileStorage = $sourceFile->getStorage();
-        if ($fileStorage->instanceOfStorage("\OCA\Files_Sharing\SharedStorage")) {
+        if ($fileStorage->instanceOfStorage(SharedStorage::class)) {
             return new DataResponse([]);
         }
 
@@ -142,7 +143,7 @@ class SharingApiController extends OCSController {
 
         $sourceFile = $this->getFile($fileId, $userId);
         $fileStorage = $sourceFile->getStorage();
-        if ($fileStorage->instanceOfStorage("\OCA\Files_Sharing\SharedStorage")) {
+        if ($fileStorage->instanceOfStorage(SharedStorage::class)) {
             return new DataResponse([], Http::STATUS_BAD_REQUEST);
         }
 
