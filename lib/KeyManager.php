@@ -56,8 +56,7 @@ class KeyManager {
             WHERE `file_id` = ?
         ");
         $result = $select->execute([$fileId]);
-
-        $keys = $result ? $select->fetch() : [];
+        $keys = $result->fetch();
         $key = is_array($keys) && isset($keys["key"]) ? $keys["key"] : "";
 
         return $key;
@@ -151,8 +150,7 @@ class KeyManager {
             WHERE `file_id` = ?
         ");
         $result = $select->execute([$fileId]);
-
-        $rows = $result ? $select->fetch() : [];
+        $rows = $result->fetch();
         $fs = is_array($rows) && isset($rows["fs"]) ? $rows["fs"] : 0;
 
         return $fs === 1 || $fs === "1";

@@ -37,6 +37,7 @@ use OCP\ICacheFactory;
 use OCP\IConfig;
 use Psr\Log\LoggerInterface;
 use OCA\Onlyoffice\AppInfo\Application;
+use OCP\IAppConfig;
 
 /**
  * Application configutarion
@@ -359,6 +360,7 @@ class AppConfig {
 
     public function __construct(
         private readonly string $appName,
+        private readonly IAppConfig $appConfig,
         private readonly IConfig $config,
         private readonly LoggerInterface $logger,
         ICacheFactory $cacheFactory,
@@ -407,7 +409,7 @@ class AppConfig {
             $data["start"] = new DateTime();
         }
 
-        $this->config->setAppValue($this->appName, $this->_demo, json_encode($data));
+        $this->appConfig->setValueString($this->appName, $this->_demo, json_encode($data));
         return true;
     }
 
@@ -417,7 +419,7 @@ class AppConfig {
      * @return array
      */
     public function getDemoData() {
-        $data = $this->config->getAppValue($this->appName, $this->_demo, "");
+        $data = $this->appConfig->getValueString($this->appName, $this->_demo, "");
 
         if (empty($data)) {
             return [
@@ -465,7 +467,7 @@ class AppConfig {
 
         $this->logger->info("setDocumentServerUrl: $documentServer", ["app" => $this->appName]);
 
-        $this->config->setAppValue($this->appName, $this->_documentserver, $documentServer);
+        $this->appConfig->setValueString($this->appName, $this->_documentserver, $documentServer);
     }
 
     /**
@@ -480,7 +482,7 @@ class AppConfig {
             return $this->DEMO_PARAM["ADDR"];
         }
 
-        $url = $this->config->getAppValue($this->appName, $this->_documentserver, "");
+        $url = $this->appConfig->getValueString($this->appName, $this->_documentserver, "");
         if (empty($url)) {
             $url = $this->getSystemValue($this->_documentserver);
         }
@@ -509,7 +511,7 @@ class AppConfig {
 
         $this->logger->info("setDocumentServerInternalUrl: $documentServerInternal", ["app" => $this->appName]);
 
-        $this->config->setAppValue($this->appName, $this->_documentserverInternal, $documentServerInternal);
+        $this->appConfig->setValueString($this->appName, $this->_documentserverInternal, $documentServerInternal);
     }
 
     /**
@@ -524,7 +526,7 @@ class AppConfig {
             return $this->getDocumentServerUrl();
         }
 
-        $url = $this->config->getAppValue($this->appName, $this->_documentserverInternal, "");
+        $url = $this->appConfig->getValueString($this->appName, $this->_documentserverInternal, "");
         if (empty($url)) {
             $url = $this->getSystemValue($this->_documentserverInternal);
         }
@@ -576,7 +578,7 @@ class AppConfig {
 
         $this->logger->info("setStorageUrl: $storageUrl", ["app" => $this->appName]);
 
-        $this->config->setAppValue($this->appName, $this->_storageUrl, $storageUrl);
+        $this->appConfig->setValueString($this->appName, $this->_storageUrl, $storageUrl);
     }
 
     /**
@@ -585,7 +587,7 @@ class AppConfig {
      * @return string
      */
     public function getStorageUrl() {
-        $url = $this->config->getAppValue($this->appName, $this->_storageUrl, "");
+        $url = $this->appConfig->getValueString($this->appName, $this->_storageUrl, "");
         if (empty($url)) {
             $url = $this->getSystemValue($this->_storageUrl);
         }
@@ -605,7 +607,7 @@ class AppConfig {
             $this->logger->info("Set secret key", ["app" => $this->appName]);
         }
 
-        $this->config->setAppValue($this->appName, $this->_jwtSecret, $secret);
+        $this->appConfig->setValueString($this->appName, $this->_jwtSecret, $secret);
     }
 
     /**
@@ -620,7 +622,7 @@ class AppConfig {
             return $this->DEMO_PARAM["SECRET"];
         }
 
-        $secret = $this->config->getAppValue($this->appName, $this->_jwtSecret, "");
+        $secret = $this->appConfig->getValueString($this->appName, $this->_jwtSecret, "");
         if (empty($secret)) {
             $secret = $this->getSystemValue($this->_jwtSecret);
         }
@@ -649,7 +651,7 @@ class AppConfig {
         $value = json_encode($formats);
         $this->logger->info("Set default formats: $value", ["app" => $this->appName]);
 
-        $this->config->setAppValue($this->appName, $this->_defFormats, $value);
+        $this->appConfig->setValueString($this->appName, $this->_defFormats, $value);
     }
 
     /**
@@ -658,7 +660,7 @@ class AppConfig {
      * @return array
      */
     private function getDefaultFormats() {
-        $value = $this->config->getAppValue($this->appName, $this->_defFormats, "");
+        $value = $this->appConfig->getValueString($this->appName, $this->_defFormats, "");
         if (empty($value)) {
             return [];
         }
@@ -674,7 +676,7 @@ class AppConfig {
         $value = json_encode($formats);
         $this->logger->info("Set editing formats: $value", ["app" => $this->appName]);
 
-        $this->config->setAppValue($this->appName, $this->_editFormats, $value);
+        $this->appConfig->setValueString($this->appName, $this->_editFormats, $value);
     }
 
     /**
@@ -683,7 +685,7 @@ class AppConfig {
      * @return array
      */
     private function getEditableFormats() {
-        $value = $this->config->getAppValue($this->appName, $this->_editFormats, "");
+        $value = $this->appConfig->getValueString($this->appName, $this->_editFormats, "");
         if (empty($value)) {
             return [];
         }
@@ -702,7 +704,7 @@ class AppConfig {
             $this->setEnableSharing(false);
         }
 
-        $this->config->setAppValue($this->appName, $this->_sameTab, json_encode($value));
+        $this->appConfig->setValueString($this->appName, $this->_sameTab, json_encode($value));
     }
 
     /**
@@ -711,7 +713,7 @@ class AppConfig {
      * @return bool
      */
     public function getSameTab() {
-        return $this->config->getAppValue($this->appName, $this->_sameTab, "true") === "true";
+        return $this->appConfig->getValueString($this->appName, $this->_sameTab, "true") === "true";
     }
 
     /**
@@ -722,7 +724,7 @@ class AppConfig {
     public function setEnableSharing($value) {
         $this->logger->info("Set enable sharing: " . json_encode($value), ["app" => $this->appName]);
 
-        $this->config->setAppValue($this->appName, $this->_enableSharing, json_encode($value));
+        $this->appConfig->setValueString($this->appName, $this->_enableSharing, json_encode($value));
     }
 
     /**
@@ -731,7 +733,7 @@ class AppConfig {
      * @return bool
      */
     public function getEnableSharing() {
-        return $this->config->getAppValue($this->appName, $this->_enableSharing, "false") === "true";
+        return $this->appConfig->getValueString($this->appName, $this->_enableSharing, "false") === "true";
     }
 
     /**
@@ -742,7 +744,7 @@ class AppConfig {
     public function setPreview($value) {
         $this->logger->info("Set generate preview: " . json_encode($value), ["app" => $this->appName]);
 
-        $this->config->setAppValue($this->appName, $this->_preview, json_encode($value));
+        $this->appConfig->setValueString($this->appName, $this->_preview, json_encode($value));
     }
 
     /**
@@ -751,7 +753,7 @@ class AppConfig {
      * @return bool
      */
     public function getAdvanced() {
-        return $this->config->getAppValue($this->appName, $this->_advanced, "false") === "true";
+        return $this->appConfig->getValueString($this->appName, $this->_advanced, "false") === "true";
     }
 
     /**
@@ -762,7 +764,7 @@ class AppConfig {
     public function setAdvanced($value) {
         $this->logger->info("Set advanced: " . json_encode($value), ["app" => $this->appName]);
 
-        $this->config->setAppValue($this->appName, $this->_advanced, json_encode($value));
+        $this->appConfig->setValueString($this->appName, $this->_advanced, json_encode($value));
     }
 
     /**
@@ -771,7 +773,7 @@ class AppConfig {
      * @return bool
      */
     public function getCronChecker() {
-        return $this->config->getAppValue($this->appName, $this->_cronChecker, "true") !== "false";
+        return $this->appConfig->getValueString($this->appName, $this->_cronChecker, "true") !== "false";
     }
 
     /**
@@ -782,7 +784,7 @@ class AppConfig {
     public function setCronChecker($value) {
         $this->logger->info("Set cron checker: " . json_encode($value), ["app" => $this->appName]);
 
-        $this->config->setAppValue($this->appName, $this->_cronChecker, json_encode($value));
+        $this->appConfig->setValueString($this->appName, $this->_cronChecker, json_encode($value));
     }
 
     /**
@@ -791,7 +793,7 @@ class AppConfig {
      * @return bool
      */
     public function getEmailNotifications() {
-        return $this->config->getAppValue($this->appName, $this->_emailNotifications, "true") !== "false";
+        return $this->appConfig->getValueString($this->appName, $this->_emailNotifications, "true") !== "false";
     }
 
     /**
@@ -802,7 +804,7 @@ class AppConfig {
     public function setEmailNotifications($value) {
         $this->logger->info("Set e-mail notifications: " . json_encode($value), ["app" => $this->appName]);
 
-        $this->config->setAppValue($this->appName, $this->_emailNotifications, json_encode($value));
+        $this->appConfig->setValueString($this->appName, $this->_emailNotifications, json_encode($value));
     }
 
     /**
@@ -811,7 +813,7 @@ class AppConfig {
      * @return bool
      */
     public function getPreview() {
-        return $this->config->getAppValue($this->appName, $this->_preview, "true") === "true";
+        return $this->appConfig->getValueString($this->appName, $this->_preview, "true") === "true";
     }
 
     /**
@@ -822,7 +824,7 @@ class AppConfig {
     public function setVersionHistory($value) {
         $this->logger->info("Set keep versions history: " . json_encode($value), ["app" => $this->appName]);
 
-        $this->config->setAppValue($this->appName, $this->_versionHistory, json_encode($value));
+        $this->appConfig->setValueString($this->appName, $this->_versionHistory, json_encode($value));
     }
 
     /**
@@ -831,7 +833,7 @@ class AppConfig {
      * @return bool
      */
     public function getVersionHistory() {
-        return $this->config->getAppValue($this->appName, $this->_versionHistory, "true") === "true";
+        return $this->appConfig->getValueString($this->appName, $this->_versionHistory, "true") === "true";
     }
 
     /**
@@ -842,7 +844,7 @@ class AppConfig {
     public function setProtection($value) {
         $this->logger->info("Set protection: " . $value, ["app" => $this->appName]);
 
-        $this->config->setAppValue($this->appName, $this->_protection, $value);
+        $this->appConfig->setValueString($this->appName, $this->_protection, $value);
     }
 
     /**
@@ -851,7 +853,7 @@ class AppConfig {
      * @return bool
      */
     public function getProtection() {
-        $value = $this->config->getAppValue($this->appName, $this->_protection, "owner");
+        $value = $this->appConfig->getValueString($this->appName, $this->_protection, "owner");
         if ($value === "all") {
             return "all";
         }
@@ -866,7 +868,7 @@ class AppConfig {
     public function setCustomizationChat($value) {
         $this->logger->info("Set chat display: " . json_encode($value), ["app" => $this->appName]);
 
-        $this->config->setAppValue($this->appName, $this->_customizationChat, json_encode($value));
+        $this->appConfig->setValueString($this->appName, $this->_customizationChat, json_encode($value));
     }
 
     /**
@@ -875,7 +877,7 @@ class AppConfig {
      * @return bool
      */
     public function getCustomizationChat() {
-        return $this->config->getAppValue($this->appName, $this->_customizationChat, "true") === "true";
+        return $this->appConfig->getValueString($this->appName, $this->_customizationChat, "true") === "true";
     }
 
     /**
@@ -886,7 +888,7 @@ class AppConfig {
     public function setCustomizationCompactHeader($value) {
         $this->logger->info("Set compact header display: " . json_encode($value), ["app" => $this->appName]);
 
-        $this->config->setAppValue($this->appName, $this->_customizationCompactHeader, json_encode($value));
+        $this->appConfig->setValueString($this->appName, $this->_customizationCompactHeader, json_encode($value));
     }
 
     /**
@@ -895,7 +897,7 @@ class AppConfig {
      * @return bool
      */
     public function getCustomizationCompactHeader() {
-        return $this->config->getAppValue($this->appName, $this->_customizationCompactHeader, "true") === "true";
+        return $this->appConfig->getValueString($this->appName, $this->_customizationCompactHeader, "true") === "true";
     }
 
     /**
@@ -906,7 +908,7 @@ class AppConfig {
     public function setCustomizationFeedback($value) {
         $this->logger->info("Set feedback display: " . json_encode($value), ["app" => $this->appName]);
 
-        $this->config->setAppValue($this->appName, $this->_customizationFeedback, json_encode($value));
+        $this->appConfig->setValueString($this->appName, $this->_customizationFeedback, json_encode($value));
     }
 
     /**
@@ -915,7 +917,7 @@ class AppConfig {
      * @return bool
      */
     public function getCustomizationFeedback() {
-        return $this->config->getAppValue($this->appName, $this->_customizationFeedback, "true") === "true";
+        return $this->appConfig->getValueString($this->appName, $this->_customizationFeedback, "true") === "true";
     }
 
     /**
@@ -926,7 +928,7 @@ class AppConfig {
     public function setCustomizationForcesave($value) {
         $this->logger->info("Set forcesave: " . json_encode($value), ["app" => $this->appName]);
 
-        $this->config->setAppValue($this->appName, $this->_customizationForcesave, json_encode($value));
+        $this->appConfig->setValueString($this->appName, $this->_customizationForcesave, json_encode($value));
     }
 
     /**
@@ -935,7 +937,7 @@ class AppConfig {
      * @return bool
      */
     public function getCustomizationForcesave() {
-        return $this->config->getAppValue($this->appName, $this->_customizationForcesave, "false") === "true";
+        return $this->appConfig->getValueString($this->appName, $this->_customizationForcesave, "false") === "true";
     }
 
     /**
@@ -946,7 +948,7 @@ class AppConfig {
     public function setLiveViewOnShare($value) {
         $this->logger->info("Set live view on share: " . json_encode($value), ["app" => $this->appName]);
 
-        $this->config->setAppValue($this->appName, $this->_liveViewOnShare, json_encode($value));
+        $this->appConfig->setValueString($this->appName, $this->_liveViewOnShare, json_encode($value));
     }
 
     /**
@@ -955,7 +957,7 @@ class AppConfig {
      * @return bool
      */
     public function getLiveViewOnShare() {
-        return $this->config->getAppValue($this->appName, $this->_liveViewOnShare, "false") === "true";
+        return $this->appConfig->getValueString($this->appName, $this->_liveViewOnShare, "false") === "true";
     }
 
     /**
@@ -966,7 +968,7 @@ class AppConfig {
     public function setCustomizationHelp($value) {
         $this->logger->info("Set help display: " . json_encode($value), ["app" => $this->appName]);
 
-        $this->config->setAppValue($this->appName, $this->_customizationHelp, json_encode($value));
+        $this->appConfig->setValueString($this->appName, $this->_customizationHelp, json_encode($value));
     }
 
     /**
@@ -975,7 +977,7 @@ class AppConfig {
      * @return bool
      */
     public function getCustomizationHelp() {
-        return $this->config->getAppValue($this->appName, $this->_customizationHelp, "true") === "true";
+        return $this->appConfig->getValueString($this->appName, $this->_customizationHelp, "true") === "true";
     }
 
     /**
@@ -986,7 +988,7 @@ class AppConfig {
     public function setCustomizationReviewDisplay($value) {
         $this->logger->info("Set review mode: " . $value, ["app" => $this->appName]);
 
-        $this->config->setAppValue($this->appName, $this->_customizationReviewDisplay, $value);
+        $this->appConfig->setValueString($this->appName, $this->_customizationReviewDisplay, $value);
     }
 
     /**
@@ -995,7 +997,7 @@ class AppConfig {
      * @return string
      */
     public function getCustomizationReviewDisplay() {
-        $value = $this->config->getAppValue($this->appName, $this->_customizationReviewDisplay, "original");
+        $value = $this->appConfig->getValueString($this->appName, $this->_customizationReviewDisplay, "original");
         if ($value === "markup") {
             return "markup";
         }
@@ -1013,7 +1015,7 @@ class AppConfig {
     public function setCustomizationTheme($value) {
         $this->logger->info("Set theme: " . $value, ["app" => $this->appName]);
 
-        $this->config->setAppValue($this->appName, $this->_customizationTheme, $value);
+        $this->appConfig->setValueString($this->appName, $this->_customizationTheme, $value);
     }
 
     /**
@@ -1023,7 +1025,7 @@ class AppConfig {
      * @return string
      */
     public function getCustomizationTheme($realValue = false) {
-        $value = $this->config->getAppValue($this->appName, $this->_customizationTheme, "theme-system");
+        $value = $this->appConfig->getValueString($this->appName, $this->_customizationTheme, "theme-system");
         $validThemes = [
             "default" => "theme-system",
             "light" => "default-light",
@@ -1069,7 +1071,7 @@ class AppConfig {
      */
     public function setUnknownAuthor($value) {
         $this->logger->info("Set unknownAuthor: " . trim($value), ["app" => $this->appName]);
-        $this->config->setAppValue($this->appName, $this->_unknownAuthor, trim($value));
+        $this->appConfig->setValueString($this->appName, $this->_unknownAuthor, trim($value));
     }
 
     /**
@@ -1078,7 +1080,7 @@ class AppConfig {
      * @return string
      */
     public function getUnknownAuthor() {
-        return $this->config->getAppValue($this->appName, $this->_unknownAuthor, "");
+        return $this->appConfig->getValueString($this->appName, $this->_unknownAuthor, "");
     }
 
     /**
@@ -1090,11 +1092,11 @@ class AppConfig {
         $this->logger->info("Set watermark enabled: " . $settings["enabled"], ["app" => $this->appName]);
 
         if ($settings["enabled"] !== "true") {
-            $this->config->setAppValue(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_enabled", "no");
+            $this->appConfig->setValueString(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_enabled", "no");
             return;
         }
 
-        $this->config->setAppValue(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_text", trim((string) $settings["text"]));
+        $this->appConfig->setValueString(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_text", trim((string) $settings["text"]));
 
         $watermarkLabels = [
             "allGroups",
@@ -1112,7 +1114,7 @@ class AppConfig {
                 $settings[$key] = [];
             }
             $value = $settings[$key] === "true" ? "yes" : "no";
-            $this->config->setAppValue(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_" . $key, $value);
+            $this->appConfig->setValueString(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_" . $key, $value);
         }
 
         $watermarkLists = [
@@ -1125,7 +1127,7 @@ class AppConfig {
                 $settings[$key] = [];
             }
             $value = implode(",", $settings[$key]);
-            $this->config->setAppValue(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_" . $key, $value);
+            $this->appConfig->setValueString(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_" . $key, $value);
         }
     }
 
@@ -1136,7 +1138,7 @@ class AppConfig {
      */
     public function getWatermarkSettings() {
         $result = [
-            "text" => $this->config->getAppValue(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_text", "{userId}, {date}"),
+            "text" => $this->appConfig->getValueString(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_text", "{userId}, {date}"),
         ];
 
         $watermarkLabels = [
@@ -1153,7 +1155,7 @@ class AppConfig {
 
         $trueResult = ["on", "yes", "true"];
         foreach ($watermarkLabels as $key) {
-            $value = $this->config->getAppValue(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_" . $key, "no");
+            $value = $this->appConfig->getValueString(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_" . $key, "no");
             $result[$key] = in_array($value, $trueResult);
         }
 
@@ -1164,7 +1166,7 @@ class AppConfig {
         ];
 
         foreach ($watermarkLists as $key) {
-            $value = $this->config->getAppValue(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_" . $key, "");
+            $value = $this->appConfig->getValueString(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_" . $key, "");
             $result[$key] = !empty($value) ? explode(",", $value) : [];
         }
 
@@ -1183,7 +1185,7 @@ class AppConfig {
         $value = json_encode($groups);
         $this->logger->info("Set groups: $value", ["app" => $this->appName]);
 
-        $this->config->setAppValue($this->appName, $this->_groups, $value);
+        $this->appConfig->setValueString($this->appName, $this->_groups, $value);
     }
 
     /**
@@ -1192,7 +1194,7 @@ class AppConfig {
      * @return array
      */
     public function getLimitGroups() {
-        $value = $this->config->getAppValue($this->appName, $this->_groups, "");
+        $value = $this->appConfig->getValueString($this->appName, $this->_groups, "");
         if (empty($value)) {
             return [];
         }
@@ -1256,7 +1258,7 @@ class AppConfig {
     public function setVerifyPeerOff($verifyPeerOff) {
         $this->logger->info("setVerifyPeerOff " . json_encode($verifyPeerOff), ["app" => $this->appName]);
 
-        $this->config->setAppValue($this->appName, $this->_verification, json_encode($verifyPeerOff));
+        $this->appConfig->setValueString($this->appName, $this->_verification, json_encode($verifyPeerOff));
     }
 
     /**
@@ -1265,7 +1267,7 @@ class AppConfig {
      * @return bool
      */
     public function getVerifyPeerOff() {
-        $turnOff = $this->config->getAppValue($this->appName, $this->_verification, "");
+        $turnOff = $this->appConfig->getValueString($this->appName, $this->_verification, "");
 
         if (!empty($turnOff)) {
             return $turnOff === "true";
@@ -1301,7 +1303,7 @@ class AppConfig {
             return $this->DEMO_PARAM["HEADER"];
         }
 
-        $header = $this->config->getAppValue($this->appName, $this->_jwtHeader, "");
+        $header = $this->appConfig->getValueString($this->appName, $this->_jwtHeader, "");
         if (empty($header)) {
             $header = $this->getSystemValue($this->_jwtHeader);
         }
@@ -1324,7 +1326,7 @@ class AppConfig {
             $this->logger->info("Set header key " . $value, ["app" => $this->appName]);
         }
 
-        $this->config->setAppValue($this->appName, $this->_jwtHeader, $value);
+        $this->appConfig->setValueString($this->appName, $this->_jwtHeader, $value);
     }
 
     /**
@@ -1344,7 +1346,7 @@ class AppConfig {
      * @param string $value - error
      */
     public function setSettingsError($value) {
-        $this->config->setAppValue($this->appName, $this->_settingsError, $value);
+        $this->appConfig->setValueString($this->appName, $this->_settingsError, $value);
     }
 
     /**
@@ -1353,7 +1355,7 @@ class AppConfig {
      * @param string $value - error
      */
     public function getSettingsError() {
-        return $this->config->getAppValue($this->appName, $this->_settingsError, "");
+        return $this->appConfig->getValueString($this->appName, $this->_settingsError, "");
     }
 
     /**
@@ -1399,7 +1401,7 @@ class AppConfig {
     public function setCustomizationMacros($value) {
         $this->logger->info("Set macros enabled: " . json_encode($value), ["app" => $this->appName]);
 
-        $this->config->setAppValue($this->appName, $this->_customizationMacros, json_encode($value));
+        $this->appConfig->setValueString($this->appName, $this->_customizationMacros, json_encode($value));
     }
 
     /**
@@ -1408,7 +1410,7 @@ class AppConfig {
      * @return bool
      */
     public function getCustomizationMacros() {
-        return $this->config->getAppValue($this->appName, $this->_customizationMacros, "true") === "true";
+        return $this->appConfig->getValueString($this->appName, $this->_customizationMacros, "true") === "true";
     }
 
     /**
@@ -1419,7 +1421,7 @@ class AppConfig {
     public function setCustomizationPlugins($value) {
         $this->logger->info("Set plugins enabled: " . json_encode($value), ["app" => $this->appName]);
 
-        $this->config->setAppValue($this->appName, $this->_customizationPlugins, json_encode($value));
+        $this->appConfig->setValueString($this->appName, $this->_customizationPlugins, json_encode($value));
     }
 
     /**
@@ -1428,7 +1430,7 @@ class AppConfig {
      * @return bool
      */
     public function getCustomizationPlugins() {
-        return $this->config->getAppValue($this->appName, $this->_customizationPlugins, "true") === "true";
+        return $this->appConfig->getValueString($this->appName, $this->_customizationPlugins, "true") === "true";
     }
 
     /**

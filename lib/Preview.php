@@ -32,7 +32,6 @@ namespace OCA\Onlyoffice;
 use OC\Files\View;
 use OCA\Files_Sharing\External\Storage as SharingExternalStorage;
 use OCA\Files_Versions\Versions\IVersionManager;
-use OCP\AppFramework\QueryException;
 use OCP\Files\File;
 use OCP\IImage;
 use OCP\Files\FileInfo;
@@ -43,7 +42,9 @@ use OCP\ISession;
 use OCP\IURLGenerator;
 use OCP\IUser;
 use OCP\Preview\IProviderV2;
+use OCP\Server;
 use OCP\Share\IManager;
+use Psr\Container\NotFoundExceptionInterface;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -169,10 +170,10 @@ class Preview implements IProviderV2 {
         $this->trans = $trans;
         $this->urlGenerator = $urlGenerator;
 
-        if (\OCP\Server::get(\OCP\App\IAppManager::class)->isInstalled("files_versions")) {
+        if (Server::get(\OCP\App\IAppManager::class)->isEnabledForAnyone("files_versions")) {
             try {
-                $this->versionManager = \OCP\Server::get(IVersionManager::class);
-            } catch (QueryException $e) {
+                $this->versionManager = Server::get(IVersionManager::class);
+            } catch (NotFoundExceptionInterface $e) {
                 $this->logger->error("VersionManager init error", ["exception" => $e]);
             }
         }

@@ -49,7 +49,6 @@ use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
 use OCP\AppFramework\Http\Attribute\PublicPage;
 use OCP\AppFramework\Http\Template\PublicTemplateResponse;
 use OCP\AppFramework\Http\TemplateResponse;
-use OCP\AppFramework\QueryException;
 use OCP\Constants;
 use OCP\Files\File;
 use OCP\Files\IRootFolder;
@@ -64,6 +63,7 @@ use OCP\IURLGenerator;
 use OCP\IUser;
 use OCP\IUserManager;
 use OCP\IUserSession;
+use OCP\Server;
 use OCP\Share\IManager;
 use OCP\Share\IShare;
 use Psr\Container\ContainerInterface;
@@ -75,48 +75,6 @@ use Psr\Log\LoggerInterface;
 class EditorController extends Controller {
 
     /**
-     * Current user session
-     *
-     * @var IUserSession
-     */
-    private $userSession;
-
-    /**
-     * User manager
-     *
-     * @var IUserManager
-     */
-    private $userManager;
-
-    /**
-     * Root folder
-     *
-     * @var IRootFolder
-     */
-    private $root;
-
-    /**
-     * Url generator service
-     *
-     * @var IURLGenerator
-     */
-    private $urlGenerator;
-
-    /**
-     * l10n service
-     *
-     * @var IL10N
-     */
-    private $trans;
-
-    /**
-     * File utility
-     *
-     * @var FileUtility
-     */
-    private $fileUtility;
-
-    /**
      * File version manager
      *
      * @var IVersionManager
@@ -124,44 +82,9 @@ class EditorController extends Controller {
     private $versionManager;
 
     /**
-     * Share manager
-     *
-     * @var IManager
-     */
-    private $shareManager;
-
-    /**
-     * Group manager
-     *
-     * @var IGroupManager
-     */
-    private $groupManager;
-
-    /**
-     * Avatar manager
-     *
-     * @var IAvatarManager
-     */
-    private $avatarManager;
-
-    /**
-     * Mailer
-     *
-     * @var IMailer
-     */
-    private $mailer;
-
-    /**
-     * Email manager
-     *
-     * @var EmailManager
-     */
-    private $emailManager;
-
-    /**
      * Folder manager
      *
-     * @var FolderManager
+     * @var \OCA\GroupFolders\Folder\FolderManager
      */
     private $folderManager;
 
@@ -182,55 +105,30 @@ class EditorController extends Controller {
      * @param IMailer $mailer - mailer
      */
     public function __construct(
-        $AppName,
+        string $appName,
         IRequest $request,
-        IRootFolder $root,
-        IUserSession $userSession,
-        IUserManager $userManager,
-        IURLGenerator $urlGenerator,
-        IL10N $trans,
-        /**
-         * Logger
-         */
+        private readonly IRootFolder $root,
+        private readonly IUserSession $userSession,
+        private readonly IUserManager $userManager,
+        private readonly IURLGenerator $urlGenerator,
+        private readonly IL10N $trans,
         private readonly LoggerInterface $logger,
-        /**
-         * Application configuration
-         */
         private readonly AppConfig $config,
-        /**
-         * Hash generator
-         */
         private readonly Crypt $crypt,
-        IManager $shareManager,
-        ISession $session,
-        IGroupManager $groupManager,
-        IMailer $mailer,
-        ContainerInterface $appContainer
+        private readonly IManager $shareManager,
+        private readonly IGroupManager $groupManager,
+        private readonly FileUtility $fileUtility,
+        private readonly IAvatarManager $avatarManager,
+        private readonly EmailManager $emailManager
     ) {
-        parent::__construct($AppName, $request);
+        parent::__construct($appName, $request);
 
-        $this->userSession = $userSession;
-        $this->userManager = $userManager;
-        $this->root = $root;
-        $this->urlGenerator = $urlGenerator;
-        $this->trans = $trans;
-        $this->shareManager = $shareManager;
-        $this->groupManager = $groupManager;
-
-        if (\OCP\Server::get(\OCP\App\IAppManager::class)->isInstalled("files_versions")) {
-            try {
-                $this->versionManager = \OCP\Server::get(IVersionManager::class);
-            } catch (QueryException $e) {
-                $this->logger->error("VersionManager init error", ["exception" => $e]);
-            }
-        }
-
-        $this->fileUtility = new FileUtility($AppName, $trans, $this->logger, $this->config, $shareManager, $session);
-        $this->avatarManager = \OCP\Server::get(IAvatarManager::class);
-        $this->emailManager = new EmailManager($AppName, $trans, $this->logger, $mailer, $userManager, $urlGenerator);
-
-        $this->folderManager = \OCP\Server::get(\OCP\App\IAppManager::class)->isInstalled("groupfolders")
-            ? $appContainer->get(\OCA\GroupFolders\Folder\FolderManager::class)
+        $appManager = Server::get(\OCP\App\IAppManager::class);
+        $this->versionManager = $appManager->isEnabledForAnyone("files_versions")
+            ? Server::get(IVersionManager::class)
+            : null;
+        $this->folderManager = $appManager->isEnabledForAnyone("groupfolders")
+            ? Server::get("OCA\\GroupFolders\\Folder\\FolderManager")
             : null;
     }
 
@@ -307,7 +205,7 @@ class EditorController extends Controller {
             $fileUrl = $this->getUrl($targetFile, $user, $shareToken);
 
             $ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
-            $region = str_replace("_", "-", \OC::$server->getL10NFactory()->get("")->getLocaleCode());
+            $region = str_replace("_", "-", $this->trans->getLocaleCode());
             $documentService = new DocumentService($this->trans, $this->config);
             try {
                 $newFileUri = $documentService->getConvertedUri($fileUrl, $targetExt, $ext, $targetKey, $region, $ext === "pdf");
@@ -328,7 +226,7 @@ class EditorController extends Controller {
         $name = $folder->getNonExistingName($name);
 
         try {
-            if (\version_compare(\implode(".", \OCP\Util::getVersion()), "19", "<")) {
+            if (\version_compare(\implode(".", Server::get(\OCP\ServerVersion::class)->getVersion()), "19", "<")) {
                 $file = $folder->newFile($name);
 
                 $file->putContent($template);
@@ -435,7 +333,7 @@ class EditorController extends Controller {
             } else {
                 // all users
                 $all = true;
-                $allUsers = $this->userManager->search($searchString);
+                $allUsers = $this->userManager->searchDisplayName($searchString);
 
                 foreach ($allUsers as $user) {
                     if ($this->filterUser($user, $currentUserId, $operationType, $searchString)) {
@@ -456,7 +354,7 @@ class EditorController extends Controller {
             }
 
             $fileInfo = $file->getFileInfo();
-            if ($fileInfo->getStorage()->instanceOfStorage(\OCA\GroupFolders\Mount\GroupFolderStorage::class)) {
+            if ($fileInfo->getStorage()->instanceOfStorage("OCA\\GroupFolders\\Mount\\GroupFolderStorage")) {
                 if ($this->folderManager !== null) {
                     $folderId = $this->folderManager->getFolderByPath($fileInfo->getPath());
                     $folderUsers = $this->folderManager->searchUsers($folderId, "", -1);
@@ -625,7 +523,7 @@ class EditorController extends Controller {
             $comment = substr($comment, 0, ($maxLen - strlen($ending))) . $ending;
         }
 
-        $notificationManager = \OCP\Server::get(\OCP\Notification\IManager::class);
+        $notificationManager = Server::get(\OCP\Notification\IManager::class);
         $notification = $notificationManager->createNotification();
         $notification->setApp($this->appName)
             ->setDateTime(new \DateTime())
@@ -840,7 +738,7 @@ class EditorController extends Controller {
         $documentService = new DocumentService($this->trans, $this->config);
         $key = $this->fileUtility->getKey($file);
         $fileUrl = $this->getUrl($file, $user, $shareToken);
-        $region = str_replace("_", "-", \OC::$server->getL10NFactory()->get("")->getLocaleCode());
+        $region = str_replace("_", "-", $this->trans->getLocaleCode());
         try {
             $newFileUri = $documentService->getConvertedUri($fileUrl, $ext, $internalExtension, $key, $region);
         } catch (\Exception $e) {
@@ -1621,8 +1519,8 @@ class EditorController extends Controller {
     private function getShareExcludedGroups() {
         $excludedGroups = [];
 
-        if (\OCP\Server::get(\OCP\IConfig::class)->getAppValue("core", "shareapi_exclude_groups", "no") === "yes") {
-            $excludedGroups = json_decode((string) \OCP\Server::get(\OCP\IConfig::class)->getAppValue("core", "shareapi_exclude_groups_list", ""), true);
+        if (Server::get(\OCP\IAppConfig::class)->getValueString("core", "shareapi_exclude_groups", "no") === "yes") {
+            $excludedGroups = json_decode((string) Server::get(\OCP\IAppConfig::class)->getValueString("core", "shareapi_exclude_groups_list", ""), true);
         }
 
         return $excludedGroups;

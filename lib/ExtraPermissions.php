@@ -32,9 +32,12 @@ namespace OCA\Onlyoffice;
 use OCA\Talk\Manager as TalkManager;
 use OCP\Constants;
 use OCP\Files\File;
+use OCP\IDBConnection;
+use OCP\Server;
 use OCP\Share\Exceptions\ShareNotFound;
 use OCP\Share\IManager;
 use OCP\Share\IShare;
+use Psr\Container\NotFoundExceptionInterface;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -97,10 +100,10 @@ class ExtraPermissions {
     ) {
         $this->shareManager = $shareManager;
 
-        if (\OCP\Server::get(\OCP\App\IAppManager::class)->isInstalled("spreed")) {
+        if (Server::get(\OCP\App\IAppManager::class)->isEnabledForAnyone("spreed")) {
             try {
-                $this->talkManager = \OCP\Server::get(TalkManager::class);
-            } catch (QueryException $e) {
+                $this->talkManager = Server::get("OCA\\Talk\\Manager");
+            } catch (NotFoundExceptionInterface $e) {
                 $this->logger->error("TalkManager init error", ["exception" => $e]);
             }
         }
@@ -265,7 +268,7 @@ class ExtraPermissions {
      * @return bool
      */
     public static function delete($shareId) {
-        $connection = \OCP\Server::get(\OCP\IDBConnection::class);
+        $connection = Server::get(IDBConnection::class);
         $delete = $connection->prepare("
             DELETE FROM `*PREFIX*" . self::TABLENAME_KEY . "`
             WHERE `share_id` = ?
@@ -281,7 +284,7 @@ class ExtraPermissions {
      * @return bool
      */
     public static function deleteList($shareIds) {
-        $connection = \OCP\Server::get(\OCP\IDBConnection::class);
+        $connection = Server::get(IDBConnection::class);
 
         $condition = "";
         if (count($shareIds) > 1) {
@@ -305,16 +308,14 @@ class ExtraPermissions {
      * @return array
      */
     private static function get($shareId) {
-        $connection = \OCP\Server::get(\OCP\IDBConnection::class);
+        $connection = Server::get(IDBConnection::class);
         $select = $connection->prepare("
             SELECT id, share_id, permissions
             FROM  `*PREFIX*" . self::TABLENAME_KEY . "`
             WHERE `share_id` = ?
         ");
         $result = $select->execute([$shareId]);
-
-        $values = $result ? $select->fetch() : [];
-
+        $values = $result->fetch();
         $value = is_array($values) ? $values : [];
 
         $result = [];
@@ -337,7 +338,7 @@ class ExtraPermissions {
      * @return array
      */
     private static function getList($shareIds) {
-        $connection = \OCP\Server::get(\OCP\IDBConnection::class);
+        $connection = Server::get(IDBConnection::class);
 
         $condition = "";
         if (count($shareIds) > 1) {
@@ -353,8 +354,7 @@ class ExtraPermissions {
         " . $condition);
 
         $result = $select->execute($shareIds);
-
-        $values = $result ? $select->fetchAll() : [];
+        $values = $result->fetchAll();
 
         $result = [];
         if (is_array($values)) {
@@ -379,7 +379,7 @@ class ExtraPermissions {
      * @return bool
      */
     private static function insert($shareId, $permissions) {
-        $connection = \OCP\Server::get(\OCP\IDBConnection::class);
+        $connection = Server::get(IDBConnection::class);
         $insert = $connection->prepare("
             INSERT INTO `*PREFIX*" . self::TABLENAME_KEY . "`
                 (`share_id`, `permissions`)
@@ -397,7 +397,7 @@ class ExtraPermissions {
      * @return bool
      */
     private static function update($shareId, $permissions) {
-        $connection = \OCP\Server::get(\OCP\IDBConnection::class);
+        $connection = Server::get(IDBConnection::class);
         $update = $connection->prepare("
             UPDATE `*PREFIX*" . self::TABLENAME_KEY . "`
             SET `permissions` = ?

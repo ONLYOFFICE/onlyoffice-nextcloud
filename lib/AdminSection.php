@@ -51,7 +51,7 @@ class AdminSection implements IIconSection {
     /**
      * Path to an 16*16 icons
      *
-     * @return strings
+     * @return string
      */
     public function getIcon() {
         return $this->urlGenerator->imagePath("onlyoffice", "app-dark.svg");
@@ -60,7 +60,7 @@ class AdminSection implements IIconSection {
     /**
      * ID of the section
      *
-     * @returns string
+     * @return string
      */
     public function getID() {
         return "onlyoffice";

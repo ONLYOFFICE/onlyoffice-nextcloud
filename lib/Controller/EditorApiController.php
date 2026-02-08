@@ -40,7 +40,6 @@ use OCP\AppFramework\Http\JSONResponse;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\Attribute\PublicPage;
 use OCP\AppFramework\OCSController;
-use OCP\AppFramework\QueryException;
 use OCP\Constants;
 use OCP\Files\File;
 use OCP\Files\Folder;
@@ -106,13 +105,6 @@ class EditorApiController extends OCSController {
     private $trans;
 
     /**
-     * File utility
-     *
-     * @var FileUtility
-     */
-    private $fileUtility;
-
-    /**
      * Tag manager
      *
      * @var ITagManager
@@ -132,13 +124,6 @@ class EditorApiController extends OCSController {
      * @var ILockManager
      */
     private $lockManager;
-
-    /**
-     * Avatar manager
-     *
-     * @var IAvatarManager
-     */
-    private $avatarManager;
 
     /**
      * Timezone service
@@ -193,7 +178,9 @@ class EditorApiController extends OCSController {
         ISession $session,
         ITagManager $tagManager,
         ILockManager $lockManager,
-        TimezoneService $timezoneService
+        TimezoneService $timezoneService,
+        private readonly FileUtility $fileUtility,
+        private readonly IAvatarManager $avatarManager
     ) {
         parent::__construct($AppName, $request);
 
@@ -207,12 +194,9 @@ class EditorApiController extends OCSController {
         $this->timezoneService = $timezoneService;
 
         if ($this->config->getAdvanced()
-            && \OCP\Server::get(\OCP\App\IAppManager::class)->isInstalled("files_sharing")) {
+            && Server::get(\OCP\App\IAppManager::class)->isEnabledForAnyone("files_sharing")) {
             $this->extraPermissions = new ExtraPermissions($AppName, $this->logger, $shareManager, $this->config);
         }
-
-        $this->fileUtility = new FileUtility($AppName, $trans, $this->logger, $this->config, $shareManager, $session);
-        $this->avatarManager = \OCP\Server::get(IAvatarManager::class);
     }
 
     /**
@@ -314,8 +298,8 @@ class EditorApiController extends OCSController {
             ],
             "documentType" => $format["type"],
             "editorConfig" => [
-                "lang" => str_replace("_", "-", \OC::$server->getL10NFactory()->get("")->getLanguageCode()),
-                "region" => str_replace("_", "-", \OC::$server->getL10NFactory()->get("")->getLocaleCode())
+                "lang" => str_replace("_", "-", $this->trans->getLanguageCode()),
+                "region" => str_replace("_", "-", $this->trans->getLocaleCode())
             ]
         ];
 
@@ -445,7 +429,7 @@ class EditorApiController extends OCSController {
             $params["document"]["permissions"]["changeHistory"] = true;
         }
 
-        if (\OCP\Server::get(\OCP\IRequest::class)->isUserAgent([$this::USER_AGENT_MOBILE])) {
+        if ($this->request->isUserAgent([$this::USER_AGENT_MOBILE])) {
             $params["type"] = "mobile";
         }
 
@@ -585,7 +569,7 @@ class EditorApiController extends OCSController {
         }
 
         if ($inframe) {
-            $params["_files_sharing"] = \OCP\Server::get(\OCP\App\IAppManager::class)->isInstalled("files_sharing");
+            $params["_files_sharing"] = Server::get(\OCP\App\IAppManager::class)->isEnabledForAnyone("files_sharing");
         }
 
         $params = $this->setCustomization($params);
@@ -859,7 +843,7 @@ class EditorApiController extends OCSController {
                 "userDisplayName" => $userDisplayName,
                 "email" => $email,
                 "date" => (new \DateTime("now", new \DateTimeZone($timezone)))->format("Y-m-d H:i:s"),
-                "themingName" => \OCP\Server::get(\OCA\Theming\ThemingDefaults::class)->getName()
+                "themingName" => Server::get(\OCA\Theming\ThemingDefaults::class)->getName()
             ];
             $watermarkTemplate = preg_replace_callback("/{(.+?)}/", fn($matches) => $replacements[$matches[1]], $watermarkTemplate);
 
@@ -936,7 +920,7 @@ class EditorApiController extends OCSController {
             && $userId !== null) {
             $groups = $watermarkSettings["allGroupsList"];
             foreach ($groups as $group) {
-                if (\OCP\Server::get(\OCP\IGroupManager::class)->isInGroup($userId, $group)) {
+                if (Server::get(\OCP\IGroupManager::class)->isInGroup($userId, $group)) {
                     return $watermarkText;
                 }
             }

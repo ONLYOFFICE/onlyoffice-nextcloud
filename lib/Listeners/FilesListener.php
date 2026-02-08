@@ -35,7 +35,7 @@ use OCA\Onlyoffice\SettingsData;
 use OCP\AppFramework\Services\IInitialState;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
-use OCP\IServerContainer;
+use OCP\Server;
 use OCP\Util;
 
 /**
@@ -51,27 +51,17 @@ class FilesListener implements IEventListener {
     private $initialState;
 
     /**
-     * Server container
-     *
-     * @var IServerContainer
-     */
-    private $serverContainer;
-
-    /**
      * @param AppConfig $config - application configuration
      * @param IInitialState $initialState - initial state
-     * @param IServerContainer $serverContainer - server container
      */
     public function __construct(
         /**
          * Application configuration
          */
         private readonly AppConfig $appConfig,
-        IInitialState $initialState,
-        IServerContainer $serverContainer
+        IInitialState $initialState
     ) {
         $this->initialState = $initialState;
-        $this->serverContainer = $serverContainer;
     }
 
     public function handle(Event $event): void {
@@ -91,13 +81,12 @@ class FilesListener implements IEventListener {
             }
 
             if ($this->appConfig->getAdvanced()
-                && \OCP\Server::get(\OCP\App\IAppManager::class)->isInstalled("files_sharing")) {
+                && Server::get(\OCP\App\IAppManager::class)->isEnabledForAnyone("files_sharing")) {
                 Util::addScript("onlyoffice", "onlyoffice-share");
                 Util::addStyle("onlyoffice", "share");
             }
 
-            $container = $this->serverContainer;
-            $this->initialState->provideLazyInitialState("settings", fn() => $container->query(SettingsData::class));
+            $this->initialState->provideLazyInitialState("settings", fn() => Server::get(SettingsData::class));
 
             Util::addStyle("onlyoffice", "main");
             Util::addStyle("onlyoffice", "template");

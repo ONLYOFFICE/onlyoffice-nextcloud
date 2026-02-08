@@ -48,7 +48,6 @@ use OCP\AppFramework\Http\Attribute\CORS;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
 use OCP\AppFramework\Http\Attribute\PublicPage;
-use OCP\AppFramework\QueryException;
 use OCP\EventDispatcher\IEventDispatcher;
 use OCP\Files\File;
 use OCP\Files\Folder;
@@ -113,13 +112,6 @@ class CallbackController extends Controller {
     private $shareManager;
 
     /**
-     * File version manager
-     *
-     * @var IVersionManager
-     */
-    private $versionManager;
-
-    /**
      * Lock manager
      *
      * @var ILockManager
@@ -178,6 +170,7 @@ class CallbackController extends Controller {
         IManager $shareManager,
         ILockManager $lockManager,
         IEventDispatcher $eventDispatcher,
+        private readonly ?IVersionManager $versionManager
     ) {
         parent::__construct($AppName, $request);
 
@@ -188,14 +181,6 @@ class CallbackController extends Controller {
         $this->shareManager = $shareManager;
         $this->lockManager = $lockManager;
         $this->eventDispatcher = $eventDispatcher;
-
-        if (\OCP\Server::get(\OCP\App\IAppManager::class)->isInstalled("files_versions")) {
-            try {
-                $this->versionManager = \OCP\Server::get(IVersionManager::class);
-            } catch (QueryException $e) {
-                $this->logger->error("VersionManager init error", ["exception" => $e]);
-            }
-        }
     }
 
 

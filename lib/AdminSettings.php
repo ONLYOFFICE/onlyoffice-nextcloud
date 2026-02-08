@@ -31,6 +31,8 @@ namespace OCA\Onlyoffice;
 
 use OCA\Onlyoffice\AppInfo\Application;
 use OCA\Onlyoffice\Controller\SettingsController;
+use OCP\AppFramework\Http\TemplateResponse;
+use OCP\Server;
 use OCP\Settings\ISettings;
 
 /**
@@ -47,10 +49,10 @@ class AdminSettings implements ISettings {
      * @return TemplateResponse
      */
     public function getForm() {
-        $app = \OCP\Server::get(Application::class);
+        $app = Server::get(Application::class);
         $container = $app->getContainer();
-        $response = $container->query(SettingsController::class)->index();
-        return $response;
+
+        return $container->get(SettingsController::class)->index();
     }
 
     /**

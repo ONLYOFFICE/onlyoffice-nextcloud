@@ -41,6 +41,7 @@ use OCP\Files\IRootFolder;
 use OCP\IRequest;
 use OCP\IUserManager;
 use OCP\IUserSession;
+use OCP\Server;
 use OCP\Share\IManager;
 use OCP\Share\IShare;
 use Psr\Log\LoggerInterface;
@@ -49,34 +50,6 @@ use Psr\Log\LoggerInterface;
  * OCS handler
  */
 class SharingApiController extends OCSController {
-
-    /**
-     * Current user session
-     *
-     * @var IUserSession
-     */
-    private $userSession;
-
-    /**
-     * User manager
-     *
-     * @var IUserManager
-     */
-    private $userManager;
-
-    /**
-     * Root folder
-     *
-     * @var IRootFolder
-     */
-    private $root;
-
-    /**
-     * Share manager
-     *
-     * @var IManager
-     */
-    private $shareManager;
 
     /**
      * Extra permissions
@@ -96,32 +69,20 @@ class SharingApiController extends OCSController {
      * @param AppConfig $appConfig - application configuration
      */
     public function __construct(
-        $AppName,
+        string $appName,
         IRequest $request,
-        IRootFolder $root,
-        /**
-         * Logger
-         */
+        private readonly IRootFolder $root,
         private readonly LoggerInterface $logger,
-        IUserSession $userSession,
-        IUserManager $userManager,
-        IManager $shareManager,
-        /**
-         * Application configuration
-         */
+        private readonly IUserSession $userSession,
+        private readonly IManager $shareManager,
         private readonly AppConfig $appConfig
     ) {
-        parent::__construct($AppName, $request);
+        parent::__construct($appName, $request);
 
-        $this->root = $root;
-        $this->userSession = $userSession;
-        $this->userManager = $userManager;
-        $this->shareManager = $shareManager;
-
-        if ($this->appConfig->getAdvanced()
-            && \OCP\Server::get(\OCP\App\IAppManager::class)->isInstalled("files_sharing")) {
-            $this->extraPermissions = new ExtraPermissions($AppName, $this->logger, $shareManager, $this->appConfig);
-        }
+        $this->extraPermissions = $this->appConfig->getAdvanced()
+            && Server::get(\OCP\App\IAppManager::class)->isEnabledForAnyone("files_sharing")
+            ? Server::get(ExtraPermissions::class)
+            : null;
     }
 
     /**

@@ -253,7 +253,7 @@ class FileUtility {
     /**
      * Generate unique file version key
      *
-     * @param OCA\Files_Versions\Versions\IVersion $version - file version
+     * @param \OCA\Files_Versions\Versions\IVersion $version - file version
      *
      * @return string
      */

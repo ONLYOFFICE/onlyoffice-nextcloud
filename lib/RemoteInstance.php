@@ -76,9 +76,7 @@ class RemoteInstance {
         ");
         $result = $select->execute([$remote]);
 
-        $dbremote = $result ? $select->fetch() : [];
-
-        return $dbremote;
+        return $result->fetch();
     }
 
     /**

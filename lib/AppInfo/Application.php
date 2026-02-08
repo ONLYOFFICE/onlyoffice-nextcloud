@@ -75,6 +75,7 @@ use OCA\Onlyoffice\Notifier;
 use OCA\Onlyoffice\Preview;
 use OCA\Onlyoffice\TemplateProvider;
 use OCA\Onlyoffice\SettingsData;
+use OCP\Server;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 
@@ -86,7 +87,7 @@ class Application extends App implements IBootstrap {
     public function __construct(array $urlParams = []) {
         parent::__construct(self::APP_ID, $urlParams);
 
-        $this->appConfig = \OCP\Server::get(AppConfig::class);
+        $this->appConfig = Server::get(AppConfig::class);
     }
 
     public function register(IRegistrationContext $context): void {
@@ -108,31 +109,14 @@ class Application extends App implements IBootstrap {
             $context->registerTemplateProvider(TemplateProvider::class);
         }
 
-        $container = $this->getContainer();
+        $context->registerPreviewProvider(Preview::class, Preview::getMimeTypeRegex());
+        $context->registerNotifierService(Notifier::class);
 
-        $previewManager = $container->query(IPreview::class);
-        $previewManager->registerProvider(Preview::getMimeTypeRegex(), fn() => $container->query(Preview::class));
-
-        $detector = $container->query(IMimeTypeDetector::class);
-        $detector->getAllMappings();
-
-        $checkBackgroundJobs = new JobListController(
-            $container->query("AppName"),
-            $container->query("Request"),
-            $this->appConfig,
-            $container->query(IJobList::class)
-        );
-        $checkBackgroundJobs->checkAllJobs();
-
+        Server::get(JobListController::class)->checkAllJobs();
         Hooks::connectHooks();
     }
 
     public function boot(IBootContext $context): void {
-
-        $context->injectFn(function (IManager $notificationsManager) {
-            $notificationsManager->registerNotifierService(Notifier::class);
-        });
-
         if (class_exists("OCP\Files\Template\TemplateFileCreator")) {
             $context->injectFn(function (ITemplateManager $templateManager, IL10N $trans, $appName) {
                 if (!empty($this->appConfig->getDocumentServerUrl())
