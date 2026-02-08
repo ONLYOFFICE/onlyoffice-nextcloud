@@ -45,32 +45,11 @@ use Psr\Log\LoggerInterface;
 class ExtraPermissions {
 
     /**
-     * Application name
-     *
-     * @var string
-     */
-    private $appName;
-
-    /**
-     * Logger
-     *
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
      * Share manager
      *
      * @var IManager
      */
     private $shareManager;
-
-    /**
-     * Application configuration
-     *
-     * @var AppConfig
-     */
-    private $config;
 
     /**
      * Talk manager
@@ -96,21 +75,27 @@ class ExtraPermissions {
     public const MODIFYFILTER = 8;
 
     /**
-     * @param string $AppName - application name
+     * @param string $appName - application name
      * @param LoggerInterface $logger - logger
      * @param AppConfig $config - application configuration
      * @param IManager $shareManager - Share manager
      */
     public function __construct(
-        $AppName,
-        LoggerInterface $logger,
+        /**
+         * Application name
+         */
+        private $appName,
+        /**
+         * Logger
+         */
+        private readonly LoggerInterface $logger,
         IManager $shareManager,
-        AppConfig $config
+        /**
+         * Application configuration
+         */
+        private readonly AppConfig $config
     ) {
-        $this->appName = $AppName;
-        $this->logger = $logger;
         $this->shareManager = $shareManager;
-        $this->config = $config;
 
         if (\OC::$server->getAppManager()->isInstalled("spreed")) {
             try {
@@ -139,7 +124,7 @@ class ExtraPermissions {
 
         $wasInit = isset($extra["permissions"]);
         $checkExtra = $wasInit ? (int)$extra["permissions"] : self::NONE;
-        list($availableExtra, $defaultPermissions) = $this->validation($share, $checkExtra, $wasInit);
+        [$availableExtra, $defaultPermissions] = $this->validation($share, $checkExtra, $wasInit);
 
         if ($availableExtra === 0
             || ($availableExtra & $checkExtra) !== $checkExtra) {
@@ -197,7 +182,7 @@ class ExtraPermissions {
 
             $wasInit = isset($currentExtra["permissions"]);
             $checkExtra = $wasInit ? (int)$currentExtra["permissions"] : self::NONE;
-            list($availableExtra, $defaultPermissions) = $this->validation($share, $checkExtra, $wasInit);
+            [$availableExtra, $defaultPermissions] = $this->validation($share, $checkExtra, $wasInit);
 
             if ($availableExtra === 0
                 || ($availableExtra & $checkExtra) !== $checkExtra) {
@@ -257,7 +242,7 @@ class ExtraPermissions {
             return $result;
         }
 
-        list($availableExtra, $defaultPermissions) = $this->validation($share, $permissions);
+        [$availableExtra, $defaultPermissions] = $this->validation($share, $permissions);
         if (($availableExtra & $permissions) !== $permissions) {
             $this->logger->debug("Share " . $shareId . " does not available to extend permissions");
             return $result;
@@ -440,7 +425,7 @@ class ExtraPermissions {
         }
 
         $node = $share->getNode();
-        $ext = strtolower(pathinfo($node->getName(), PATHINFO_EXTENSION));
+        $ext = strtolower(pathinfo((string) $node->getName(), PATHINFO_EXTENSION));
         $format = !empty($ext) && array_key_exists($ext, $this->config->formatsSetting()) ? $this->config->formatsSetting()[$ext] : null;
         if (!isset($format)) {
             return [$availableExtra, $defaultExtra];
@@ -486,12 +471,12 @@ class ExtraPermissions {
         try {
             $share = $this->shareManager->getShareById("ocinternal:" . $shareId);
             return $share;
-        } catch (ShareNotFound $e) {}
+        } catch (ShareNotFound) {}
 
         try {
             $share = $this->shareManager->getShareById("ocRoomShare:" . $shareId);
             return $share;
-        } catch (ShareNotFound $e) {}
+        } catch (ShareNotFound) {}
 
         $this->logger->error("getShare: share not found: " . $shareId);
 

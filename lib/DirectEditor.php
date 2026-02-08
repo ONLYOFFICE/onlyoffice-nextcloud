@@ -46,13 +46,6 @@ use Psr\Log\LoggerInterface;
 class DirectEditor implements IEditor {
 
     /**
-     * Application name
-     *
-     * @var string
-     */
-    private $appName;
-
-    /**
      * Url generator service
      *
      * @var IURLGenerator
@@ -67,28 +60,7 @@ class DirectEditor implements IEditor {
     private $trans;
 
     /**
-     * Logger
-     *
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
-     * Application configuration
-     *
-     * @var AppConfig
-     */
-    private $config;
-
-    /**
-     * Hash generator
-     *
-     * @var Crypt
-     */
-    private $crypt;
-
-    /**
-     * @param string $AppName - application name
+     * @param string $appName - application name
      * @param IURLGenerator $urlGenerator - url generator service
      * @param IL10N $trans - l10n service
      * @param LoggerInterface $logger - logger
@@ -96,19 +68,27 @@ class DirectEditor implements IEditor {
      * @param Crypt $crypt - hash generator
      */
     public function __construct(
-        $AppName,
+        /**
+         * Application name
+         */
+        private $appName,
         IURLGenerator $urlGenerator,
         IL10N $trans,
-        LoggerInterface $logger,
-        AppConfig $config,
-        Crypt $crypt
+        /**
+         * Logger
+         */
+        private readonly LoggerInterface $logger,
+        /**
+         * Application configuration
+         */
+        private readonly AppConfig $config,
+        /**
+         * Hash generator
+         */
+        private readonly Crypt $crypt
     ) {
-        $this->appName = $AppName;
         $this->urlGenerator = $urlGenerator;
         $this->trans = $trans;
-        $this->logger = $logger;
-        $this->config = $config;
-        $this->crypt = $crypt;
     }
 
     /**
@@ -135,7 +115,7 @@ class DirectEditor implements IEditor {
      * @return array
      */
     public function getMimetypes(): array {
-        $mimes = array();
+        $mimes = [];
         if (!$this->config->isUserAllowedToUse()) {
             return $mimes;
         }
@@ -156,7 +136,7 @@ class DirectEditor implements IEditor {
      * @return array
      */
     public function getMimetypesOptional(): array {
-        $mimes = array();
+        $mimes = [];
         if (!$this->config->isUserAllowedToUse()) {
             return $mimes;
         }
@@ -178,7 +158,7 @@ class DirectEditor implements IEditor {
      */
     public function getCreators(): array {
         if (!$this->config->isUserAllowedToUse()) {
-            return array();
+            return [];
         }
 
         return [
@@ -237,7 +217,7 @@ class DirectEditor implements IEditor {
             ]);
 
             $filePath = $file->getPath();
-            $filePath = preg_replace("/^\/" . $userId . "\/files/", "", $filePath);
+            $filePath = preg_replace("/^\/" . $userId . "\/files/", "", (string) $filePath);
 
             $params = [
                 "fileId" => null,

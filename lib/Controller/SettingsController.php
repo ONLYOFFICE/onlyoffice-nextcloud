@@ -56,32 +56,11 @@ class SettingsController extends Controller {
     private $trans;
 
     /**
-     * Logger
-     *
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
-     * Application configuration
-     *
-     * @var AppConfig
-     */
-    private $config;
-
-    /**
      * Url generator service
      *
      * @var IURLGenerator
      */
     private $urlGenerator;
-
-    /**
-     * Hash generator
-     *
-     * @var Crypt
-     */
-    private $crypt;
 
     /**
      * Mime icon provider
@@ -105,18 +84,24 @@ class SettingsController extends Controller {
         IRequest $request,
         IURLGenerator $urlGenerator,
         IL10N $trans,
-        LoggerInterface $logger,
-        AppConfig $config,
-        Crypt $crypt,
+        /**
+         * Logger
+         */
+        private readonly LoggerInterface $logger,
+        /**
+         * Application configuration
+         */
+        private readonly AppConfig $config,
+        /**
+         * Hash generator
+         */
+        private readonly Crypt $crypt,
         IMimeIconProvider $mimeIconProvider,
     ) {
         parent::__construct($AppName, $request);
 
         $this->urlGenerator = $urlGenerator;
         $this->trans = $trans;
-        $this->logger = $logger;
-        $this->config = $config;
-        $this->crypt = $crypt;
         $this->mimeIconProvider = $mimeIconProvider;
     }
 
@@ -205,7 +190,7 @@ class SettingsController extends Controller {
             $documentserver = $this->config->getDocumentServerUrl();
             if (!empty($documentserver)) {
                 $documentService = new DocumentService($this->trans, $this->config);
-                list($error, $version) = $documentService->checkDocServiceUrl($this->urlGenerator, $this->crypt);
+                [$error, $version] = $documentService->checkDocServiceUrl($this->urlGenerator, $this->crypt);
                 $this->config->setSettingsError($error);
             }
         }
@@ -309,7 +294,7 @@ class SettingsController extends Controller {
     ): DataResponse {
 
         if ($watermarks["enabled"] === "true") {
-            $watermarks["text"] = trim($watermarks["text"]);
+            $watermarks["text"] = trim((string) $watermarks["text"]);
             if (empty($watermarks["text"])) {
                 $watermarks["text"] = $this->trans->t("DO NOT SHARE THIS") . " {userId} {date}";
             }

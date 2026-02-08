@@ -56,13 +56,6 @@ class TemplateController extends Controller {
     private $trans;
 
     /**
-     * Logger
-     *
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
      * Preview manager
      *
      * @var IPreview
@@ -86,14 +79,16 @@ class TemplateController extends Controller {
         $AppName,
         IRequest $request,
         IL10N $trans,
-        LoggerInterface $logger,
+        /**
+         * Logger
+         */
+        private readonly LoggerInterface $logger,
         IPreview $preview,
         IMimeIconProvider $mimeIconProvider,
     ) {
         parent::__construct($AppName, $request);
 
         $this->trans = $trans;
-        $this->logger = $logger;
         $this->preview = $preview;
         $this->mimeIconProvider = $mimeIconProvider;
     }
@@ -224,9 +219,9 @@ class TemplateController extends Controller {
             $response->cacheFor(3600 * 24);
 
             return $response;
-        } catch (NotFoundException $e) {
+        } catch (NotFoundException) {
             return new DataResponse([], Http::STATUS_NOT_FOUND);
-        } catch (\InvalidArgumentException $e) {
+        } catch (\InvalidArgumentException) {
             return new DataResponse([], Http::STATUS_BAD_REQUEST);
         }
     }

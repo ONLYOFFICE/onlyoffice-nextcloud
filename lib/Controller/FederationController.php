@@ -51,13 +51,6 @@ use Psr\Log\LoggerInterface;
 class FederationController extends OCSController {
 
     /**
-     * Logger
-     *
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
      * Application configuration
      *
      * @var AppConfig
@@ -83,16 +76,17 @@ class FederationController extends OCSController {
         $AppName,
         IRequest $request,
         IL10N $trans,
-        LoggerInterface $logger,
+        /**
+         * Logger
+         */
+        private readonly LoggerInterface $logger,
         IManager $shareManager,
         ISession $session
     ) {
         parent::__construct($AppName, $request);
 
-        $this->logger = $logger;
-
         $this->config = \OCP\Server::get(AppConfig::class);
-        $this->fileUtility = new FileUtility($AppName, $trans, $logger, $this->config, $shareManager, $session);
+        $this->fileUtility = new FileUtility($AppName, $trans, $this->logger, $this->config, $shareManager, $session);
     }
 
     /**
@@ -107,7 +101,7 @@ class FederationController extends OCSController {
     #[NoCSRFRequired]
     #[PublicPage]
     public function key($shareToken, $path) {
-        list($file, $error, $share) = $this->fileUtility->getFileByToken(null, $shareToken, $path);
+        [$file, $error, $share] = $this->fileUtility->getFileByToken(null, $shareToken, $path);
 
         if (isset($error)) {
             $this->logger->error("Federated getFileByToken: $error");
@@ -137,7 +131,7 @@ class FederationController extends OCSController {
     #[NoCSRFRequired]
     #[PublicPage]
     public function keylock($shareToken, $path, $lock, $fs) {
-        list($file, $error, $share) = $this->fileUtility->getFileByToken(null, $shareToken, $path);
+        [$file, $error, $share] = $this->fileUtility->getFileByToken(null, $shareToken, $path);
 
         if (isset($error)) {
             $this->logger->error("Federated getFileByToken: $error");

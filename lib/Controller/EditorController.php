@@ -110,27 +110,6 @@ class EditorController extends Controller {
     private $trans;
 
     /**
-     * Logger
-     *
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
-     * Application configuration
-     *
-     * @var AppConfig
-     */
-    private $config;
-
-    /**
-     * Hash generator
-     *
-     * @var Crypt
-     */
-    private $crypt;
-
-    /**
      * File utility
      *
      * @var FileUtility
@@ -210,9 +189,18 @@ class EditorController extends Controller {
         IUserManager $userManager,
         IURLGenerator $urlGenerator,
         IL10N $trans,
-        LoggerInterface $logger,
-        AppConfig $config,
-        Crypt $crypt,
+        /**
+         * Logger
+         */
+        private readonly LoggerInterface $logger,
+        /**
+         * Application configuration
+         */
+        private readonly AppConfig $config,
+        /**
+         * Hash generator
+         */
+        private readonly Crypt $crypt,
         IManager $shareManager,
         ISession $session,
         IGroupManager $groupManager,
@@ -226,9 +214,6 @@ class EditorController extends Controller {
         $this->root = $root;
         $this->urlGenerator = $urlGenerator;
         $this->trans = $trans;
-        $this->logger = $logger;
-        $this->config = $config;
-        $this->crypt = $crypt;
         $this->shareManager = $shareManager;
         $this->groupManager = $groupManager;
 
@@ -240,9 +225,9 @@ class EditorController extends Controller {
             }
         }
 
-        $this->fileUtility = new FileUtility($AppName, $trans, $logger, $config, $shareManager, $session);
+        $this->fileUtility = new FileUtility($AppName, $trans, $this->logger, $this->config, $shareManager, $session);
         $this->avatarManager = \OC::$server->get(IAvatarManager::class);
-        $this->emailManager = new EmailManager($AppName, $trans, $logger, $mailer, $userManager, $urlGenerator);
+        $this->emailManager = new EmailManager($AppName, $trans, $this->logger, $mailer, $userManager, $urlGenerator);
 
         $this->folderManager = \OC::$server->getAppManager()->isInstalled("groupfolders")
             ? $appContainer->get(\OCA\GroupFolders\Folder\FolderManager::class)
@@ -280,7 +265,7 @@ class EditorController extends Controller {
             $userId = $user->getUID();
             $userFolder = $this->root->getUserFolder($userId);
         } else {
-            list($userFolder, $error, $share) = $this->fileUtility->getNodeByToken($shareToken);
+            [$userFolder, $error, $share] = $this->fileUtility->getNodeByToken($shareToken);
 
             if (isset($error)) {
                 $this->logger->error("Create: $error");
@@ -316,7 +301,7 @@ class EditorController extends Controller {
         } elseif (!empty($targetId)) {
             $targetFile = $userFolder->getById($targetId)[0];
             $targetName = $targetFile->getName();
-            $targetExt = strtolower(pathinfo($targetName, PATHINFO_EXTENSION));
+            $targetExt = strtolower(pathinfo((string) $targetName, PATHINFO_EXTENSION));
             $targetKey = $this->fileUtility->getKey($targetFile);
 
             $fileUrl = $this->getUrl($targetFile, $user, $shareToken);
@@ -420,7 +405,7 @@ class EditorController extends Controller {
             $isMemberExcludedGroups = false;
         }
 
-        list($file, $error, $share) = $this->getFile($currentUserId, $fileId);
+        [$file, $error, $share] = $this->getFile($currentUserId, $fileId);
         if (isset($error)) {
             $this->logger->error("Users: $fileId $error");
             return new DataResponse();
@@ -433,7 +418,7 @@ class EditorController extends Controller {
 
         $all = false;
         $users = [];
-        $searchString = $search !== null ? $search : "";
+        $searchString = $search ?? "";
         $offset = $from !== null ? (int)$from : 0;
         $limit = $count !== null ? (int)$count : null;
         if ($canShare && $operationType !== "protect") {
@@ -529,9 +514,9 @@ class EditorController extends Controller {
      */
     private function searchInUser($user, $searchString) {
         return empty($searchString)
-            || stripos($user->getUID(), $searchString) !== false
-            || stripos($user->getDisplayName(), $searchString) !== false
-            || !empty($user->getEMailAddress()) && stripos($user->getEMailAddress(), $searchString) !== false;
+            || stripos((string) $user->getUID(), (string) $searchString) !== false
+            || stripos((string) $user->getDisplayName(), (string) $searchString) !== false
+            || !empty($user->getEMailAddress()) && stripos((string) $user->getEMailAddress(), (string) $searchString) !== false;
     }
 
     /**
@@ -621,7 +606,7 @@ class EditorController extends Controller {
             $isMemberExcludedGroups = false;
         }
 
-        list($file, $error, $share) = $this->getFile($userId, $fileId);
+        [$file, $error, $share] = $this->getFile($userId, $fileId);
         if (isset($error)) {
             $this->logger->error("Mention: $fileId $error");
             return new DataResponse(["error" => $this->trans->t("Failed to send notification")]);
@@ -735,7 +720,7 @@ class EditorController extends Controller {
         $fileId = (integer)($referenceData["fileKey"] ?? 0);
         if (!empty($fileId)
             && $referenceData["instanceId"] === $this->config->getSystemValue("instanceid", true)) {
-            list($file, $error, $share) = $this->getFile($userId, $fileId);
+            [$file, $error, $share] = $this->getFile($userId, $fileId);
         }
 
         $userFolder = $this->root->getUserFolder($userId);
@@ -753,7 +738,7 @@ class EditorController extends Controller {
             && !empty($link)) {
             [$fileId, $redirect] = $this->getFileIdByLink($link);
             if (!empty($fileId)) {
-                list($file, $error, $share) = $this->getFile($userId, $fileId);
+                [$file, $error, $share] = $this->getFile($userId, $fileId);
             } elseif ($redirect) {
                 return new DataResponse(["url" => $link]);
             }
@@ -765,7 +750,7 @@ class EditorController extends Controller {
         }
 
         $fileName = $file->getName();
-        $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+        $ext = strtolower(pathinfo((string) $fileName, PATHINFO_EXTENSION));
         $key = $this->fileUtility->getKey($file);
         $key = DocumentService::generateRevisionId($key);
 
@@ -816,7 +801,7 @@ class EditorController extends Controller {
             $userId = $user->getUID();
         }
 
-        list($file, $error, $share) = empty($shareToken) ? $this->getFile($userId, $fileId) : $this->fileUtility->getFileByToken($fileId, $shareToken);
+        [$file, $error, $share] = empty($shareToken) ? $this->getFile($userId, $fileId) : $this->fileUtility->getFileByToken($fileId, $shareToken);
 
         if (isset($error)) {
             $this->logger->error("Convertion: $fileId $error");
@@ -829,7 +814,7 @@ class EditorController extends Controller {
         }
 
         $fileName = $file->getName();
-        $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+        $ext = strtolower(pathinfo((string) $fileName, PATHINFO_EXTENSION));
         $format = $this->config->formatsSetting()[$ext];
         if (!isset($format)) {
             $this->logger->info("Format for convertion not supported: $fileName");
@@ -875,7 +860,7 @@ class EditorController extends Controller {
             return new DataResponse(["error" => $this->trans->t("Failed to download converted file")]);
         }
 
-        $fileNameWithoutExt = substr($fileName, 0, strlen($fileName) - strlen($ext) - 1);
+        $fileNameWithoutExt = substr((string) $fileName, 0, strlen((string) $fileName) - strlen($ext) - 1);
         $newFileName = $folder->getNonExistingName($fileNameWithoutExt . "." . $internalExtension);
 
         try {
@@ -931,7 +916,7 @@ class EditorController extends Controller {
             $documentServerUrl = $this->urlGenerator->getAbsoluteURL($documentServerUrl);
         }
 
-        if (parse_url($url, PHP_URL_HOST) !== parse_url($documentServerUrl, PHP_URL_HOST)) {
+        if (parse_url($url, PHP_URL_HOST) !== parse_url((string) $documentServerUrl, PHP_URL_HOST)) {
             $this->logger->error("Incorrect domain in file url");
             return new DataResponse(["error" => $this->trans->t("The domain in the file url does not match the domain of the Document server")]);
         }
@@ -983,7 +968,7 @@ class EditorController extends Controller {
             $userId = $user->getUID();
         }
 
-        list($file, $error, $share) = $this->getFile($userId, $fileId);
+        [$file, $error, $share] = $this->getFile($userId, $fileId);
 
         if (isset($error)) {
             $this->logger->error("History: $fileId $error");
@@ -1000,7 +985,7 @@ class EditorController extends Controller {
             $ownerId = $owner->getUID();
         }
 
-        $versions = array();
+        $versions = [];
         if ($this->versionManager !== null
             && $owner !== null) {
             $versions = FileVersions::processVersionsArray($this->versionManager->getVersionsForFile($owner, $file));
@@ -1123,7 +1108,7 @@ class EditorController extends Controller {
             $userId = $user->getUID();
         }
 
-        list($file, $error, $share) = $this->getFile($userId, $fileId);
+        [$file, $error, $share] = $this->getFile($userId, $fileId);
 
         if (isset($error)) {
             $this->logger->error("History: $fileId $error");
@@ -1136,7 +1121,7 @@ class EditorController extends Controller {
 
         $owner = null;
         $ownerId = null;
-        $versions = array();
+        $versions = [];
         if ($this->versionManager !== null) {
             $owner = $file->getFileInfo()->getOwner();
             if ($owner !== null) {
@@ -1163,7 +1148,7 @@ class EditorController extends Controller {
         }
         $key = DocumentService::generateRevisionId($key);
         $fileName = $file->getName();
-        $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+        $ext = strtolower(pathinfo((string) $fileName, PATHINFO_EXTENSION));
 
         $result = [
             "fileType" => $ext,
@@ -1228,7 +1213,7 @@ class EditorController extends Controller {
             $userId = $user->getUID();
         }
 
-        list($file, $error, $share) = $this->getFile($userId, $fileId);
+        [$file, $error, $share] = $this->getFile($userId, $fileId);
 
         if (isset($error)) {
             $this->logger->error("Restore: $fileId $error");
@@ -1240,7 +1225,7 @@ class EditorController extends Controller {
         }
 
         $owner = null;
-        $versions = array();
+        $versions = [];
         if ($this->versionManager !== null) {
             $owner = $file->getFileInfo()->getOwner();
             if ($owner !== null) {
@@ -1299,7 +1284,7 @@ class EditorController extends Controller {
         }
 
         $fileName = $file->getName();
-        $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+        $ext = strtolower(pathinfo((string) $fileName, PATHINFO_EXTENSION));
         $fileUrl = $this->getUrl($file, $user);
 
         $result = [
@@ -1353,7 +1338,7 @@ class EditorController extends Controller {
                 $userId = $user->getUID();
             }
 
-            list($file, $error, $share) = $this->getFile($userId, $fileId);
+            [$file, $error, $share] = $this->getFile($userId, $fileId);
 
             if (isset($error)) {
                 $this->logger->error("Download: $fileId $error");
@@ -1370,8 +1355,8 @@ class EditorController extends Controller {
         }
 
         $fileName = $file->getName();
-        $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-        $toExtension = strtolower($toExtension);
+        $ext = strtolower(pathinfo((string) $fileName, PATHINFO_EXTENSION));
+        $toExtension = strtolower((string) $toExtension);
 
         if ($toExtension === null
             || $ext === $toExtension
@@ -1417,7 +1402,7 @@ class EditorController extends Controller {
             return $this->renderError($this->trans->t("Failed to download converted file"));
         }
 
-        $fileNameWithoutExt = substr($fileName, 0, strlen($fileName) - strlen($ext) - 1);
+        $fileNameWithoutExt = substr((string) $fileName, 0, strlen((string) $fileName) - strlen($ext) - 1);
         $newFileName = "$fileNameWithoutExt.$newFileType";
 
         $mimeType = $this->config->getMimeType($newFileType);
@@ -1453,7 +1438,7 @@ class EditorController extends Controller {
 
         $shareBy = null;
         if (!empty($shareToken) && !$isLoggedIn) {
-            list($share, $error) = $this->fileUtility->getShare($shareToken);
+            [$share, $error] = $this->fileUtility->getShare($shareToken);
             if (!empty($share)) {
                 $shareBy = $share->getSharedBy();
             }
@@ -1491,7 +1476,7 @@ class EditorController extends Controller {
             } else {
                 $response = new PublicTemplateResponse($this->appName, "editor", $params);
 
-                list($file, $error, $share) = $this->fileUtility->getFileByToken($fileId, $shareToken);
+                [$file, $error, $share] = $this->fileUtility->getFileByToken($fileId, $shareToken);
                 if (!isset($error)) {
                     $response->setHeaderTitle($file->getName());
                 }
@@ -1637,7 +1622,7 @@ class EditorController extends Controller {
         $excludedGroups = [];
 
         if (\OC::$server->getConfig()->getAppValue("core", "shareapi_exclude_groups", "no") === "yes") {
-            $excludedGroups = json_decode(\OC::$server->getConfig()->getAppValue("core", "shareapi_exclude_groups_list", ""), true);
+            $excludedGroups = json_decode((string) \OC::$server->getConfig()->getAppValue("core", "shareapi_exclude_groups_list", ""), true);
         }
 
         return $excludedGroups;
@@ -1680,14 +1665,14 @@ class EditorController extends Controller {
      */
     private function getFileIdByLink(string $link) {
         $path = parse_url($link, PHP_URL_PATH);
-        $encodedPath = array_map("urlencode", explode("/", $path));
+        $encodedPath = array_map(urlencode(...), explode("/", $path));
         $parsedLink = str_replace($path, implode("/", $encodedPath), $link);
         if (filter_var($parsedLink, FILTER_VALIDATE_URL) === false) {
             return [null, true];
         }
 
         $storageUrl = $this->urlGenerator->getAbsoluteURL("/");
-        if (parse_url($parsedLink, PHP_URL_HOST) !== parse_url($storageUrl, PHP_URL_HOST)) {
+        if (parse_url($parsedLink, PHP_URL_HOST) !== parse_url((string) $storageUrl, PHP_URL_HOST)) {
             return [null, true];
         }
 

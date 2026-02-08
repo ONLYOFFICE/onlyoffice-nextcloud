@@ -355,12 +355,12 @@ class AppConfig {
     /**
      * The config key for store cache
      */
-    private ICache $cache;
+    private readonly ICache $cache;
 
     public function __construct(
-        private string $appName,
-        private IConfig $config,
-        private LoggerInterface $logger,
+        private readonly string $appName,
+        private readonly IConfig $config,
+        private readonly LoggerInterface $logger,
         ICacheFactory $cacheFactory,
     ) {
         $this->cache = $cacheFactory->createLocal(Application::APP_ID);
@@ -566,7 +566,7 @@ class AppConfig {
      * @param string $documentServer - document service address
      */
     public function setStorageUrl($storageUrl) {
-        $storageUrl = rtrim(trim($storageUrl), "/");
+        $storageUrl = rtrim(trim((string) $storageUrl), "/");
         if (strlen($storageUrl) > 0) {
             $storageUrl = $storageUrl . "/";
             if (!preg_match("/^https?:\/\//i", $storageUrl)) {
@@ -660,7 +660,7 @@ class AppConfig {
     private function getDefaultFormats() {
         $value = $this->config->getAppValue($this->appName, $this->_defFormats, "");
         if (empty($value)) {
-            return array();
+            return [];
         }
         return json_decode($value, true);
     }
@@ -685,7 +685,7 @@ class AppConfig {
     private function getEditableFormats() {
         $value = $this->config->getAppValue($this->appName, $this->_editFormats, "");
         if (empty($value)) {
-            return array();
+            return [];
         }
         return json_decode($value, true);
     }
@@ -984,7 +984,7 @@ class AppConfig {
      * @param string $value - review mode
      */
     public function setCustomizationReviewDisplay($value) {
-        $this->logger->info("Set review mode: " . $value, array("app" => $this->appName));
+        $this->logger->info("Set review mode: " . $value, ["app" => $this->appName]);
 
         $this->config->setAppValue($this->appName, $this->_customizationReviewDisplay, $value);
     }
@@ -1011,7 +1011,7 @@ class AppConfig {
      * @param string $value - theme
      */
     public function setCustomizationTheme($value) {
-        $this->logger->info("Set theme: " . $value, array("app" => $this->appName));
+        $this->logger->info("Set theme: " . $value, ["app" => $this->appName]);
 
         $this->config->setAppValue($this->appName, $this->_customizationTheme, $value);
     }
@@ -1094,7 +1094,7 @@ class AppConfig {
             return;
         }
 
-        $this->config->setAppValue(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_text", trim($settings["text"]));
+        $this->config->setAppValue(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_text", trim((string) $settings["text"]));
 
         $watermarkLabels = [
             "allGroups",
@@ -1109,7 +1109,7 @@ class AppConfig {
         ];
         foreach ($watermarkLabels as $key) {
             if (empty($settings[$key])) {
-                $settings[$key] = array();
+                $settings[$key] = [];
             }
             $value = $settings[$key] === "true" ? "yes" : "no";
             $this->config->setAppValue(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_" . $key, $value);
@@ -1122,7 +1122,7 @@ class AppConfig {
         ];
         foreach ($watermarkLists as $key) {
             if (empty($settings[$key])) {
-                $settings[$key] = array();
+                $settings[$key] = [];
             }
             $value = implode(",", $settings[$key]);
             $this->config->setAppValue(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_" . $key, $value);
@@ -1151,7 +1151,7 @@ class AppConfig {
             "shareRead",
         ];
 
-        $trueResult = array("on", "yes", "true");
+        $trueResult = ["on", "yes", "true"];
         foreach ($watermarkLabels as $key) {
             $value = $this->config->getAppValue(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_" . $key, "no");
             $result[$key] = in_array($value, $trueResult);
@@ -1178,7 +1178,7 @@ class AppConfig {
      */
     public function setLimitGroups($groups) {
         if (!is_array($groups)) {
-            $groups = array();
+            $groups = [];
         }
         $value = json_encode($groups);
         $this->logger->info("Set groups: $value", ["app" => $this->appName]);
@@ -1194,11 +1194,11 @@ class AppConfig {
     public function getLimitGroups() {
         $value = $this->config->getAppValue($this->appName, $this->_groups, "");
         if (empty($value)) {
-            return array();
+            return [];
         }
         $groups = json_decode($value, true);
         if (!is_array($groups)) {
-            $groups = array();
+            $groups = [];
         }
         return $groups;
     }

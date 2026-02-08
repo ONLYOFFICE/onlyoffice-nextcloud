@@ -72,20 +72,6 @@ class SharingApiController extends OCSController {
     private $root;
 
     /**
-     * Logger
-     *
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
-     * Application configuration
-     *
-     * @var AppConfig
-     */
-    private $appConfig;
-
-    /**
      * Share manager
      *
      * @var IManager
@@ -113,24 +99,28 @@ class SharingApiController extends OCSController {
         $AppName,
         IRequest $request,
         IRootFolder $root,
-        LoggerInterface $logger,
+        /**
+         * Logger
+         */
+        private readonly LoggerInterface $logger,
         IUserSession $userSession,
         IUserManager $userManager,
         IManager $shareManager,
-        AppConfig $appConfig
+        /**
+         * Application configuration
+         */
+        private readonly AppConfig $appConfig
     ) {
         parent::__construct($AppName, $request);
 
         $this->root = $root;
-        $this->logger = $logger;
         $this->userSession = $userSession;
         $this->userManager = $userManager;
         $this->shareManager = $shareManager;
-        $this->appConfig = $appConfig;
 
         if ($this->appConfig->getAdvanced()
             && \OC::$server->getAppManager()->isInstalled("files_sharing")) {
-            $this->extraPermissions = new ExtraPermissions($AppName, $logger, $shareManager, $appConfig);
+            $this->extraPermissions = new ExtraPermissions($AppName, $this->logger, $shareManager, $this->appConfig);
         }
     }
 

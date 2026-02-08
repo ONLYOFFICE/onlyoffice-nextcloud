@@ -106,27 +106,6 @@ class EditorApiController extends OCSController {
     private $trans;
 
     /**
-     * Logger
-     *
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
-     * Application configuration
-     *
-     * @var AppConfig
-     */
-    private $config;
-
-    /**
-     * Hash generator
-     *
-     * @var Crypt
-     */
-    private $crypt;
-
-    /**
      * File utility
      *
      * @var FileUtility
@@ -198,9 +177,18 @@ class EditorApiController extends OCSController {
         IUserManager $userManager,
         IURLGenerator $urlGenerator,
         IL10N $trans,
-        LoggerInterface $logger,
-        AppConfig $config,
-        Crypt $crypt,
+        /**
+         * Logger
+         */
+        private readonly LoggerInterface $logger,
+        /**
+         * Application configuration
+         */
+        private readonly AppConfig $config,
+        /**
+         * Hash generator
+         */
+        private readonly Crypt $crypt,
         IManager $shareManager,
         ISession $session,
         ITagManager $tagManager,
@@ -214,19 +202,16 @@ class EditorApiController extends OCSController {
         $this->root = $root;
         $this->urlGenerator = $urlGenerator;
         $this->trans = $trans;
-        $this->logger = $logger;
-        $this->config = $config;
-        $this->crypt = $crypt;
         $this->tagManager = $tagManager;
         $this->lockManager = $lockManager;
         $this->timezoneService = $timezoneService;
 
         if ($this->config->getAdvanced()
             && \OC::$server->getAppManager()->isInstalled("files_sharing")) {
-            $this->extraPermissions = new ExtraPermissions($AppName, $logger, $shareManager, $config);
+            $this->extraPermissions = new ExtraPermissions($AppName, $this->logger, $shareManager, $this->config);
         }
 
-        $this->fileUtility = new FileUtility($AppName, $trans, $logger, $config, $shareManager, $session);
+        $this->fileUtility = new FileUtility($AppName, $trans, $this->logger, $this->config, $shareManager, $session);
         $this->avatarManager = \OC::$server->get(IAvatarManager::class);
     }
 
@@ -251,7 +236,7 @@ class EditorApiController extends OCSController {
     public function config($fileId, $filePath = null, $shareToken = null, $directToken = null, $inframe = false, $inviewer = false, $desktop = false, $guestName = null, $template = false, $anchor = null) {
 
         if (!empty($directToken)) {
-            list($directData, $error) = $this->crypt->readHash($directToken);
+            [$directData, $error] = $this->crypt->readHash($directToken);
             if ($directData === null) {
                 $this->logger->error("Config for directEditor with empty or not correct hash: $error");
                 return new JSONResponse(["error" => $this->trans->t("Not permitted")]);
@@ -287,7 +272,7 @@ class EditorApiController extends OCSController {
             }
         }
 
-        list($file, $error, $share) = empty($shareToken) ? $this->getFile($userId, $fileId, $filePath, $template) : $this->fileUtility->getFileByToken($fileId, $shareToken);
+        [$file, $error, $share] = empty($shareToken) ? $this->getFile($userId, $fileId, $filePath, $template) : $this->fileUtility->getFileByToken($fileId, $shareToken);
 
         if (isset($error)) {
             $this->logger->error("Config: $fileId $error");
@@ -303,7 +288,7 @@ class EditorApiController extends OCSController {
         }
 
         $fileName = $file->getName();
-        $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+        $ext = strtolower(pathinfo((string) $fileName, PATHINFO_EXTENSION));
         $format = !empty($ext) && array_key_exists($ext, $this->config->formatsSetting()) ? $this->config->formatsSetting()[$ext] : null;
         if (!isset($format)) {
             $this->logger->info("Format is not supported for editing: $fileName");
@@ -401,7 +386,7 @@ class EditorApiController extends OCSController {
                         $this->logger->debug("File " . $file->getId() . " is locked by $lockOwner");
                     }
                 }
-            } catch (PreConditionNotMetException | NoLockProviderException $e) {
+            } catch (PreConditionNotMetException | NoLockProviderException) {
             }
         }
 
@@ -546,7 +531,7 @@ class EditorApiController extends OCSController {
                 $createParam["name"] = $createName;
 
                 $createUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".editor.create_new", $createParam);
-                $params["editorConfig"]["createUrl"] = urldecode($createUrl);
+                $params["editorConfig"]["createUrl"] = urldecode((string) $createUrl);
             }
 
             $templatesList = TemplateManager::getGlobalTemplates($file->getMimeType());
@@ -559,7 +544,7 @@ class EditorApiController extends OCSController {
                     array_push($templates, [
                         "image" => "",
                         "title" => $templateItem->getName(),
-                        "url" => urldecode($this->urlGenerator->linkToRouteAbsolute($this->appName . ".editor.create_new", $createParam))
+                        "url" => urldecode((string) $this->urlGenerator->linkToRouteAbsolute($this->appName . ".editor.create_new", $createParam))
                     ]);
                 }
 
@@ -876,22 +861,20 @@ class EditorApiController extends OCSController {
                 "date" => (new \DateTime("now", new \DateTimeZone($timezone)))->format("Y-m-d H:i:s"),
                 "themingName" => \OC::$server->getThemingDefaults()->getName()
             ];
-            $watermarkTemplate = preg_replace_callback("/{(.+?)}/", function ($matches) use ($replacements) {
-                return $replacements[$matches[1]];
-            }, $watermarkTemplate);
+            $watermarkTemplate = preg_replace_callback("/{(.+?)}/", fn($matches) => $replacements[$matches[1]], $watermarkTemplate);
 
             $params["document"]["options"] = [
                 "watermark_on_draw" => [
                     "align" => 1,
                     "height" => 100,
-                    "paragraphs" => array([
+                    "paragraphs" => [[
                         "align" => 2,
-                        "runs" => array([
+                        "runs" => [[
                             "fill" => [182, 182, 182],
                             "font-size" => 70,
                             "text" => $watermarkTemplate,
-                        ])
-                    ]),
+                        ]]
+                    ]],
                     "rotate" => -45,
                     "width" => 250,
                 ]

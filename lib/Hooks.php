@@ -170,7 +170,7 @@ class Hooks {
         }
 
         try {
-            list($filePath, $versionId) = FileVersions::splitPathVersion($pathVersion);
+            [$filePath, $versionId] = FileVersions::splitPathVersion($pathVersion);
             if (empty($filePath)) {
                 return;
             }
@@ -206,7 +206,7 @@ class Hooks {
             return;
         }
 
-        $filePath = preg_replace('/^\/\w+\/files\//', '', $params["node"]->getPath());
+        $filePath = preg_replace('/^\/\w+\/files\//', '', (string) $params["node"]->getPath());
         if (empty($filePath)) {
             return;
         }

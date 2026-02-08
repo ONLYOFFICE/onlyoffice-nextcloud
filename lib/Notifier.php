@@ -41,13 +41,6 @@ use Psr\Log\LoggerInterface;
 class Notifier implements INotifier {
 
     /**
-     * Application name
-     *
-     * @var string
-     */
-    private $appName;
-
-    /**
      * IFactory
      *
      * @var IFactory
@@ -60,13 +53,6 @@ class Notifier implements INotifier {
      * @var IURLGenerator
      */
     private $urlGenerator;
-
-    /**
-     * Logger
-     *
-     * @var LoggerInterface
-     */
-    private $logger;
 
     /**
      * User manager
@@ -83,16 +69,20 @@ class Notifier implements INotifier {
      * @param IUserManager $userManager - user manager
      */
     public function __construct(
-        string $appName,
+        /**
+         * Application name
+         */
+        private readonly string $appName,
         IFactory $l10nFactory,
         IURLGenerator $urlGenerator,
-        LoggerInterface $logger,
+        /**
+         * Logger
+         */
+        private readonly LoggerInterface $logger,
         IUserManager $userManager
     ) {
-        $this->appName = $appName;
         $this->l10nFactory = $l10nFactory;
         $this->urlGenerator = $urlGenerator;
-        $this->logger = $logger;
         $this->userManager = $userManager;
     }
 

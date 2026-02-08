@@ -44,25 +44,11 @@ use OCP\IUserManager;
 class EmailManager {
 
     /**
-     * Application name
-     *
-     * @var string
-     */
-    private $appName;
-
-    /**
      * l10n service
      *
      * @var IL10N
      */
     private $trans;
-
-    /**
-     * Logger
-     *
-     * @var LoggerInterface
-     */
-    private $logger;
 
     /**
      * Mailer
@@ -94,16 +80,20 @@ class EmailManager {
      * @param IURLGenerator $urlGenerator - URL generator
      */
     public function __construct(
-        $appName,
+        /**
+         * Application name
+         */
+        private $appName,
         IL10N $trans,
-        LoggerInterface $logger,
+        /**
+         * Logger
+         */
+        private readonly LoggerInterface $logger,
         IMailer $mailer,
         IUserManager $userManager,
         IURLGenerator $urlGenerator,
     ) {
-        $this->appName = $appName;
         $this->trans = $trans;
-        $this->logger = $logger;
         $this->mailer = $mailer;
         $this->userManager = $userManager;
         $this->urlGenerator = $urlGenerator;

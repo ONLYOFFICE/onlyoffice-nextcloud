@@ -54,19 +54,14 @@ class DocumentService {
     private $trans;
 
     /**
-     * Application configuration
-     *
-     * @var AppConfig
-     */
-    private $config;
-
-    /**
      * @param IL10N $trans - l10n service
      * @param AppConfig $config - application configutarion
      */
-    public function __construct(IL10N $trans, AppConfig $appConfig) {
+    public function __construct(IL10N $trans, /**
+     * Application configuration
+     */
+    private readonly AppConfig $config) {
         $this->trans = $trans;
-        $this->config = $appConfig;
     }
 
     /**
@@ -80,8 +75,8 @@ class DocumentService {
         if (strlen($expected_key) > 20) {
             $expected_key = crc32($expected_key);
         }
-        $key = preg_replace("[^0-9-.a-zA-Z_=]", "_", $expected_key);
-        $key = substr($key, 0, min(array(strlen($key), 20)));
+        $key = preg_replace("[^0-9-.a-zA-Z_=]", "_", (string) $expected_key);
+        $key = substr((string) $key, 0, min([strlen((string) $key), 20]));
         return $key;
     }
 
@@ -391,9 +386,9 @@ class DocumentService {
         $client = $httpClientService->newClient();
 
         if (null === $opts) {
-            $opts = array();
+            $opts = [];
         }
-        if (substr($url, 0, strlen("https")) === "https" && $this->config->getVerifyPeerOff()) {
+        if (str_starts_with($url, "https") && $this->config->getVerifyPeerOff()) {
             $opts["verify"] = false;
         }
         if (!array_key_exists("timeout", $opts)) {
@@ -426,7 +421,7 @@ class DocumentService {
         $version = null;
 
         try {
-            if (preg_match("/^https:\/\//i", $urlGenerator->getAbsoluteURL("/"))
+            if (preg_match("/^https:\/\//i", (string) $urlGenerator->getAbsoluteURL("/"))
                 && preg_match("/^http:\/\//i", $this->config->getDocumentServerUrl())) {
                 throw new \Exception($this->trans->t("Mixed Active Content is not allowed. HTTPS address for ONLYOFFICE Docs is required."));
             }
@@ -469,9 +464,9 @@ class DocumentService {
                 $fileUrl = str_replace($urlGenerator->getAbsoluteURL("/"), $this->config->getStorageUrl(), $fileUrl);
             }
 
-            $convertedFileUri = $this->getConvertedUri($fileUrl, "docx", "docx", "check_" . rand());
+            $convertedFileUri = $this->getConvertedUri($fileUrl, "docx", "docx", "check_" . random_int(0, mt_getrandmax()));
 
-            if (strcmp($convertedFileUri, $fileUrl) === 0) {
+            if (strcmp($convertedFileUri, (string) $fileUrl) === 0) {
                 $logger->debug("getConvertedUri skipped", ["app" => self::$appName]);
             }
         } catch (\Exception $e) {

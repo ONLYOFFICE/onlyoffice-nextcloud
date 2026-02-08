@@ -47,25 +47,11 @@ use Psr\Log\LoggerInterface;
 class FileUtility {
 
     /**
-     * Application name
-     *
-     * @var string
-     */
-    private $appName;
-
-    /**
      * l10n service
      *
      * @var IL10N
      */
     private $trans;
-
-    /**
-     * Logger
-     *
-     * @var LoggerInterface
-     */
-    private $logger;
 
     /**
      * Share manager
@@ -82,14 +68,7 @@ class FileUtility {
     private $session;
 
     /**
-     * Application configuration
-     *
-     * @var AppConfig
-     */
-    private $config;
-
-    /**
-     * @param string $AppName - application name
+     * @param string $appName - application name
      * @param IL10N $trans - l10n service
      * @param LoggerInterface $logger - logger
      * @param AppConfig $config - application configuration
@@ -97,17 +76,23 @@ class FileUtility {
      * @param IManager $ISession - Session
      */
     public function __construct(
-        $AppName,
+        /**
+         * Application name
+         */
+        private $appName,
         IL10N $trans,
-        LoggerInterface $logger,
-        AppConfig $config,
+        /**
+         * Logger
+         */
+        private readonly LoggerInterface $logger,
+        /**
+         * Application configuration
+         */
+        private readonly AppConfig $config,
         IManager $shareManager,
         ISession $session
     ) {
-        $this->appName = $AppName;
         $this->trans = $trans;
-        $this->logger = $logger;
-        $this->config = $config;
         $this->shareManager = $shareManager;
         $this->session = $session;
     }
@@ -122,7 +107,7 @@ class FileUtility {
      * @return array
      */
     public function getFileByToken($fileId, $shareToken, $path = null) {
-        list($node, $error, $share) = $this->getNodeByToken($shareToken);
+        [$node, $error, $share] = $this->getNodeByToken($shareToken);
 
         if (isset($error)) {
             return [null, $error, null];
@@ -165,7 +150,7 @@ class FileUtility {
      * @return array
      */
     public function getNodeByToken($shareToken) {
-        list($share, $error) = $this->getShare($shareToken);
+        [$share, $error] = $this->getShare($shareToken);
 
         if (isset($error)) {
             return [null, $error, null];

@@ -51,13 +51,6 @@ class JobListController extends Controller {
     private $jobList;
 
     /**
-     * Application configuration
-     *
-     * @var AppConfig
-     */
-    private $config;
-
-    /**
      * JobListController constructor.
      *
      * @param string $AppName - application name
@@ -65,9 +58,11 @@ class JobListController extends Controller {
      * @param AppConfig $config - application configuration
      * @param IJobList $jobList - job list
      */
-    public function __construct($AppName, IRequest $request, AppConfig $config, IJobList $jobList) {
+    public function __construct($AppName, IRequest $request, /**
+     * Application configuration
+     */
+    private readonly AppConfig $config, IJobList $jobList) {
         parent::__construct($AppName, $request);
-        $this->config = $config;
         $this->jobList = $jobList;
     }
 

@@ -42,13 +42,6 @@ use Psr\Log\LoggerInterface;
 class FileCreator extends ACreateEmpty {
 
     /**
-     * Application name
-     *
-     * @var string
-     */
-    private $appName;
-
-    /**
      * l10n service
      *
      * @var IL10N
@@ -56,35 +49,27 @@ class FileCreator extends ACreateEmpty {
     private $trans;
 
     /**
-     * Logger
-     *
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
-     * Format for creation
-     *
-     * @var string
-     */
-    private $format;
-
-    /**
-     * @param string $AppName - application name
+     * @param string $appName - application name
      * @param IL10N $trans - l10n service
      * @param LoggerInterface $logger - logger
      * @param string $format - format for creation
      */
     public function __construct(
-        $AppName,
+        /**
+         * Application name
+         */
+        private $appName,
         IL10N $trans,
-        LoggerInterface $logger,
-        $format
+        /**
+         * Logger
+         */
+        private readonly LoggerInterface $logger,
+        /**
+         * Format for creation
+         */
+        private $format
     ) {
-        $this->appName = $AppName;
         $this->trans = $trans;
-        $this->logger = $logger;
-        $this->format = $format;
     }
 
     /**
@@ -101,14 +86,13 @@ class FileCreator extends ACreateEmpty {
      *
      * @return string
      */
-    public function getName(): string {
-        switch ($this->format) {
-            case "xlsx":
-                return $this->trans->t("New spreadsheet");
-            case "pptx":
-                return $this->trans->t("New presentation");
-        }
-        return $this->trans->t("New document");
+    public function getName(): string
+    {
+        return match ($this->format) {
+            "xlsx" => $this->trans->t("New spreadsheet"),
+            "pptx" => $this->trans->t("New presentation"),
+            default => $this->trans->t("New document"),
+        };
     }
 
     /**
@@ -125,14 +109,13 @@ class FileCreator extends ACreateEmpty {
      *
      * @return array
      */
-    public function getMimetype(): string {
-        switch ($this->format) {
-            case "xlsx":
-                return "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-            case "pptx":
-                return "application/vnd.openxmlformats-officedocument.presentationml.presentation";
-        }
-        return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+    public function getMimetype(): string
+    {
+        return match ($this->format) {
+            "xlsx" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            "pptx" => "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+            default => "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        };
     }
 
     /**

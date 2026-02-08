@@ -81,7 +81,7 @@ use Psr\Log\LoggerInterface;
 class Application extends App implements IBootstrap {
     public const APP_ID = "onlyoffice";
 
-    private AppConfig $appConfig;
+    private readonly AppConfig $appConfig;
 
     public function __construct(array $urlParams = []) {
         parent::__construct(self::APP_ID, $urlParams);
@@ -111,9 +111,7 @@ class Application extends App implements IBootstrap {
         $container = $this->getContainer();
 
         $previewManager = $container->query(IPreview::class);
-        $previewManager->registerProvider(Preview::getMimeTypeRegex(), function () use ($container) {
-            return $container->query(Preview::class);
-        });
+        $previewManager->registerProvider(Preview::getMimeTypeRegex(), fn() => $container->query(Preview::class));
 
         $detector = $container->query(IMimeTypeDetector::class);
         $detector->getAllMappings();

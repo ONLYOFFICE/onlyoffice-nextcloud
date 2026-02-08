@@ -146,7 +146,7 @@ class RemoteInstance {
         $status = false;
         try {
             $response = $client->get($remote . "ocs/v2.php/apps/" . self::APP_NAME . "/api/v1/healthcheck?format=json");
-            $body = json_decode($response->getBody(), true);
+            $body = json_decode((string) $response->getBody(), true);
 
             $data = $body["ocs"]["data"];
 
@@ -180,7 +180,7 @@ class RemoteInstance {
     public static function getRemoteKey($file) {
         $logger = \OCP\Log\logger('onlyoffice');
 
-        $remote = rtrim($file->getStorage()->getRemote(), "/") . "/";
+        $remote = rtrim((string) $file->getStorage()->getRemote(), "/") . "/";
         $shareToken = $file->getStorage()->getToken();
         $internalPath = $file->getInternalPath();
 
@@ -196,7 +196,7 @@ class RemoteInstance {
                 ]
             ]);
 
-            $body = \json_decode($response->getBody(), true);
+            $body = \json_decode((string) $response->getBody(), true);
 
             $data = $body["ocs"]["data"];
             if (!empty($data["error"])) {
@@ -233,7 +233,7 @@ class RemoteInstance {
         $logger = \OCP\Log\logger('onlyoffice');
         $action = $lock ? "lock" : "unlock";
 
-        $remote = rtrim($file->getStorage()->getRemote(), "/") . "/";
+        $remote = rtrim((string) $file->getStorage()->getRemote(), "/") . "/";
         $shareToken = $file->getStorage()->getToken();
         $internalPath = $file->getInternalPath();
 
@@ -253,7 +253,7 @@ class RemoteInstance {
 
         try {
             $response = $client->post($remote . "ocs/v2.php/apps/" . self::APP_NAME . "/api/v1/keylock?format=json", $data);
-            $body = \json_decode($response->getBody(), true);
+            $body = \json_decode((string) $response->getBody(), true);
 
             $data = $body["ocs"]["data"];
 

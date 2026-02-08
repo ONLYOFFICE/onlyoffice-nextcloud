@@ -44,13 +44,6 @@ use OCP\Util;
 class FileSharingListener implements IEventListener {
 
     /**
-     * Application configuration
-     *
-     * @var AppConfig
-     */
-    private $appConfig;
-
-    /**
      * Initial state
      *
      * @var IInitialState
@@ -70,11 +63,13 @@ class FileSharingListener implements IEventListener {
      * @param IServerContainer $serverContainer - server container
      */
     public function __construct(
-        AppConfig $appConfig,
+        /**
+         * Application configuration
+         */
+        private readonly AppConfig $appConfig,
         IInitialState $initialState,
         IServerContainer $serverContainer
     ) {
-        $this->appConfig = $appConfig;
         $this->initialState = $initialState;
         $this->serverContainer = $serverContainer;
     }
@@ -102,9 +97,7 @@ class FileSharingListener implements IEventListener {
             }
 
             $container = $this->serverContainer;
-            $this->initialState->provideLazyInitialState("settings", function () use ($container) {
-                return $container->query(SettingsData::class);
-            });
+            $this->initialState->provideLazyInitialState("settings", fn() => $container->query(SettingsData::class));
 
             Util::addScript("onlyoffice", "onlyoffice-main");
             Util::addStyle("onlyoffice", "main");

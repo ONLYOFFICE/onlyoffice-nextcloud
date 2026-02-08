@@ -67,7 +67,7 @@ class TemplateManager {
         $templateDir = null;
         try {
             $templateDir = $rootFolder->get($dirPath);
-        } catch (NotFoundException $e) {
+        } catch (NotFoundException) {
             $templateDir = $rootFolder->newFolder($dirPath);
         }
 
@@ -130,17 +130,14 @@ class TemplateManager {
      *
      * @return string
      */
-    public static function getTypeTemplate($mime) {
-        switch ($mime) {
-            case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-                return "document";
-            case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
-                return "spreadsheet";
-            case "application/vnd.openxmlformats-officedocument.presentationml.presentation":
-                return "presentation";
-        }
-
-        return "";
+    public static function getTypeTemplate($mime)
+    {
+        return match ($mime) {
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document" => "document",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" => "spreadsheet",
+            "application/vnd.openxmlformats-officedocument.presentationml.presentation" => "presentation",
+            default => "",
+        };
     }
 
     /**
@@ -150,17 +147,14 @@ class TemplateManager {
      *
      * @return string
      */
-    public static function getMimeTemplate($type) {
-        switch ($type) {
-            case "document":
-                return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-            case "spreadsheet":
-                return "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-            case "presentation":
-                return "application/vnd.openxmlformats-officedocument.presentationml.presentation";
-        }
-
-        return "";
+    public static function getMimeTemplate($type)
+    {
+        return match ($type) {
+            "document" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            "spreadsheet" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            "presentation" => "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+            default => "",
+        };
     }
 
     /**
@@ -172,14 +166,10 @@ class TemplateManager {
      */
     public static function isTemplateType($name) {
         $ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
-        switch ($ext) {
-            case "docx":
-            case "xlsx":
-            case "pptx":
-                return true;
-        }
-
-        return false;
+        return match ($ext) {
+            "docx", "xlsx", "pptx" => true,
+            default => false,
+        };
     }
 
     /**

@@ -37,13 +37,6 @@ use OCP\IURLGenerator;
 class TemplateProvider implements ICustomTemplateProvider {
 
     /**
-     * Application name
-     *
-     * @var string
-     */
-    private $appName;
-
-    /**
      * Url generator service
      *
      * @var IURLGenerator
@@ -51,11 +44,13 @@ class TemplateProvider implements ICustomTemplateProvider {
     private $urlGenerator;
 
     /**
-     * @param string $AppName - application name
+     * @param string $appName - application name
      * @param IURLGenerator $urlGenerator - url generator service
      */
-    public function __construct($AppName, IURLGenerator $urlGenerator) {
-        $this->appName = $AppName;
+    public function __construct(/**
+     * Application name
+     */
+    private $appName, IURLGenerator $urlGenerator) {
         $this->urlGenerator = $urlGenerator;
     }
 

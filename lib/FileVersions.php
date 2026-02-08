@@ -173,7 +173,7 @@ class FileVersions {
         }
 
         $fileId = $fileInfo->getId();
-        list($view, $path) = self::getView($ownerId, $fileInfo);
+        [$view, $path] = self::getView($ownerId, $fileInfo);
         if ($view === null) {
             return null;
         }
@@ -186,7 +186,7 @@ class FileVersions {
         $historyDataString = $view->file_get_contents($historyPath);
 
         try {
-            $historyData = json_decode($historyDataString, true);
+            $historyData = json_decode((string) $historyDataString, true);
 
             if ($historyData["prev"] !== $prevVersion) {
                 $logger->debug("getHistoryData: previous $prevVersion != " . $historyData["prev"], ["app" => self::$appName]);
@@ -223,7 +223,7 @@ class FileVersions {
             return false;
         }
 
-        list($view, $path) = self::getView($ownerId, $fileInfo);
+        [$view, $path] = self::getView($ownerId, $fileInfo);
         if ($view === null) {
             return false;
         }
@@ -247,7 +247,7 @@ class FileVersions {
         }
         $fileId = $fileInfo->getId();
 
-        list($view, $path) = self::getView($ownerId, $fileInfo);
+        [$view, $path] = self::getView($ownerId, $fileInfo);
         if ($view === null) {
             return null;
         }
@@ -299,7 +299,7 @@ class FileVersions {
         $fileId = $fileInfo->getId();
         $versionId = $fileInfo->getMtime();
 
-        list($view, $path) = self::getView($ownerId, $fileInfo, true);
+        [$view, $path] = self::getView($ownerId, $fileInfo, true);
 
         try {
             $changesPath = $path . "/" . $versionId . self::$changesExt;
@@ -336,7 +336,7 @@ class FileVersions {
             return;
         }
 
-        list($view, $path) = self::getView($ownerId, $fileInfo);
+        [$view, $path] = self::getView($ownerId, $fileInfo);
         if ($view === null) {
             return;
         }
@@ -363,7 +363,7 @@ class FileVersions {
         $fileId = $fileInfo->getId();
         $logger->debug("deleteVersion $fileId ($versionId)", ["app" => self::$appName]);
 
-        list($view, $path) = self::getView($ownerId, $fileInfo);
+        [$view, $path] = self::getView($ownerId, $fileInfo);
         if ($view === null) {
             return null;
         }
@@ -434,7 +434,7 @@ class FileVersions {
         $fileId = $fileInfo->getId();
         $versionId = $fileInfo->getMtime();
 
-        list($view, $path) = self::getView($ownerId, $fileInfo, true);
+        [$view, $path] = self::getView($ownerId, $fileInfo, true);
 
         try {
             $authorPath = $path . "/" . $versionId . self::$authorExt;
@@ -467,7 +467,7 @@ class FileVersions {
         }
 
         $fileId = $fileInfo->getId();
-        list($view, $path) = self::getView($ownerId, $fileInfo);
+        [$view, $path] = self::getView($ownerId, $fileInfo);
         if ($view === null) {
             return null;
         }
@@ -478,7 +478,7 @@ class FileVersions {
         }
 
         $authorDataString = $view->file_get_contents($authorPath);
-        $author = json_decode($authorDataString, true);
+        $author = json_decode((string) $authorDataString, true);
 
         \OCP\Log\logger('onlyoffice')->debug("getAuthor: $fileId v.$versionId for $ownerId get author $authorPath", ["app" => self::$appName]);
 
@@ -506,7 +506,7 @@ class FileVersions {
             return;
         }
 
-        list($view, $path) = self::getView($ownerId, $fileInfo);
+        [$view, $path] = self::getView($ownerId, $fileInfo);
         if ($view === null) {
             return null;
         }

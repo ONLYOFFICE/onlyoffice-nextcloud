@@ -71,7 +71,7 @@ class ContentSecurityPolicyListener implements IEventListener {
     }
 
     private function isMainPage(): bool {
-        $scriptName = explode('/', $this->request->getScriptName());
+        $scriptName = explode('/', (string) $this->request->getScriptName());
         return end($scriptName) === 'index.php';
     }
 }

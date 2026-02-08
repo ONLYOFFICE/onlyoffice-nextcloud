@@ -54,25 +54,11 @@ use Psr\Log\LoggerInterface;
 class Preview implements IProviderV2 {
 
     /**
-     * Application name
-     *
-     * @var string
-     */
-    private $appName;
-
-    /**
      * Root folder
      *
      * @var IRootFolder
      */
     private $root;
-
-    /**
-     * Logger
-     *
-     * @var LoggerInterface
-     */
-    private $logger;
 
     /**
      * l10n service
@@ -82,25 +68,11 @@ class Preview implements IProviderV2 {
     private $trans;
 
     /**
-     * Application configuration
-     *
-     * @var AppConfig
-     */
-    private $config;
-
-    /**
      * Url generator service
      *
      * @var IURLGenerator
      */
     private $urlGenerator;
-
-    /**
-     * Hash generator
-     *
-     * @var Crypt
-     */
-    private $crypt;
 
     /**
      * File version manager
@@ -171,23 +143,31 @@ class Preview implements IProviderV2 {
      * @param ISession $session - session
      */
     public function __construct(
-        string $appName,
+        /**
+         * Application name
+         */
+        private readonly string $appName,
         IRootFolder $root,
-        LoggerInterface $logger,
+        /**
+         * Logger
+         */
+        private readonly LoggerInterface $logger,
         IL10N $trans,
-        AppConfig $config,
+        /**
+         * Application configuration
+         */
+        private readonly AppConfig $config,
         IURLGenerator $urlGenerator,
-        Crypt $crypt,
+        /**
+         * Hash generator
+         */
+        private readonly Crypt $crypt,
         IManager $shareManager,
         ISession $session
     ) {
-        $this->appName = $appName;
         $this->root = $root;
-        $this->logger = $logger;
         $this->trans = $trans;
-        $this->config = $config;
         $this->urlGenerator = $urlGenerator;
-        $this->crypt = $crypt;
 
         if (\OC::$server->getAppManager()->isInstalled("files_versions")) {
             try {
@@ -197,7 +177,7 @@ class Preview implements IProviderV2 {
             }
         }
 
-        $this->fileUtility = new FileUtility($appName, $trans, $logger, $config, $shareManager, $session);
+        $this->fileUtility = new FileUtility($this->appName, $trans, $this->logger, $this->config, $shareManager, $session);
     }
 
     /**
@@ -366,7 +346,7 @@ class Preview implements IProviderV2 {
                 $versionNum = $versionNum + 1;
 
                 $versionId = $version->getRevisionId();
-                if (strcmp($versionId, $fileVersion) === 0) {
+                if (strcmp((string) $versionId, (string) $fileVersion) === 0) {
                     $key = $this->fileUtility->getVersionKey($version);
                     $key = DocumentService::generateRevisionId($key);
 

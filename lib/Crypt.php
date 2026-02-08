@@ -37,17 +37,15 @@ namespace OCA\Onlyoffice;
 class Crypt {
 
     /**
-     * Application configuration
-     *
-     * @var AppConfig
-     */
-    private $config;
-
-    /**
      * @param AppConfig $config - application configutarion
      */
-    public function __construct(AppConfig $appConfig) {
-        $this->config = $appConfig;
+    public function __construct(
+        /**
+         * Application configuration
+         */
+        private readonly AppConfig $config
+    )
+    {
     }
 
     /**

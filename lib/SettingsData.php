@@ -31,15 +31,13 @@ namespace OCA\Onlyoffice;
 
 class SettingsData implements \JsonSerializable {
 
-    /**
-     * Application configuration
-     *
-     * @var AppConfig
-     */
-    private $appConfig;
-
-    public function __construct(AppConfig $appConfig) {
-        $this->appConfig = $appConfig;
+    public function __construct(
+        /**
+         * Application configuration
+         */
+        private readonly AppConfig $appConfig
+    )
+    {
     }
 
     public function jsonSerialize(): array {

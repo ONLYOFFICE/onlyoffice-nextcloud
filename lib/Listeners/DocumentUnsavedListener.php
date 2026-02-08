@@ -59,10 +59,10 @@ class DocumentUnsavedListener implements IEventListener {
      * @param \OCP\L10N\IFactory $l10nFactory
      */
     public function __construct(
-        private IConfig $config,
-        private LoggerInterface $logger,
-        private NotificationIManager $notificationManager,
-        private IFactory $l10nFactory,
+        private readonly IConfig $config,
+        private readonly LoggerInterface $logger,
+        private readonly NotificationIManager $notificationManager,
+        private readonly IFactory $l10nFactory,
     ) {}
 
     public function handle(Event $event): void {

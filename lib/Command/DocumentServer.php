@@ -42,13 +42,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 class DocumentServer extends Command {
 
     /**
-     * Application configuration
-     *
-     * @var AppConfig
-     */
-    private $config;
-
-    /**
      * l10n service
      *
      * @var IL10N
@@ -63,29 +56,26 @@ class DocumentServer extends Command {
     private $urlGenerator;
 
     /**
-     * Hash generator
-     *
-     * @var Crypt
-     */
-    private $crypt;
-
-    /**
      * @param AppConfig $config - application configuration
      * @param IL10N $trans - l10n service
      * @param IURLGenerator $urlGenerator - url generator service
      * @param Crypt $crypt - hash generator
      */
     public function __construct(
-        AppConfig $config,
+        /**
+         * Application configuration
+         */
+        private readonly AppConfig $config,
         IL10N $trans,
         IURLGenerator $urlGenerator,
-        Crypt $crypt
+        /**
+         * Hash generator
+         */
+        private readonly Crypt $crypt
     ) {
         parent::__construct();
-        $this->config = $config;
         $this->trans = $trans;
         $this->urlGenerator = $urlGenerator;
-        $this->crypt = $crypt;
     }
 
     /**
@@ -123,7 +113,7 @@ class DocumentServer extends Command {
         if ($check) {
             $documentService = new DocumentService($this->trans, $this->config);
 
-            list($error, $version) = $documentService->checkDocServiceUrl($this->urlGenerator, $this->crypt);
+            [$error, $version] = $documentService->checkDocServiceUrl($this->urlGenerator, $this->crypt);
             $this->config->setSettingsError($error);
 
             if (!empty($error)) {
