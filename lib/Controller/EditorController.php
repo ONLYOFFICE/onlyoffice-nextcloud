@@ -217,19 +217,19 @@ class EditorController extends Controller {
         $this->shareManager = $shareManager;
         $this->groupManager = $groupManager;
 
-        if (\OC::$server->getAppManager()->isInstalled("files_versions")) {
+        if (\OCP\Server::get(\OCP\App\IAppManager::class)->isInstalled("files_versions")) {
             try {
-                $this->versionManager = \OC::$server->query(IVersionManager::class);
+                $this->versionManager = \OCP\Server::get(IVersionManager::class);
             } catch (QueryException $e) {
                 $this->logger->error("VersionManager init error", ["exception" => $e]);
             }
         }
 
         $this->fileUtility = new FileUtility($AppName, $trans, $this->logger, $this->config, $shareManager, $session);
-        $this->avatarManager = \OC::$server->get(IAvatarManager::class);
+        $this->avatarManager = \OCP\Server::get(IAvatarManager::class);
         $this->emailManager = new EmailManager($AppName, $trans, $this->logger, $mailer, $userManager, $urlGenerator);
 
-        $this->folderManager = \OC::$server->getAppManager()->isInstalled("groupfolders")
+        $this->folderManager = \OCP\Server::get(\OCP\App\IAppManager::class)->isInstalled("groupfolders")
             ? $appContainer->get(\OCA\GroupFolders\Folder\FolderManager::class)
             : null;
     }
@@ -625,7 +625,7 @@ class EditorController extends Controller {
             $comment = substr($comment, 0, ($maxLen - strlen($ending))) . $ending;
         }
 
-        $notificationManager = \OC::$server->getNotificationManager();
+        $notificationManager = \OCP\Server::get(\OCP\Notification\IManager::class);
         $notification = $notificationManager->createNotification();
         $notification->setApp($this->appName)
             ->setDateTime(new \DateTime())
@@ -1621,8 +1621,8 @@ class EditorController extends Controller {
     private function getShareExcludedGroups() {
         $excludedGroups = [];
 
-        if (\OC::$server->getConfig()->getAppValue("core", "shareapi_exclude_groups", "no") === "yes") {
-            $excludedGroups = json_decode((string) \OC::$server->getConfig()->getAppValue("core", "shareapi_exclude_groups_list", ""), true);
+        if (\OCP\Server::get(\OCP\IConfig::class)->getAppValue("core", "shareapi_exclude_groups", "no") === "yes") {
+            $excludedGroups = json_decode((string) \OCP\Server::get(\OCP\IConfig::class)->getAppValue("core", "shareapi_exclude_groups_list", ""), true);
         }
 
         return $excludedGroups;

@@ -207,12 +207,12 @@ class EditorApiController extends OCSController {
         $this->timezoneService = $timezoneService;
 
         if ($this->config->getAdvanced()
-            && \OC::$server->getAppManager()->isInstalled("files_sharing")) {
+            && \OCP\Server::get(\OCP\App\IAppManager::class)->isInstalled("files_sharing")) {
             $this->extraPermissions = new ExtraPermissions($AppName, $this->logger, $shareManager, $this->config);
         }
 
         $this->fileUtility = new FileUtility($AppName, $trans, $this->logger, $this->config, $shareManager, $session);
-        $this->avatarManager = \OC::$server->get(IAvatarManager::class);
+        $this->avatarManager = \OCP\Server::get(IAvatarManager::class);
     }
 
     /**
@@ -445,7 +445,7 @@ class EditorApiController extends OCSController {
             $params["document"]["permissions"]["changeHistory"] = true;
         }
 
-        if (\OC::$server->getRequest()->isUserAgent([$this::USER_AGENT_MOBILE])) {
+        if (\OCP\Server::get(\OCP\IRequest::class)->isUserAgent([$this::USER_AGENT_MOBILE])) {
             $params["type"] = "mobile";
         }
 
@@ -585,7 +585,7 @@ class EditorApiController extends OCSController {
         }
 
         if ($inframe) {
-            $params["_files_sharing"] = \OC::$server->getAppManager()->isInstalled("files_sharing");
+            $params["_files_sharing"] = \OCP\Server::get(\OCP\App\IAppManager::class)->isInstalled("files_sharing");
         }
 
         $params = $this->setCustomization($params);
@@ -859,7 +859,7 @@ class EditorApiController extends OCSController {
                 "userDisplayName" => $userDisplayName,
                 "email" => $email,
                 "date" => (new \DateTime("now", new \DateTimeZone($timezone)))->format("Y-m-d H:i:s"),
-                "themingName" => \OC::$server->getThemingDefaults()->getName()
+                "themingName" => \OCP\Server::get(\OCA\Theming\ThemingDefaults::class)->getName()
             ];
             $watermarkTemplate = preg_replace_callback("/{(.+?)}/", fn($matches) => $replacements[$matches[1]], $watermarkTemplate);
 
@@ -936,7 +936,7 @@ class EditorApiController extends OCSController {
             && $userId !== null) {
             $groups = $watermarkSettings["allGroupsList"];
             foreach ($groups as $group) {
-                if (\OC::$server->getGroupManager()->isInGroup($userId, $group)) {
+                if (\OCP\Server::get(\OCP\IGroupManager::class)->isInGroup($userId, $group)) {
                     return $watermarkText;
                 }
             }

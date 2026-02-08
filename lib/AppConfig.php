@@ -1039,7 +1039,7 @@ class AppConfig {
         }
 
         if ($value === "theme-system") {
-            $user = \OC::$server->getUserSession()->getUser();
+            $user = \OCP\Server::get(\OCP\IUserSession::class)->getUser();
 
             if ($user !== null) {
                 $themingMode = $this->config->getUserValue($user->getUID(), "theming", "enabled-themes", "");
@@ -1212,7 +1212,7 @@ class AppConfig {
      */
     public function isUserAllowedToUse($userId = null) {
         // no user -> no
-        $userSession = \OC::$server->getUserSession();
+        $userSession = \OCP\Server::get(\OCP\IUserSession::class);
         if (is_null($userId) && ($userSession === null || !$userSession->isLoggedIn())) {
             return false;
         }
@@ -1226,7 +1226,7 @@ class AppConfig {
         if (is_null($userId)) {
             $user = $userSession->getUser();
         } else {
-            $user = \OC::$server->getUserManager()->get($userId);
+            $user = \OCP\Server::get(\OCP\IUserManager::class)->get($userId);
             if (empty($user)) {
                 return false;
             }
@@ -1234,7 +1234,7 @@ class AppConfig {
 
         foreach ($groups as $groupName) {
             // group unknown -> error and allow nobody
-            $group = \OC::$server->getGroupManager()->get($groupName);
+            $group = \OCP\Server::get(\OCP\IGroupManager::class)->get($groupName);
             if ($group === null) {
                 \OCP\Log\logger('onlyoffice')->error("Group is unknown $groupName", ["app" => $this->appName]);
                 $this->setLimitGroups(array_diff($groups, [$groupName]));

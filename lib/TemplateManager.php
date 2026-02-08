@@ -59,11 +59,11 @@ class TemplateManager {
      * @return Folder
      */
     public static function getGlobalTemplateDir() {
-        $dirPath = "appdata_" . \OC::$server->getConfig()->getSystemValue("instanceid", null)
+        $dirPath = "appdata_" . \OCP\Server::get(\OCP\IConfig::class)->getSystemValue("instanceid", null)
                                 . "/" . self::$appName
                                 . "/" . self::$templateFolderName;
 
-        $rootFolder = \OC::$server->getRootFolder();
+        $rootFolder = \OCP\Server::get(\OCP\Files\IRootFolder::class);
         $templateDir = null;
         try {
             $templateDir = $rootFolder->get($dirPath);

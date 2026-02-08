@@ -68,7 +68,7 @@ class RemoteInstance {
      * @return array
      */
     private static function get($remote) {
-        $connection = \OC::$server->getDatabaseConnection();
+        $connection = \OCP\Server::get(\OCP\IDBConnection::class);
         $select = $connection->prepare("
             SELECT remote, expire, status
             FROM  `*PREFIX*" . self::TABLENAME_KEY . "`
@@ -90,7 +90,7 @@ class RemoteInstance {
      * @return bool
      */
     private static function set($remote, $status) {
-        $connection = \OC::$server->getDatabaseConnection();
+        $connection = \OCP\Server::get(\OCP\IDBConnection::class);
         $insert = $connection->prepare("
             INSERT INTO `*PREFIX*" . self::TABLENAME_KEY . "`
                 (`remote`, `status`, `expire`)
@@ -108,7 +108,7 @@ class RemoteInstance {
      * @return bool
      */
     private static function update($remote, $status) {
-        $connection = \OC::$server->getDatabaseConnection();
+        $connection = \OCP\Server::get(\OCP\IDBConnection::class);
         $update = $connection->prepare("
             UPDATE `*PREFIX*" . self::TABLENAME_KEY . "`
             SET status = ?, expire = ?
@@ -140,7 +140,7 @@ class RemoteInstance {
             return self::$healthRemote[$remote];
         }
 
-        $httpClientService = \OC::$server->get(IClientService::class);
+        $httpClientService = \OCP\Server::get(IClientService::class);
         $client = $httpClientService->newClient();
 
         $status = false;
@@ -184,7 +184,7 @@ class RemoteInstance {
         $shareToken = $file->getStorage()->getToken();
         $internalPath = $file->getInternalPath();
 
-        $httpClientService = \OC::$server->get(IClientService::class);
+        $httpClientService = \OCP\Server::get(IClientService::class);
         $client = $httpClientService->newClient();
 
         try {
@@ -237,7 +237,7 @@ class RemoteInstance {
         $shareToken = $file->getStorage()->getToken();
         $internalPath = $file->getInternalPath();
 
-        $httpClientService = \OC::$server->get(IClientService::class);
+        $httpClientService = \OCP\Server::get(IClientService::class);
         $client = $httpClientService->newClient();
         $data = [
             "timeout" => 5,

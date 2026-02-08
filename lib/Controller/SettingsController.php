@@ -141,7 +141,7 @@ class SettingsController extends Controller {
             "watermark" => $this->config->getWatermarkSettings(),
             "plugins" => $this->config->getCustomizationPlugins(),
             "macros" => $this->config->getCustomizationMacros(),
-            "tagsEnabled" => \OC::$server->getAppManager()->isEnabledForUser("systemtags"),
+            "tagsEnabled" => \OCP\Server::get(\OCP\App\IAppManager::class)->isEnabledForUser("systemtags"),
             "reviewDisplay" => $this->config->getCustomizationReviewDisplay(),
             "theme" => $this->config->getCustomizationTheme(true),
             "templates" => $this->getGlobalTemplates(),

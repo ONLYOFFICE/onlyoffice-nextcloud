@@ -131,7 +131,7 @@ class Hooks {
 
             FileVersions::deleteAllVersions($ownerId, $fileInfo);
 
-            $root = \OC::$server->get(\OCP\Files\IRootFolder::class);
+            $root = \OCP\Server::get(\OCP\Files\IRootFolder::class);
             $folder = $root->getUserFolder($ownerId);
             $files = $folder->getById($fileId);
             if (!empty($files)) {
@@ -143,7 +143,7 @@ class Hooks {
                     IShare::TYPE_ROOM,
                 ];
                 $node = $files[0];
-                $shareManager = \OC::$server->get(\OCP\Share\IManager::class);
+                $shareManager = \OCP\Server::get(\OCP\Share\IManager::class);
 
                 foreach ($shareTypes as $shareType) {
                     $shares = array_merge($shares, $shareManager->getSharesBy($ownerId, $shareType, $node));

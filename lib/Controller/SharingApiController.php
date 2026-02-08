@@ -119,7 +119,7 @@ class SharingApiController extends OCSController {
         $this->shareManager = $shareManager;
 
         if ($this->appConfig->getAdvanced()
-            && \OC::$server->getAppManager()->isInstalled("files_sharing")) {
+            && \OCP\Server::get(\OCP\App\IAppManager::class)->isInstalled("files_sharing")) {
             $this->extraPermissions = new ExtraPermissions($AppName, $this->logger, $shareManager, $this->appConfig);
         }
     }

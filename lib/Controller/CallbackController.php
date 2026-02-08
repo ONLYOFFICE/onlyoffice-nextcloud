@@ -189,9 +189,9 @@ class CallbackController extends Controller {
         $this->lockManager = $lockManager;
         $this->eventDispatcher = $eventDispatcher;
 
-        if (\OC::$server->getAppManager()->isInstalled("files_versions")) {
+        if (\OCP\Server::get(\OCP\App\IAppManager::class)->isInstalled("files_versions")) {
             try {
-                $this->versionManager = \OC::$server->query(IVersionManager::class);
+                $this->versionManager = \OCP\Server::get(IVersionManager::class);
             } catch (QueryException $e) {
                 $this->logger->error("VersionManager init error", ["exception" => $e]);
             }
@@ -230,7 +230,7 @@ class CallbackController extends Controller {
         $this->logger->debug("Download: $fileId ($version)" . ($changes ? " changes" : ""));
 
         if (!empty($this->config->getDocumentServerSecret())) {
-            $header = \OC::$server->getRequest()->getHeader($this->config->jwtHeader());
+            $header = $this->request->getHeader($this->config->jwtHeader());
             if (empty($header)) {
                 $this->logger->error("Download without jwt");
                 return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
@@ -369,7 +369,7 @@ class CallbackController extends Controller {
         }
 
         if (!empty($this->config->getDocumentServerSecret())) {
-            $header = \OC::$server->getRequest()->getHeader($this->config->jwtHeader());
+            $header = $this->request->getHeader($this->config->jwtHeader());
             if (empty($header)) {
                 $this->logger->error("Download empty without jwt");
                 return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
@@ -447,7 +447,7 @@ class CallbackController extends Controller {
                     return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);
                 }
             } else {
-                $header = \OC::$server->getRequest()->getHeader($this->config->jwtHeader());
+                $header = $this->request->getHeader($this->config->jwtHeader());
                 if (empty($header)) {
                     $this->logger->error("Track without jwt");
                     return new JSONResponse(["message" => $this->trans->t("Access denied")], Http::STATUS_FORBIDDEN);

@@ -91,7 +91,7 @@ class FilesListener implements IEventListener {
             }
 
             if ($this->appConfig->getAdvanced()
-                && \OC::$server->getAppManager()->isInstalled("files_sharing")) {
+                && \OCP\Server::get(\OCP\App\IAppManager::class)->isInstalled("files_sharing")) {
                 Util::addScript("onlyoffice", "onlyoffice-share");
                 Util::addStyle("onlyoffice", "share");
             }

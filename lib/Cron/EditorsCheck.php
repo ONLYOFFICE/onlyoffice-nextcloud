@@ -189,7 +189,7 @@ class EditorsCheck extends TimedJob {
      * @return void
      */
     private function notifyAdmins() {
-        $notificationManager = \OC::$server->getNotificationManager();
+        $notificationManager = \OCP\Server::get(\OCP\Notification\IManager::class);
         $notification = $notificationManager->createNotification();
         $notification->setApp($this->appName)
             ->setDateTime(new \DateTime())

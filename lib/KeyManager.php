@@ -49,7 +49,7 @@ class KeyManager {
      * @return string
      */
     public static function get($fileId) {
-        $connection = \OC::$server->getDatabaseConnection();
+        $connection = \OCP\Server::get(\OCP\IDBConnection::class);
         $select = $connection->prepare("
             SELECT `key`
             FROM  `*PREFIX*" . self::TABLENAME_KEY . "`
@@ -72,7 +72,7 @@ class KeyManager {
      * @return bool
      */
     public static function set($fileId, $key) {
-        $connection = \OC::$server->getDatabaseConnection();
+        $connection = \OCP\Server::get(\OCP\IDBConnection::class);
         $insert = $connection->prepare("
             INSERT INTO `*PREFIX*" . self::TABLENAME_KEY . "`
                 (`file_id`, `key`)
@@ -90,7 +90,7 @@ class KeyManager {
      * @return bool
      */
     public static function delete($fileId, $unlock = false) {
-        $connection = \OC::$server->getDatabaseConnection();
+        $connection = \OCP\Server::get(\OCP\IDBConnection::class);
         $delete = $connection->prepare(
             "
             DELETE FROM `*PREFIX*" . self::TABLENAME_KEY . "`
@@ -109,7 +109,7 @@ class KeyManager {
      * @return bool
      */
     public static function lock($fileId, $lock = true) {
-        $connection = \OC::$server->getDatabaseConnection();
+        $connection = \OCP\Server::get(\OCP\IDBConnection::class);
         $update = $connection->prepare("
             UPDATE `*PREFIX*" . self::TABLENAME_KEY . "`
             SET `lock` = ?
@@ -127,7 +127,7 @@ class KeyManager {
      * @return bool
      */
     public static function setForcesave($fileId, $fs = true) {
-        $connection = \OC::$server->getDatabaseConnection();
+        $connection = \OCP\Server::get(\OCP\IDBConnection::class);
         $update = $connection->prepare("
             UPDATE `*PREFIX*" . self::TABLENAME_KEY . "`
             SET `fs` = ?
@@ -144,7 +144,7 @@ class KeyManager {
      * @return bool
      */
     public static function wasForcesave($fileId) {
-        $connection = \OC::$server->getDatabaseConnection();
+        $connection = \OCP\Server::get(\OCP\IDBConnection::class);
         $select = $connection->prepare("
             SELECT `fs`
             FROM  `*PREFIX*" . self::TABLENAME_KEY . "`

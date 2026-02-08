@@ -522,7 +522,7 @@ class FileVersions {
      * Get version compare with files_versions
      */
     public static function getFilesVersionAppInfoCompareResult() {
-        $filesVersionAppInfo = \OC::$server->getAppManager()->getAppInfo("files_versions");
+        $filesVersionAppInfo = \OCP\Server::get(\OCP\App\IAppManager::class)->getAppInfo("files_versions");
         return \version_compare($filesVersionAppInfo["version"], "1.19");
     }
 

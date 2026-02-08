@@ -169,9 +169,9 @@ class Preview implements IProviderV2 {
         $this->trans = $trans;
         $this->urlGenerator = $urlGenerator;
 
-        if (\OC::$server->getAppManager()->isInstalled("files_versions")) {
+        if (\OCP\Server::get(\OCP\App\IAppManager::class)->isInstalled("files_versions")) {
             try {
-                $this->versionManager = \OC::$server->query(IVersionManager::class);
+                $this->versionManager = \OCP\Server::get(IVersionManager::class);
             } catch (QueryException $e) {
                 $this->logger->error("VersionManager init error", ["exception" => $e]);
             }
