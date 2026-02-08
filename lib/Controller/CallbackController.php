@@ -432,7 +432,7 @@ class CallbackController extends Controller {
      * @param array $actions - the array of action
      * @param string $filetype - extension of the document that is downloaded from the link specified with the url parameter
      *
-     * @return array
+     * @return JSONResponse
      */
     #[CORS]
     #[NoAdminRequired]

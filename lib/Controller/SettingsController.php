@@ -35,6 +35,7 @@ use OCA\Onlyoffice\DocumentService;
 use OCA\Onlyoffice\FileVersions;
 use OCA\Onlyoffice\TemplateManager;
 use OCP\AppFramework\Controller;
+use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IL10N;
 use OCP\IRequest;
@@ -175,7 +176,7 @@ class SettingsController extends Controller {
      * @param string $jwtHeader - jwt header
      * @param bool $demo - use demo server
      *
-     * @return array
+     * @return DataResponse
      */
     public function saveAddress(
         $documentserver,
@@ -185,7 +186,7 @@ class SettingsController extends Controller {
         $secret,
         $jwtHeader,
         $demo
-    ) {
+    ): DataResponse {
         $error = null;
         if (!$this->config->selectDemo($demo === true)) {
             $error = $this->trans->t("The 30-day test period is over, you can no longer connect to demo ONLYOFFICE Docs server.");
@@ -209,7 +210,7 @@ class SettingsController extends Controller {
             }
         }
 
-        return [
+        return new DataResponse([
             "documentserver" => $this->config->getDocumentServerUrl(true),
             "verifyPeerOff" => $this->config->getVerifyPeerOff(),
             "documentserverInternal" => $this->config->getDocumentServerInternalUrl(true),
@@ -218,7 +219,7 @@ class SettingsController extends Controller {
             "jwtHeader" => $this->config->jwtHeader(true),
             "error" => $error,
             "version" => $version,
-        ];
+        ]);
     }
 
     /**
@@ -243,7 +244,7 @@ class SettingsController extends Controller {
      * @param string $reviewDisplay - review viewing mode
      * @param string $unknownAuthor - display unknown author
      *
-     * @return array
+     * @return DataResponse
      */
     public function saveCommon(
         $defFormats,
@@ -265,7 +266,7 @@ class SettingsController extends Controller {
         $reviewDisplay,
         $theme,
         $unknownAuthor
-    ) {
+    ): DataResponse {
 
         $this->config->setDefaultFormats($defFormats);
         $this->config->setEditableFormats($editFormats);
@@ -287,8 +288,7 @@ class SettingsController extends Controller {
         $this->config->setCustomizationTheme($theme);
         $this->config->setUnknownAuthor($unknownAuthor);
 
-        return [
-        ];
+        return new DataResponse();
     }
 
     /**
@@ -299,14 +299,14 @@ class SettingsController extends Controller {
      * @param bool $macros - run document macros
      * @param string $protection - protection
      *
-     * @return array
+     * @return DataResponse
      */
     public function saveSecurity(
         $watermarks,
         $plugins,
         $macros,
         $protection
-    ) {
+    ): DataResponse {
 
         if ($watermarks["enabled"] === "true") {
             $watermarks["text"] = trim($watermarks["text"]);
@@ -320,21 +320,19 @@ class SettingsController extends Controller {
         $this->config->setCustomizationMacros($macros);
         $this->config->setProtection($protection);
 
-        return [
-        ];
+        return new DataResponse();
     }
 
     /**
      * Clear all version history
      *
-     * @return array
+     * @return DataResponse
      */
     public function clearHistory() {
 
         FileVersions::clearHistory();
 
-        return [
-        ];
+        return new DataResponse();
     }
 
     /**

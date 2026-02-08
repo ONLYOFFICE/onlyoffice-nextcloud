@@ -101,10 +101,10 @@ class TemplateController extends Controller {
     /**
      * Get templates
      *
-     * @return array
+     * @return DataResponse
      */
     #[NoAdminRequired]
-    public function getTemplates() {
+    public function getTemplates(): DataResponse {
         $templatesList = TemplateManager::getGlobalTemplates();
 
         $templates = [];
@@ -118,53 +118,48 @@ class TemplateController extends Controller {
             array_push($templates, $template);
         }
 
-        return $templates;
+        return new DataResponse($templates);
     }
 
     /**
      * Add global template
      *
-     * @return array
+     * @return DataResponse
      */
     public function addTemplate() {
 
         $file = $this->request->getUploadedFile("file");
 
-        if (!is_null($file)) {
-            if (is_uploaded_file($file["tmp_name"]) && $file["error"] === 0) {
-                if (!TemplateManager::isTemplateType($file["name"])) {
-                    return [
-                        "error" => $this->trans->t("Template must be in OOXML format")
-                    ];
-                }
-
-                $templateDir = TemplateManager::getGlobalTemplateDir();
-                if ($templateDir->nodeExists($file["name"])) {
-                    return [
-                        "error" => $this->trans->t("Template already exists")
-                    ];
-                }
-
-                $templateContent = file_get_contents($file["tmp_name"]);
-
-                $template = $templateDir->newFile($file["name"]);
-                $template->putContent($templateContent);
-
-                $fileInfo = $template->getFileInfo();
-                $result = [
-                    "id" => $fileInfo->getId(),
-                    "name" => $fileInfo->getName(),
-                    "type" => TemplateManager::getTypeTemplate($fileInfo->getMimeType()),
-                    "icon" => $this->mimeIconProvider->getMimeIconUrl($fileInfo->getMimeType())
-                ];
-
-                return $result;
+        if (!empty($file) && is_uploaded_file($file["tmp_name"]) && $file["error"] === 0) {
+            if (!TemplateManager::isTemplateType($file["name"])) {
+                return new DataResponse([
+                    "error" => $this->trans->t("Template must be in OOXML format")
+                ]);
             }
+
+            $templateDir = TemplateManager::getGlobalTemplateDir();
+            if ($templateDir->nodeExists($file["name"])) {
+                return new DataResponse([
+                    "error" => $this->trans->t("Template already exists")
+                ]);
+            }
+
+            $templateContent = file_get_contents($file["tmp_name"]);
+
+            $template = $templateDir->newFile($file["name"]);
+            $template->putContent($templateContent);
+
+            $fileInfo = $template->getFileInfo();
+
+            return new DataResponse([
+                "id" => $fileInfo->getId(),
+                "name" => $fileInfo->getName(),
+                "type" => TemplateManager::getTypeTemplate($fileInfo->getMimeType()),
+                "icon" => $this->mimeIconProvider->getMimeIconUrl($fileInfo->getMimeType())
+            ]);
         }
 
-        return [
-            "error" => $this->trans->t("Invalid file provided")
-        ];
+        return new DataResponse(["error" => $this->trans->t("Invalid file provided")]);
     }
 
     /**
@@ -172,7 +167,7 @@ class TemplateController extends Controller {
      *
      * @param string $templateId - file identifier
      *
-     * @return array
+     * @return DataResponse
      */
     public function deleteTemplate($templateId) {
         $templateDir = TemplateManager::getGlobalTemplateDir();
@@ -181,22 +176,22 @@ class TemplateController extends Controller {
             $templates = $templateDir->getById($templateId);
         } catch (\Exception $e) {
             $this->logger->error("deleteTemplate: $templateId", ["exception" => $e]);
-            return [
+            return new DataResponse([
                 "error" => $this->trans->t("Failed to delete template")
-            ];
+            ]);
         }
 
         if (empty($templates)) {
             $this->logger->info("Template not found: $templateId");
-            return [
+            return new DataResponse([
                 "error" => $this->trans->t("Failed to delete template")
-            ];
+            ]);
         }
 
         $templates[0]->delete();
 
         $this->logger->debug("Template: deleted " . $templates[0]->getName());
-        return [];
+        return new DataResponse();
     }
 
     /**
