@@ -35,7 +35,6 @@ use OCP\AppFramework\Http\TemplateResponse;
 use OCP\DirectEditing\IEditor;
 use OCP\DirectEditing\IToken;
 use OCP\IL10N;
-use OCP\IURLGenerator;
 use Psr\Log\LoggerInterface;
 
 /**

@@ -29,7 +29,6 @@
 
 namespace OCA\Onlyoffice\Controller;
 
-use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\DocumentService;
 use OCA\Onlyoffice\FileUtility;
 use OCA\Onlyoffice\KeyManager;
@@ -39,10 +38,7 @@ use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
 use OCP\AppFramework\Http\Attribute\PublicPage;
 use OCP\AppFramework\OCSController;
-use OCP\IL10N;
 use OCP\IRequest;
-use OCP\ISession;
-use OCP\Share\IManager;
 use Psr\Log\LoggerInterface;
 
 /**

@@ -57,11 +57,9 @@ use OCP\Files\File;
 use OCP\Files\IRootFolder;
 use OCP\Files\NotPermittedException;
 use OCP\IAvatarManager;
-use OCP\Mail\IMailer;
 use OCP\IGroupManager;
 use OCP\IL10N;
 use OCP\IRequest;
-use OCP\ISession;
 use OCP\IURLGenerator;
 use OCP\IUser;
 use OCP\IUserManager;
@@ -69,7 +67,6 @@ use OCP\IUserSession;
 use OCP\Server;
 use OCP\Share\IManager;
 use OCP\Share\IShare;
-use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 
 /**

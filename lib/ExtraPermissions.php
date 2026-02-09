@@ -31,7 +31,6 @@ namespace OCA\Onlyoffice;
 
 use OCA\Talk\Manager as TalkManager;
 use OCP\Constants;
-use OCP\Files\File;
 use OCP\IDBConnection;
 use OCP\Server;
 use OCP\Share\Exceptions\ShareNotFound;

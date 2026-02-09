@@ -36,12 +36,10 @@ use OCA\Onlyoffice\EmailManager;
 use OCP\AppFramework\Utility\ITimeFactory;
 use OCP\BackgroundJob\IJob;
 use OCP\BackgroundJob\TimedJob;
-use OCP\Mail\IMailer;
 use OCP\IGroup;
 use OCP\IGroupManager;
 use OCP\IL10N;
 use OCP\IURLGenerator;
-use OCP\IUserManager;
 use Psr\Log\LoggerInterface;
 
 /**

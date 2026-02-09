@@ -41,7 +41,6 @@ use OCP\IL10N;
 use OCP\IRequest;
 use OCP\IURLGenerator;
 use OCP\Preview\IMimeIconProvider;
-use Psr\Log\LoggerInterface;
 
 /**
  * Settings controller for the administration page

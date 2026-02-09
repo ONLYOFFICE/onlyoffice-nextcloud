@@ -38,12 +38,10 @@ use OCP\Files\FileInfo;
 use OCP\Files\IRootFolder;
 use OCP\IL10N;
 use OCP\Image;
-use OCP\ISession;
 use OCP\IURLGenerator;
 use OCP\IUser;
 use OCP\Preview\IProviderV2;
 use OCP\Server;
-use OCP\Share\IManager;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Log\LoggerInterface;
 

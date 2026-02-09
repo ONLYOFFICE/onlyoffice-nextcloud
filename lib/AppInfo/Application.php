@@ -29,44 +29,28 @@
 
 namespace OCA\Onlyoffice\AppInfo;
 
-use OC\EventDispatcher\SymfonyAdapter;
 use OCP\AppFramework\App;
 use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
 use OCP\AppFramework\Http\Events\BeforeTemplateRenderedEvent as HttpBeforeTemplateRenderedEvent;
-use OCP\BackgroundJob\IJobList;
 use OCP\DirectEditing\RegisterDirectEditorEvent;
 use OCP\Files\Template\FileCreatedFromTemplateEvent;
 use OCP\Files\Template\ITemplateManager;
 use OCP\Files\Template\TemplateFileCreator;
-use OCP\Files\IMimeTypeDetector;
-use OCP\Files\Lock\ILockManager;
 use OCP\IL10N;
-use OCP\IPreview;
-use OCP\ITagManager;
-use OCP\Preview\IMimeIconProvider;
-use OCP\Mail\IMailer;
-use OCP\Notification\IManager;
 use OCP\Security\CSP\AddContentSecurityPolicyEvent;
 use OCA\Files\Event\LoadAdditionalScriptsEvent;
 use OCA\Files_Sharing\Event\BeforeTemplateRenderedEvent;
 use OCA\Viewer\Event\LoadViewer;
 use OCA\Onlyoffice\AppConfig;
-use OCA\Onlyoffice\Controller\CallbackController;
-use OCA\Onlyoffice\Controller\EditorController;
-use OCA\Onlyoffice\Controller\EditorApiController;
 use OCA\Onlyoffice\Controller\JobListController;
-use OCA\Onlyoffice\Controller\SharingApiController;
-use OCA\Onlyoffice\Controller\SettingsController;
-use OCA\Onlyoffice\Controller\TemplateController;
 use OCA\Onlyoffice\Listeners\CreateFromTemplateListener;
 use OCA\Onlyoffice\Listeners\FilesListener;
 use OCA\Onlyoffice\Listeners\FileSharingListener;
 use OCA\Onlyoffice\Listeners\DirectEditorListener;
 use OCA\Onlyoffice\Listeners\ViewerListener;
 use OCA\Onlyoffice\Listeners\WidgetListener;
-use OCA\Onlyoffice\DirectEditor;
 use OCA\Onlyoffice\Events\DocumentUnsavedEvent;
 use OCA\Onlyoffice\Hooks;
 use OCA\Onlyoffice\Listeners\ContentSecurityPolicyListener;
@@ -74,10 +58,7 @@ use OCA\Onlyoffice\Listeners\DocumentUnsavedListener;
 use OCA\Onlyoffice\Notifier;
 use OCA\Onlyoffice\Preview;
 use OCA\Onlyoffice\TemplateProvider;
-use OCA\Onlyoffice\SettingsData;
 use OCP\Server;
-use Psr\Container\ContainerInterface;
-use Psr\Log\LoggerInterface;
 
 class Application extends App implements IBootstrap {
     public const APP_ID = "onlyoffice";

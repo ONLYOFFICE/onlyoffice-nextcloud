@@ -40,7 +40,6 @@ use OCP\AppFramework\OCSController;
 use OCP\Files\File;
 use OCP\Files\IRootFolder;
 use OCP\IRequest;
-use OCP\IUserManager;
 use OCP\IUserSession;
 use OCP\Server;
 use OCP\Share\IManager;
