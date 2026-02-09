@@ -28,11 +28,11 @@
  */
 
     style("onlyoffice", "editor");
-    script("onlyoffice", "onlyoffice-desktop");
+    \OCP\Util::addScript("onlyoffice", "onlyoffice-desktop", 'core');
 if (!empty($_["directToken"])) {
-    script("onlyoffice", "onlyoffice-directeditor");
+    \OCP\Util::addScript("onlyoffice", "onlyoffice-directeditor", 'core');
 }
-    script("onlyoffice", "onlyoffice-editor");
+    \OCP\Util::addScript("onlyoffice", "onlyoffice-editor", 'core');
 ?>
 
 <div id="app"
