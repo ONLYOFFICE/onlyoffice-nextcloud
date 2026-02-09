@@ -74,7 +74,6 @@ class SettingsController extends Controller {
      * @param IRequest $request - request object
      * @param IURLGenerator $urlGenerator - url generator service
      * @param IL10N $trans - l10n service
-     * @param LoggerInterface $logger - logger
      * @param AppConfig $config - application configuration
      * @param Crypt $crypt - hash generator
      * @param IMimeIconProvider $mimeIconProvider - mime icon provider
@@ -84,10 +83,6 @@ class SettingsController extends Controller {
         IRequest $request,
         IURLGenerator $urlGenerator,
         IL10N $trans,
-        /**
-         * Logger
-         */
-        private readonly LoggerInterface $logger,
         /**
          * Application configuration
          */
@@ -160,8 +155,6 @@ class SettingsController extends Controller {
      * @param string $secret - secret key for signature
      * @param string $jwtHeader - jwt header
      * @param bool $demo - use demo server
-     *
-     * @return DataResponse
      */
     public function saveAddress(
         $documentserver,
@@ -228,8 +221,6 @@ class SettingsController extends Controller {
      * @param bool $help - display help
      * @param string $reviewDisplay - review viewing mode
      * @param string $unknownAuthor - display unknown author
-     *
-     * @return DataResponse
      */
     public function saveCommon(
         $defFormats,
@@ -283,8 +274,6 @@ class SettingsController extends Controller {
      * @param bool $plugins - enable plugins
      * @param bool $macros - run document macros
      * @param string $protection - protection
-     *
-     * @return DataResponse
      */
     public function saveSecurity(
         $watermarks,
@@ -322,8 +311,6 @@ class SettingsController extends Controller {
 
     /**
      * Get global templates
-     *
-     * @return array
      */
     private function getGlobalTemplates(): array {
         $templates = [];

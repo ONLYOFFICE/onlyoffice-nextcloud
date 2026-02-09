@@ -128,8 +128,6 @@ class TemplateManager {
      * Get type template from mimetype
      *
      * @param string $mime - mimetype
-     *
-     * @return string
      */
     public static function getTypeTemplate($mime): string
     {
@@ -145,8 +143,6 @@ class TemplateManager {
      * Get mimetype template from format type
      *
      * @param string $type - format type
-     *
-     * @return string
      */
     public static function getMimeTemplate($type): string
     {
@@ -177,8 +173,6 @@ class TemplateManager {
      * Check file if it's template
      *
      * @param int $fileId - identifier file
-     *
-     * @return bool
      */
     public static function isTemplate($fileId): bool {
         $template = self::getTemplate($fileId);
@@ -206,9 +200,7 @@ class TemplateManager {
         if (!file_exists($templatePath)) {
             return false;
         }
-
-        $template = file_get_contents($templatePath);
-        return $template;
+        return file_get_contents($templatePath);
     }
 
     /**
@@ -216,8 +208,6 @@ class TemplateManager {
      *
      * @param string $lang - language
      * @param string $ext - file extension
-     *
-     * @return string
      */
     public static function getEmptyTemplatePath($lang, string $ext): string {
         if (!array_key_exists($lang, self::$localPath)) {

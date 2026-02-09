@@ -184,7 +184,6 @@ class EditorsCheck extends TimedJob {
 
     /**
      * Send notification to admins
-     * @return void
      */
     private function notifyAdmins(): void {
         $notificationManager = \OCP\Server::get(\OCP\Notification\IManager::class);

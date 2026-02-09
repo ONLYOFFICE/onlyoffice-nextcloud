@@ -33,6 +33,7 @@ use OC\Files\Node\File;
 use OC\Files\View;
 use OC\User\Database;
 use OCA\Files_Sharing\External\Storage as SharingExternalStorage;
+use OCA\GroupFolders\Mount\GroupFolderStorage;
 use OCP\Files\FileInfo;
 use OCP\Files\IRootFolder;
 use OCP\IUser;
@@ -92,8 +93,6 @@ class FileVersions {
      * @param View $view - view
      * @param string $path - folder path
      * @param bool $createIfNotExist - create folder if not exist
-     *
-     * @return bool
      */
     private static function checkFolderExist($view, string $path, bool $createIfNotExist = false): bool {
         if ($view->is_dir($path)) {
@@ -112,14 +111,12 @@ class FileVersions {
      * @param string $userId - user id
      * @param FileInfo $fileInfo - file info
      * @param bool $createIfNotExist - create folder if not exist
-     *
-     * @return array
      */
     private static function getView(string $userId, $fileInfo, bool $createIfNotExist = false): array {
         $fileId = null;
         if ($fileInfo !== null) {
             $fileId = $fileInfo->getId();
-            if ($fileInfo->getStorage()->instanceOfStorage(\OCA\GroupFolders\Mount\GroupFolderStorage::class)) {
+            if ($fileInfo->getStorage()->instanceOfStorage(GroupFolderStorage::class)) {
                 $view = new View("/" . self::$groupFolderName);
             } else {
                 $view = new View("/" . $userId);
@@ -231,7 +228,7 @@ class FileVersions {
      *
      * @return File
      */
-    public static function getChangesFile($ownerId, $fileInfo, string $versionId): ?\OC\Files\Node\File {
+    public static function getChangesFile($ownerId, $fileInfo, string $versionId): ?File {
         if ($ownerId === null || $fileInfo === null) {
             return null;
         }

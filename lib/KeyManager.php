@@ -57,9 +57,8 @@ class KeyManager {
         ");
         $result = $select->execute([$fileId]);
         $keys = $result->fetch();
-        $key = is_array($keys) && isset($keys["key"]) ? $keys["key"] : "";
 
-        return $key;
+        return is_array($keys) && isset($keys["key"]) ? $keys["key"] : "";
     }
 
     /**
@@ -67,8 +66,6 @@ class KeyManager {
      *
      * @param integer $fileId - file identifier
      * @param integer $key - file key
-     *
-     * @return bool
      */
     public static function set($fileId, $key): bool {
         $connection = \OCP\Server::get(\OCP\IDBConnection::class);
@@ -85,8 +82,6 @@ class KeyManager {
      *
      * @param integer $fileId - file identifier
      * @param bool $unlock - delete even with lock label
-     *
-     * @return bool
      */
     public static function delete($fileId, $unlock = false): bool {
         $connection = \OCP\Server::get(\OCP\IDBConnection::class);
@@ -104,8 +99,6 @@ class KeyManager {
      *
      * @param integer $fileId - file identifier
      * @param bool $lock - status
-     *
-     * @return bool
      */
     public static function lock($fileId, $lock = true): bool {
         $connection = \OCP\Server::get(\OCP\IDBConnection::class);
@@ -122,8 +115,6 @@ class KeyManager {
      *
      * @param integer $fileId - file identifier
      * @param bool $fs - status
-     *
-     * @return bool
      */
     public static function setForcesave($fileId, $fs = true): bool {
         $connection = \OCP\Server::get(\OCP\IDBConnection::class);
@@ -139,8 +130,6 @@ class KeyManager {
      * Get forcesave status
      *
      * @param integer $fileId - file identifier
-     *
-     * @return bool
      */
     public static function wasForcesave($fileId): bool {
         $connection = \OCP\Server::get(\OCP\IDBConnection::class);

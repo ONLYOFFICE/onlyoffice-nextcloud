@@ -41,13 +41,11 @@ class SettingsData implements \JsonSerializable {
     }
 
     public function jsonSerialize(): array {
-        $data = [
+        return [
             "formats" => $this->appConfig->formatsSetting(),
             "sameTab" => $this->appConfig->getSameTab(),
             "enableSharing" => $this->appConfig->getEnableSharing(),
             "disableDownload" => $this->appConfig->getDisableDownload()
         ];
-
-        return $data;
     }
 }

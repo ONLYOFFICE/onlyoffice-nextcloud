@@ -51,40 +51,24 @@ use Psr\Log\LoggerInterface;
 class FederationController extends OCSController {
 
     /**
-     * Application configuration
-     *
-     * @var AppConfig
-     */
-    public $config;
-
-    /**
-     * File utility
-     */
-    private readonly FileUtility $fileUtility;
-
-    /**
-     * @param string $AppName - application name
-     * @param IRequest $request - request object
-     * @param IL10N $trans - l10n service
-     * @param LoggerInterface $logger - logger
-     * @param IManager $shareManager - Share manager
-     * @param IManager $ISession - Session
+     * @param string $appName application name
+     * @param IRequest $request request object
+     * @param LoggerInterface $logger logger
+     * @param FileUtility $fileUtility file utility
      */
     public function __construct(
-        $AppName,
+        string $appName,
         IRequest $request,
-        IL10N $trans,
         /**
          * Logger
          */
         private readonly LoggerInterface $logger,
-        IManager $shareManager,
-        ISession $session
+        /**
+         * File utility
+         */
+        private readonly FileUtility $fileUtility
     ) {
-        parent::__construct($AppName, $request);
-
-        $this->config = \OCP\Server::get(AppConfig::class);
-        $this->fileUtility = new FileUtility($AppName, $trans, $this->logger, $this->config, $shareManager, $session);
+        parent::__construct($appName, $request);
     }
 
     /**
@@ -156,13 +140,11 @@ class FederationController extends OCSController {
 
     /**
      * Health check instance
-     *
-     * @return DataResponse
      */
     #[NoAdminRequired]
     #[NoCSRFRequired]
     #[PublicPage]
-    public function healthcheck() {
+    public function healthcheck(): DataResponse {
         $this->logger->debug("Federated healthcheck");
 
         return new DataResponse(["alive" => true]);

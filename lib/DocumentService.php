@@ -66,16 +66,13 @@ class DocumentService {
      * Translation key to a supported form.
      *
      * @param string $expected_key - Expected key
-     *
-     * @return string
      */
     public static function generateRevisionId($expected_key): string {
         if (strlen($expected_key) > 20) {
             $expected_key = crc32($expected_key);
         }
         $key = preg_replace("[^0-9-.a-zA-Z_=]", "_", (string) $expected_key);
-        $key = substr((string) $key, 0, min([strlen((string) $key), 20]));
-        return $key;
+        return substr((string) $key, 0, min([strlen((string) $key), 20]));
     }
 
     /**
@@ -87,8 +84,6 @@ class DocumentService {
      * @param string $document_revision_id - Key for caching on service
      * @param string $region - Region
      * @param bool $toForm - Convert to form
-     *
-     * @return string
      */
     public function getConvertedUri($document_uri, $from_extension, $to_extension, $document_revision_id, $region = null, $toForm = false): string {
         $responceFromConvertService = $this->sendRequestToConvertService($document_uri, $from_extension, $to_extension, $document_revision_id, false, $region, $toForm);
@@ -217,8 +212,6 @@ class DocumentService {
      * Generate an error code table of convertion
      *
      * @param string $errorCode - Error code
-     *
-     * @return null
      */
     public function processConvServResponceError(?string $errorCode): void {
         $errorMessageTemplate = $this->trans->t("Error occurred in the document service");
@@ -264,8 +257,6 @@ class DocumentService {
 
     /**
      * Request health status
-     *
-     * @return bool
      */
     public function healthcheckRequest(): bool {
 
@@ -343,8 +334,6 @@ class DocumentService {
      * Generate an error code table of command
      *
      * @param string $errorCode - Error code
-     *
-     * @return null
      */
     public function processCommandServResponceError(?string $errorCode): void {
         $errorMessageTemplate = $this->trans->t("Error occurred in the document service");
@@ -411,8 +400,6 @@ class DocumentService {
      *
      * @param \OCP\IURLGenerator $urlGenerator - url generator
      * @param \OCA\Onlyoffice\Crypt $crypt -crypt
-     *
-     * @return array
      */
     public function checkDocServiceUrl($urlGenerator, $crypt): array {
         $logger = \OCP\Log\logger('onlyoffice');

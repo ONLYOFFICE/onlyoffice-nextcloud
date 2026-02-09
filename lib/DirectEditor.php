@@ -46,13 +46,6 @@ use Psr\Log\LoggerInterface;
 class DirectEditor implements IEditor {
 
     /**
-     * Url generator service
-     *
-     * @var IURLGenerator
-     */
-    private $urlGenerator;
-
-    /**
      * l10n service
      *
      * @var IL10N
@@ -87,14 +80,11 @@ class DirectEditor implements IEditor {
          */
         private readonly Crypt $crypt
     ) {
-        $this->urlGenerator = $urlGenerator;
         $this->trans = $trans;
     }
 
     /**
      * Return a unique identifier for the editor
-     *
-     * @return string
      */
     public function getId(): string {
         return $this->appName;
@@ -102,8 +92,6 @@ class DirectEditor implements IEditor {
 
     /**
      * Return a readable name for the editor
-     *
-     * @return string
      */
     public function getName(): string {
         return "ONLYOFFICE";
@@ -111,8 +99,6 @@ class DirectEditor implements IEditor {
 
     /**
      * A list of mimetypes that should open the editor by default
-     *
-     * @return array
      */
     public function getMimetypes(): array {
         $mimes = [];
@@ -121,7 +107,7 @@ class DirectEditor implements IEditor {
         }
 
         $formats = $this->config->formatsSetting();
-        foreach ($formats as $format => $setting) {
+        foreach ($formats as $setting) {
             if (array_key_exists("def", $setting) && $setting["def"]) {
                 array_push($mimes, $setting["mime"][0]);
             }
@@ -132,8 +118,6 @@ class DirectEditor implements IEditor {
 
     /**
      * A list of mimetypes that can be opened in the editor optionally
-     *
-     * @return array
      */
     public function getMimetypesOptional(): array {
         $mimes = [];
@@ -142,7 +126,7 @@ class DirectEditor implements IEditor {
         }
 
         $formats = $this->config->formatsSetting();
-        foreach ($formats as $format => $setting) {
+        foreach ($formats as $setting) {
             if (!array_key_exists("def", $setting) || !$setting["def"]) {
                 array_push($mimes, $setting["mime"][0]);
             }
@@ -170,8 +154,6 @@ class DirectEditor implements IEditor {
 
     /**
      * Return if the view is able to securely view a file without downloading it to the browser
-     *
-     * @return bool
      */
     public function isSecure(): bool {
         return true;
@@ -185,8 +167,6 @@ class DirectEditor implements IEditor {
      * and take care of invalidation
      *
      * @param IToken $token - one time token
-     *
-     * @return Response
      */
     public function open(IToken $token): Response {
         try {

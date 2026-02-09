@@ -95,8 +95,6 @@ class TemplateController extends Controller {
 
     /**
      * Get templates
-     *
-     * @return DataResponse
      */
     #[NoAdminRequired]
     public function getTemplates(): DataResponse {
@@ -144,13 +142,11 @@ class TemplateController extends Controller {
             $template = $templateDir->newFile($file["name"]);
             $template->putContent($templateContent);
 
-            $fileInfo = $template->getFileInfo();
-
             return new DataResponse([
-                "id" => $fileInfo->getId(),
-                "name" => $fileInfo->getName(),
-                "type" => TemplateManager::getTypeTemplate($fileInfo->getMimeType()),
-                "icon" => $this->mimeIconProvider->getMimeIconUrl($fileInfo->getMimeType())
+                "id" => $template->getId(),
+                "name" => $template->getName(),
+                "type" => TemplateManager::getTypeTemplate($template->getMimeType()),
+                "icon" => $this->mimeIconProvider->getMimeIconUrl($template->getMimeType())
             ]);
         }
 

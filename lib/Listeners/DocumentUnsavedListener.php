@@ -52,12 +52,6 @@ class DocumentUnsavedListener implements IEventListener {
      */
     private $trans;
     
-    /**
-     * @param \OCP\IConfig $config
-     * @param \Psr\Log\LoggerInterface $logger
-     * @param \OCP\Notification\IManager $notificationManager
-     * @param \OCP\L10N\IFactory $l10nFactory
-     */
     public function __construct(
         private readonly IConfig $config,
         private readonly LoggerInterface $logger,

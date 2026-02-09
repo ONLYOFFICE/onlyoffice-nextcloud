@@ -58,8 +58,6 @@ class TemplateProvider implements ICustomTemplateProvider {
      * Return a list of additional templates that the template provider is offering
      *
      * @param string $template - mimetype of the template
-     *
-     * @return array
      */
     public function getCustomTemplates($mimetype) : array {
         $templates = [];
@@ -85,8 +83,6 @@ class TemplateProvider implements ICustomTemplateProvider {
      * Return the file for a given template id
      *
      * @param string $templateId - identifier of the template
-     *
-     * @return File
      */
     public function getCustomTemplate($templateId) : File {
         return TemplateManager::getTemplate($templateId);

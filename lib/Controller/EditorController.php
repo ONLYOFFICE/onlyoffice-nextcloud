@@ -32,6 +32,7 @@ namespace OCA\Onlyoffice\Controller;
 use OCA\Files\Helper;
 use OCA\Files_Sharing\SharedStorage;
 use OCA\Files_Versions\Versions\IVersionManager;
+use OCA\GroupFolders\Folder\FolderManager;
 use OCA\GroupFolders\Mount\GroupFolderStorage;
 use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\Crypt;
@@ -86,7 +87,7 @@ class EditorController extends Controller {
     /**
      * Folder manager
      *
-     * @var \OCA\GroupFolders\Folder\FolderManager
+     * @var FolderManager
      */
     private $folderManager;
 
@@ -130,7 +131,7 @@ class EditorController extends Controller {
             ? Server::get(IVersionManager::class)
             : null;
         $this->folderManager = $appManager->isEnabledForAnyone("groupfolders")
-            ? Server::get("OCA\\GroupFolders\\Folder\\FolderManager")
+            ? Server::get(FolderManager::class)
             : null;
     }
 
@@ -257,12 +258,13 @@ class EditorController extends Controller {
     public function createNew($name, $dir, $templateId = null) {
         $this->logger->debug("Create from editor: $name in $dir");
 
-        $result = $this->create($name, $dir, $templateId);
-        if (isset($result["error"])) {
-            return $this->renderError($result["error"]);
+        $response = $this->create($name, $dir, $templateId);
+        $data = $response->getData();
+        if (isset($data['error'])) {
+            return $this->renderError(error: $data["error"]);
         }
 
-        $openEditor = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".editor.index", ["fileId" => $result["id"]]);
+        $openEditor = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".editor.index", ["fileId" => $data["id"]]);
         return new RedirectResponse($openEditor);
     }
 
@@ -395,8 +397,6 @@ class EditorController extends Controller {
      * @param string $currentUserId - id of current user
      * @param string $operationType - type of the get user operation
      * @param int $searchString - string for searching
-     *
-     * @return bool
      */
     private function filterUser($user, $currentUserId, $operationType, $searchString): bool {
         return $user->getUID() != $currentUserId
@@ -409,8 +409,6 @@ class EditorController extends Controller {
      *
      * @param IUser $user - user
      * @param int $searchString - string for searching
-     *
-     * @return bool
      */
     private function searchInUser($user, $searchString): bool {
         return empty($searchString)
@@ -1428,8 +1426,6 @@ class EditorController extends Controller {
      * @param integer $fileId - file identifier
      * @param string $filePath - file path
      * @param bool $template - file is template
-     *
-     * @return array
      */
     private function getFile(?string $userId, $fileId, $filePath = null, $template = false): array {
         if (empty($userId)) {
@@ -1539,13 +1535,10 @@ class EditorController extends Controller {
      * Generate unique user identifier
      *
      * @param string $userId - current user identifier
-     *
-     * @return string
      */
-    private function buildUserId($userId): string {
+    private function buildUserId(string $userId): string {
         $instanceId = $this->config->getSystemValue("instanceid", true);
-        $userId = $instanceId . "_" . $userId;
-        return $userId;
+        return $instanceId . "_" . $userId;
     }
 
     /**
@@ -1567,8 +1560,6 @@ class EditorController extends Controller {
      * Get File id from by link
      *
      * @param string $link - link to the file
-     *
-     * @return array
      */
     private function getFileIdByLink(string $link): array {
         $path = parse_url($link, PHP_URL_PATH);

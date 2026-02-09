@@ -328,8 +328,6 @@ class AppConfig {
      * Switch on demo server
      *
      * @param bool $value - select demo
-     *
-     * @return bool
      */
     public function selectDemo($value): bool {
         $this->logger->info("Select demo: " . json_encode($value), ["app" => $this->appName]);
@@ -381,8 +379,6 @@ class AppConfig {
 
     /**
      * Get status of demo server
-     *
-     * @return bool
      */
     public function useDemo(): bool {
         return $this->getDemoData()["enabled"] === true;
@@ -646,8 +642,6 @@ class AppConfig {
 
     /**
      * Get the opening setting in a same tab
-     *
-     * @return bool
      */
     public function getSameTab(): bool {
         return $this->appConfig->getValueString($this->appName, $this->_sameTab, "true") === "true";
@@ -666,8 +660,6 @@ class AppConfig {
 
     /**
      * Get the enable sharing setting
-     *
-     * @return bool
      */
     public function getEnableSharing(): bool {
         return $this->appConfig->getValueString($this->appName, $this->_enableSharing, "false") === "true";
@@ -686,8 +678,6 @@ class AppConfig {
 
     /**
      * Get advanced setting
-     *
-     * @return bool
      */
     public function getAdvanced(): bool {
         return $this->appConfig->getValueString($this->appName, $this->_advanced, "false") === "true";
@@ -706,8 +696,6 @@ class AppConfig {
 
     /**
      * Get cron checker setting
-     *
-     * @return bool
      */
     public function getCronChecker(): bool {
         return $this->appConfig->getValueString($this->appName, $this->_cronChecker, "true") !== "false";
@@ -726,8 +714,6 @@ class AppConfig {
 
     /**
      * Get e-mail notifications setting
-     *
-     * @return bool
      */
     public function getEmailNotifications(): bool {
         return $this->appConfig->getValueString($this->appName, $this->_emailNotifications, "true") !== "false";
@@ -746,8 +732,6 @@ class AppConfig {
 
     /**
      * Get generate preview setting
-     *
-     * @return bool
      */
     public function getPreview(): bool {
         return $this->appConfig->getValueString($this->appName, $this->_preview, "true") === "true";
@@ -766,8 +750,6 @@ class AppConfig {
 
     /**
      * Get keep versions history
-     *
-     * @return bool
      */
     public function getVersionHistory(): bool {
         return $this->appConfig->getValueString($this->appName, $this->_versionHistory, "true") === "true";
@@ -786,8 +768,6 @@ class AppConfig {
 
     /**
      * Get protection
-     *
-     * @return bool
      */
     public function getProtection(): string {
         $value = $this->appConfig->getValueString($this->appName, $this->_protection, "owner");
@@ -810,8 +790,6 @@ class AppConfig {
 
     /**
      * Get chat display setting
-     *
-     * @return bool
      */
     public function getCustomizationChat(): bool {
         return $this->appConfig->getValueString($this->appName, $this->_customizationChat, "true") === "true";
@@ -830,8 +808,6 @@ class AppConfig {
 
     /**
      * Get compact header setting
-     *
-     * @return bool
      */
     public function getCustomizationCompactHeader(): bool {
         return $this->appConfig->getValueString($this->appName, $this->_customizationCompactHeader, "true") === "true";
@@ -850,8 +826,6 @@ class AppConfig {
 
     /**
      * Get feedback display setting
-     *
-     * @return bool
      */
     public function getCustomizationFeedback(): bool {
         return $this->appConfig->getValueString($this->appName, $this->_customizationFeedback, "true") === "true";
@@ -870,8 +844,6 @@ class AppConfig {
 
     /**
      * Get forcesave setting
-     *
-     * @return bool
      */
     public function getCustomizationForcesave(): bool {
         return $this->appConfig->getValueString($this->appName, $this->_customizationForcesave, "false") === "true";
@@ -890,8 +862,6 @@ class AppConfig {
 
     /**
      * Get live view on share setting
-     *
-     * @return bool
      */
     public function getLiveViewOnShare(): bool {
         return $this->appConfig->getValueString($this->appName, $this->_liveViewOnShare, "false") === "true";
@@ -910,8 +880,6 @@ class AppConfig {
 
     /**
      * Get help display setting
-     *
-     * @return bool
      */
     public function getCustomizationHelp(): bool {
         return $this->appConfig->getValueString($this->appName, $this->_customizationHelp, "true") === "true";
@@ -930,8 +898,6 @@ class AppConfig {
 
     /**
      * Get review viewing mode setting
-     *
-     * @return string
      */
     public function getCustomizationReviewDisplay(): string {
         $value = $this->appConfig->getValueString($this->appName, $this->_customizationReviewDisplay, "original");
@@ -1127,8 +1093,6 @@ class AppConfig {
 
     /**
      * Get the list of groups
-     *
-     * @return array
      */
     public function getLimitGroups(): array {
         $value = $this->appConfig->getValueString($this->appName, $this->_groups, "");
@@ -1146,8 +1110,6 @@ class AppConfig {
      * Check access for group
      *
      * @param string $userId - user identifier
-     *
-     * @return bool
      */
     public function isUserAllowedToUse($userId = null): bool {
         // no user -> no
@@ -1200,8 +1162,6 @@ class AppConfig {
 
     /**
      * Get the document service verification setting to the application configuration
-     *
-     * @return bool
      */
     public function getVerifyPeerOff(): bool {
         $turnOff = $this->appConfig->getValueString($this->appName, $this->_verification, "");
@@ -1215,8 +1175,6 @@ class AppConfig {
 
     /**
      * Get the limit on size document when generating thumbnails
-     *
-     * @return int
      */
     public function getLimitThumbSize(): int {
         $limitSize = (integer)$this->getSystemValue($this->_limitThumbSize);
@@ -1268,13 +1226,9 @@ class AppConfig {
 
     /**
      * Get the Jwt Leeway
-     *
-     * @return int
      */
     public function getJwtLeeway(): int {
-        $jwtLeeway = (integer)$this->getSystemValue($this->_jwtLeeway);
-
-        return $jwtLeeway;
+        return (integer)$this->getSystemValue($this->_jwtLeeway);
     }
 
     /**
@@ -1297,8 +1251,6 @@ class AppConfig {
 
     /**
      * Get the status settings
-     *
-     * @return bool
      */
     public function settingsAreSuccessful(): bool {
         return empty($this->getSettingsError());
@@ -1306,8 +1258,6 @@ class AppConfig {
 
     /**
      * Get supported formats
-     *
-     * @return array
      */
     #[NoAdminRequired]
     public function formatsSetting(): array {
@@ -1343,8 +1293,6 @@ class AppConfig {
 
     /**
      * Get macros setting
-     *
-     * @return bool
      */
     public function getCustomizationMacros(): bool {
         return $this->appConfig->getValueString($this->appName, $this->_customizationMacros, "true") === "true";
@@ -1363,8 +1311,6 @@ class AppConfig {
 
     /**
      * Get plugins setting
-     *
-     * @return bool
      */
     public function getCustomizationPlugins(): bool {
         return $this->appConfig->getValueString($this->appName, $this->_customizationPlugins, "true") === "true";
@@ -1372,18 +1318,12 @@ class AppConfig {
 
     /**
      * Get the disable download value
-     *
-     * @return bool
      */
-    public function getDisableDownload() {
-        $disableDownload = (bool)$this->getSystemValue($this->_disableDownload);
-
-        return $disableDownload;
+    public function getDisableDownload(): bool {
+        return (bool)$this->getSystemValue($this->_disableDownload);
     }
     /**
      * Get the editors check interval
-     *
-     * @return int
      */
     public function getEditorsCheckInterval(): int {
         $interval = $this->getSystemValue($this->_editors_check_interval);
@@ -1398,13 +1338,11 @@ class AppConfig {
         if (empty($interval) && $interval !== 0) {
             $interval = 60 * 60 * 24;
         }
-        return (integer)$interval;
+        return $interval;
     }
 
     /**
      * Get the JWT expiration
-     *
-     * @return int
      */
     public function getJwtExpiration(): int {
         $jwtExp = $this->getSystemValue($this->_jwt_expiration);
@@ -1417,8 +1355,6 @@ class AppConfig {
 
     /**
      * Get ONLYOFFICE formats list
-     *
-     * @return array
      */
     private function buildOnlyofficeFormats(): array {
         try {
@@ -1460,11 +1396,9 @@ class AppConfig {
 
     /**
      * Get the additional format attributes
-     *
-     * @return array
      */
     private function getAdditionalFormatAttributes(): array {
-        $additionalFormatAttributes = [
+        return [
             "docx" => [
                 "def" => true,
             ],
@@ -1495,7 +1429,6 @@ class AppConfig {
                 "def" => true,
             ],
         ];
-        return $additionalFormatAttributes;
     }
 
     /**

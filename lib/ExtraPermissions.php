@@ -78,16 +78,11 @@ class ExtraPermissions {
     public const MODIFYFILTER = 8;
 
     /**
-     * @param string $appName - application name
      * @param LoggerInterface $logger - logger
      * @param AppConfig $config - application configuration
      * @param IManager $shareManager - Share manager
      */
     public function __construct(
-        /**
-         * Application name
-         */
-        private $appName,
         /**
          * Logger
          */
@@ -157,8 +152,6 @@ class ExtraPermissions {
      * Get list extra permissions by shares
      *
      * @param array $shares - array of shares
-     *
-     * @return array
      */
     public function getExtras($shares): array {
         $result = [];
@@ -264,8 +257,6 @@ class ExtraPermissions {
      * Delete extra permissions for share
      *
      * @param integer $shareId - file identifier
-     *
-     * @return bool
      */
     public static function delete($shareId): bool {
         $connection = Server::get(IDBConnection::class);
@@ -280,8 +271,6 @@ class ExtraPermissions {
      * Delete list extra permissions
      *
      * @param array $shareIds - array of share identifiers
-     *
-     * @return bool
      */
     public static function deleteList($shareIds): bool {
         $connection = Server::get(IDBConnection::class);
@@ -304,8 +293,6 @@ class ExtraPermissions {
      * Get extra permissions for share
      *
      * @param integer $shareId - share identifier
-     *
-     * @return array
      */
     private static function get($shareId): array {
         $connection = Server::get(IDBConnection::class);
@@ -375,8 +362,6 @@ class ExtraPermissions {
      *
      * @param integer $shareId - share identifier
      * @param integer $permissions - value permissions
-     *
-     * @return bool
      */
     private static function insert($shareId, int $permissions): bool {
         $connection = Server::get(IDBConnection::class);
@@ -393,8 +378,6 @@ class ExtraPermissions {
      *
      * @param integer $shareId - share identifier
      * @param bool $permissions - value permissions
-     *
-     * @return bool
      */
     private static function update($shareId, int $permissions): bool {
         $connection = Server::get(IDBConnection::class);
@@ -412,8 +395,6 @@ class ExtraPermissions {
      * @param IShare $share - share
      * @param int $checkExtra - checkable extra permissions
      * @param bool $wasInit - was initialization extra
-     *
-     * @return array
      */
     private function validation($share, $checkExtra, bool $wasInit = true): array {
         $availableExtra = self::NONE;
@@ -462,20 +443,14 @@ class ExtraPermissions {
 
     /**
      * Get origin share
-     *
-     * @param integer $shareId - share identifier
-     *
-     * @return IShare
      */
-    private function getShare($shareId) {
+    private function getShare(string $shareId): ?IShare {
         try {
-            $share = $this->shareManager->getShareById("ocinternal:" . $shareId);
-            return $share;
+            return $this->shareManager->getShareById("ocinternal:" . $shareId);
         } catch (ShareNotFound) {}
 
         try {
-            $share = $this->shareManager->getShareById("ocRoomShare:" . $shareId);
-            return $share;
+            return $this->shareManager->getShareById("ocRoomShare:" . $shareId);
         } catch (ShareNotFound) {}
 
         $this->logger->error("getShare: share not found: " . $shareId);

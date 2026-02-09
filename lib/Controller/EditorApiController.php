@@ -193,7 +193,7 @@ class EditorApiController extends OCSController {
 
         if ($this->config->getAdvanced()
             && Server::get(\OCP\App\IAppManager::class)->isEnabledForAnyone("files_sharing")) {
-            $this->extraPermissions = new ExtraPermissions($AppName, $this->logger, $shareManager, $this->config);
+            $this->extraPermissions = Server::get(ExtraPermissions::class);
         }
     }
 
@@ -614,8 +614,6 @@ class EditorApiController extends OCSController {
      * @param integer $fileId - file identifier
      * @param string $filePath - file path
      * @param bool $template - file is template
-     *
-     * @return array
      */
     private function getFile(?string $userId, $fileId, $filePath = null, $template = false): array {
         if (empty($userId)) {
@@ -706,21 +704,16 @@ class EditorApiController extends OCSController {
      * Generate unique user identifier
      *
      * @param string $userId - current user identifier
-     *
-     * @return string
      */
-    private function buildUserId($userId): string {
+    private function buildUserId(string $userId): string {
         $instanceId = $this->config->getSystemValue("instanceid", true);
-        $userId = $instanceId . "_" . $userId;
-        return $userId;
+        return $instanceId . "_" . $userId;
     }
 
     /**
      * Set customization parameters
      *
      * @param array params - file parameters
-     *
-     * @return array
      */
     private function setCustomization(array $params): array {
         //default is true
@@ -810,11 +803,9 @@ class EditorApiController extends OCSController {
      * @param array params - file parameters
      * @param bool isPublic - with access token
      * @param IUser $user - current user
-     * @param string file - file
-     *
-     * @return array
+     * @param File file - file
      */
-    private function setWatermark(array $params, bool $isPublic, $user, $file): array {
+    private function setWatermark(array $params, bool $isPublic, $user, File $file): array {
         $userId = !empty($user) ? $user->getUID() : null;
         $watermarkTemplate = $this->getWatermarkText(
             $isPublic,
@@ -871,13 +862,13 @@ class EditorApiController extends OCSController {
      *
      * @param bool isPublic - with access token
      * @param string userId - user identifier
-     * @param string file - file
+     * @param File file - file
      * @param bool canEdit - edit permission
      * @param bool canDownload - download permission
      *
      * @return bool|string
      */
-    private function getWatermarkText(bool $isPublic, $userId, $file, bool $canEdit, bool $canDownload) {
+    private function getWatermarkText(bool $isPublic, $userId, File $file, bool $canEdit, bool $canDownload) {
         $watermarkSettings = $this->config->getWatermarkSettings();
         if (!$watermarkSettings["enabled"]) {
             return false;

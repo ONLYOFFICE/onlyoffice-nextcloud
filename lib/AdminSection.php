@@ -59,8 +59,6 @@ class AdminSection implements IIconSection {
 
     /**
      * ID of the section
-     *
-     * @return string
      */
     public function getID(): string {
         return "onlyoffice";
@@ -68,8 +66,6 @@ class AdminSection implements IIconSection {
 
     /**
      * Name of the section
-     *
-     * @return string
      */
     public function getName(): string {
         return "ONLYOFFICE";
@@ -77,8 +73,6 @@ class AdminSection implements IIconSection {
 
     /**
      * Get priority order
-     *
-     * @return int
      */
     public function getPriority(): int {
         return 50;

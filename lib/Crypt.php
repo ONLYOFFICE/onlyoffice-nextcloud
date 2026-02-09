@@ -56,8 +56,6 @@ class Crypt {
      * Generate token for the object
      *
      * @param array $object - object to signature
-     *
-     * @return string
      */
     public function getHash(array $object): string {
         return JWT::encode($object, $this->config->getSKey(), "HS256");
@@ -67,8 +65,6 @@ class Crypt {
      * Create an object from the token
      *
      * @param string $token - token
-     *
-     * @return array
      */
     public function readHash($token): array {
         $result = null;

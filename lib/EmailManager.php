@@ -222,8 +222,6 @@ class EmailManager {
      * @param IEMailTemplate $template - e-mail template
      * @param string $email - e-mail address
      * @param string $recipientName - recipient name
-     *
-     * @return bool
      */
     private function sendEmailNotification(IEMailTemplate $template, string $email, string $recipientName): bool {
         try {

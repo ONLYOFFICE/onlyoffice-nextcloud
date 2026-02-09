@@ -83,11 +83,6 @@ class Preview implements IProviderV2 {
     private $versionManager;
 
     /**
-     * File utility
-     */
-    private readonly FileUtility $fileUtility;
-
-    /**
      * Capabilities mimetype
      */
     public static array $capabilities = [
@@ -136,8 +131,7 @@ class Preview implements IProviderV2 {
      * @param AppConfig $config - application configuration
      * @param IURLGenerator $urlGenerator - url generator service
      * @param Crypt $crypt - hash generator
-     * @param IManager $shareManager - share manager
-     * @param ISession $session - session
+     * @param FileUtility $fileUtility - file utility
      */
     public function __construct(
         /**
@@ -159,8 +153,10 @@ class Preview implements IProviderV2 {
          * Hash generator
          */
         private readonly Crypt $crypt,
-        IManager $shareManager,
-        ISession $session
+        /**
+         * Hash generator
+         */
+        private readonly FileUtility $fileUtility
     ) {
         $this->root = $root;
         $this->trans = $trans;
@@ -173,8 +169,6 @@ class Preview implements IProviderV2 {
                 $this->logger->error("VersionManager init error", ["exception" => $e]);
             }
         }
-
-        $this->fileUtility = new FileUtility($this->appName, $trans, $this->logger, $this->config, $shareManager, $session);
     }
 
     /**
@@ -188,25 +182,21 @@ class Preview implements IProviderV2 {
             }
             $mimeTypeRegex = $mimeTypeRegex . str_replace("/", "\/", $format);
         }
-        $mimeTypeRegex = "/" . $mimeTypeRegex . "/";
 
-        return $mimeTypeRegex;
+        return "/" . $mimeTypeRegex . "/";
     }
 
     /**
      * Return mime type
      */
     public function getMimeType(): string {
-        $m = self::getMimeTypeRegex();
-        return $m;
+        return self::getMimeTypeRegex();
     }
 
     /**
      * The method checks if the file can be converted
      *
      * @param FileInfo $file - File
-     *
-     * @return bool
      */
     public function isAvailable(FileInfo $file): bool {
         if ($this->config->getPreview() !== true) {
@@ -271,8 +261,6 @@ class Preview implements IProviderV2 {
      * @param IUser $user - user with access
      * @param int $version - file version
      * @param bool $template - file is template
-     *
-     * @return string
      */
     private function getUrl(File $file, ?IUser $user, int $version = 0, bool $template = false): string {
 
@@ -308,8 +296,6 @@ class Preview implements IProviderV2 {
      * Generate array with file parameters
      *
      * @param File $file - file
-     *
-     * @return array
      */
     private function getFileParam(File $file): array {
         if ($file->getType() !== FileInfo::TYPE_FILE || $file->getSize() === 0) {

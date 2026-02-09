@@ -30,6 +30,7 @@
 namespace OCA\Onlyoffice;
 
 use OCP\Constants;
+use OCP\Files\File;
 use OCP\Files\Folder;
 use OCP\Files\NotFoundException;
 use OCP\IL10N;
@@ -68,7 +69,6 @@ class FileUtility {
     private $session;
 
     /**
-     * @param string $appName - application name
      * @param IL10N $trans - l10n service
      * @param LoggerInterface $logger - logger
      * @param AppConfig $config - application configuration
@@ -76,10 +76,6 @@ class FileUtility {
      * @param IManager $ISession - Session
      */
     public function __construct(
-        /**
-         * Application name
-         */
-        private $appName,
         IL10N $trans,
         /**
          * Logger
@@ -103,8 +99,6 @@ class FileUtility {
      * @param integer $fileId - file identifier
      * @param string $shareToken - access token
      * @param string $path - file path
-     *
-     * @return array
      */
     public function getFileByToken($fileId, $shareToken, $path = null): array {
         [$node, $error, $share] = $this->getNodeByToken($shareToken);
@@ -146,8 +140,6 @@ class FileUtility {
      * Getting file by token
      *
      * @param string $shareToken - access token
-     *
-     * @return array
      */
     public function getNodeByToken($shareToken): array {
         [$share, $error] = $this->getShare($shareToken);
@@ -174,8 +166,6 @@ class FileUtility {
      * Getting share by token
      *
      * @param string $shareToken - access token
-     *
-     * @return array
      */
     public function getShare($shareToken): array {
         if (empty($shareToken)) {
@@ -239,8 +229,6 @@ class FileUtility {
 
     /**
      * Generate unique identifier
-     *
-     * @return string
      */
     private function GUID(): string {
         if (function_exists("com_create_guid") === true) {
@@ -254,15 +242,11 @@ class FileUtility {
      * Generate unique file version key
      *
      * @param \OCA\Files_Versions\Versions\IVersion $version - file version
-     *
-     * @return string
      */
     public function getVersionKey($version): string {
         $instanceId = $this->config->getSystemValue("instanceid", true);
 
-        $key = $instanceId . "_" . $version->getSourceFile()->getEtag() . "_" . $version->getRevisionId();
-
-        return $key;
+        return $instanceId . "_" . $version->getSourceFile()->getEtag() . "_" . $version->getRevisionId();
     }
 
     /**
@@ -297,8 +281,6 @@ class FileUtility {
             $attributes = $share->getAttributes();
         }
 
-        $attribute = isset($attributes) ? $attributes->getAttribute("permissions", $attribute) : null;
-
-        return $attribute;
+        return isset($attributes) ? $attributes->getAttribute("permissions", $attribute) : null;
     }
 }

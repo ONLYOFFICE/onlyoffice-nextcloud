@@ -75,8 +75,6 @@ class FileCreator extends ACreateEmpty {
 
     /**
      * Unique id for the creator to filter templates
-     *
-     * @return string
      */
     public function getId(): string {
         return $this->appName . "_" . $this->format;
@@ -84,8 +82,6 @@ class FileCreator extends ACreateEmpty {
 
     /**
      * Descriptive name for the create action
-     *
-     * @return string
      */
     public function getName(): string
     {
@@ -98,8 +94,6 @@ class FileCreator extends ACreateEmpty {
 
     /**
      * Default file extension for the new file
-     *
-     * @return string
      */
     public function getExtension(): string {
         return $this->format;

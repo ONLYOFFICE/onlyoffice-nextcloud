@@ -40,9 +40,6 @@ use OCP\Settings\ISettings;
  */
 class AdminSettings implements ISettings {
 
-    public function __construct() {
-    }
-
     /**
      * Print config section
      *
@@ -57,8 +54,6 @@ class AdminSettings implements ISettings {
 
     /**
      * Get section ID
-     *
-     * @return string
      */
     public function getSection(): string {
         return "onlyoffice";
@@ -66,8 +61,6 @@ class AdminSettings implements ISettings {
 
     /**
      * Get priority order
-     *
-     * @return int
      */
     public function getPriority(): int {
         return 50;

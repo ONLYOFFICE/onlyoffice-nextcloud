@@ -55,7 +55,7 @@ class RemoteInstance {
     /**
      * Time to live of remote instance (12 hours)
      */
-    private static int $ttl = 60 * 60 * 1;
+    private static int $ttl = 60 * 60;
 
     /**
      * Health remote list
@@ -86,8 +86,6 @@ class RemoteInstance {
      *
      * @param string $remote - remote instance
      * @param bool $status - remote status
-     *
-     * @return bool
      */
     private static function set(string $remote, bool $status): bool {
         $connection = Server::get(IDBConnection::class);
@@ -104,8 +102,6 @@ class RemoteInstance {
      *
      * @param string $remote - remote instance
      * @param bool $status - remote status
-     *
-     * @return bool
      */
     private static function update(string $remote, bool $status): bool {
         $connection = Server::get(IDBConnection::class);

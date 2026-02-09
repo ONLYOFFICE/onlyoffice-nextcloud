@@ -88,8 +88,6 @@ class Notifier implements INotifier {
 
     /**
      * Identifier of the notifier, only use [a-z0-9_]
-     *
-     * @return string
      */
     public function getID(): string {
         return $this->appName;
@@ -97,8 +95,6 @@ class Notifier implements INotifier {
 
     /**
      * Human readable name describing the notifier
-     *
-     * @return string
      */
     public function getName(): string {
         return $this->appName;
@@ -107,8 +103,6 @@ class Notifier implements INotifier {
     /**
      * @param INotification $notification - notification object
      * @param string $languageCode - the code of the language that should be used to prepare the notification
-     *
-     * @return INotification
      */
     public function prepare(INotification $notification, string $languageCode): INotification {
         if ($notification->getApp() !== $this->appName) {

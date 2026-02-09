@@ -648,8 +648,6 @@ class CallbackController extends Controller {
      * @param string $filePath - file path
      * @param integer $version - file version
      * @param bool $template - file is template
-     *
-     * @return array
      */
     private function getFile(string $userId, $fileId, $filePath = null, $version = 0, $template = false): array {
         if (empty($fileId)) {
@@ -715,8 +713,6 @@ class CallbackController extends Controller {
      * @param integer $fileId - file identifier
      * @param string $shareToken - access token
      * @param integer $version - file version
-     *
-     * @return array
      */
     private function getFileByToken($fileId, $shareToken, $version = 0): array {
         [$share, $error] = $this->getShare($shareToken);
@@ -768,8 +764,6 @@ class CallbackController extends Controller {
      * Getting share by token
      *
      * @param string $shareToken - access token
-     *
-     * @return array
      */
     private function getShare($shareToken): array {
         if (empty($shareToken)) {
@@ -854,8 +848,6 @@ class CallbackController extends Controller {
     /**
      * Retry operation if a LockedException occurred
      * Other exceptions will still be thrown
-     *
-     * @param callable $operation
      *
      * @throws LockedException
      */
