@@ -570,7 +570,7 @@ class CallbackController extends Controller {
      * @param integer $version - file version
      * @param bool $template - file is template
      */
-    private function getFile(string $userId, $fileId, $filePath = null, $version = 0, $template = false): array {
+    private function getFile(?string $userId, $fileId, $filePath = null, $version = 0, $template = false): array {
         if (empty($fileId)) {
             return [null, new JSONResponse(["message" => $this->trans->t("FileId is empty")], Http::STATUS_BAD_REQUEST), null];
         }
