@@ -323,7 +323,7 @@ class SettingsController extends Controller {
                 "type" => TemplateManager::getTypeTemplate($templatesItem->getMimeType()),
                 "icon" => $this->mimeIconProvider->getMimeIconUrl($templatesItem->getMimeType())
             ];
-            array_push($templates, $template);
+            $templates[] = $template;
         }
 
         return $templates;

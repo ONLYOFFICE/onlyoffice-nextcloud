@@ -176,12 +176,7 @@ class TemplateManager {
      */
     public static function isTemplate($fileId): bool {
         $template = self::getTemplate($fileId);
-
-        if (empty($template)) {
-            return false;
-        }
-
-        return true;
+        return !empty($template);
     }
 
     /**

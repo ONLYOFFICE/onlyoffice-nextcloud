@@ -283,7 +283,7 @@ class CallbackController extends Controller {
         }
 
         if ($changes) {
-            if ($this->versionManager === null) {
+            if (!$this->versionManager instanceof IVersionManager) {
                 $this->logger->error("Download changes: versionManager is null");
                 return new JSONResponse(["message" => $this->trans->t("Invalid request")], Http::STATUS_BAD_REQUEST);
             }
@@ -306,7 +306,7 @@ class CallbackController extends Controller {
             }
 
             $changesFile = FileVersions::getChangesFile($owner->getUID(), $file->getFileInfo(), $versionId);
-            if ($changesFile === null) {
+            if (!$changesFile instanceof \OC\Files\Node\File) {
                 $this->logger->error("Download: changes $fileId ($version) was not found");
                 return new JSONResponse(["message" => $this->trans->t("Files not found")], Http::STATUS_NOT_FOUND);
             }
@@ -595,7 +595,7 @@ class CallbackController extends Controller {
 
                     if (!$isForcesave
                         && !$prevIsForcesave
-                        && $this->versionManager !== null
+                        && $this->versionManager instanceof IVersionManager
                         && $this->config->getVersionHistory()) {
                         $changes = null;
                         if (!empty($changesurl)) {
@@ -655,7 +655,7 @@ class CallbackController extends Controller {
         }
 
         try {
-            $folder = !$template ? $this->root->getUserFolder($userId) : TemplateManager::getGlobalTemplateDir();
+            $folder = $template ? TemplateManager::getGlobalTemplateDir() : $this->root->getUserFolder($userId);
             $files = $folder->getById($fileId);
         } catch (\Exception $e) {
             $this->logger->error("getFile: $fileId", ["exception" => $e]);
@@ -684,7 +684,7 @@ class CallbackController extends Controller {
             return [null, new JSONResponse(["message" => $this->trans->t("File not found")], Http::STATUS_NOT_FOUND), null];
         }
 
-        if ($version > 0 && $this->versionManager !== null) {
+        if ($version > 0 && $this->versionManager instanceof IVersionManager) {
             $owner = $file->getOwner();
 
             if ($owner !== null) {
@@ -745,7 +745,7 @@ class CallbackController extends Controller {
             $file = $node;
         }
 
-        if ($version > 0 && $this->versionManager !== null) {
+        if ($version > 0 && $this->versionManager instanceof IVersionManager) {
             $owner = $file->getFileInfo()->getOwner();
 
             if ($owner !== null) {
@@ -794,7 +794,7 @@ class CallbackController extends Controller {
      */
     private function parseUserId($userId) {
         $instanceId = $this->config->getSystemValue("instanceid", true);
-        $instanceId = $instanceId . "_";
+        $instanceId .= "_";
 
         if (str_starts_with($userId, $instanceId)) {
             return substr($userId, strlen($instanceId));

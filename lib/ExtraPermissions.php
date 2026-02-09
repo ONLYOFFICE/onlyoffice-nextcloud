@@ -113,12 +113,12 @@ class ExtraPermissions {
      */
     public function getExtra($shareId): ?array {
         $share = $this->getShare($shareId);
-        if (empty($share)) {
+        if (!$share instanceof IShare) {
             return null;
         }
 
         $shareId = $share->getId();
-        $extra = self::get($shareId);
+        $extra = $this->get($shareId);
 
         $wasInit = isset($extra["permissions"]);
         $checkExtra = $wasInit ? (int)$extra["permissions"] : self::NONE;
@@ -158,14 +158,14 @@ class ExtraPermissions {
 
         $shareIds = [];
         foreach ($shares as $share) {
-            array_push($shareIds, $share->getId());
+            $shareIds[] = $share->getId();
         }
 
         if (empty($shareIds)) {
             return $result;
         }
 
-        $extras = self::getList($shareIds);
+        $extras = $this->getList($shareIds);
 
         $noActualList = [];
         foreach ($shares as $share) {
@@ -180,12 +180,9 @@ class ExtraPermissions {
             $checkExtra = $wasInit ? (int)$currentExtra["permissions"] : self::NONE;
             [$availableExtra, $defaultPermissions] = $this->validation($share, $checkExtra, $wasInit);
 
-            if ($availableExtra === 0
-                || ($availableExtra & $checkExtra) !== $checkExtra) {
-                if (!empty($currentExtra)) {
-                    array_push($noActualList, $share->getId());
-                    $currentExtra = [];
-                }
+            if (($availableExtra === 0 || ($availableExtra & $checkExtra) !== $checkExtra) && !empty($currentExtra)) {
+                $noActualList[] = $share->getId();
+                $currentExtra = [];
             }
 
             if ($availableExtra > 0) {
@@ -210,7 +207,7 @@ class ExtraPermissions {
                     }
                 }
 
-                array_push($result, $currentExtra);
+                $result[] = $currentExtra;
             }
         }
 
@@ -230,11 +227,11 @@ class ExtraPermissions {
      *
      * @return bool
      */
-    public function setExtra($shareId, $permissions, $extraId) {
+    public function setExtra(string $shareId, $permissions, $extraId) {
         $result = false;
 
         $share = $this->getShare($shareId);
-        if (empty($share)) {
+        if (!$share instanceof IShare) {
             return $result;
         }
 
@@ -244,11 +241,7 @@ class ExtraPermissions {
             return $result;
         }
 
-        if ($extraId > 0) {
-            $result = self::update($share->getId(), $permissions);
-        } else {
-            $result = self::insert($share->getId(), $permissions);
-        }
+        $result = $extraId > 0 ? $this->update($share->getId(), $permissions) : $this->insert($share->getId(), $permissions);
 
         return $result;
     }
@@ -277,8 +270,9 @@ class ExtraPermissions {
 
         $condition = "";
         if (count($shareIds) > 1) {
-            for ($i = 1; $i < count($shareIds); $i++) {
-                $condition = $condition . " OR `share_id` = ?";
+            $counter = count($shareIds);
+            for ($i = 1; $i < $counter; $i++) {
+                $condition .= " OR `share_id` = ?";
             }
         }
 
@@ -294,7 +288,7 @@ class ExtraPermissions {
      *
      * @param integer $shareId - share identifier
      */
-    private static function get($shareId): array {
+    private function get($shareId): array {
         $connection = Server::get(IDBConnection::class);
         $select = $connection->prepare("
             SELECT id, share_id, permissions
@@ -324,13 +318,14 @@ class ExtraPermissions {
      *
      * @return array
      */
-    private static function getList(array $shareIds) {
+    private function getList(array $shareIds) {
         $connection = Server::get(IDBConnection::class);
 
         $condition = "";
         if (count($shareIds) > 1) {
-            for ($i = 1; $i < count($shareIds); $i++) {
-                $condition = $condition . " OR `share_id` = ?";
+            $counter = count($shareIds);
+            for ($i = 1; $i < $counter; $i++) {
+                $condition .= " OR `share_id` = ?";
             }
         }
 
@@ -346,11 +341,11 @@ class ExtraPermissions {
         $result = [];
         if (is_array($values)) {
             foreach ($values as $value) {
-                array_push($result, [
+                $result[] = [
                     "id" => (int)$value["id"],
                     "share_id" => (string)$value["share_id"],
                     "permissions" => (int)$value["permissions"]
-                ]);
+                ];
             }
         }
 
@@ -363,7 +358,7 @@ class ExtraPermissions {
      * @param integer $shareId - share identifier
      * @param integer $permissions - value permissions
      */
-    private static function insert($shareId, int $permissions): bool {
+    private function insert($shareId, int $permissions): bool {
         $connection = Server::get(IDBConnection::class);
         $insert = $connection->prepare("
             INSERT INTO `*PREFIX*" . self::TABLENAME_KEY . "`
@@ -379,7 +374,7 @@ class ExtraPermissions {
      * @param integer $shareId - share identifier
      * @param bool $permissions - value permissions
      */
-    private static function update($shareId, int $permissions): bool {
+    private function update($shareId, int $permissions): bool {
         $connection = Server::get(IDBConnection::class);
         $update = $connection->prepare("
             UPDATE `*PREFIX*" . self::TABLENAME_KEY . "`
@@ -431,10 +426,8 @@ class ExtraPermissions {
                 $availableExtra |= self::FILLFORMS;
             }
 
-            if (!$wasInit) {
-                if (($defaultExtra & self::MODIFYFILTER) === self::MODIFYFILTER) {
-                    $availableExtra ^= self::COMMENT;
-                }
+            if (!$wasInit && ($defaultExtra & self::MODIFYFILTER) === self::MODIFYFILTER) {
+                $availableExtra ^= self::COMMENT;
             }
         }
 

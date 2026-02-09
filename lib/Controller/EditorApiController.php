@@ -312,7 +312,7 @@ class EditorApiController extends OCSController {
         if ($fileStorage->instanceOfStorage(\OCA\Files_Sharing\SharedStorage::class) || !empty($shareToken)) {
             $shareId = empty($share) ? $fileStorage->getShareId() : $share->getId();
             $extraPermissions = null;
-            if ($this->extraPermissions !== null) {
+            if ($this->extraPermissions instanceof ExtraPermissions) {
                 $extraPermissions = $this->extraPermissions->getExtra($shareId);
             }
 
@@ -357,7 +357,7 @@ class EditorApiController extends OCSController {
         if ($this->lockManager->isLockProviderAvailable()) {
             try {
                 $locks = $this->lockManager->getLocks($file->getId());
-                $lock = !empty($locks) ? $locks[0] : null;
+                $lock = empty($locks) ? null : $locks[0];
 
                 if ($lock !== null) {
                     $lockType = $lock->getType();
@@ -523,11 +523,11 @@ class EditorApiController extends OCSController {
                     $createParam["templateId"] = $templateItem->getId();
                     $createParam["name"] = $templateItem->getName();
 
-                    array_push($templates, [
+                    $templates[] = [
                         "image" => "",
                         "title" => $templateItem->getName(),
                         "url" => urldecode((string) $this->urlGenerator->linkToRouteAbsolute($this->appName . ".editor.create_new", $createParam))
-                    ]);
+                    ];
                 }
 
                 $params["editorConfig"]["templates"] = $templates;
@@ -625,7 +625,7 @@ class EditorApiController extends OCSController {
         }
 
         try {
-            $folder = !$template ? $this->root->getUserFolder($userId) : TemplateManager::getGlobalTemplateDir();
+            $folder = $template ? TemplateManager::getGlobalTemplateDir() : $this->root->getUserFolder($userId);
             $files = $folder->getById($fileId);
         } catch (\Exception $e) {
             $this->logger->error("getFile: $fileId", ["exception" => $e]);
@@ -722,17 +722,17 @@ class EditorApiController extends OCSController {
         }
 
         //default is false
-        if ($this->config->getCustomizationCompactHeader() === true) {
+        if ($this->config->getCustomizationCompactHeader()) {
             $params["editorConfig"]["customization"]["compactHeader"] = true;
         }
 
         //default is false
-        if ($this->config->getCustomizationFeedback() === true) {
+        if ($this->config->getCustomizationFeedback()) {
             $params["editorConfig"]["customization"]["feedback"] = true;
         }
 
         //default is false
-        if ($this->config->getCustomizationForcesave() === true) {
+        if ($this->config->getCustomizationForcesave()) {
             $params["editorConfig"]["customization"]["forcesave"] = true;
         }
 
@@ -806,7 +806,7 @@ class EditorApiController extends OCSController {
      * @param File file - file
      */
     private function setWatermark(array $params, bool $isPublic, $user, File $file): array {
-        $userId = !empty($user) ? $user->getUID() : null;
+        $userId = empty($user) ? null : $user->getUID();
         $watermarkTemplate = $this->getWatermarkText(
             $isPublic,
             $userId,

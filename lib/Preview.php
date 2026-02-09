@@ -178,9 +178,9 @@ class Preview implements IProviderV2 {
         $mimeTypeRegex = "";
         foreach (self::$capabilities as $format) {
             if (!empty($mimeTypeRegex)) {
-                $mimeTypeRegex = $mimeTypeRegex . "|";
+                $mimeTypeRegex .= "|";
             }
-            $mimeTypeRegex = $mimeTypeRegex . str_replace("/", "\/", $format);
+            $mimeTypeRegex .= str_replace("/", "\/", $format);
         }
 
         return "/" . $mimeTypeRegex . "/";
@@ -199,7 +199,7 @@ class Preview implements IProviderV2 {
      * @param FileInfo $file - File
      */
     public function isAvailable(FileInfo $file): bool {
-        if ($this->config->getPreview() !== true) {
+        if (!$this->config->getPreview()) {
             return false;
         }
         if (!$file
@@ -210,10 +210,7 @@ class Preview implements IProviderV2 {
         if (!in_array($file->getMimetype(), self::$capabilities, true)) {
             return false;
         }
-        if ($file->getStorage()->instanceOfStorage(SharingExternalStorage::class)) {
-            return false;
-        }
-        return true;
+        return !$file->getStorage()->instanceOfStorage(SharingExternalStorage::class);
     }
 
     /**
@@ -326,7 +323,7 @@ class Preview implements IProviderV2 {
             $versions = FileVersions::processVersionsArray($this->versionManager->getVersionsForFile($owner, $file));
 
             foreach ($versions as $version) {
-                $versionNum = $versionNum + 1;
+                $versionNum += 1;
 
                 $versionId = $version->getRevisionId();
                 if (strcmp((string) $versionId, (string) $fileVersion) === 0) {

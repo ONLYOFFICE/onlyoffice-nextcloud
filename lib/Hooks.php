@@ -183,8 +183,6 @@ class Hooks {
             }
             $ownerId = $owner->getUID();
 
-            $fileId = $fileInfo->getId();
-
             FileVersions::deleteVersion($ownerId, $fileInfo, $versionId);
             FileVersions::deleteAuthor($ownerId, $fileInfo, $versionId);
         } catch (\Exception $e) {
@@ -247,7 +245,7 @@ class Hooks {
         try {
             $shareIds = [];
             foreach ($shares as $share) {
-                array_push($shareIds, $share["id"]);
+                $shareIds[] = $share["id"];
             }
 
             ExtraPermissions::deleteList($shareIds);

@@ -120,7 +120,7 @@ class FileCreator extends ACreateEmpty {
      * @param string $creatorId - creator id
      * @param string $templateId - teamplate id
      */
-    public function create(File $file, string $creatorId = null, string $templateId = null): void {
+    public function create(File $file, ?string $creatorId = null, ?string $templateId = null): void {
         $this->logger->debug("FileCreator: " . $file->getId() . " " . $file->getName() . " $creatorId $templateId");
 
         $fileName = $file->getName();

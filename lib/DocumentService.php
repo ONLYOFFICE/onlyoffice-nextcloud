@@ -138,11 +138,7 @@ class DocumentService {
         $document_revision_id = self::generateRevisionId($document_revision_id);
         $urlToConverter = $urlToConverter . "?shardKey=" . $document_revision_id;
 
-        if (empty($from_extension)) {
-            $from_extension = pathinfo($document_uri)["extension"];
-        } else {
-            $from_extension = trim($from_extension, ".");
-        }
+        $from_extension = empty($from_extension) ? pathinfo($document_uri)["extension"] : trim($from_extension, ".");
 
         $data = [
             "async" => $is_async,
@@ -386,11 +382,7 @@ class DocumentService {
             'allow_local_address' => true,
         ];
 
-        if ($method === "post") {
-            $response = $client->post($url, $opts);
-        } else {
-            $response = $client->get($url, $opts);
-        }
+        $response = $method === "post" ? $client->post($url, $opts) : $client->get($url, $opts);
 
         return $response->getBody();
     }

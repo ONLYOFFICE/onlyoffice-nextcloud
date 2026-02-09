@@ -338,11 +338,8 @@ class FileVersions {
      * @param FileInfo $fileInfo - file info
      * @param string $versionId - file version
      */
-    public static function deleteVersion($ownerId, $fileInfo, ?string $versionId) {
-        if ($ownerId === null) {
-            return;
-        }
-        if ($fileInfo === null || empty($versionId)) {
+    public static function deleteVersion(?string $ownerId, ?FileInfo $fileInfo, ?string $versionId): void {
+        if ($ownerId === null || $fileInfo === null || empty($versionId)) {
             return;
         }
 
@@ -352,7 +349,7 @@ class FileVersions {
 
         [$view, $path] = self::getView($ownerId, $fileInfo);
         if ($view === null) {
-            return null;
+            return;
         }
 
         $historyPath = $path . "/" . $versionId . self::$historyExt;
@@ -479,23 +476,20 @@ class FileVersions {
      * @param FileInfo $fileInfo - file info
      * @param string $versionId - file version
      */
-    public static function deleteAuthor($ownerId, $fileInfo, ?string $versionId) {
+    public static function deleteAuthor($ownerId, $fileInfo, ?string $versionId): void {
         $logger = \OCP\Log\logger('onlyoffice');
 
         $fileId = $fileInfo->getId();
 
         $logger->debug("deleteAuthor $fileId ($versionId)", ["app" => self::$appName]);
 
-        if ($ownerId === null) {
-            return;
-        }
-        if ($fileInfo === null || empty($versionId)) {
+        if ($ownerId === null || $fileInfo === null || empty($versionId)) {
             return;
         }
 
         [$view, $path] = self::getView($ownerId, $fileInfo);
         if ($view === null) {
-            return null;
+            return;
         }
 
         $authorPath = $path . "/" . $versionId . self::$authorExt;

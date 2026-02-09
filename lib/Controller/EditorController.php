@@ -384,7 +384,7 @@ class EditorController extends Controller {
                 "id" => $operationType === "protect" ? $this->buildUserId($user->getUID()) : $user->getUID(),
                 "email" => $user->getEMailAddress()
             ];
-            array_push($result, $userElement);
+            $result[] = $userElement;
         }
 
         return new DataResponse($result);
@@ -449,7 +449,7 @@ class EditorController extends Controller {
                         );
                         $userData["image"] = $userAvatarUrl;
                     }
-                    array_push($result, $userData);
+                    $result[] = $userData;
                 }
             }
         }
@@ -485,7 +485,7 @@ class EditorController extends Controller {
             foreach ($recipients as $recipient) {
                 $recipientId = $recipient->getUID();
                 if (!in_array($recipientId, $recipientIds)) {
-                    array_push($recipientIds, $recipientId);
+                    $recipientIds[] = $recipientId;
                 }
             }
         }
@@ -896,7 +896,7 @@ class EditorController extends Controller {
         $prevVersion = "";
         $versionNum = 0;
         foreach ($versions as $version) {
-            $versionNum = $versionNum + 1;
+            $versionNum += 1;
 
             $key = $this->fileUtility->getVersionKey($version);
             $key = DocumentService::generateRevisionId($key);
@@ -916,20 +916,18 @@ class EditorController extends Controller {
                     "id" => $this->buildUserId($author["id"]),
                     "name" => $author["name"],
                 ];
+            } elseif (!empty($this->config->getUnknownAuthor()) && $versionNum !== 1) {
+                $authorName = $this->config->getUnknownAuthor();
+                $historyItem["user"] = [
+                    "name" => $authorName,
+                ];
             } else {
-                if (!empty($this->config->getUnknownAuthor()) && $versionNum !== 1) {
-                    $authorName = $this->config->getUnknownAuthor();
-                    $historyItem["user"] = [
-                        "name" => $authorName,
-                    ];
-                } else {
-                    $authorName = $owner->getDisplayName();
-                    $authorId = $owner->getUID();
-                    $historyItem["user"] = [
-                        "id" => $this->buildUserId($authorId),
-                        "name" => $authorName,
-                    ];
-                }
+                $authorName = $owner->getDisplayName();
+                $authorId = $owner->getUID();
+                $historyItem["user"] = [
+                    "id" => $this->buildUserId($authorId),
+                    "name" => $authorName,
+                ];
             }
 
             $historyData = FileVersions::getHistoryData($ownerId, $file->getFileInfo(), $versionId, $prevVersion);
@@ -940,7 +938,7 @@ class EditorController extends Controller {
 
             $prevVersion = $versionId;
 
-            array_push($history, $historyItem);
+            $history[] = $historyItem;
         }
 
         $key = $this->fileUtility->getKey($file, true);
@@ -960,20 +958,18 @@ class EditorController extends Controller {
                 "id" => $this->buildUserId($author["id"]),
                 "name" => $author["name"],
             ];
+        } elseif (!empty($this->config->getUnknownAuthor()) && $versionNum !== 0) {
+            $authorName = $this->config->getUnknownAuthor();
+            $historyItem["user"] = [
+                "name" => $authorName,
+            ];
         } else {
-            if (!empty($this->config->getUnknownAuthor()) && $versionNum !== 0) {
-                $authorName = $this->config->getUnknownAuthor();
-                $historyItem["user"] = [
-                    "name" => $authorName,
-                ];
-            } else {
-                $authorName = $owner->getDisplayName();
-                $authorId = $owner->getUID();
-                $historyItem["user"] = [
-                    "id" => $this->buildUserId($authorId),
-                    "name" => $authorName,
-                ];
-            }
+            $authorName = $owner->getDisplayName();
+            $authorId = $owner->getUID();
+            $historyItem["user"] = [
+                "id" => $this->buildUserId($authorId),
+                "name" => $authorName,
+            ];
         }
 
         $historyData = FileVersions::getHistoryData($ownerId, $file->getFileInfo(), $versionId, $prevVersion);
@@ -981,7 +977,7 @@ class EditorController extends Controller {
             $historyItem["changes"] = $historyData["changes"];
             $historyItem["serverVersion"] = $historyData["serverVersion"];
         }
-        array_push($history, $historyItem);
+        $history[] = $historyItem;
 
         return new DataResponse($history);
     }
@@ -1375,16 +1371,14 @@ class EditorController extends Controller {
         if ($inframe === true) {
             $params["inframe"] = true;
             $response = new TemplateResponse($this->appName, "editor", $params, "base");
+        } elseif ($isLoggedIn) {
+            $response = new TemplateResponse($this->appName, "editor", $params);
         } else {
-            if ($isLoggedIn) {
-                $response = new TemplateResponse($this->appName, "editor", $params);
-            } else {
-                $response = new PublicTemplateResponse($this->appName, "editor", $params);
+            $response = new PublicTemplateResponse($this->appName, "editor", $params);
 
-                [$file, $error, $share] = $this->fileUtility->getFileByToken($fileId, $shareToken);
-                if (!isset($error)) {
-                    $response->setHeaderTitle($file->getName());
-                }
+            [$file, $error, $share] = $this->fileUtility->getFileByToken($fileId, $shareToken);
+            if (!isset($error)) {
+                $response->setHeaderTitle($file->getName());
             }
         }
 
@@ -1437,7 +1431,7 @@ class EditorController extends Controller {
         }
 
         try {
-            $folder = !$template ? $this->root->getUserFolder($userId) : TemplateManager::getGlobalTemplateDir();
+            $folder = $template ? TemplateManager::getGlobalTemplateDir() : $this->root->getUserFolder($userId);
             $files = $folder->getById($fileId);
         } catch (\Exception $e) {
             $this->logger->error("getFile: $fileId", ["exception" => $e]);

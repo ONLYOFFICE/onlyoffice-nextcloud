@@ -231,7 +231,7 @@ class FileUtility {
      * Generate unique identifier
      */
     private function GUID(): string {
-        if (function_exists("com_create_guid") === true) {
+        if (function_exists("com_create_guid")) {
             return trim(com_create_guid(), "{}");
         }
 

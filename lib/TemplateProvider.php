@@ -73,7 +73,7 @@ class TemplateProvider implements ICustomTemplateProvider {
 
             $template->setCustomPreviewUrl($this->urlGenerator->linkToRouteAbsolute($this->appName . ".template.preview", ["fileId" => $templateFile->getId()]));
 
-            array_push($templates, $template);
+            $templates[] = $template;
         }
 
         return $templates;

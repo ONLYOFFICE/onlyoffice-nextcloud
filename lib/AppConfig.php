@@ -391,7 +391,7 @@ class AppConfig {
      */
     public function setDocumentServerUrl($documentServer): void {
         $documentServer = trim($documentServer);
-        if (strlen($documentServer) > 0) {
+        if ($documentServer !== '') {
             $documentServer = rtrim($documentServer, "/") . "/";
             if (!preg_match("/(^https?:\/\/)|^\//i", $documentServer)) {
                 $documentServer = "http://" . $documentServer;
@@ -421,8 +421,8 @@ class AppConfig {
         }
         if ($url !== null && $url !== "/") {
             $url = rtrim($url, "/");
-            if (strlen($url) > 0) {
-                $url = $url . "/";
+            if ($url !== '') {
+                $url .= "/";
             }
         }
         return $url;
@@ -435,8 +435,8 @@ class AppConfig {
      */
     public function setDocumentServerInternalUrl($documentServerInternal): void {
         $documentServerInternal = rtrim(trim($documentServerInternal), "/");
-        if (strlen($documentServerInternal) > 0) {
-            $documentServerInternal = $documentServerInternal . "/";
+        if ($documentServerInternal !== '') {
+            $documentServerInternal .= "/";
             if (!preg_match("/^https?:\/\//i", $documentServerInternal)) {
                 $documentServerInternal = "http://" . $documentServerInternal;
             }
@@ -502,8 +502,8 @@ class AppConfig {
      */
     public function setStorageUrl($storageUrl): void {
         $storageUrl = rtrim(trim((string) $storageUrl), "/");
-        if (strlen($storageUrl) > 0) {
-            $storageUrl = $storageUrl . "/";
+        if ($storageUrl !== '') {
+            $storageUrl .= "/";
             if (!preg_match("/^https?:\/\//i", $storageUrl)) {
                 $storageUrl = "http://" . $storageUrl;
             }
@@ -1070,7 +1070,7 @@ class AppConfig {
 
         foreach ($watermarkLists as $key) {
             $value = $this->appConfig->getValueString(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_" . $key, "");
-            $result[$key] = !empty($value) ? explode(",", $value) : [];
+            $result[$key] = empty($value) ? [] : explode(",", $value);
         }
 
         return $result;
@@ -1139,10 +1139,8 @@ class AppConfig {
             if ($group === null) {
                 \OCP\Log\logger('onlyoffice')->error("Group is unknown $groupName", ["app" => $this->appName]);
                 $this->setLimitGroups(array_diff($groups, [$groupName]));
-            } else {
-                if ($group->inGroup($user)) {
-                    return true;
-                }
+            } elseif ($group->inGroup($user)) {
+                return true;
             }
         }
 
@@ -1328,11 +1326,7 @@ class AppConfig {
     public function getEditorsCheckInterval(): int {
         $interval = $this->getSystemValue($this->_editors_check_interval);
         if ($interval !== null && !is_int($interval)) {
-            if (is_string($interval) && !ctype_digit($interval)) {
-                $interval = null;
-            } else {
-                $interval = (integer)$interval;
-            }
+            $interval = is_string($interval) && !ctype_digit($interval) ? null : (integer)$interval;
         }
 
         if (empty($interval) && $interval !== 0) {

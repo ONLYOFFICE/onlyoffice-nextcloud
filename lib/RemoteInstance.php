@@ -94,7 +94,7 @@ class RemoteInstance {
                 (`remote`, `status`, `expire`)
             VALUES (?, ?, ?)
         ");
-        return (bool)$insert->execute([$remote, $status === true ? 1 : 0, time()]);
+        return (bool)$insert->execute([$remote, $status ? 1 : 0, time()]);
     }
 
     /**
@@ -110,7 +110,7 @@ class RemoteInstance {
             SET status = ?, expire = ?
             WHERE remote = ?
         ");
-        return (bool)$update->execute([$status === true ? 1 : 0, time(), $remote]);
+        return (bool)$update->execute([$status ? 1 : 0, time(), $remote]);
     }
 
     /**
