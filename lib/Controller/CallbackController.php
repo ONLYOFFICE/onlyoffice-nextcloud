@@ -569,7 +569,7 @@ class CallbackController extends Controller {
 
                     $this->logger->debug("Track put content " . $file->getPath());
 
-                    $retryOperation = function () use ($file, $newData) {
+                    $retryOperation = function () use ($file, $newData): void {
                         $this->retryOperation(fn() => $file->putContent($newData));
                     };
 
@@ -651,7 +651,7 @@ class CallbackController extends Controller {
      *
      * @return array
      */
-    private function getFile($userId, $fileId, $filePath = null, $version = 0, $template = false) {
+    private function getFile(string $userId, $fileId, $filePath = null, $version = 0, $template = false): array {
         if (empty($fileId)) {
             return [null, new JSONResponse(["message" => $this->trans->t("FileId is empty")], Http::STATUS_BAD_REQUEST), null];
         }
@@ -718,7 +718,7 @@ class CallbackController extends Controller {
      *
      * @return array
      */
-    private function getFileByToken($fileId, $shareToken, $version = 0) {
+    private function getFileByToken($fileId, $shareToken, $version = 0): array {
         [$share, $error] = $this->getShare($shareToken);
 
         if (isset($error)) {
@@ -771,7 +771,7 @@ class CallbackController extends Controller {
      *
      * @return array
      */
-    private function getShare($shareToken) {
+    private function getShare($shareToken): array {
         if (empty($shareToken)) {
             return [null, new JSONResponse(["message" => $this->trans->t("FileId is empty")], Http::STATUS_BAD_REQUEST)];
         }
@@ -814,7 +814,7 @@ class CallbackController extends Controller {
      *
      * @param File $file - file
      */
-    private function lock($file) {
+    private function lock($file): void {
         if (!$this->lockManager->isLockProviderAvailable()) {
             return;
         }
@@ -836,7 +836,7 @@ class CallbackController extends Controller {
      *
      * @param File $file - file
      */
-    private function unlock($file) {
+    private function unlock($file): void {
         if (!$this->lockManager->isLockProviderAvailable()) {
             return;
         }

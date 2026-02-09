@@ -70,7 +70,7 @@ class KeyManager {
      *
      * @return bool
      */
-    public static function set($fileId, $key) {
+    public static function set($fileId, $key): bool {
         $connection = \OCP\Server::get(\OCP\IDBConnection::class);
         $insert = $connection->prepare("
             INSERT INTO `*PREFIX*" . self::TABLENAME_KEY . "`
@@ -88,7 +88,7 @@ class KeyManager {
      *
      * @return bool
      */
-    public static function delete($fileId, $unlock = false) {
+    public static function delete($fileId, $unlock = false): bool {
         $connection = \OCP\Server::get(\OCP\IDBConnection::class);
         $delete = $connection->prepare(
             "
@@ -107,7 +107,7 @@ class KeyManager {
      *
      * @return bool
      */
-    public static function lock($fileId, $lock = true) {
+    public static function lock($fileId, $lock = true): bool {
         $connection = \OCP\Server::get(\OCP\IDBConnection::class);
         $update = $connection->prepare("
             UPDATE `*PREFIX*" . self::TABLENAME_KEY . "`
@@ -125,7 +125,7 @@ class KeyManager {
      *
      * @return bool
      */
-    public static function setForcesave($fileId, $fs = true) {
+    public static function setForcesave($fileId, $fs = true): bool {
         $connection = \OCP\Server::get(\OCP\IDBConnection::class);
         $update = $connection->prepare("
             UPDATE `*PREFIX*" . self::TABLENAME_KEY . "`
@@ -142,7 +142,7 @@ class KeyManager {
      *
      * @return bool
      */
-    public static function wasForcesave($fileId) {
+    public static function wasForcesave($fileId): bool {
         $connection = \OCP\Server::get(\OCP\IDBConnection::class);
         $select = $connection->prepare("
             SELECT `fs`

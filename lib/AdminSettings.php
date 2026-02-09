@@ -60,7 +60,7 @@ class AdminSettings implements ISettings {
      *
      * @return string
      */
-    public function getSection() {
+    public function getSection(): string {
         return "onlyoffice";
     }
 
@@ -69,7 +69,7 @@ class AdminSettings implements ISettings {
      *
      * @return int
      */
-    public function getPriority() {
+    public function getPriority(): int {
         return 50;
     }
 }

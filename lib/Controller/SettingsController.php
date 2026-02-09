@@ -325,7 +325,7 @@ class SettingsController extends Controller {
      *
      * @return array
      */
-    private function getGlobalTemplates() {
+    private function getGlobalTemplates(): array {
         $templates = [];
         $templatesList = TemplateManager::getGlobalTemplates();
 

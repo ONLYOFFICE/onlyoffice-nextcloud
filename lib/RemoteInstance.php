@@ -32,6 +32,8 @@ namespace OCA\Onlyoffice;
 use OCA\Files_Sharing\External\Storage as SharingExternalStorage;
 use OCP\Files\File;
 use OCP\Http\Client\IClientService;
+use OCP\IDBConnection;
+use OCP\Server;
 
 /**
  * Remote instance manager
@@ -53,12 +55,12 @@ class RemoteInstance {
     /**
      * Time to live of remote instance (12 hours)
      */
-    private static $ttl = 60 * 60 * 1;
+    private static int $ttl = 60 * 60 * 1;
 
     /**
      * Health remote list
      */
-    private static $healthRemote = [];
+    private static array $healthRemote = [];
 
     /**
      * Get remote instance
@@ -67,8 +69,8 @@ class RemoteInstance {
      *
      * @return array
      */
-    private static function get($remote) {
-        $connection = \OCP\Server::get(\OCP\IDBConnection::class);
+    private static function get(string $remote) {
+        $connection = Server::get(IDBConnection::class);
         $select = $connection->prepare("
             SELECT remote, expire, status
             FROM  `*PREFIX*" . self::TABLENAME_KEY . "`
@@ -87,8 +89,8 @@ class RemoteInstance {
      *
      * @return bool
      */
-    private static function set($remote, $status) {
-        $connection = \OCP\Server::get(\OCP\IDBConnection::class);
+    private static function set(string $remote, bool $status): bool {
+        $connection = Server::get(IDBConnection::class);
         $insert = $connection->prepare("
             INSERT INTO `*PREFIX*" . self::TABLENAME_KEY . "`
                 (`remote`, `status`, `expire`)
@@ -105,8 +107,8 @@ class RemoteInstance {
      *
      * @return bool
      */
-    private static function update($remote, $status) {
-        $connection = \OCP\Server::get(\OCP\IDBConnection::class);
+    private static function update(string $remote, bool $status): bool {
+        $connection = Server::get(IDBConnection::class);
         $update = $connection->prepare("
             UPDATE `*PREFIX*" . self::TABLENAME_KEY . "`
             SET status = ?, expire = ?
@@ -138,7 +140,7 @@ class RemoteInstance {
             return self::$healthRemote[$remote];
         }
 
-        $httpClientService = \OCP\Server::get(IClientService::class);
+        $httpClientService = Server::get(IClientService::class);
         $client = $httpClientService->newClient();
 
         $status = false;
@@ -182,7 +184,7 @@ class RemoteInstance {
         $shareToken = $file->getStorage()->getToken();
         $internalPath = $file->getInternalPath();
 
-        $httpClientService = \OCP\Server::get(IClientService::class);
+        $httpClientService = Server::get(IClientService::class);
         $client = $httpClientService->newClient();
 
         try {
@@ -235,7 +237,7 @@ class RemoteInstance {
         $shareToken = $file->getStorage()->getToken();
         $internalPath = $file->getInternalPath();
 
-        $httpClientService = \OCP\Server::get(IClientService::class);
+        $httpClientService = Server::get(IClientService::class);
         $client = $httpClientService->newClient();
         $data = [
             "timeout" => 5,

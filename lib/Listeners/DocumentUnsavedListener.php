@@ -75,7 +75,7 @@ class DocumentUnsavedListener implements IEventListener {
         $this->notifySender($event->getUserId(), $event->getFileId(), $event->getFileName());
     }
 
-    private function notifySender($uid, $fileId, $fileName) {
+    private function notifySender(string $uid, int $fileId, string $fileName): void {
         try {
             $notification = $this->notificationManager->createNotification();
             $notification->setApp(Application::APP_ID)

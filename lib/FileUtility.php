@@ -106,7 +106,7 @@ class FileUtility {
      *
      * @return array
      */
-    public function getFileByToken($fileId, $shareToken, $path = null) {
+    public function getFileByToken($fileId, $shareToken, $path = null): array {
         [$node, $error, $share] = $this->getNodeByToken($shareToken);
 
         if (isset($error)) {
@@ -149,7 +149,7 @@ class FileUtility {
      *
      * @return array
      */
-    public function getNodeByToken($shareToken) {
+    public function getNodeByToken($shareToken): array {
         [$share, $error] = $this->getShare($shareToken);
 
         if (isset($error)) {
@@ -177,7 +177,7 @@ class FileUtility {
      *
      * @return array
      */
-    public function getShare($shareToken) {
+    public function getShare($shareToken): array {
         if (empty($shareToken)) {
             return [null, $this->trans->t("FileId is empty")];
         }
@@ -242,7 +242,7 @@ class FileUtility {
      *
      * @return string
      */
-    private function GUID() {
+    private function GUID(): string {
         if (function_exists("com_create_guid") === true) {
             return trim(com_create_guid(), "{}");
         }
@@ -257,7 +257,7 @@ class FileUtility {
      *
      * @return string
      */
-    public function getVersionKey($version) {
+    public function getVersionKey($version): string {
         $instanceId = $this->config->getSystemValue("instanceid", true);
 
         $key = $instanceId . "_" . $version->getSourceFile()->getEtag() . "_" . $version->getRevisionId();
@@ -291,7 +291,7 @@ class FileUtility {
      *
      * @return bool|null
      */
-    private static function getShareAttrubute($share, $attribute) {
+    private static function getShareAttrubute($share, string $attribute) {
         $attributes = null;
         if (method_exists(IShare::class, "getAttributes")) {
             $attributes = $share->getAttributes();

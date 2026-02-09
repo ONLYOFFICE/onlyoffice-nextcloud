@@ -398,7 +398,7 @@ class EditorController extends Controller {
      *
      * @return bool
      */
-    private function filterUser($user, $currentUserId, $operationType, $searchString) {
+    private function filterUser($user, $currentUserId, $operationType, $searchString): bool {
         return $user->getUID() != $currentUserId
             && (!empty($user->getEMailAddress()) || $operationType === "protect")
             && $this->searchInUser($user, $searchString);
@@ -412,7 +412,7 @@ class EditorController extends Controller {
      *
      * @return bool
      */
-    private function searchInUser($user, $searchString) {
+    private function searchInUser($user, $searchString): bool {
         return empty($searchString)
             || stripos((string) $user->getUID(), (string) $searchString) !== false
             || stripos((string) $user->getDisplayName(), (string) $searchString) !== false
@@ -1431,7 +1431,7 @@ class EditorController extends Controller {
      *
      * @return array
      */
-    private function getFile($userId, $fileId, $filePath = null, $template = false) {
+    private function getFile(?string $userId, $fileId, $filePath = null, $template = false): array {
         if (empty($userId)) {
             return [null, $this->trans->t("UserId is empty"), null];
         }
@@ -1484,7 +1484,7 @@ class EditorController extends Controller {
      *
      * @return string
      */
-    private function getUrl($file, $user = null, $shareToken = null, $version = 0, $changes = false, $template = false) {
+    private function getUrl($file, $user = null, $shareToken = null, $version = 0, bool $changes = false, $template = false) {
 
         $data = [
             "action" => "download",
@@ -1542,7 +1542,7 @@ class EditorController extends Controller {
      *
      * @return string
      */
-    private function buildUserId($userId) {
+    private function buildUserId($userId): string {
         $instanceId = $this->config->getSystemValue("instanceid", true);
         $userId = $instanceId . "_" . $userId;
         return $userId;
@@ -1570,7 +1570,7 @@ class EditorController extends Controller {
      *
      * @return array
      */
-    private function getFileIdByLink(string $link) {
+    private function getFileIdByLink(string $link): array {
         $path = parse_url($link, PHP_URL_PATH);
         $encodedPath = array_map(urlencode(...), explode("/", $path));
         $parsedLink = str_replace($path, implode("/", $encodedPath), $link);

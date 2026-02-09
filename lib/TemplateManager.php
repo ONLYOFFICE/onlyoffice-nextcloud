@@ -30,7 +30,12 @@
 namespace OCA\Onlyoffice;
 
 use OCP\Files\File;
+use OCP\Files\Folder;
+use OCP\Files\IRootFolder;
 use OCP\Files\NotFoundException;
+use OCP\IConfig;
+use OCP\IL10N;
+use OCP\Server;
 
 /**
  * Template manager
@@ -41,17 +46,13 @@ class TemplateManager {
 
     /**
      * Application name
-     *
-     * @var string
      */
-    private static $appName = "onlyoffice";
+    private static string $appName = "onlyoffice";
 
     /**
      * Template folder name
-     *
-     * @var string
      */
-    private static $templateFolderName = "template";
+    private static string $templateFolderName = "template";
 
     /**
      * Get global template directory
@@ -59,11 +60,11 @@ class TemplateManager {
      * @return Folder
      */
     public static function getGlobalTemplateDir() {
-        $dirPath = "appdata_" . \OCP\Server::get(\OCP\IConfig::class)->getSystemValue("instanceid", null)
+        $dirPath = "appdata_" . Server::get(IConfig::class)->getSystemValue("instanceid", null)
                                 . "/" . self::$appName
                                 . "/" . self::$templateFolderName;
 
-        $rootFolder = \OCP\Server::get(\OCP\Files\IRootFolder::class);
+        $rootFolder = Server::get(IRootFolder::class);
         $templateDir = null;
         try {
             $templateDir = $rootFolder->get($dirPath);
@@ -98,7 +99,7 @@ class TemplateManager {
      *
      * @param string $templateId - identifier of the template
      *
-     * @return File
+     * @return ?File
      */
     public static function getTemplate($templateId) {
         $logger = \OCP\Log\logger('onlyoffice');
@@ -130,7 +131,7 @@ class TemplateManager {
      *
      * @return string
      */
-    public static function getTypeTemplate($mime)
+    public static function getTypeTemplate($mime): string
     {
         return match ($mime) {
             "application/vnd.openxmlformats-officedocument.wordprocessingml.document" => "document",
@@ -147,7 +148,7 @@ class TemplateManager {
      *
      * @return string
      */
-    public static function getMimeTemplate($type)
+    public static function getMimeTemplate($type): string
     {
         return match ($type) {
             "document" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
@@ -179,7 +180,7 @@ class TemplateManager {
      *
      * @return bool
      */
-    public static function isTemplate($fileId) {
+    public static function isTemplate($fileId): bool {
         $template = self::getTemplate($fileId);
 
         if (empty($template)) {
@@ -196,10 +197,10 @@ class TemplateManager {
      *
      * @return string
      */
-    public static function getEmptyTemplate($name) {
+    public static function getEmptyTemplate($name): false|string {
         $ext = strtolower("." . pathinfo($name, PATHINFO_EXTENSION));
 
-        $lang = \OC::$server->getL10NFactory("")->get("")->getLanguageCode();
+        $lang = Server::get(IL10N::class)->getLanguageCode();
 
         $templatePath = self::getEmptyTemplatePath($lang, $ext);
         if (!file_exists($templatePath)) {
@@ -218,7 +219,7 @@ class TemplateManager {
      *
      * @return string
      */
-    public static function getEmptyTemplatePath($lang, $ext) {
+    public static function getEmptyTemplatePath($lang, string $ext): string {
         if (!array_key_exists($lang, self::$localPath)) {
             $lang = "default";
         }
@@ -228,10 +229,8 @@ class TemplateManager {
 
     /**
      * Mapping local path to templates
-     *
-     * @var Array
      */
-    private static $localPath = [
+    private static array $localPath = [
         "ar" => "ar-SA",
         "az" => "az-Latn-AZ",
         "bg" => "bg-BG",

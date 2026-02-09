@@ -116,7 +116,7 @@ class ExtraPermissions {
      *
      * @return array
      */
-    public function getExtra($shareId) {
+    public function getExtra($shareId): ?array {
         $share = $this->getShare($shareId);
         if (empty($share)) {
             return null;
@@ -160,7 +160,7 @@ class ExtraPermissions {
      *
      * @return array
      */
-    public function getExtras($shares) {
+    public function getExtras($shares): array {
         $result = [];
 
         $shareIds = [];
@@ -267,7 +267,7 @@ class ExtraPermissions {
      *
      * @return bool
      */
-    public static function delete($shareId) {
+    public static function delete($shareId): bool {
         $connection = Server::get(IDBConnection::class);
         $delete = $connection->prepare("
             DELETE FROM `*PREFIX*" . self::TABLENAME_KEY . "`
@@ -283,7 +283,7 @@ class ExtraPermissions {
      *
      * @return bool
      */
-    public static function deleteList($shareIds) {
+    public static function deleteList($shareIds): bool {
         $connection = Server::get(IDBConnection::class);
 
         $condition = "";
@@ -307,7 +307,7 @@ class ExtraPermissions {
      *
      * @return array
      */
-    private static function get($shareId) {
+    private static function get($shareId): array {
         $connection = Server::get(IDBConnection::class);
         $select = $connection->prepare("
             SELECT id, share_id, permissions
@@ -337,7 +337,7 @@ class ExtraPermissions {
      *
      * @return array
      */
-    private static function getList($shareIds) {
+    private static function getList(array $shareIds) {
         $connection = Server::get(IDBConnection::class);
 
         $condition = "";
@@ -378,7 +378,7 @@ class ExtraPermissions {
      *
      * @return bool
      */
-    private static function insert($shareId, $permissions) {
+    private static function insert($shareId, int $permissions): bool {
         $connection = Server::get(IDBConnection::class);
         $insert = $connection->prepare("
             INSERT INTO `*PREFIX*" . self::TABLENAME_KEY . "`
@@ -396,7 +396,7 @@ class ExtraPermissions {
      *
      * @return bool
      */
-    private static function update($shareId, $permissions) {
+    private static function update($shareId, int $permissions): bool {
         $connection = Server::get(IDBConnection::class);
         $update = $connection->prepare("
             UPDATE `*PREFIX*" . self::TABLENAME_KEY . "`
@@ -415,7 +415,7 @@ class ExtraPermissions {
      *
      * @return array
      */
-    private function validation($share, $checkExtra, $wasInit = true) {
+    private function validation($share, $checkExtra, bool $wasInit = true): array {
         $availableExtra = self::NONE;
         $defaultExtra = self::NONE;
 

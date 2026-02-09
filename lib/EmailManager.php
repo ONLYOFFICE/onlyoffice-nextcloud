@@ -225,7 +225,7 @@ class EmailManager {
      *
      * @return bool
      */
-    private function sendEmailNotification(IEMailTemplate $template, string $email, string $recipientName) {
+    private function sendEmailNotification(IEMailTemplate $template, string $email, string $recipientName): bool {
         try {
             $message = $this->mailer->createMessage();
             $message->setTo([$email => $recipientName]);

@@ -41,10 +41,8 @@ class DocumentService {
 
     /**
      * Application name
-     *
-     * @var string
      */
-    private static $appName = "onlyoffice";
+    private static string $appName = "onlyoffice";
 
     /**
      * l10n service
@@ -71,7 +69,7 @@ class DocumentService {
      *
      * @return string
      */
-    public static function generateRevisionId($expected_key) {
+    public static function generateRevisionId($expected_key): string {
         if (strlen($expected_key) > 20) {
             $expected_key = crc32($expected_key);
         }
@@ -92,7 +90,7 @@ class DocumentService {
      *
      * @return string
      */
-    public function getConvertedUri($document_uri, $from_extension, $to_extension, $document_revision_id, $region = null, $toForm = false) {
+    public function getConvertedUri($document_uri, $from_extension, $to_extension, $document_revision_id, $region = null, $toForm = false): string {
         $responceFromConvertService = $this->sendRequestToConvertService($document_uri, $from_extension, $to_extension, $document_revision_id, false, $region, $toForm);
 
         if (isset($responceFromConvertService->error)) {
@@ -222,7 +220,7 @@ class DocumentService {
      *
      * @return null
      */
-    public function processConvServResponceError($errorCode) {
+    public function processConvServResponceError(?string $errorCode): void {
         $errorMessageTemplate = $this->trans->t("Error occurred in the document service");
         $errorMessage = "";
 
@@ -269,7 +267,7 @@ class DocumentService {
      *
      * @return bool
      */
-    public function healthcheckRequest() {
+    public function healthcheckRequest(): bool {
 
         $documentServerUrl = $this->config->getDocumentServerInternalUrl();
 
@@ -348,7 +346,7 @@ class DocumentService {
      *
      * @return null
      */
-    public function processCommandServResponceError($errorCode) {
+    public function processCommandServResponceError(?string $errorCode): void {
         $errorMessageTemplate = $this->trans->t("Error occurred in the document service");
         $errorMessage = "";
 
@@ -411,12 +409,12 @@ class DocumentService {
     /**
      * Checking document service location
      *
-     * @param OCP\IURLGenerator $urlGenerator - url generator
-     * @param OCA\Onlyoffice\Crypt $crypt -crypt
+     * @param \OCP\IURLGenerator $urlGenerator - url generator
+     * @param \OCA\Onlyoffice\Crypt $crypt -crypt
      *
      * @return array
      */
-    public function checkDocServiceUrl($urlGenerator, $crypt) {
+    public function checkDocServiceUrl($urlGenerator, $crypt): array {
         $logger = \OCP\Log\logger('onlyoffice');
         $version = null;
 

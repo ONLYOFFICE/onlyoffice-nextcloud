@@ -62,7 +62,7 @@ class AdminSection implements IIconSection {
      *
      * @return string
      */
-    public function getID() {
+    public function getID(): string {
         return "onlyoffice";
     }
 
@@ -71,7 +71,7 @@ class AdminSection implements IIconSection {
      *
      * @return string
      */
-    public function getName() {
+    public function getName(): string {
         return "ONLYOFFICE";
     }
 
@@ -80,7 +80,7 @@ class AdminSection implements IIconSection {
      *
      * @return int
      */
-    public function getPriority() {
+    public function getPriority(): int {
         return 50;
     }
 }

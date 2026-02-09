@@ -71,7 +71,7 @@ class JobListController extends Controller {
      *
      * @param IJob|string $job
      */
-    private function addJob($job) {
+    private function addJob(string $job): void {
         if (!$this->jobList->has($job, null)) {
             $this->jobList->add($job);
             \OCP\Log\logger('onlyoffice')->debug("Job '".$job."' added to JobList.", ["app" => $this->appName]);
@@ -83,7 +83,7 @@ class JobListController extends Controller {
      *
      * @param IJob|string $job
      */
-    private function removeJob($job) {
+    private function removeJob(string $job): void {
         if ($this->jobList->has($job, null)) {
             $this->jobList->remove($job);
             \OCP\Log\logger('onlyoffice')->debug("Job '".$job."' removed from JobList.", ["app" => $this->appName]);
@@ -94,7 +94,7 @@ class JobListController extends Controller {
      * Add or remove EditorsCheck job depending on the value of _editors_check_interval
      *
      */
-    private function checkEditorsCheckJob() {
+    private function checkEditorsCheckJob(): void {
         if (!$this->config->getCronChecker()) {
             $this->removeJob(EditorsCheck::class);
             return;
@@ -110,7 +110,7 @@ class JobListController extends Controller {
      * Method for sequentially calling checks of all jobs
      *
      */
-    public function checkAllJobs() {
+    public function checkAllJobs(): void {
         $this->checkEditorsCheckJob();
     }
 }

@@ -80,10 +80,8 @@ class EditorsCheck extends TimedJob {
 
     /**
      * Email manager
-     *
-     * @var EmailManager
      */
-    private $emailManager;
+    private readonly EmailManager $emailManager;
 
     /**
      * @param string $appName - application name
@@ -167,7 +165,7 @@ class EditorsCheck extends TimedJob {
      *
      * @return string[]
      */
-    private function getUsersToNotify() {
+    private function getUsersToNotify(): array {
         $notifyGroups = ["admin"];
         $notifyUsers = [];
 
@@ -188,7 +186,7 @@ class EditorsCheck extends TimedJob {
      * Send notification to admins
      * @return void
      */
-    private function notifyAdmins() {
+    private function notifyAdmins(): void {
         $notificationManager = \OCP\Server::get(\OCP\Notification\IManager::class);
         $notification = $notificationManager->createNotification();
         $notification->setApp($this->appName)

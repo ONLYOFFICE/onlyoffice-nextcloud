@@ -113,10 +113,8 @@ class EditorApiController extends OCSController {
 
     /**
      * Extra permissions
-     *
-     * @var ExtraPermissions
      */
-    private $extraPermissions;
+    private ?ExtraPermissions $extraPermissions = null;
 
     /**
      * Lock manager
@@ -619,7 +617,7 @@ class EditorApiController extends OCSController {
      *
      * @return array
      */
-    private function getFile($userId, $fileId, $filePath = null, $template = false) {
+    private function getFile(?string $userId, $fileId, $filePath = null, $template = false): array {
         if (empty($userId)) {
             return [null, $this->trans->t("UserId is empty"), null];
         }
@@ -711,7 +709,7 @@ class EditorApiController extends OCSController {
      *
      * @return string
      */
-    private function buildUserId($userId) {
+    private function buildUserId($userId): string {
         $instanceId = $this->config->getSystemValue("instanceid", true);
         $userId = $instanceId . "_" . $userId;
         return $userId;
@@ -724,7 +722,7 @@ class EditorApiController extends OCSController {
      *
      * @return array
      */
-    private function setCustomization($params) {
+    private function setCustomization(array $params): array {
         //default is true
         if ($this->config->getCustomizationChat() === false) {
             $params["editorConfig"]["customization"]["chat"] = false;
@@ -816,7 +814,7 @@ class EditorApiController extends OCSController {
      *
      * @return array
      */
-    private function setWatermark($params, $isPublic, $user, $file) {
+    private function setWatermark(array $params, bool $isPublic, $user, $file): array {
         $userId = !empty($user) ? $user->getUID() : null;
         $watermarkTemplate = $this->getWatermarkText(
             $isPublic,
@@ -879,7 +877,7 @@ class EditorApiController extends OCSController {
      *
      * @return bool|string
      */
-    private function getWatermarkText($isPublic, $userId, $file, $canEdit, $canDownload) {
+    private function getWatermarkText(bool $isPublic, $userId, $file, bool $canEdit, bool $canDownload) {
         $watermarkSettings = $this->config->getWatermarkSettings();
         if (!$watermarkSettings["enabled"]) {
             return false;

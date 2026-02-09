@@ -118,11 +118,11 @@ class Application extends App implements IBootstrap {
 
     public function boot(IBootContext $context): void {
         if (class_exists(TemplateFileCreator::class)) {
-            $context->injectFn(function (ITemplateManager $templateManager, IL10N $trans, $appName) {
+            $context->injectFn(function (ITemplateManager $templateManager, IL10N $trans, $appName): void {
                 if (!empty($this->appConfig->getDocumentServerUrl())
                     && $this->appConfig->settingsAreSuccessful()
                     && $this->appConfig->isUserAllowedToUse()) {
-                    $templateManager->registerTemplateFileCreator(function () use ($appName, $trans) {
+                    $templateManager->registerTemplateFileCreator(function () use ($appName, $trans): TemplateFileCreator {
                         $wordTemplate = new TemplateFileCreator($appName, $trans->t("New document"), ".docx");
                         $wordTemplate->addMimetype("application/vnd.openxmlformats-officedocument.wordprocessingml.document");
                         $wordTemplate->setIconSvgInline(file_get_contents(__DIR__ . '/../../img/new-docx.svg'));
@@ -130,7 +130,7 @@ class Application extends App implements IBootstrap {
                         return $wordTemplate;
                     });
 
-                    $templateManager->registerTemplateFileCreator(function () use ($appName, $trans) {
+                    $templateManager->registerTemplateFileCreator(function () use ($appName, $trans): TemplateFileCreator {
                         $cellTemplate = new TemplateFileCreator($appName, $trans->t("New spreadsheet"), ".xlsx");
                         $cellTemplate->addMimetype("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
                         $cellTemplate->setIconSvgInline(file_get_contents(__DIR__ . '/../../img/new-xlsx.svg'));
@@ -138,7 +138,7 @@ class Application extends App implements IBootstrap {
                         return $cellTemplate;
                     });
 
-                    $templateManager->registerTemplateFileCreator(function () use ($appName, $trans) {
+                    $templateManager->registerTemplateFileCreator(function () use ($appName, $trans): TemplateFileCreator {
                         $slideTemplate = new TemplateFileCreator($appName, $trans->t("New presentation"), ".pptx");
                         $slideTemplate->addMimetype("application/vnd.openxmlformats-officedocument.presentationml.presentation");
                         $slideTemplate->setIconSvgInline(file_get_contents(__DIR__ . '/../../img/new-pptx.svg'));

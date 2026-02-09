@@ -59,10 +59,8 @@ class FederationController extends OCSController {
 
     /**
      * File utility
-     *
-     * @var FileUtility
      */
-    private $fileUtility;
+    private readonly FileUtility $fileUtility;
 
     /**
      * @param string $AppName - application name

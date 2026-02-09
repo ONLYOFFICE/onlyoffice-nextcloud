@@ -84,17 +84,13 @@ class Preview implements IProviderV2 {
 
     /**
      * File utility
-     *
-     * @var FileUtility
      */
-    private $fileUtility;
+    private readonly FileUtility $fileUtility;
 
     /**
      * Capabilities mimetype
-     *
-     * @var Array
      */
-    public static $capabilities = [
+    public static array $capabilities = [
         "text/csv",
         "application/msword",
         "application/vnd.ms-word.document.macroEnabled.12",
@@ -184,7 +180,7 @@ class Preview implements IProviderV2 {
     /**
      * Return mime type
      */
-    public static function getMimeTypeRegex() {
+    public static function getMimeTypeRegex(): string {
         $mimeTypeRegex = "";
         foreach (self::$capabilities as $format) {
             if (!empty($mimeTypeRegex)) {
@@ -286,7 +282,7 @@ class Preview implements IProviderV2 {
         ];
 
         $userId = null;
-        if (!empty($user)) {
+        if ($user instanceof IUser) {
             $userId = $user->getUID();
             $data["userId"] = $userId;
         }
