@@ -34,7 +34,7 @@ use OCP\Files\Folder;
 use OCP\Files\IRootFolder;
 use OCP\Files\NotFoundException;
 use OCP\IConfig;
-use OCP\IL10N;
+use OCP\L10N\IFactory;
 use OCP\Server;
 
 /**
@@ -189,7 +189,7 @@ class TemplateManager {
     public static function getEmptyTemplate($name): false|string {
         $ext = strtolower("." . pathinfo($name, PATHINFO_EXTENSION));
 
-        $lang = Server::get(IL10N::class)->getLanguageCode();
+        $lang = Server::get(IFactory::class)->get("")->getLanguageCode();
 
         $templatePath = self::getEmptyTemplatePath($lang, $ext);
         if (!file_exists($templatePath)) {
