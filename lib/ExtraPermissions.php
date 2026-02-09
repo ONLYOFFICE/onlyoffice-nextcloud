@@ -48,13 +48,6 @@ use Psr\Log\LoggerInterface;
 class ExtraPermissions {
 
     /**
-     * Share manager
-     *
-     * @var IManager
-     */
-    private $shareManager;
-
-    /**
      * Talk manager
      *
      * @var TalkManager
@@ -77,27 +70,14 @@ class ExtraPermissions {
     public const FILLFORMS = 4;
     public const MODIFYFILTER = 8;
 
-    /**
-     * @param LoggerInterface $logger - logger
-     * @param AppConfig $config - application configuration
-     * @param IManager $shareManager - Share manager
-     */
     public function __construct(
-        /**
-         * Logger
-         */
         private readonly LoggerInterface $logger,
-        IManager $shareManager,
-        /**
-         * Application configuration
-         */
-        private readonly AppConfig $config
+        private readonly IManager $shareManager,
+        private readonly AppConfig $appConfig
     ) {
-        $this->shareManager = $shareManager;
-
         if (Server::get(\OCP\App\IAppManager::class)->isEnabledForAnyone("spreed")) {
             try {
-                $this->talkManager = Server::get("OCA\\Talk\\Manager");
+                $this->talkManager = Server::get(Talkmanager::class);
             } catch (NotFoundExceptionInterface $e) {
                 $this->logger->error("TalkManager init error", ["exception" => $e]);
             }
@@ -402,7 +382,7 @@ class ExtraPermissions {
 
         $node = $share->getNode();
         $ext = strtolower(pathinfo((string) $node->getName(), PATHINFO_EXTENSION));
-        $format = !empty($ext) && array_key_exists($ext, $this->config->formatsSetting()) ? $this->config->formatsSetting()[$ext] : null;
+        $format = !empty($ext) && array_key_exists($ext, $this->appConfig->formatsSetting()) ? $this->appConfig->formatsSetting()[$ext] : null;
         if (!isset($format)) {
             return [$availableExtra, $defaultExtra];
         }

@@ -50,76 +50,20 @@ use Psr\Log\LoggerInterface;
  */
 class EditorsCheck extends TimedJob {
 
-    /**
-     * Url generator service
-     *
-     * @var IURLGenerator
-     */
-    private $urlGenerator;
-
-    /**
-     * Logger
-     *
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
-     * l10n service
-     *
-     * @var IL10N
-     */
-    private $trans;
-
-    /**
-     * Group manager
-     *
-     * @var IGroupManager
-     */
-    private $groupManager;
-
-    /**
-     * Email manager
-     */
-    private readonly EmailManager $emailManager;
-
-    /**
-     * @param string $appName - application name
-     * @param IURLGenerator $urlGenerator - url generator service
-     * @param ITimeFactory $time - time
-     * @param AppConfig $config - application configuration
-     * @param IL10N $trans - l10n service
-     * @param Crypt $crypt - crypt service
-     */
     public function __construct(
-        /**
-         * Application name
-         */
-        private readonly string $appName,
-        IURLGenerator $urlGenerator,
         ITimeFactory $time,
-        /**
-         * Application configuration
-         */
-        private readonly AppConfig $config,
-        IL10N $trans,
-        /**
-         * Hash generator
-         */
+        private readonly string $appName,
+        private readonly IURLGenerator $urlGenerator,
+        private readonly AppConfig $appConfig,
+        private readonly IL10N $trans,
         private readonly Crypt $crypt,
-        IGroupManager $groupManager
+        private readonly IGroupManager $groupManager,
+        private readonly EmailManager $emailManager,
+        private readonly LoggerInterface $logger
     ) {
         parent::__construct($time);
-        $this->urlGenerator = $urlGenerator;
-
-        $this->logger = \OCP\Server::get(LoggerInterface::class);
-        $this->trans = $trans;
-        $this->groupManager = $groupManager;
-        $this->setInterval($this->config->getEditorsCheckInterval());
+        $this->setInterval($this->appConfig->getEditorsCheckInterval());
         $this->setTimeSensitivity(IJob::TIME_SENSITIVE);
-        $mailer = \OCP\Server::get(IMailer::class);
-        $userManager = \OCP\Server::get(IUserManager::class);
-        $this->emailManager = new EmailManager($this->appName, $trans, $this->logger, $mailer, $userManager, $urlGenerator);
     }
 
     /**
@@ -128,17 +72,17 @@ class EditorsCheck extends TimedJob {
      * @param array $argument unused argument
      */
     protected function run($argument) {
-        if (empty($this->config->getDocumentServerUrl())) {
+        if (empty($this->appConfig->getDocumentServerUrl())) {
             $this->logger->debug("Settings are empty");
             return;
         }
-        if (!$this->config->settingsAreSuccessful()) {
+        if (!$this->appConfig->settingsAreSuccessful()) {
             $this->logger->debug("Settings are not correct");
             return;
         }
         $fileUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.emptyfile");
-        if (!$this->config->useDemo() && !empty($this->config->getStorageUrl())) {
-            $fileUrl = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->config->getStorageUrl(), $fileUrl);
+        if (!$this->appConfig->useDemo() && !empty($this->appConfig->getStorageUrl())) {
+            $fileUrl = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->appConfig->getStorageUrl(), $fileUrl);
         }
         $host = parse_url((string) $fileUrl)["host"];
         if ($host === "localhost" || $host === "127.0.0.1") {
@@ -148,12 +92,12 @@ class EditorsCheck extends TimedJob {
 
         $this->logger->debug("ONLYOFFICE check started by cron");
 
-        $documentService = new DocumentService($this->trans, $this->config);
+        $documentService = new DocumentService($this->trans, $this->appConfig);
         [$error, $version] = $documentService->checkDocServiceUrl($this->urlGenerator, $this->crypt);
 
         if (!empty($error)) {
             $this->logger->info("ONLYOFFICE server is not available");
-            $this->config->setSettingsError($error);
+            $this->appConfig->setSettingsError($error);
             $this->notifyAdmins();
         } else {
             $this->logger->debug("ONLYOFFICE server availability check is finished successfully");
@@ -195,7 +139,7 @@ class EditorsCheck extends TimedJob {
         foreach ($this->getUsersToNotify() as $uid) {
             $notification->setUser($uid);
             $notificationManager->notify($notification);
-            if ($this->config->getEmailNotifications()) {
+            if ($this->appConfig->getEmailNotifications()) {
                 $this->emailManager->notifyEditorsCheckEmail($uid);
             }
         }

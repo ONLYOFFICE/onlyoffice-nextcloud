@@ -48,56 +48,16 @@ use Psr\Log\LoggerInterface;
  */
 class SettingsController extends Controller {
 
-    /**
-     * l10n service
-     *
-     * @var IL10N
-     */
-    private $trans;
-
-    /**
-     * Url generator service
-     *
-     * @var IURLGenerator
-     */
-    private $urlGenerator;
-
-    /**
-     * Mime icon provider
-     *
-     * @var IMimeIconProvider
-     */
-    private $mimeIconProvider;
-
-    /**
-     * @param string $AppName - application name
-     * @param IRequest $request - request object
-     * @param IURLGenerator $urlGenerator - url generator service
-     * @param IL10N $trans - l10n service
-     * @param AppConfig $config - application configuration
-     * @param Crypt $crypt - hash generator
-     * @param IMimeIconProvider $mimeIconProvider - mime icon provider
-     */
     public function __construct(
-        $AppName,
+        $appName,
         IRequest $request,
-        IURLGenerator $urlGenerator,
-        IL10N $trans,
-        /**
-         * Application configuration
-         */
-        private readonly AppConfig $config,
-        /**
-         * Hash generator
-         */
+        private readonly IURLGenerator $urlGenerator,
+        private readonly IL10N $trans,
+        private readonly AppConfig $appConfig,
         private readonly Crypt $crypt,
-        IMimeIconProvider $mimeIconProvider,
+        private readonly IMimeIconProvider $mimeIconProvider
     ) {
-        parent::__construct($AppName, $request);
-
-        $this->urlGenerator = $urlGenerator;
-        $this->trans = $trans;
-        $this->mimeIconProvider = $mimeIconProvider;
+        parent::__construct($appName, $request);
     }
 
     /**
@@ -107,40 +67,40 @@ class SettingsController extends Controller {
      */
     public function index() {
         $data = [
-            "documentserver" => $this->config->getDocumentServerUrl(true),
-            "documentserverInternal" => $this->config->getDocumentServerInternalUrl(true),
-            "storageUrl" => $this->config->getStorageUrl(),
-            "verifyPeerOff" => $this->config->getVerifyPeerOff(),
-            "secret" => $this->config->getDocumentServerSecret(true),
-            "jwtHeader" => $this->config->jwtHeader(true),
-            "demo" => $this->config->getDemoData(),
+            "documentserver" => $this->appConfig->getDocumentServerUrl(true),
+            "documentserverInternal" => $this->appConfig->getDocumentServerInternalUrl(true),
+            "storageUrl" => $this->appConfig->getStorageUrl(),
+            "verifyPeerOff" => $this->appConfig->getVerifyPeerOff(),
+            "secret" => $this->appConfig->getDocumentServerSecret(true),
+            "jwtHeader" => $this->appConfig->jwtHeader(true),
+            "demo" => $this->appConfig->getDemoData(),
             "currentServer" => $this->urlGenerator->getAbsoluteURL("/"),
-            "formats" => $this->config->formatsSetting(),
-            "sameTab" => $this->config->getSameTab(),
-            "enableSharing" => $this->config->getEnableSharing(),
-            "preview" => $this->config->getPreview(),
-            "advanced" => $this->config->getAdvanced(),
-            "cronChecker" => $this->config->getCronChecker(),
-            "emailNotifications" => $this->config->getEmailNotifications(),
-            "versionHistory" => $this->config->getVersionHistory(),
-            "protection" => $this->config->getProtection(),
-            "limitGroups" => $this->config->getLimitGroups(),
-            "chat" => $this->config->getCustomizationChat(),
-            "compactHeader" => $this->config->getCustomizationCompactHeader(),
-            "feedback" => $this->config->getCustomizationFeedback(),
-            "forcesave" => $this->config->getCustomizationForcesave(),
-            "liveViewOnShare" => $this->config->getLiveViewOnShare(),
-            "help" => $this->config->getCustomizationHelp(),
-            "successful" => $this->config->settingsAreSuccessful(),
-            "settingsError" => $this->config->getSettingsError(),
-            "watermark" => $this->config->getWatermarkSettings(),
-            "plugins" => $this->config->getCustomizationPlugins(),
-            "macros" => $this->config->getCustomizationMacros(),
+            "formats" => $this->appConfig->formatsSetting(),
+            "sameTab" => $this->appConfig->getSameTab(),
+            "enableSharing" => $this->appConfig->getEnableSharing(),
+            "preview" => $this->appConfig->getPreview(),
+            "advanced" => $this->appConfig->getAdvanced(),
+            "cronChecker" => $this->appConfig->getCronChecker(),
+            "emailNotifications" => $this->appConfig->getEmailNotifications(),
+            "versionHistory" => $this->appConfig->getVersionHistory(),
+            "protection" => $this->appConfig->getProtection(),
+            "limitGroups" => $this->appConfig->getLimitGroups(),
+            "chat" => $this->appConfig->getCustomizationChat(),
+            "compactHeader" => $this->appConfig->getCustomizationCompactHeader(),
+            "feedback" => $this->appConfig->getCustomizationFeedback(),
+            "forcesave" => $this->appConfig->getCustomizationForcesave(),
+            "liveViewOnShare" => $this->appConfig->getLiveViewOnShare(),
+            "help" => $this->appConfig->getCustomizationHelp(),
+            "successful" => $this->appConfig->settingsAreSuccessful(),
+            "settingsError" => $this->appConfig->getSettingsError(),
+            "watermark" => $this->appConfig->getWatermarkSettings(),
+            "plugins" => $this->appConfig->getCustomizationPlugins(),
+            "macros" => $this->appConfig->getCustomizationMacros(),
             "tagsEnabled" => \OCP\Server::get(\OCP\App\IAppManager::class)->isEnabledForUser("systemtags"),
-            "reviewDisplay" => $this->config->getCustomizationReviewDisplay(),
-            "theme" => $this->config->getCustomizationTheme(true),
+            "reviewDisplay" => $this->appConfig->getCustomizationReviewDisplay(),
+            "theme" => $this->appConfig->getCustomizationTheme(true),
             "templates" => $this->getGlobalTemplates(),
-            "unknownAuthor" => $this->config->getUnknownAuthor()
+            "unknownAuthor" => $this->appConfig->getUnknownAuthor()
         ];
         return new TemplateResponse($this->appName, "settings", $data, "blank");
     }
@@ -166,35 +126,35 @@ class SettingsController extends Controller {
         $demo
     ): DataResponse {
         $error = null;
-        if (!$this->config->selectDemo($demo === true)) {
+        if (!$this->appConfig->selectDemo($demo === true)) {
             $error = $this->trans->t("The 30-day test period is over, you can no longer connect to demo ONLYOFFICE Docs server.");
         }
         if ($demo !== true) {
-            $this->config->setDocumentServerUrl($documentserver);
-            $this->config->setVerifyPeerOff($verifyPeerOff);
-            $this->config->setDocumentServerInternalUrl($documentserverInternal);
-            $this->config->setDocumentServerSecret($secret);
-            $this->config->setJwtHeader($jwtHeader);
+            $this->appConfig->setDocumentServerUrl($documentserver);
+            $this->appConfig->setVerifyPeerOff($verifyPeerOff);
+            $this->appConfig->setDocumentServerInternalUrl($documentserverInternal);
+            $this->appConfig->setDocumentServerSecret($secret);
+            $this->appConfig->setJwtHeader($jwtHeader);
         }
-        $this->config->setStorageUrl($storageUrl);
+        $this->appConfig->setStorageUrl($storageUrl);
 
         $version = null;
         if (empty($error)) {
-            $documentserver = $this->config->getDocumentServerUrl();
+            $documentserver = $this->appConfig->getDocumentServerUrl();
             if (!empty($documentserver)) {
-                $documentService = new DocumentService($this->trans, $this->config);
+                $documentService = new DocumentService($this->trans, $this->appConfig);
                 [$error, $version] = $documentService->checkDocServiceUrl($this->urlGenerator, $this->crypt);
-                $this->config->setSettingsError($error);
+                $this->appConfig->setSettingsError($error);
             }
         }
 
         return new DataResponse([
-            "documentserver" => $this->config->getDocumentServerUrl(true),
-            "verifyPeerOff" => $this->config->getVerifyPeerOff(),
-            "documentserverInternal" => $this->config->getDocumentServerInternalUrl(true),
-            "storageUrl" => $this->config->getStorageUrl(),
-            "secret" => $this->config->getDocumentServerSecret(true),
-            "jwtHeader" => $this->config->jwtHeader(true),
+            "documentserver" => $this->appConfig->getDocumentServerUrl(true),
+            "verifyPeerOff" => $this->appConfig->getVerifyPeerOff(),
+            "documentserverInternal" => $this->appConfig->getDocumentServerInternalUrl(true),
+            "storageUrl" => $this->appConfig->getStorageUrl(),
+            "secret" => $this->appConfig->getDocumentServerSecret(true),
+            "jwtHeader" => $this->appConfig->jwtHeader(true),
             "error" => $error,
             "version" => $version,
         ]);
@@ -244,25 +204,25 @@ class SettingsController extends Controller {
         $unknownAuthor
     ): DataResponse {
 
-        $this->config->setDefaultFormats($defFormats);
-        $this->config->setEditableFormats($editFormats);
-        $this->config->setEnableSharing($enableSharing);
-        $this->config->setSameTab($sameTab);
-        $this->config->setPreview($preview);
-        $this->config->setAdvanced($advanced);
-        $this->config->setCronChecker($cronChecker);
-        $this->config->setEmailNotifications($emailNotifications);
-        $this->config->setVersionHistory($versionHistory);
-        $this->config->setLimitGroups($limitGroups);
-        $this->config->setCustomizationChat($chat);
-        $this->config->setCustomizationCompactHeader($compactHeader);
-        $this->config->setCustomizationFeedback($feedback);
-        $this->config->setCustomizationForcesave($forcesave);
-        $this->config->setLiveViewOnShare($liveViewOnShare);
-        $this->config->setCustomizationHelp($help);
-        $this->config->setCustomizationReviewDisplay($reviewDisplay);
-        $this->config->setCustomizationTheme($theme);
-        $this->config->setUnknownAuthor($unknownAuthor);
+        $this->appConfig->setDefaultFormats($defFormats);
+        $this->appConfig->setEditableFormats($editFormats);
+        $this->appConfig->setEnableSharing($enableSharing);
+        $this->appConfig->setSameTab($sameTab);
+        $this->appConfig->setPreview($preview);
+        $this->appConfig->setAdvanced($advanced);
+        $this->appConfig->setCronChecker($cronChecker);
+        $this->appConfig->setEmailNotifications($emailNotifications);
+        $this->appConfig->setVersionHistory($versionHistory);
+        $this->appConfig->setLimitGroups($limitGroups);
+        $this->appConfig->setCustomizationChat($chat);
+        $this->appConfig->setCustomizationCompactHeader($compactHeader);
+        $this->appConfig->setCustomizationFeedback($feedback);
+        $this->appConfig->setCustomizationForcesave($forcesave);
+        $this->appConfig->setLiveViewOnShare($liveViewOnShare);
+        $this->appConfig->setCustomizationHelp($help);
+        $this->appConfig->setCustomizationReviewDisplay($reviewDisplay);
+        $this->appConfig->setCustomizationTheme($theme);
+        $this->appConfig->setUnknownAuthor($unknownAuthor);
 
         return new DataResponse();
     }
@@ -289,10 +249,10 @@ class SettingsController extends Controller {
             }
         }
 
-        $this->config->setWatermarkSettings($watermarks);
-        $this->config->setCustomizationPlugins($plugins);
-        $this->config->setCustomizationMacros($macros);
-        $this->config->setProtection($protection);
+        $this->appConfig->setWatermarkSettings($watermarks);
+        $this->appConfig->setCustomizationPlugins($plugins);
+        $this->appConfig->setCustomizationMacros($macros);
+        $this->appConfig->setProtection($protection);
 
         return new DataResponse();
     }

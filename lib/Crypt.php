@@ -40,17 +40,7 @@ use UnexpectedValueException;
  */
 class Crypt {
 
-    /**
-     * @param AppConfig $config - application configutarion
-     */
-    public function __construct(
-        /**
-         * Application configuration
-         */
-        private readonly AppConfig $config
-    )
-    {
-    }
+    public function __construct(private readonly AppConfig $appConfig) {}
 
     /**
      * Generate token for the object
@@ -58,7 +48,7 @@ class Crypt {
      * @param array $object - object to signature
      */
     public function getHash(array $object): string {
-        return JWT::encode($object, $this->config->getSKey(), "HS256");
+        return JWT::encode($object, $this->appConfig->getSKey(), "HS256");
     }
 
     /**
@@ -73,7 +63,7 @@ class Crypt {
             return [$result, "token is empty"];
         }
         try {
-            $result = JWT::decode($token, new Key($this->config->getSKey(), "HS256"));
+            $result = JWT::decode($token, new Key($this->appConfig->getSKey(), "HS256"));
         } catch (UnexpectedValueException $e) {
             $error = $e->getMessage();
         }

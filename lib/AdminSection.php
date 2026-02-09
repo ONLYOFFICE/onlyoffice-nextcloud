@@ -37,15 +37,7 @@ use OCP\Settings\IIconSection;
  */
 class AdminSection implements IIconSection {
 
-    /** @var IURLGenerator */
-    private $urlGenerator;
-
-    /**
-     * @param IURLGenerator $urlGenerator - url generator service
-     */
-    public function __construct(IURLGenerator $urlGenerator) {
-        $this->urlGenerator = $urlGenerator;
-    }
+    public function __construct(private readonly IURLGenerator $urlGenerator) {}
 
 
     /**

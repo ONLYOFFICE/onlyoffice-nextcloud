@@ -50,22 +50,10 @@ use Psr\Log\LoggerInterface;
  */
 class FederationController extends OCSController {
 
-    /**
-     * @param string $appName application name
-     * @param IRequest $request request object
-     * @param LoggerInterface $logger logger
-     * @param FileUtility $fileUtility file utility
-     */
     public function __construct(
         string $appName,
         IRequest $request,
-        /**
-         * Logger
-         */
         private readonly LoggerInterface $logger,
-        /**
-         * File utility
-         */
         private readonly FileUtility $fileUtility
     ) {
         parent::__construct($appName, $request);

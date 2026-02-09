@@ -42,36 +42,12 @@ use Psr\Log\LoggerInterface;
  */
 class FileCreator extends ACreateEmpty {
 
-    /**
-     * l10n service
-     *
-     * @var IL10N
-     */
-    private $trans;
-
-    /**
-     * @param string $appName - application name
-     * @param IL10N $trans - l10n service
-     * @param LoggerInterface $logger - logger
-     * @param string $format - format for creation
-     */
     public function __construct(
-        /**
-         * Application name
-         */
-        private $appName,
-        IL10N $trans,
-        /**
-         * Logger
-         */
+        private readonly string $appName,
+        private readonly IL10N $trans,
         private readonly LoggerInterface $logger,
-        /**
-         * Format for creation
-         */
-        private $format
-    ) {
-        $this->trans = $trans;
-    }
+        private readonly string $format
+    ) {}
 
     /**
      * Unique id for the creator to filter templates

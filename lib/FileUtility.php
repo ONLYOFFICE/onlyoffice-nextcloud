@@ -47,51 +47,13 @@ use Psr\Log\LoggerInterface;
  */
 class FileUtility {
 
-    /**
-     * l10n service
-     *
-     * @var IL10N
-     */
-    private $trans;
-
-    /**
-     * Share manager
-     *
-     * @var IManager
-     */
-    private $shareManager;
-
-    /**
-     * Session
-     *
-     * @var ISession
-     */
-    private $session;
-
-    /**
-     * @param IL10N $trans - l10n service
-     * @param LoggerInterface $logger - logger
-     * @param AppConfig $config - application configuration
-     * @param IManager $shareManager - Share manager
-     * @param IManager $ISession - Session
-     */
     public function __construct(
-        IL10N $trans,
-        /**
-         * Logger
-         */
+        private readonly IL10N $trans,
         private readonly LoggerInterface $logger,
-        /**
-         * Application configuration
-         */
-        private readonly AppConfig $config,
-        IManager $shareManager,
-        ISession $session
-    ) {
-        $this->trans = $trans;
-        $this->shareManager = $shareManager;
-        $this->session = $session;
-    }
+        private readonly AppConfig $appConfig,
+        private readonly IManager $shareManager,
+        private readonly ISession $session
+    ) {}
 
     /**
      * Getting file by token
@@ -217,7 +179,7 @@ class FileUtility {
         $key = KeyManager::get($fileId);
 
         if (empty($key)) {
-            $instanceId = $this->config->getSystemValue("instanceid", true);
+            $instanceId = $this->appConfig->getSystemValue("instanceid", true);
 
             $key = $instanceId . "_" . $this->GUID();
 
@@ -244,7 +206,7 @@ class FileUtility {
      * @param \OCA\Files_Versions\Versions\IVersion $version - file version
      */
     public function getVersionKey($version): string {
-        $instanceId = $this->config->getSystemValue("instanceid", true);
+        $instanceId = $this->appConfig->getSystemValue("instanceid", true);
 
         return $instanceId . "_" . $version->getSourceFile()->getEtag() . "_" . $version->getRevisionId();
     }

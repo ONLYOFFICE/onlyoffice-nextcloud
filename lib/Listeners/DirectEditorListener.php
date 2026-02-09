@@ -40,22 +40,10 @@ use OCP\EventDispatcher\IEventListener;
  */
 class DirectEditorListener implements IEventListener {
 
-    /**
-     * @param AppConfig $config - application configuration
-     * @param DirectEditor $editor - direct editor
-     */
     public function __construct(
-        /**
-         * Application configuration
-         */
         private readonly AppConfig $appConfig,
-        /**
-         * Direct editor
-         */
         private readonly DirectEditor $editor
-    )
-    {
-    }
+    ) {}
 
     public function handle(Event $event): void {
         if (!$event instanceof RegisterDirectEditorEvent) {

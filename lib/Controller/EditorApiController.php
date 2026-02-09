@@ -70,128 +70,35 @@ use Psr\Log\LoggerInterface;
 class EditorApiController extends OCSController {
 
     /**
-     * Current user session
-     *
-     * @var IUserSession
-     */
-    private $userSession;
-
-    /**
-     * User manager
-     *
-     * @var IUserManager
-     */
-    private $userManager;
-
-    /**
-     * Root folder
-     *
-     * @var IRootFolder
-     */
-    private $root;
-
-    /**
-     * Url generator service
-     *
-     * @var IURLGenerator
-     */
-    private $urlGenerator;
-
-    /**
-     * l10n service
-     *
-     * @var IL10N
-     */
-    private $trans;
-
-    /**
-     * Tag manager
-     *
-     * @var ITagManager
-     */
-    private $tagManager;
-
-    /**
      * Extra permissions
      */
     private ?ExtraPermissions $extraPermissions = null;
-
-    /**
-     * Lock manager
-     *
-     * @var ILockManager
-     */
-    private $lockManager;
-
-    /**
-     * Timezone service
-     *
-     * @var TimezoneService
-     */
-    private $timezoneService;
 
     /**
      * Mobile regex from https://github.com/ONLYOFFICE/CommunityServer/blob/v9.1.1/web/studio/ASC.Web.Studio/web.appsettings.config#L35
      */
     public const USER_AGENT_MOBILE = "/android|avantgo|playbook|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od|ad)|iris|kindle|lge |maemo|midp|mmp|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\\/|plucker|pocket|psp|symbian|treo|up\\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i";
 
-    /**
-     * @param string $AppName - application name
-     * @param IRequest $request - request object
-     * @param IRootFolder $root - root folder
-     * @param IUserSession $userSession - current user session
-     * @param IUserManager $userManager - user manager
-     * @param IURLGenerator $urlGenerator - url generator service
-     * @param IL10N $trans - l10n service
-     * @param LoggerInterface $logger - logger
-     * @param AppConfig $config - application configuration
-     * @param Crypt $crypt - hash generator
-     * @param IManager $shareManager - Share manager
-     * @param ISession $ISession - Session
-     * @param ITagManager $tagManager - Tag manager
-     * @param ILockManager $lockManager - Lock manager
-     * @param TimezoneService $timezoneService - Timezone service
-     */
     public function __construct(
-        $AppName,
+        string $appName,
         IRequest $request,
-        IRootFolder $root,
-        IUserSession $userSession,
-        IUserManager $userManager,
-        IURLGenerator $urlGenerator,
-        IL10N $trans,
-        /**
-         * Logger
-         */
+        private readonly IRootFolder $root,
+        private readonly IUserSession $userSession,
+        private readonly IUserManager $userManager,
+        private readonly IURLGenerator $urlGenerator,
+        private readonly IL10N $trans,
         private readonly LoggerInterface $logger,
-        /**
-         * Application configuration
-         */
-        private readonly AppConfig $config,
-        /**
-         * Hash generator
-         */
+        private readonly AppConfig $appConfig,
         private readonly Crypt $crypt,
-        IManager $shareManager,
-        ISession $session,
-        ITagManager $tagManager,
-        ILockManager $lockManager,
-        TimezoneService $timezoneService,
+        private readonly ITagManager $tagManager,
+        private readonly ILockManager $lockManager,
+        private readonly TimezoneService $timezoneService,
         private readonly FileUtility $fileUtility,
         private readonly IAvatarManager $avatarManager
     ) {
-        parent::__construct($AppName, $request);
+        parent::__construct($appName, $request);
 
-        $this->userSession = $userSession;
-        $this->userManager = $userManager;
-        $this->root = $root;
-        $this->urlGenerator = $urlGenerator;
-        $this->trans = $trans;
-        $this->tagManager = $tagManager;
-        $this->lockManager = $lockManager;
-        $this->timezoneService = $timezoneService;
-
-        if ($this->config->getAdvanced()
+        if ($this->appConfig->getAdvanced()
             && Server::get(\OCP\App\IAppManager::class)->isEnabledForAnyone("files_sharing")) {
             $this->extraPermissions = Server::get(ExtraPermissions::class);
         }
@@ -265,13 +172,13 @@ class EditorApiController extends OCSController {
         if (!empty($share)) {
             $checkUserAllowGroups = $share->getSharedBy();
         }
-        if (!$this->config->isUserAllowedToUse($checkUserAllowGroups)) {
+        if (!$this->appConfig->isUserAllowedToUse($checkUserAllowGroups)) {
             return new JSONResponse(["error" => $this->trans->t("Not permitted")]);
         }
 
         $fileName = $file->getName();
         $ext = strtolower(pathinfo((string) $fileName, PATHINFO_EXTENSION));
-        $format = !empty($ext) && array_key_exists($ext, $this->config->formatsSetting()) ? $this->config->formatsSetting()[$ext] : null;
+        $format = !empty($ext) && array_key_exists($ext, $this->appConfig->formatsSetting()) ? $this->appConfig->formatsSetting()[$ext] : null;
         if (!isset($format)) {
             $this->logger->info("Format is not supported for editing: $fileName");
             return new JSONResponse(["error" => $this->trans->t("Format is not supported")]);
@@ -291,7 +198,7 @@ class EditorApiController extends OCSController {
                 "url" => $fileUrl,
                 "referenceData" => [
                     "fileKey" => (string)$file->getId(),
-                    "instanceId" => $this->config->getSystemValue("instanceid", true),
+                    "instanceId" => $this->appConfig->getSystemValue("instanceid", true),
                 ],
             ],
             "documentType" => $format["type"],
@@ -301,7 +208,7 @@ class EditorApiController extends OCSController {
             ]
         ];
 
-        $permissions_modifyFilter = $this->config->getSystemValue($this->config->_permissions_modifyFilter);
+        $permissions_modifyFilter = $this->appConfig->getSystemValue($this->appConfig->_permissions_modifyFilter);
         if (isset($permissions_modifyFilter)) {
             $params["document"]["permissions"]["modifyFilter"] = $permissions_modifyFilter;
         }
@@ -387,7 +294,7 @@ class EditorApiController extends OCSController {
             }
 
             $canProtect = true;
-            if ($this->config->getProtection() === "owner") {
+            if ($this->appConfig->getProtection() === "owner") {
                 $canProtect = $ownerId === $userId;
             }
             $params["document"]["permissions"]["protect"] = $canProtect;
@@ -405,15 +312,15 @@ class EditorApiController extends OCSController {
             $hashCallback = $this->crypt->getHash(["userId" => $userId, "ownerId" => $ownerId, "fileId" => $file->getId(), "filePath" => $filePath, "shareToken" => $shareToken, "action" => "track"]);
             $callback = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.track", ["doc" => $hashCallback]);
 
-            if (!$this->config->useDemo() && !empty($this->config->getStorageUrl())) {
-                $callback = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->config->getStorageUrl(), $callback);
+            if (!$this->appConfig->useDemo() && !empty($this->appConfig->getStorageUrl())) {
+                $callback = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->appConfig->getStorageUrl(), $callback);
             }
 
             $params["editorConfig"]["callbackUrl"] = $callback;
         } else {
             $params["editorConfig"]["mode"] = "view";
 
-            if (isset($shareToken) && empty($userId) && !$this->config->getLiveViewOnShare()) {
+            if (isset($shareToken) && empty($userId) && !$this->appConfig->getLiveViewOnShare()) {
                 $params["editorConfig"]["coEditing"] = [
                     "mode" => "strict",
                     "change" => false
@@ -548,9 +455,9 @@ class EditorApiController extends OCSController {
             }
         } elseif (!$desktop
             && $inframe
-            && ($this->config->getSameTab()
+            && ($this->appConfig->getSameTab()
                 || !empty($directToken)
-                || $this->config->getEnableSharing() && empty($shareToken))) {
+                || $this->appConfig->getEnableSharing() && empty($shareToken))) {
                 $params["editorConfig"]["customization"]["close"]["visible"] = true;
         } elseif ($canGoBack) {
             $params["editorConfig"]["customization"]["goback"] = [
@@ -560,7 +467,7 @@ class EditorApiController extends OCSController {
             $params["editorConfig"]["customization"]["close"]["visible"] = true;
         }
 
-        if (!$canDownload || $this->config->getDisableDownload()) {
+        if (!$canDownload || $this->appConfig->getDisableDownload()) {
             $params["document"]["permissions"]["download"] = false;
             $params["document"]["permissions"]["print"] = false;
             $params["document"]["permissions"]["copy"] = false;
@@ -574,8 +481,8 @@ class EditorApiController extends OCSController {
 
         $params = $this->setWatermark($params, !empty($shareToken), $user, $file);
 
-        if ($this->config->useDemo()) {
-            $params["editorConfig"]["tenant"] = $this->config->getSystemValue("instanceid", true);
+        if ($this->appConfig->useDemo()) {
+            $params["editorConfig"]["tenant"] = $this->appConfig->getSystemValue("instanceid", true);
         }
 
         if ($anchor !== null) {
@@ -588,17 +495,17 @@ class EditorApiController extends OCSController {
             }
         }
 
-        if (!empty($this->config->getDocumentServerUrl())) {
-            $params["documentServerUrl"] = $this->config->getDocumentServerUrl();
+        if (!empty($this->appConfig->getDocumentServerUrl())) {
+            $params["documentServerUrl"] = $this->appConfig->getDocumentServerUrl();
         }
 
-        if (!empty($this->config->getDocumentServerSecret())) {
+        if (!empty($this->appConfig->getDocumentServerSecret())) {
             $now = time();
             $iat = $now;
-            $exp = $now + $this->config->getJwtExpiration() * 60;
+            $exp = $now + $this->appConfig->getJwtExpiration() * 60;
             $params["iat"] = $iat;
             $params["exp"] = $exp;
-            $token = \Firebase\JWT\JWT::encode($params, $this->config->getDocumentServerSecret(), "HS256");
+            $token = \Firebase\JWT\JWT::encode($params, $this->appConfig->getDocumentServerSecret(), "HS256");
             $params["token"] = $token;
         }
 
@@ -693,8 +600,8 @@ class EditorApiController extends OCSController {
 
         $fileUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.download", ["doc" => $hashUrl]);
 
-        if (!$this->config->useDemo() && !empty($this->config->getStorageUrl())) {
-            $fileUrl = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->config->getStorageUrl(), $fileUrl);
+        if (!$this->appConfig->useDemo() && !empty($this->appConfig->getStorageUrl())) {
+            $fileUrl = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->appConfig->getStorageUrl(), $fileUrl);
         }
 
         return $fileUrl;
@@ -706,7 +613,7 @@ class EditorApiController extends OCSController {
      * @param string $userId - current user identifier
      */
     private function buildUserId(string $userId): string {
-        $instanceId = $this->config->getSystemValue("instanceid", true);
+        $instanceId = $this->appConfig->getSystemValue("instanceid", true);
         return $instanceId . "_" . $userId;
     }
 
@@ -717,79 +624,79 @@ class EditorApiController extends OCSController {
      */
     private function setCustomization(array $params): array {
         //default is true
-        if ($this->config->getCustomizationChat() === false) {
+        if ($this->appConfig->getCustomizationChat() === false) {
             $params["editorConfig"]["customization"]["chat"] = false;
         }
 
         //default is false
-        if ($this->config->getCustomizationCompactHeader()) {
+        if ($this->appConfig->getCustomizationCompactHeader()) {
             $params["editorConfig"]["customization"]["compactHeader"] = true;
         }
 
         //default is false
-        if ($this->config->getCustomizationFeedback()) {
+        if ($this->appConfig->getCustomizationFeedback()) {
             $params["editorConfig"]["customization"]["feedback"] = true;
         }
 
         //default is false
-        if ($this->config->getCustomizationForcesave()) {
+        if ($this->appConfig->getCustomizationForcesave()) {
             $params["editorConfig"]["customization"]["forcesave"] = true;
         }
 
         //default is true
-        if ($this->config->getCustomizationHelp() === false) {
+        if ($this->appConfig->getCustomizationHelp() === false) {
             $params["editorConfig"]["customization"]["help"] = false;
         }
 
         //default is original
-        $reviewDisplay = $this->config->getCustomizationReviewDisplay();
+        $reviewDisplay = $this->appConfig->getCustomizationReviewDisplay();
         if ($reviewDisplay !== "original") {
             $params["editorConfig"]["customization"]["reviewDisplay"] = $reviewDisplay;
         }
 
-        $theme = $this->config->getCustomizationTheme();
+        $theme = $this->appConfig->getCustomizationTheme();
         if (isset($theme)) {
             $params["editorConfig"]["customization"]["uiTheme"] = $theme;
         }
 
         //default is true
-        if ($this->config->getCustomizationMacros() === false) {
+        if ($this->appConfig->getCustomizationMacros() === false) {
             $params["editorConfig"]["customization"]["macros"] = false;
         }
 
         //default is true
-        if ($this->config->getCustomizationPlugins() === false) {
+        if ($this->appConfig->getCustomizationPlugins() === false) {
             $params["editorConfig"]["customization"]["plugins"] = false;
         }
 
         /* from system config */
 
-        $autosave = $this->config->getSystemValue($this->config->_customization_autosave);
+        $autosave = $this->appConfig->getSystemValue($this->appConfig->_customization_autosave);
         if (isset($autosave)) {
             $params["editorConfig"]["customization"]["autosave"] = $autosave;
         }
 
-        $customer = $this->config->getSystemValue($this->config->_customization_customer);
+        $customer = $this->appConfig->getSystemValue($this->appConfig->_customization_customer);
         if (isset($customer)) {
             $params["editorConfig"]["customization"]["customer"] = $customer;
         }
 
-        $loaderLogo = $this->config->getSystemValue($this->config->_customization_loaderLogo);
+        $loaderLogo = $this->appConfig->getSystemValue($this->appConfig->_customization_loaderLogo);
         if (isset($loaderLogo)) {
             $params["editorConfig"]["customization"]["loaderLogo"] = $loaderLogo;
         }
 
-        $loaderName = $this->config->getSystemValue($this->config->_customization_loaderName);
+        $loaderName = $this->appConfig->getSystemValue($this->appConfig->_customization_loaderName);
         if (isset($loaderName)) {
             $params["editorConfig"]["customization"]["loaderName"] = $loaderName;
         }
 
-        $logo = $this->config->getSystemValue($this->config->_customization_logo);
+        $logo = $this->appConfig->getSystemValue($this->appConfig->_customization_logo);
         if (isset($logo)) {
             $params["editorConfig"]["customization"]["logo"] = $logo;
         }
 
-        $zoom = $this->config->getSystemValue($this->config->_customization_zoom);
+        $zoom = $this->appConfig->getSystemValue($this->appConfig->_customization_zoom);
         if (isset($zoom)) {
             $params["editorConfig"]["customization"]["zoom"] = $zoom;
         }
@@ -869,7 +776,7 @@ class EditorApiController extends OCSController {
      * @return bool|string
      */
     private function getWatermarkText(bool $isPublic, $userId, File $file, bool $canEdit, bool $canDownload) {
-        $watermarkSettings = $this->config->getWatermarkSettings();
+        $watermarkSettings = $this->appConfig->getWatermarkSettings();
         if (!$watermarkSettings["enabled"]) {
             return false;
         }

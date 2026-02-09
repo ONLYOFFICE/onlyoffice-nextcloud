@@ -44,23 +44,10 @@ class DocumentService {
      */
     private static string $appName = "onlyoffice";
 
-    /**
-     * l10n service
-     *
-     * @var IL10N
-     */
-    private $trans;
-
-    /**
-     * @param IL10N $trans - l10n service
-     * @param AppConfig $config - application configutarion
-     */
-    public function __construct(IL10N $trans, /**
-     * Application configuration
-     */
-    private readonly AppConfig $config) {
-        $this->trans = $trans;
-    }
+    public function __construct(
+        private readonly IL10N $trans,
+        private readonly AppConfig $appConfig
+    ) {}
 
     /**
      * Translation key to a supported form.
@@ -123,7 +110,7 @@ class DocumentService {
         $toForm = false,
         $thumbnail = [],
     ) {
-        $documentServerUrl = $this->config->getDocumentServerInternalUrl();
+        $documentServerUrl = $this->appConfig->getDocumentServerInternalUrl();
 
         if (empty($documentServerUrl)) {
             throw new \Exception($this->trans->t("ONLYOFFICE app is not configured. Please contact admin"));
@@ -153,8 +140,8 @@ class DocumentService {
             $data["region"] = $region;
         }
 
-        if ($this->config->useDemo()) {
-            $data["tenant"] = $this->config->getSystemValue("instanceid", true);
+        if ($this->appConfig->useDemo()) {
+            $data["tenant"] = $this->appConfig->getSystemValue("instanceid", true);
         }
 
         if ($toForm) {
@@ -175,21 +162,21 @@ class DocumentService {
             "body" => json_encode($data)
         ];
 
-        if (!empty($this->config->getDocumentServerSecret())) {
+        if (!empty($this->appConfig->getDocumentServerSecret())) {
             $now = time();
             $iat = $now;
-            $exp = $now + $this->config->getJwtExpiration() * 60;
+            $exp = $now + $this->appConfig->getJwtExpiration() * 60;
             $params = [
                 "payload" => $data,
                 "iat" => $iat,
                 "exp" => $exp
             ];
-            $token = \Firebase\JWT\JWT::encode($params, $this->config->getDocumentServerSecret(), "HS256");
-            $opts["headers"][$this->config->jwtHeader()] = "Bearer " . $token;
+            $token = \Firebase\JWT\JWT::encode($params, $this->appConfig->getDocumentServerSecret(), "HS256");
+            $opts["headers"][$this->appConfig->jwtHeader()] = "Bearer " . $token;
 
             $data["iat"] = $iat;
             $data["exp"] = $exp;
-            $token = \Firebase\JWT\JWT::encode($data, $this->config->getDocumentServerSecret(), "HS256");
+            $token = \Firebase\JWT\JWT::encode($data, $this->appConfig->getDocumentServerSecret(), "HS256");
             $data["token"] = $token;
             $opts["body"] = json_encode($data);
         }
@@ -256,7 +243,7 @@ class DocumentService {
      */
     public function healthcheckRequest(): bool {
 
-        $documentServerUrl = $this->config->getDocumentServerInternalUrl();
+        $documentServerUrl = $this->appConfig->getDocumentServerInternalUrl();
 
         if (empty($documentServerUrl)) {
             throw new \Exception($this->trans->t("ONLYOFFICE app is not configured. Please contact admin"));
@@ -278,7 +265,7 @@ class DocumentService {
      */
     public function commandRequest($method) {
 
-        $documentServerUrl = $this->config->getDocumentServerInternalUrl();
+        $documentServerUrl = $this->appConfig->getDocumentServerInternalUrl();
 
         if (empty($documentServerUrl)) {
             throw new \Exception($this->trans->t("ONLYOFFICE app is not configured. Please contact admin"));
@@ -297,22 +284,22 @@ class DocumentService {
             "body" => json_encode($data)
         ];
 
-        if (!empty($this->config->getDocumentServerSecret())) {
+        if (!empty($this->appConfig->getDocumentServerSecret())) {
             $now = time();
             $iat = $now;
-            $exp = $now + $this->config->getJwtExpiration() * 60;
+            $exp = $now + $this->appConfig->getJwtExpiration() * 60;
             $params = [
                 "payload" => $data,
                 "iat" => $iat,
                 "exp" => $exp
             ];
 
-            $token = \Firebase\JWT\JWT::encode($params, $this->config->getDocumentServerSecret(), "HS256");
-            $opts["headers"][$this->config->jwtHeader()] = "Bearer " . $token;
+            $token = \Firebase\JWT\JWT::encode($params, $this->appConfig->getDocumentServerSecret(), "HS256");
+            $opts["headers"][$this->appConfig->jwtHeader()] = "Bearer " . $token;
 
             $data["iat"] = $iat;
             $data["exp"] = $exp;
-            $token = \Firebase\JWT\JWT::encode($data, $this->config->getDocumentServerSecret(), "HS256");
+            $token = \Firebase\JWT\JWT::encode($data, $this->appConfig->getDocumentServerSecret(), "HS256");
             $data["token"] = $token;
             $opts["body"] = json_encode($data);
         }
@@ -371,7 +358,7 @@ class DocumentService {
         if (null === $opts) {
             $opts = [];
         }
-        if (str_starts_with($url, "https") && $this->config->getVerifyPeerOff()) {
+        if (str_starts_with($url, "https") && $this->appConfig->getVerifyPeerOff()) {
             $opts["verify"] = false;
         }
         if (!array_key_exists("timeout", $opts)) {
@@ -399,7 +386,7 @@ class DocumentService {
 
         try {
             if (preg_match("/^https:\/\//i", (string) $urlGenerator->getAbsoluteURL("/"))
-                && preg_match("/^http:\/\//i", $this->config->getDocumentServerUrl())) {
+                && preg_match("/^http:\/\//i", $this->appConfig->getDocumentServerUrl())) {
                 throw new \Exception($this->trans->t("Mixed Active Content is not allowed. HTTPS address for ONLYOFFICE Docs is required."));
             }
         } catch (\Exception $e) {
@@ -437,8 +424,8 @@ class DocumentService {
         try {
             $hashUrl = $crypt->getHash(["action" => "empty"]);
             $fileUrl = $urlGenerator->linkToRouteAbsolute(self::$appName . ".callback.emptyfile", ["doc" => $hashUrl]);
-            if (!$this->config->useDemo() && !empty($this->config->getStorageUrl())) {
-                $fileUrl = str_replace($urlGenerator->getAbsoluteURL("/"), $this->config->getStorageUrl(), $fileUrl);
+            if (!$this->appConfig->useDemo() && !empty($this->appConfig->getStorageUrl())) {
+                $fileUrl = str_replace($urlGenerator->getAbsoluteURL("/"), $this->appConfig->getStorageUrl(), $fileUrl);
             }
 
             $convertedFileUri = $this->getConvertedUri($fileUrl, "docx", "docx", "check_" . random_int(0, mt_getrandmax()));

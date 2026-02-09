@@ -91,22 +91,6 @@ class EditorController extends Controller {
      */
     private $folderManager;
 
-    /**
-     * @param string $AppName - application name
-     * @param IRequest $request - request object
-     * @param IRootFolder $root - root folder
-     * @param IUserSession $userSession - current user session
-     * @param IUserManager $userManager - user manager
-     * @param IURLGenerator $urlGenerator - url generator service
-     * @param IL10N $trans - l10n service
-     * @param LoggerInterface $logger - logger
-     * @param AppConfig $config - application configuration
-     * @param Crypt $crypt - hash generator
-     * @param IManager $shareManager - Share manager
-     * @param ISession $session - Session
-     * @param IGroupManager $groupManager - group Manager
-     * @param IMailer $mailer - mailer
-     */
     public function __construct(
         string $appName,
         IRequest $request,
@@ -116,7 +100,7 @@ class EditorController extends Controller {
         private readonly IURLGenerator $urlGenerator,
         private readonly IL10N $trans,
         private readonly LoggerInterface $logger,
-        private readonly AppConfig $config,
+        private readonly AppConfig $appConfig,
         private readonly Crypt $crypt,
         private readonly IManager $shareManager,
         private readonly IGroupManager $groupManager,
@@ -151,7 +135,7 @@ class EditorController extends Controller {
     public function create($name, $dir, $templateId = null, $targetId = 0, $shareToken = null) {
         $this->logger->debug("Create: $name");
 
-        if (empty($shareToken) && !$this->config->isUserAllowedToUse()) {
+        if (empty($shareToken) && !$this->appConfig->isUserAllowedToUse()) {
             return new DataResponse(["error" => $this->trans->t("Not permitted")]);
         }
 
@@ -209,7 +193,7 @@ class EditorController extends Controller {
 
             $ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
             $region = str_replace("_", "-", $this->trans->getLocaleCode());
-            $documentService = new DocumentService($this->trans, $this->config);
+            $documentService = new DocumentService($this->trans, $this->appConfig);
             try {
                 $newFileUri = $documentService->getConvertedUri($fileUrl, $targetExt, $ext, $targetKey, $region, $ext === "pdf");
             } catch (\Exception $e) {
@@ -283,7 +267,7 @@ class EditorController extends Controller {
         $result = [];
         $currentUserGroups = [];
 
-        if (!$this->config->isUserAllowedToUse()) {
+        if (!$this->appConfig->isUserAllowedToUse()) {
             return new DataResponse();
         }
 
@@ -471,7 +455,7 @@ class EditorController extends Controller {
     public function mention($fileId, $anchor, $comment, $emails) {
         $this->logger->debug("mention: from $fileId to " . json_encode($emails));
 
-        if (!$this->config->isUserAllowedToUse()) {
+        if (!$this->appConfig->isUserAllowedToUse()) {
             return new DataResponse(["error" => $this->trans->t("Not permitted")]);
         }
 
@@ -581,7 +565,7 @@ class EditorController extends Controller {
             $notification->setUser($recipientId);
 
             $notificationManager->notify($notification);
-            if ($this->config->getEmailNotifications()) {
+            if ($this->appConfig->getEmailNotifications()) {
                 $this->emailManager->notifyMentionEmail($userId, $recipientId, $file->getId(), $file->getName(), $anchor, $notification->getObjectId());
             }
         }
@@ -603,7 +587,7 @@ class EditorController extends Controller {
     public function reference($referenceData, $path = null, $link = null) {
         $this->logger->debug("reference: " . json_encode($referenceData) . " $path");
 
-        if (!$this->config->isUserAllowedToUse()) {
+        if (!$this->appConfig->isUserAllowedToUse()) {
             return new DataResponse(["error" => $this->trans->t("Not permitted")]);
         }
 
@@ -617,7 +601,7 @@ class EditorController extends Controller {
         $file = null;
         $fileId = (integer)($referenceData["fileKey"] ?? 0);
         if (!empty($fileId)
-            && $referenceData["instanceId"] === $this->config->getSystemValue("instanceid", true)) {
+            && $referenceData["instanceId"] === $this->appConfig->getSystemValue("instanceid", true)) {
             [$file, $error, $share] = $this->getFile($userId, $fileId);
         }
 
@@ -658,18 +642,18 @@ class EditorController extends Controller {
             "key" => $key,
             "referenceData" => [
                 "fileKey" => (string)$file->getId(),
-                "instanceId" => $this->config->getSystemValue("instanceid", true),
+                "instanceId" => $this->appConfig->getSystemValue("instanceid", true),
             ],
             "url" => $this->getUrl($file, $user),
         ];
 
-        if (!empty($this->config->getDocumentServerSecret())) {
+        if (!empty($this->appConfig->getDocumentServerSecret())) {
             $now = time();
             $iat = $now;
-            $exp = $now + $this->config->getJwtExpiration() * 60;
+            $exp = $now + $this->appConfig->getJwtExpiration() * 60;
             $response["iat"] = $iat;
             $response["exp"] = $exp;
-            $token = \Firebase\JWT\JWT::encode($response, $this->config->getDocumentServerSecret(), "HS256");
+            $token = \Firebase\JWT\JWT::encode($response, $this->appConfig->getDocumentServerSecret(), "HS256");
             $response["token"] = $token;
         }
 
@@ -689,7 +673,7 @@ class EditorController extends Controller {
     public function convert($fileId, $shareToken = null) {
         $this->logger->debug("Convert: $fileId");
 
-        if (empty($shareToken) && !$this->config->isUserAllowedToUse()) {
+        if (empty($shareToken) && !$this->appConfig->isUserAllowedToUse()) {
             return new DataResponse(["error" => $this->trans->t("Not permitted")]);
         }
 
@@ -713,7 +697,7 @@ class EditorController extends Controller {
 
         $fileName = $file->getName();
         $ext = strtolower(pathinfo((string) $fileName, PATHINFO_EXTENSION));
-        $format = $this->config->formatsSetting()[$ext];
+        $format = $this->appConfig->formatsSetting()[$ext];
         if (!isset($format)) {
             $this->logger->info("Format for convertion not supported: $fileName");
             return new DataResponse(["error" => $this->trans->t("Format is not supported")]);
@@ -735,7 +719,7 @@ class EditorController extends Controller {
         }
 
         $newFileUri = null;
-        $documentService = new DocumentService($this->trans, $this->config);
+        $documentService = new DocumentService($this->trans, $this->appConfig);
         $key = $this->fileUtility->getKey($file);
         $fileUrl = $this->getUrl($file, $user, $shareToken);
         $region = str_replace("_", "-", $this->trans->getLocaleCode());
@@ -786,7 +770,7 @@ class EditorController extends Controller {
     public function save($name, $dir, $url) {
         $this->logger->debug("Save: $name");
 
-        if (!$this->config->isUserAllowedToUse()) {
+        if (!$this->appConfig->isUserAllowedToUse()) {
             return new DataResponse(["error" => $this->trans->t("Not permitted")]);
         }
 
@@ -807,7 +791,7 @@ class EditorController extends Controller {
             $this->logger->error("Folder for saving file without permission: $dir");
             return new DataResponse(["error" => $this->trans->t("You don't have enough permission to create")]);
         }
-        $documentServerUrl = $this->config->getDocumentServerUrl();
+        $documentServerUrl = $this->appConfig->getDocumentServerUrl();
 
         if (empty($documentServerUrl)) {
             $this->logger->error("documentServerUrl is empty");
@@ -823,10 +807,10 @@ class EditorController extends Controller {
             return new DataResponse(["error" => $this->trans->t("The domain in the file url does not match the domain of the Document server")]);
         }
 
-        $url = $this->config->replaceDocumentServerUrlToInternal($url);
+        $url = $this->appConfig->replaceDocumentServerUrlToInternal($url);
 
         try {
-            $documentService = new DocumentService($this->trans, $this->config);
+            $documentService = new DocumentService($this->trans, $this->appConfig);
             $newData = $documentService->request($url);
         } catch (\Exception $e) {
             $this->logger->error("Failed to download file for saving: $url", ["exception" => $e]);
@@ -858,7 +842,7 @@ class EditorController extends Controller {
     public function history($fileId) {
         $this->logger->debug("Request history for: $fileId");
 
-        if (!$this->config->isUserAllowedToUse()) {
+        if (!$this->appConfig->isUserAllowedToUse()) {
             return new DataResponse(["error" => $this->trans->t("Not permitted")]);
         }
 
@@ -916,8 +900,8 @@ class EditorController extends Controller {
                     "id" => $this->buildUserId($author["id"]),
                     "name" => $author["name"],
                 ];
-            } elseif (!empty($this->config->getUnknownAuthor()) && $versionNum !== 1) {
-                $authorName = $this->config->getUnknownAuthor();
+            } elseif (!empty($this->appConfig->getUnknownAuthor()) && $versionNum !== 1) {
+                $authorName = $this->appConfig->getUnknownAuthor();
                 $historyItem["user"] = [
                     "name" => $authorName,
                 ];
@@ -958,8 +942,8 @@ class EditorController extends Controller {
                 "id" => $this->buildUserId($author["id"]),
                 "name" => $author["name"],
             ];
-        } elseif (!empty($this->config->getUnknownAuthor()) && $versionNum !== 0) {
-            $authorName = $this->config->getUnknownAuthor();
+        } elseif (!empty($this->appConfig->getUnknownAuthor()) && $versionNum !== 0) {
+            $authorName = $this->appConfig->getUnknownAuthor();
             $historyItem["user"] = [
                 "name" => $authorName,
             ];
@@ -994,7 +978,7 @@ class EditorController extends Controller {
     public function version($fileId, $version) {
         $this->logger->debug("Request version for: $fileId ($version)");
 
-        if (!$this->config->isUserAllowedToUse()) {
+        if (!$this->appConfig->isUserAllowedToUse()) {
             return new DataResponse(["error" => $this->trans->t("Not permitted")]);
         }
 
@@ -1074,13 +1058,13 @@ class EditorController extends Controller {
             ];
         }
 
-        if (!empty($this->config->getDocumentServerSecret())) {
+        if (!empty($this->appConfig->getDocumentServerSecret())) {
             $now = time();
             $iat = $now;
-            $exp = $now + $this->config->getJwtExpiration() * 60;
+            $exp = $now + $this->appConfig->getJwtExpiration() * 60;
             $result["iat"] = $iat;
             $result["exp"] = $exp;
-            $token = \Firebase\JWT\JWT::encode($result, $this->config->getDocumentServerSecret(), "HS256");
+            $token = \Firebase\JWT\JWT::encode($result, $this->appConfig->getDocumentServerSecret(), "HS256");
             $result["token"] = $token;
         }
 
@@ -1099,7 +1083,7 @@ class EditorController extends Controller {
     public function restore($fileId, $version) {
         $this->logger->debug("Request restore version for: $fileId ($version)");
 
-        if (!$this->config->isUserAllowedToUse()) {
+        if (!$this->appConfig->isUserAllowedToUse()) {
             return new DataResponse(["error" => $this->trans->t("Not permitted")]);
         }
 
@@ -1153,7 +1137,7 @@ class EditorController extends Controller {
     public function url($filePath) {
         $this->logger->debug("Request url for: $filePath");
 
-        if (!$this->config->isUserAllowedToUse()) {
+        if (!$this->appConfig->isUserAllowedToUse()) {
             return new DataResponse(["error" => $this->trans->t("Not permitted")]);
         }
 
@@ -1193,13 +1177,13 @@ class EditorController extends Controller {
             "url" => $fileUrl
         ];
 
-        if (!empty($this->config->getDocumentServerSecret())) {
+        if (!empty($this->appConfig->getDocumentServerSecret())) {
             $now = time();
             $iat = $now;
-            $exp = $now + $this->config->getJwtExpiration() * 60;
+            $exp = $now + $this->appConfig->getJwtExpiration() * 60;
             $result["iat"] = $iat;
             $result["exp"] = $exp;
-            $token = \Firebase\JWT\JWT::encode($result, $this->config->getDocumentServerSecret(), "HS256");
+            $token = \Firebase\JWT\JWT::encode($result, $this->appConfig->getDocumentServerSecret(), "HS256");
             $result["token"] = $token;
         }
 
@@ -1220,7 +1204,7 @@ class EditorController extends Controller {
     public function download($fileId, $toExtension = null, $template = false) {
         $this->logger->debug("Download: $fileId $toExtension");
 
-        if (!$this->config->isUserAllowedToUse() || $this->config->getDisableDownload()) {
+        if (!$this->appConfig->isUserAllowedToUse() || $this->appConfig->getDisableDownload()) {
             return $this->renderError($this->trans->t("Not permitted"));
         }
 
@@ -1267,7 +1251,7 @@ class EditorController extends Controller {
 
         $newFileUri = null;
         $newFileType = $toExtension;
-        $documentService = new DocumentService($this->trans, $this->config);
+        $documentService = new DocumentService($this->trans, $this->appConfig);
         $key = $this->fileUtility->getKey($file);
         $fileUrl = $this->getUrl($file, $user);
         $thumbnail = ['first' => false];
@@ -1306,7 +1290,7 @@ class EditorController extends Controller {
         $fileNameWithoutExt = substr((string) $fileName, 0, strlen((string) $fileName) - strlen($ext) - 1);
         $newFileName = "$fileNameWithoutExt.$newFileType";
 
-        $mimeType = $this->config->getMimeType($newFileType);
+        $mimeType = $this->appConfig->getMimeType($newFileType);
 
         return new DataDownloadResponse($newData, $newFileName, $mimeType);
     }
@@ -1345,11 +1329,11 @@ class EditorController extends Controller {
             }
         }
 
-        if (!$this->config->isUserAllowedToUse($shareBy)) {
+        if (!$this->appConfig->isUserAllowedToUse($shareBy)) {
             return $this->renderError($this->trans->t("Not permitted"));
         }
 
-        $documentServerUrl = $this->config->getDocumentServerUrl();
+        $documentServerUrl = $this->appConfig->getDocumentServerUrl();
 
         if (empty($documentServerUrl)) {
             $this->logger->error("documentServerUrl is empty");
@@ -1503,8 +1487,8 @@ class EditorController extends Controller {
 
         $fileUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.download", ["doc" => $hashUrl]);
 
-        if (!$this->config->useDemo() && !empty($this->config->getStorageUrl())) {
-            $fileUrl = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->config->getStorageUrl(), $fileUrl);
+        if (!$this->appConfig->useDemo() && !empty($this->appConfig->getStorageUrl())) {
+            $fileUrl = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->appConfig->getStorageUrl(), $fileUrl);
         }
 
         return $fileUrl;
@@ -1531,7 +1515,7 @@ class EditorController extends Controller {
      * @param string $userId - current user identifier
      */
     private function buildUserId(string $userId): string {
-        $instanceId = $this->config->getSystemValue("instanceid", true);
+        $instanceId = $this->appConfig->getSystemValue("instanceid", true);
         return $instanceId . "_" . $userId;
     }
 

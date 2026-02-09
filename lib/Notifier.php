@@ -40,51 +40,13 @@ use Psr\Log\LoggerInterface;
 
 class Notifier implements INotifier {
 
-    /**
-     * IFactory
-     *
-     * @var IFactory
-     */
-    private $l10nFactory;
-
-    /**
-     * Url generator service
-     *
-     * @var IURLGenerator
-     */
-    private $urlGenerator;
-
-    /**
-     * User manager
-     *
-     * @var IUserManager
-     */
-    private $userManager;
-
-    /**
-     * @param string $AppName - application name
-     * @param IFactory $l10NFactory - l10n
-     * @param IURLGenerator $urlGenerator - url generator service
-     * @param LoggerInterface $logger - logger
-     * @param IUserManager $userManager - user manager
-     */
     public function __construct(
-        /**
-         * Application name
-         */
         private readonly string $appName,
-        IFactory $l10nFactory,
-        IURLGenerator $urlGenerator,
-        /**
-         * Logger
-         */
+        private readonly IFactory $l10nFactory,
+        private readonly IURLGenerator $urlGenerator,
         private readonly LoggerInterface $logger,
-        IUserManager $userManager
-    ) {
-        $this->l10nFactory = $l10nFactory;
-        $this->urlGenerator = $urlGenerator;
-        $this->userManager = $userManager;
-    }
+        private readonly IUserManager $userManager
+    ) {}
 
     /**
      * Identifier of the notifier, only use [a-z0-9_]

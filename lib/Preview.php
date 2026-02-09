@@ -55,27 +55,6 @@ use Psr\Log\LoggerInterface;
 class Preview implements IProviderV2 {
 
     /**
-     * Root folder
-     *
-     * @var IRootFolder
-     */
-    private $root;
-
-    /**
-     * l10n service
-     *
-     * @var IL10N
-     */
-    private $trans;
-
-    /**
-     * Url generator service
-     *
-     * @var IURLGenerator
-     */
-    private $urlGenerator;
-
-    /**
      * File version manager
      *
      * @var IVersionManager
@@ -123,45 +102,16 @@ class Preview implements IProviderV2 {
      */
     private const THUMBEXTENSION = "jpeg";
 
-    /**
-     * @param string $appName - application name
-     * @param IRootFolder $root - root folder
-     * @param LoggerInterface $logger - logger
-     * @param IL10N $trans - l10n service
-     * @param AppConfig $config - application configuration
-     * @param IURLGenerator $urlGenerator - url generator service
-     * @param Crypt $crypt - hash generator
-     * @param FileUtility $fileUtility - file utility
-     */
     public function __construct(
-        /**
-         * Application name
-         */
         private readonly string $appName,
-        IRootFolder $root,
-        /**
-         * Logger
-         */
+        private readonly IRootFolder $root,
         private readonly LoggerInterface $logger,
-        IL10N $trans,
-        /**
-         * Application configuration
-         */
-        private readonly AppConfig $config,
-        IURLGenerator $urlGenerator,
-        /**
-         * Hash generator
-         */
+        private readonly IL10N $trans,
+        private readonly AppConfig $appConfig,
+        private readonly IURLGenerator $urlGenerator,
         private readonly Crypt $crypt,
-        /**
-         * Hash generator
-         */
         private readonly FileUtility $fileUtility
     ) {
-        $this->root = $root;
-        $this->trans = $trans;
-        $this->urlGenerator = $urlGenerator;
-
         if (Server::get(\OCP\App\IAppManager::class)->isEnabledForAnyone("files_versions")) {
             try {
                 $this->versionManager = Server::get(IVersionManager::class);
@@ -199,12 +149,12 @@ class Preview implements IProviderV2 {
      * @param FileInfo $file - File
      */
     public function isAvailable(FileInfo $file): bool {
-        if (!$this->config->getPreview()) {
+        if (!$this->appConfig->getPreview()) {
             return false;
         }
         if (!$file
             || $file->getSize() === 0
-            || $file->getSize() > $this->config->getLimitThumbSize()) {
+            || $file->getSize() > $this->appConfig->getLimitThumbSize()) {
             return false;
         }
         if (!in_array($file->getMimetype(), self::$capabilities, true)) {
@@ -225,7 +175,7 @@ class Preview implements IProviderV2 {
         }
 
         $imageUrl = null;
-        $documentService = new DocumentService($this->trans, $this->config);
+        $documentService = new DocumentService($this->trans, $this->appConfig);
         try {
             $imageUrl = $documentService->getConvertedUri($fileUrl, $extension, self::THUMBEXTENSION, $key);
         } catch (\Exception $e) {
@@ -282,8 +232,8 @@ class Preview implements IProviderV2 {
 
         $fileUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.download", ["doc" => $hashUrl]);
 
-        if (!$this->config->useDemo() && !empty($this->config->getStorageUrl())) {
-            $fileUrl = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->config->getStorageUrl(), $fileUrl);
+        if (!$this->appConfig->useDemo() && !empty($this->appConfig->getStorageUrl())) {
+            $fileUrl = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->appConfig->getStorageUrl(), $fileUrl);
         }
 
         return $fileUrl;

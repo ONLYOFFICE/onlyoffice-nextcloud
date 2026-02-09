@@ -43,27 +43,13 @@ use OCP\IRequest;
  */
 class JobListController extends Controller {
 
-    /**
-     * Job list
-     *
-     * @var IJobList
-     */
-    private $jobList;
-
-    /**
-     * JobListController constructor.
-     *
-     * @param string $AppName - application name
-     * @param IRequest $request - request object
-     * @param AppConfig $config - application configuration
-     * @param IJobList $jobList - job list
-     */
-    public function __construct($AppName, IRequest $request, /**
-     * Application configuration
-     */
-    private readonly AppConfig $config, IJobList $jobList) {
-        parent::__construct($AppName, $request);
-        $this->jobList = $jobList;
+    public function __construct(
+        string $appName,
+        IRequest $request,
+        private readonly AppConfig $appConfig,
+        private readonly IJobList $jobList
+    ) {
+        parent::__construct($appName, $request);
     }
 
     /**
@@ -95,11 +81,11 @@ class JobListController extends Controller {
      *
      */
     private function checkEditorsCheckJob(): void {
-        if (!$this->config->getCronChecker()) {
+        if (!$this->appConfig->getCronChecker()) {
             $this->removeJob(EditorsCheck::class);
             return;
         }
-        if ($this->config->getEditorsCheckInterval() > 0) {
+        if ($this->appConfig->getEditorsCheckInterval() > 0) {
             $this->addJob(EditorsCheck::class);
         } else {
             $this->removeJob(EditorsCheck::class);

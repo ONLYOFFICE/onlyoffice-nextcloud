@@ -43,26 +43,10 @@ use OCP\Util;
  */
 class ViewerListener implements IEventListener {
 
-    /**
-     * Initial state
-     *
-     * @var IInitialState
-     */
-    private $initialState;
-
-    /**
-     * @param AppConfig $config - application configuration
-     * @param IInitialState $initialState - initial state
-     */
     public function __construct(
-        /**
-         * Application configuration
-         */
         private readonly AppConfig $appConfig,
-        IInitialState $initialState
-    ) {
-        $this->initialState = $initialState;
-    }
+        private readonly IInitialState $initialState
+    ) {}
 
     public function handle(Event $event): void {
         if (!$event instanceof LoadViewer) {

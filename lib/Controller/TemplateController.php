@@ -48,49 +48,15 @@ use Psr\Log\LoggerInterface;
  */
 class TemplateController extends Controller {
 
-    /**
-     * l10n service
-     *
-     * @var IL10N
-     */
-    private $trans;
-
-    /**
-     * Preview manager
-     *
-     * @var IPreview
-     */
-    private $preview;
-
-    /**
-     * Mime icon provider
-     *
-     * @var IMimeIconProvider
-     */
-    private $mimeIconProvider;
-
-    /**
-     * @param string $AppName - application name
-     * @param LoggerInterface $logger - logger
-     * @param IL10N $trans - l10n service
-     * @param IMimeIconProvider $mimeIconProvider - mime icon provider
-     */
     public function __construct(
-        $AppName,
+        string $appName,
         IRequest $request,
-        IL10N $trans,
-        /**
-         * Logger
-         */
+        private readonly IL10N $trans,
         private readonly LoggerInterface $logger,
-        IPreview $preview,
-        IMimeIconProvider $mimeIconProvider,
+        private readonly IPreview $preview,
+        private readonly IMimeIconProvider $mimeIconProvider,
     ) {
-        parent::__construct($AppName, $request);
-
-        $this->trans = $trans;
-        $this->preview = $preview;
-        $this->mimeIconProvider = $mimeIconProvider;
+        parent::__construct($appName, $request);
     }
 
     /**

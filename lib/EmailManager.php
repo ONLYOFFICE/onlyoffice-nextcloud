@@ -43,61 +43,14 @@ use OCP\IUserManager;
  */
 class EmailManager {
 
-    /**
-     * l10n service
-     *
-     * @var IL10N
-     */
-    private $trans;
-
-    /**
-     * Mailer
-     *
-     * @var IMailer
-     */
-    private $mailer;
-
-    /**
-     * User manager
-     *
-     * @var IUserManager
-     */
-    private $userManager;
-
-    /**
-     * Url generator service
-     *
-     * @var IURLGenerator
-     */
-    private $urlGenerator;
-
-    /**
-     * @param string $appName - application name
-     * @param IL10N $trans - l10n service
-     * @param LoggerInterface $logger - logger
-     * @param IMailer $mailer - mailer
-     * @param IUserManager $userManager - user manager
-     * @param IURLGenerator $urlGenerator - URL generator
-     */
     public function __construct(
-        /**
-         * Application name
-         */
-        private $appName,
-        IL10N $trans,
-        /**
-         * Logger
-         */
+        private readonly string $appName,
+        private readonly IL10N $trans,
         private readonly LoggerInterface $logger,
-        IMailer $mailer,
-        IUserManager $userManager,
-        IURLGenerator $urlGenerator,
-    ) {
-        $this->trans = $trans;
-        $this->mailer = $mailer;
-        $this->userManager = $userManager;
-        $this->urlGenerator = $urlGenerator;
-    }
+        private readonly IMailer $mailer,
+        private readonly IUserManager $userManager,
+        private readonly IURLGenerator $urlGenerator,
+    ) {}
 
     /**
      * Send notification about mention via email

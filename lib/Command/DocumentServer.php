@@ -41,41 +41,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class DocumentServer extends Command {
 
-    /**
-     * l10n service
-     *
-     * @var IL10N
-     */
-    private $trans;
-
-    /**
-     * Url generator service
-     *
-     * @var IURLGenerator
-     */
-    private $urlGenerator;
-
-    /**
-     * @param AppConfig $config - application configuration
-     * @param IL10N $trans - l10n service
-     * @param IURLGenerator $urlGenerator - url generator service
-     * @param Crypt $crypt - hash generator
-     */
     public function __construct(
-        /**
-         * Application configuration
-         */
-        private readonly AppConfig $config,
-        IL10N $trans,
-        IURLGenerator $urlGenerator,
-        /**
-         * Hash generator
-         */
+        private readonly AppConfig $appConfig,
+        private readonly IL10N $trans,
+        private readonly IURLGenerator $urlGenerator,
         private readonly Crypt $crypt
     ) {
         parent::__construct();
-        $this->trans = $trans;
-        $this->urlGenerator = $urlGenerator;
     }
 
     /**
@@ -104,17 +76,17 @@ class DocumentServer extends Command {
     protected function execute(InputInterface $input, OutputInterface $output) {
         $check = $input->getOption("check");
 
-        $documentserver = $this->config->getDocumentServerUrl(true);
+        $documentserver = $this->appConfig->getDocumentServerUrl(true);
         if (empty($documentserver)) {
             $output->writeln("<info>Document server is not configured</info>");
             return 1;
         }
 
         if ($check) {
-            $documentService = new DocumentService($this->trans, $this->config);
+            $documentService = new DocumentService($this->trans, $this->appConfig);
 
             [$error, $version] = $documentService->checkDocServiceUrl($this->urlGenerator, $this->crypt);
-            $this->config->setSettingsError($error);
+            $this->appConfig->setSettingsError($error);
 
             if (!empty($error)) {
                 $output->writeln("<error>Error connection: $error</error>");

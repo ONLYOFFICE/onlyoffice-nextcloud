@@ -54,21 +54,9 @@ class SharingApiController extends OCSController {
 
     /**
      * Extra permissions
-     *
-     * @var ExtraPermissions
      */
-    private $extraPermissions;
+    private ?ExtraPermissions $extraPermissions;
 
-    /**
-     * @param string $AppName - application name
-     * @param IRequest $request - request object
-     * @param IRootFolder $root - root folder
-     * @param LoggerInterface $logger - logger
-     * @param IUserSession $userSession - current user session
-     * @param IUserManager $userManager - user manager
-     * @param IManager $shareManager - Share manager
-     * @param AppConfig $appConfig - application configuration
-     */
     public function __construct(
         string $appName,
         IRequest $request,

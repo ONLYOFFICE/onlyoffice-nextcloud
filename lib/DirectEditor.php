@@ -45,43 +45,13 @@ use Psr\Log\LoggerInterface;
  */
 class DirectEditor implements IEditor {
 
-    /**
-     * l10n service
-     *
-     * @var IL10N
-     */
-    private $trans;
-
-    /**
-     * @param string $appName - application name
-     * @param IURLGenerator $urlGenerator - url generator service
-     * @param IL10N $trans - l10n service
-     * @param LoggerInterface $logger - logger
-     * @param AppConfig $config - application configuration
-     * @param Crypt $crypt - hash generator
-     */
     public function __construct(
-        /**
-         * Application name
-         */
-        private $appName,
-        IURLGenerator $urlGenerator,
-        IL10N $trans,
-        /**
-         * Logger
-         */
+        private readonly string $appName,
+        private readonly IL10N $trans,
         private readonly LoggerInterface $logger,
-        /**
-         * Application configuration
-         */
-        private readonly AppConfig $config,
-        /**
-         * Hash generator
-         */
+        private readonly AppConfig $appConfig,
         private readonly Crypt $crypt
-    ) {
-        $this->trans = $trans;
-    }
+    ) {}
 
     /**
      * Return a unique identifier for the editor
@@ -102,11 +72,11 @@ class DirectEditor implements IEditor {
      */
     public function getMimetypes(): array {
         $mimes = [];
-        if (!$this->config->isUserAllowedToUse()) {
+        if (!$this->appConfig->isUserAllowedToUse()) {
             return $mimes;
         }
 
-        $formats = $this->config->formatsSetting();
+        $formats = $this->appConfig->formatsSetting();
         foreach ($formats as $setting) {
             if (array_key_exists("def", $setting) && $setting["def"]) {
                 $mimes[] = $setting["mime"][0];
@@ -121,11 +91,11 @@ class DirectEditor implements IEditor {
      */
     public function getMimetypesOptional(): array {
         $mimes = [];
-        if (!$this->config->isUserAllowedToUse()) {
+        if (!$this->appConfig->isUserAllowedToUse()) {
             return $mimes;
         }
 
-        $formats = $this->config->formatsSetting();
+        $formats = $this->appConfig->formatsSetting();
         foreach ($formats as $setting) {
             if (!array_key_exists("def", $setting) || !$setting["def"]) {
                 $mimes[] = $setting["mime"][0];
@@ -141,7 +111,7 @@ class DirectEditor implements IEditor {
      * @return array of ACreateFromTemplate|ACreateEmpty
      */
     public function getCreators(): array {
-        if (!$this->config->isUserAllowedToUse()) {
+        if (!$this->appConfig->isUserAllowedToUse()) {
             return [];
         }
 
@@ -177,11 +147,11 @@ class DirectEditor implements IEditor {
 
             $this->logger->debug("DirectEditor open: $fileId");
 
-            if (!$this->config->isUserAllowedToUse($userId)) {
+            if (!$this->appConfig->isUserAllowedToUse($userId)) {
                 return $this->renderError($this->trans->t("Not permitted"));
             }
 
-            $documentServerUrl = $this->config->getDocumentServerUrl();
+            $documentServerUrl = $this->appConfig->getDocumentServerUrl();
 
             if (empty($documentServerUrl)) {
                 $this->logger->error("documentServerUrl is empty");
