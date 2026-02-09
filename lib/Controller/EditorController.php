@@ -111,10 +111,10 @@ class EditorController extends Controller {
         parent::__construct($appName, $request);
 
         $appManager = Server::get(\OCP\App\IAppManager::class);
-        $this->versionManager = $appManager->isEnabledForAnyone("files_versions")
+        $this->versionManager = $appManager->isInstalled("files_versions")
             ? Server::get(IVersionManager::class)
             : null;
-        $this->folderManager = $appManager->isEnabledForAnyone("groupfolders")
+        $this->folderManager = $appManager->isInstalled("groupfolders")
             ? Server::get(FolderManager::class)
             : null;
     }

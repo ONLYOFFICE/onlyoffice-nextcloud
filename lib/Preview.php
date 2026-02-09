@@ -112,7 +112,7 @@ class Preview implements IProviderV2 {
         private readonly Crypt $crypt,
         private readonly FileUtility $fileUtility
     ) {
-        if (Server::get(\OCP\App\IAppManager::class)->isEnabledForAnyone("files_versions")) {
+        if (Server::get(\OCP\App\IAppManager::class)->isInstalled("files_versions")) {
             try {
                 $this->versionManager = Server::get(IVersionManager::class);
             } catch (NotFoundExceptionInterface $e) {

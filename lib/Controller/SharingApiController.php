@@ -69,7 +69,7 @@ class SharingApiController extends OCSController {
         parent::__construct($appName, $request);
 
         $this->extraPermissions = $this->appConfig->getAdvanced()
-            && Server::get(\OCP\App\IAppManager::class)->isEnabledForAnyone("files_sharing")
+            && Server::get(\OCP\App\IAppManager::class)->isInstalled("files_sharing")
             ? Server::get(ExtraPermissions::class)
             : null;
     }

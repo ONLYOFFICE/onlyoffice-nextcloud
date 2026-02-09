@@ -75,7 +75,7 @@ class ExtraPermissions {
         private readonly IManager $shareManager,
         private readonly AppConfig $appConfig
     ) {
-        if (Server::get(\OCP\App\IAppManager::class)->isEnabledForAnyone("spreed")) {
+        if (Server::get(\OCP\App\IAppManager::class)->isInstalled("spreed")) {
             try {
                 $this->talkManager = Server::get(Talkmanager::class);
             } catch (NotFoundExceptionInterface $e) {

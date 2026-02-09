@@ -99,7 +99,7 @@ class EditorApiController extends OCSController {
         parent::__construct($appName, $request);
 
         if ($this->appConfig->getAdvanced()
-            && Server::get(\OCP\App\IAppManager::class)->isEnabledForAnyone("files_sharing")) {
+            && Server::get(\OCP\App\IAppManager::class)->isInstalled("files_sharing")) {
             $this->extraPermissions = Server::get(ExtraPermissions::class);
         }
     }
@@ -474,7 +474,7 @@ class EditorApiController extends OCSController {
         }
 
         if ($inframe) {
-            $params["_files_sharing"] = Server::get(\OCP\App\IAppManager::class)->isEnabledForAnyone("files_sharing");
+            $params["_files_sharing"] = Server::get(\OCP\App\IAppManager::class)->isInstalled("files_sharing");
         }
 
         $params = $this->setCustomization($params);
