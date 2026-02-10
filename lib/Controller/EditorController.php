@@ -779,7 +779,7 @@ class EditorController extends Controller {
              * @var \OC\Files\Node\Folder
              */
             $folder = $userFolder->get($dir);
-        } catch(\OCP\Files\NotFoundException $e) {
+        } catch (\OCP\Files\NotFoundException $e) {
             $this->logger->error("Folder for saving file was not found: $dir", ['exception' => $e]);
             return new DataResponse(["error" => $this->trans->t("The required folder was not found")]);
         }

@@ -386,7 +386,7 @@ class DocumentService {
         $version = null;
 
         try {
-            if (preg_match("/^https:\/\//i", (string) $$this->urlGenerator->getAbsoluteURL("/"))
+            if (preg_match("/^https:\/\//i", (string) $this->urlGenerator->getAbsoluteURL("/"))
                 && preg_match("/^http:\/\//i", $this->appConfig->getDocumentServerUrl())) {
                 throw new \Exception($this->trans->t("Mixed Active Content is not allowed. HTTPS address for ONLYOFFICE Docs is required."));
             }
