@@ -100,7 +100,8 @@ class CallbackController extends Controller {
         private readonly ILockManager $lockManager,
         private readonly IEventDispatcher $eventDispatcher,
         private readonly ?IVersionManager $versionManager,
-        private readonly DocumentService $documentService
+        private readonly DocumentService $documentService,
+        private readonly KeyManager $keyManager
     ) {
         parent::__construct($appName, $request);
     }
@@ -477,7 +478,7 @@ class CallbackController extends Controller {
 
                     $newData = $this->documentService->request($url);
 
-                    $prevIsForcesave = KeyManager::wasForcesave($fileId);
+                    $prevIsForcesave = $this->keyManager->wasForcesave($fileId);
 
                     if (RemoteInstance::isRemoteFile($file)) {
                         $isLock = RemoteInstance::lockRemoteKey($file, $isForcesave, null);
@@ -485,7 +486,7 @@ class CallbackController extends Controller {
                             break;
                         }
                     } else {
-                        KeyManager::lock($fileId, $isForcesave);
+                        $this->keyManager->lock($fileId, $isForcesave);
                     }
 
                     $this->logger->debug("Track put content " . $file->getPath());
@@ -510,8 +511,8 @@ class CallbackController extends Controller {
                             RemoteInstance::lockRemoteKey($file, false, $isForcesave);
                         }
                     } else {
-                        KeyManager::lock($fileId, false);
-                        KeyManager::setForcesave($fileId, $isForcesave);
+                        $this->keyManager->lock($fileId, false);
+                        $this->keyManager->setForcesave($fileId, $isForcesave);
                     }
 
                     if (!$isForcesave

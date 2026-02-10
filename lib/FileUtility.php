@@ -52,7 +52,8 @@ class FileUtility {
         private readonly LoggerInterface $logger,
         private readonly AppConfig $appConfig,
         private readonly IManager $shareManager,
-        private readonly ISession $session
+        private readonly ISession $session,
+        private readonly KeyManager $keyManager
     ) {}
 
     /**
@@ -176,14 +177,14 @@ class FileUtility {
             }
         }
 
-        $key = KeyManager::get($fileId);
+        $key = $this->keyManager->get($fileId);
 
         if (empty($key)) {
             $instanceId = $this->appConfig->getSystemValue("instanceid", true);
 
             $key = $instanceId . "_" . $this->GUID();
 
-            KeyManager::set($fileId, $key);
+            $this->keyManager->set($fileId, $key);
         }
 
         return $key;

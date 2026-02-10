@@ -104,7 +104,8 @@ class EditorController extends Controller {
         private readonly FileUtility $fileUtility,
         private readonly IAvatarManager $avatarManager,
         private readonly EmailManager $emailManager,
-        private readonly DocumentService $documentService
+        private readonly DocumentService $documentService,
+        private readonly KeyManager $keyManager
     ) {
         parent::__construct($appName, $request);
 
@@ -1113,7 +1114,7 @@ class EditorController extends Controller {
                 $fileVersion = array_values($versions)[$version - 1];
                 $this->versionManager->rollback($fileVersion);
                 if ($fileVersion->getSourceFile()->getFileInfo()->getStorage()->instanceOfStorage(GroupFolderStorage::class)) {
-                    KeyManager::delete($fileVersion->getSourceFile()->getId());
+                    $this->keyManager->delete($fileVersion->getSourceFile()->getId());
                 }
             }
         }

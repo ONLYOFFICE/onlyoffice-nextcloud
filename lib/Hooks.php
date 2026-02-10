@@ -96,7 +96,8 @@ class Hooks {
 
         $fileId = $fileInfo->getId();
 
-        KeyManager::delete($fileId);
+        $keyManager = Server::get(KeyManager::class);
+        $keyManager->delete($fileId);
 
         \OCP\Log\logger('onlyoffice')->debug("Hook fileUpdate " . json_encode($params), ["app" => self::$appName]);
     }
@@ -126,7 +127,8 @@ class Hooks {
 
             $fileId = $fileInfo->getId();
 
-            KeyManager::delete($fileId, true);
+            $keyManager = Server::get(KeyManager::class);
+            $keyManager->delete($fileId, true);
 
             FileVersions::deleteAllVersions($ownerId, $fileInfo);
 
@@ -225,7 +227,8 @@ class Hooks {
 
             $fileId = $fileInfo->getId();
 
-            KeyManager::delete($fileId);
+            $keyManager = Server::get(KeyManager::class);
+            $keyManager->delete($fileId);
 
             FileVersions::deleteVersion($ownerId, $fileInfo, $versionId);
         } catch (\Exception $e) {

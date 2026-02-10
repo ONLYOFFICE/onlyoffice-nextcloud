@@ -50,7 +50,8 @@ class FederationController extends OCSController {
         string $appName,
         IRequest $request,
         private readonly LoggerInterface $logger,
-        private readonly FileUtility $fileUtility
+        private readonly FileUtility $fileUtility,
+        private readonly KeyManager $keyManager
     ) {
         parent::__construct($appName, $request);
     }
@@ -112,9 +113,9 @@ class FederationController extends OCSController {
                 return new DataResponse(["error" => "Failed request"]);
             }
         } else {
-            KeyManager::lock($fileId, $lock);
+            $this->keyManager->lock($fileId, $lock);
             if (!empty($fs)) {
-                KeyManager::setForcesave($fileId, $fs);
+                $this->keyManager->setForcesave($fileId, $fs);
             }
         }
 

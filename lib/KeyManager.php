@@ -29,12 +29,16 @@
 
 namespace OCA\Onlyoffice;
 
+use OCP\IDBConnection;
+
 /**
  * Key manager
  *
  * @package OCA\Onlyoffice
  */
 class KeyManager {
+
+    public function __construct(private IDBConnection $connection) {}
 
     /**
      * Table name
@@ -48,9 +52,8 @@ class KeyManager {
      *
      * @return string
      */
-    public static function get($fileId) {
-        $connection = \OCP\Server::get(\OCP\IDBConnection::class);
-        $select = $connection->prepare("
+    public function get($fileId) {
+        $select = $this->connection->prepare("
             SELECT `key`
             FROM  `*PREFIX*" . self::TABLENAME_KEY . "`
             WHERE `file_id` = ?
@@ -67,9 +70,8 @@ class KeyManager {
      * @param integer $fileId - file identifier
      * @param integer $key - file key
      */
-    public static function set($fileId, $key): bool {
-        $connection = \OCP\Server::get(\OCP\IDBConnection::class);
-        $insert = $connection->prepare("
+    public function set($fileId, $key): bool {
+        $insert = $this->connection->prepare("
             INSERT INTO `*PREFIX*" . self::TABLENAME_KEY . "`
                 (`file_id`, `key`)
             VALUES (?, ?)
@@ -83,9 +85,8 @@ class KeyManager {
      * @param integer $fileId - file identifier
      * @param bool $unlock - delete even with lock label
      */
-    public static function delete($fileId, $unlock = false): bool {
-        $connection = \OCP\Server::get(\OCP\IDBConnection::class);
-        $delete = $connection->prepare(
+    public function delete($fileId, $unlock = false): bool {
+        $delete = $this->connection->prepare(
             "
             DELETE FROM `*PREFIX*" . self::TABLENAME_KEY . "`
             WHERE `file_id` = ?
@@ -100,9 +101,8 @@ class KeyManager {
      * @param integer $fileId - file identifier
      * @param bool $lock - status
      */
-    public static function lock($fileId, $lock = true): bool {
-        $connection = \OCP\Server::get(\OCP\IDBConnection::class);
-        $update = $connection->prepare("
+    public function lock($fileId, $lock = true): bool {
+        $update = $this->connection->prepare("
             UPDATE `*PREFIX*" . self::TABLENAME_KEY . "`
             SET `lock` = ?
             WHERE `file_id` = ?
@@ -116,9 +116,8 @@ class KeyManager {
      * @param integer $fileId - file identifier
      * @param bool $fs - status
      */
-    public static function setForcesave($fileId, $fs = true): bool {
-        $connection = \OCP\Server::get(\OCP\IDBConnection::class);
-        $update = $connection->prepare("
+    public function setForcesave($fileId, $fs = true): bool {
+        $update = $this->connection->prepare("
             UPDATE `*PREFIX*" . self::TABLENAME_KEY . "`
             SET `fs` = ?
             WHERE `file_id` = ?
@@ -131,9 +130,8 @@ class KeyManager {
      *
      * @param integer $fileId - file identifier
      */
-    public static function wasForcesave($fileId): bool {
-        $connection = \OCP\Server::get(\OCP\IDBConnection::class);
-        $select = $connection->prepare("
+    public function wasForcesave($fileId): bool {
+        $select = $this->connection->prepare("
             SELECT `fs`
             FROM  `*PREFIX*" . self::TABLENAME_KEY . "`
             WHERE `file_id` = ?
