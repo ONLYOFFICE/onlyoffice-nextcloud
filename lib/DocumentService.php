@@ -31,6 +31,8 @@ namespace OCA\Onlyoffice;
 
 use OCP\Http\Client\IClientService;
 use OCP\IL10N;
+use OCP\IURLGenerator;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class service connector to Document Service
@@ -46,7 +48,10 @@ class DocumentService {
 
     public function __construct(
         private readonly IL10N $trans,
-        private readonly AppConfig $appConfig
+        private readonly AppConfig $appConfig,
+        private readonly IURLGenerator $urlGenerator,
+        private readonly Crypt $crypt,
+        private readonly LoggerInterface $logger
     ) {}
 
     /**
@@ -376,21 +381,17 @@ class DocumentService {
 
     /**
      * Checking document service location
-     *
-     * @param \OCP\IURLGenerator $urlGenerator - url generator
-     * @param \OCA\Onlyoffice\Crypt $crypt -crypt
      */
-    public function checkDocServiceUrl($urlGenerator, $crypt): array {
-        $logger = \OCP\Log\logger('onlyoffice');
+    public function checkDocServiceUrl(): array {
         $version = null;
 
         try {
-            if (preg_match("/^https:\/\//i", (string) $urlGenerator->getAbsoluteURL("/"))
+            if (preg_match("/^https:\/\//i", (string) $$this->urlGenerator->getAbsoluteURL("/"))
                 && preg_match("/^http:\/\//i", $this->appConfig->getDocumentServerUrl())) {
                 throw new \Exception($this->trans->t("Mixed Active Content is not allowed. HTTPS address for ONLYOFFICE Docs is required."));
             }
         } catch (\Exception $e) {
-            $logger->error("Protocol on check error", ['exception' => $e]);
+            $this->logger->error("Protocol on check error", ['exception' => $e]);
             return [$e->getMessage(), $version];
         }
 
@@ -400,13 +401,13 @@ class DocumentService {
                 throw new \Exception($this->trans->t("Bad healthcheck status"));
             }
         } catch (\Exception $e) {
-            $logger->error("healthcheckRequest on check error", ['exception' => $e]);
+            $this->logger->error("healthcheckRequest on check error", ['exception' => $e]);
             return [$e->getMessage(), $version];
         }
 
         try {
             $commandResponse = $this->commandRequest("version");
-            $logger->debug("commandRequest on check: " . json_encode($commandResponse), ["app" => self::$appName]);
+            $this->logger->debug("commandRequest on check: " . json_encode($commandResponse), ["app" => self::$appName]);
             if (empty($commandResponse)) {
                 throw new \Exception($this->trans->t("Error occurred in the document service"));
             }
@@ -416,32 +417,32 @@ class DocumentService {
                 throw new \Exception($this->trans->t("Not supported version"));
             }
         } catch (\Exception $e) {
-            $logger->error("commandRequest on check error", ['exception' => $e]);
+            $this->logger->error("commandRequest on check error", ['exception' => $e]);
             return [$e->getMessage(), $version];
         }
 
         $convertedFileUri = null;
         try {
-            $hashUrl = $crypt->getHash(["action" => "empty"]);
-            $fileUrl = $urlGenerator->linkToRouteAbsolute(self::$appName . ".callback.emptyfile", ["doc" => $hashUrl]);
+            $hashUrl = $this->crypt->getHash(["action" => "empty"]);
+            $fileUrl = $this->urlGenerator->linkToRouteAbsolute(self::$appName . ".callback.emptyfile", ["doc" => $hashUrl]);
             if (!$this->appConfig->useDemo() && !empty($this->appConfig->getStorageUrl())) {
-                $fileUrl = str_replace($urlGenerator->getAbsoluteURL("/"), $this->appConfig->getStorageUrl(), $fileUrl);
+                $fileUrl = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->appConfig->getStorageUrl(), $fileUrl);
             }
 
             $convertedFileUri = $this->getConvertedUri($fileUrl, "docx", "docx", "check_" . random_int(0, mt_getrandmax()));
 
             if (strcmp($convertedFileUri, (string) $fileUrl) === 0) {
-                $logger->debug("getConvertedUri skipped", ["app" => self::$appName]);
+                $this->logger->debug("getConvertedUri skipped", ["app" => self::$appName]);
             }
         } catch (\Exception $e) {
-            $logger->error("getConvertedUri on check error", ['exception' => $e]);
+            $this->logger->error("getConvertedUri on check error", ['exception' => $e]);
             return [$e->getMessage(), $version];
         }
 
         try {
             $this->request($convertedFileUri);
         } catch (\Exception $e) {
-            $logger->error("Request converted file on check error", ['exception' => $e]);
+            $this->logger->error("Request converted file on check error", ['exception' => $e]);
             return [$e->getMessage(), $version];
         }
 

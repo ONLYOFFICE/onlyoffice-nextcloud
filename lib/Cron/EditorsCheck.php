@@ -57,7 +57,8 @@ class EditorsCheck extends TimedJob {
         private readonly Crypt $crypt,
         private readonly IGroupManager $groupManager,
         private readonly EmailManager $emailManager,
-        private readonly LoggerInterface $logger
+        private readonly LoggerInterface $logger,
+        private readonly DocumentService $documentService
     ) {
         parent::__construct($time);
         $this->setInterval($this->appConfig->getEditorsCheckInterval());
@@ -90,8 +91,7 @@ class EditorsCheck extends TimedJob {
 
         $this->logger->debug("ONLYOFFICE check started by cron");
 
-        $documentService = new DocumentService($this->trans, $this->appConfig);
-        [$error, $version] = $documentService->checkDocServiceUrl($this->urlGenerator, $this->crypt);
+        [$error, $version] = $this->documentService->checkDocServiceUrl();
 
         if (!empty($error)) {
             $this->logger->info("ONLYOFFICE server is not available");

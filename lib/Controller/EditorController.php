@@ -103,7 +103,8 @@ class EditorController extends Controller {
         private readonly IGroupManager $groupManager,
         private readonly FileUtility $fileUtility,
         private readonly IAvatarManager $avatarManager,
-        private readonly EmailManager $emailManager
+        private readonly EmailManager $emailManager,
+        private readonly DocumentService $documentService
     ) {
         parent::__construct($appName, $request);
 
@@ -190,14 +191,13 @@ class EditorController extends Controller {
 
             $ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
             $region = str_replace("_", "-", $this->trans->getLocaleCode());
-            $documentService = new DocumentService($this->trans, $this->appConfig);
             try {
-                $newFileUri = $documentService->getConvertedUri($fileUrl, $targetExt, $ext, $targetKey, $region, $ext === "pdf");
+                $newFileUri = $this->documentService->getConvertedUri($fileUrl, $targetExt, $ext, $targetKey, $region, $ext === "pdf");
             } catch (\Exception $e) {
                 $this->logger->error("getConvertedUri: " . $targetFile->getId(), ["exception" => $e]);
                 return new DataResponse(["error" => $e->getMessage()]);
             }
-            $template = $documentService->request($newFileUri);
+            $template = $this->documentService->request($newFileUri);
         } else {
             $template = TemplateManager::getEmptyTemplate($name);
         }
@@ -716,12 +716,11 @@ class EditorController extends Controller {
         }
 
         $newFileUri = null;
-        $documentService = new DocumentService($this->trans, $this->appConfig);
         $key = $this->fileUtility->getKey($file);
         $fileUrl = $this->getUrl($file, $user, $shareToken);
         $region = str_replace("_", "-", $this->trans->getLocaleCode());
         try {
-            $newFileUri = $documentService->getConvertedUri($fileUrl, $ext, $internalExtension, $key, $region);
+            $newFileUri = $this->documentService->getConvertedUri($fileUrl, $ext, $internalExtension, $key, $region);
         } catch (\Exception $e) {
             $this->logger->error("getConvertedUri: " . $file->getId(), ["exception" => $e]);
             return new DataResponse(["error" => $e->getMessage()]);
@@ -733,7 +732,7 @@ class EditorController extends Controller {
         }
 
         try {
-            $newData = $documentService->request($newFileUri);
+            $newData = $this->documentService->request($newFileUri);
         } catch (\Exception $e) {
             $this->logger->error("Failed to download converted file", ["exception" => $e]);
             return new DataResponse(["error" => $this->trans->t("Failed to download converted file")]);
@@ -807,8 +806,7 @@ class EditorController extends Controller {
         $url = $this->appConfig->replaceDocumentServerUrlToInternal($url);
 
         try {
-            $documentService = new DocumentService($this->trans, $this->appConfig);
-            $newData = $documentService->request($url);
+            $newData = $this->documentService->request($url);
         } catch (\Exception $e) {
             $this->logger->error("Failed to download file for saving: $url", ["exception" => $e]);
             return new DataResponse(["error" => $this->trans->t("Download failed")]);
@@ -1248,12 +1246,11 @@ class EditorController extends Controller {
 
         $newFileUri = null;
         $newFileType = $toExtension;
-        $documentService = new DocumentService($this->trans, $this->appConfig);
         $key = $this->fileUtility->getKey($file);
         $fileUrl = $this->getUrl($file, $user);
         $thumbnail = ['first' => false];
         try {
-            $response = $documentService->sendRequestToConvertService(
+            $response = $this->documentService->sendRequestToConvertService(
                 $fileUrl,
                 $ext,
                 $toExtension,
@@ -1265,7 +1262,7 @@ class EditorController extends Controller {
             );
 
             if (isset($response->error)) {
-                $documentService->processConvServResponceError($response->error);
+                $this->documentService->processConvServResponceError($response->error);
             }
 
             if (isset($response->endConvert) && $response->endConvert === true) {
@@ -1278,7 +1275,7 @@ class EditorController extends Controller {
         }
 
         try {
-            $newData = $documentService->request($newFileUri);
+            $newData = $this->documentService->request($newFileUri);
         } catch (\Exception $e) {
             $this->logger->error("Failed to download converted file", ["exception" => $e]);
             return $this->renderError($this->trans->t("Failed to download converted file"));

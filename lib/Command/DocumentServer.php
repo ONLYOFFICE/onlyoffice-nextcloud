@@ -30,10 +30,7 @@
 namespace OCA\Onlyoffice\Command;
 
 use OCA\Onlyoffice\AppConfig;
-use OCA\Onlyoffice\Crypt;
 use OCA\Onlyoffice\DocumentService;
-use OCP\IL10N;
-use OCP\IURLGenerator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -43,9 +40,7 @@ class DocumentServer extends Command {
 
     public function __construct(
         private readonly AppConfig $appConfig,
-        private readonly IL10N $trans,
-        private readonly IURLGenerator $urlGenerator,
-        private readonly Crypt $crypt
+        private readonly DocumentService $documentService
     ) {
         parent::__construct();
     }
@@ -83,9 +78,7 @@ class DocumentServer extends Command {
         }
 
         if ($check) {
-            $documentService = new DocumentService($this->trans, $this->appConfig);
-
-            [$error, $version] = $documentService->checkDocServiceUrl($this->urlGenerator, $this->crypt);
+            [$error, $version] = $this->documentService->checkDocServiceUrl();
             $this->appConfig->setSettingsError($error);
 
             if (!empty($error)) {

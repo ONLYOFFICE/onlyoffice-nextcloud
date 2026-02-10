@@ -30,7 +30,6 @@
 namespace OCA\Onlyoffice\Controller;
 
 use OCA\Onlyoffice\AppConfig;
-use OCA\Onlyoffice\Crypt;
 use OCA\Onlyoffice\DocumentService;
 use OCA\Onlyoffice\FileVersions;
 use OCA\Onlyoffice\TemplateManager;
@@ -53,8 +52,8 @@ class SettingsController extends Controller {
         private readonly IURLGenerator $urlGenerator,
         private readonly IL10N $trans,
         private readonly AppConfig $appConfig,
-        private readonly Crypt $crypt,
-        private readonly IMimeIconProvider $mimeIconProvider
+        private readonly IMimeIconProvider $mimeIconProvider,
+        private readonly DocumentService $documentService
     ) {
         parent::__construct($appName, $request);
     }
@@ -141,8 +140,7 @@ class SettingsController extends Controller {
         if (empty($error)) {
             $documentserver = $this->appConfig->getDocumentServerUrl();
             if (!empty($documentserver)) {
-                $documentService = new DocumentService($this->trans, $this->appConfig);
-                [$error, $version] = $documentService->checkDocServiceUrl($this->urlGenerator, $this->crypt);
+                [$error, $version] = $this->documentService->checkDocServiceUrl();
                 $this->appConfig->setSettingsError($error);
             }
         }

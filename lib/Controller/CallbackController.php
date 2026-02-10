@@ -99,7 +99,8 @@ class CallbackController extends Controller {
         private readonly IManager $shareManager,
         private readonly ILockManager $lockManager,
         private readonly IEventDispatcher $eventDispatcher,
-        private readonly ?IVersionManager $versionManager
+        private readonly ?IVersionManager $versionManager,
+        private readonly DocumentService $documentService
     ) {
         parent::__construct($appName, $request);
     }
@@ -462,20 +463,19 @@ class CallbackController extends Controller {
                     $curExt = strtolower(pathinfo((string) $fileName, PATHINFO_EXTENSION));
                     $downloadExt = $filetype;
 
-                    $documentService = new DocumentService($this->trans, $this->appConfig);
                     if ($downloadExt !== $curExt) {
                         $key = DocumentService::generateRevisionId($fileId . $url);
 
                         try {
                             $this->logger->debug("Converted from $downloadExt to $curExt");
-                            $url = $documentService->getConvertedUri($url, $downloadExt, $curExt, $key);
+                            $url = $this->documentService->getConvertedUri($url, $downloadExt, $curExt, $key);
                         } catch (\Exception $e) {
                             $this->logger->error("Converted on save error", ["exception" => $e]);
                             return new JSONResponse(["message" => $e->getMessage()], Http::STATUS_INTERNAL_SERVER_ERROR);
                         }
                     }
 
-                    $newData = $documentService->request($url);
+                    $newData = $this->documentService->request($url);
 
                     $prevIsForcesave = KeyManager::wasForcesave($fileId);
 
@@ -522,7 +522,7 @@ class CallbackController extends Controller {
                         if (!empty($changesurl)) {
                             $changesurl = $this->appConfig->replaceDocumentServerUrlToInternal($changesurl);
                             try {
-                                $changes = $documentService->request($changesurl);
+                                $changes = $this->documentService->request($changesurl);
                             } catch (\Exception $e) {
                                 $this->logger->error("Failed to download changes", ["exception" => $e]);
                             }

@@ -36,7 +36,6 @@ use OCP\Files\File;
 use OCP\IImage;
 use OCP\Files\FileInfo;
 use OCP\Files\IRootFolder;
-use OCP\IL10N;
 use OCP\Image;
 use OCP\IURLGenerator;
 use OCP\IUser;
@@ -104,11 +103,11 @@ class Preview implements IProviderV2 {
         private readonly string $appName,
         private readonly IRootFolder $root,
         private readonly LoggerInterface $logger,
-        private readonly IL10N $trans,
         private readonly AppConfig $appConfig,
         private readonly IURLGenerator $urlGenerator,
         private readonly Crypt $crypt,
-        private readonly FileUtility $fileUtility
+        private readonly FileUtility $fileUtility,
+        private readonly DocumentService $documentService
     ) {
         if (Server::get(\OCP\App\IAppManager::class)->isInstalled("files_versions")) {
             try {
@@ -173,16 +172,15 @@ class Preview implements IProviderV2 {
         }
 
         $imageUrl = null;
-        $documentService = new DocumentService($this->trans, $this->appConfig);
         try {
-            $imageUrl = $documentService->getConvertedUri($fileUrl, $extension, self::THUMBEXTENSION, $key);
+            $imageUrl = $this->documentService->getConvertedUri($fileUrl, $extension, self::THUMBEXTENSION, $key);
         } catch (\Exception $e) {
             $this->logger->error("getConvertedUri: from $extension to " . self::THUMBEXTENSION, ["exception" => $e]);
             return null;
         }
 
         try {
-            $thumbnail = $documentService->request($imageUrl);
+            $thumbnail = $this->documentService->request($imageUrl);
         } catch (\Exception $e) {
             $this->logger->error("Failed to download thumbnail", ["exception" => $e]);
             return null;
