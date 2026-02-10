@@ -72,7 +72,8 @@ class ExtraPermissions {
     public function __construct(
         private readonly LoggerInterface $logger,
         private readonly IManager $shareManager,
-        private readonly AppConfig $appConfig
+        private readonly AppConfig $appConfig,
+        private readonly IDBConnection $connection
     ) {
         if (Server::get(\OCP\App\IAppManager::class)->isInstalled("spreed")) {
             try {
@@ -106,7 +107,7 @@ class ExtraPermissions {
         if ($availableExtra === 0
             || ($availableExtra & $checkExtra) !== $checkExtra) {
             if (!empty($extra)) {
-                self::delete($shareId);
+                $this->delete($shareId);
             }
 
             $this->logger->debug("Share " . $shareId . " does not support extra permissions");
@@ -191,7 +192,7 @@ class ExtraPermissions {
         }
 
         if (!empty($noActualList)) {
-            self::deleteList($noActualList);
+            $this->deleteList($noActualList);
         }
 
         return $result;
@@ -230,9 +231,8 @@ class ExtraPermissions {
      *
      * @param integer $shareId - file identifier
      */
-    public static function delete($shareId): bool {
-        $connection = Server::get(IDBConnection::class);
-        $delete = $connection->prepare("
+    public function delete($shareId): bool {
+        $delete = $this->connection->prepare("
             DELETE FROM `*PREFIX*" . self::TABLENAME_KEY . "`
             WHERE `share_id` = ?
         ");
@@ -244,9 +244,7 @@ class ExtraPermissions {
      *
      * @param array $shareIds - array of share identifiers
      */
-    public static function deleteList($shareIds): bool {
-        $connection = Server::get(IDBConnection::class);
-
+    public function deleteList($shareIds): bool {
         $condition = "";
         if (count($shareIds) > 1) {
             $counter = count($shareIds);
@@ -255,7 +253,7 @@ class ExtraPermissions {
             }
         }
 
-        $delete = $connection->prepare("
+        $delete = $this->connection->prepare("
             DELETE FROM `*PREFIX*" . self::TABLENAME_KEY . "`
             WHERE `share_id` = ?
         " . $condition);
@@ -268,8 +266,7 @@ class ExtraPermissions {
      * @param integer $shareId - share identifier
      */
     private function get($shareId): array {
-        $connection = Server::get(IDBConnection::class);
-        $select = $connection->prepare("
+        $select = $this->connection->prepare("
             SELECT id, share_id, permissions
             FROM  `*PREFIX*" . self::TABLENAME_KEY . "`
             WHERE `share_id` = ?
@@ -298,8 +295,6 @@ class ExtraPermissions {
      * @return array
      */
     private function getList(array $shareIds) {
-        $connection = Server::get(IDBConnection::class);
-
         $condition = "";
         if (count($shareIds) > 1) {
             $counter = count($shareIds);
@@ -308,7 +303,7 @@ class ExtraPermissions {
             }
         }
 
-        $select = $connection->prepare("
+        $select = $this->connection->prepare("
             SELECT id, share_id, permissions
             FROM  `*PREFIX*" . self::TABLENAME_KEY . "`
             WHERE `share_id` = ?
@@ -338,8 +333,7 @@ class ExtraPermissions {
      * @param integer $permissions - value permissions
      */
     private function insert($shareId, int $permissions): bool {
-        $connection = Server::get(IDBConnection::class);
-        $insert = $connection->prepare("
+        $insert = $this->connection->prepare("
             INSERT INTO `*PREFIX*" . self::TABLENAME_KEY . "`
                 (`share_id`, `permissions`)
             VALUES (?, ?)
@@ -354,8 +348,7 @@ class ExtraPermissions {
      * @param bool $permissions - value permissions
      */
     private function update($shareId, int $permissions): bool {
-        $connection = Server::get(IDBConnection::class);
-        $update = $connection->prepare("
+        $update = $this->connection->prepare("
             UPDATE `*PREFIX*" . self::TABLENAME_KEY . "`
             SET `permissions` = ?
             WHERE `share_id` = ?

@@ -31,6 +31,7 @@ namespace OCA\Onlyoffice;
 
 use OC\Files\Filesystem;
 use OC\Files\Node\File;
+use OCP\Server;
 use OCP\Share\IShare;
 use OCP\Util;
 
@@ -148,7 +149,8 @@ class Hooks {
                 }
                 $shareIds = array_map(fn(IShare $share) => $share->getId(), $shares);
                 if (!empty($shareIds)) {
-                    ExtraPermissions::deleteList($shareIds);
+                    $extraPermissions = Server::get(ExtraPermissions::class);
+                    $extraPermissions->deleteList($shareIds);
                 }
             }
         } catch (\Exception $e) {
@@ -248,7 +250,8 @@ class Hooks {
                 $shareIds[] = $share["id"];
             }
 
-            ExtraPermissions::deleteList($shareIds);
+            $extraPermissions = Server::get(ExtraPermissions::class);
+            $extraPermissions->deleteList($shareIds);
         } catch (\Exception $e) {
             \OCP\Log\logger('onlyoffice')->error("Hook: extraPermissionsDelete " . json_encode($params), ['exception' => $e]);
         }
