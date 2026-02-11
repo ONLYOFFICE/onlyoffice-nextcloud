@@ -29,6 +29,7 @@
 
 namespace OCA\Onlyoffice;
 
+use OCA\Files_Versions\Versions\IVersion;
 use OCP\Constants;
 use OCP\Files\File;
 use OCP\Files\Folder;
@@ -63,7 +64,7 @@ class FileUtility {
      * @param string $shareToken - access token
      * @param string $path - file path
      */
-    public function getFileByToken($fileId, $shareToken, $path = null): array {
+    public function getFileByToken(?int $fileId, string $shareToken, ?string $path = null): array {
         [$node, $error, $share] = $this->getNodeByToken($shareToken);
 
         if (isset($error)) {
@@ -100,11 +101,9 @@ class FileUtility {
     }
 
     /**
-     * Getting file by token
-     *
-     * @param string $shareToken - access token
+     * Get a file by token
      */
-    public function getNodeByToken($shareToken): array {
+    public function getNodeByToken(string $shareToken): array {
         [$share, $error] = $this->getShare($shareToken);
 
         if (isset($error)) {
@@ -130,7 +129,7 @@ class FileUtility {
      *
      * @param string $shareToken - access token
      */
-    public function getShare($shareToken): array {
+    public function getShare(string $shareToken): array {
         if (empty($shareToken)) {
             return [null, $this->trans->t("FileId is empty")];
         }
@@ -166,7 +165,7 @@ class FileUtility {
      *
      * @return string
      */
-    public function getKey($file, $origin = false) {
+    public function getKey(File $file, bool $origin = false): string {
         $fileId = $file->getId();
 
         if ($origin
@@ -206,7 +205,7 @@ class FileUtility {
      *
      * @param \OCA\Files_Versions\Versions\IVersion $version - file version
      */
-    public function getVersionKey($version): string {
+    public function getVersionKey(IVersion $version): string {
         $instanceId = $this->appConfig->getSystemValue("instanceid", true);
 
         return $instanceId . "_" . $version->getSourceFile()->getEtag() . "_" . $version->getRevisionId();
@@ -219,7 +218,7 @@ class FileUtility {
      *
      * @return bool
      */
-    public static function canShareDownload($share) {
+    public static function canShareDownload(IShare $share) {
         $can = true;
 
         $downloadAttribute = self::getShareAttrubute($share, "download");
@@ -238,7 +237,7 @@ class FileUtility {
      *
      * @return bool|null
      */
-    private static function getShareAttrubute($share, string $attribute) {
+    private static function getShareAttrubute(IShare $share, string $attribute) {
         $attributes = null;
         if (method_exists(IShare::class, "getAttributes")) {
             $attributes = $share->getAttributes();

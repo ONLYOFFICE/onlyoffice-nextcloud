@@ -202,10 +202,8 @@ class DirectEditor implements IEditor {
      * Print error page
      *
      * @param string $error - error message
-     *
-     * @return TemplateResponse
      */
-    private function renderError($error) {
+    private function renderError(string $error): TemplateResponse {
         return new TemplateResponse($this->appName, "directeditorerror", [
             "error" => $error
         ], TemplateResponse::RENDER_AS_ERROR);

@@ -56,10 +56,8 @@ class TemplateManager {
 
     /**
      * Get global template directory
-     *
-     * @return Folder
      */
-    public static function getGlobalTemplateDir() {
+    public static function getGlobalTemplateDir(): Folder {
         $dirPath = "appdata_" . Server::get(IConfig::class)->getSystemValue("instanceid", null)
                                 . "/" . self::$appName
                                 . "/" . self::$templateFolderName;
@@ -82,7 +80,7 @@ class TemplateManager {
      *
      * @return array
      */
-    public static function getGlobalTemplates($mimetype = null) {
+    public static function getGlobalTemplates($mimetype = null): array {
         $templateDir = self::getGlobalTemplateDir();
 
         $templatesList = $templateDir->getDirectoryListing();
@@ -126,10 +124,8 @@ class TemplateManager {
 
     /**
      * Get type template from mimetype
-     *
-     * @param string $mime - mimetype
      */
-    public static function getTypeTemplate($mime): string
+    public static function getTypeTemplate(string $mime): string
     {
         return match ($mime) {
             "application/vnd.openxmlformats-officedocument.wordprocessingml.document" => "document",
@@ -141,10 +137,8 @@ class TemplateManager {
 
     /**
      * Get mimetype template from format type
-     *
-     * @param string $type - format type
      */
-    public static function getMimeTemplate($type): string
+    public static function getMimeTemplate(string $type): string
     {
         return match ($type) {
             "document" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
@@ -156,12 +150,8 @@ class TemplateManager {
 
     /**
      * Check template type
-     *
-     * @param string $name - template name
-     *
-     * @return bool
      */
-    public static function isTemplateType($name) {
+    public static function isTemplateType(string $name): bool {
         $ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
         return match ($ext) {
             "docx", "xlsx", "pptx" => true,
@@ -180,13 +170,9 @@ class TemplateManager {
     }
 
     /**
-     * Get template
-     *
-     * @param string $name - file name
-     *
-     * @return string
+     * Get template by file name
      */
-    public static function getEmptyTemplate($name): false|string {
+    public static function getEmptyTemplate(string $name): false|string {
         $ext = strtolower("." . pathinfo($name, PATHINFO_EXTENSION));
 
         $lang = Server::get(IFactory::class)->get("")->getLanguageCode();
@@ -204,7 +190,7 @@ class TemplateManager {
      * @param string $lang - language
      * @param string $ext - file extension
      */
-    public static function getEmptyTemplatePath($lang, string $ext): string {
+    public static function getEmptyTemplatePath(string $lang, string $ext): string {
         if (!array_key_exists($lang, self::$localPath)) {
             $lang = "default";
         }

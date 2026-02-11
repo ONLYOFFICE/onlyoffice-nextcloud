@@ -67,7 +67,7 @@ class FederationController extends OCSController {
     #[NoAdminRequired]
     #[NoCSRFRequired]
     #[PublicPage]
-    public function key($shareToken, $path) {
+    public function key(string $shareToken, string $path): DataResponse {
         [$file, $error, $share] = $this->fileUtility->getFileByToken(null, $shareToken, $path);
 
         if (isset($error)) {
@@ -97,7 +97,7 @@ class FederationController extends OCSController {
     #[NoAdminRequired]
     #[NoCSRFRequired]
     #[PublicPage]
-    public function keylock($shareToken, $path, $lock, $fs) {
+    public function keylock(string $shareToken, string $path, bool $lock, bool $fs): DataResponse {
         [$file, $error, $share] = $this->fileUtility->getFileByToken(null, $shareToken, $path);
 
         if (isset($error)) {

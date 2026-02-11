@@ -70,7 +70,7 @@ class EditorsCheck extends TimedJob {
      *
      * @param array $argument unused argument
      */
-    protected function run($argument) {
+    protected function run($argument): void {
         if (empty($this->appConfig->getDocumentServerUrl())) {
             $this->logger->debug("Settings are empty");
             return;

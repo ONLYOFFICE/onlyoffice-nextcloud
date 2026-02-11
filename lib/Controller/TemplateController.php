@@ -85,7 +85,7 @@ class TemplateController extends Controller {
      *
      * @return DataResponse
      */
-    public function addTemplate() {
+    public function addTemplate(): DataResponse {
 
         $file = $this->request->getUploadedFile("file");
 
@@ -122,11 +122,11 @@ class TemplateController extends Controller {
     /**
      * Delete template
      *
-     * @param string $templateId - file identifier
+     * @param int $templateId - file identifier
      *
      * @return DataResponse
      */
-    public function deleteTemplate($templateId) {
+    public function deleteTemplate(int $templateId): DataResponse {
         $templateDir = TemplateManager::getGlobalTemplateDir();
 
         try {
@@ -164,7 +164,13 @@ class TemplateController extends Controller {
      */
     #[NoAdminRequired]
     #[NoCSRFRequired]
-    public function preview($fileId, $x = 256, $y = 256, $crop = false, $mode = IPreview::MODE_FILL) {
+    public function preview(
+        int $fileId,
+        int $x = 256,
+        int $y = 256,
+        bool $crop = false,
+        string $mode = IPreview::MODE_FILL
+    ): DataResponse|FileDisplayResponse {
         if (empty($fileId) || $x === 0 || $y === 0) {
             return new DataResponse([], Http::STATUS_BAD_REQUEST);
         }

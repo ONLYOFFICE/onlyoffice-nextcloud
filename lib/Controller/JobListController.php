@@ -57,7 +57,7 @@ class JobListController extends Controller {
      *
      * @param IJob|string $job
      */
-    private function addJob(string $job): void {
+    private function addJob(IJob|string $job): void {
         if (!$this->jobList->has($job, null)) {
             $this->jobList->add($job);
             \OCP\Log\logger('onlyoffice')->debug("Job '".$job."' added to JobList.", ["app" => $this->appName]);
@@ -69,7 +69,7 @@ class JobListController extends Controller {
      *
      * @param IJob|string $job
      */
-    private function removeJob(string $job): void {
+    private function removeJob(IJob|string $job): void {
         if ($this->jobList->has($job, null)) {
             $this->jobList->remove($job);
             \OCP\Log\logger('onlyoffice')->debug("Job '".$job."' removed from JobList.", ["app" => $this->appName]);

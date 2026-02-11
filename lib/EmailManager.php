@@ -70,7 +70,7 @@ class EmailManager {
         string $fileName,
         string $anchor,
         string $notificationObjectId
-    ) {
+    ): bool {
         $recipient = $this->userManager->get($recipientId);
         if (empty($recipient)) {
             $this->logger->error("recipient $recipientId is null");
@@ -119,7 +119,7 @@ class EmailManager {
      *
      * @return bool
      */
-    public function notifyEditorsCheckEmail(string $uid) {
+    public function notifyEditorsCheckEmail(string $uid): bool {
         $user = $this->userManager->get($uid);
         if (empty($user)) {
             $this->logger->error("recipient $uid is null");
@@ -155,7 +155,12 @@ class EmailManager {
      *
      * @return IEMailTemplate
      */
-    private function buildEmailTemplate(string $subject, string $heading, string $body, array $button = []) {
+    private function buildEmailTemplate(
+        string $subject,
+        string $heading,
+        string $body,
+        array $button = []
+    ): IEMailTemplate {
         $template = $this->mailer->createEMailTemplate("onlyoffice.NotifyEmail");
         $template->setSubject($subject);
         $template->addHeader();

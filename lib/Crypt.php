@@ -56,10 +56,10 @@ class Crypt {
      *
      * @param string $token - token
      */
-    public function readHash($token): array {
+    public function readHash(string $token): array {
         $result = null;
         $error = null;
-        if ($token === null) {
+        if ($token === "") {
             return [$result, "token is empty"];
         }
         try {

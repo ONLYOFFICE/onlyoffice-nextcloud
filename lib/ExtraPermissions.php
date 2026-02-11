@@ -86,12 +86,8 @@ class ExtraPermissions {
 
     /**
      * Get extra permissions by shareId
-     *
-     * @param integer $shareId - share identifier
-     *
-     * @return array
      */
-    public function getExtra($shareId): ?array {
+    public function getExtra(string $shareId): ?array {
         $share = $this->getShare($shareId);
         if (!$share instanceof IShare) {
             return null;
@@ -130,10 +126,8 @@ class ExtraPermissions {
 
     /**
      * Get list extra permissions by shares
-     *
-     * @param array $shares - array of shares
      */
-    public function getExtras($shares): array {
+    public function getExtras(array $shares): array {
         $result = [];
 
         $shareIds = [];
@@ -202,12 +196,12 @@ class ExtraPermissions {
      * Get extra permissions by share
      *
      * @param integer $shareId - share identifier
-     * @param integer $permissions - value extra permissions
+     * @param integer $permissions - extra permissions bitmask
      * @param integer $extraId - extra permission identifier
      *
      * @return bool
      */
-    public function setExtra(string $shareId, $permissions, $extraId) {
+    public function setExtra(string $shareId, int $permissions, int $extraId): bool {
         $result = false;
 
         $share = $this->getShare($shareId);
@@ -228,10 +222,8 @@ class ExtraPermissions {
 
     /**
      * Delete extra permissions for share
-     *
-     * @param integer $shareId - file identifier
      */
-    public function delete($shareId): bool {
+    public function delete(string $shareId): bool {
         $delete = $this->connection->prepare("
             DELETE FROM `*PREFIX*" . self::TABLENAME_KEY . "`
             WHERE `share_id` = ?
@@ -244,7 +236,7 @@ class ExtraPermissions {
      *
      * @param array $shareIds - array of share identifiers
      */
-    public function deleteList($shareIds): bool {
+    public function deleteList(array $shareIds): bool {
         $condition = "";
         if (count($shareIds) > 1) {
             $counter = count($shareIds);
@@ -262,10 +254,8 @@ class ExtraPermissions {
 
     /**
      * Get extra permissions for share
-     *
-     * @param integer $shareId - share identifier
      */
-    private function get($shareId): array {
+    private function get(string $shareId): array {
         $select = $this->connection->prepare("
             SELECT id, share_id, permissions
             FROM  `*PREFIX*" . self::TABLENAME_KEY . "`
@@ -289,12 +279,8 @@ class ExtraPermissions {
 
     /**
      * Get list extra permissions
-     *
-     * @param array $shareIds - array of share identifiers
-     *
-     * @return array
      */
-    private function getList(array $shareIds) {
+    private function getList(array $shareIds): array {
         $condition = "";
         if (count($shareIds) > 1) {
             $counter = count($shareIds);
@@ -329,10 +315,10 @@ class ExtraPermissions {
     /**
      * Store extra permissions for share
      *
-     * @param integer $shareId - share identifier
-     * @param integer $permissions - value permissions
+     * @param string $shareId - share identifier
+     * @param integer $permissions - permissions bitmask
      */
-    private function insert($shareId, int $permissions): bool {
+    private function insert(string $shareId, int $permissions): bool {
         $insert = $this->connection->prepare("
             INSERT INTO `*PREFIX*" . self::TABLENAME_KEY . "`
                 (`share_id`, `permissions`)
@@ -344,10 +330,10 @@ class ExtraPermissions {
     /**
      * Update extra permissions for share
      *
-     * @param integer $shareId - share identifier
-     * @param bool $permissions - value permissions
+     * @param string $shareId - share identifier
+     * @param bool $permissions - permissions bitmask
      */
-    private function update($shareId, int $permissions): bool {
+    private function update(string $shareId, int $permissions): bool {
         $update = $this->connection->prepare("
             UPDATE `*PREFIX*" . self::TABLENAME_KEY . "`
             SET `permissions` = ?
@@ -360,10 +346,10 @@ class ExtraPermissions {
      * Validation share on extend capability by extra permissions
      *
      * @param IShare $share - share
-     * @param int $checkExtra - checkable extra permissions
+     * @param int $checkExtra - checkable extra permissions bitmask
      * @param bool $wasInit - was initialization extra
      */
-    private function validation($share, $checkExtra, bool $wasInit = true): array {
+    private function validation(IShare $share, int $checkExtra, bool $wasInit = true): array {
         $availableExtra = self::NONE;
         $defaultExtra = self::NONE;
 

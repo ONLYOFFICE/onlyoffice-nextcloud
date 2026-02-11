@@ -39,13 +39,10 @@ class AdminSection implements IIconSection {
 
     public function __construct(private readonly IURLGenerator $urlGenerator) {}
 
-
     /**
      * Path to an 16*16 icons
-     *
-     * @return string
      */
-    public function getIcon() {
+    public function getIcon(): string {
         return $this->urlGenerator->imagePath("onlyoffice", "app-dark.svg");
     }
 

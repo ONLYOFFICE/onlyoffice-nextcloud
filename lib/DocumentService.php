@@ -59,7 +59,7 @@ class DocumentService {
      *
      * @param string $expected_key - Expected key
      */
-    public static function generateRevisionId($expected_key): string {
+    public static function generateRevisionId(string $expected_key): string {
         if (strlen($expected_key) > 20) {
             $expected_key = crc32($expected_key);
         }
@@ -77,18 +77,22 @@ class DocumentService {
      * @param string $region - Region
      * @param bool $toForm - Convert to form
      */
-    public function getConvertedUri($document_uri, $from_extension, $to_extension, $document_revision_id, $region = null, $toForm = false): string {
-        $responceFromConvertService = $this->sendRequestToConvertService($document_uri, $from_extension, $to_extension, $document_revision_id, false, $region, $toForm);
+    public function getConvertedUri(
+        string $document_uri,
+        string $from_extension,
+        string $to_extension,
+        string $document_revision_id,
+        string $region = "",
+        bool $toForm = false
+    ): string {
+        $response = $this->sendRequestToConvertService($document_uri, $from_extension, $to_extension, $document_revision_id, false, $region, $toForm);
+        $error = $response["error"] ?? null;
 
-        if (isset($responceFromConvertService->error)) {
-            $this->processConvServResponceError($responceFromConvertService->error);
+        if ($error !== null) {
+            $this->processConvServResponceError((int)$error);
         }
 
-        if (isset($responceFromConvertService->endConvert) && $responceFromConvertService->endConvert === true) {
-            return (string)$responceFromConvertService->fileUrl;
-        }
-
-        return "";
+        return $response["fileUrl"] ?? "";
     }
 
     /**
@@ -106,15 +110,15 @@ class DocumentService {
      * @return array
      */
     public function sendRequestToConvertService(
-        $document_uri,
-        $from_extension,
-        $to_extension,
-        $document_revision_id,
-        $is_async,
-        $region = null,
-        $toForm = false,
-        $thumbnail = [],
-    ) {
+        string $document_uri,
+        string $from_extension,
+        string $to_extension,
+        string $document_revision_id,
+        bool $is_async,
+        string $region = "",
+        bool $toForm = false,
+        array $thumbnail = [],
+    ): array {
         $documentServerUrl = $this->appConfig->getDocumentServerInternalUrl();
 
         if (empty($documentServerUrl)) {
@@ -141,7 +145,7 @@ class DocumentService {
             "key" => $document_revision_id
         ];
 
-        if (!is_null($region)) {
+        if ($region !== "") {
             $data["region"] = $region;
         }
 
@@ -187,7 +191,7 @@ class DocumentService {
         }
 
         $responseJsonData = $this->request($urlToConverter, "post", $opts);
-        $responseData = json_decode($responseJsonData);
+        $responseData = json_decode($responseJsonData, true);
         if (json_last_error() !== 0) {
             $exc = $this->trans->t("Bad Response. JSON error: " . json_last_error_msg());
             throw new \Exception($exc);
@@ -198,10 +202,8 @@ class DocumentService {
 
     /**
      * Generate an error code table of convertion
-     *
-     * @param string $errorCode - Error code
      */
-    public function processConvServResponceError(?string $errorCode): void {
+    public function processConvServResponceError(int $errorCode): void {
         $errorMessageTemplate = $this->trans->t("Error occurred in the document service");
         $errorMessage = "";
 
@@ -265,10 +267,8 @@ class DocumentService {
      * Send command
      *
      * @param string $method - type of command
-     *
-     * @return array
      */
-    public function commandRequest($method) {
+    public function commandRequest(string $method): array {
 
         $documentServerUrl = $this->appConfig->getDocumentServerInternalUrl();
 
@@ -311,9 +311,9 @@ class DocumentService {
 
         $response = $this->request($urlCommand, "post", $opts);
 
-        $data = json_decode($response);
+        $data = json_decode($response, true);
 
-        $this->processCommandServResponceError($data->error);
+        $this->processCommandServResponceError((int)$data["error"]);
 
         return $data;
     }
@@ -323,7 +323,7 @@ class DocumentService {
      *
      * @param string $errorCode - Error code
      */
-    public function processCommandServResponceError(?string $errorCode): void {
+    public function processCommandServResponceError(int $errorCode): void {
         $errorMessageTemplate = $this->trans->t("Error occurred in the document service");
         $errorMessage = "";
 
@@ -351,18 +351,15 @@ class DocumentService {
      * Request to Document Server with turn off verification
      *
      * @param string $url - request address
-     * @param array $method - request method
+     * @param string $method - request method
      * @param array $opts - request options
      *
      * @return string
      */
-    public function request($url, $method = "get", $opts = null) {
+    public function request(string $url, string $method = "get", array $opts = []) {
         $httpClientService = \OCP\Server::get(IClientService::class);
         $client = $httpClientService->newClient();
 
-        if (null === $opts) {
-            $opts = [];
-        }
         if (str_starts_with($url, "https") && $this->appConfig->getVerifyPeerOff()) {
             $opts["verify"] = false;
         }
@@ -408,10 +405,10 @@ class DocumentService {
         try {
             $commandResponse = $this->commandRequest("version");
             $this->logger->debug("commandRequest on check: " . json_encode($commandResponse), ["app" => self::$appName]);
-            if (empty($commandResponse)) {
+            if (empty($commandResponse) || !array_key_exists("version", $commandResponse)) {
                 throw new \Exception($this->trans->t("Error occurred in the document service"));
             }
-            $version = $commandResponse->version;
+            $version = $commandResponse["version"];
             $versionF = floatval($version);
             if ($versionF > 0.0 && $versionF <= 6.0) {
                 throw new \Exception($this->trans->t("Not supported version"));

@@ -60,10 +60,8 @@ class SettingsController extends Controller {
 
     /**
      * Print config section
-     *
-     * @return TemplateResponse
      */
-    public function index() {
+    public function index(): TemplateResponse {
         $data = [
             "documentserver" => $this->appConfig->getDocumentServerUrl(true),
             "documentserverInternal" => $this->appConfig->getDocumentServerInternalUrl(true),
@@ -180,25 +178,25 @@ class SettingsController extends Controller {
      * @param string $unknownAuthor - display unknown author
      */
     public function saveCommon(
-        $defFormats,
-        $editFormats,
-        $sameTab,
-        $enableSharing,
-        $preview,
-        $advanced,
-        $cronChecker,
-        $emailNotifications,
-        $versionHistory,
-        $limitGroups,
-        $chat,
-        $compactHeader,
-        $feedback,
-        $forcesave,
-        $liveViewOnShare,
-        $help,
-        $reviewDisplay,
-        $theme,
-        $unknownAuthor
+        array $defFormats,
+        array $editFormats,
+        bool $sameTab,
+        bool $enableSharing,
+        bool $preview,
+        bool $advanced,
+        bool $cronChecker,
+        bool $emailNotifications,
+        bool $versionHistory,
+        bool $chat,
+        bool $compactHeader,
+        bool $feedback,
+        bool $forcesave,
+        bool $liveViewOnShare,
+        bool $help,
+        string $reviewDisplay,
+        string $theme,
+        string $unknownAuthor,
+        array $limitGroups = []
     ): DataResponse {
 
         $this->appConfig->setDefaultFormats($defFormats);
@@ -233,10 +231,10 @@ class SettingsController extends Controller {
      * @param string $protection - protection
      */
     public function saveSecurity(
-        $watermarks,
-        $plugins,
-        $macros,
-        $protection
+        array $watermarks,
+        bool $plugins,
+        bool $macros,
+        string $protection
     ): DataResponse {
 
         if ($watermarks["enabled"] === "true") {
@@ -259,7 +257,7 @@ class SettingsController extends Controller {
      *
      * @return DataResponse
      */
-    public function clearHistory() {
+    public function clearHistory(): DataResponse {
 
         FileVersions::clearHistory();
 

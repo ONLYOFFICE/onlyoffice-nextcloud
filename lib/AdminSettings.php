@@ -42,10 +42,8 @@ class AdminSettings implements ISettings {
 
     /**
      * Print config section
-     *
-     * @return TemplateResponse
      */
-    public function getForm() {
+    public function getForm(): TemplateResponse {
         $app = Server::get(Application::class);
         $container = $app->getContainer();
 

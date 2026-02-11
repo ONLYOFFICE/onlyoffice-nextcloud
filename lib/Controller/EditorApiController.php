@@ -120,7 +120,18 @@ class EditorApiController extends OCSController {
      */
     #[NoAdminRequired]
     #[PublicPage]
-    public function config($fileId, $filePath = null, $shareToken = null, $directToken = null, $inframe = false, $inviewer = false, $desktop = false, $guestName = null, $template = false, $anchor = null) {
+    public function config(
+        int $fileId,
+        string $filePath = "",
+        string $shareToken = "",
+        string $directToken = "",
+        bool $inframe = false,
+        bool $inviewer = false,
+        bool $desktop = false,
+        string $guestName = "",
+        bool $template = false,
+        string $anchor = ""
+    ): JSONResponse {
 
         if (!empty($directToken)) {
             [$directData, $error] = $this->crypt->readHash($directToken);
@@ -182,7 +193,7 @@ class EditorApiController extends OCSController {
             return new JSONResponse(["error" => $this->trans->t("Format is not supported")]);
         }
 
-        $fileUrl = $this->getUrl($file, $user, $shareToken, null, $template);
+        $fileUrl = $this->getUrl($file, $user, $shareToken, false, $template);
 
         $key = $this->fileUtility->getKey($file, true);
         $key = DocumentService::generateRevisionId($key);
@@ -483,7 +494,7 @@ class EditorApiController extends OCSController {
             $params["editorConfig"]["tenant"] = $this->appConfig->getSystemValue("instanceid", true);
         }
 
-        if ($anchor !== null) {
+        if ($anchor !== "") {
             try {
                 $actionLink = json_decode($anchor, true);
 
@@ -520,7 +531,7 @@ class EditorApiController extends OCSController {
      * @param string $filePath - file path
      * @param bool $template - file is template
      */
-    private function getFile(?string $userId, $fileId, $filePath = null, $template = false): array {
+    private function getFile(?string $userId, ?int $fileId, string $filePath = "", bool $template = false): array {
         if (empty($userId)) {
             return [null, $this->trans->t("UserId is empty"), null];
         }
@@ -572,7 +583,13 @@ class EditorApiController extends OCSController {
      *
      * @return string
      */
-    private function getUrl($file, $user = null, $shareToken = null, $changes = false, $template = false) {
+    private function getUrl(
+        File $file,
+        ?IUser $user = null,
+        string $shareToken = "",
+        bool $changes = false,
+        bool $template = false
+    ): string {
 
         $data = [
             "action" => "download",
@@ -710,7 +727,7 @@ class EditorApiController extends OCSController {
      * @param IUser $user - current user
      * @param File file - file
      */
-    private function setWatermark(array $params, bool $isPublic, $user, File $file): array {
+    private function setWatermark(array $params, bool $isPublic, ?IUser $user, File $file): array {
         $userId = empty($user) ? null : $user->getUID();
         $watermarkTemplate = $this->getWatermarkText(
             $isPublic,
@@ -773,7 +790,13 @@ class EditorApiController extends OCSController {
      *
      * @return bool|string
      */
-    private function getWatermarkText(bool $isPublic, $userId, File $file, bool $canEdit, bool $canDownload) {
+    private function getWatermarkText(
+        bool $isPublic,
+        ?string $userId,
+        File $file,
+        bool $canEdit,
+        bool $canDownload
+    ): bool|string {
         $watermarkSettings = $this->appConfig->getWatermarkSettings();
         if (!$watermarkSettings["enabled"]) {
             return false;
@@ -840,7 +863,7 @@ class EditorApiController extends OCSController {
      *
      * @return bool
      */
-    private function isFavorite($fileId, $userId = null) {
+    private function isFavorite(int $fileId, ?string $userId = null): bool {
         $currentTags = $this->tagManager->load("files", [], false, $userId)->getTagsForObjects([$fileId]);
         if ($currentTags) {
             return in_array(ITags::TAG_FAVORITE, $currentTags[$fileId]);

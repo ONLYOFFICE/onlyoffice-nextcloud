@@ -118,7 +118,7 @@ class CallbackController extends Controller {
     #[NoAdminRequired]
     #[NoCSRFRequired]
     #[PublicPage]
-    public function download($doc) {
+    public function download(string $doc): StreamResponse|JSONResponse {
 
         [$hashData, $error] = $this->crypt->readHash($doc);
         if ($hashData === null) {
@@ -131,10 +131,10 @@ class CallbackController extends Controller {
         }
 
         $fileId = $hashData->fileId;
-        $version = $hashData->version ?? null;
+        $version = $hashData->version ?? 0;
         $changes = $hashData->changes ?? false;
         $template = $hashData->template ?? false;
-        $filePath = $hashData->filePath ?? null;
+        $filePath = $hashData->filePath ?? "";
         $this->logger->debug("Download: $fileId ($version)" . ($changes ? " changes" : ""));
 
         if (!empty($this->appConfig->getDocumentServerSecret())) {
@@ -263,7 +263,7 @@ class CallbackController extends Controller {
     #[NoAdminRequired]
     #[NoCSRFRequired]
     #[PublicPage]
-    public function emptyfile($doc) {
+    public function emptyfile(string $doc): DataDownloadResponse|JSONResponse {
         $this->logger->debug("Download empty");
 
         [$hashData, $error] = $this->crypt->readHash($doc);
@@ -313,17 +313,17 @@ class CallbackController extends Controller {
     /**
      * Handle request from the document server with the document status information
      *
-     * @param string $doc - verification token with the file identifier
-     * @param array $users - the list of the identifiers of the users
-     * @param string $key - the edited document identifier
-     * @param integer $status - the edited status
-     * @param string $url - the link to the edited document to be saved
-     * @param string $token - request signature
-     * @param array $history - file history
-     * @param string $changesurl - link to file changes
-     * @param integer $forcesavetype - the type of force save action
-     * @param array $actions - the array of action
-     * @param string $filetype - extension of the document that is downloaded from the link specified with the url parameter
+     * @param string $doc verification token with the file identifier
+     * @param string $key the edited document identifier
+     * @param int $status the edited status
+     * @param array $actions the array of action
+     * @param array $users the list of the identifiers of the users
+     * @param string $changesurl link to file changes
+     * @param string $filetype extension of the document that is downloaded from the link specified with the url parameter
+     * @param mixed $forcesavetype the type of force save action
+     * @param array $history file history
+     * @param string $url the link to the edited document to be saved
+     * @param string $token request signature
      *
      * @return JSONResponse
      */
@@ -331,7 +331,19 @@ class CallbackController extends Controller {
     #[NoAdminRequired]
     #[NoCSRFRequired]
     #[PublicPage]
-    public function track($doc, $users, $key, $status, $url, $token, $history, $changesurl, $forcesavetype, $actions, $filetype) {
+    public function track(
+        string $doc,
+        string $key,
+        int $status,
+        array $actions = [],
+        array $users = [],
+        string $changesurl = "",
+        string $filetype = "",
+        ?int $forcesavetype = null,
+        array $history = [],
+        string $url = "",
+        string $token = ""
+    ): JSONResponse {
 
         [$hashData, $error] = $this->crypt->readHash($doc);
         if ($hashData === null) {
@@ -571,7 +583,13 @@ class CallbackController extends Controller {
      * @param integer $version - file version
      * @param bool $template - file is template
      */
-    private function getFile(?string $userId, $fileId, $filePath = null, $version = 0, $template = false): array {
+    private function getFile(
+        ?string $userId,
+        ?int $fileId,
+        string $filePath = "",
+        int $version = 0,
+        bool $template = false
+    ): array {
         if (empty($fileId)) {
             return [null, new JSONResponse(["message" => $this->trans->t("FileId is empty")], Http::STATUS_BAD_REQUEST), null];
         }
@@ -636,7 +654,7 @@ class CallbackController extends Controller {
      * @param string $shareToken - access token
      * @param integer $version - file version
      */
-    private function getFileByToken($fileId, $shareToken, $version = 0): array {
+    private function getFileByToken(int $fileId, string $shareToken, int $version = 0): array {
         [$share, $error] = $this->getShare($shareToken);
 
         if (isset($error)) {
@@ -687,7 +705,7 @@ class CallbackController extends Controller {
      *
      * @param string $shareToken - access token
      */
-    private function getShare($shareToken): array {
+    private function getShare(?string $shareToken): array {
         if (empty($shareToken)) {
             return [null, new JSONResponse(["message" => $this->trans->t("FileId is empty")], Http::STATUS_BAD_REQUEST)];
         }
@@ -714,7 +732,7 @@ class CallbackController extends Controller {
      *
      * @return string
      */
-    private function parseUserId($userId) {
+    private function parseUserId(string $userId) {
         $instanceId = $this->appConfig->getSystemValue("instanceid", true);
         $instanceId .= "_";
 
@@ -730,7 +748,7 @@ class CallbackController extends Controller {
      *
      * @param File $file - file
      */
-    private function lock($file): void {
+    private function lock(File $file): void {
         if (!$this->lockManager->isLockProviderAvailable()) {
             return;
         }
@@ -752,7 +770,7 @@ class CallbackController extends Controller {
      *
      * @param File $file - file
      */
-    private function unlock($file): void {
+    private function unlock(File $file): void {
         if (!$this->lockManager->isLockProviderAvailable()) {
             return;
         }

@@ -131,7 +131,13 @@ class EditorController extends Controller {
      */
     #[NoAdminRequired]
     #[PublicPage]
-    public function create($name, $dir, $templateId = null, $targetId = 0, $shareToken = null) {
+    public function create(
+        string $name,
+        string $dir,
+        ?string $templateId = null,
+        int $targetId = 0,
+        ?string $shareToken = null
+    ): DataResponse {
         $this->logger->debug("Create: $name");
 
         if (empty($shareToken) && !$this->appConfig->isUserAllowedToUse()) {
@@ -237,7 +243,7 @@ class EditorController extends Controller {
      */
     #[NoAdminRequired]
     #[NoCSRFRequired]
-    public function createNew($name, $dir, $templateId = null) {
+    public function createNew(string $name, string $dir, ?string $templateId = null): TemplateResponse|RedirectResponse {
         $this->logger->debug("Create from editor: $name in $dir");
 
         $response = $this->create($name, $dir, $templateId);
@@ -260,7 +266,13 @@ class EditorController extends Controller {
      */
     #[NoAdminRequired]
     #[NoCSRFRequired]
-    public function users($fileId, $operationType = null, $from = null, $count = null, $search = null) {
+    public function users(
+        int $fileId,
+        string $operationType = "",
+        int $offset = 0,
+        int $limit = 100,
+        string $search = ""
+    ): DataResponse {
         $this->logger->debug("Search users");
         $result = [];
         $currentUserGroups = [];
@@ -302,16 +314,14 @@ class EditorController extends Controller {
 
         $all = false;
         $users = [];
-        $searchString = $search ?? "";
-        $offset = $from !== null ? (int)$from : 0;
-        $limit = $count !== null ? (int)$count : null;
+
         if ($canShare && $operationType !== "protect") {
             // who can be given access
             if ($shareMemberGroups || $autocompleteMemberGroup) {
                 foreach ($currentUserGroups as $currentUserGroup) {
                     $group = $this->groupManager->get($currentUserGroup);
                     foreach ($group->getUsers() as $user) {
-                        if ($this->filterUser($user, $currentUserId, $operationType, $searchString)) {
+                        if ($this->filterUser($user, $currentUserId, $operationType, $search)) {
                             $users[$user->getUID()] = $user;
                         }
                     }
@@ -319,10 +329,10 @@ class EditorController extends Controller {
             } else {
                 // all users
                 $all = true;
-                $allUsers = $this->userManager->searchDisplayName($searchString);
+                $allUsers = $this->userManager->searchDisplayName($search);
 
                 foreach ($allUsers as $user) {
-                    if ($this->filterUser($user, $currentUserId, $operationType, $searchString)) {
+                    if ($this->filterUser($user, $currentUserId, $operationType, $search)) {
                         $users[$user->getUID()] = $user;
                     }
                 }
@@ -334,7 +344,7 @@ class EditorController extends Controller {
             $accessList = $this->shareManager->getAccessList($file);
             foreach ($accessList["users"] as $accessUser) {
                 $user = $this->userManager->get($accessUser);
-                if ($this->filterUser($user, $currentUserId, $operationType, $searchString)) {
+                if ($this->filterUser($user, $currentUserId, $operationType, $search)) {
                     $users[$user->getUID()] = $user;
                 }
             }
@@ -346,7 +356,7 @@ class EditorController extends Controller {
                     $folderUsers = $this->folderManager->searchUsers($folderId, "", -1);
                     foreach ($folderUsers as $folderUser) {
                         $user = $this->userManager->get($folderUser["uid"]);
-                        if ($this->filterUser($user, $currentUserId, $operationType, $searchString)) {
+                        if ($this->filterUser($user, $currentUserId, $operationType, $search)) {
                             $users[$user->getUID()] = $user;
                         }
                     }
@@ -356,9 +366,7 @@ class EditorController extends Controller {
             }
         }
 
-        if ($limit !== null) {
-            $users = array_slice($users, $offset, $limit);
-        }
+        $users = array_slice($users, $offset, $limit);
 
         foreach ($users as $user) {
             $userElement = [
@@ -378,9 +386,9 @@ class EditorController extends Controller {
      * @param IUser $user - user
      * @param string $currentUserId - id of current user
      * @param string $operationType - type of the get user operation
-     * @param int $searchString - string for searching
+     * @param string $searchString - string for searching
      */
-    private function filterUser($user, $currentUserId, $operationType, $searchString): bool {
+    private function filterUser(IUser $user, string $currentUserId, string $operationType, string $searchString): bool {
         return $user->getUID() != $currentUserId
             && (!empty($user->getEMailAddress()) || $operationType === "protect")
             && $this->searchInUser($user, $searchString);
@@ -390,9 +398,9 @@ class EditorController extends Controller {
      * Check if the user contains the search string
      *
      * @param IUser $user - user
-     * @param int $searchString - string for searching
+     * @param string $searchString - string for searching
      */
-    private function searchInUser($user, $searchString): bool {
+    private function searchInUser(IUser $user, string $searchString): bool {
         return empty($searchString)
             || stripos((string) $user->getUID(), (string) $searchString) !== false
             || stripos((string) $user->getDisplayName(), (string) $searchString) !== false
@@ -408,7 +416,7 @@ class EditorController extends Controller {
      */
     #[NoAdminRequired]
     #[NoCSRFRequired]
-    public function userInfo($userIds) {
+    public function userInfo(string $userIds): DataResponse {
         $result = [];
         $userIds = json_decode($userIds, true);
 
@@ -450,7 +458,7 @@ class EditorController extends Controller {
      */
     #[NoAdminRequired]
     #[NoCSRFRequired]
-    public function mention($fileId, $anchor, $comment, $emails) {
+    public function mention(int $fileId, string $anchor, string $comment, array $emails): DataResponse {
         $this->logger->debug("mention: from $fileId to " . json_encode($emails));
 
         if (!$this->appConfig->isUserAllowedToUse()) {
@@ -582,7 +590,7 @@ class EditorController extends Controller {
      */
     #[NoAdminRequired]
     #[PublicPage]
-    public function reference($referenceData, $path = null, $link = null) {
+    public function reference(array $referenceData, string $path = "", string $link = ""): DataResponse {
         $this->logger->debug("reference: " . json_encode($referenceData) . " $path");
 
         if (!$this->appConfig->isUserAllowedToUse()) {
@@ -605,7 +613,7 @@ class EditorController extends Controller {
 
         $userFolder = $this->root->getUserFolder($userId);
         if ($file === null
-            && $path !== null
+            && $path !== ""
             && $userFolder->nodeExists($path)) {
             $node = $userFolder->get($path);
             if ($node instanceof File
@@ -668,7 +676,7 @@ class EditorController extends Controller {
      */
     #[NoAdminRequired]
     #[PublicPage]
-    public function convert($fileId, $shareToken = null) {
+    public function convert(int $fileId, string $shareToken = ""): DataResponse {
         $this->logger->debug("Convert: $fileId");
 
         if (empty($shareToken) && !$this->appConfig->isUserAllowedToUse()) {
@@ -764,7 +772,7 @@ class EditorController extends Controller {
      * @return DataResponse
      */
     #[NoAdminRequired]
-    public function save($name, $dir, $url) {
+    public function save(string $name, string $dir, string $url): DataResponse {
         $this->logger->debug("Save: $name");
 
         if (!$this->appConfig->isUserAllowedToUse()) {
@@ -835,7 +843,7 @@ class EditorController extends Controller {
      * @return DataResponse
      */
     #[NoAdminRequired]
-    public function history($fileId) {
+    public function history(int $fileId): DataResponse {
         $this->logger->debug("Request history for: $fileId");
 
         if (!$this->appConfig->isUserAllowedToUse()) {
@@ -971,14 +979,12 @@ class EditorController extends Controller {
      * @return DataResponse
      */
     #[NoAdminRequired]
-    public function version($fileId, $version) {
+    public function version(int $fileId, int $version): DataResponse {
         $this->logger->debug("Request version for: $fileId ($version)");
 
         if (!$this->appConfig->isUserAllowedToUse()) {
             return new DataResponse(["error" => $this->trans->t("Not permitted")]);
         }
-
-        $version = empty($version) ? null : $version;
 
         $user = $this->userSession->getUser();
         $userId = null;
@@ -1076,14 +1082,12 @@ class EditorController extends Controller {
      * @return DataResponse
      */
     #[NoAdminRequired]
-    public function restore($fileId, $version) {
+    public function restore(int $fileId, int $version): DataResponse {
         $this->logger->debug("Request restore version for: $fileId ($version)");
 
         if (!$this->appConfig->isUserAllowedToUse()) {
             return new DataResponse(["error" => $this->trans->t("Not permitted")]);
         }
-
-        $version = empty($version) ? null : $version;
 
         $user = $this->userSession->getUser();
         $userId = null;
@@ -1130,7 +1134,7 @@ class EditorController extends Controller {
      * @return DataResponse
      */
     #[NoAdminRequired]
-    public function url($filePath) {
+    public function url(string $filePath): DataResponse {
         $this->logger->debug("Request url for: $filePath");
 
         if (!$this->appConfig->isUserAllowedToUse()) {
@@ -1197,7 +1201,7 @@ class EditorController extends Controller {
      */
     #[NoAdminRequired]
     #[NoCSRFRequired]
-    public function download($fileId, $toExtension = null, $template = false) {
+    public function download(int $fileId, ?string $toExtension = null, bool $template = false): DataDownloadResponse|TemplateResponse {
         $this->logger->debug("Download: $fileId $toExtension");
 
         if (!$this->appConfig->isUserAllowedToUse() || $this->appConfig->getDisableDownload()) {
@@ -1257,18 +1261,21 @@ class EditorController extends Controller {
                 $toExtension,
                 $key,
                 false,
-                null,
+                "",
                 false,
                 $thumbnail,
             );
 
-            if (isset($response->error)) {
-                $this->documentService->processConvServResponceError($response->error);
+            $error = $response["error"] ?? null;
+            $endConvert = $response["endConvert"] ?? false;
+
+            if ($error !== null) {
+                $this->documentService->processConvServResponceError((int)$error);
             }
 
-            if (isset($response->endConvert) && $response->endConvert === true) {
-                $newFileUri = $response->fileUrl;
-                $newFileType = $response->fileType;
+            if ($endConvert) {
+                $newFileUri = $response["fileUrl"] ?? "";
+                $newFileType = $response["fileType"] ?? "";
             }
         } catch (\Exception $e) {
             $this->logger->error("sendRequestToConvertService: " . $file->getId(), ["exception" => $e]);
@@ -1305,7 +1312,15 @@ class EditorController extends Controller {
      */
     #[NoAdminRequired]
     #[NoCSRFRequired]
-    public function index($fileId, $filePath = null, $shareToken = null, $inframe = false, $inviewer = false, $template = false, $anchor = null) {
+    public function index(
+        ?int $fileId,
+        ?string $filePath = null,
+        ?string $shareToken = null,
+        bool $inframe = false,
+        bool $inviewer = false,
+        bool $template = false,
+        ?string $anchor = null
+    ): TemplateResponse|RedirectResponse {
         $this->logger->debug("Open: $fileId $filePath ");
 
         $isLoggedIn = $this->userSession->isLoggedIn();
@@ -1388,7 +1403,11 @@ class EditorController extends Controller {
     #[NoAdminRequired]
     #[NoCSRFRequired]
     #[PublicPage]
-    public function publicPage($fileId, $shareToken, $inframe = false) {
+    public function publicPage(
+        ?int $fileId,
+        string $shareToken,
+        bool $inframe = false
+    ): TemplateResponse {
         return $this->index($fileId, null, $shareToken, $inframe);
     }
 
@@ -1453,7 +1472,14 @@ class EditorController extends Controller {
      *
      * @return string
      */
-    private function getUrl($file, $user = null, $shareToken = null, $version = 0, bool $changes = false, $template = false) {
+    private function getUrl(
+        File $file,
+        ?IUser $user = null,
+        ?string $shareToken = null,
+        int $version = 0,
+        bool $changes = false,
+        bool $template = false
+    ): string {
 
         $data = [
             "action" => "download",
@@ -1491,10 +1517,8 @@ class EditorController extends Controller {
 
     /**
      * Return excluded groups list for share
-     *
-     * @return array
      */
-    private function getShareExcludedGroups() {
+    private function getShareExcludedGroups(): array {
         $excludedGroups = [];
 
         if (Server::get(\OCP\IAppConfig::class)->getValueString("core", "shareapi_exclude_groups", "no") === "yes") {
@@ -1518,10 +1542,8 @@ class EditorController extends Controller {
      * Get Nextcloud userId from unique user identifier
      *
      * @param string $userId - current user identifier
-     *
-     * @return string
      */
-    private function getUserId($userId) {
+    private function getUserId(string $userId): string {
         if (str_contains($userId, "_")) {
             $userIdExp = explode("_", $userId);
             $userId = end($userIdExp);
@@ -1531,8 +1553,6 @@ class EditorController extends Controller {
 
     /**
      * Get File id from by link
-     *
-     * @param string $link - link to the file
      */
     private function getFileIdByLink(string $link): array {
         $path = parse_url($link, PHP_URL_PATH);
@@ -1562,7 +1582,7 @@ class EditorController extends Controller {
      *
      * @return TemplateResponse
      */
-    private function renderError($error, $hint = "") {
+    private function renderError(string $error, string $hint = ""): TemplateResponse {
         return new TemplateResponse("", "error", [
             "errors" => [
                 [

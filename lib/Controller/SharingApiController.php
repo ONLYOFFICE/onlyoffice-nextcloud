@@ -82,7 +82,7 @@ class SharingApiController extends OCSController {
      */
     #[NoAdminRequired]
     #[NoCSRFRequired]
-    public function getShares($fileId) {
+    public function getShares(int $fileId): DataResponse {
         if ($this->extraPermissions === null) {
             $this->logger->debug("extraPermissions isn't init");
             return new DataResponse([], Http::STATUS_BAD_REQUEST);
@@ -111,15 +111,15 @@ class SharingApiController extends OCSController {
      * Set shares for file
      *
      * @param integer $extraId - extra permission identifier
-     * @param integer $shareId - share identifier
+     * @param string $shareId - share identifier
      * @param integer $fileId - file identifier
-     * @param integer $permissions - permissions value
+     * @param integer $permissions - permissions bitmask
      *
      * @return DataResponse
      */
     #[NoAdminRequired]
     #[NoCSRFRequired]
-    public function setShares($extraId, $shareId, $fileId, $permissions) {
+    public function setShares(int $extraId, string $shareId, int $fileId, int $permissions): DataResponse {
         if ($this->extraPermissions === null) {
             $this->logger->debug("extraPermissions isn't init");
             return new DataResponse([], Http::STATUS_BAD_REQUEST);
@@ -152,7 +152,7 @@ class SharingApiController extends OCSController {
      *
      * @return File
      */
-    private function getFile($fileId, $userId) {
+    private function getFile(int $fileId, string $userId): ?File {
         try {
             $folder = $this->root->getUserFolder($userId);
             $files = $folder->getById($fileId);

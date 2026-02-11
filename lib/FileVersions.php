@@ -72,12 +72,8 @@ class FileVersions {
 
     /**
      * Split file path and version id
-     *
-     * @param string $pathVersion - version path
-     *
-     * @return array
      */
-    public static function splitPathVersion($pathVersion): false|array {
+    public static function splitPathVersion(string $pathVersion): false|array {
         if (empty($pathVersion)) {
             return false;
         }
@@ -88,17 +84,17 @@ class FileVersions {
     }
 
     /**
-     * Check if folder is not exist
+     * Check if folder exists
      *
      * @param View $view - view
      * @param string $path - folder path
-     * @param bool $createIfNotExist - create folder if not exist
+     * @param bool $create - create folder if it does not exist
      */
-    private static function checkFolderExist($view, string $path, bool $createIfNotExist = false): bool {
+    private static function checkFolderExist(View $view, string $path, bool $create = false): bool {
         if ($view->is_dir($path)) {
             return true;
         }
-        if (!$createIfNotExist) {
+        if (!$create) {
             return false;
         }
         $view->mkdir($path);
@@ -205,7 +201,7 @@ class FileVersions {
      *
      * @return bool
      */
-    public static function hasChanges($ownerId, $fileInfo, string $versionId) {
+    public static function hasChanges(?string $ownerId, ?FileInfo $fileInfo, string $versionId) {
         if ($ownerId === null || $fileInfo === null) {
             return false;
         }
@@ -228,7 +224,7 @@ class FileVersions {
      *
      * @return File
      */
-    public static function getChangesFile($ownerId, $fileInfo, string $versionId): ?File {
+    public static function getChangesFile(?string $ownerId, ?FileInfo $fileInfo, string $versionId): ?File {
         if ($ownerId === null || $fileInfo === null) {
             return null;
         }
@@ -262,7 +258,7 @@ class FileVersions {
      * @param string $changes - file changes
      * @param string $prevVersion - previous version for check
      */
-    public static function saveHistory($fileInfo, $history, $changes, $prevVersion): void {
+    public static function saveHistory(?FileInfo $fileInfo, $history, $changes, $prevVersion): void {
         $logger = \OCP\Log\logger('onlyoffice');
 
         if ($fileInfo === null) {
@@ -310,7 +306,7 @@ class FileVersions {
      * @param string $ownerId - file owner id
      * @param FileInfo $fileInfo - file info
      */
-    public static function deleteAllVersions($ownerId, $fileInfo = null): void {
+    public static function deleteAllVersions(?string $ownerId, ?FileInfo $fileInfo = null): void {
         $logger = \OCP\Log\logger('onlyoffice');
         $fileId = null;
         if ($fileInfo !== null) {
@@ -398,7 +394,7 @@ class FileVersions {
      * @param FileInfo $fileInfo - file info
      * @param IUser $author - version author
      */
-    public static function saveAuthor($fileInfo, $author): void {
+    public static function saveAuthor(?FileInfo $fileInfo, ?IUser $author): void {
         $logger = \OCP\Log\logger('onlyoffice');
 
         if ($fileInfo === null || $author === null) {
@@ -445,7 +441,7 @@ class FileVersions {
      *
      * @return array
      */
-    public static function getAuthor($ownerId, $fileInfo, string $versionId) {
+    public static function getAuthor(?string $ownerId, ?FileInfo $fileInfo, string $versionId) {
         if ($ownerId === null || $fileInfo === null) {
             return null;
         }
@@ -476,7 +472,7 @@ class FileVersions {
      * @param FileInfo $fileInfo - file info
      * @param string $versionId - file version
      */
-    public static function deleteAuthor($ownerId, $fileInfo, ?string $versionId): void {
+    public static function deleteAuthor(?string $ownerId, ?FileInfo $fileInfo, ?string $versionId): void {
         $logger = \OCP\Log\logger('onlyoffice');
 
         $fileId = $fileInfo->getId();
@@ -512,7 +508,7 @@ class FileVersions {
      *
      * @param array $versions - versions array
      */
-    public static function processVersionsArray($versions) {
+    public static function processVersionsArray(array $versions): array {
         if (self::getFilesVersionAppInfoCompareResult() === -1) {
             return array_reverse($versions);
         } else {

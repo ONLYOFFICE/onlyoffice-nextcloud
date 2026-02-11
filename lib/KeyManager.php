@@ -46,13 +46,9 @@ class KeyManager {
     private const TABLENAME_KEY = "onlyoffice_filekey";
 
     /**
-     * Get document identifier
-     *
-     * @param integer $fileId - file identifier
-     *
-     * @return string
+     * Get document identifier by file id
      */
-    public function get($fileId) {
+    public function get(int $fileId): string {
         $select = $this->connection->prepare("
             SELECT `key`
             FROM  `*PREFIX*" . self::TABLENAME_KEY . "`
@@ -66,11 +62,8 @@ class KeyManager {
 
     /**
      * Store document identifier
-     *
-     * @param integer $fileId - file identifier
-     * @param integer $key - file key
      */
-    public function set($fileId, $key): bool {
+    public function set(int $fileId, string $key): bool {
         $insert = $this->connection->prepare("
             INSERT INTO `*PREFIX*" . self::TABLENAME_KEY . "`
                 (`file_id`, `key`)
@@ -85,7 +78,7 @@ class KeyManager {
      * @param integer $fileId - file identifier
      * @param bool $unlock - delete even with lock label
      */
-    public function delete($fileId, $unlock = false): bool {
+    public function delete(int $fileId, bool $unlock = false): bool {
         $delete = $this->connection->prepare(
             "
             DELETE FROM `*PREFIX*" . self::TABLENAME_KEY . "`
@@ -101,7 +94,7 @@ class KeyManager {
      * @param integer $fileId - file identifier
      * @param bool $lock - status
      */
-    public function lock($fileId, $lock = true): bool {
+    public function lock(int $fileId, bool $lock = true): bool {
         $update = $this->connection->prepare("
             UPDATE `*PREFIX*" . self::TABLENAME_KEY . "`
             SET `lock` = ?
@@ -116,7 +109,7 @@ class KeyManager {
      * @param integer $fileId - file identifier
      * @param bool $fs - status
      */
-    public function setForcesave($fileId, $fs = true): bool {
+    public function setForcesave(int $fileId, bool $fs = true): bool {
         $update = $this->connection->prepare("
             UPDATE `*PREFIX*" . self::TABLENAME_KEY . "`
             SET `fs` = ?
@@ -130,7 +123,7 @@ class KeyManager {
      *
      * @param integer $fileId - file identifier
      */
-    public function wasForcesave($fileId): bool {
+    public function wasForcesave(int $fileId): bool {
         $select = $this->connection->prepare("
             SELECT `fs`
             FROM  `*PREFIX*" . self::TABLENAME_KEY . "`

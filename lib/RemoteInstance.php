@@ -120,7 +120,7 @@ class RemoteInstance {
      *
      * @return bool
      */
-    public static function healthCheck($remote) {
+    public static function healthCheck(string $remote) {
         $logger = \OCP\Log\logger('onlyoffice');
         $remote = rtrim($remote, "/") . "/";
 
@@ -173,7 +173,7 @@ class RemoteInstance {
      *
      * @return string
      */
-    public static function getRemoteKey($file) {
+    public static function getRemoteKey(File $file) {
         $logger = \OCP\Log\logger('onlyoffice');
 
         $remote = rtrim((string) $file->getStorage()->getRemote(), "/") . "/";
