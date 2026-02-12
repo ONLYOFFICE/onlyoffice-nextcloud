@@ -31,7 +31,6 @@ namespace OCA\Onlyoffice;
 
 use OC\Files\Filesystem;
 use OC\Files\Node\File;
-use OCP\Share\IShare;
 use OCP\Util;
 
 /**
@@ -41,121 +40,12 @@ use OCP\Util;
  */
 class Hooks {
 
-    /**
-     * Application name
-     *
-     * @var string
-     */
-    private static $appName = "onlyoffice";
-
     public static function connectHooks() {
-        // Listen user deletion
-        Util::connectHook("OC_User", "pre_deleteUser", Hooks::class, "userDelete");
-
-        // Listen file change
-        Util::connectHook("OC_Filesystem", "write", Hooks::class, "fileUpdate");
-
-        // Listen file deletion
-        Util::connectHook("OC_Filesystem", "delete", Hooks::class, "fileDelete");
-
         // Listen file version deletion
         Util::connectHook("\OCP\Versions", "preDelete", Hooks::class, "fileVersionDelete");
 
         // Listen file version restore
         Util::connectHook("\OCP\Versions", "rollback", Hooks::class, "fileVersionRestore");
-
-        // Listen share deletion
-        Util::connectHook("OCP\Share", "post_unshare", Hooks::class, "extraPermissionsDelete");
-    }
-
-    /**
-     * Erase user file versions
-     *
-     * @param array $params - hook params
-     */
-    public static function userDelete($params) {
-        $userId = $params["uid"];
-
-        FileVersions::deleteAllVersions($userId);
-    }
-
-    /**
-     * Listen of file change
-     *
-     * @param array $params - hook params
-     */
-    public static function fileUpdate($params) {
-        $filePath = $params[Filesystem::signal_param_path];
-        if (empty($filePath)) {
-            return;
-        }
-
-        $fileInfo = Filesystem::getFileInfo($filePath);
-        if ($fileInfo === false) {
-            return;
-        }
-
-        $fileId = $fileInfo->getId();
-
-        KeyManager::delete($fileId);
-
-        \OCP\Log\logger('onlyoffice')->debug("Hook fileUpdate " . json_encode($params), ["app" => self::$appName]);
-    }
-
-    /**
-     * Erase versions of deleted file
-     *
-     * @param array $params - hook params
-     */
-    public static function fileDelete($params) {
-        $filePath = $params[Filesystem::signal_param_path];
-        if (empty($filePath)) {
-            return;
-        }
-
-        try {
-            $fileInfo = Filesystem::getFileInfo($filePath);
-            if ($fileInfo === false) {
-                return;
-            }
-
-            $owner = $fileInfo->getOwner();
-            if (empty($owner)) {
-                return;
-            }
-            $ownerId = $owner->getUID();
-
-            $fileId = $fileInfo->getId();
-
-            KeyManager::delete($fileId, true);
-
-            FileVersions::deleteAllVersions($ownerId, $fileInfo);
-
-            $root = \OC::$server->get(\OCP\Files\IRootFolder::class);
-            $folder = $root->getUserFolder($ownerId);
-            $files = $folder->getById($fileId);
-            if (!empty($files)) {
-                $shares = [];
-                $shareTypes = [
-                    IShare::TYPE_USER,
-                    IShare::TYPE_GROUP,
-                    IShare::TYPE_LINK,
-                    IShare::TYPE_ROOM,
-                ];
-                $node = $files[0];
-                $shareManager = \OC::$server->get(\OCP\Share\IManager::class);
-
-                foreach ($shareTypes as $shareType) {
-                    $shares = array_merge($shares, $shareManager->getSharesBy($ownerId, $shareType, $node));
-                }
-                $shareIds = array_map(fn(IShare $share) => $share->getId(), $shares);
-                if (!empty($shareIds)) {
-                    ExtraPermissions::deleteList($shareIds);
-                }
-            }
-        } catch (\Exception $e) {
-            \OCP\Log\logger('onlyoffice')->error("Hook: fileDelete " . json_encode($params), ['exception' => $e]);
-        }
     }
 
     /**
@@ -184,8 +74,6 @@ class Hooks {
                 return;
             }
             $ownerId = $owner->getUID();
-
-            $fileId = $fileInfo->getId();
 
             FileVersions::deleteVersion($ownerId, $fileInfo, $versionId);
             FileVersions::deleteAuthor($ownerId, $fileInfo, $versionId);
@@ -232,29 +120,6 @@ class Hooks {
             FileVersions::deleteVersion($ownerId, $fileInfo, $versionId);
         } catch (\Exception $e) {
             \OCP\Log\logger('onlyoffice')->error("Hook: fileVersionRestore " . json_encode($params), ['exception' => $e]);
-        }
-    }
-
-    /**
-     * Erase extra permissions of deleted share
-     *
-     * @param array $params - hook param
-     */
-    public static function extraPermissionsDelete($params) {
-        $shares = $params["deletedShares"];
-        if (empty($shares)) {
-            return;
-        }
-
-        try {
-            $shareIds = [];
-            foreach ($shares as $share) {
-                array_push($shareIds, $share["id"]);
-            }
-
-            ExtraPermissions::deleteList($shareIds);
-        } catch (\Exception $e) {
-            \OCP\Log\logger('onlyoffice')->error("Hook: extraPermissionsDelete " . json_encode($params), ['exception' => $e]);
         }
     }
 }
