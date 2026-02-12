@@ -2,6 +2,7 @@
 
 ##
 ## Changed
+- migrated from legacy hooks to event listeners
 - fixed watermark not applying to link shares with system tags
 - fixed opening the editor with a watermark on tagged files
 - replace deprecated TemplateFileCreator::setIconClass with TemplateFileCreator::setIconSvgInline method
