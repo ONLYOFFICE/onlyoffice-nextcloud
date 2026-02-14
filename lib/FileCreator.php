@@ -41,56 +41,16 @@ use Psr\Log\LoggerInterface;
  */
 class FileCreator extends ACreateEmpty {
 
-    /**
-     * Application name
-     *
-     * @var string
-     */
-    private $appName;
-
-    /**
-     * l10n service
-     *
-     * @var IL10N
-     */
-    private $trans;
-
-    /**
-     * Logger
-     *
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
-     * Format for creation
-     *
-     * @var string
-     */
-    private $format;
-
-    /**
-     * @param string $AppName - application name
-     * @param IL10N $trans - l10n service
-     * @param LoggerInterface $logger - logger
-     * @param string $format - format for creation
-     */
     public function __construct(
-        $AppName,
-        IL10N $trans,
-        LoggerInterface $logger,
-        $format
+        private string $AppName,
+        private IL10N $trans,
+        private LoggerInterface $logger,
+        private string $format
     ) {
-        $this->appName = $AppName;
-        $this->trans = $trans;
-        $this->logger = $logger;
-        $this->format = $format;
     }
 
     /**
      * Unique id for the creator to filter templates
-     *
-     * @return string
      */
     public function getId(): string {
         return $this->appName . "_" . $this->format;
@@ -98,8 +58,6 @@ class FileCreator extends ACreateEmpty {
 
     /**
      * Descriptive name for the create action
-     *
-     * @return string
      */
     public function getName(): string {
         switch ($this->format) {
@@ -113,8 +71,6 @@ class FileCreator extends ACreateEmpty {
 
     /**
      * Default file extension for the new file
-     *
-     * @return string
      */
     public function getExtension(): string {
         return $this->format;
@@ -122,8 +78,6 @@ class FileCreator extends ACreateEmpty {
 
     /**
      * Mimetype of the resulting created file
-     *
-     * @return array
      */
     public function getMimetype(): string {
         switch ($this->format) {
@@ -137,12 +91,8 @@ class FileCreator extends ACreateEmpty {
 
     /**
      * Add content when creating empty files
-     *
-     * @param File $file - empty file
-     * @param string $creatorId - creator id
-     * @param string $templateId - teamplate id
      */
-    public function create(File $file, string $creatorId = null, string $templateId = null): void {
+    public function create(File $file, ?string $creatorId = null, ?string $templateId = null): void {
         $this->logger->debug("FileCreator: " . $file->getId() . " " . $file->getName() . " $creatorId $templateId");
 
         $fileName = $file->getName();
