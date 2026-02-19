@@ -528,21 +528,55 @@ import { loadState } from '@nextcloud/initial-state'
 		const formats = OCA.Onlyoffice.setting.formats
 
 		const getConfig = function(file) {
-			const fileExt = file?.extension?.toLowerCase()?.replace('.', '')
-			const config = formats[fileExt]
+			const fileName = file?.basename
+				|| file?.filename
+				|| file?.name
+				|| file?.attributes?.filename
+				|| file?.attributes?.displayname
+				|| ''
 
-			return config
+			const fileExt = (file?.extension || fileName.split('.').pop() || '')
+				.toLowerCase()
+				.replace('.', '')
+			const config = formats[fileExt]
+			if (config) {
+				return config
+			}
+
+			const mime = file?.mime
+				|| file?.mimetype
+				|| file?.attributes?.mimetype
+				|| file?.attributes?.getcontenttype
+
+			if (mime) {
+				return Object.values(formats).find((entry) => {
+					const entryMimes = Array.isArray(entry?.mime)
+						? entry.mime
+						: [entry?.mime].filter(Boolean)
+					return entryMimes.includes(mime)
+				})
+			}
+
+			return undefined
 		}
 
-		if (OCA.Files && OCA.Files.fileActions) {
+		const legacyFileActions = OCA.Files?.fileActions
+		if (legacyFileActions && typeof legacyFileActions.registerAction === 'function') {
 			$.each(formats, function(ext, config) {
 				if (!config.mime) {
 					return true
 				}
 
-				const mimeTypes = config.mime
+				const mimeTypes = Array.isArray(config.mime)
+					? config.mime
+					: [config.mime].filter(Boolean)
+
+				if (mimeTypes.length === 0) {
+					return true
+				}
+
 				mimeTypes.forEach((mime) => {
-					OCA.Files.fileActions.registerAction({
+					legacyFileActions.registerAction({
 						name: 'onlyofficeOpen',
 						displayName: t(OCA.Onlyoffice.AppName, 'Open in ONLYOFFICE'),
 						mime,
@@ -551,12 +585,12 @@ import { loadState } from '@nextcloud/initial-state'
 						actionHandler: OCA.Onlyoffice.FileClick,
 					})
 
-					if (config.def) {
-						OCA.Files.fileActions.setDefault(mime, 'onlyofficeOpen')
+					if (config.def && typeof legacyFileActions.setDefault === 'function') {
+						legacyFileActions.setDefault(mime, 'onlyofficeOpen')
 					}
 
 					if (config.conv) {
-						OCA.Files.fileActions.registerAction({
+						legacyFileActions.registerAction({
 							name: 'onlyofficeConvert',
 							displayName: t(OCA.Onlyoffice.AppName, 'Convert with ONLYOFFICE'),
 							mime,
@@ -567,7 +601,7 @@ import { loadState } from '@nextcloud/initial-state'
 					}
 
 					if (config.createForm) {
-						OCA.Files.fileActions.registerAction({
+						legacyFileActions.registerAction({
 							name: 'onlyofficeCreateForm',
 							displayName: t(OCA.Onlyoffice.AppName, 'Create form'),
 							mime,
@@ -578,7 +612,7 @@ import { loadState } from '@nextcloud/initial-state'
 					}
 
 					if (config.saveas && !isPublicShare() && !OCA.Onlyoffice.setting.disableDownload) {
-						OCA.Files.fileActions.registerAction({
+						legacyFileActions.registerAction({
 							name: 'onlyofficeDownload',
 							displayName: t(OCA.Onlyoffice.AppName, 'Download as'),
 							mime,
@@ -589,7 +623,9 @@ import { loadState } from '@nextcloud/initial-state'
 					}
 				})
 			})
-		} else {
+		}
+
+		if (typeof registerFileAction === 'function' && typeof FileAction === 'function') {
 			registerFileAction(new FileAction({
 				id: 'onlyoffice-open-def',
 				displayName: () => t(OCA.Onlyoffice.AppName, 'Open in ONLYOFFICE'),
