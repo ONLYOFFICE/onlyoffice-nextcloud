@@ -2,6 +2,7 @@
 
 ##
 ## Changed
+- fixed opening editor for shared non-default formats
 - fixed watermark not applying to link shares with system tags
 - fixed opening the editor with a watermark on tagged files
 - replace deprecated TemplateFileCreator::setIconClass with TemplateFileCreator::setIconSvgInline method
