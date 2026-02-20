@@ -888,18 +888,23 @@ import { loadState } from '@nextcloud/initial-state'
 
 			if (_oc_appswebroots.richdocuments
 				|| (_oc_appswebroots.files_pdfviewer && extension === 'pdf')
-				|| (_oc_appswebroots.text && extension === 'txt')) {
+				|| (_oc_appswebroots.text && extension === 'txt')
+				|| !config.def) {
 
-				const button = document.createElement('a')
-				button.href = editorUrl
-				button.className = 'onlyoffice-public-open button'
-				button.innerText = t(OCA.Onlyoffice.AppName, 'Open in ONLYOFFICE')
+				registerFileAction(new FileAction({
+					id: 'onlyoffice-public-open button',
+					displayName: () => t(OCA.Onlyoffice.AppName, 'Open in ONLYOFFICE'),
+					iconSvgInline: () => AppDarkSvg,
+					enabled: (files) => {
+						if (Permission.READ !== (files[0].permissions & Permission.READ)) { return false }
 
-				if (!OCA.Onlyoffice.setting.sameTab) {
-					button.target = '_blank'
-				}
+						return true
+					},
+					exec(file, view, dir) {
+						OCA.Onlyoffice.FileClickExec(file, view, dir, false)
+					},
+				}))
 
-				$('#preview').prepend(button)
 			} else {
 				OCA.Onlyoffice.frameSelector = '#onlyofficeFrame'
 				const container = document.createElement('div')
