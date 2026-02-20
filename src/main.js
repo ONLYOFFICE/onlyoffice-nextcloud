@@ -33,7 +33,6 @@
 
 import {
 	File,
-	FileAction,
 	getSidebar,
 	registerFileAction,
 	Permission,
@@ -590,7 +589,7 @@ import { loadState } from '@nextcloud/initial-state'
 				})
 			})
 		} else {
-			registerFileAction(new FileAction({
+			registerFileAction({
 				id: 'onlyoffice-open-def',
 				displayName: () => t(OCA.Onlyoffice.AppName, 'Open in ONLYOFFICE'),
 				iconSvgInline: () => AppDarkSvg,
@@ -608,9 +607,9 @@ import { loadState } from '@nextcloud/initial-state'
 				exec: OCA.Onlyoffice.FileClickExec,
 				default: DefaultType.HIDDEN,
 				order: -1,
-			}))
+			})
 
-			registerFileAction(new FileAction({
+			registerFileAction({
 				id: 'onlyoffice-open',
 				displayName: () => t(OCA.Onlyoffice.AppName, 'Open in ONLYOFFICE'),
 				iconSvgInline: () => AppDarkSvg,
@@ -627,9 +626,9 @@ import { loadState } from '@nextcloud/initial-state'
 				exec({ nodes, view, dir }) {
 					OCA.Onlyoffice.FileClickExec({ nodes, view, dir, isDefault: false })
 				},
-			}))
+			})
 
-			registerFileAction(new FileAction({
+			registerFileAction({
 				id: 'onlyoffice-convert',
 				displayName: () => t(OCA.Onlyoffice.AppName, 'Convert with ONLYOFFICE'),
 				iconSvgInline: () => AppDarkSvg,
@@ -653,9 +652,9 @@ import { loadState } from '@nextcloud/initial-state'
 					return true
 				},
 				exec: OCA.Onlyoffice.FileConvertClickExec,
-			}))
+			})
 
-			registerFileAction(new FileAction({
+			registerFileAction({
 				id: 'onlyoffice-create-form',
 				displayName: () => t(OCA.Onlyoffice.AppName, 'Create form'),
 				iconSvgInline: () => AppDarkSvg,
@@ -679,10 +678,10 @@ import { loadState } from '@nextcloud/initial-state'
 					return true
 				},
 				exec: OCA.Onlyoffice.CreateFormClickExec,
-			}))
+			})
 
 			if (!isPublicShare()) {
-				registerFileAction(new FileAction({
+				registerFileAction({
 					id: 'onlyoffice-download-as',
 					displayName: () => t(OCA.Onlyoffice.AppName, 'Download as'),
 					iconSvgInline: () => AppDarkSvg,
@@ -706,7 +705,7 @@ import { loadState } from '@nextcloud/initial-state'
 						return true
 					},
 					exec: OCA.Onlyoffice.DownloadClickExec,
-				}))
+				})
 			}
 		}
 	}
