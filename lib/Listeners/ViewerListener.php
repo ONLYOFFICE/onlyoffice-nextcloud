@@ -87,7 +87,7 @@ class ViewerListener implements IEventListener {
         if (!empty($this->appConfig->getDocumentServerUrl())
             && $this->appConfig->settingsAreSuccessful()
             && $this->appConfig->isUserAllowedToUse()) {
-            Util::addScript("onlyoffice", "onlyoffice-viewer", "viewer");
+            Util::addScript("onlyoffice", "onlyoffice-viewer", "viewer", true);
             Util::addScript("onlyoffice", "onlyoffice-listener", "viewer");
 
             Util::addStyle("onlyoffice", "viewer");
