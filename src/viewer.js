@@ -32,15 +32,11 @@
  * @param {object} OCA Nextcloud OCA object
  */
 (function(OCA) {
-	if (OCA.Onlyoffice) {
-		return
-	}
-
-	OCA.Onlyoffice = {
+	OCA.Onlyoffice = Object.assign({
 		AppName: 'onlyoffice',
 		frameSelector: null,
 		setting: {},
-	}
+	}, OCA.Onlyoffice || {})
 
 	OCA.Onlyoffice.setting = OCP.InitialState.loadState(OCA.Onlyoffice.AppName, 'settings')
 
@@ -83,7 +79,15 @@
 		},
 	}
 
-	if (OCA.Viewer) {
+	let viewerHandlerRegistered = false
+	const registerViewerHandler = function() {
+		if (viewerHandlerRegistered) {
+			return true
+		}
+		if (!(OCA.Viewer && typeof OCA.Viewer.registerHandler === 'function')) {
+			return false
+		}
+
 		OCA.Onlyoffice.frameSelector = '#onlyofficeViewerFrame'
 
 		const mimes = $.map(OCA.Onlyoffice.setting.formats, function(format) {
@@ -91,13 +95,30 @@
 				return format.mime
 			}
 		})
-		mimes.flat()
+			.flat()
+			.filter((mime) => typeof mime === 'string' && mime.length > 0)
+
 		OCA.Viewer.registerHandler({
 			id: OCA.Onlyoffice.AppName,
 			group: null,
 			mimes,
 			component: OnlyofficeViewerVue,
 		})
+
+		viewerHandlerRegistered = true
+		return true
+	}
+
+	if (!registerViewerHandler()) {
+		const waitRegister = (attempt = 0) => {
+			if (registerViewerHandler() || attempt >= 25) {
+				return
+			}
+
+			setTimeout(() => waitRegister(attempt + 1), 200)
+		}
+
+		waitRegister()
 	}
 
 })(OCA)
