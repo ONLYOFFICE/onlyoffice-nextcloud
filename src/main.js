@@ -66,14 +66,6 @@ import { loadState } from '@nextcloud/initial-state'
 	OCA.Onlyoffice.mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini|Macintosh/i.test(navigator.userAgent)
 							&& navigator.maxTouchPoints && navigator.maxTouchPoints > 1
 
-	OCA.Onlyoffice.CreateFile = function(name, fileList, templateId, targetId, open = true) {
-		const dir = fileList.getCurrentDirectory()
-
-		OCA.Onlyoffice.CreateFileProcess(name, dir, templateId, targetId, open, (response) => {
-			fileList.add(response, { animate: true })
-		})
-	}
-
 	OCA.Onlyoffice.CreateFileOverload = function(name, context, templateId, targetId, open = true, filesContext = null) {
 		if (!context.view) {
 			context.view = OCP.Files.Router._router.app.currentView
@@ -433,11 +425,7 @@ import { loadState } from '@nextcloud/initial-state'
 						}
 					})
 				}
-				if (filelist.getCurrentDirectory) {
-					OCA.Onlyoffice.CreateFile(name, filelist, 0, targetId)
-				} else {
-					OCA.Onlyoffice.CreateFileOverload(name, filelist, 0, targetId, true, filesContext)
-				}
+				OCA.Onlyoffice.CreateFileOverload(name, filelist, 0, targetId, true, filesContext)
 			},
 			false,
 			filterMimes,
