@@ -772,78 +772,6 @@ import { loadState } from '@nextcloud/initial-state'
 		}
 	}
 
-	OCA.Onlyoffice.NewFileMenu = {
-		attach(menu) {
-			const fileList = menu.fileList
-
-			if (fileList.id !== 'files' && fileList.id !== 'files.public') {
-				return
-			}
-
-			if (isPublicShare() && !OCA.Onlyoffice.isViewIsFile()) {
-				menu.addMenuEntry({
-					id: 'onlyofficeDocx',
-					displayName: t(OCA.Onlyoffice.AppName, 'New document'),
-					templateName: t(OCA.Onlyoffice.AppName, 'New document'),
-					iconClass: 'icon-onlyoffice-new-docx',
-					fileType: 'docx',
-					actionHandler(name) {
-						if (!isPublicShare() && OCA.Onlyoffice.TemplateExist('document')) {
-							OCA.Onlyoffice.OpenTemplatePicker(name, '.docx', 'document')
-						} else {
-							OCA.Onlyoffice.CreateFile(name + '.docx', fileList)
-						}
-					},
-				})
-
-				menu.addMenuEntry({
-					id: 'onlyofficeXlsx',
-					displayName: t(OCA.Onlyoffice.AppName, 'New spreadsheet'),
-					templateName: t(OCA.Onlyoffice.AppName, 'New spreadsheet'),
-					iconClass: 'icon-onlyoffice-new-xlsx',
-					fileType: 'xlsx',
-					actionHandler(name) {
-						if (!isPublicShare() && OCA.Onlyoffice.TemplateExist('spreadsheet')) {
-							OCA.Onlyoffice.OpenTemplatePicker(name, '.xlsx', 'spreadsheet')
-						} else {
-							OCA.Onlyoffice.CreateFile(name + '.xlsx', fileList)
-						}
-					},
-				})
-
-				menu.addMenuEntry({
-					id: 'onlyofficePpts',
-					displayName: t(OCA.Onlyoffice.AppName, 'New presentation'),
-					templateName: t(OCA.Onlyoffice.AppName, 'New presentation'),
-					iconClass: 'icon-onlyoffice-new-pptx',
-					fileType: 'pptx',
-					actionHandler(name) {
-						if (!isPublicShare() && OCA.Onlyoffice.TemplateExist('presentation')) {
-							OCA.Onlyoffice.OpenTemplatePicker(name, '.pptx', 'presentation')
-						} else {
-							OCA.Onlyoffice.CreateFile(name + '.pptx', fileList)
-						}
-					},
-				})
-
-				if (OCA.Onlyoffice.GetTemplates) {
-					OCA.Onlyoffice.GetTemplates()
-				}
-			}
-
-			menu.addMenuEntry({
-				id: 'onlyofficePdf',
-				displayName: t(OCA.Onlyoffice.AppName, 'New PDF form'),
-				templateName: t(OCA.Onlyoffice.AppName, 'New PDF form'),
-				iconClass: 'icon-onlyoffice-new-pdf',
-				fileType: 'pdf',
-				actionHandler(name) {
-					OCA.Onlyoffice.OpenFormPicker(name + '.pdf', fileList)
-				},
-			})
-		},
-	}
-
 	OCA.Onlyoffice.getFileExtension = function(fileName) {
 		const extension = fileName.substr(fileName.lastIndexOf('.') + 1).toLowerCase()
 		return extension
@@ -920,8 +848,6 @@ import { loadState } from '@nextcloud/initial-state'
 				$('body').addClass('onlyoffice-inline')
 			}
 		} else {
-			OC.Plugins.register('OCA.Files.NewFileMenu', OCA.Onlyoffice.NewFileMenu)
-
 			OCA.Onlyoffice.registerNewFileMenu()
 
 			OCA.Onlyoffice.registerAction()
