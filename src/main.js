@@ -273,17 +273,6 @@ import { loadState } from '@nextcloud/initial-state'
 		}
 	}
 
-	OCA.Onlyoffice.FileClick = function(fileName, context) {
-		const fileInfoModel = context.fileInfoModel || context.fileList.getModelForFile(fileName)
-		const fileId = context.fileId || (context.$file && context.$file[0].dataset.id) || fileInfoModel.id
-		const winEditor = !fileInfoModel && !OCA.Onlyoffice.setting.sameTab ? document : null
-
-		OCA.Onlyoffice.OpenEditor(fileId, context.dir, fileName, winEditor)
-
-		OCA.Onlyoffice.context = context
-		OCA.Onlyoffice.context.fileName = fileName
-	}
-
 	OCA.Onlyoffice.FileClickExec = async function(file, view, dir, isDefault = true) {
 		if (OCA.Onlyoffice.context !== null
 			&& document.querySelector('.onlyoffice-iframe-container')
@@ -299,18 +288,6 @@ import { loadState } from '@nextcloud/initial-state'
 		}
 
 		return null
-	}
-
-	OCA.Onlyoffice.FileConvertClick = function(fileName, context) {
-		const fileInfoModel = context.fileInfoModel || context.fileList.getModelForFile(fileName)
-		const fileList = context.fileList
-		const fileId = context.$file ? context.$file[0].dataset.id : fileInfoModel.id
-
-		OCA.Onlyoffice.FileConvert(fileId, (response) => {
-			if (response.parentId === fileList.dirInfo.id) {
-				fileList.add(response, { animate: true })
-			}
-		})
 	}
 
 	OCA.Onlyoffice.FileConvertClickExec = async function(file, view, dir) {
@@ -347,12 +324,6 @@ import { loadState } from '@nextcloud/initial-state'
 
 				OCP.Toast.success(t(OCA.Onlyoffice.AppName, 'File has been converted. Its content might look different.'))
 			})
-	}
-
-	OCA.Onlyoffice.DownloadClick = function(fileName, context) {
-		const fileId = context.fileInfoModel.id
-
-		OCA.Onlyoffice.Download(fileName, fileId)
 	}
 
 	OCA.Onlyoffice.DownloadClickExec = async function(file) {
@@ -476,14 +447,6 @@ import { loadState } from '@nextcloud/initial-state'
 			{
 				buttons,
 			})
-	}
-
-	OCA.Onlyoffice.CreateFormClick = function(fileName, context) {
-		const fileList = context.fileList
-		const name = fileName.replace(/\.[^.]+$/, '.pdf')
-		const targetId = context.fileInfoModel.id
-
-		OCA.Onlyoffice.CreateFile(name, fileList, 0, targetId, false)
 	}
 
 	OCA.Onlyoffice.CreateFormClickExec = async function(file, view, dir) {
