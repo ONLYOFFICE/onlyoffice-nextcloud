@@ -594,10 +594,6 @@ import { loadState } from '@nextcloud/initial-state'
 				OCA.Onlyoffice.OpenFormPicker(name + '.pdf', dirContext, context)
 			},
 		})
-
-		if (!isPublicShare() && OCA.Onlyoffice.GetTemplates) {
-			OCA.Onlyoffice.GetTemplates()
-		}
 	}
 
 	OCA.Onlyoffice.getFileExtension = function(fileName) {
