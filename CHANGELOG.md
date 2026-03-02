@@ -1,5 +1,8 @@
 # Change Log
 
+##
+## Changed
+
 ## 10.0.0
 ## Changed
 - compatible with Nextcloud 33

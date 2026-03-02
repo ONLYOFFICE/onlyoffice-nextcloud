@@ -39,6 +39,7 @@ Whether you’re working with internal teams or external collaborators, the ONLY
     <screenshot>https://raw.githubusercontent.com/ONLYOFFICE/onlyoffice-nextcloud/master/screenshots/open.png</screenshot>
     <screenshot>https://raw.githubusercontent.com/ONLYOFFICE/onlyoffice-nextcloud/master/screenshots/open_form.png</screenshot>
     <dependencies>
+        <php min-version="8.1" max-version="8.4"/>
         <nextcloud min-version="33" max-version="33"/>
     </dependencies>
     <settings>
