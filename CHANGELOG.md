@@ -2,6 +2,8 @@
 
 ##
 ## Changed
+- migrated from legacy hooks to event listeners
+- fixed opening editor for shared link
 
 ## 10.0.0
 ## Changed

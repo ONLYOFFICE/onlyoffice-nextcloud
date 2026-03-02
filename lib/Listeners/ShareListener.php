@@ -27,55 +27,39 @@
  *
  */
 
-namespace OCA\Onlyoffice;
+namespace OCA\Onlyoffice\Listeners;
 
-use OC\Files\Filesystem;
-use OC\Files\Node\File;
-use OCP\Util;
+use Exception;
+use OCA\Onlyoffice\ExtraPermissions;
+use OCP\EventDispatcher\Event;
+use OCP\EventDispatcher\IEventListener;
+use OCP\Share\Events\ShareDeletedEvent;
+use OCP\Share\IShare;
+use Psr\Log\LoggerInterface;
 
 /**
- * The class to handle the filesystem hooks
- *
- * @package OCA\Onlyoffice
+ * OCP\Share events listener
  */
-class Hooks {
+class ShareListener implements IEventListener {
 
-    public static function connectHooks() {
-        // Listen file version deletion
-        Util::connectHook("\OCP\Versions", "preDelete", Hooks::class, "fileVersionDelete");
+    public function __construct(
+        private readonly LoggerInterface $logger,
+    ) {}
+
+    public function handle(Event $event): void {
+        if ($event instanceof ShareDeletedEvent) {
+            $this->shareDeleted($event->getShare());
+        }
     }
 
-    /**
-     * Erase versions of deleted version of file
-     *
-     * @param array $params - hook param
-     */
-    public static function fileVersionDelete($params) {
-        $pathVersion = $params["path"];
-        if (empty($pathVersion)) {
-            return;
-        }
-
+    public function shareDeleted(IShare $share): void {
         try {
-            list($filePath, $versionId) = FileVersions::splitPathVersion($pathVersion);
-            if (empty($filePath)) {
-                return;
-            }
-            $fileInfo = Filesystem::getFileInfo($filePath);
-            if ($fileInfo === false) {
-                return;
-            }
-
-            $owner = $fileInfo->getOwner();
-            if (empty($owner)) {
-                return;
-            }
-            $ownerId = $owner->getUID();
-
-            FileVersions::deleteVersion($ownerId, $fileInfo, $versionId);
-            FileVersions::deleteAuthor($ownerId, $fileInfo, $versionId);
-        } catch (\Exception $e) {
-            \OCP\Log\logger('onlyoffice')->error("Hook: fileVersionDelete " . json_encode($params), ['exception' => $e]);
+            ExtraPermissions::delete($share->getId());
+        } catch (Exception $e) {
+            $this->logger->error(
+                "ShareDeletedEvent: deleting extra permissions for share {$share->getId()}",
+                ["exception" => $e]
+            );
         }
     }
 }

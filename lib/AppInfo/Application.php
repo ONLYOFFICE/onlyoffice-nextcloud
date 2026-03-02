@@ -51,6 +51,7 @@ use OCP\Notification\IManager;
 use OCP\Security\CSP\AddContentSecurityPolicyEvent;
 use OCA\Files\Event\LoadAdditionalScriptsEvent;
 use OCA\Files_Sharing\Event\BeforeTemplateRenderedEvent;
+use OCA\Files_Versions\Events\VersionRestoredEvent;
 use OCA\Viewer\Event\LoadViewer;
 use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\Controller\CallbackController;
@@ -71,10 +72,18 @@ use OCA\Onlyoffice\Events\DocumentUnsavedEvent;
 use OCA\Onlyoffice\Hooks;
 use OCA\Onlyoffice\Listeners\ContentSecurityPolicyListener;
 use OCA\Onlyoffice\Listeners\DocumentUnsavedListener;
+use OCA\Onlyoffice\Listeners\FileListener;
+use OCA\Onlyoffice\Listeners\FileVersionsListener;
+use OCA\Onlyoffice\Listeners\ShareListener;
+use OCA\Onlyoffice\Listeners\UserListener;
 use OCA\Onlyoffice\Notifier;
 use OCA\Onlyoffice\Preview;
 use OCA\Onlyoffice\TemplateProvider;
 use OCA\Onlyoffice\SettingsData;
+use OCP\Files\Events\Node\NodeDeletedEvent;
+use OCP\Files\Events\Node\NodeWrittenEvent;
+use OCP\Share\Events\ShareDeletedEvent;
+use OCP\User\Events\UserDeletedEvent;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 
@@ -103,6 +112,11 @@ class Application extends App implements IBootstrap {
         $context->registerEventListener(BeforeTemplateRenderedEvent::class, FileSharingListener::class);
         $context->registerEventListener(HttpBeforeTemplateRenderedEvent::class, WidgetListener::class);
         $context->registerEventListener(DocumentUnsavedEvent::class, DocumentUnsavedListener::class);
+        $context->registerEventListener(NodeDeletedEvent::class, FileListener::class);
+        $context->registerEventListener(NodeWrittenEvent::class, FileListener::class);
+        $context->registerEventListener(ShareDeletedEvent::class, ShareListener::class);
+        $context->registerEventListener(UserDeletedEvent::class, UserListener::class);
+        $context->registerEventListener(VersionRestoredEvent::class, FileVersionsListener::class);
 
         if (interface_exists("OCP\Files\Template\ICustomTemplateProvider")) {
             $context->registerTemplateProvider(TemplateProvider::class);
