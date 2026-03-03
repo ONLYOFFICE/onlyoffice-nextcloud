@@ -54,6 +54,7 @@ jobs:
           rm ./phpunit.xml
           rm ./playwright.config.ts
           rm ./psalm.xml
+          rm ./tsconfig.json
           cd $cwd
           tar -czvf onlyoffice.tar.gz onlyoffice
       - name: Upload Artifact
