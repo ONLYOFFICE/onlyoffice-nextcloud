@@ -2,7 +2,7 @@
 
 ##
 ## Changed
-- updated PHP codebase to Nextcloud 32 API
+- updated PHP codebase to Nextcloud 33 API
 - adopted PHP 8.1 syntax
 - improved PHP type coverage
 - removed unused PHP code

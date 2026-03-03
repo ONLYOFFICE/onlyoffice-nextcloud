@@ -69,7 +69,7 @@ class RemoteInstance {
      *
      * @return array
      */
-    private static function get(string $remote): ?array {
+    private static function get(string $remote): array {
         $connection = Server::get(IDBConnection::class);
         $select = $connection->prepare("
             SELECT remote, expire, status
@@ -77,8 +77,9 @@ class RemoteInstance {
             WHERE `remote` = ?
         ");
         $result = $select->execute([$remote]);
+        $row = $result->fetchAssociative();
 
-        return $result->fetch();
+        return $row === false ? [] : $row;
     }
 
     /**

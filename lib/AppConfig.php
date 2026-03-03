@@ -38,6 +38,7 @@ use OCP\ICacheFactory;
 use OCP\IConfig;
 use Psr\Log\LoggerInterface;
 use OCA\Onlyoffice\AppInfo\Application;
+use OCP\Config\IUserConfig;
 use OCP\IAppConfig;
 
 /**
@@ -299,6 +300,7 @@ class AppConfig {
         private readonly string $appName,
         private readonly IAppConfig $appConfig,
         private readonly IConfig $config,
+        private readonly IUserConfig $userConfig,
         private readonly LoggerInterface $logger,
         ICacheFactory $cacheFactory,
     ) {
@@ -908,7 +910,7 @@ class AppConfig {
             $user = \OCP\Server::get(\OCP\IUserSession::class)->getUser();
 
             if ($user !== null) {
-                $themingMode = $this->config->getUserValue($user->getUID(), "theming", "enabled-themes", "");
+                $themingMode = $this->userConfig->getValueString($user->getUID(), "theming", "enabled-themes", "");
 
                 if ($themingMode !== "") {
                     try {
