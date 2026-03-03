@@ -32,9 +32,9 @@ namespace OCA\Onlyoffice\Listeners;
 
 use OCA\Onlyoffice\AppInfo\Application;
 use OCA\Onlyoffice\Events\DocumentUnsavedEvent;
+use OCP\Config\IUserConfig;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
-use OCP\IConfig;
 use OCP\L10N\IFactory;
 use OCP\Notification\IManager as NotificationIManager;
 use OCP\Notification\IncompleteNotificationException;
@@ -53,7 +53,7 @@ class DocumentUnsavedListener implements IEventListener {
     private $trans;
     
     public function __construct(
-        private readonly IConfig $config,
+        private readonly IUserConfig $userConfig,
         private readonly LoggerInterface $logger,
         private readonly NotificationIManager $notificationManager,
         private readonly IFactory $l10nFactory,
@@ -64,7 +64,7 @@ class DocumentUnsavedListener implements IEventListener {
             return;
         }
 
-        $lang = $this->config->getUserValue($event->getUserId(), 'core', 'lang', 'en');
+        $lang = $this->userConfig->getValueString($event->getUserId(), 'core', 'lang', 'en');
         $this->trans = $this->l10nFactory->get(Application::class, $lang);
         $this->notifySender($event->getUserId(), $event->getFileId(), $event->getFileName());
     }
