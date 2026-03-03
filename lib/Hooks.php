@@ -30,7 +30,6 @@
 namespace OCA\Onlyoffice;
 
 use OC\Files\Filesystem;
-use OC\Files\Node\File;
 use OCP\Util;
 
 /**
@@ -50,14 +49,14 @@ class Hooks {
      *
      * @param array $params - hook param
      */
-    public static function fileVersionDelete($params) {
+    public static function fileVersionDelete(array $params): void {
         $pathVersion = $params["path"];
         if (empty($pathVersion)) {
             return;
         }
 
         try {
-            list($filePath, $versionId) = FileVersions::splitPathVersion($pathVersion);
+            [$filePath, $versionId] = FileVersions::splitPathVersion($pathVersion);
             if (empty($filePath)) {
                 return;
             }

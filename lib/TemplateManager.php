@@ -30,7 +30,12 @@
 namespace OCA\Onlyoffice;
 
 use OCP\Files\File;
+use OCP\Files\Folder;
+use OCP\Files\IRootFolder;
 use OCP\Files\NotFoundException;
+use OCP\IConfig;
+use OCP\L10N\IFactory;
+use OCP\Server;
 
 /**
  * Template manager
@@ -41,33 +46,27 @@ class TemplateManager {
 
     /**
      * Application name
-     *
-     * @var string
      */
-    private static $appName = "onlyoffice";
+    private static string $appName = "onlyoffice";
 
     /**
      * Template folder name
-     *
-     * @var string
      */
-    private static $templateFolderName = "template";
+    private static string $templateFolderName = "template";
 
     /**
      * Get global template directory
-     *
-     * @return Folder
      */
-    public static function getGlobalTemplateDir() {
-        $dirPath = "appdata_" . \OC::$server->getConfig()->getSystemValue("instanceid", null)
+    public static function getGlobalTemplateDir(): Folder {
+        $dirPath = "appdata_" . Server::get(IConfig::class)->getSystemValue("instanceid", null)
                                 . "/" . self::$appName
                                 . "/" . self::$templateFolderName;
 
-        $rootFolder = \OC::$server->getRootFolder();
+        $rootFolder = Server::get(IRootFolder::class);
         $templateDir = null;
         try {
             $templateDir = $rootFolder->get($dirPath);
-        } catch (NotFoundException $e) {
+        } catch (NotFoundException) {
             $templateDir = $rootFolder->newFolder($dirPath);
         }
 
@@ -81,7 +80,7 @@ class TemplateManager {
      *
      * @return array
      */
-    public static function getGlobalTemplates($mimetype = null) {
+    public static function getGlobalTemplates(?string $mimetype = null): array {
         $templateDir = self::getGlobalTemplateDir();
 
         $templatesList = $templateDir->getDirectoryListing();
@@ -95,12 +94,8 @@ class TemplateManager {
 
     /**
      * Get template file
-     *
-     * @param string $templateId - identifier of the template
-     *
-     * @return File
      */
-    public static function getTemplate($templateId) {
+    public static function getTemplate(int $templateId): ?File {
         $logger = \OCP\Log\logger('onlyoffice');
 
         if (empty($templateId)) {
@@ -125,99 +120,62 @@ class TemplateManager {
 
     /**
      * Get type template from mimetype
-     *
-     * @param string $mime - mimetype
-     *
-     * @return string
      */
-    public static function getTypeTemplate($mime) {
-        switch ($mime) {
-            case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-                return "document";
-            case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
-                return "spreadsheet";
-            case "application/vnd.openxmlformats-officedocument.presentationml.presentation":
-                return "presentation";
-        }
-
-        return "";
+    public static function getTypeTemplate(string $mime): string
+    {
+        return match ($mime) {
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document" => "document",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" => "spreadsheet",
+            "application/vnd.openxmlformats-officedocument.presentationml.presentation" => "presentation",
+            default => "",
+        };
     }
 
     /**
      * Get mimetype template from format type
-     *
-     * @param string $type - format type
-     *
-     * @return string
      */
-    public static function getMimeTemplate($type) {
-        switch ($type) {
-            case "document":
-                return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-            case "spreadsheet":
-                return "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-            case "presentation":
-                return "application/vnd.openxmlformats-officedocument.presentationml.presentation";
-        }
-
-        return "";
+    public static function getMimeTemplate(string $type): string
+    {
+        return match ($type) {
+            "document" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            "spreadsheet" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            "presentation" => "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+            default => "",
+        };
     }
 
     /**
      * Check template type
-     *
-     * @param string $name - template name
-     *
-     * @return bool
      */
-    public static function isTemplateType($name) {
+    public static function isTemplateType(string $name): bool {
         $ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
-        switch ($ext) {
-            case "docx":
-            case "xlsx":
-            case "pptx":
-                return true;
-        }
-
-        return false;
+        return match ($ext) {
+            "docx", "xlsx", "pptx" => true,
+            default => false,
+        };
     }
 
     /**
      * Check file if it's template
-     *
-     * @param int $fileId - identifier file
-     *
-     * @return bool
      */
-    public static function isTemplate($fileId) {
+    public static function isTemplate(int $fileId): bool {
         $template = self::getTemplate($fileId);
-
-        if (empty($template)) {
-            return false;
-        }
-
-        return true;
+        return !empty($template);
     }
 
     /**
-     * Get template
-     *
-     * @param string $name - file name
-     *
-     * @return string
+     * Get template by file name
      */
-    public static function getEmptyTemplate($name) {
+    public static function getEmptyTemplate(string $name): false|string {
         $ext = strtolower("." . pathinfo($name, PATHINFO_EXTENSION));
 
-        $lang = \OC::$server->getL10NFactory("")->get("")->getLanguageCode();
+        $lang = Server::get(IFactory::class)->get("")->getLanguageCode();
 
         $templatePath = self::getEmptyTemplatePath($lang, $ext);
         if (!file_exists($templatePath)) {
             return false;
         }
-
-        $template = file_get_contents($templatePath);
-        return $template;
+        return file_get_contents($templatePath);
     }
 
     /**
@@ -225,10 +183,8 @@ class TemplateManager {
      *
      * @param string $lang - language
      * @param string $ext - file extension
-     *
-     * @return string
      */
-    public static function getEmptyTemplatePath($lang, $ext) {
+    public static function getEmptyTemplatePath(string $lang, string $ext): string {
         if (!array_key_exists($lang, self::$localPath)) {
             $lang = "default";
         }
@@ -238,10 +194,8 @@ class TemplateManager {
 
     /**
      * Mapping local path to templates
-     *
-     * @var Array
      */
-    private static $localPath = [
+    private static array $localPath = [
         "ar" => "ar-SA",
         "az" => "az-Latn-AZ",
         "bg" => "bg-BG",

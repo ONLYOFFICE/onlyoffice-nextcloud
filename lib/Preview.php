@@ -32,18 +32,14 @@ namespace OCA\Onlyoffice;
 use OC\Files\View;
 use OCA\Files_Sharing\External\Storage as SharingExternalStorage;
 use OCA\Files_Versions\Versions\IVersionManager;
-use OCP\AppFramework\QueryException;
 use OCP\Files\File;
 use OCP\IImage;
 use OCP\Files\FileInfo;
 use OCP\Files\IRootFolder;
-use OCP\IL10N;
 use OCP\Image;
-use OCP\ISession;
 use OCP\IURLGenerator;
 use OCP\IUser;
 use OCP\Preview\IProviderV2;
-use OCP\Share\IManager;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -54,74 +50,9 @@ use Psr\Log\LoggerInterface;
 class Preview implements IProviderV2 {
 
     /**
-     * Application name
-     *
-     * @var string
-     */
-    private $appName;
-
-    /**
-     * Root folder
-     *
-     * @var IRootFolder
-     */
-    private $root;
-
-    /**
-     * Logger
-     *
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
-     * l10n service
-     *
-     * @var IL10N
-     */
-    private $trans;
-
-    /**
-     * Application configuration
-     *
-     * @var AppConfig
-     */
-    private $config;
-
-    /**
-     * Url generator service
-     *
-     * @var IURLGenerator
-     */
-    private $urlGenerator;
-
-    /**
-     * Hash generator
-     *
-     * @var Crypt
-     */
-    private $crypt;
-
-    /**
-     * File version manager
-     *
-     * @var IVersionManager
-     */
-    private $versionManager;
-
-    /**
-     * File utility
-     *
-     * @var FileUtility
-     */
-    private $fileUtility;
-
-    /**
      * Capabilities mimetype
-     *
-     * @var Array
      */
-    public static $capabilities = [
+    public static array $capabilities = [
         "text/csv",
         "application/msword",
         "application/vnd.ms-word.document.macroEnabled.12",
@@ -159,94 +90,58 @@ class Preview implements IProviderV2 {
      */
     private const THUMBEXTENSION = "jpeg";
 
-    /**
-     * @param string $appName - application name
-     * @param IRootFolder $root - root folder
-     * @param LoggerInterface $logger - logger
-     * @param IL10N $trans - l10n service
-     * @param AppConfig $config - application configuration
-     * @param IURLGenerator $urlGenerator - url generator service
-     * @param Crypt $crypt - hash generator
-     * @param IManager $shareManager - share manager
-     * @param ISession $session - session
-     */
     public function __construct(
-        string $appName,
-        IRootFolder $root,
-        LoggerInterface $logger,
-        IL10N $trans,
-        AppConfig $config,
-        IURLGenerator $urlGenerator,
-        Crypt $crypt,
-        IManager $shareManager,
-        ISession $session
-    ) {
-        $this->appName = $appName;
-        $this->root = $root;
-        $this->logger = $logger;
-        $this->trans = $trans;
-        $this->config = $config;
-        $this->urlGenerator = $urlGenerator;
-        $this->crypt = $crypt;
-
-        if (\OC::$server->getAppManager()->isInstalled("files_versions")) {
-            try {
-                $this->versionManager = \OC::$server->query(IVersionManager::class);
-            } catch (QueryException $e) {
-                $this->logger->error("VersionManager init error", ["exception" => $e]);
-            }
-        }
-
-        $this->fileUtility = new FileUtility($appName, $trans, $logger, $config, $shareManager, $session);
-    }
+        private readonly string $appName,
+        private readonly IRootFolder $root,
+        private readonly LoggerInterface $logger,
+        private readonly AppConfig $appConfig,
+        private readonly IURLGenerator $urlGenerator,
+        private readonly Crypt $crypt,
+        private readonly FileUtility $fileUtility,
+        private readonly DocumentService $documentService,
+        private readonly ?IVersionManager $versionManager
+    ) {}
 
     /**
      * Return mime type
      */
-    public static function getMimeTypeRegex() {
+    public static function getMimeTypeRegex(): string {
         $mimeTypeRegex = "";
         foreach (self::$capabilities as $format) {
             if (!empty($mimeTypeRegex)) {
-                $mimeTypeRegex = $mimeTypeRegex . "|";
+                $mimeTypeRegex .= "|";
             }
-            $mimeTypeRegex = $mimeTypeRegex . str_replace("/", "\/", $format);
+            $mimeTypeRegex .= str_replace("/", "\/", $format);
         }
-        $mimeTypeRegex = "/" . $mimeTypeRegex . "/";
 
-        return $mimeTypeRegex;
+        return "/" . $mimeTypeRegex . "/";
     }
 
     /**
      * Return mime type
      */
     public function getMimeType(): string {
-        $m = self::getMimeTypeRegex();
-        return $m;
+        return self::getMimeTypeRegex();
     }
 
     /**
      * The method checks if the file can be converted
      *
      * @param FileInfo $file - File
-     *
-     * @return bool
      */
     public function isAvailable(FileInfo $file): bool {
-        if ($this->config->getPreview() !== true) {
+        if (!$this->appConfig->getPreview()) {
             return false;
         }
         if (!$file
             || $file->getSize() === 0
-            || $file->getSize() > $this->config->getLimitThumbSize()) {
+            || $file->getSize() > $this->appConfig->getLimitThumbSize()) {
             return false;
         }
         if (!in_array($file->getMimetype(), self::$capabilities, true)) {
             return false;
         }
-        if ($file->getStorage()->instanceOfStorage(SharingExternalStorage::class)) {
-            return false;
-        }
-        return true;
+        return !$file->getStorage()->instanceOfStorage(SharingExternalStorage::class);
     }
 
     /**
@@ -261,16 +156,15 @@ class Preview implements IProviderV2 {
         }
 
         $imageUrl = null;
-        $documentService = new DocumentService($this->trans, $this->config);
         try {
-            $imageUrl = $documentService->getConvertedUri($fileUrl, $extension, self::THUMBEXTENSION, $key);
+            $imageUrl = $this->documentService->getConvertedUri($fileUrl, $extension, self::THUMBEXTENSION, $key);
         } catch (\Exception $e) {
             $this->logger->error("getConvertedUri: from $extension to " . self::THUMBEXTENSION, ["exception" => $e]);
             return null;
         }
 
         try {
-            $thumbnail = $documentService->request($imageUrl);
+            $thumbnail = $this->documentService->request($imageUrl);
         } catch (\Exception $e) {
             $this->logger->error("Failed to download thumbnail", ["exception" => $e]);
             return null;
@@ -294,8 +188,6 @@ class Preview implements IProviderV2 {
      * @param IUser $user - user with access
      * @param int $version - file version
      * @param bool $template - file is template
-     *
-     * @return string
      */
     private function getUrl(File $file, ?IUser $user, int $version = 0, bool $template = false): string {
 
@@ -305,7 +197,7 @@ class Preview implements IProviderV2 {
         ];
 
         $userId = null;
-        if (!empty($user)) {
+        if ($user instanceof IUser) {
             $userId = $user->getUID();
             $data["userId"] = $userId;
         }
@@ -320,8 +212,8 @@ class Preview implements IProviderV2 {
 
         $fileUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.download", ["doc" => $hashUrl]);
 
-        if (!$this->config->useDemo() && !empty($this->config->getStorageUrl())) {
-            $fileUrl = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->config->getStorageUrl(), $fileUrl);
+        if (!$this->appConfig->useDemo() && !empty($this->appConfig->getStorageUrl())) {
+            $fileUrl = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->appConfig->getStorageUrl(), $fileUrl);
         }
 
         return $fileUrl;
@@ -331,8 +223,6 @@ class Preview implements IProviderV2 {
      * Generate array with file parameters
      *
      * @param File $file - file
-     *
-     * @return array
      */
     private function getFileParam(File $file): array {
         if ($file->getType() !== FileInfo::TYPE_FILE || $file->getSize() === 0) {
@@ -363,10 +253,10 @@ class Preview implements IProviderV2 {
             $versions = FileVersions::processVersionsArray($this->versionManager->getVersionsForFile($owner, $file));
 
             foreach ($versions as $version) {
-                $versionNum = $versionNum + 1;
+                $versionNum += 1;
 
                 $versionId = $version->getRevisionId();
-                if (strcmp($versionId, $fileVersion) === 0) {
+                if (strcmp((string) $versionId, (string) $fileVersion) === 0) {
                     $key = $this->fileUtility->getVersionKey($version);
                     $key = DocumentService::generateRevisionId($key);
 

@@ -29,6 +29,10 @@
 
 namespace OCA\Onlyoffice;
 
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+use UnexpectedValueException;
+
 /**
  * Token generator
  *
@@ -36,47 +40,31 @@ namespace OCA\Onlyoffice;
  */
 class Crypt {
 
-    /**
-     * Application configuration
-     *
-     * @var AppConfig
-     */
-    private $config;
-
-    /**
-     * @param AppConfig $config - application configutarion
-     */
-    public function __construct(AppConfig $appConfig) {
-        $this->config = $appConfig;
-    }
+    public function __construct(private readonly AppConfig $appConfig) {}
 
     /**
      * Generate token for the object
      *
      * @param array $object - object to signature
-     *
-     * @return string
      */
-    public function getHash($object) {
-        return \Firebase\JWT\JWT::encode($object, $this->config->getSKey(), "HS256");
+    public function getHash(array $object): string {
+        return JWT::encode($object, $this->appConfig->getSKey(), "HS256");
     }
 
     /**
      * Create an object from the token
      *
      * @param string $token - token
-     *
-     * @return array
      */
-    public function readHash($token) {
+    public function readHash(string $token): array {
         $result = null;
         $error = null;
-        if ($token === null) {
+        if ($token === "") {
             return [$result, "token is empty"];
         }
         try {
-            $result = \Firebase\JWT\JWT::decode($token, new \Firebase\JWT\Key($this->config->getSKey(), "HS256"));
-        } catch (\UnexpectedValueException $e) {
+            $result = JWT::decode($token, new Key($this->appConfig->getSKey(), "HS256"));
+        } catch (UnexpectedValueException $e) {
             $error = $e->getMessage();
         }
         return [$result, $error];

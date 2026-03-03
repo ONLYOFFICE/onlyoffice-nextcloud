@@ -29,45 +29,29 @@
 
 namespace OCA\Onlyoffice\AppInfo;
 
-use OC\EventDispatcher\SymfonyAdapter;
 use OCP\AppFramework\App;
 use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
 use OCP\AppFramework\Http\Events\BeforeTemplateRenderedEvent as HttpBeforeTemplateRenderedEvent;
-use OCP\BackgroundJob\IJobList;
 use OCP\DirectEditing\RegisterDirectEditorEvent;
 use OCP\Files\Template\FileCreatedFromTemplateEvent;
 use OCP\Files\Template\ITemplateManager;
 use OCP\Files\Template\TemplateFileCreator;
-use OCP\Files\IMimeTypeDetector;
-use OCP\Files\Lock\ILockManager;
 use OCP\IL10N;
-use OCP\IPreview;
-use OCP\ITagManager;
-use OCP\Preview\IMimeIconProvider;
-use OCP\Mail\IMailer;
-use OCP\Notification\IManager;
 use OCP\Security\CSP\AddContentSecurityPolicyEvent;
 use OCA\Files\Event\LoadAdditionalScriptsEvent;
 use OCA\Files_Sharing\Event\BeforeTemplateRenderedEvent;
 use OCA\Files_Versions\Events\VersionRestoredEvent;
 use OCA\Viewer\Event\LoadViewer;
 use OCA\Onlyoffice\AppConfig;
-use OCA\Onlyoffice\Controller\CallbackController;
-use OCA\Onlyoffice\Controller\EditorController;
-use OCA\Onlyoffice\Controller\EditorApiController;
 use OCA\Onlyoffice\Controller\JobListController;
-use OCA\Onlyoffice\Controller\SharingApiController;
-use OCA\Onlyoffice\Controller\SettingsController;
-use OCA\Onlyoffice\Controller\TemplateController;
 use OCA\Onlyoffice\Listeners\CreateFromTemplateListener;
 use OCA\Onlyoffice\Listeners\FilesListener;
 use OCA\Onlyoffice\Listeners\FileSharingListener;
 use OCA\Onlyoffice\Listeners\DirectEditorListener;
 use OCA\Onlyoffice\Listeners\ViewerListener;
 use OCA\Onlyoffice\Listeners\WidgetListener;
-use OCA\Onlyoffice\DirectEditor;
 use OCA\Onlyoffice\Events\DocumentUnsavedEvent;
 use OCA\Onlyoffice\Hooks;
 use OCA\Onlyoffice\Listeners\ContentSecurityPolicyListener;
@@ -79,23 +63,21 @@ use OCA\Onlyoffice\Listeners\UserListener;
 use OCA\Onlyoffice\Notifier;
 use OCA\Onlyoffice\Preview;
 use OCA\Onlyoffice\TemplateProvider;
-use OCA\Onlyoffice\SettingsData;
 use OCP\Files\Events\Node\NodeDeletedEvent;
 use OCP\Files\Events\Node\NodeWrittenEvent;
 use OCP\Share\Events\ShareDeletedEvent;
 use OCP\User\Events\UserDeletedEvent;
-use Psr\Container\ContainerInterface;
-use Psr\Log\LoggerInterface;
+use OCP\Server;
 
 class Application extends App implements IBootstrap {
     public const APP_ID = "onlyoffice";
 
-    private AppConfig $appConfig;
+    private readonly AppConfig $appConfig;
 
     public function __construct(array $urlParams = []) {
         parent::__construct(self::APP_ID, $urlParams);
 
-        $this->appConfig = \OCP\Server::get(AppConfig::class);
+        $this->appConfig = Server::get(AppConfig::class);
     }
 
     public function register(IRegistrationContext $context): void {
@@ -118,43 +100,24 @@ class Application extends App implements IBootstrap {
         $context->registerEventListener(UserDeletedEvent::class, UserListener::class);
         $context->registerEventListener(VersionRestoredEvent::class, FileVersionsListener::class);
 
-        if (interface_exists("OCP\Files\Template\ICustomTemplateProvider")) {
+        if (interface_exists(\OCP\Files\Template\ICustomTemplateProvider::class)) {
             $context->registerTemplateProvider(TemplateProvider::class);
         }
 
-        $container = $this->getContainer();
+        $context->registerPreviewProvider(Preview::class, Preview::getMimeTypeRegex());
+        $context->registerNotifierService(Notifier::class);
 
-        $previewManager = $container->query(IPreview::class);
-        $previewManager->registerProvider(Preview::getMimeTypeRegex(), function () use ($container) {
-            return $container->query(Preview::class);
-        });
-
-        $detector = $container->query(IMimeTypeDetector::class);
-        $detector->getAllMappings();
-
-        $checkBackgroundJobs = new JobListController(
-            $container->query("AppName"),
-            $container->query("Request"),
-            $this->appConfig,
-            $container->query(IJobList::class)
-        );
-        $checkBackgroundJobs->checkAllJobs();
-
+        Server::get(JobListController::class)->checkAllJobs();
         Hooks::connectHooks();
     }
 
     public function boot(IBootContext $context): void {
-
-        $context->injectFn(function (IManager $notificationsManager) {
-            $notificationsManager->registerNotifierService(Notifier::class);
-        });
-
-        if (class_exists("OCP\Files\Template\TemplateFileCreator")) {
-            $context->injectFn(function (ITemplateManager $templateManager, IL10N $trans, $appName) {
+        if (class_exists(TemplateFileCreator::class)) {
+            $context->injectFn(function (ITemplateManager $templateManager, IL10N $trans, $appName): void {
                 if (!empty($this->appConfig->getDocumentServerUrl())
                     && $this->appConfig->settingsAreSuccessful()
                     && $this->appConfig->isUserAllowedToUse()) {
-                    $templateManager->registerTemplateFileCreator(function () use ($appName, $trans) {
+                    $templateManager->registerTemplateFileCreator(function () use ($appName, $trans): TemplateFileCreator {
                         $wordTemplate = new TemplateFileCreator($appName, $trans->t("New document"), ".docx");
                         $wordTemplate->addMimetype("application/vnd.openxmlformats-officedocument.wordprocessingml.document");
                         $wordTemplate->setIconSvgInline(file_get_contents(__DIR__ . '/../../img/new-docx.svg'));
@@ -162,7 +125,7 @@ class Application extends App implements IBootstrap {
                         return $wordTemplate;
                     });
 
-                    $templateManager->registerTemplateFileCreator(function () use ($appName, $trans) {
+                    $templateManager->registerTemplateFileCreator(function () use ($appName, $trans): TemplateFileCreator {
                         $cellTemplate = new TemplateFileCreator($appName, $trans->t("New spreadsheet"), ".xlsx");
                         $cellTemplate->addMimetype("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
                         $cellTemplate->setIconSvgInline(file_get_contents(__DIR__ . '/../../img/new-xlsx.svg'));
@@ -170,7 +133,7 @@ class Application extends App implements IBootstrap {
                         return $cellTemplate;
                     });
 
-                    $templateManager->registerTemplateFileCreator(function () use ($appName, $trans) {
+                    $templateManager->registerTemplateFileCreator(function () use ($appName, $trans): TemplateFileCreator {
                         $slideTemplate = new TemplateFileCreator($appName, $trans->t("New presentation"), ".pptx");
                         $slideTemplate->addMimetype("application/vnd.openxmlformats-officedocument.presentationml.presentation");
                         $slideTemplate->setIconSvgInline(file_get_contents(__DIR__ . '/../../img/new-pptx.svg'));

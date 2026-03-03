@@ -31,6 +31,7 @@ namespace OCA\Onlyoffice;
 
 use OCP\DirectEditing\ACreateEmpty;
 use OCP\Files\File;
+use OCP\Files\NotPermittedException;
 use OCP\IL10N;
 use Psr\Log\LoggerInterface;
 
@@ -41,56 +42,15 @@ use Psr\Log\LoggerInterface;
  */
 class FileCreator extends ACreateEmpty {
 
-    /**
-     * Application name
-     *
-     * @var string
-     */
-    private $appName;
-
-    /**
-     * l10n service
-     *
-     * @var IL10N
-     */
-    private $trans;
-
-    /**
-     * Logger
-     *
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
-     * Format for creation
-     *
-     * @var string
-     */
-    private $format;
-
-    /**
-     * @param string $AppName - application name
-     * @param IL10N $trans - l10n service
-     * @param LoggerInterface $logger - logger
-     * @param string $format - format for creation
-     */
     public function __construct(
-        $AppName,
-        IL10N $trans,
-        LoggerInterface $logger,
-        $format
-    ) {
-        $this->appName = $AppName;
-        $this->trans = $trans;
-        $this->logger = $logger;
-        $this->format = $format;
-    }
+        private readonly string $appName,
+        private readonly IL10N $trans,
+        private readonly LoggerInterface $logger,
+        private readonly string $format
+    ) {}
 
     /**
      * Unique id for the creator to filter templates
-     *
-     * @return string
      */
     public function getId(): string {
         return $this->appName . "_" . $this->format;
@@ -98,23 +58,18 @@ class FileCreator extends ACreateEmpty {
 
     /**
      * Descriptive name for the create action
-     *
-     * @return string
      */
-    public function getName(): string {
-        switch ($this->format) {
-            case "xlsx":
-                return $this->trans->t("New spreadsheet");
-            case "pptx":
-                return $this->trans->t("New presentation");
-        }
-        return $this->trans->t("New document");
+    public function getName(): string
+    {
+        return match ($this->format) {
+            "xlsx" => $this->trans->t("New spreadsheet"),
+            "pptx" => $this->trans->t("New presentation"),
+            default => $this->trans->t("New document"),
+        };
     }
 
     /**
      * Default file extension for the new file
-     *
-     * @return string
      */
     public function getExtension(): string {
         return $this->format;
@@ -125,14 +80,13 @@ class FileCreator extends ACreateEmpty {
      *
      * @return array
      */
-    public function getMimetype(): string {
-        switch ($this->format) {
-            case "xlsx":
-                return "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-            case "pptx":
-                return "application/vnd.openxmlformats-officedocument.presentationml.presentation";
-        }
-        return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+    public function getMimetype(): string
+    {
+        return match ($this->format) {
+            "xlsx" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            "pptx" => "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+            default => "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        };
     }
 
     /**
@@ -142,7 +96,7 @@ class FileCreator extends ACreateEmpty {
      * @param string $creatorId - creator id
      * @param string $templateId - teamplate id
      */
-    public function create(File $file, string $creatorId = null, string $templateId = null): void {
+    public function create(File $file, ?string $creatorId = null, ?string $templateId = null): void {
         $this->logger->debug("FileCreator: " . $file->getId() . " " . $file->getName() . " $creatorId $templateId");
 
         $fileName = $file->getName();

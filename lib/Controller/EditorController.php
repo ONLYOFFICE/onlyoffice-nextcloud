@@ -30,7 +30,10 @@
 namespace OCA\Onlyoffice\Controller;
 
 use OCA\Files\Helper;
+use OCA\Files_Sharing\SharedStorage;
 use OCA\Files_Versions\Versions\IVersionManager;
+use OCA\GroupFolders\Folder\FolderManager;
+use OCA\GroupFolders\Mount\GroupFolderStorage;
 use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\Crypt;
 use OCA\Onlyoffice\DocumentService;
@@ -42,30 +45,28 @@ use OCA\Onlyoffice\TemplateManager;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\ContentSecurityPolicy;
 use OCP\AppFramework\Http\DataDownloadResponse;
+use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Http\RedirectResponse;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
 use OCP\AppFramework\Http\Attribute\PublicPage;
 use OCP\AppFramework\Http\Template\PublicTemplateResponse;
 use OCP\AppFramework\Http\TemplateResponse;
-use OCP\AppFramework\QueryException;
 use OCP\Constants;
 use OCP\Files\File;
 use OCP\Files\IRootFolder;
 use OCP\Files\NotPermittedException;
 use OCP\IAvatarManager;
-use OCP\Mail\IMailer;
 use OCP\IGroupManager;
 use OCP\IL10N;
 use OCP\IRequest;
-use OCP\ISession;
 use OCP\IURLGenerator;
 use OCP\IUser;
 use OCP\IUserManager;
 use OCP\IUserSession;
+use OCP\Server;
 use OCP\Share\IManager;
 use OCP\Share\IShare;
-use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -73,179 +74,28 @@ use Psr\Log\LoggerInterface;
  */
 class EditorController extends Controller {
 
-    /**
-     * Current user session
-     *
-     * @var IUserSession
-     */
-    private $userSession;
-
-    /**
-     * User manager
-     *
-     * @var IUserManager
-     */
-    private $userManager;
-
-    /**
-     * Root folder
-     *
-     * @var IRootFolder
-     */
-    private $root;
-
-    /**
-     * Url generator service
-     *
-     * @var IURLGenerator
-     */
-    private $urlGenerator;
-
-    /**
-     * l10n service
-     *
-     * @var IL10N
-     */
-    private $trans;
-
-    /**
-     * Logger
-     *
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
-     * Application configuration
-     *
-     * @var AppConfig
-     */
-    private $config;
-
-    /**
-     * Hash generator
-     *
-     * @var Crypt
-     */
-    private $crypt;
-
-    /**
-     * File utility
-     *
-     * @var FileUtility
-     */
-    private $fileUtility;
-
-    /**
-     * File version manager
-     *
-     * @var IVersionManager
-     */
-    private $versionManager;
-
-    /**
-     * Share manager
-     *
-     * @var IManager
-     */
-    private $shareManager;
-
-    /**
-     * Group manager
-     *
-     * @var IGroupManager
-     */
-    private $groupManager;
-
-    /**
-     * Avatar manager
-     *
-     * @var IAvatarManager
-     */
-    private $avatarManager;
-
-    /**
-     * Mailer
-     *
-     * @var IMailer
-     */
-    private $mailer;
-
-    /**
-     * Email manager
-     *
-     * @var EmailManager
-     */
-    private $emailManager;
-
-    /**
-     * Folder manager
-     *
-     * @var FolderManager
-     */
-    private $folderManager;
-
-    /**
-     * @param string $AppName - application name
-     * @param IRequest $request - request object
-     * @param IRootFolder $root - root folder
-     * @param IUserSession $userSession - current user session
-     * @param IUserManager $userManager - user manager
-     * @param IURLGenerator $urlGenerator - url generator service
-     * @param IL10N $trans - l10n service
-     * @param LoggerInterface $logger - logger
-     * @param AppConfig $config - application configuration
-     * @param Crypt $crypt - hash generator
-     * @param IManager $shareManager - Share manager
-     * @param ISession $session - Session
-     * @param IGroupManager $groupManager - group Manager
-     * @param IMailer $mailer - mailer
-     */
     public function __construct(
-        $AppName,
+        string $appName,
         IRequest $request,
-        IRootFolder $root,
-        IUserSession $userSession,
-        IUserManager $userManager,
-        IURLGenerator $urlGenerator,
-        IL10N $trans,
-        LoggerInterface $logger,
-        AppConfig $config,
-        Crypt $crypt,
-        IManager $shareManager,
-        ISession $session,
-        IGroupManager $groupManager,
-        IMailer $mailer,
-        ContainerInterface $appContainer
+        private readonly IRootFolder $root,
+        private readonly IUserSession $userSession,
+        private readonly IUserManager $userManager,
+        private readonly IURLGenerator $urlGenerator,
+        private readonly IL10N $trans,
+        private readonly LoggerInterface $logger,
+        private readonly AppConfig $appConfig,
+        private readonly Crypt $crypt,
+        private readonly IManager $shareManager,
+        private readonly IGroupManager $groupManager,
+        private readonly FileUtility $fileUtility,
+        private readonly IAvatarManager $avatarManager,
+        private readonly EmailManager $emailManager,
+        private readonly DocumentService $documentService,
+        private readonly KeyManager $keyManager,
+        private readonly ?IVersionManager $versionManager,
+        private readonly ?FolderManager $folderManager
     ) {
-        parent::__construct($AppName, $request);
-
-        $this->userSession = $userSession;
-        $this->userManager = $userManager;
-        $this->root = $root;
-        $this->urlGenerator = $urlGenerator;
-        $this->trans = $trans;
-        $this->logger = $logger;
-        $this->config = $config;
-        $this->crypt = $crypt;
-        $this->shareManager = $shareManager;
-        $this->groupManager = $groupManager;
-
-        if (\OC::$server->getAppManager()->isInstalled("files_versions")) {
-            try {
-                $this->versionManager = \OC::$server->query(IVersionManager::class);
-            } catch (QueryException $e) {
-                $this->logger->error("VersionManager init error", ["exception" => $e]);
-            }
-        }
-
-        $this->fileUtility = new FileUtility($AppName, $trans, $logger, $config, $shareManager, $session);
-        $this->avatarManager = \OC::$server->get(IAvatarManager::class);
-        $this->emailManager = new EmailManager($AppName, $trans, $logger, $mailer, $userManager, $urlGenerator);
-
-        $this->folderManager = \OC::$server->getAppManager()->isInstalled("groupfolders")
-            ? $appContainer->get(\OCA\GroupFolders\Folder\FolderManager::class)
-            : null;
+        parent::__construct($appName, $request);
     }
 
     /**
@@ -253,24 +103,30 @@ class EditorController extends Controller {
      *
      * @param string $name - file name
      * @param string $dir - folder path
-     * @param string $templateId - file identifier
+     * @param ?int $templateId - file identifier
      * @param int $targetId - identifier of the file for using as template for create
      * @param string $shareToken - access token
      *
-     * @return array
+     * @return DataResponse
      */
     #[NoAdminRequired]
     #[PublicPage]
-    public function create($name, $dir, $templateId = null, $targetId = 0, $shareToken = null) {
+    public function create(
+        string $name,
+        string $dir,
+        ?int $templateId = null,
+        int $targetId = 0,
+        ?string $shareToken = null
+    ): DataResponse {
         $this->logger->debug("Create: $name");
 
-        if (empty($shareToken) && !$this->config->isUserAllowedToUse()) {
-            return ["error" => $this->trans->t("Not permitted")];
+        if (empty($shareToken) && !$this->appConfig->isUserAllowedToUse()) {
+            return new DataResponse(["error" => $this->trans->t("Not permitted")]);
         }
 
         if (empty($name)) {
             $this->logger->error("File name for creation was not found: $name");
-            return ["error" => $this->trans->t("Template not found")];
+            return new DataResponse(["error" => $this->trans->t("Template not found")]);
         }
 
         $user = null;
@@ -279,20 +135,20 @@ class EditorController extends Controller {
             $userId = $user->getUID();
             $userFolder = $this->root->getUserFolder($userId);
         } else {
-            list($userFolder, $error, $share) = $this->fileUtility->getNodeByToken($shareToken);
+            [$userFolder, $error, $share] = $this->fileUtility->getNodeByToken($shareToken);
 
             if (isset($error)) {
                 $this->logger->error("Create: $error");
-                return ["error" => $error];
+                return new DataResponse(["error" => $error]);
             }
 
             if ($userFolder instanceof File) {
-                return ["error" => $this->trans->t("You don't have enough permission to create")];
+                return new DataResponse(["error" => $this->trans->t("You don't have enough permission to create")]);
             }
 
             if (!empty($shareToken) && ($share->getPermissions() & Constants::PERMISSION_CREATE) === 0) {
                 $this->logger->error("Create in public folder without access");
-                return ["error" => $this->trans->t("You do not have enough permissions to view the file")];
+                return new DataResponse(["error" => $this->trans->t("You do not have enough permissions to view the file")]);
             }
         }
 
@@ -300,11 +156,11 @@ class EditorController extends Controller {
 
         if ($folder === null) {
             $this->logger->error("Folder for file creation was not found: $dir");
-            return ["error" => $this->trans->t("The required folder was not found")];
+            return new DataResponse(["error" => $this->trans->t("The required folder was not found")]);
         }
         if (!($folder->isCreatable() && $folder->isUpdateable())) {
             $this->logger->error("Folder for file creation without permission: $dir");
-            return ["error" => $this->trans->t("You don't have enough permission to create")];
+            return new DataResponse(["error" => $this->trans->t("You don't have enough permission to create")]);
         }
 
         if (!empty($templateId)) {
@@ -315,34 +171,33 @@ class EditorController extends Controller {
         } elseif (!empty($targetId)) {
             $targetFile = $userFolder->getById($targetId)[0];
             $targetName = $targetFile->getName();
-            $targetExt = strtolower(pathinfo($targetName, PATHINFO_EXTENSION));
+            $targetExt = strtolower(pathinfo((string) $targetName, PATHINFO_EXTENSION));
             $targetKey = $this->fileUtility->getKey($targetFile);
 
             $fileUrl = $this->getUrl($targetFile, $user, $shareToken);
 
             $ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
-            $region = str_replace("_", "-", \OC::$server->getL10NFactory()->get("")->getLocaleCode());
-            $documentService = new DocumentService($this->trans, $this->config);
+            $region = str_replace("_", "-", $this->trans->getLocaleCode());
             try {
-                $newFileUri = $documentService->getConvertedUri($fileUrl, $targetExt, $ext, $targetKey, $region, $ext === "pdf");
+                $newFileUri = $this->documentService->getConvertedUri($fileUrl, $targetExt, $ext, $targetKey, $region, $ext === "pdf");
             } catch (\Exception $e) {
                 $this->logger->error("getConvertedUri: " . $targetFile->getId(), ["exception" => $e]);
-                return ["error" => $e->getMessage()];
+                return new DataResponse(["error" => $e->getMessage()]);
             }
-            $template = $documentService->request($newFileUri);
+            $template = $this->documentService->request($newFileUri);
         } else {
             $template = TemplateManager::getEmptyTemplate($name);
         }
 
         if (!$template) {
             $this->logger->error("Template for file creation not found: $name ($templateId)");
-            return ["error" => $this->trans->t("Template not found")];
+            return new DataResponse(["error" => $this->trans->t("Template not found")]);
         }
 
         $name = $folder->getNonExistingName($name);
 
         try {
-            if (\version_compare(\implode(".", \OCP\Util::getVersion()), "19", "<")) {
+            if (\version_compare(\implode(".", Server::get(\OCP\ServerVersion::class)->getVersion()), "19", "<")) {
                 $file = $folder->newFile($name);
 
                 $file->putContent($template);
@@ -351,13 +206,10 @@ class EditorController extends Controller {
             }
         } catch (NotPermittedException $e) {
             $this->logger->error("Can't create file: $name", ["exception" => $e]);
-            return ["error" => $this->trans->t("Can't create file")];
+            return new DataResponse(["error" => $this->trans->t("Can't create file")]);
         }
 
-        $fileInfo = $file->getFileInfo();
-
-        $result = Helper::formatFileInfo($fileInfo);
-        return $result;
+        return new DataResponse(Helper::formatFileInfo($file->getFileInfo()));
     }
 
     /**
@@ -365,21 +217,22 @@ class EditorController extends Controller {
      *
      * @param string $name - file name
      * @param string $dir - folder path
-     * @param string $templateId - file identifier
+     * @param ?int $templateId - file identifier
      *
      * @return TemplateResponse|RedirectResponse
      */
     #[NoAdminRequired]
     #[NoCSRFRequired]
-    public function createNew($name, $dir, $templateId = null) {
+    public function createNew(string $name, string $dir, ?int $templateId = null): TemplateResponse|RedirectResponse {
         $this->logger->debug("Create from editor: $name in $dir");
 
-        $result = $this->create($name, $dir, $templateId);
-        if (isset($result["error"])) {
-            return $this->renderError($result["error"]);
+        $response = $this->create($name, $dir, $templateId);
+        $data = $response->getData();
+        if (isset($data['error'])) {
+            return $this->renderError(error: $data["error"]);
         }
 
-        $openEditor = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".editor.index", ["fileId" => $result["id"]]);
+        $openEditor = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".editor.index", ["fileId" => $data["id"]]);
         return new RedirectResponse($openEditor);
     }
 
@@ -389,21 +242,27 @@ class EditorController extends Controller {
      * @param $fileId - file identifier
      * @param $operationType - type of operation
      *
-     * @return array
+     * @return DataResponse
      */
     #[NoAdminRequired]
     #[NoCSRFRequired]
-    public function users($fileId, $operationType = null, $from = null, $count = null, $search = null) {
+    public function users(
+        int $fileId,
+        string $operationType = "",
+        int $offset = 0,
+        int $limit = 100,
+        string $search = ""
+    ): DataResponse {
         $this->logger->debug("Search users");
         $result = [];
         $currentUserGroups = [];
 
-        if (!$this->config->isUserAllowedToUse()) {
-            return $result;
+        if (!$this->appConfig->isUserAllowedToUse()) {
+            return new DataResponse();
         }
 
         if (!$this->shareManager->allowEnumeration()) {
-            return $result;
+            return new DataResponse();
         }
 
         $autocompleteMemberGroup = false;
@@ -422,10 +281,10 @@ class EditorController extends Controller {
             $isMemberExcludedGroups = false;
         }
 
-        list($file, $error, $share) = $this->getFile($currentUserId, $fileId);
+        [$file, $error, $share] = $this->getFile($currentUserId, $fileId);
         if (isset($error)) {
             $this->logger->error("Users: $fileId $error");
-            return $result;
+            return new DataResponse();
         }
 
         $canShare = (($file->getPermissions() & Constants::PERMISSION_SHARE) === Constants::PERMISSION_SHARE)
@@ -435,16 +294,14 @@ class EditorController extends Controller {
 
         $all = false;
         $users = [];
-        $searchString = $search !== null ? $search : "";
-        $offset = $from !== null ? (int)$from : 0;
-        $limit = $count !== null ? (int)$count : null;
+
         if ($canShare && $operationType !== "protect") {
             // who can be given access
             if ($shareMemberGroups || $autocompleteMemberGroup) {
                 foreach ($currentUserGroups as $currentUserGroup) {
                     $group = $this->groupManager->get($currentUserGroup);
                     foreach ($group->getUsers() as $user) {
-                        if ($this->filterUser($user, $currentUserId, $operationType, $searchString)) {
+                        if ($this->filterUser($user, $currentUserId, $operationType, $search)) {
                             $users[$user->getUID()] = $user;
                         }
                     }
@@ -452,10 +309,10 @@ class EditorController extends Controller {
             } else {
                 // all users
                 $all = true;
-                $allUsers = $this->userManager->search($searchString);
+                $allUsers = $this->userManager->searchDisplayName($search);
 
                 foreach ($allUsers as $user) {
-                    if ($this->filterUser($user, $currentUserId, $operationType, $searchString)) {
+                    if ($this->filterUser($user, $currentUserId, $operationType, $search)) {
                         $users[$user->getUID()] = $user;
                     }
                 }
@@ -467,19 +324,19 @@ class EditorController extends Controller {
             $accessList = $this->shareManager->getAccessList($file);
             foreach ($accessList["users"] as $accessUser) {
                 $user = $this->userManager->get($accessUser);
-                if ($this->filterUser($user, $currentUserId, $operationType, $searchString)) {
+                if ($this->filterUser($user, $currentUserId, $operationType, $search)) {
                     $users[$user->getUID()] = $user;
                 }
             }
 
             $fileInfo = $file->getFileInfo();
-            if ($fileInfo->getStorage()->instanceOfStorage(\OCA\GroupFolders\Mount\GroupFolderStorage::class)) {
+            if ($fileInfo->getStorage()->instanceOfStorage(GroupFolderStorage::class)) {
                 if ($this->folderManager !== null) {
                     $folderId = $this->folderManager->getFolderByPath($fileInfo->getPath());
                     $folderUsers = $this->folderManager->searchUsers($folderId, "", -1);
                     foreach ($folderUsers as $folderUser) {
                         $user = $this->userManager->get($folderUser["uid"]);
-                        if ($this->filterUser($user, $currentUserId, $operationType, $searchString)) {
+                        if ($this->filterUser($user, $currentUserId, $operationType, $search)) {
                             $users[$user->getUID()] = $user;
                         }
                     }
@@ -489,9 +346,7 @@ class EditorController extends Controller {
             }
         }
 
-        if ($limit !== null) {
-            $users = array_slice($users, $offset, $limit);
-        }
+        $users = array_slice($users, $offset, $limit);
 
         foreach ($users as $user) {
             $userElement = [
@@ -499,10 +354,10 @@ class EditorController extends Controller {
                 "id" => $operationType === "protect" ? $this->buildUserId($user->getUID()) : $user->getUID(),
                 "email" => $user->getEMailAddress()
             ];
-            array_push($result, $userElement);
+            $result[] = $userElement;
         }
 
-        return $result;
+        return new DataResponse($result);
     }
 
     /**
@@ -511,11 +366,9 @@ class EditorController extends Controller {
      * @param IUser $user - user
      * @param string $currentUserId - id of current user
      * @param string $operationType - type of the get user operation
-     * @param int $searchString - string for searching
-     *
-     * @return bool
+     * @param string $searchString - string for searching
      */
-    private function filterUser($user, $currentUserId, $operationType, $searchString) {
+    private function filterUser(IUser $user, string $currentUserId, string $operationType, string $searchString): bool {
         return $user->getUID() != $currentUserId
             && (!empty($user->getEMailAddress()) || $operationType === "protect")
             && $this->searchInUser($user, $searchString);
@@ -525,15 +378,13 @@ class EditorController extends Controller {
      * Check if the user contains the search string
      *
      * @param IUser $user - user
-     * @param int $searchString - string for searching
-     *
-     * @return bool
+     * @param string $searchString - string for searching
      */
-    private function searchInUser($user, $searchString) {
+    private function searchInUser(IUser $user, string $searchString): bool {
         return empty($searchString)
-            || stripos($user->getUID(), $searchString) !== false
-            || stripos($user->getDisplayName(), $searchString) !== false
-            || !empty($user->getEMailAddress()) && stripos($user->getEMailAddress(), $searchString) !== false;
+            || stripos((string) $user->getUID(), (string) $searchString) !== false
+            || stripos((string) $user->getDisplayName(), (string) $searchString) !== false
+            || !empty($user->getEMailAddress()) && stripos((string) $user->getEMailAddress(), (string) $searchString) !== false;
     }
 
     /**
@@ -541,11 +392,11 @@ class EditorController extends Controller {
      *
      * @param string $userIds - users identifiers
      *
-     * @return array
+     * @return DataResponse
      */
     #[NoAdminRequired]
     #[NoCSRFRequired]
-    public function userInfo($userIds) {
+    public function userInfo(string $userIds): DataResponse {
         $result = [];
         $userIds = json_decode($userIds, true);
 
@@ -568,11 +419,11 @@ class EditorController extends Controller {
                         );
                         $userData["image"] = $userAvatarUrl;
                     }
-                    array_push($result, $userData);
+                    $result[] = $userData;
                 }
             }
         }
-        return $result;
+        return new DataResponse($result);
     }
 
     /**
@@ -583,19 +434,19 @@ class EditorController extends Controller {
      * @param string $comment - comment
      * @param array $emails - emails array to whom to send notify
      *
-     * @return array
+     * @return DataResponse
      */
     #[NoAdminRequired]
     #[NoCSRFRequired]
-    public function mention($fileId, $anchor, $comment, $emails) {
+    public function mention(int $fileId, string $anchor, string $comment, array $emails): DataResponse {
         $this->logger->debug("mention: from $fileId to " . json_encode($emails));
 
-        if (!$this->config->isUserAllowedToUse()) {
-            return ["error" => $this->trans->t("Not permitted")];
+        if (!$this->appConfig->isUserAllowedToUse()) {
+            return new DataResponse(["error" => $this->trans->t("Not permitted")]);
         }
 
         if (empty($emails)) {
-            return ["error" => $this->trans->t("Failed to send notification")];
+            return new DataResponse(["error" => $this->trans->t("Failed to send notification")]);
         }
 
         $recipientIds = [];
@@ -604,7 +455,7 @@ class EditorController extends Controller {
             foreach ($recipients as $recipient) {
                 $recipientId = $recipient->getUID();
                 if (!in_array($recipientId, $recipientIds, true)) {
-                    array_push($recipientIds, $recipientId);
+                    $recipientIds[] = $recipientId;
                 }
             }
         }
@@ -623,10 +474,10 @@ class EditorController extends Controller {
             $isMemberExcludedGroups = false;
         }
 
-        list($file, $error, $share) = $this->getFile($userId, $fileId);
+        [$file, $error, $share] = $this->getFile($userId, $fileId);
         if (isset($error)) {
             $this->logger->error("Mention: $fileId $error");
-            return ["error" => $this->trans->t("Failed to send notification")];
+            return new DataResponse(["error" => $this->trans->t("Failed to send notification")]);
         }
 
         foreach ($emails as $email) {
@@ -642,7 +493,7 @@ class EditorController extends Controller {
             $comment = substr($comment, 0, ($maxLen - strlen($ending))) . $ending;
         }
 
-        $notificationManager = \OC::$server->getNotificationManager();
+        $notificationManager = Server::get(\OCP\Notification\IManager::class);
         $notification = $notificationManager->createNotification();
         $notification->setApp($this->appName)
             ->setDateTime(new \DateTime())
@@ -664,7 +515,7 @@ class EditorController extends Controller {
             $isAvailable = in_array($recipientId, $accessList["users"], true);
 
             if (!$isAvailable
-                && ($file->getFileInfo()->getStorage()->instanceOfStorage("\OCA\GroupFolders\Mount\GroupFolderStorage")
+                && ($file->getFileInfo()->getStorage()->instanceOfStorage(GroupFolderStorage::class)
                 || $file->getFileInfo()->getMountPoint() instanceof \OCA\Files_External\Config\ExternalMountPoint)) {
                 $recipientFolder = $this->root->getUserFolder($recipientId);
                 $recipientFile = $recipientFolder->getById($file->getId());
@@ -700,12 +551,12 @@ class EditorController extends Controller {
             $notification->setUser($recipientId);
 
             $notificationManager->notify($notification);
-            if ($this->config->getEmailNotifications()) {
+            if ($this->appConfig->getEmailNotifications()) {
                 $this->emailManager->notifyMentionEmail($userId, $recipientId, $file->getId(), $file->getName(), $anchor, $notification->getObjectId());
             }
         }
 
-        return ["message" => $this->trans->t("Notification sent successfully")];
+        return new DataResponse(["message" => $this->trans->t("Notification sent successfully")]);
     }
 
     /**
@@ -715,20 +566,20 @@ class EditorController extends Controller {
      * @param string $path - file path
      * @param string $link - file link
      *
-     * @return array
+     * @return DataResponse
      */
     #[NoAdminRequired]
     #[PublicPage]
-    public function reference($referenceData, $path = null, $link = null) {
+    public function reference(array $referenceData, string $path = "", string $link = ""): DataResponse {
         $this->logger->debug("reference: " . json_encode($referenceData) . " $path");
 
-        if (!$this->config->isUserAllowedToUse()) {
-            return ["error" => $this->trans->t("Not permitted")];
+        if (!$this->appConfig->isUserAllowedToUse()) {
+            return new DataResponse(["error" => $this->trans->t("Not permitted")]);
         }
 
         $user = $this->userSession->getUser();
         if (empty($user)) {
-            return ["error" => $this->trans->t("Not permitted")];
+            return new DataResponse(["error" => $this->trans->t("Not permitted")]);
         }
 
         $userId = $user->getUID();
@@ -736,13 +587,13 @@ class EditorController extends Controller {
         $file = null;
         $fileId = (integer)($referenceData["fileKey"] ?? 0);
         if (!empty($fileId)
-            && $referenceData["instanceId"] === $this->config->getSystemValue("instanceid", true)) {
-            list($file, $error, $share) = $this->getFile($userId, $fileId);
+            && $referenceData["instanceId"] === $this->appConfig->getSystemValue("instanceid", true)) {
+            [$file, $error, $share] = $this->getFile($userId, $fileId);
         }
 
         $userFolder = $this->root->getUserFolder($userId);
         if ($file === null
-            && $path !== null
+            && $path !== ""
             && $userFolder->nodeExists($path)) {
             $node = $userFolder->get($path);
             if ($node instanceof File
@@ -755,23 +606,19 @@ class EditorController extends Controller {
             && !empty($link)) {
             [$fileId, $redirect] = $this->getFileIdByLink($link);
             if (!empty($fileId)) {
-                list($file, $error, $share) = $this->getFile($userId, $fileId);
+                [$file, $error, $share] = $this->getFile($userId, $fileId);
             } elseif ($redirect) {
-                $response = [
-                    "url" => $link,
-                ];
-
-                return $response;
+                return new DataResponse(["url" => $link]);
             }
         }
 
         if ($file === null) {
             $this->logger->error("Reference not found: $fileId $path");
-            return ["error" => $this->trans->t("File not found")];
+            return new DataResponse(["error" => $this->trans->t("File not found")]);
         }
 
         $fileName = $file->getName();
-        $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+        $ext = strtolower(pathinfo((string) $fileName, PATHINFO_EXTENSION));
         $key = $this->fileUtility->getKey($file);
         $key = DocumentService::generateRevisionId($key);
 
@@ -781,22 +628,22 @@ class EditorController extends Controller {
             "key" => $key,
             "referenceData" => [
                 "fileKey" => (string)$file->getId(),
-                "instanceId" => $this->config->getSystemValue("instanceid", true),
+                "instanceId" => $this->appConfig->getSystemValue("instanceid", true),
             ],
             "url" => $this->getUrl($file, $user),
         ];
 
-        if (!empty($this->config->getDocumentServerSecret())) {
+        if (!empty($this->appConfig->getDocumentServerSecret())) {
             $now = time();
             $iat = $now;
-            $exp = $now + $this->config->getJwtExpiration() * 60;
+            $exp = $now + $this->appConfig->getJwtExpiration() * 60;
             $response["iat"] = $iat;
             $response["exp"] = $exp;
-            $token = \Firebase\JWT\JWT::encode($response, $this->config->getDocumentServerSecret(), "HS256");
+            $token = \Firebase\JWT\JWT::encode($response, $this->appConfig->getDocumentServerSecret(), "HS256");
             $response["token"] = $token;
         }
 
-        return $response;
+        return new DataResponse($response);
     }
 
     /**
@@ -805,15 +652,15 @@ class EditorController extends Controller {
      * @param integer $fileId - file identifier
      * @param string $shareToken - access token
      *
-     * @return array
+     * @return DataResponse
      */
     #[NoAdminRequired]
     #[PublicPage]
-    public function convert($fileId, $shareToken = null) {
+    public function convert(int $fileId, string $shareToken = ""): DataResponse {
         $this->logger->debug("Convert: $fileId");
 
-        if (empty($shareToken) && !$this->config->isUserAllowedToUse()) {
-            return ["error" => $this->trans->t("Not permitted")];
+        if (empty($shareToken) && !$this->appConfig->isUserAllowedToUse()) {
+            return new DataResponse(["error" => $this->trans->t("Not permitted")]);
         }
 
         $user = $this->userSession->getUser();
@@ -822,51 +669,46 @@ class EditorController extends Controller {
             $userId = $user->getUID();
         }
 
-        list($file, $error, $share) = empty($shareToken) ? $this->getFile($userId, $fileId) : $this->fileUtility->getFileByToken($fileId, $shareToken);
+        [$file, $error, $share] = empty($shareToken) ? $this->getFile($userId, $fileId) : $this->fileUtility->getFileByToken($fileId, $shareToken);
 
         if (isset($error)) {
             $this->logger->error("Convertion: $fileId $error");
-            return ["error" => $error];
+            return new DataResponse(["error" => $error]);
         }
 
         if (!empty($shareToken) && ($share->getPermissions() & Constants::PERMISSION_CREATE) === 0) {
             $this->logger->error("Convertion in public folder without access: $fileId");
-            return ["error" => $this->trans->t("You do not have enough permissions to view the file")];
+            return new DataResponse(["error" => $this->trans->t("You do not have enough permissions to view the file")]);
         }
 
         $fileName = $file->getName();
-        $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-        $format = $this->config->formatsSetting()[$ext];
+        $ext = strtolower(pathinfo((string) $fileName, PATHINFO_EXTENSION));
+        $format = $this->appConfig->formatsSetting()[$ext];
         if (!isset($format)) {
             $this->logger->info("Format for convertion not supported: $fileName");
-            return ["error" => $this->trans->t("Format is not supported")];
+            return new DataResponse(["error" => $this->trans->t("Format is not supported")]);
         }
 
         if (!isset($format["conv"]) || $format["conv"] !== true) {
             $this->logger->info("Conversion is not required: $fileName");
-            return ["error" => $this->trans->t("Conversion is not required")];
+            return new DataResponse(["error" => $this->trans->t("Conversion is not required")]);
         }
 
-        $internalExtension = "docx";
-        switch ($format["type"]) {
-            case "cell":
-                $internalExtension = "xlsx";
-                break;
-            case "slide":
-                $internalExtension = "pptx";
-                break;
-        }
+        $internalExtension = match ($format["type"]) {
+            "cell" => "xlsx",
+            "slide" => "pptx",
+            default => "docx",
+        };
 
         $newFileUri = null;
-        $documentService = new DocumentService($this->trans, $this->config);
         $key = $this->fileUtility->getKey($file);
         $fileUrl = $this->getUrl($file, $user, $shareToken);
-        $region = str_replace("_", "-", \OC::$server->getL10NFactory()->get("")->getLocaleCode());
+        $region = str_replace("_", "-", $this->trans->getLocaleCode());
         try {
-            $newFileUri = $documentService->getConvertedUri($fileUrl, $ext, $internalExtension, $key, $region);
+            $newFileUri = $this->documentService->getConvertedUri($fileUrl, $ext, $internalExtension, $key, $region);
         } catch (\Exception $e) {
             $this->logger->error("getConvertedUri: " . $file->getId(), ["exception" => $e]);
-            return ["error" => $e->getMessage()];
+            return new DataResponse(["error" => $e->getMessage()]);
         }
 
         $folder = $file->getParent();
@@ -875,13 +717,13 @@ class EditorController extends Controller {
         }
 
         try {
-            $newData = $documentService->request($newFileUri);
+            $newData = $this->documentService->request($newFileUri);
         } catch (\Exception $e) {
             $this->logger->error("Failed to download converted file", ["exception" => $e]);
-            return ["error" => $this->trans->t("Failed to download converted file")];
+            return new DataResponse(["error" => $this->trans->t("Failed to download converted file")]);
         }
 
-        $fileNameWithoutExt = substr($fileName, 0, strlen($fileName) - strlen($ext) - 1);
+        $fileNameWithoutExt = substr((string) $fileName, 0, strlen((string) $fileName) - strlen($ext) - 1);
         $newFileName = $folder->getNonExistingName($fileNameWithoutExt . "." . $internalExtension);
 
         try {
@@ -890,13 +732,10 @@ class EditorController extends Controller {
             $file->putContent($newData);
         } catch (NotPermittedException $e) {
             $this->logger->error("Can't create file: $newFileName", ["exception" => $e]);
-            return ["error" => $this->trans->t("Can't create file")];
+            return new DataResponse(["error" => $this->trans->t("Can't create file")]);
         }
 
-        $fileInfo = $file->getFileInfo();
-
-        $result = Helper::formatFileInfo($fileInfo);
-        return $result;
+        return new DataResponse(Helper::formatFileInfo($file->getFileInfo()));
     }
 
     /**
@@ -906,53 +745,56 @@ class EditorController extends Controller {
      * @param string $dir - folder path
      * @param string $url - file url
      *
-     * @return array
+     * @return DataResponse
      */
     #[NoAdminRequired]
-    public function save($name, $dir, $url) {
+    public function save(string $name, string $dir, string $url): DataResponse {
         $this->logger->debug("Save: $name");
 
-        if (!$this->config->isUserAllowedToUse()) {
-            return ["error" => $this->trans->t("Not permitted")];
+        if (!$this->appConfig->isUserAllowedToUse()) {
+            return new DataResponse(["error" => $this->trans->t("Not permitted")]);
         }
 
         $userId = $this->userSession->getUser()->getUID();
         $userFolder = $this->root->getUserFolder($userId);
 
-        $folder = $userFolder->get($dir);
-
-        if ($folder === null) {
-            $this->logger->error("Folder for saving file was not found: $dir");
-            return ["error" => $this->trans->t("The required folder was not found")];
+        try {
+            /**
+             * @var \OC\Files\Node\Folder
+             */
+            $folder = $userFolder->get($dir);
+        } catch (\OCP\Files\NotFoundException $e) {
+            $this->logger->error("Folder for saving file was not found: $dir", ['exception' => $e]);
+            return new DataResponse(["error" => $this->trans->t("The required folder was not found")]);
         }
+
         if (!($folder->isCreatable() && $folder->isUpdateable())) {
             $this->logger->error("Folder for saving file without permission: $dir");
-            return ["error" => $this->trans->t("You don't have enough permission to create")];
+            return new DataResponse(["error" => $this->trans->t("You don't have enough permission to create")]);
         }
-        $documentServerUrl = $this->config->getDocumentServerUrl();
+        $documentServerUrl = $this->appConfig->getDocumentServerUrl();
 
         if (empty($documentServerUrl)) {
             $this->logger->error("documentServerUrl is empty");
-            return ["error" => $this->trans->t("ONLYOFFICE app is not configured. Please contact admin")];
+            return new DataResponse(["error" => $this->trans->t("ONLYOFFICE app is not configured. Please contact admin")]);
         }
 
         if (str_starts_with($documentServerUrl, "/")) {
             $documentServerUrl = $this->urlGenerator->getAbsoluteURL($documentServerUrl);
         }
 
-        if (parse_url($url, PHP_URL_HOST) !== parse_url($documentServerUrl, PHP_URL_HOST)) {
+        if (parse_url($url, PHP_URL_HOST) !== parse_url((string) $documentServerUrl, PHP_URL_HOST)) {
             $this->logger->error("Incorrect domain in file url");
-            return ["error" => $this->trans->t("The domain in the file url does not match the domain of the Document server")];
+            return new DataResponse(["error" => $this->trans->t("The domain in the file url does not match the domain of the Document server")]);
         }
 
-        $url = $this->config->replaceDocumentServerUrlToInternal($url);
+        $url = $this->appConfig->replaceDocumentServerUrlToInternal($url);
 
         try {
-            $documentService = new DocumentService($this->trans, $this->config);
-            $newData = $documentService->request($url);
+            $newData = $this->documentService->request($url);
         } catch (\Exception $e) {
             $this->logger->error("Failed to download file for saving: $url", ["exception" => $e]);
-            return ["error" => $this->trans->t("Download failed")];
+            return new DataResponse(["error" => $this->trans->t("Download failed")]);
         }
 
         $name = $folder->getNonExistingName($name);
@@ -963,13 +805,10 @@ class EditorController extends Controller {
             $file->putContent($newData);
         } catch (NotPermittedException $e) {
             $this->logger->error("Can't save file: $name", ["exception" => $e]);
-            return ["error" => $this->trans->t("Can't create file")];
+            return new DataResponse(["error" => $this->trans->t("Can't create file")]);
         }
 
-        $fileInfo = $file->getFileInfo();
-
-        $result = Helper::formatFileInfo($fileInfo);
-        return $result;
+        return new DataResponse(Helper::formatFileInfo($file->getFileInfo()));
     }
 
     /**
@@ -977,14 +816,14 @@ class EditorController extends Controller {
      *
      * @param integer $fileId - file identifier
      *
-     * @return array
+     * @return DataResponse
      */
     #[NoAdminRequired]
-    public function history($fileId) {
+    public function history(int $fileId): DataResponse {
         $this->logger->debug("Request history for: $fileId");
 
-        if (!$this->config->isUserAllowedToUse()) {
-            return ["error" => $this->trans->t("Not permitted")];
+        if (!$this->appConfig->isUserAllowedToUse()) {
+            return new DataResponse(["error" => $this->trans->t("Not permitted")]);
         }
 
         $history = [];
@@ -995,11 +834,11 @@ class EditorController extends Controller {
             $userId = $user->getUID();
         }
 
-        list($file, $error, $share) = $this->getFile($userId, $fileId);
+        [$file, $error, $share] = $this->getFile($userId, $fileId);
 
         if (isset($error)) {
             $this->logger->error("History: $fileId $error");
-            return ["error" => $error];
+            return new DataResponse(["error" => $error]);
         }
 
         if ($fileId === 0) {
@@ -1012,7 +851,7 @@ class EditorController extends Controller {
             $ownerId = $owner->getUID();
         }
 
-        $versions = array();
+        $versions = [];
         if ($this->versionManager !== null
             && $owner !== null) {
             $versions = FileVersions::processVersionsArray($this->versionManager->getVersionsForFile($owner, $file));
@@ -1021,7 +860,7 @@ class EditorController extends Controller {
         $prevVersion = "";
         $versionNum = 0;
         foreach ($versions as $version) {
-            $versionNum = $versionNum + 1;
+            $versionNum += 1;
 
             $key = $this->fileUtility->getVersionKey($version);
             $key = DocumentService::generateRevisionId($key);
@@ -1041,20 +880,18 @@ class EditorController extends Controller {
                     "id" => $this->buildUserId($author["id"]),
                     "name" => $author["name"],
                 ];
+            } elseif (!empty($this->appConfig->getUnknownAuthor()) && $versionNum !== 1) {
+                $authorName = $this->appConfig->getUnknownAuthor();
+                $historyItem["user"] = [
+                    "name" => $authorName,
+                ];
             } else {
-                if (!empty($this->config->getUnknownAuthor()) && $versionNum !== 1) {
-                    $authorName = $this->config->getUnknownAuthor();
-                    $historyItem["user"] = [
-                        "name" => $authorName,
-                    ];
-                } else {
-                    $authorName = $owner->getDisplayName();
-                    $authorId = $owner->getUID();
-                    $historyItem["user"] = [
-                        "id" => $this->buildUserId($authorId),
-                        "name" => $authorName,
-                    ];
-                }
+                $authorName = $owner->getDisplayName();
+                $authorId = $owner->getUID();
+                $historyItem["user"] = [
+                    "id" => $this->buildUserId($authorId),
+                    "name" => $authorName,
+                ];
             }
 
             $historyData = FileVersions::getHistoryData($ownerId, $file->getFileInfo(), $versionId, $prevVersion);
@@ -1065,7 +902,7 @@ class EditorController extends Controller {
 
             $prevVersion = $versionId;
 
-            array_push($history, $historyItem);
+            $history[] = $historyItem;
         }
 
         $key = $this->fileUtility->getKey($file, true);
@@ -1085,20 +922,18 @@ class EditorController extends Controller {
                 "id" => $this->buildUserId($author["id"]),
                 "name" => $author["name"],
             ];
+        } elseif (!empty($this->appConfig->getUnknownAuthor()) && $versionNum !== 0) {
+            $authorName = $this->appConfig->getUnknownAuthor();
+            $historyItem["user"] = [
+                "name" => $authorName,
+            ];
         } else {
-            if (!empty($this->config->getUnknownAuthor()) && $versionNum !== 0) {
-                $authorName = $this->config->getUnknownAuthor();
-                $historyItem["user"] = [
-                    "name" => $authorName,
-                ];
-            } else {
-                $authorName = $owner->getDisplayName();
-                $authorId = $owner->getUID();
-                $historyItem["user"] = [
-                    "id" => $this->buildUserId($authorId),
-                    "name" => $authorName,
-                ];
-            }
+            $authorName = $owner->getDisplayName();
+            $authorId = $owner->getUID();
+            $historyItem["user"] = [
+                "id" => $this->buildUserId($authorId),
+                "name" => $authorName,
+            ];
         }
 
         $historyData = FileVersions::getHistoryData($ownerId, $file->getFileInfo(), $versionId, $prevVersion);
@@ -1106,9 +941,9 @@ class EditorController extends Controller {
             $historyItem["changes"] = $historyData["changes"];
             $historyItem["serverVersion"] = $historyData["serverVersion"];
         }
-        array_push($history, $historyItem);
+        $history[] = $historyItem;
 
-        return $history;
+        return new DataResponse($history);
     }
 
     /**
@@ -1117,17 +952,15 @@ class EditorController extends Controller {
      * @param integer $fileId - file identifier
      * @param integer $version - file version
      *
-     * @return array
+     * @return DataResponse
      */
     #[NoAdminRequired]
-    public function version($fileId, $version) {
+    public function version(int $fileId, int $version): DataResponse {
         $this->logger->debug("Request version for: $fileId ($version)");
 
-        if (!$this->config->isUserAllowedToUse()) {
-            return ["error" => $this->trans->t("Not permitted")];
+        if (!$this->appConfig->isUserAllowedToUse()) {
+            return new DataResponse(["error" => $this->trans->t("Not permitted")]);
         }
-
-        $version = empty($version) ? null : $version;
 
         $user = $this->userSession->getUser();
         $userId = null;
@@ -1135,11 +968,11 @@ class EditorController extends Controller {
             $userId = $user->getUID();
         }
 
-        list($file, $error, $share) = $this->getFile($userId, $fileId);
+        [$file, $error, $share] = $this->getFile($userId, $fileId);
 
         if (isset($error)) {
             $this->logger->error("History: $fileId $error");
-            return ["error" => $error];
+            return new DataResponse(["error" => $error]);
         }
 
         if ($fileId === 0) {
@@ -1148,7 +981,7 @@ class EditorController extends Controller {
 
         $owner = null;
         $ownerId = null;
-        $versions = array();
+        $versions = [];
         if ($this->versionManager !== null) {
             $owner = $file->getFileInfo()->getOwner();
             if ($owner !== null) {
@@ -1175,7 +1008,7 @@ class EditorController extends Controller {
         }
         $key = DocumentService::generateRevisionId($key);
         $fileName = $file->getName();
-        $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+        $ext = strtolower(pathinfo((string) $fileName, PATHINFO_EXTENSION));
 
         $result = [
             "fileType" => $ext,
@@ -1203,17 +1036,17 @@ class EditorController extends Controller {
             ];
         }
 
-        if (!empty($this->config->getDocumentServerSecret())) {
+        if (!empty($this->appConfig->getDocumentServerSecret())) {
             $now = time();
             $iat = $now;
-            $exp = $now + $this->config->getJwtExpiration() * 60;
+            $exp = $now + $this->appConfig->getJwtExpiration() * 60;
             $result["iat"] = $iat;
             $result["exp"] = $exp;
-            $token = \Firebase\JWT\JWT::encode($result, $this->config->getDocumentServerSecret(), "HS256");
+            $token = \Firebase\JWT\JWT::encode($result, $this->appConfig->getDocumentServerSecret(), "HS256");
             $result["token"] = $token;
         }
 
-        return $result;
+        return new DataResponse($result);
     }
 
     /**
@@ -1222,17 +1055,15 @@ class EditorController extends Controller {
      * @param integer $fileId - file identifier
      * @param integer $version - file version
      *
-     * @return array
+     * @return DataResponse
      */
     #[NoAdminRequired]
-    public function restore($fileId, $version) {
+    public function restore(int $fileId, int $version): DataResponse {
         $this->logger->debug("Request restore version for: $fileId ($version)");
 
-        if (!$this->config->isUserAllowedToUse()) {
-            return ["error" => $this->trans->t("Not permitted")];
+        if (!$this->appConfig->isUserAllowedToUse()) {
+            return new DataResponse(["error" => $this->trans->t("Not permitted")]);
         }
-
-        $version = empty($version) ? null : $version;
 
         $user = $this->userSession->getUser();
         $userId = null;
@@ -1240,11 +1071,11 @@ class EditorController extends Controller {
             $userId = $user->getUID();
         }
 
-        list($file, $error, $share) = $this->getFile($userId, $fileId);
+        [$file, $error, $share] = $this->getFile($userId, $fileId);
 
         if (isset($error)) {
             $this->logger->error("Restore: $fileId $error");
-            return ["error" => $error];
+            return new DataResponse(["error" => $error]);
         }
 
         if ($fileId === 0) {
@@ -1252,7 +1083,7 @@ class EditorController extends Controller {
         }
 
         $owner = null;
-        $versions = array();
+        $versions = [];
         if ($this->versionManager !== null) {
             $owner = $file->getFileInfo()->getOwner();
             if ($owner !== null) {
@@ -1262,8 +1093,8 @@ class EditorController extends Controller {
             if (count($versions) >= $version) {
                 $fileVersion = array_values($versions)[$version - 1];
                 $this->versionManager->rollback($fileVersion);
-                if ($fileVersion->getSourceFile()->getFileInfo()->getStorage()->instanceOfStorage("\OCA\GroupFolders\Mount\GroupFolderStorage")) {
-                    KeyManager::delete($fileVersion->getSourceFile()->getId());
+                if ($fileVersion->getSourceFile()->getFileInfo()->getStorage()->instanceOfStorage(GroupFolderStorage::class)) {
+                    $this->keyManager->delete($fileVersion->getSourceFile()->getId());
                 }
             }
         }
@@ -1276,14 +1107,14 @@ class EditorController extends Controller {
      *
      * @param string $filePath - file path
      *
-     * @return array
+     * @return DataResponse
      */
     #[NoAdminRequired]
-    public function url($filePath) {
+    public function url(string $filePath): DataResponse {
         $this->logger->debug("Request url for: $filePath");
 
-        if (!$this->config->isUserAllowedToUse()) {
-            return ["error" => $this->trans->t("Not permitted")];
+        if (!$this->appConfig->isUserAllowedToUse()) {
+            return new DataResponse(["error" => $this->trans->t("Not permitted")]);
         }
 
         $user = $this->userSession->getUser();
@@ -1294,24 +1125,27 @@ class EditorController extends Controller {
 
         if ($file === null) {
             $this->logger->error("File for generate presigned url was not found: $filePath");
-            return ["error" => $this->trans->t("File not found")];
+            return new DataResponse(["error" => $this->trans->t("File not found")]);
         }
 
         $canDownload = true;
 
+        /**
+         * @var \OCP\Files\Storage\IStorage|\OCA\Files_Sharing\SharedStorage
+         */
         $fileStorage = $file->getStorage();
-        if ($fileStorage->instanceOfStorage("\OCA\Files_Sharing\SharedStorage")) {
+        if ($fileStorage->instanceOfStorage(SharedStorage::class)) {
             $share = $fileStorage->getShare();
             $canDownload = FileUtility::canShareDownload($share);
         }
 
         if (!$file->isReadable() || !$canDownload) {
             $this->logger->error("File without permission: $filePath");
-            return ["error" => $this->trans->t("You do not have enough permissions to view the file")];
+            return new DataResponse(["error" => $this->trans->t("You do not have enough permissions to view the file")]);
         }
 
         $fileName = $file->getName();
-        $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+        $ext = strtolower(pathinfo((string) $fileName, PATHINFO_EXTENSION));
         $fileUrl = $this->getUrl($file, $user);
 
         $result = [
@@ -1319,17 +1153,17 @@ class EditorController extends Controller {
             "url" => $fileUrl
         ];
 
-        if (!empty($this->config->getDocumentServerSecret())) {
+        if (!empty($this->appConfig->getDocumentServerSecret())) {
             $now = time();
             $iat = $now;
-            $exp = $now + $this->config->getJwtExpiration() * 60;
+            $exp = $now + $this->appConfig->getJwtExpiration() * 60;
             $result["iat"] = $iat;
             $result["exp"] = $exp;
-            $token = \Firebase\JWT\JWT::encode($result, $this->config->getDocumentServerSecret(), "HS256");
+            $token = \Firebase\JWT\JWT::encode($result, $this->appConfig->getDocumentServerSecret(), "HS256");
             $result["token"] = $token;
         }
 
-        return $result;
+        return new DataResponse($result);
     }
 
     /**
@@ -1343,10 +1177,10 @@ class EditorController extends Controller {
      */
     #[NoAdminRequired]
     #[NoCSRFRequired]
-    public function download($fileId, $toExtension = null, $template = false) {
+    public function download(int $fileId, ?string $toExtension = null, bool $template = false): DataDownloadResponse|TemplateResponse {
         $this->logger->debug("Download: $fileId $toExtension");
 
-        if (!$this->config->isUserAllowedToUse() || $this->config->getDisableDownload()) {
+        if (!$this->appConfig->isUserAllowedToUse() || $this->appConfig->getDisableDownload()) {
             return $this->renderError($this->trans->t("Not permitted"));
         }
 
@@ -1365,7 +1199,7 @@ class EditorController extends Controller {
                 $userId = $user->getUID();
             }
 
-            list($file, $error, $share) = $this->getFile($userId, $fileId);
+            [$file, $error, $share] = $this->getFile($userId, $fileId);
 
             if (isset($error)) {
                 $this->logger->error("Download: $fileId $error");
@@ -1374,7 +1208,7 @@ class EditorController extends Controller {
         }
 
         $fileStorage = $file->getStorage();
-        if ($fileStorage->instanceOfStorage("\OCA\Files_Sharing\SharedStorage")) {
+        if ($fileStorage->instanceOfStorage(SharedStorage::class)) {
             $share = empty($share) ? $fileStorage->getShare() : $share;
             if (!FileUtility::canShareDownload($share)) {
                 return $this->renderError($this->trans->t("Not permitted"));
@@ -1382,8 +1216,8 @@ class EditorController extends Controller {
         }
 
         $fileName = $file->getName();
-        $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-        $toExtension = strtolower($toExtension);
+        $ext = strtolower(pathinfo((string) $fileName, PATHINFO_EXTENSION));
+        $toExtension = strtolower((string) $toExtension);
 
         if ($toExtension === null
             || $ext === $toExtension
@@ -1393,29 +1227,31 @@ class EditorController extends Controller {
 
         $newFileUri = null;
         $newFileType = $toExtension;
-        $documentService = new DocumentService($this->trans, $this->config);
         $key = $this->fileUtility->getKey($file);
         $fileUrl = $this->getUrl($file, $user);
         $thumbnail = ['first' => false];
         try {
-            $response = $documentService->sendRequestToConvertService(
+            $response = $this->documentService->sendRequestToConvertService(
                 $fileUrl,
                 $ext,
                 $toExtension,
                 $key,
                 false,
-                null,
+                "",
                 false,
                 $thumbnail,
             );
 
-            if (isset($response->error)) {
-                $documentService->processConvServResponceError($response->error);
+            $error = $response["error"] ?? null;
+            $endConvert = $response["endConvert"] ?? false;
+
+            if ($error !== null) {
+                $this->documentService->processConvServResponceError((int)$error);
             }
 
-            if (isset($response->endConvert) && $response->endConvert === true) {
-                $newFileUri = $response->fileUrl;
-                $newFileType = $response->fileType;
+            if ($endConvert) {
+                $newFileUri = $response["fileUrl"] ?? "";
+                $newFileType = $response["fileType"] ?? "";
             }
         } catch (\Exception $e) {
             $this->logger->error("sendRequestToConvertService: " . $file->getId(), ["exception" => $e]);
@@ -1423,16 +1259,16 @@ class EditorController extends Controller {
         }
 
         try {
-            $newData = $documentService->request($newFileUri);
+            $newData = $this->documentService->request($newFileUri);
         } catch (\Exception $e) {
             $this->logger->error("Failed to download converted file", ["exception" => $e]);
             return $this->renderError($this->trans->t("Failed to download converted file"));
         }
 
-        $fileNameWithoutExt = substr($fileName, 0, strlen($fileName) - strlen($ext) - 1);
+        $fileNameWithoutExt = substr((string) $fileName, 0, strlen((string) $fileName) - strlen($ext) - 1);
         $newFileName = "$fileNameWithoutExt.$newFileType";
 
-        $mimeType = $this->config->getMimeType($newFileType);
+        $mimeType = $this->appConfig->getMimeType($newFileType);
 
         return new DataDownloadResponse($newData, $newFileName, $mimeType);
     }
@@ -1452,7 +1288,15 @@ class EditorController extends Controller {
      */
     #[NoAdminRequired]
     #[NoCSRFRequired]
-    public function index($fileId, $filePath = null, $shareToken = null, $inframe = false, $inviewer = false, $template = false, $anchor = null) {
+    public function index(
+        ?int $fileId,
+        ?string $filePath = null,
+        ?string $shareToken = null,
+        bool $inframe = false,
+        bool $inviewer = false,
+        bool $template = false,
+        ?string $anchor = null
+    ): TemplateResponse|RedirectResponse {
         $this->logger->debug("Open: $fileId $filePath ");
 
         $isLoggedIn = $this->userSession->isLoggedIn();
@@ -1465,17 +1309,17 @@ class EditorController extends Controller {
 
         $shareBy = null;
         if (!empty($shareToken) && !$isLoggedIn) {
-            list($share, $error) = $this->fileUtility->getShare($shareToken);
+            [$share, $error] = $this->fileUtility->getShare($shareToken);
             if (!empty($share)) {
                 $shareBy = $share->getSharedBy();
             }
         }
 
-        if (!$this->config->isUserAllowedToUse($shareBy)) {
+        if (!$this->appConfig->isUserAllowedToUse($shareBy)) {
             return $this->renderError($this->trans->t("Not permitted"));
         }
 
-        $documentServerUrl = $this->config->getDocumentServerUrl();
+        $documentServerUrl = $this->appConfig->getDocumentServerUrl();
 
         if (empty($documentServerUrl)) {
             $this->logger->error("documentServerUrl is empty");
@@ -1497,16 +1341,14 @@ class EditorController extends Controller {
         if ($inframe === true) {
             $params["inframe"] = true;
             $response = new TemplateResponse($this->appName, "editor", $params, "base");
+        } elseif ($isLoggedIn) {
+            $response = new TemplateResponse($this->appName, "editor", $params);
         } else {
-            if ($isLoggedIn) {
-                $response = new TemplateResponse($this->appName, "editor", $params);
-            } else {
-                $response = new PublicTemplateResponse($this->appName, "editor", $params);
+            $response = new PublicTemplateResponse($this->appName, "editor", $params);
 
-                list($file, $error, $share) = $this->fileUtility->getFileByToken($fileId, $shareToken);
-                if (!isset($error)) {
-                    $response->setHeaderTitle($file->getName());
-                }
+            [$file, $error, $share] = $this->fileUtility->getFileByToken($fileId, $shareToken);
+            if (!isset($error)) {
+                $response->setHeaderTitle($file->getName());
             }
         }
 
@@ -1537,7 +1379,11 @@ class EditorController extends Controller {
     #[NoAdminRequired]
     #[NoCSRFRequired]
     #[PublicPage]
-    public function publicPage($fileId, $shareToken, $inframe = false) {
+    public function publicPage(
+        ?int $fileId,
+        string $shareToken,
+        bool $inframe = false
+    ): TemplateResponse {
         return $this->index($fileId, null, $shareToken, $inframe);
     }
 
@@ -1548,10 +1394,8 @@ class EditorController extends Controller {
      * @param integer $fileId - file identifier
      * @param string $filePath - file path
      * @param bool $template - file is template
-     *
-     * @return array
      */
-    private function getFile($userId, $fileId, $filePath = null, $template = false) {
+    private function getFile(?string $userId, $fileId, $filePath = null, $template = false): array {
         if (empty($userId)) {
             return [null, $this->trans->t("UserId is empty"), null];
         }
@@ -1561,7 +1405,7 @@ class EditorController extends Controller {
         }
 
         try {
-            $folder = !$template ? $this->root->getUserFolder($userId) : TemplateManager::getGlobalTemplateDir();
+            $folder = $template ? TemplateManager::getGlobalTemplateDir() : $this->root->getUserFolder($userId);
             $files = $folder->getById($fileId);
         } catch (\Exception $e) {
             $this->logger->error("getFile: $fileId", ["exception" => $e]);
@@ -1604,7 +1448,14 @@ class EditorController extends Controller {
      *
      * @return string
      */
-    private function getUrl($file, $user = null, $shareToken = null, $version = 0, $changes = false, $template = false) {
+    private function getUrl(
+        File $file,
+        ?IUser $user = null,
+        ?string $shareToken = null,
+        int $version = 0,
+        bool $changes = false,
+        bool $template = false
+    ): string {
 
         $data = [
             "action" => "download",
@@ -1633,8 +1484,8 @@ class EditorController extends Controller {
 
         $fileUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.download", ["doc" => $hashUrl]);
 
-        if (!$this->config->useDemo() && !empty($this->config->getStorageUrl())) {
-            $fileUrl = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->config->getStorageUrl(), $fileUrl);
+        if (!$this->appConfig->useDemo() && !empty($this->appConfig->getStorageUrl())) {
+            $fileUrl = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->appConfig->getStorageUrl(), $fileUrl);
         }
 
         return $fileUrl;
@@ -1642,14 +1493,12 @@ class EditorController extends Controller {
 
     /**
      * Return excluded groups list for share
-     *
-     * @return array
      */
-    private function getShareExcludedGroups() {
+    private function getShareExcludedGroups(): array {
         $excludedGroups = [];
 
-        if (\OC::$server->getConfig()->getAppValue("core", "shareapi_exclude_groups", "no") === "yes") {
-            $excludedGroups = json_decode(\OC::$server->getConfig()->getAppValue("core", "shareapi_exclude_groups_list", ""), true);
+        if (Server::get(\OCP\IAppConfig::class)->getValueString("core", "shareapi_exclude_groups", "no") === "yes") {
+            $excludedGroups = json_decode((string) Server::get(\OCP\IAppConfig::class)->getValueString("core", "shareapi_exclude_groups_list", ""), true);
         }
 
         return $excludedGroups;
@@ -1659,23 +1508,18 @@ class EditorController extends Controller {
      * Generate unique user identifier
      *
      * @param string $userId - current user identifier
-     *
-     * @return string
      */
-    private function buildUserId($userId) {
-        $instanceId = $this->config->getSystemValue("instanceid", true);
-        $userId = $instanceId . "_" . $userId;
-        return $userId;
+    private function buildUserId(string $userId): string {
+        $instanceId = $this->appConfig->getSystemValue("instanceid", true);
+        return $instanceId . "_" . $userId;
     }
 
     /**
      * Get Nextcloud userId from unique user identifier
      *
      * @param string $userId - current user identifier
-     *
-     * @return string
      */
-    private function getUserId($userId) {
+    private function getUserId(string $userId): string {
         if (str_contains($userId, "_")) {
             $userIdExp = explode("_", $userId);
             $userId = end($userIdExp);
@@ -1685,21 +1529,17 @@ class EditorController extends Controller {
 
     /**
      * Get File id from by link
-     *
-     * @param string $link - link to the file
-     *
-     * @return array
      */
-    private function getFileIdByLink(string $link) {
+    private function getFileIdByLink(string $link): array {
         $path = parse_url($link, PHP_URL_PATH);
-        $encodedPath = array_map("urlencode", explode("/", $path));
+        $encodedPath = array_map(urlencode(...), explode("/", $path));
         $parsedLink = str_replace($path, implode("/", $encodedPath), $link);
         if (filter_var($parsedLink, FILTER_VALIDATE_URL) === false) {
             return [null, true];
         }
 
         $storageUrl = $this->urlGenerator->getAbsoluteURL("/");
-        if (parse_url($parsedLink, PHP_URL_HOST) !== parse_url($storageUrl, PHP_URL_HOST)) {
+        if (parse_url($parsedLink, PHP_URL_HOST) !== parse_url((string) $storageUrl, PHP_URL_HOST)) {
             return [null, true];
         }
 
@@ -1718,7 +1558,7 @@ class EditorController extends Controller {
      *
      * @return TemplateResponse
      */
-    private function renderError($error, $hint = "") {
+    private function renderError(string $error, string $hint = ""): TemplateResponse {
         return new TemplateResponse("", "error", [
             "errors" => [
                 [

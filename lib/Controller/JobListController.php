@@ -43,32 +43,13 @@ use OCP\IRequest;
  */
 class JobListController extends Controller {
 
-    /**
-     * Job list
-     *
-     * @var IJobList
-     */
-    private $jobList;
-
-    /**
-     * Application configuration
-     *
-     * @var AppConfig
-     */
-    private $config;
-
-    /**
-     * JobListController constructor.
-     *
-     * @param string $AppName - application name
-     * @param IRequest $request - request object
-     * @param AppConfig $config - application configuration
-     * @param IJobList $jobList - job list
-     */
-    public function __construct($AppName, IRequest $request, AppConfig $config, IJobList $jobList) {
-        parent::__construct($AppName, $request);
-        $this->config = $config;
-        $this->jobList = $jobList;
+    public function __construct(
+        string $appName,
+        IRequest $request,
+        private readonly AppConfig $appConfig,
+        private readonly IJobList $jobList
+    ) {
+        parent::__construct($appName, $request);
     }
 
     /**
@@ -76,7 +57,7 @@ class JobListController extends Controller {
      *
      * @param IJob|string $job
      */
-    private function addJob($job) {
+    private function addJob(IJob|string $job): void {
         if (!$this->jobList->has($job, null)) {
             $this->jobList->add($job);
             \OCP\Log\logger('onlyoffice')->debug("Job '".$job."' added to JobList.", ["app" => $this->appName]);
@@ -88,7 +69,7 @@ class JobListController extends Controller {
      *
      * @param IJob|string $job
      */
-    private function removeJob($job) {
+    private function removeJob(IJob|string $job): void {
         if ($this->jobList->has($job, null)) {
             $this->jobList->remove($job);
             \OCP\Log\logger('onlyoffice')->debug("Job '".$job."' removed from JobList.", ["app" => $this->appName]);
@@ -99,12 +80,12 @@ class JobListController extends Controller {
      * Add or remove EditorsCheck job depending on the value of _editors_check_interval
      *
      */
-    private function checkEditorsCheckJob() {
-        if (!$this->config->getCronChecker()) {
+    private function checkEditorsCheckJob(): void {
+        if (!$this->appConfig->getCronChecker()) {
             $this->removeJob(EditorsCheck::class);
             return;
         }
-        if ($this->config->getEditorsCheckInterval() > 0) {
+        if ($this->appConfig->getEditorsCheckInterval() > 0) {
             $this->addJob(EditorsCheck::class);
         } else {
             $this->removeJob(EditorsCheck::class);
@@ -115,7 +96,7 @@ class JobListController extends Controller {
      * Method for sequentially calling checks of all jobs
      *
      */
-    public function checkAllJobs() {
+    public function checkAllJobs(): void {
         $this->checkEditorsCheckJob();
     }
 }

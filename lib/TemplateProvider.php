@@ -36,37 +36,15 @@ use OCP\IURLGenerator;
 
 class TemplateProvider implements ICustomTemplateProvider {
 
-    /**
-     * Application name
-     *
-     * @var string
-     */
-    private $appName;
-
-    /**
-     * Url generator service
-     *
-     * @var IURLGenerator
-     */
-    private $urlGenerator;
-
-    /**
-     * @param string $AppName - application name
-     * @param IURLGenerator $urlGenerator - url generator service
-     */
-    public function __construct($AppName, IURLGenerator $urlGenerator) {
-        $this->appName = $AppName;
-        $this->urlGenerator = $urlGenerator;
-    }
+    public function __construct(
+        private readonly string $appName,
+        private readonly IURLGenerator $urlGenerator
+    ) {}
 
     /**
      * Return a list of additional templates that the template provider is offering
-     *
-     * @param string $template - mimetype of the template
-     *
-     * @return array
      */
-    public function getCustomTemplates($mimetype) : array {
+    public function getCustomTemplates(string $mimetype) : array {
         $templates = [];
 
         $templateFiles = TemplateManager::getGlobalTemplates($mimetype);
@@ -80,7 +58,7 @@ class TemplateProvider implements ICustomTemplateProvider {
 
             $template->setCustomPreviewUrl($this->urlGenerator->linkToRouteAbsolute($this->appName . ".template.preview", ["fileId" => $templateFile->getId()]));
 
-            array_push($templates, $template);
+            $templates[] = $template;
         }
 
         return $templates;
@@ -88,12 +66,8 @@ class TemplateProvider implements ICustomTemplateProvider {
 
     /**
      * Return the file for a given template id
-     *
-     * @param string $templateId - identifier of the template
-     *
-     * @return File
      */
-    public function getCustomTemplate($templateId) : File {
-        return TemplateManager::getTemplate($templateId);
+    public function getCustomTemplate(string $templateId): File {
+        return TemplateManager::getTemplate((int)$templateId);
     }
 }

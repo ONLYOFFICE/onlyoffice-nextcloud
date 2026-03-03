@@ -46,6 +46,7 @@ class FileVersionsListener implements IEventListener {
 
     public function __construct(
         private readonly LoggerInterface $logger,
+        private readonly KeyManager $keyManager
     ) {}
 
     public function handle(Event $event): void {
@@ -71,7 +72,7 @@ class FileVersionsListener implements IEventListener {
 
     private function deleteKeyForFile(File $file, bool $unlock = false): void {
         try {
-            KeyManager::delete($file->getId(), $unlock);
+            $this->keyManager->delete($file->getId(), $unlock);
         } catch (Exception $e) {
             $this->logger->error(
                 "VersionRestoredEvent: deleting key for file {$file->getId()}",

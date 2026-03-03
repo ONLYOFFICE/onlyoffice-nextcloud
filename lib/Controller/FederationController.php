@@ -29,7 +29,6 @@
 
 namespace OCA\Onlyoffice\Controller;
 
-use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\DocumentService;
 use OCA\Onlyoffice\FileUtility;
 use OCA\Onlyoffice\KeyManager;
@@ -39,10 +38,7 @@ use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
 use OCP\AppFramework\Http\Attribute\PublicPage;
 use OCP\AppFramework\OCSController;
-use OCP\IL10N;
 use OCP\IRequest;
-use OCP\ISession;
-use OCP\Share\IManager;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -50,49 +46,14 @@ use Psr\Log\LoggerInterface;
  */
 class FederationController extends OCSController {
 
-    /**
-     * Logger
-     *
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
-     * Application configuration
-     *
-     * @var AppConfig
-     */
-    public $config;
-
-    /**
-     * File utility
-     *
-     * @var FileUtility
-     */
-    private $fileUtility;
-
-    /**
-     * @param string $AppName - application name
-     * @param IRequest $request - request object
-     * @param IL10N $trans - l10n service
-     * @param LoggerInterface $logger - logger
-     * @param IManager $shareManager - Share manager
-     * @param IManager $ISession - Session
-     */
     public function __construct(
-        $AppName,
+        string $appName,
         IRequest $request,
-        IL10N $trans,
-        LoggerInterface $logger,
-        IManager $shareManager,
-        ISession $session
+        private readonly LoggerInterface $logger,
+        private readonly FileUtility $fileUtility,
+        private readonly KeyManager $keyManager
     ) {
-        parent::__construct($AppName, $request);
-
-        $this->logger = $logger;
-
-        $this->config = \OCP\Server::get(AppConfig::class);
-        $this->fileUtility = new FileUtility($AppName, $trans, $logger, $this->config, $shareManager, $session);
+        parent::__construct($appName, $request);
     }
 
     /**
@@ -106,8 +67,8 @@ class FederationController extends OCSController {
     #[NoAdminRequired]
     #[NoCSRFRequired]
     #[PublicPage]
-    public function key($shareToken, $path) {
-        list($file, $error, $share) = $this->fileUtility->getFileByToken(null, $shareToken, $path);
+    public function key(string $shareToken, string $path): DataResponse {
+        [$file, $error, $share] = $this->fileUtility->getFileByToken(null, $shareToken, $path);
 
         if (isset($error)) {
             $this->logger->error("Federated getFileByToken: $error");
@@ -136,8 +97,8 @@ class FederationController extends OCSController {
     #[NoAdminRequired]
     #[NoCSRFRequired]
     #[PublicPage]
-    public function keylock($shareToken, $path, $lock, $fs) {
-        list($file, $error, $share) = $this->fileUtility->getFileByToken(null, $shareToken, $path);
+    public function keylock(string $shareToken, string $path, bool $lock, bool $fs): DataResponse {
+        [$file, $error, $share] = $this->fileUtility->getFileByToken(null, $shareToken, $path);
 
         if (isset($error)) {
             $this->logger->error("Federated getFileByToken: $error");
@@ -152,9 +113,9 @@ class FederationController extends OCSController {
                 return new DataResponse(["error" => "Failed request"]);
             }
         } else {
-            KeyManager::lock($fileId, $lock);
+            $this->keyManager->lock($fileId, $lock);
             if (!empty($fs)) {
-                KeyManager::setForcesave($fileId, $fs);
+                $this->keyManager->setForcesave($fileId, $fs);
             }
         }
 
@@ -164,13 +125,11 @@ class FederationController extends OCSController {
 
     /**
      * Health check instance
-     *
-     * @return DataResponse
      */
     #[NoAdminRequired]
     #[NoCSRFRequired]
     #[PublicPage]
-    public function healthcheck() {
+    public function healthcheck(): DataResponse {
         $this->logger->debug("Federated healthcheck");
 
         return new DataResponse(["alive" => true]);

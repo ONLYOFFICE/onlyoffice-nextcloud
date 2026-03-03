@@ -40,66 +40,16 @@ use Psr\Log\LoggerInterface;
 
 class Notifier implements INotifier {
 
-    /**
-     * Application name
-     *
-     * @var string
-     */
-    private $appName;
-
-    /**
-     * IFactory
-     *
-     * @var IFactory
-     */
-    private $l10nFactory;
-
-    /**
-     * Url generator service
-     *
-     * @var IURLGenerator
-     */
-    private $urlGenerator;
-
-    /**
-     * Logger
-     *
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
-     * User manager
-     *
-     * @var IUserManager
-     */
-    private $userManager;
-
-    /**
-     * @param string $AppName - application name
-     * @param IFactory $l10NFactory - l10n
-     * @param IURLGenerator $urlGenerator - url generator service
-     * @param LoggerInterface $logger - logger
-     * @param IUserManager $userManager - user manager
-     */
     public function __construct(
-        string $appName,
-        IFactory $l10nFactory,
-        IURLGenerator $urlGenerator,
-        LoggerInterface $logger,
-        IUserManager $userManager
-    ) {
-        $this->appName = $appName;
-        $this->l10nFactory = $l10nFactory;
-        $this->urlGenerator = $urlGenerator;
-        $this->logger = $logger;
-        $this->userManager = $userManager;
-    }
+        private readonly string $appName,
+        private readonly IFactory $l10nFactory,
+        private readonly IURLGenerator $urlGenerator,
+        private readonly LoggerInterface $logger,
+        private readonly IUserManager $userManager
+    ) {}
 
     /**
      * Identifier of the notifier, only use [a-z0-9_]
-     *
-     * @return string
      */
     public function getID(): string {
         return $this->appName;
@@ -107,8 +57,6 @@ class Notifier implements INotifier {
 
     /**
      * Human readable name describing the notifier
-     *
-     * @return string
      */
     public function getName(): string {
         return $this->appName;
@@ -117,8 +65,6 @@ class Notifier implements INotifier {
     /**
      * @param INotification $notification - notification object
      * @param string $languageCode - the code of the language that should be used to prepare the notification
-     *
-     * @return INotification
      */
     public function prepare(INotification $notification, string $languageCode): INotification {
         if ($notification->getApp() !== $this->appName) {

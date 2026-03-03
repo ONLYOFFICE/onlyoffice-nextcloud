@@ -29,7 +29,9 @@
 
 namespace OCA\Onlyoffice;
 
+use OCA\Files_Versions\Versions\IVersion;
 use OCP\Constants;
+use OCP\Files\File;
 use OCP\Files\Folder;
 use OCP\Files\NotFoundException;
 use OCP\IL10N;
@@ -46,71 +48,14 @@ use Psr\Log\LoggerInterface;
  */
 class FileUtility {
 
-    /**
-     * Application name
-     *
-     * @var string
-     */
-    private $appName;
-
-    /**
-     * l10n service
-     *
-     * @var IL10N
-     */
-    private $trans;
-
-    /**
-     * Logger
-     *
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
-     * Share manager
-     *
-     * @var IManager
-     */
-    private $shareManager;
-
-    /**
-     * Session
-     *
-     * @var ISession
-     */
-    private $session;
-
-    /**
-     * Application configuration
-     *
-     * @var AppConfig
-     */
-    private $config;
-
-    /**
-     * @param string $AppName - application name
-     * @param IL10N $trans - l10n service
-     * @param LoggerInterface $logger - logger
-     * @param AppConfig $config - application configuration
-     * @param IManager $shareManager - Share manager
-     * @param IManager $ISession - Session
-     */
     public function __construct(
-        $AppName,
-        IL10N $trans,
-        LoggerInterface $logger,
-        AppConfig $config,
-        IManager $shareManager,
-        ISession $session
-    ) {
-        $this->appName = $AppName;
-        $this->trans = $trans;
-        $this->logger = $logger;
-        $this->config = $config;
-        $this->shareManager = $shareManager;
-        $this->session = $session;
-    }
+        private readonly IL10N $trans,
+        private readonly LoggerInterface $logger,
+        private readonly AppConfig $appConfig,
+        private readonly IManager $shareManager,
+        private readonly ISession $session,
+        private readonly KeyManager $keyManager
+    ) {}
 
     /**
      * Getting file by token
@@ -118,11 +63,9 @@ class FileUtility {
      * @param integer $fileId - file identifier
      * @param string $shareToken - access token
      * @param string $path - file path
-     *
-     * @return array
      */
-    public function getFileByToken($fileId, $shareToken, $path = null) {
-        list($node, $error, $share) = $this->getNodeByToken($shareToken);
+    public function getFileByToken(?int $fileId, string $shareToken, ?string $path = null): array {
+        [$node, $error, $share] = $this->getNodeByToken($shareToken);
 
         if (isset($error)) {
             return [null, $error, null];
@@ -158,14 +101,10 @@ class FileUtility {
     }
 
     /**
-     * Getting file by token
-     *
-     * @param string $shareToken - access token
-     *
-     * @return array
+     * Get a file by token
      */
-    public function getNodeByToken($shareToken) {
-        list($share, $error) = $this->getShare($shareToken);
+    public function getNodeByToken(string $shareToken): array {
+        [$share, $error] = $this->getShare($shareToken);
 
         if (isset($error)) {
             return [null, $error, null];
@@ -189,10 +128,8 @@ class FileUtility {
      * Getting share by token
      *
      * @param string $shareToken - access token
-     *
-     * @return array
      */
-    public function getShare($shareToken) {
+    public function getShare(string $shareToken): array {
         if (empty($shareToken)) {
             return [null, $this->trans->t("FileId is empty")];
         }
@@ -228,7 +165,7 @@ class FileUtility {
      *
      * @return string
      */
-    public function getKey($file, $origin = false) {
+    public function getKey(File $file, bool $origin = false): string {
         $fileId = $file->getId();
 
         if ($origin
@@ -239,14 +176,14 @@ class FileUtility {
             }
         }
 
-        $key = KeyManager::get($fileId);
+        $key = $this->keyManager->get($fileId);
 
         if (empty($key)) {
-            $instanceId = $this->config->getSystemValue("instanceid", true);
+            $instanceId = $this->appConfig->getSystemValue("instanceid", true);
 
             $key = $instanceId . "_" . $this->GUID();
 
-            KeyManager::set($fileId, $key);
+            $this->keyManager->set($fileId, $key);
         }
 
         return $key;
@@ -254,11 +191,9 @@ class FileUtility {
 
     /**
      * Generate unique identifier
-     *
-     * @return string
      */
-    private function GUID() {
-        if (function_exists("com_create_guid") === true) {
+    private function GUID(): string {
+        if (function_exists("com_create_guid")) {
             return trim(com_create_guid(), "{}");
         }
 
@@ -268,16 +203,12 @@ class FileUtility {
     /**
      * Generate unique file version key
      *
-     * @param OCA\Files_Versions\Versions\IVersion $version - file version
-     *
-     * @return string
+     * @param \OCA\Files_Versions\Versions\IVersion $version - file version
      */
-    public function getVersionKey($version) {
-        $instanceId = $this->config->getSystemValue("instanceid", true);
+    public function getVersionKey(IVersion $version): string {
+        $instanceId = $this->appConfig->getSystemValue("instanceid", true);
 
-        $key = $instanceId . "_" . $version->getSourceFile()->getEtag() . "_" . $version->getRevisionId();
-
-        return $key;
+        return $instanceId . "_" . $version->getSourceFile()->getEtag() . "_" . $version->getRevisionId();
     }
 
     /**
@@ -287,7 +218,7 @@ class FileUtility {
      *
      * @return bool
      */
-    public static function canShareDownload($share) {
+    public static function canShareDownload(IShare $share): bool {
         $can = true;
 
         $downloadAttribute = self::getShareAttrubute($share, "download");
@@ -306,14 +237,12 @@ class FileUtility {
      *
      * @return bool|null
      */
-    private static function getShareAttrubute($share, $attribute) {
+    private static function getShareAttrubute(IShare $share, string $attribute) {
         $attributes = null;
         if (method_exists(IShare::class, "getAttributes")) {
             $attributes = $share->getAttributes();
         }
 
-        $attribute = isset($attributes) ? $attributes->getAttribute("permissions", $attribute) : null;
-
-        return $attribute;
+        return isset($attributes) ? $attributes->getAttribute("permissions", $attribute) : null;
     }
 }

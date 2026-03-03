@@ -2,6 +2,11 @@
 
 ##
 ## Changed
+- updated PHP codebase to Nextcloud 32 API
+- adopted PHP 8.1 syntax
+- improved PHP type coverage
+- removed unused PHP code
+- internal PHP refactoring
 - migrated from legacy hooks to event listeners
 - fixed opening editor for shared link
 

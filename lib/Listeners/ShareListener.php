@@ -44,6 +44,7 @@ class ShareListener implements IEventListener {
 
     public function __construct(
         private readonly LoggerInterface $logger,
+        private readonly ExtraPermissions $extraPermissions
     ) {}
 
     public function handle(Event $event): void {
@@ -54,7 +55,7 @@ class ShareListener implements IEventListener {
 
     public function shareDeleted(IShare $share): void {
         try {
-            ExtraPermissions::delete($share->getId());
+            $this->extraPermissions->delete($share->getId());
         } catch (Exception $e) {
             $this->logger->error(
                 "ShareDeletedEvent: deleting extra permissions for share {$share->getId()}",

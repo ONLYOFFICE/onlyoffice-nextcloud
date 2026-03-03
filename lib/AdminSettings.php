@@ -31,6 +31,8 @@ namespace OCA\Onlyoffice;
 
 use OCA\Onlyoffice\AppInfo\Application;
 use OCA\Onlyoffice\Controller\SettingsController;
+use OCP\AppFramework\Http\TemplateResponse;
+use OCP\Server;
 use OCP\Settings\ISettings;
 
 /**
@@ -38,36 +40,27 @@ use OCP\Settings\ISettings;
  */
 class AdminSettings implements ISettings {
 
-    public function __construct() {
-    }
-
     /**
      * Print config section
-     *
-     * @return TemplateResponse
      */
-    public function getForm() {
-        $app = \OC::$server->query(Application::class);
+    public function getForm(): TemplateResponse {
+        $app = Server::get(Application::class);
         $container = $app->getContainer();
-        $response = $container->query(SettingsController::class)->index();
-        return $response;
+
+        return $container->get(SettingsController::class)->index();
     }
 
     /**
      * Get section ID
-     *
-     * @return string
      */
-    public function getSection() {
+    public function getSection(): string {
         return "onlyoffice";
     }
 
     /**
      * Get priority order
-     *
-     * @return int
      */
-    public function getPriority() {
+    public function getPriority(): int {
         return 50;
     }
 }

@@ -35,7 +35,7 @@ use OCA\Viewer\Event\LoadViewer;
 use OCP\AppFramework\Services\IInitialState;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
-use OCP\IServerContainer;
+use OCP\Server;
 use OCP\Util;
 
 /**
@@ -43,41 +43,10 @@ use OCP\Util;
  */
 class ViewerListener implements IEventListener {
 
-    /**
-     * Application configuration
-     *
-     * @var AppConfig
-     */
-    private $appConfig;
-
-    /**
-     * Initial state
-     *
-     * @var IInitialState
-     */
-    private $initialState;
-
-    /**
-     * Server container
-     *
-     * @var IServerContainer
-     */
-    private $serverContainer;
-
-    /**
-     * @param AppConfig $config - application configuration
-     * @param IInitialState $initialState - initial state
-     * @param IServerContainer $serverContainer - server container
-     */
     public function __construct(
-        AppConfig $appConfig,
-        IInitialState $initialState,
-        IServerContainer $serverContainer
-    ) {
-        $this->appConfig = $appConfig;
-        $this->initialState = $initialState;
-        $this->serverContainer = $serverContainer;
-    }
+        private readonly AppConfig $appConfig,
+        private readonly IInitialState $initialState
+    ) {}
 
     public function handle(Event $event): void {
         if (!$event instanceof LoadViewer) {
@@ -93,10 +62,7 @@ class ViewerListener implements IEventListener {
             Util::addStyle("onlyoffice", "viewer");
             Util::addStyle("onlyoffice", "format");
 
-            $container = $this->serverContainer;
-            $this->initialState->provideLazyInitialState("settings", function () use ($container) {
-                return $container->query(SettingsData::class);
-            });
+            $this->initialState->provideLazyInitialState("settings", fn() => Server::get(SettingsData::class));
         }
     }
 }
