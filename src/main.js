@@ -279,7 +279,7 @@ import { loadState } from '@nextcloud/initial-state'
 		return null
 	}
 
-	OCA.Onlyoffice.FileConvertClickExec = async function(file, view, dir) {
+	OCA.Onlyoffice.FileConvertHandler = async function(file, view, dir) {
 		OCA.Onlyoffice.FileConvert(file.fileid, async (response) => {
 			const viewContents = await view.getContents(dir)
 
@@ -517,7 +517,7 @@ import { loadState } from '@nextcloud/initial-state'
 
 				return true
 			},
-			exec: OCA.Onlyoffice.FileConvertClickExec,
+			exec: OCA.Onlyoffice.FileConvertHandler,
 		}))
 
 		registerFileAction(new FileAction({
