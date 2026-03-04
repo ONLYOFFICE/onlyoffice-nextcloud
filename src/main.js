@@ -262,7 +262,7 @@ import { loadState } from '@nextcloud/initial-state'
 		}
 	}
 
-	OCA.Onlyoffice.FileClickExec = async function(file, view, dir, isDefault = true) {
+	OCA.Onlyoffice.FileOpenHandler = async function(file, view, dir, isDefault = true) {
 		if (OCA.Onlyoffice.context !== null
 			&& document.querySelector('.onlyoffice-iframe-container')
 			&& !OCA.Onlyoffice.Desktop) {
@@ -470,7 +470,7 @@ import { loadState } from '@nextcloud/initial-state'
 
 				return true
 			},
-			exec: OCA.Onlyoffice.FileClickExec,
+			exec: OCA.Onlyoffice.FileOpenHandler,
 			default: DefaultType.HIDDEN,
 			order: -1,
 		}))
@@ -490,7 +490,7 @@ import { loadState } from '@nextcloud/initial-state'
 				return true
 			},
 			exec(file, view, dir) {
-				OCA.Onlyoffice.FileClickExec(file, view, dir, false)
+				OCA.Onlyoffice.FileOpenHandler(file, view, dir, false)
 			},
 		}))
 
@@ -644,7 +644,7 @@ import { loadState } from '@nextcloud/initial-state'
 					return true
 				},
 				exec(file, view, dir) {
-					OCA.Onlyoffice.FileClickExec(file, view, dir, false)
+					OCA.Onlyoffice.FileOpenHandler(file, view, dir, false)
 				},
 			}))
 
