@@ -316,12 +316,9 @@ import { loadState } from '@nextcloud/initial-state'
 	}
 
 	OCA.Onlyoffice.FileDownloadAsHandler = async function(file) {
-		OCA.Onlyoffice.Download(file.basename, file.fileid)
+		const fileName = file.basename
+		const fileId = file.fileid
 
-		return null
-	}
-
-	OCA.Onlyoffice.Download = function(fileName, fileId) {
 		$.get(OC.filePath(OCA.Onlyoffice.AppName, 'templates', 'downloadPicker.html'),
 			function(tmpl) {
 				const dialog = $(tmpl).octemplate({
@@ -379,6 +376,8 @@ import { loadState } from '@nextcloud/initial-state'
 					}],
 				})
 			})
+
+		return null
 	}
 
 	OCA.Onlyoffice.OpenFormPicker = function(name, filelist, filesContext = null) {
