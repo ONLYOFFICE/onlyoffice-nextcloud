@@ -167,7 +167,7 @@ import { loadState } from '@nextcloud/initial-state'
 			OCA.Onlyoffice.SetDefaultUrl()
 			winEditor.location.href = url
 		} else if ((!OCA.Onlyoffice.setting.sameTab && !OCA.Onlyoffice.setting.enableSharing)
-			|| OCA.Onlyoffice.mobile || OCA.Onlyoffice.Desktop || (isPublicShare() && !OCA.Onlyoffice.isViewIsFile()
+			|| OCA.Onlyoffice.mobile || OCA.Onlyoffice.Desktop || (isPublicShare() && !OCA.Onlyoffice.isPublicFileShare()
 			&& !OCA.Onlyoffice.setting.sameTab && OCA.Onlyoffice.setting.enableSharing)
 			|| (!OCA.Onlyoffice.setting.sameTab && !isDefault)) {
 			OCA.Onlyoffice.SetDefaultUrl()
@@ -597,7 +597,7 @@ import { loadState } from '@nextcloud/initial-state'
 		return extension
 	}
 
-	OCA.Onlyoffice.isViewIsFile = function() {
+	OCA.Onlyoffice.isPublicFileShare = function() {
 		const mimetype = document.getElementById('mimetype')?.value
 		if (mimetype !== undefined) {
 			return mimetype !== 'httpd/unix-directory'
@@ -611,7 +611,7 @@ import { loadState } from '@nextcloud/initial-state'
 	}
 
 	const initPage = function() {
-		if (isPublicShare() && OCA.Onlyoffice.isViewIsFile()) {
+		if (isPublicShare() && OCA.Onlyoffice.isPublicFileShare()) {
 			// file by shared link
 			let fileName = ''
 			const fileNameDomElement = document.getElementById('filename')
