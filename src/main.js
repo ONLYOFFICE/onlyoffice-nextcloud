@@ -433,7 +433,7 @@ import { loadState } from '@nextcloud/initial-state'
 			})
 	}
 
-	OCA.Onlyoffice.CreateFormClickExec = async function(file, view, dir) {
+	OCA.Onlyoffice.FileCreateFormHandler = async function(file, view, dir) {
 		const name = file.basename.replace(/\.[^.]+$/, '.pdf')
 		const context = {
 			dir,
@@ -542,7 +542,7 @@ import { loadState } from '@nextcloud/initial-state'
 
 				return true
 			},
-			exec: OCA.Onlyoffice.CreateFormClickExec,
+			exec: OCA.Onlyoffice.FileCreateFormHandler,
 		}))
 
 		if (!isPublicShare()) {
