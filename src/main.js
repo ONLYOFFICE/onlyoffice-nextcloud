@@ -315,7 +315,7 @@ import { loadState } from '@nextcloud/initial-state'
 			})
 	}
 
-	OCA.Onlyoffice.DownloadClickExec = async function(file) {
+	OCA.Onlyoffice.FileDownloadAsHandler = async function(file) {
 		OCA.Onlyoffice.Download(file.basename, file.fileid)
 
 		return null
@@ -570,7 +570,7 @@ import { loadState } from '@nextcloud/initial-state'
 
 					return true
 				},
-				exec: OCA.Onlyoffice.DownloadClickExec,
+				exec: OCA.Onlyoffice.FileDownloadAsHandler,
 			}))
 		}
 	}
