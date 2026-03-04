@@ -445,7 +445,7 @@ import { loadState } from '@nextcloud/initial-state'
 		return null
 	}
 
-	OCA.Onlyoffice.registerAction = function() {
+	OCA.Onlyoffice.registerFileActions = function() {
 		const formats = OCA.Onlyoffice.setting.formats
 
 		const getConfig = function(file) {
@@ -670,7 +670,7 @@ import { loadState } from '@nextcloud/initial-state'
 		} else {
 			OCA.Onlyoffice.registerNewFileMenu()
 
-			OCA.Onlyoffice.registerAction()
+			OCA.Onlyoffice.registerFileActions()
 		}
 	}
 	initPage()
