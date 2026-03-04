@@ -598,16 +598,7 @@ import { loadState } from '@nextcloud/initial-state'
 	}
 
 	OCA.Onlyoffice.isPublicFileShare = function() {
-		const mimetype = document.getElementById('mimetype')?.value
-		if (mimetype !== undefined) {
-			return mimetype !== 'httpd/unix-directory'
-		}
-
-		try {
-			return loadState('files_sharing', 'view') === 'public-file-share'
-		} catch {
-			return false
-		}
+		return loadState('files_sharing', 'view', null) === 'public-file-share'
 	}
 
 	const initPage = function() {
