@@ -462,8 +462,13 @@ import { loadState } from '@nextcloud/initial-state'
 			enabled: (files) => {
 				const config = getConfig(files[0])
 
-				if (!config) return false
-				if (!config.def) return false
+				if (!config
+					|| !config.def
+					|| OCA.Onlyoffice.isPublicFileShare() && (_oc_appswebroots.richdocuments
+						|| (_oc_appswebroots.files_pdfviewer && extension === 'pdf')
+						|| (_oc_appswebroots.text && extension === 'txt'))) {
+					return false
+				}
 
 				if (Permission.READ !== (files[0].permissions & Permission.READ)) { return false }
 
@@ -492,6 +497,11 @@ import { loadState } from '@nextcloud/initial-state'
 				OCA.Onlyoffice.FileOpenHandler(file, view, dir, false)
 			},
 		}))
+
+		// Skip the rest if the page is public file share
+		if (OCA.Onlyoffice.isPublicFileShare()) {
+			return
+		}
 
 		registerFileAction(new FileAction({
 			id: 'onlyoffice-convert',
@@ -602,67 +612,11 @@ import { loadState } from '@nextcloud/initial-state'
 	}
 
 	const initPage = function() {
-		if (isPublicShare() && OCA.Onlyoffice.isPublicFileShare()) {
-			// file by shared link
-			let fileName = ''
-			const fileNameDomElement = document.getElementById('filename')
-			if (fileNameDomElement !== null && fileNameDomElement.value) {
-				fileName = fileNameDomElement.value
-			} else {
-				try {
-					fileName = loadState('files_sharing', 'filename')
-				} catch {
-					return
-				}
-			}
-
-			const extension = OCA.Onlyoffice.getFileExtension(fileName)
-			const formats = OCA.Onlyoffice.setting.formats
-
-			const config = formats[extension]
-			if (!config) {
-				return
-			}
-
-			registerFileAction(new FileAction({
-				id: 'onlyoffice-public-open',
-				displayName: () => t(OCA.Onlyoffice.AppName, 'Open in ONLYOFFICE'),
-				iconSvgInline: () => AppDarkSvg,
-				enabled: (files) => {
-					if (Permission.READ !== (files[0].permissions & Permission.READ)) { return false }
-
-					return true
-				},
-				exec(file, view, dir) {
-					OCA.Onlyoffice.FileOpenHandler(file, view, dir, false)
-				},
-			}))
-
-			if (config.def
-				&& !_oc_appswebroots.richdocuments
-				&& !(_oc_appswebroots.files_pdfviewer && extension === 'pdf')
-				&& !(_oc_appswebroots.text && extension === 'txt')) {
-				const editorUrl = OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/s/' + encodeURIComponent(getSharingToken()))
-
-				OCA.Onlyoffice.frameSelector = '#onlyofficeFrame'
-				const container = document.createElement('div')
-				container.classList.add('onlyoffice-iframe-container')
-				const iframe = document.createElement('iframe')
-				iframe.id = 'onlyofficeFrame'
-				iframe.nonce = btoa(OC.requestToken)
-				iframe.scrolling = 'no'
-				iframe.allowFullscreen = true
-				iframe.src = `${editorUrl}?inframe=true`
-				container.appendChild(iframe)
-				const appContent = document.querySelector('#app-content') || document.querySelector('#app-content-vue')
-				appContent.appendChild(container)
-				$('body').addClass('onlyoffice-inline')
-			}
-		} else {
+		if (!OCA.Onlyoffice.isPublicFileShare()) {
 			OCA.Onlyoffice.registerNewFileMenu()
-
-			OCA.Onlyoffice.registerFileActions()
 		}
+
+		OCA.Onlyoffice.registerFileActions()
 	}
 	initPage()
 
