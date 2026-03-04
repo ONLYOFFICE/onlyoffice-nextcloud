@@ -29,7 +29,7 @@
 /* global _, jQuery */
 
 import { spawnDialog } from '@nextcloud/vue/functions/dialog'
-import { defineAsyncComponent } from 'vue'
+import EmptyJwtInfoDialog from './views/EmptyJwtInfoDialog.vue'
 
 /**
  * @param {object} $ JQueryStatic object
@@ -213,7 +213,7 @@ import { defineAsyncComponent } from 'vue'
 							if (response.secret !== null) {
 								OCP.Toast.success(t(OCA.Onlyoffice.AppName, 'Server settings have been successfully updated') + versionMessage)
 							} else {
-								spawnDialog(defineAsyncComponent(() => import('./views/EmptyJwtInfoDialog.vue')))
+								spawnDialog(EmptyJwtInfoDialog)
 							}
 						}
 					} else {
