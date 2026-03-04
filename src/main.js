@@ -449,7 +449,7 @@ import { loadState } from '@nextcloud/initial-state'
 		const formats = OCA.Onlyoffice.setting.formats
 
 		const getConfig = function(file) {
-			const fileExt = file?.extension?.toLowerCase()?.replace('.', '')
+			const fileExt = OCA.Onlyoffice.getFileExtension(file?.extension || file?.displayname)
 			const config = formats[fileExt]
 
 			return config
