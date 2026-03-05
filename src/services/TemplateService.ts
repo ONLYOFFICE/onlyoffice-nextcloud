@@ -26,30 +26,18 @@
  *
  */
 
-/* global _, jQuery */
+import axios from '@nextcloud/axios'
+import { generateUrl } from '@nextcloud/router'
+import type { ApiError, Template } from '../types'
 
-/**
- * @param {object} $ JQueryStatic object
- * @param {object} OC Nextcloud OCA object
- */
-(function($, OC) {
+const templateUrl = generateUrl('apps/onlyoffice/ajax/template')
 
-	OCA.Onlyoffice = _.extend({
-		AppName: 'onlyoffice',
-		templates: null,
-	}, OCA.Onlyoffice)
+export const addTemplate = (file: File): Promise<Template | ApiError> => {
+	const data = new FormData()
+	data.append('file', file)
+	return axios.post<Template | ApiError>(templateUrl, data).then(response => response.data)
+}
 
-	OCA.Onlyoffice.AttachItemTemplate = function(template) {
-		$.get(OC.filePath(OCA.Onlyoffice.AppName, 'templates', 'templateItem.html'),
-			function(item) {
-				item = $(item)
-
-				item.attr('data-id', template.id)
-				item.children('img').attr('src', template.icon)
-				item.children('p').text(template.name)
-
-				$('.onlyoffice-template-container').append(item)
-			})
-	}
-
-})(jQuery, OC)
+export const deleteTemplate = (templateId: number): Promise<ApiError | []> => {
+	return axios.delete<ApiError | []>(templateUrl, { params: { templateId } }).then(response => response.data)
+}

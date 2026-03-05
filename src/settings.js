@@ -30,6 +30,7 @@
 
 import { spawnDialog } from '@nextcloud/vue/functions/dialog'
 import EmptyJwtInfoDialog from './views/EmptyJwtInfoDialog.vue'
+import { addTemplate, deleteTemplate } from './services/TemplateService'
 
 /**
  * @param {object} $ JQueryStatic object
@@ -383,27 +384,18 @@ import EmptyJwtInfoDialog from './views/EmptyJwtInfoDialog.vue'
 
 		$('#onlyofficeAddTemplate').change(function() {
 			const file = this.files[0]
-			const data = new FormData()
-
-			data.append('file', file)
 
 			$('.section-onlyoffice').addClass('icon-loading')
-			OCA.Onlyoffice.AddTemplate(file, (template, error) => {
-
+			addTemplate(file).then((response) => {
 				$('.section-onlyoffice').removeClass('icon-loading')
-				const message = error
-					? t(OCA.Onlyoffice.AppName, 'Error') + ': ' + error
-					: t(OCA.Onlyoffice.AppName, 'Template successfully added')
 
-				if (error) {
-					OCP.Toast.error(message)
+				if (response.error) {
+					OCP.Toast.error(t(OCA.Onlyoffice.AppName, 'Error') + ': ' + response.error)
 					return
 				}
 
-				if (template) {
-					OCA.Onlyoffice.AttachItemTemplate(template)
-				}
-				OCP.Toast.success(message)
+				OCA.Onlyoffice.AttachItemTemplate(response)
+				OCP.Toast.success(t(OCA.Onlyoffice.AppName, 'Template successfully added'))
 			})
 		})
 
@@ -412,19 +404,16 @@ import EmptyJwtInfoDialog from './views/EmptyJwtInfoDialog.vue'
 			const templateId = $(item).attr('data-id')
 
 			$('.section-onlyoffice').addClass('icon-loading')
-			OCA.Onlyoffice.DeleteTemplate(templateId, (response) => {
+			deleteTemplate(templateId).then((response) => {
 				$('.section-onlyoffice').removeClass('icon-loading')
 
-				const message = response.error
-					? t(OCA.Onlyoffice.AppName, 'Error') + ': ' + response.error
-					: t(OCA.Onlyoffice.AppName, 'Template successfully deleted')
 				if (response.error) {
-					OCP.Toast.error(message)
+					OCP.Toast.error(t(OCA.Onlyoffice.AppName, 'Error') + ': ' + response.error)
 					return
 				}
 
 				$(item).detach()
-				OCP.Toast.success(message)
+				OCP.Toast.success(t(OCA.Onlyoffice.AppName, 'Template successfully deleted'))
 			})
 		})
 

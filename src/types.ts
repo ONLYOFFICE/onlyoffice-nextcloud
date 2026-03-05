@@ -26,30 +26,13 @@
  *
  */
 
-/* global _, jQuery */
+export interface Template {
+	id: number
+	name: string
+	type: string
+	icon: string
+}
 
-/**
- * @param {object} $ JQueryStatic object
- * @param {object} OC Nextcloud OCA object
- */
-(function($, OC) {
-
-	OCA.Onlyoffice = _.extend({
-		AppName: 'onlyoffice',
-		templates: null,
-	}, OCA.Onlyoffice)
-
-	OCA.Onlyoffice.AttachItemTemplate = function(template) {
-		$.get(OC.filePath(OCA.Onlyoffice.AppName, 'templates', 'templateItem.html'),
-			function(item) {
-				item = $(item)
-
-				item.attr('data-id', template.id)
-				item.children('img').attr('src', template.icon)
-				item.children('p').text(template.name)
-
-				$('.onlyoffice-template-container').append(item)
-			})
-	}
-
-})(jQuery, OC)
+export interface ApiError {
+	error: string
+}
