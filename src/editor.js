@@ -30,6 +30,20 @@ import { getCurrentUser } from '@nextcloud/auth'
 import { showError, showSuccess } from '@nextcloud/dialogs'
 import { t } from '@nextcloud/l10n'
 import { generateUrl } from '@nextcloud/router'
+import {
+	getConfig,
+	getHistory,
+	getVersionData,
+	restoreVersion,
+	saveAs,
+	getFileUrl,
+	setReferenceSource,
+	getReferenceData,
+	getUserInfo,
+	getUsers,
+	sendMention,
+	setFavorite,
+} from './services/EditorService.ts'
 
 /* global _, DocsAPI, jQuery, moment, oc_defaults */
 
@@ -73,158 +87,151 @@ import { generateUrl } from '@nextcloud/router'
 
 		const configUrl = OCA.Onlyoffice.getConfigUrl()
 
-		$.ajax({
-			url: configUrl,
-			success: function onSuccess(config) {
-				if (config) {
-					OCA.Onlyoffice.device = config.type
-					if (OCA.Onlyoffice.device === 'mobile') {
-						OCA.Onlyoffice.resizeEvents()
-					}
-
-					if (config.redirectUrl) {
-						location.href = config.redirectUrl
-						return
-					}
-
-					if (config.error != null) {
-						OCA.Onlyoffice.showMessage(config.error, 'error', { timeout: -1 })
-						return
-					}
-
-					if (!config.documentServerUrl) {
-						OCA.Onlyoffice.showMessage('ONLYOFFICE cannot be reached. Please contact admin', 'error', { timeout: -1 })
-						return
-					}
-
-					const script = document.createElement('script')
-					script.src = config.documentServerUrl + 'web-apps/apps/api/documents/api.js?shardkey=' + config.document.key
-					script.setAttribute('nonce', btoa(OC.requestToken))
-					script.onerror = function() {
-						OCA.Onlyoffice.showMessage(t(OCA.Onlyoffice.AppName, 'ONLYOFFICE cannot be reached. Please contact admin'), 'error', { timeout: -1 })
-					}
-					script.onload = function() {
-						if (typeof DocsAPI === 'undefined') {
-							OCA.Onlyoffice.showMessage(t(OCA.Onlyoffice.AppName, 'ONLYOFFICE cannot be reached. Please contact admin'), 'error', { timeout: -1 })
-							return
-						}
-
-						const docsVersion = DocsAPI.DocEditor.version().split('.')
-						if ((docsVersion[0] < 6)
-							|| (parseInt(docsVersion[0]) === 6 && parseInt(docsVersion[1]) === 0)) {
-							OCA.Onlyoffice.showMessage(t(OCA.Onlyoffice.AppName, 'Not supported version'), 'error', { timeout: -1 })
-							return
-						}
-
-						let docIsChanged = null
-						let docIsChangedTimeout = null
-
-						const setPageTitle = function(event) {
-							clearTimeout(docIsChangedTimeout)
-
-							if (docIsChanged !== event.data) {
-								const titleChange = function() {
-									OCA.Onlyoffice.currentWindow.document.title = config.document.title + (event.data ? ' *' : '') + ' - ' + oc_defaults.title
-									docIsChanged = event.data
-								}
-
-								if (event === false || event.data) {
-									titleChange()
-								} else {
-									docIsChangedTimeout = setTimeout(titleChange, 500)
-								}
-							}
-						}
-						setPageTitle(false)
-
-						OCA.Onlyoffice.documentType = config.documentType
-
-						config.events = {
-							onDocumentStateChange: setPageTitle,
-							onDocumentReady: OCA.Onlyoffice.onDocumentReady,
-							onMakeActionLink: OCA.Onlyoffice.onMakeActionLink,
-						}
-
-						if (config.editorConfig.tenant) {
-							config.events.onAppReady = function() {
-								OCA.Onlyoffice.docEditor.showMessage(t(OCA.Onlyoffice.AppName, 'You are using public demo ONLYOFFICE Docs server. Please do not store private sensitive data.'))
-							}
-						}
-
-						if ((OCA.Onlyoffice.inframe && !OCA.Onlyoffice.shareToken)
-							|| (OCA.Onlyoffice.currentUser.uid)) {
-							config.events.onRequestSaveAs = OCA.Onlyoffice.onRequestSaveAs
-							config.events.onRequestInsertImage = OCA.Onlyoffice.onRequestInsertImage
-							config.events.onRequestMailMergeRecipients = OCA.Onlyoffice.onRequestMailMergeRecipients
-							config.events.onRequestCompareFile = OCA.Onlyoffice.onRequestSelectDocument // todo: remove (for editors 7.4)
-							config.events.onRequestSelectDocument = OCA.Onlyoffice.onRequestSelectDocument
-							config.events.onRequestSendNotify = OCA.Onlyoffice.onRequestSendNotify
-							config.events.onRequestReferenceData = OCA.Onlyoffice.onRequestReferenceData
-							config.events.onRequestOpen = OCA.Onlyoffice.onRequestOpen
-							config.events.onRequestReferenceSource = OCA.Onlyoffice.onRequestReferenceSource
-							config.events.onMetaChange = OCA.Onlyoffice.onMetaChange
-							config.events.onRequestRefreshFile = OCA.Onlyoffice.onRequestRefreshFile
-
-							if (OCA.Onlyoffice.currentUser.uid) {
-								config.events.onRequestUsers = OCA.Onlyoffice.onRequestUsers
-							}
-
-							if (!OCA.Onlyoffice.filePath) {
-								OCA.Onlyoffice.filePath = config._file_path
-							}
-
-							if (!OCA.Onlyoffice.template) {
-								config.events.onRequestHistory = OCA.Onlyoffice.onRequestHistory
-								config.events.onRequestHistoryData = OCA.Onlyoffice.onRequestHistoryData
-								config.events.onRequestRestore = OCA.Onlyoffice.onRequestRestore
-								config.events.onRequestHistoryClose = OCA.Onlyoffice.onRequestHistoryClose
-							}
-						}
-
-						if (OCA.Onlyoffice.directEditor || OCA.Onlyoffice.inframe) {
-							config.events.onRequestClose = OCA.Onlyoffice.onRequestClose
-						}
-
-						if (OCA.Onlyoffice.inframe
-							&& config._files_sharing && !OCA.Onlyoffice.shareToken
-							&& window.parent.OCA.Onlyoffice.context) {
-							config.events.onRequestSharingSettings = OCA.Onlyoffice.onRequestSharingSettings
-						}
-
-						OCA.Onlyoffice.docEditor = new DocsAPI.DocEditor('iframeEditor', config)
-
-						if (OCA.Onlyoffice.directEditor) {
-							OCA.Onlyoffice.directEditor.loaded()
-						}
-
-						if (!OCA.Onlyoffice.directEditor
-							&& config.type === 'mobile' && $('#app > iframe').css('position') === 'fixed') {
-							$('#app > iframe').css('height', 'calc(100% - 50px)')
-						}
-
-						const favicon = OC.filePath(OCA.Onlyoffice.AppName, 'img', OCA.Onlyoffice.documentType + '.ico')
-						if (OCA.Onlyoffice.inframe) {
-							window.parent.postMessage({
-								method: 'changeFavicon',
-								param: favicon,
-							},
-							'*')
-						} else {
-							$('link[rel="icon"]').attr('href', favicon)
-						}
-					}
-					document.head.appendChild(script)
+		getConfig(configUrl).then((config) => {
+			if (config) {
+				OCA.Onlyoffice.device = config.type
+				if (OCA.Onlyoffice.device === 'mobile') {
+					OCA.Onlyoffice.resizeEvents()
 				}
-			},
+
+				if (config.redirectUrl) {
+					location.href = config.redirectUrl
+					return
+				}
+
+				if (config.error != null) {
+					OCA.Onlyoffice.showMessage(config.error, 'error', { timeout: -1 })
+					return
+				}
+
+				if (!config.documentServerUrl) {
+					OCA.Onlyoffice.showMessage('ONLYOFFICE cannot be reached. Please contact admin', 'error', { timeout: -1 })
+					return
+				}
+
+				const script = document.createElement('script')
+				script.src = config.documentServerUrl + 'web-apps/apps/api/documents/api.js?shardKey=' + config.document.key
+				script.setAttribute('nonce', btoa(OC.requestToken))
+				script.onerror = function() {
+					OCA.Onlyoffice.showMessage(t(OCA.Onlyoffice.AppName, 'ONLYOFFICE cannot be reached. Please contact admin'), 'error', { timeout: -1 })
+				}
+				script.onload = function() {
+					if (typeof DocsAPI === 'undefined') {
+						OCA.Onlyoffice.showMessage(t(OCA.Onlyoffice.AppName, 'ONLYOFFICE cannot be reached. Please contact admin'), 'error', { timeout: -1 })
+						return
+					}
+
+					const docsVersion = DocsAPI.DocEditor.version().split('.')
+					if ((docsVersion[0] < 6)
+						|| (parseInt(docsVersion[0]) === 6 && parseInt(docsVersion[1]) === 0)) {
+						OCA.Onlyoffice.showMessage(t(OCA.Onlyoffice.AppName, 'Not supported version'), 'error', { timeout: -1 })
+						return
+					}
+
+					let docIsChanged = null
+					let docIsChangedTimeout = null
+
+					const setPageTitle = function(event) {
+						clearTimeout(docIsChangedTimeout)
+
+						if (docIsChanged !== event.data) {
+							const titleChange = function() {
+								OCA.Onlyoffice.currentWindow.document.title = config.document.title + (event.data ? ' *' : '') + ' - ' + oc_defaults.title
+								docIsChanged = event.data
+							}
+
+							if (event === false || event.data) {
+								titleChange()
+							} else {
+								docIsChangedTimeout = setTimeout(titleChange, 500)
+							}
+						}
+					}
+					setPageTitle(false)
+
+					OCA.Onlyoffice.documentType = config.documentType
+
+					config.events = {
+						onDocumentStateChange: setPageTitle,
+						onDocumentReady: OCA.Onlyoffice.onDocumentReady,
+						onMakeActionLink: OCA.Onlyoffice.onMakeActionLink,
+					}
+
+					if (config.editorConfig.tenant) {
+						config.events.onAppReady = function() {
+							OCA.Onlyoffice.docEditor.showMessage(t(OCA.Onlyoffice.AppName, 'You are using public demo ONLYOFFICE Docs server. Please do not store private sensitive data.'))
+						}
+					}
+
+					if ((OCA.Onlyoffice.inframe && !OCA.Onlyoffice.shareToken)
+						|| (OCA.Onlyoffice.currentUser.uid)) {
+						config.events.onRequestSaveAs = OCA.Onlyoffice.onRequestSaveAs
+						config.events.onRequestInsertImage = OCA.Onlyoffice.onRequestInsertImage
+						config.events.onRequestMailMergeRecipients = OCA.Onlyoffice.onRequestMailMergeRecipients
+						config.events.onRequestCompareFile = OCA.Onlyoffice.onRequestSelectDocument // todo: remove (for editors 7.4)
+						config.events.onRequestSelectDocument = OCA.Onlyoffice.onRequestSelectDocument
+						config.events.onRequestSendNotify = OCA.Onlyoffice.onRequestSendNotify
+						config.events.onRequestReferenceData = OCA.Onlyoffice.onRequestReferenceData
+						config.events.onRequestOpen = OCA.Onlyoffice.onRequestOpen
+						config.events.onRequestReferenceSource = OCA.Onlyoffice.onRequestReferenceSource
+						config.events.onMetaChange = OCA.Onlyoffice.onMetaChange
+						config.events.onRequestRefreshFile = OCA.Onlyoffice.onRequestRefreshFile
+
+						if (OCA.Onlyoffice.currentUser.uid) {
+							config.events.onRequestUsers = OCA.Onlyoffice.onRequestUsers
+						}
+
+						if (!OCA.Onlyoffice.filePath) {
+							OCA.Onlyoffice.filePath = config._file_path
+						}
+
+						if (!OCA.Onlyoffice.template) {
+							config.events.onRequestHistory = OCA.Onlyoffice.onRequestHistory
+							config.events.onRequestHistoryData = OCA.Onlyoffice.onRequestHistoryData
+							config.events.onRequestRestore = OCA.Onlyoffice.onRequestRestore
+							config.events.onRequestHistoryClose = OCA.Onlyoffice.onRequestHistoryClose
+						}
+					}
+
+					if (OCA.Onlyoffice.directEditor || OCA.Onlyoffice.inframe) {
+						config.events.onRequestClose = OCA.Onlyoffice.onRequestClose
+					}
+
+					if (OCA.Onlyoffice.inframe
+						&& config._files_sharing && !OCA.Onlyoffice.shareToken
+						&& window.parent.OCA.Onlyoffice.context) {
+						config.events.onRequestSharingSettings = OCA.Onlyoffice.onRequestSharingSettings
+					}
+
+					OCA.Onlyoffice.docEditor = new DocsAPI.DocEditor('iframeEditor', config)
+
+					if (OCA.Onlyoffice.directEditor) {
+						OCA.Onlyoffice.directEditor.loaded()
+					}
+
+					if (!OCA.Onlyoffice.directEditor
+						&& config.type === 'mobile' && $('#app > iframe').css('position') === 'fixed') {
+						$('#app > iframe').css('height', 'calc(100% - 50px)')
+					}
+
+					const favicon = OC.filePath(OCA.Onlyoffice.AppName, 'img', OCA.Onlyoffice.documentType + '.ico')
+					if (OCA.Onlyoffice.inframe) {
+						window.parent.postMessage({
+							method: 'changeFavicon',
+							param: favicon,
+						},
+						'*')
+					} else {
+						$('link[rel="icon"]').attr('href', favicon)
+					}
+				}
+				document.head.appendChild(script)
+			}
 		})
 	}
 
 	OCA.Onlyoffice.onRequestHistory = function(version) {
-		$.get(generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/history?fileId={fileId}',
-			{
-				fileId: OCA.Onlyoffice.fileId || 0,
-			}),
-		function onSuccess(response) {
+		getHistory(OCA.Onlyoffice.fileId || 0).then((response) => {
 			OCA.Onlyoffice.refreshHistory(response, version)
 		})
 	}
@@ -232,12 +239,7 @@ import { generateUrl } from '@nextcloud/router'
 	OCA.Onlyoffice.onRequestHistoryData = function(event) {
 		const version = event.data
 
-		$.get(generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/version?fileId={fileId}&version={version}',
-			{
-				fileId: OCA.Onlyoffice.fileId || 0,
-				version,
-			}),
-		function onSuccess(response) {
+		getVersionData(OCA.Onlyoffice.fileId || 0, version).then((response) => {
 			if (response.error) {
 				response = {
 					error: response.error,
@@ -251,23 +253,15 @@ import { generateUrl } from '@nextcloud/router'
 	OCA.Onlyoffice.onRequestRestore = function(event) {
 		const version = event.data.version
 
-		$.ajax({
-			method: 'PUT',
-			url: generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/restore'),
-			data: {
-				fileId: OCA.Onlyoffice.fileId || 0,
-				version,
-			},
-			success: function onSuccess(response) {
-				OCA.Onlyoffice.refreshHistory(response, response.at(-1).version)
+		restoreVersion(OCA.Onlyoffice.fileId || 0, version).then((response) => {
+			OCA.Onlyoffice.refreshHistory(response, response.at(-1).version)
 
-				if (OCA.Onlyoffice.inframe) {
-					window.parent.postMessage({
-						method: 'onRefreshVersionsDialog',
-					},
-					'*')
-				}
-			},
+			if (OCA.Onlyoffice.inframe) {
+				window.parent.postMessage({
+					method: 'onRefreshVersionsDialog',
+				},
+				'*')
+			}
 		})
 	}
 
@@ -324,16 +318,14 @@ import { generateUrl } from '@nextcloud/router'
 	}
 
 	OCA.Onlyoffice.editorSaveAs = function(saveData) {
-		$.post(generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/save'),
-			saveData,
-			function onSuccess(response) {
-				if (response.error) {
-					OCA.Onlyoffice.showMessage(response.error, 'error')
-					return
-				}
+		saveAs(saveData).then((response) => {
+			if (response.error) {
+				OCA.Onlyoffice.showMessage(response.error, 'error')
+				return
+			}
 
-				OCA.Onlyoffice.showMessage(t(OCA.Onlyoffice.AppName, 'File saved') + ' (' + response.name + ')')
-			})
+			OCA.Onlyoffice.showMessage(t(OCA.Onlyoffice.AppName, 'File saved') + ' (' + response.name + ')')
+		})
 	}
 
 	OCA.Onlyoffice.onRequestInsertImage = function(event) {
@@ -365,11 +357,7 @@ import { generateUrl } from '@nextcloud/router'
 	}
 
 	OCA.Onlyoffice.editorInsertImage = function(filePath) {
-		$.get(generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/url?filePath={filePath}',
-			{
-				filePath,
-			}),
-		function onSuccess(response) {
+		getFileUrl(filePath).then((response) => {
 			if (response.error) {
 				OCA.Onlyoffice.showMessage(response.error, 'error')
 				return
@@ -404,11 +392,7 @@ import { generateUrl } from '@nextcloud/router'
 	}
 
 	OCA.Onlyoffice.editorSetRecipient = function(filePath) {
-		$.get(generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/url?filePath={filePath}',
-			{
-				filePath,
-			}),
-		function onSuccess(response) {
+		getFileUrl(filePath).then((response) => {
 			if (response.error) {
 				OCA.Onlyoffice.showMessage(response.error, 'error')
 				return
@@ -424,17 +408,13 @@ import { generateUrl } from '@nextcloud/router'
 			return
 		}
 
-		$.post(generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/reference'),
-			{
-				path: filePath,
-			},
-			function onSuccess(response) {
-				if (response.error) {
-					OCA.Onlyoffice.showMessage(response.error, 'error')
-					return
-				}
-				OCA.Onlyoffice.docEditor.setReferenceSource(response)
-			})
+		setReferenceSource(filePath).then((response) => {
+			if (response.error) {
+				OCA.Onlyoffice.showMessage(response.error, 'error')
+				return
+			}
+			OCA.Onlyoffice.docEditor.setReferenceSource(response)
+		})
 	}
 
 	OCA.Onlyoffice.onRequestClose = function() {
@@ -495,11 +475,7 @@ import { generateUrl } from '@nextcloud/router'
 
 	OCA.Onlyoffice.editorSetRequested = function(filePath) {
 		const documentSelectionType = this.documentSelectionType
-		$.get(generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/url?filePath={filePath}',
-			{
-				filePath,
-			}),
-		function onSuccess(response) {
+		getFileUrl(filePath).then((response) => {
 			if (response.error) {
 				showError(response.error)
 				return
@@ -542,11 +518,7 @@ import { generateUrl } from '@nextcloud/router'
 		const operationType = typeof (event.data.c) !== 'undefined' ? event.data.c : null
 		switch (operationType) {
 		case 'info': {
-			$.get(generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/userInfo?userIds={userIds}',
-				{
-					userIds: JSON.stringify(event.data.id),
-				}),
-			function onSuccess(response) {
+			getUserInfo(event.data.id).then((response) => {
 				OCA.Onlyoffice.docEditor.setUsers({
 					c: operationType,
 					users: response,
@@ -555,15 +527,15 @@ import { generateUrl } from '@nextcloud/router'
 			break
 		}
 		default: {
-			let requestString = 'apps/' + OCA.Onlyoffice.AppName + '/ajax/users?fileId={fileId}&operationType=' + operationType
-			if (typeof (event.data.search) !== 'undefined') {
-				requestString += '&from=' + event.data.from + '&count=' + event.data.count + '&search=' + encodeURIComponent(event.data.search)
-			}
-			$.get(generateUrl(requestString,
-				{
-					fileId: OCA.Onlyoffice.fileId || 0,
+			getUsers({
+				fileId: OCA.Onlyoffice.fileId || 0,
+				operationType,
+				...(typeof event.data.search !== 'undefined' && {
+					from: event.data.from,
+					count: event.data.count,
+					search: event.data.search,
 				}),
-			function onSuccess(response) {
+			}).then((response) => {
 				OCA.Onlyoffice.docEditor.setUsers({
 					c: operationType,
 					users: response,
@@ -584,21 +556,19 @@ import { generateUrl } from '@nextcloud/router'
 
 		const fileId = OCA.Onlyoffice.fileId
 
-		$.post(generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/mention'),
-			{
-				fileId,
-				anchor: JSON.stringify(actionLink),
-				comment,
-				emails,
-			},
-			function onSuccess(response) {
-				if (response.error) {
-					OCA.Onlyoffice.showMessage(response.error, 'error')
-					return
-				}
+		sendMention({
+			fileId,
+			anchor: JSON.stringify(actionLink),
+			comment,
+			emails,
+		}).then((response) => {
+			if (response.error) {
+				OCA.Onlyoffice.showMessage(response.error, 'error')
+				return
+			}
 
-				OCA.Onlyoffice.showMessage(response.message)
-			})
+			OCA.Onlyoffice.showMessage(response.message)
+		})
 	}
 
 	OCA.Onlyoffice.onRequestReferenceData = function(event) {
@@ -606,20 +576,14 @@ import { generateUrl } from '@nextcloud/router'
 		const referenceData = event.data.referenceData
 		const path = event.data.path
 
-		$.post(generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/reference'),
-			{
-				referenceData,
-				path,
-				link,
-			},
-			function onSuccess(response) {
-				if (response.error) {
-					OCA.Onlyoffice.showMessage(response.error, 'error')
-					return
-				}
+		getReferenceData({ referenceData, path, link }).then((response) => {
+			if (response.error) {
+				OCA.Onlyoffice.showMessage(response.error, 'error')
+				return
+			}
 
-				OCA.Onlyoffice.docEditor.setReferenceData(response)
-			})
+			OCA.Onlyoffice.docEditor.setReferenceData(response)
+		})
 	}
 
 	OCA.Onlyoffice.onRequestOpen = function(event) {
@@ -651,28 +615,16 @@ import { generateUrl } from '@nextcloud/router'
 
 	OCA.Onlyoffice.onMetaChange = function(event) {
 		if (event.data.favorite !== undefined) {
-			$.ajax({
-				url: generateUrl('apps/files/api/v1/files' + OC.encodePath(OCA.Onlyoffice.filePath)),
-				type: 'post',
-				data: JSON.stringify({
-					tags: event.data.favorite ? [OC.TAG_FAVORITE] : [],
-				}),
-				contentType: 'application/json',
-				dataType: 'json',
-				success() {
-					OCA.Onlyoffice.docEditor.setFavorite(event.data.favorite)
-				},
+			setFavorite(OCA.Onlyoffice.filePath, event.data.favorite).then(() => {
+				OCA.Onlyoffice.docEditor.setFavorite(event.data.favorite)
 			})
 		}
 	}
 
 	OCA.Onlyoffice.onRequestRefreshFile = function() {
 		const configUrl = OCA.Onlyoffice.getConfigUrl()
-		$.ajax({
-			url: configUrl,
-			success: function onSuccess(config) {
-				OCA.Onlyoffice.docEditor.refreshFile(config)
-			},
+		getConfig(configUrl).then((config) => {
+			OCA.Onlyoffice.docEditor.refreshFile(config)
 		})
 	}
 
