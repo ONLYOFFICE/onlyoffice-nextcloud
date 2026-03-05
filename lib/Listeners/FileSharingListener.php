@@ -73,6 +73,7 @@ class FileSharingListener implements IEventListener {
             $this->initialState->provideLazyInitialState("settings", fn() => Server::get(SettingsData::class));
 
             Util::addScript("onlyoffice", "onlyoffice-main");
+            Util::addScript("onlyoffice", "onlyoffice-template");
             Util::addStyle("onlyoffice", "main");
             Util::addStyle("onlyoffice", "format");
         }
