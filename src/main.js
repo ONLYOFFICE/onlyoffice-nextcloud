@@ -48,6 +48,7 @@ import AppDarkSvg from '../img/app-dark.svg?raw'
 import NewPdfSvg from '../img/new-pdf.svg?raw'
 import { isPublicShare, getSharingToken } from '@nextcloud/sharing/public'
 import { loadState } from '@nextcloud/initial-state'
+import { generateUrl } from '@nextcloud/router'
 
 /**
  * @param {object} OCA Nextcloud OCA object
@@ -117,7 +118,7 @@ import { loadState } from '@nextcloud/initial-state'
 			createData.shareToken = encodeURIComponent(getSharingToken())
 		}
 
-		$.post(OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/new'),
+		$.post(generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/new'),
 			createData,
 			function onSuccess(response) {
 				if (response.error) {
@@ -150,14 +151,14 @@ import { loadState } from '@nextcloud/initial-state'
 		if (fileName) {
 			filePath = fileDir.replace(/\/$/, '') + '/' + fileName
 		}
-		let url = OC.generateUrl('/apps/' + OCA.Onlyoffice.AppName + '/{fileId}?filePath={filePath}',
+		let url = generateUrl('/apps/' + OCA.Onlyoffice.AppName + '/{fileId}?filePath={filePath}',
 			{
 				fileId,
 				filePath,
 			})
 
 		if (isPublicShare()) {
-			url = OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/s/{shareToken}?fileId={fileId}',
+			url = generateUrl('apps/' + OCA.Onlyoffice.AppName + '/s/{shareToken}?fileId={fileId}',
 				{
 					shareToken: encodeURIComponent(getSharingToken()),
 					fileId,
@@ -302,7 +303,7 @@ import { loadState } from '@nextcloud/initial-state'
 			convertData.shareToken = encodeURIComponent(getSharingToken())
 		}
 
-		$.post(OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/convert'),
+		$.post(generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/convert'),
 			convertData,
 			function onSuccess(response) {
 				if (response.error) {
@@ -366,7 +367,7 @@ import { loadState } from '@nextcloud/initial-state'
 						classes: 'primary',
 						click() {
 							const format = this.dataset.format
-							const downloadLink = OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/downloadas?fileId={fileId}&toExtension={toExtension}', {
+							const downloadLink = generateUrl('apps/' + OCA.Onlyoffice.AppName + '/downloadas?fileId={fileId}&toExtension={toExtension}', {
 								fileId,
 								toExtension: format,
 							})

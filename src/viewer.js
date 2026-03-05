@@ -26,6 +26,8 @@
  *
  */
 
+import { generateUrl } from '@nextcloud/router'
+
 /* global $ */
 
 /**
@@ -74,7 +76,7 @@
 		},
 		data() {
 			return {
-				url: OC.generateUrl('/apps/' + OCA.Onlyoffice.AppName + '/{fileId}?filePath={filePath}',
+				url: generateUrl('/apps/' + OCA.Onlyoffice.AppName + '/{fileId}?filePath={filePath}',
 					{
 						fileId: this.fileid,
 						filePath: this.filename,

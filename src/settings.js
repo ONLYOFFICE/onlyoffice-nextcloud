@@ -30,6 +30,7 @@
 
 import { createApp } from 'vue'
 import { showError, showSuccess } from '@nextcloud/dialogs'
+import { generateUrl } from '@nextcloud/router'
 import { spawnDialog } from '@nextcloud/vue/functions/dialog'
 import EmptyJwtInfoDialog from './views/EmptyJwtInfoDialog.vue'
 import TemplateList from './views/TemplateList.vue'
@@ -187,7 +188,7 @@ import TemplateList from './views/TemplateList.vue'
 
 			$.ajax({
 				method: 'PUT',
-				url: OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/settings/address'),
+				url: generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/settings/address'),
 				data: {
 					documentserver: onlyofficeUrl,
 					documentserverInternal: onlyofficeInternalUrl,
@@ -262,7 +263,7 @@ import TemplateList from './views/TemplateList.vue'
 
 			$.ajax({
 				method: 'PUT',
-				url: OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/settings/common'),
+				url: generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/settings/common'),
 				data: {
 					defFormats,
 					editFormats,
@@ -328,7 +329,7 @@ import TemplateList from './views/TemplateList.vue'
 
 			$.ajax({
 				method: 'PUT',
-				url: OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/settings/security'),
+				url: generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/settings/security'),
 				data: {
 					watermarks: watermarkSettings,
 					plugins,
@@ -372,7 +373,7 @@ import TemplateList from './views/TemplateList.vue'
 
 					$.ajax({
 						method: 'DELETE',
-						url: OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/settings/history'),
+						url: generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/settings/history'),
 						success: function onSuccess(response) {
 							$('.section-onlyoffice').removeClass('icon-loading')
 							if (response) {

@@ -27,6 +27,7 @@
  */
 
 import { showError, showSuccess } from '@nextcloud/dialogs'
+import { generateUrl } from '@nextcloud/router'
 
 /* global _, DocsAPI, jQuery, moment, oc_defaults */
 
@@ -217,7 +218,7 @@ import { showError, showSuccess } from '@nextcloud/dialogs'
 	}
 
 	OCA.Onlyoffice.onRequestHistory = function(version) {
-		$.get(OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/history?fileId={fileId}',
+		$.get(generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/history?fileId={fileId}',
 			{
 				fileId: OCA.Onlyoffice.fileId || 0,
 			}),
@@ -229,7 +230,7 @@ import { showError, showSuccess } from '@nextcloud/dialogs'
 	OCA.Onlyoffice.onRequestHistoryData = function(event) {
 		const version = event.data
 
-		$.get(OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/version?fileId={fileId}&version={version}',
+		$.get(generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/version?fileId={fileId}&version={version}',
 			{
 				fileId: OCA.Onlyoffice.fileId || 0,
 				version,
@@ -250,7 +251,7 @@ import { showError, showSuccess } from '@nextcloud/dialogs'
 
 		$.ajax({
 			method: 'PUT',
-			url: OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/restore'),
+			url: generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/restore'),
 			data: {
 				fileId: OCA.Onlyoffice.fileId || 0,
 				version,
@@ -321,7 +322,7 @@ import { showError, showSuccess } from '@nextcloud/dialogs'
 	}
 
 	OCA.Onlyoffice.editorSaveAs = function(saveData) {
-		$.post(OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/save'),
+		$.post(generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/save'),
 			saveData,
 			function onSuccess(response) {
 				if (response.error) {
@@ -362,7 +363,7 @@ import { showError, showSuccess } from '@nextcloud/dialogs'
 	}
 
 	OCA.Onlyoffice.editorInsertImage = function(filePath) {
-		$.get(OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/url?filePath={filePath}',
+		$.get(generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/url?filePath={filePath}',
 			{
 				filePath,
 			}),
@@ -401,7 +402,7 @@ import { showError, showSuccess } from '@nextcloud/dialogs'
 	}
 
 	OCA.Onlyoffice.editorSetRecipient = function(filePath) {
-		$.get(OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/url?filePath={filePath}',
+		$.get(generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/url?filePath={filePath}',
 			{
 				filePath,
 			}),
@@ -421,7 +422,7 @@ import { showError, showSuccess } from '@nextcloud/dialogs'
 			return
 		}
 
-		$.post(OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/reference'),
+		$.post(generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/reference'),
 			{
 				path: filePath,
 			},
@@ -492,7 +493,7 @@ import { showError, showSuccess } from '@nextcloud/dialogs'
 
 	OCA.Onlyoffice.editorSetRequested = function(filePath) {
 		const documentSelectionType = this.documentSelectionType
-		$.get(OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/url?filePath={filePath}',
+		$.get(generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/url?filePath={filePath}',
 			{
 				filePath,
 			}),
@@ -539,7 +540,7 @@ import { showError, showSuccess } from '@nextcloud/dialogs'
 		const operationType = typeof (event.data.c) !== 'undefined' ? event.data.c : null
 		switch (operationType) {
 		case 'info': {
-			$.get(OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/userInfo?userIds={userIds}',
+			$.get(generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/userInfo?userIds={userIds}',
 				{
 					userIds: JSON.stringify(event.data.id),
 				}),
@@ -556,7 +557,7 @@ import { showError, showSuccess } from '@nextcloud/dialogs'
 			if (typeof (event.data.search) !== 'undefined') {
 				requestString += '&from=' + event.data.from + '&count=' + event.data.count + '&search=' + encodeURIComponent(event.data.search)
 			}
-			$.get(OC.generateUrl(requestString,
+			$.get(generateUrl(requestString,
 				{
 					fileId: OCA.Onlyoffice.fileId || 0,
 				}),
@@ -581,7 +582,7 @@ import { showError, showSuccess } from '@nextcloud/dialogs'
 
 		const fileId = OCA.Onlyoffice.fileId
 
-		$.post(OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/mention'),
+		$.post(generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/mention'),
 			{
 				fileId,
 				anchor: JSON.stringify(actionLink),
@@ -603,7 +604,7 @@ import { showError, showSuccess } from '@nextcloud/dialogs'
 		const referenceData = event.data.referenceData
 		const path = event.data.path
 
-		$.post(OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/reference'),
+		$.post(generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/reference'),
 			{
 				referenceData,
 				path,
@@ -623,7 +624,7 @@ import { showError, showSuccess } from '@nextcloud/dialogs'
 		const filePath = event.data.path
 		const fileId = event.data.referenceData.fileKey
 		const windowName = event.data.windowName
-		const sourceUrl = OC.generateUrl(`apps/${OCA.Onlyoffice.AppName}/${fileId}?filePath=${OC.encodePath(filePath)}`)
+		const sourceUrl = generateUrl(`apps/${OCA.Onlyoffice.AppName}/${fileId}?filePath=${OC.encodePath(filePath)}`)
 		window.open(sourceUrl, windowName)
 	}
 
@@ -649,7 +650,7 @@ import { showError, showSuccess } from '@nextcloud/dialogs'
 	OCA.Onlyoffice.onMetaChange = function(event) {
 		if (event.data.favorite !== undefined) {
 			$.ajax({
-				url: OC.generateUrl('apps/files/api/v1/files' + OC.encodePath(OCA.Onlyoffice.filePath)),
+				url: generateUrl('apps/files/api/v1/files' + OC.encodePath(OCA.Onlyoffice.filePath)),
 				type: 'post',
 				data: JSON.stringify({
 					tags: event.data.favorite ? [OC.TAG_FAVORITE] : [],
