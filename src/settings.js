@@ -31,10 +31,10 @@
 import { createApp } from 'vue'
 import { showError, showSuccess } from '@nextcloud/dialogs'
 import { t } from '@nextcloud/l10n'
-import { generateUrl } from '@nextcloud/router'
 import { spawnDialog } from '@nextcloud/vue/functions/dialog'
 import EmptyJwtInfoDialog from './views/EmptyJwtInfoDialog.vue'
 import TemplateList from './views/TemplateList.vue'
+import { saveAddressSettings, saveCommonSettings, saveSecuritySettings, clearHistory } from './services/SettingsService.ts'
 
 /**
  * @param {object} $ JQueryStatic object
@@ -187,44 +187,39 @@ import TemplateList from './views/TemplateList.vue'
 			const jwtHeader = ($('#onlyofficeJwtHeader').val() || '').trim()
 			const demo = $('#onlyofficeDemo').prop('checked')
 
-			$.ajax({
-				method: 'PUT',
-				url: generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/settings/address'),
-				data: {
-					documentserver: onlyofficeUrl,
-					documentserverInternal: onlyofficeInternalUrl,
-					storageUrl: onlyofficeStorageUrl,
-					verifyPeerOff: onlyofficeVerifyPeerOff,
-					secret: onlyofficeSecret,
-					jwtHeader,
-					demo,
-				},
-				success: function onSuccess(response) {
-					$('.section-onlyoffice').removeClass('icon-loading')
-					if (response && (response.documentserver != null || demo)) {
-						$('#onlyofficeUrl').val(response.documentserver)
-						$('#onlyofficeInternalUrl').val(response.documentserverInternal)
-						$('#onlyofficeStorageUrl').val(response.storageUrl)
-						$('#onlyofficeSecret').val(response.secret)
-						$('#onlyofficeJwtHeader').val(response.jwtHeader)
+			saveAddressSettings({
+				documentserver: onlyofficeUrl,
+				documentserverInternal: onlyofficeInternalUrl,
+				storageUrl: onlyofficeStorageUrl,
+				verifyPeerOff: onlyofficeVerifyPeerOff,
+				secret: onlyofficeSecret,
+				jwtHeader,
+				demo,
+			}).then((response) => {
+				$('.section-onlyoffice').removeClass('icon-loading')
+				if (response && (response.documentserver != null || demo)) {
+					$('#onlyofficeUrl').val(response.documentserver)
+					$('#onlyofficeInternalUrl').val(response.documentserverInternal)
+					$('#onlyofficeStorageUrl').val(response.storageUrl)
+					$('#onlyofficeSecret').val(response.secret)
+					$('#onlyofficeJwtHeader').val(response.jwtHeader)
 
-						$('.section-onlyoffice-common, .section-onlyoffice-templates, .section-onlyoffice-watermark').toggleClass('onlyoffice-hide', (response.documentserver == null && !demo) || !!response.error.length)
+					$('.section-onlyoffice-common, .section-onlyoffice-templates, .section-onlyoffice-watermark').toggleClass('onlyoffice-hide', (response.documentserver == null && !demo) || !!response.error.length)
 
-						const versionMessage = response.version ? (' (' + t(OCA.Onlyoffice.AppName, 'version') + ' ' + response.version + ')') : ''
+					const versionMessage = response.version ? (' (' + t(OCA.Onlyoffice.AppName, 'version') + ' ' + response.version + ')') : ''
 
-						if (response.error) {
-							showError(t(OCA.Onlyoffice.AppName, 'Error when trying to connect') + ' (' + response.error + ')' + versionMessage)
-						} else {
-							if (response.secret !== null) {
-								showSuccess(t(OCA.Onlyoffice.AppName, 'Server settings have been successfully updated') + versionMessage)
-							} else {
-								spawnDialog(EmptyJwtInfoDialog)
-							}
-						}
+					if (response.error) {
+						showError(t(OCA.Onlyoffice.AppName, 'Error when trying to connect') + ' (' + response.error + ')' + versionMessage)
 					} else {
-						$('.section-onlyoffice-common, .section-onlyoffice-templates, .section-onlyoffice-watermark').addClass('onlyoffice-hide')
+						if (response.secret !== null) {
+							showSuccess(t(OCA.Onlyoffice.AppName, 'Server settings have been successfully updated') + versionMessage)
+						} else {
+							spawnDialog(EmptyJwtInfoDialog)
+						}
 					}
-				},
+				} else {
+					$('.section-onlyoffice-common, .section-onlyoffice-templates, .section-onlyoffice-watermark').addClass('onlyoffice-hide')
+				}
 			})
 		})
 
@@ -262,36 +257,29 @@ import TemplateList from './views/TemplateList.vue'
 			const theme = $("input[type='radio'][name='theme']:checked").attr('id').replace('onlyofficeTheme_', '')
 			const unknownAuthor = $('#onlyofficeUnknownAuthor').val().trim()
 
-			$.ajax({
-				method: 'PUT',
-				url: generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/settings/common'),
-				data: {
-					defFormats,
-					editFormats,
-					sameTab,
-					enableSharing,
-					preview,
-					advanced,
-					cronChecker,
-					emailNotifications,
-					versionHistory,
-					limitGroups,
-					chat,
-					compactHeader,
-					feedback,
-					forcesave,
-					liveViewOnShare,
-					help,
-					reviewDisplay,
-					theme,
-					unknownAuthor,
-				},
-				success: function onSuccess(response) {
-					$('.section-onlyoffice').removeClass('icon-loading')
-					if (response) {
-						showSuccess(t(OCA.Onlyoffice.AppName, 'Common settings have been successfully updated'))
-					}
-				},
+			saveCommonSettings({
+				defFormats,
+				editFormats,
+				sameTab,
+				enableSharing,
+				preview,
+				advanced,
+				cronChecker,
+				emailNotifications,
+				versionHistory,
+				limitGroups,
+				chat,
+				compactHeader,
+				feedback,
+				forcesave,
+				liveViewOnShare,
+				help,
+				reviewDisplay,
+				theme,
+				unknownAuthor,
+			}).then(() => {
+				$('.section-onlyoffice').removeClass('icon-loading')
+				showSuccess(t(OCA.Onlyoffice.AppName, 'Common settings have been successfully updated'))
 			})
 		})
 
@@ -328,21 +316,14 @@ import TemplateList from './views/TemplateList.vue'
 				})
 			}
 
-			$.ajax({
-				method: 'PUT',
-				url: generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/settings/security'),
-				data: {
-					watermarks: watermarkSettings,
-					plugins,
-					macros,
-					protection,
-				},
-				success: function onSuccess(response) {
-					$('.section-onlyoffice').removeClass('icon-loading')
-					if (response) {
-						showSuccess(t(OCA.Onlyoffice.AppName, 'Security settings have been successfully updated'))
-					}
-				},
+			saveSecuritySettings({
+				watermarks: watermarkSettings,
+				plugins,
+				macros,
+				protection,
+			}).then(() => {
+				$('.section-onlyoffice').removeClass('icon-loading')
+				showSuccess(t(OCA.Onlyoffice.AppName, 'Security settings have been successfully updated'))
 			})
 		})
 
@@ -372,15 +353,9 @@ import TemplateList from './views/TemplateList.vue'
 
 					$('.section-onlyoffice').addClass('icon-loading')
 
-					$.ajax({
-						method: 'DELETE',
-						url: generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/settings/history'),
-						success: function onSuccess(response) {
-							$('.section-onlyoffice').removeClass('icon-loading')
-							if (response) {
-								showSuccess(t(OCA.Onlyoffice.AppName, 'All history successfully deleted'))
-							}
-						},
+					clearHistory().then(() => {
+						$('.section-onlyoffice').removeClass('icon-loading')
+						showSuccess(t(OCA.Onlyoffice.AppName, 'All history successfully deleted'))
 					})
 				},
 			)

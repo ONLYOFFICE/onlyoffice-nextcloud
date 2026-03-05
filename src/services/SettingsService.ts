@@ -26,24 +26,65 @@
  *
  */
 
-export interface AddressSettingsResponse {
-	documentserver: string | null
+import axios from '@nextcloud/axios'
+import { generateUrl } from '@nextcloud/router'
+import type { AddressSettingsResponse } from '../types'
+
+export interface AddressSettingsData {
+	documentserver: string
 	documentserverInternal: string
 	storageUrl: string
 	verifyPeerOff: boolean
-	secret: string | null
+	secret: string
 	jwtHeader: string
-	error: string | null
-	version: string | null
+	demo: boolean
 }
 
-export interface Template {
-	id: number
-	name: string
-	type: string
-	icon: string
+export interface CommonSettingsData {
+	defFormats: Record<string, boolean>
+	editFormats: Record<string, boolean>
+	sameTab: boolean
+	enableSharing: boolean
+	preview: boolean
+	advanced: boolean
+	cronChecker: boolean
+	emailNotifications: boolean
+	versionHistory: boolean
+	limitGroups: string[]
+	chat: boolean
+	compactHeader: boolean
+	feedback: boolean
+	forcesave: boolean
+	liveViewOnShare: boolean
+	help: boolean
+	reviewDisplay: string
+	theme: string
+	unknownAuthor: string
 }
 
-export interface ApiError {
-	error: string
+export interface SecuritySettingsData {
+	watermarks: Record<string, unknown>
+	plugins: boolean
+	macros: boolean
+	protection: string
+}
+
+export const saveAddressSettings = async (data: AddressSettingsData): Promise<AddressSettingsResponse> => {
+	const response = await axios.put<AddressSettingsResponse>(
+		generateUrl('apps/onlyoffice/ajax/settings/address'),
+		data,
+	)
+	return response.data
+}
+
+export const saveCommonSettings = async (data: CommonSettingsData): Promise<void> => {
+	await axios.put(generateUrl('apps/onlyoffice/ajax/settings/common'), data)
+}
+
+export const saveSecuritySettings = async (data: SecuritySettingsData): Promise<void> => {
+	await axios.put(generateUrl('apps/onlyoffice/ajax/settings/security'), data)
+}
+
+export const clearHistory = async (): Promise<void> => {
+	await axios.delete(generateUrl('apps/onlyoffice/ajax/settings/history'))
 }
