@@ -42,6 +42,7 @@ import {
 	davGetDefaultPropfind,
 	davResultToNode,
 } from '@nextcloud/files'
+import { showError, showSuccess } from '@nextcloud/dialogs'
 import { emit } from '@nextcloud/event-bus'
 import AppDarkSvg from '../img/app-dark.svg?raw'
 import NewPdfSvg from '../img/new-pdf.svg?raw'
@@ -123,7 +124,7 @@ import { loadState } from '@nextcloud/initial-state'
 					if (winEditor) {
 						winEditor.close()
 					}
-					OCP.Toast.error(response.error)
+					showError(response.error)
 					return
 				}
 
@@ -139,7 +140,7 @@ import { loadState } from '@nextcloud/initial-state'
 					}
 				}
 
-				OCP.Toast.success(t(OCA.Onlyoffice.AppName, 'File created'))
+				showSuccess(t(OCA.Onlyoffice.AppName, 'File created'))
 			},
 		)
 	}
@@ -305,13 +306,13 @@ import { loadState } from '@nextcloud/initial-state'
 			convertData,
 			function onSuccess(response) {
 				if (response.error) {
-					OCP.Toast.error(response.error)
+					showError(response.error)
 					return
 				}
 
 				callback(response)
 
-				OCP.Toast.success(t(OCA.Onlyoffice.AppName, 'File has been converted. Its content might look different.'))
+				showSuccess(t(OCA.Onlyoffice.AppName, 'File has been converted. Its content might look different.'))
 			})
 	}
 

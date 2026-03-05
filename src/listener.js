@@ -26,6 +26,8 @@
  *
  */
 
+import { showError, showSuccess } from '@nextcloud/dialogs'
+
 /* global _, $ */
 
 /**
@@ -130,10 +132,10 @@
 	OCA.Onlyoffice.onShowMessage = function(messageObj) {
 		switch (messageObj.type) {
 		case 'success':
-			OCP.Toast.success(messageObj.message, messageObj.props)
+			showSuccess(messageObj.message, messageObj.props)
 			break
 		case 'error':
-			OCP.Toast.error(messageObj.message, messageObj.props)
+			showError(messageObj.message, messageObj.props)
 			break
 		}
 	}

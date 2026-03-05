@@ -29,6 +29,7 @@
 /* global _, jQuery */
 
 import { createApp } from 'vue'
+import { showError, showSuccess } from '@nextcloud/dialogs'
 import { spawnDialog } from '@nextcloud/vue/functions/dialog'
 import EmptyJwtInfoDialog from './views/EmptyJwtInfoDialog.vue'
 import TemplateList from './views/TemplateList.vue'
@@ -166,7 +167,7 @@ import TemplateList from './views/TemplateList.vue'
 
 		const connectionError = document.getElementById('onlyofficeSettingsState').value
 		if (connectionError !== '') {
-			OCP.Toast.error(t(OCA.Onlyoffice.AppName, 'Error when trying to connect') + ' (' + connectionError + ')')
+			showError(t(OCA.Onlyoffice.AppName, 'Error when trying to connect') + ' (' + connectionError + ')')
 		}
 
 		$('#onlyofficeAddrSave').click(function() {
@@ -210,10 +211,10 @@ import TemplateList from './views/TemplateList.vue'
 						const versionMessage = response.version ? (' (' + t(OCA.Onlyoffice.AppName, 'version') + ' ' + response.version + ')') : ''
 
 						if (response.error) {
-							OCP.Toast.error(t(OCA.Onlyoffice.AppName, 'Error when trying to connect') + ' (' + response.error + ')' + versionMessage)
+							showError(t(OCA.Onlyoffice.AppName, 'Error when trying to connect') + ' (' + response.error + ')' + versionMessage)
 						} else {
 							if (response.secret !== null) {
-								OCP.Toast.success(t(OCA.Onlyoffice.AppName, 'Server settings have been successfully updated') + versionMessage)
+								showSuccess(t(OCA.Onlyoffice.AppName, 'Server settings have been successfully updated') + versionMessage)
 							} else {
 								spawnDialog(EmptyJwtInfoDialog)
 							}
@@ -286,7 +287,7 @@ import TemplateList from './views/TemplateList.vue'
 				success: function onSuccess(response) {
 					$('.section-onlyoffice').removeClass('icon-loading')
 					if (response) {
-						OCP.Toast.success(t(OCA.Onlyoffice.AppName, 'Common settings have been successfully updated'))
+						showSuccess(t(OCA.Onlyoffice.AppName, 'Common settings have been successfully updated'))
 					}
 				},
 			})
@@ -337,7 +338,7 @@ import TemplateList from './views/TemplateList.vue'
 				success: function onSuccess(response) {
 					$('.section-onlyoffice').removeClass('icon-loading')
 					if (response) {
-						OCP.Toast.success(t(OCA.Onlyoffice.AppName, 'Security settings have been successfully updated'))
+						showSuccess(t(OCA.Onlyoffice.AppName, 'Security settings have been successfully updated'))
 					}
 				},
 			})
@@ -375,7 +376,7 @@ import TemplateList from './views/TemplateList.vue'
 						success: function onSuccess(response) {
 							$('.section-onlyoffice').removeClass('icon-loading')
 							if (response) {
-								OCP.Toast.success(t(OCA.Onlyoffice.AppName, 'All history successfully deleted'))
+								showSuccess(t(OCA.Onlyoffice.AppName, 'All history successfully deleted'))
 							}
 						},
 					})
