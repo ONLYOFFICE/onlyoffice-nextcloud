@@ -31,7 +31,8 @@
 /* global _, jQuery */
 
 import { t } from '@nextcloud/l10n'
-import AppDarkSvg from '../img/app-dark.svg?raw';
+import AppDarkSvg from '../img/app-dark.svg?raw'
+import { getShares, setShares } from './services/ShareService.ts'
 
 /**
  * @param {object} $ JQueryStatic object
@@ -461,30 +462,11 @@ import AppDarkSvg from '../img/app-dark.svg?raw';
 	}
 
 	OCA.Onlyoffice.GetShares = function(fileId, callback) {
-		$.ajax({
-			url: OC.linkToOCS('apps/' + OCA.Onlyoffice.AppName + '/api/v1/shares', 2) + fileId + '?format=json',
-			success: function onSuccess(response) {
-				callback(response.ocs.data)
-			},
-		})
+		getShares(fileId).then(callback)
 	}
 
 	OCA.Onlyoffice.SetShares = function(id, shareId, fileId, permissions, callback) {
-		const data = {
-			extraId: id,
-			shareId,
-			fileId,
-			permissions,
-		}
-
-		$.ajax({
-			method: 'PUT',
-			url: OC.linkToOCS('apps/' + OCA.Onlyoffice.AppName + '/api/v1', 2) + 'shares?format=json',
-			data,
-			success: function onSuccess(response) {
-				callback(response.ocs.data)
-			},
-		})
+		setShares({ extraId: id, shareId, fileId, permissions }).then(callback)
 	}
 
 	if (OCA.Files.Sidebar && OCA.Files.Sidebar.registerTab) {
