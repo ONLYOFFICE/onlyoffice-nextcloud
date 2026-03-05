@@ -58,7 +58,6 @@ class FilesListener implements IEventListener {
             && $this->appConfig->isUserAllowedToUse()) {
             Util::addScript("onlyoffice", "onlyoffice-desktop");
             Util::addScript("onlyoffice", "onlyoffice-main");
-            Util::addScript("onlyoffice", "onlyoffice-template");
 
             if ($this->appConfig->getSameTab()) {
                 Util::addScript("onlyoffice", "onlyoffice-listener");
