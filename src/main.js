@@ -47,6 +47,7 @@ import { emit } from '@nextcloud/event-bus'
 import AppDarkSvg from '../img/app-dark.svg?raw'
 import NewPdfSvg from '../img/new-pdf.svg?raw'
 import { isPublicShare, getSharingToken } from '@nextcloud/sharing/public'
+import { getCurrentUser } from '@nextcloud/auth'
 import { loadState } from '@nextcloud/initial-state'
 import { generateUrl } from '@nextcloud/router'
 
@@ -78,10 +79,10 @@ import { generateUrl } from '@nextcloud/router'
 					mtime: new Date(),
 					mime: response.mimetype,
 					name: response.name,
-					owner: OC.getCurrentUser().uid || null,
+					owner: getCurrentUser().uid || null,
 					permissions: Permission.ALL,
 					type: 'file',
-					root: filesContext?.root || '/files/' + OC.getCurrentUser().uid,
+					root: filesContext?.root || '/files/' + getCurrentUser().uid,
 				})
 				emit('files:node:created', file)
 			} else {

@@ -26,6 +26,7 @@
  *
  */
 
+import { getCurrentUser } from '@nextcloud/auth'
 import { showError, showSuccess } from '@nextcloud/dialogs'
 import { generateUrl } from '@nextcloud/router'
 
@@ -57,7 +58,7 @@ import { generateUrl } from '@nextcloud/router'
 		OCA.Onlyoffice.filePath = $('#iframeEditor').data('path')
 		OCA.Onlyoffice.anchor = $('#iframeEditor').attr('data-anchor')
 		OCA.Onlyoffice.currentWindow = window
-		OCA.Onlyoffice.currentUser = OC.getCurrentUser()
+		OCA.Onlyoffice.currentUser = getCurrentUser()
 
 		if (OCA.Onlyoffice.inframe) {
 			OCA.Onlyoffice.currentWindow = window.parent
