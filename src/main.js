@@ -51,6 +51,7 @@ import { getCurrentUser } from '@nextcloud/auth'
 import { loadState } from '@nextcloud/initial-state'
 import { t } from '@nextcloud/l10n'
 import { generateUrl } from '@nextcloud/router'
+import { createFile, convertFile } from './services/FileService.ts'
 
 /**
  * @param {object} OCA Nextcloud OCA object
@@ -120,32 +121,29 @@ import { generateUrl } from '@nextcloud/router'
 			createData.shareToken = encodeURIComponent(getSharingToken())
 		}
 
-		$.post(generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/new'),
-			createData,
-			function onSuccess(response) {
-				if (response.error) {
-					if (winEditor) {
-						winEditor.close()
-					}
-					showError(response.error)
-					return
+		createFile(createData).then((response) => {
+			if (response.error) {
+				if (winEditor) {
+					winEditor.close()
 				}
+				showError(response.error)
+				return
+			}
 
-				callback(response)
+			callback(response)
 
-				if (open) {
-					const fileName = response.name
-					OCA.Onlyoffice.OpenEditor(response.id, dir, fileName, winEditor)
+			if (open) {
+				const fileName = response.name
+				OCA.Onlyoffice.OpenEditor(response.id, dir, fileName, winEditor)
 
-					OCA.Onlyoffice.context = {
-						fileName: response.name,
-						dir,
-					}
+				OCA.Onlyoffice.context = {
+					fileName: response.name,
+					dir,
 				}
+			}
 
-				showSuccess(t(OCA.Onlyoffice.AppName, 'File created'))
-			},
-		)
+			showSuccess(t(OCA.Onlyoffice.AppName, 'File created'))
+		})
 	}
 
 	OCA.Onlyoffice.OpenEditor = function(fileId, fileDir, fileName, winEditor, isDefault = true) {
@@ -305,18 +303,16 @@ import { generateUrl } from '@nextcloud/router'
 			convertData.shareToken = encodeURIComponent(getSharingToken())
 		}
 
-		$.post(generateUrl('apps/' + OCA.Onlyoffice.AppName + '/ajax/convert'),
-			convertData,
-			function onSuccess(response) {
-				if (response.error) {
-					showError(response.error)
-					return
-				}
+		convertFile(convertData).then((response) => {
+			if (response.error) {
+				showError(response.error)
+				return
+			}
 
-				callback(response)
+			callback(response)
 
-				showSuccess(t(OCA.Onlyoffice.AppName, 'File has been converted. Its content might look different.'))
-			})
+			showSuccess(t(OCA.Onlyoffice.AppName, 'File has been converted. Its content might look different.'))
+		})
 	}
 
 	OCA.Onlyoffice.FileDownloadAsHandler = async function(file) {

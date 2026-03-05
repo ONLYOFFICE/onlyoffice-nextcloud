@@ -26,37 +26,35 @@
  *
  */
 
-export interface FileInfo {
-	id: number
-	parentId: number
-	mtime: number
+import axios from '@nextcloud/axios'
+import { generateUrl } from '@nextcloud/router'
+import type { FileInfo } from '../types'
+
+export interface CreateFileData {
 	name: string
-	permissions: number
-	mimetype: string
-	size: number
-	type: string
-	etag: string
-	error?: string
+	dir: string
+	templateId?: number
+	targetId?: number
+	shareToken?: string
 }
 
-export interface AddressSettingsResponse {
-	documentserver: string | null
-	documentserverInternal: string
-	storageUrl: string
-	verifyPeerOff: boolean
-	secret: string | null
-	jwtHeader: string
-	error: string | null
-	version: string | null
+export interface ConvertFileData {
+	fileId: number
+	shareToken?: string
 }
 
-export interface Template {
-	id: number
-	name: string
-	type: string
-	icon: string
+export const createFile = async (data: CreateFileData): Promise<FileInfo> => {
+	const response = await axios.post<FileInfo>(
+		generateUrl('apps/onlyoffice/ajax/new'),
+		data,
+	)
+	return response.data
 }
 
-export interface ApiError {
-	error: string
+export const convertFile = async (data: ConvertFileData): Promise<FileInfo> => {
+	const response = await axios.post<FileInfo>(
+		generateUrl('apps/onlyoffice/ajax/convert'),
+		data,
+	)
+	return response.data
 }
