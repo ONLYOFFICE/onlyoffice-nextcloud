@@ -26,6 +26,7 @@
  *
  */
 
+import { loadState } from '@nextcloud/initial-state'
 import { generateUrl } from '@nextcloud/router'
 
 /* global $ */
@@ -44,7 +45,7 @@ import { generateUrl } from '@nextcloud/router'
 		setting: {},
 	}
 
-	OCA.Onlyoffice.setting = OCP.InitialState.loadState(OCA.Onlyoffice.AppName, 'settings')
+	OCA.Onlyoffice.setting = loadState(OCA.Onlyoffice.AppName, 'settings')
 
 	const OnlyofficeViewerVue = {
 		name: 'OnlyofficeViewerVue',

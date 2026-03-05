@@ -61,7 +61,7 @@ import { generateUrl } from '@nextcloud/router'
 		frameSelector: null,
 	}, OCA.Onlyoffice)
 
-	OCA.Onlyoffice.setting = OCP.InitialState.loadState(OCA.Onlyoffice.AppName, 'settings')
+	OCA.Onlyoffice.setting = loadState(OCA.Onlyoffice.AppName, 'settings')
 	OCA.Onlyoffice.mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini|Macintosh/i.test(navigator.userAgent)
 							&& navigator.maxTouchPoints && navigator.maxTouchPoints > 1
 
