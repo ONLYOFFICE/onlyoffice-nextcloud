@@ -28,9 +28,10 @@
 
 /* global _, jQuery */
 
+import { createApp } from 'vue'
 import { spawnDialog } from '@nextcloud/vue/functions/dialog'
 import EmptyJwtInfoDialog from './views/EmptyJwtInfoDialog.vue'
-import { addTemplate, deleteTemplate } from './services/TemplateService'
+import TemplateList from './views/TemplateList.vue'
 
 /**
  * @param {object} $ JQueryStatic object
@@ -382,65 +383,7 @@ import { addTemplate, deleteTemplate } from './services/TemplateService'
 			)
 		})
 
-		$('#onlyofficeAddTemplate').change(function() {
-			const file = this.files[0]
-
-			$('.section-onlyoffice').addClass('icon-loading')
-			addTemplate(file).then((response) => {
-				$('.section-onlyoffice').removeClass('icon-loading')
-
-				if (response.error) {
-					OCP.Toast.error(t(OCA.Onlyoffice.AppName, 'Error') + ': ' + response.error)
-					return
-				}
-
-				OCA.Onlyoffice.AttachItemTemplate(response)
-				OCP.Toast.success(t(OCA.Onlyoffice.AppName, 'Template successfully added'))
-			})
-		})
-
-		$(document).on('click', '.onlyoffice-template-delete', function(event) {
-			const item = $(event.target).parents('.onlyoffice-template-item')
-			const templateId = $(item).attr('data-id')
-
-			$('.section-onlyoffice').addClass('icon-loading')
-			deleteTemplate(templateId).then((response) => {
-				$('.section-onlyoffice').removeClass('icon-loading')
-
-				if (response.error) {
-					OCP.Toast.error(t(OCA.Onlyoffice.AppName, 'Error') + ': ' + response.error)
-					return
-				}
-
-				$(item).detach()
-				OCP.Toast.success(t(OCA.Onlyoffice.AppName, 'Template successfully deleted'))
-			})
-		})
-
-		$(document).on('click', '.onlyoffice-template-item p', function(event) {
-			const item = $(event.target).parents('.onlyoffice-template-item')
-			const templateId = $(item).attr('data-id')
-
-			const url = OC.generateUrl('/apps/' + OCA.Onlyoffice.AppName + '/{fileId}?template={template}',
-				{
-					fileId: templateId,
-					template: 'true',
-				})
-
-			window.open(url)
-		})
-
-		$(document).on('click', '.onlyoffice-template-download', function(event) {
-			const item = $(event.target).parents('.onlyoffice-template-item')
-			const templateId = $(item).attr('data-id')
-
-			const downloadLink = OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/downloadas?fileId={fileId}&template={template}', {
-				fileId: templateId,
-				template: 'true',
-			})
-
-			location.href = downloadLink
-		})
+		createApp(TemplateList).mount('#onlyoffice-template-list')
 
 		const sameTabCheckbox = document.getElementById('onlyofficeSameTab')
 		const sharingBlock = document.getElementById('onlyofficeEnableSharingBlock')

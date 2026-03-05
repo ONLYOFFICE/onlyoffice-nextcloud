@@ -32,12 +32,19 @@ import type { ApiError, Template } from '../types'
 
 const templateUrl = generateUrl('apps/onlyoffice/ajax/template')
 
-export const addTemplate = (file: File): Promise<Template | ApiError> => {
-	const data = new FormData()
-	data.append('file', file)
-	return axios.post<Template | ApiError>(templateUrl, data).then(response => response.data)
+export const getTemplates = async (): Promise<Template[]> => {
+	const response = await axios.get<Template[]>(templateUrl)
+	return response.data
 }
 
-export const deleteTemplate = (templateId: number): Promise<ApiError | []> => {
-	return axios.delete<ApiError | []>(templateUrl, { params: { templateId } }).then(response => response.data)
+export const addTemplate = async (file: File): Promise<Template | ApiError> => {
+	const data = new FormData()
+	data.append('file', file)
+	const response = await axios.post<Template | ApiError>(templateUrl, data)
+	return response.data
+}
+
+export const deleteTemplate = async (templateId: number): Promise<ApiError | []> => {
+	const response = await axios.delete<ApiError | []>(templateUrl, { params: { templateId } })
+	return response.data
 }

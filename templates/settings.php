@@ -309,16 +309,7 @@ if ($_["tagsEnabled"]) {
         <input id="onlyofficeAddTemplate" type="file" class="hidden-visually" />
         <label for="onlyofficeAddTemplate" class="icon-add" title="<?php p($l->t("Add a new template")) ?>"></label>
     </h2>
-    <ul class="onlyoffice-template-container">
-        <?php foreach ($_["templates"] as $template) { ?>
-            <li data-id=<?php p($template["id"]) ?> class="onlyoffice-template-item" >
-                <img src="<?php p($template["icon"]) ?>" />
-                <p><?php p($template["name"]) ?></p>
-                <span class="onlyoffice-template-download"></span>
-                <span class="onlyoffice-template-delete icon-delete"></span>
-            </li>
-        <?php } ?>
-    </ul>
+    <div id="onlyoffice-template-list"></div>
 
 </div>
 
