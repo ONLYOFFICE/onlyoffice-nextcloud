@@ -27,6 +27,7 @@
  */
 
 import { showError, showSuccess } from '@nextcloud/dialogs'
+import { t } from '@nextcloud/l10n'
 
 /* global _, $ */
 

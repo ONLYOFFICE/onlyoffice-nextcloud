@@ -28,6 +28,7 @@
 
 import { getCurrentUser } from '@nextcloud/auth'
 import { showError, showSuccess } from '@nextcloud/dialogs'
+import { t } from '@nextcloud/l10n'
 import { generateUrl } from '@nextcloud/router'
 
 /* global _, DocsAPI, jQuery, moment, oc_defaults */

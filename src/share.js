@@ -30,6 +30,7 @@
 
 /* global _, jQuery */
 
+import { t } from '@nextcloud/l10n'
 import AppDarkSvg from '../img/app-dark.svg?raw';
 
 /**

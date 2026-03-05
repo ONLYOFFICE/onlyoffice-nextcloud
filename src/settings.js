@@ -30,6 +30,7 @@
 
 import { createApp } from 'vue'
 import { showError, showSuccess } from '@nextcloud/dialogs'
+import { t } from '@nextcloud/l10n'
 import { generateUrl } from '@nextcloud/router'
 import { spawnDialog } from '@nextcloud/vue/functions/dialog'
 import EmptyJwtInfoDialog from './views/EmptyJwtInfoDialog.vue'

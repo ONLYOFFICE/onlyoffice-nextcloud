@@ -49,6 +49,7 @@ import NewPdfSvg from '../img/new-pdf.svg?raw'
 import { isPublicShare, getSharingToken } from '@nextcloud/sharing/public'
 import { getCurrentUser } from '@nextcloud/auth'
 import { loadState } from '@nextcloud/initial-state'
+import { t } from '@nextcloud/l10n'
 import { generateUrl } from '@nextcloud/router'
 
 /**
