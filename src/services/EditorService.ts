@@ -46,11 +46,6 @@ export interface SendMentionData {
 	emails: string[]
 }
 
-export interface ReferenceData {
-	referenceData?: unknown
-	path?: string
-	link?: string
-}
 
 const encodePath = (path: string): string =>
 	path.split('/').map(encodeURIComponent).join('/')
@@ -100,15 +95,7 @@ export const getFileUrl = async (filePath: string): Promise<unknown> => {
 	return response.data
 }
 
-export const setReferenceSource = async (path: string): Promise<unknown> => {
-	const response = await axios.post<unknown>(
-		generateUrl('apps/onlyoffice/ajax/reference'),
-		{ path },
-	)
-	return response.data
-}
-
-export const getReferenceData = async (data: ReferenceData): Promise<unknown> => {
+export const fetchReference = async (data: Record<string, unknown>): Promise<unknown> => {
 	const response = await axios.post<unknown>(
 		generateUrl('apps/onlyoffice/ajax/reference'),
 		data,

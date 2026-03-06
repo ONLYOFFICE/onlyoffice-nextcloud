@@ -38,8 +38,7 @@ import {
 	restoreVersion,
 	saveAs,
 	getFileUrl,
-	setReferenceSource,
-	getReferenceData,
+	fetchReference,
 	getUserInfo,
 	getUsers,
 	sendMention,
@@ -425,7 +424,7 @@ import {
 			return
 		}
 
-		setReferenceSource(filePath).then((response) => {
+		fetchReference({ referenceData: {}, path: filePath }).then((response) => {
 			if (response.error) {
 				OCA.Onlyoffice.showMessage(response.error, 'error')
 				return
@@ -598,7 +597,7 @@ import {
 		const referenceData = event.data.referenceData
 		const path = event.data.path
 
-		getReferenceData({ referenceData, path, link }).then((response) => {
+		fetchReference({ referenceData, path, link }).then((response) => {
 			if (response.error) {
 				OCA.Onlyoffice.showMessage(response.error, 'error')
 				return
