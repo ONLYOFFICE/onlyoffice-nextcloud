@@ -347,6 +347,8 @@ import { saveAddressSettings, saveCommonSettings, saveSecuritySettings, clearHis
 			const confirmed = await showConfirmation({
 				name: t(OCA.Onlyoffice.AppName, 'Confirm metadata removal'),
 				text: t(OCA.Onlyoffice.AppName, 'Are you sure you want to clear metadata?'),
+				labelReject: t('core', 'Cancel'),
+				severity: 'info',
 			})
 			if (!confirmed) {
 				return
