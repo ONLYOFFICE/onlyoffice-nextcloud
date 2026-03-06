@@ -37,12 +37,9 @@ import {
 	Permission,
 	DefaultType,
 	addNewFileMenuEntry,
-	davGetClient,
-	davRootPath,
-	davGetDefaultPropfind,
-	davResultToNode,
 } from '@nextcloud/files'
-import { showError, showSuccess } from '@nextcloud/dialogs'
+import '@nextcloud/dialogs/style.css'
+import { showError, showSuccess, getFilePickerBuilder } from '@nextcloud/dialogs'
 import { emit } from '@nextcloud/event-bus'
 import AppDarkSvg from '../img/app-dark.svg?raw'
 import NewPdfSvg from '../img/new-pdf.svg?raw'
@@ -385,52 +382,27 @@ import { createFile, convertFile } from './services/FileService.ts'
 			'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 		]
 
-		const buttons = [
-			{
-				text: t(OCA.Onlyoffice.AppName, 'Blank'),
-				type: 'blank',
-			},
-			{
-				text: t(OCA.Onlyoffice.AppName, 'From text document'),
-				type: 'target',
-				defaultButton: true,
-			},
-		]
+		const startDir = filelist.getCurrentDirectory ? filelist.getCurrentDirectory() : filelist.dir
 
-		OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, 'Create new PDF form'),
-			async function(filePath, type) {
-				let dialogFileList = OC.dialogs.filelist
-				let targetId = 0
-
-				const targetFileName = OC.basename(filePath)
-				const targetFolderPath = OC.dirname(filePath)
-
-				if (!dialogFileList) {
-					const results = await davGetClient().getDirectoryContents(davRootPath + targetFolderPath, {
-						details: true,
-						data: davGetDefaultPropfind(),
-					})
-					dialogFileList = results.data.map((result) => davResultToNode(result))
-				}
-
-				if (type === 'target') {
-					dialogFileList.forEach(item => {
-						const itemName = item.name ? item.name : item.basename
-						if (itemName === targetFileName) {
-							targetId = item.id ? item.id : item.fileid
-						}
-					})
-				}
-				OCA.Onlyoffice.CreateFileOverload(name, filelist, 0, targetId, true, filesContext)
-			},
-			false,
-			filterMimes,
-			true,
-			OC.dialogs.FILEPICKER_TYPE_CUSTOM,
-			filelist.getCurrentDirectory ? filelist.getCurrentDirectory() : filelist.dir,
-			{
-				buttons,
+		getFilePickerBuilder(t(OCA.Onlyoffice.AppName, 'Create new PDF form'))
+			.setMimeTypeFilter(filterMimes)
+			.startAt(startDir)
+			.addButton({
+				label: t(OCA.Onlyoffice.AppName, 'Blank'),
+				callback: () => OCA.Onlyoffice.CreateFileOverload(name, filelist, 0, 0, true, filesContext),
 			})
+			.addButton({
+				label: t(OCA.Onlyoffice.AppName, 'From text document'),
+				callback: (nodes) => {
+					if (!nodes[0]) return
+					const targetId = nodes[0].id ?? 0
+					OCA.Onlyoffice.CreateFileOverload(name, filelist, 0, targetId, true, filesContext)
+				},
+				variant: 'primary',
+			})
+			.build()
+			.pickNodes()
+			.catch(() => {})
 	}
 
 	OCA.Onlyoffice.FileCreateFormHandler = async function(file, view, dir) {

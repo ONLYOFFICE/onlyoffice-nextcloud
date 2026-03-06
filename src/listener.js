@@ -26,7 +26,8 @@
  *
  */
 
-import { showError, showSuccess } from '@nextcloud/dialogs'
+import '@nextcloud/dialogs/style.css'
+import { showError, showSuccess, getFilePickerBuilder } from '@nextcloud/dialogs'
 import { t } from '@nextcloud/l10n'
 
 /* global _, $ */
@@ -57,33 +58,48 @@ import { t } from '@nextcloud/l10n'
 	}
 
 	OCA.Onlyoffice.onRequestSaveAs = function(saveData) {
-
-		OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, 'Save as'),
-			function(fileDir) {
-				saveData.dir = fileDir
-				$(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.editorSaveAs(saveData)
-			},
-			false,
-			'httpd/unix-directory',
-			true,
-			OC.dialogs.FILEPICKER_TYPE_CHOOSE,
-			saveData.dir)
+		getFilePickerBuilder(t(OCA.Onlyoffice.AppName, 'Save as'))
+			.setMimeTypeFilter(['httpd/unix-directory'])
+			.allowDirectories()
+			.startAt(saveData.dir)
+			.addButton({
+				label: t('core', 'Choose'),
+				callback: (nodes) => {
+					if (!nodes[0]) return
+					saveData.dir = nodes[0].path
+					$(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.editorSaveAs(saveData)
+				},
+				variant: 'primary',
+			})
+			.build()
+			.pickNodes()
+			.catch(() => {})
 	}
 
 	OCA.Onlyoffice.onRequestInsertImage = function(imageMimes) {
-		OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, 'Insert image'),
-			$(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.editorInsertImage,
-			false,
-			imageMimes,
-			true)
+		getFilePickerBuilder(t(OCA.Onlyoffice.AppName, 'Insert image'))
+			.setMimeTypeFilter(imageMimes)
+			.addButton({
+				label: t('core', 'Choose'),
+				callback: (nodes) => { if (!nodes[0]) return; $(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.editorInsertImage(nodes[0].path) },
+				variant: 'primary',
+			})
+			.build()
+			.pickNodes()
+			.catch(() => {})
 	}
 
 	OCA.Onlyoffice.onRequestMailMergeRecipients = function(recipientMimes) {
-		OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, 'Select recipients'),
-			$(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.editorSetRecipient,
-			false,
-			recipientMimes,
-			true)
+		getFilePickerBuilder(t(OCA.Onlyoffice.AppName, 'Select recipients'))
+			.setMimeTypeFilter(recipientMimes)
+			.addButton({
+				label: t('core', 'Choose'),
+				callback: (nodes) => { if (!nodes[0]) return; $(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.editorSetRecipient(nodes[0].path) },
+				variant: 'primary',
+			})
+			.build()
+			.pickNodes()
+			.catch(() => {})
 	}
 
 	OCA.Onlyoffice.onRequestSelectDocument = function(revisedMimes, documentSelectionType) {
@@ -101,19 +117,29 @@ import { t } from '@nextcloud/l10n'
 		default:
 			title = t(OCA.Onlyoffice.AppName, 'Select file')
 		}
-		OC.dialogs.filepicker(title,
-			$(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.editorSetRequested.bind({ documentSelectionType }),
-			false,
-			revisedMimes,
-			true)
+		getFilePickerBuilder(title)
+			.setMimeTypeFilter(revisedMimes)
+			.addButton({
+				label: t('core', 'Choose'),
+				callback: (nodes) => { if (!nodes[0]) return; $(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.editorSetRequested.call({ documentSelectionType }, nodes[0].path) },
+				variant: 'primary',
+			})
+			.build()
+			.pickNodes()
+			.catch(() => {})
 	}
 
 	OCA.Onlyoffice.onRequestReferenceSource = function(referenceSourceMimes) {
-		OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, 'Select data source'),
-			$(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.editorReferenceSource,
-			false,
-			referenceSourceMimes,
-			true)
+		getFilePickerBuilder(t(OCA.Onlyoffice.AppName, 'Select data source'))
+			.setMimeTypeFilter(referenceSourceMimes)
+			.addButton({
+				label: t('core', 'Choose'),
+				callback: (nodes) => { if (!nodes[0]) return; $(OCA.Onlyoffice.frameSelector)[0].contentWindow.OCA.Onlyoffice.editorReferenceSource(nodes[0].path) },
+				variant: 'primary',
+			})
+			.build()
+			.pickNodes()
+			.catch(() => {})
 	}
 
 	OCA.Onlyoffice.onDocumentReady = function() {

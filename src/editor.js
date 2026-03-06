@@ -27,7 +27,8 @@
  */
 
 import { getCurrentUser } from '@nextcloud/auth'
-import { showError, showSuccess } from '@nextcloud/dialogs'
+import '@nextcloud/dialogs/style.css'
+import { showError, showSuccess, getFilePickerBuilder } from '@nextcloud/dialogs'
 import { t } from '@nextcloud/l10n'
 import { generateUrl, generateOcsUrl } from '@nextcloud/router'
 import {
@@ -304,16 +305,22 @@ import {
 			},
 			'*')
 		} else {
-			OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, 'Save as'),
-				function(fileDir) {
-					saveData.dir = fileDir
-					OCA.Onlyoffice.editorSaveAs(saveData)
-				},
-				false,
-				'httpd/unix-directory',
-				true,
-				OC.dialogs.FILEPICKER_TYPE_CHOOSE,
-				saveData.dir)
+			getFilePickerBuilder(t(OCA.Onlyoffice.AppName, 'Save as'))
+				.setMimeTypeFilter(['httpd/unix-directory'])
+				.allowDirectories()
+				.startAt(saveData.dir)
+				.addButton({
+					label: t('core', 'Choose'),
+					callback: (nodes) => {
+						if (!nodes[0]) return
+						saveData.dir = nodes[0].path
+						OCA.Onlyoffice.editorSaveAs(saveData)
+					},
+					variant: 'primary',
+				})
+				.build()
+				.pickNodes()
+				.catch(() => {})
 		}
 	}
 
@@ -348,11 +355,16 @@ import {
 			},
 			'*')
 		} else {
-			OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, 'Insert image'),
-				OCA.Onlyoffice.editorInsertImage,
-				false,
-				imageMimes,
-				true)
+			getFilePickerBuilder(t(OCA.Onlyoffice.AppName, 'Insert image'))
+				.setMimeTypeFilter(imageMimes)
+				.addButton({
+					label: t('core', 'Choose'),
+					callback: (nodes) => { if (!nodes[0]) return; OCA.Onlyoffice.editorInsertImage(nodes[0].path) },
+					variant: 'primary',
+				})
+				.build()
+				.pickNodes()
+				.catch(() => {})
 		}
 	}
 
@@ -383,11 +395,16 @@ import {
 			},
 			'*')
 		} else {
-			OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, 'Select recipients'),
-				OCA.Onlyoffice.editorSetRecipient,
-				false,
-				recipientMimes,
-				true)
+			getFilePickerBuilder(t(OCA.Onlyoffice.AppName, 'Select recipients'))
+				.setMimeTypeFilter(recipientMimes)
+				.addButton({
+					label: t('core', 'Choose'),
+					callback: (nodes) => { if (!nodes[0]) return; OCA.Onlyoffice.editorSetRecipient(nodes[0].path) },
+					variant: 'primary',
+				})
+				.build()
+				.pickNodes()
+				.catch(() => {})
 		}
 	}
 
@@ -465,11 +482,16 @@ import {
 			default:
 				title = t(OCA.Onlyoffice.AppName, 'Select file')
 			}
-			OC.dialogs.filepicker(title,
-				OCA.Onlyoffice.editorSetRequested.bind({ documentSelectionType: event.data.c }),
-				false,
-				revisedMimes,
-				true)
+			getFilePickerBuilder(title)
+				.setMimeTypeFilter(revisedMimes)
+				.addButton({
+					label: t('core', 'Choose'),
+					callback: (nodes) => { if (!nodes[0]) return; OCA.Onlyoffice.editorSetRequested.call({ documentSelectionType: event.data.c }, nodes[0].path) },
+					variant: 'primary',
+				})
+				.build()
+				.pickNodes()
+				.catch(() => {})
 		}
 	}
 
@@ -605,11 +627,16 @@ import {
 			},
 			'*')
 		} else {
-			OC.dialogs.filepicker(t(OCA.Onlyoffice.AppName, 'Select data source'),
-				OCA.Onlyoffice.editorReferenceSource,
-				false,
-				referenceSourceMimes,
-				true)
+			getFilePickerBuilder(t(OCA.Onlyoffice.AppName, 'Select data source'))
+				.setMimeTypeFilter(referenceSourceMimes)
+				.addButton({
+					label: t('core', 'Choose'),
+					callback: (nodes) => { if (!nodes[0]) return; OCA.Onlyoffice.editorReferenceSource(nodes[0].path) },
+					variant: 'primary',
+				})
+				.build()
+				.pickNodes()
+				.catch(() => {})
 		}
 	}
 
