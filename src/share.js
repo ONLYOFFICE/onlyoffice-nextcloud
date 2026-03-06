@@ -31,6 +31,7 @@
 /* global _, jQuery */
 
 import { t } from '@nextcloud/l10n'
+import { ShareType } from '@nextcloud/sharing'
 import AppDarkSvg from '../img/app-dark.svg?raw'
 import { getShares, setShares } from './services/ShareService.ts'
 
@@ -142,17 +143,17 @@ import { getShares, setShares } from './services/ShareService.ts'
 
 					let avatarSrc = '/index.php/avatar/' + extra.shareWith + '/32?v=0'
 					let label = extra.shareWithName
-					if (extra.type === OC.Share.SHARE_TYPE_GROUP
-						|| extra.type === OC.Share.SHARE_TYPE_ROOM) {
+					if (extra.type === ShareType.Group
+						|| extra.type === ShareType.Room) {
 						avatarSrc = '/index.php/avatar/guest/' + extra.shareWith + '/32?v=0'
 						label = extra.shareWith + ' (' + t(OCA.Onlyoffice.AppName, 'group') + ')'
 					}
 
-					if (extra.type === OC.Share.SHARE_TYPE_ROOM) {
+					if (extra.type === ShareType.Room) {
 						label = extra.shareWith + ' (' + t(OCA.Onlyoffice.AppName, 'conversation') + ')'
 					}
 
-					if (extra.type === OC.Share.SHARE_TYPE_LINK) {
+					if (extra.type === ShareType.Link) {
 						label = t(OCA.Onlyoffice.AppName, 'Share link')
 
 						const avatarWrapper = itemNode.find('.avatardiv')
