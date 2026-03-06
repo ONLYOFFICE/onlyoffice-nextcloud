@@ -29,7 +29,7 @@
 /* global _, jQuery */
 
 import { createApp } from 'vue'
-import { showError, showSuccess } from '@nextcloud/dialogs'
+import { showError, showSuccess, showConfirmation } from '@nextcloud/dialogs'
 import { t } from '@nextcloud/l10n'
 import { spawnDialog } from '@nextcloud/vue/functions/dialog'
 import EmptyJwtInfoDialog from './views/EmptyJwtInfoDialog.vue'
@@ -342,23 +342,21 @@ import { saveAddressSettings, saveCommonSettings, saveSecuritySettings, clearHis
 			}
 		})
 
-		$('#onlyofficeClearVersionHistory').click(function() {
-			OC.dialogs.confirm(
-				t(OCA.Onlyoffice.AppName, 'Are you sure you want to clear metadata?'),
-				t(OCA.Onlyoffice.AppName, 'Confirm metadata removal'),
-				(clicked) => {
-					if (!clicked) {
-						return
-					}
+		$('#onlyofficeClearVersionHistory').click(async function() {
+			const confirmed = await showConfirmation({
+				name: t(OCA.Onlyoffice.AppName, 'Confirm metadata removal'),
+				text: t(OCA.Onlyoffice.AppName, 'Are you sure you want to clear metadata?'),
+			})
+			if (!confirmed) {
+				return
+			}
 
-					$('.section-onlyoffice').addClass('icon-loading')
+			$('.section-onlyoffice').addClass('icon-loading')
 
-					clearHistory().then(() => {
-						$('.section-onlyoffice').removeClass('icon-loading')
-						showSuccess(t(OCA.Onlyoffice.AppName, 'All history successfully deleted'))
-					})
-				},
-			)
+			clearHistory().then(() => {
+				$('.section-onlyoffice').removeClass('icon-loading')
+				showSuccess(t(OCA.Onlyoffice.AppName, 'All history successfully deleted'))
+			})
 		})
 
 		createApp(TemplateList).mount('#onlyoffice-template-list')
