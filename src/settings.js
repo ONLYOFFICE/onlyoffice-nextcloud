@@ -29,6 +29,7 @@
 /* global _, jQuery */
 
 import { createApp } from 'vue'
+import '@nextcloud/dialogs/style.css'
 import { showError, showSuccess, showConfirmation } from '@nextcloud/dialogs'
 import { t } from '@nextcloud/l10n'
 import { spawnDialog } from '@nextcloud/vue/functions/dialog'

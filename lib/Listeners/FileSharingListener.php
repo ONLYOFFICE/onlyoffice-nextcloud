@@ -68,11 +68,13 @@ class FileSharingListener implements IEventListener {
 
             if ($this->appConfig->getSameTab() || $shareType === "file") {
                 Util::addScript("onlyoffice", "onlyoffice-listener");
+                Util::addStyle("onlyoffice", "onlyoffice-listener");
             }
 
             $this->initialState->provideLazyInitialState("settings", fn() => Server::get(SettingsData::class));
 
             Util::addScript("onlyoffice", "onlyoffice-main");
+            Util::addStyle("onlyoffice", "onlyoffice-main");
             Util::addStyle("onlyoffice", "main");
             Util::addStyle("onlyoffice", "format");
         }

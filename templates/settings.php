@@ -29,6 +29,7 @@
 
     style("onlyoffice", "settings");
     style("onlyoffice", "template");
+    \OCP\Util::addStyle("onlyoffice", "onlyoffice-settings");
     \OCP\Util::addScript("onlyoffice", "onlyoffice-settings", 'core');
     \OCP\Util::addScript("onlyoffice", "onlyoffice-template", 'core');
 
