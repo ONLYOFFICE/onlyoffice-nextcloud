@@ -29,7 +29,7 @@
 import { getCurrentUser } from '@nextcloud/auth'
 import { showError, showSuccess } from '@nextcloud/dialogs'
 import { t } from '@nextcloud/l10n'
-import { generateUrl } from '@nextcloud/router'
+import { generateUrl, generateOcsUrl } from '@nextcloud/router'
 import {
 	getConfig,
 	getHistory,
@@ -718,7 +718,7 @@ import {
 
 	OCA.Onlyoffice.getConfigUrl = function() {
 		const guestName = localStorage.getItem('nick')
-		let configUrl = OC.linkToOCS('apps/' + OCA.Onlyoffice.AppName + '/api/v1/config', 2) + (OCA.Onlyoffice.fileId || 0)
+		let configUrl = generateOcsUrl('apps/onlyoffice/api/v1/config/') + (OCA.Onlyoffice.fileId || 0)
 
 		const params = []
 		if (OCA.Onlyoffice.filePath) {
