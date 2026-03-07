@@ -36,6 +36,7 @@ use OCA\Onlyoffice\TemplateManager;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Http\TemplateResponse;
+use OCP\AppFramework\Services\IInitialState;
 use OCP\IL10N;
 use OCP\IRequest;
 use OCP\IURLGenerator;
@@ -53,7 +54,8 @@ class SettingsController extends Controller {
         private readonly IL10N $trans,
         private readonly AppConfig $appConfig,
         private readonly IMimeIconProvider $mimeIconProvider,
-        private readonly DocumentService $documentService
+        private readonly DocumentService $documentService,
+        private readonly IInitialState $initialState
     ) {
         parent::__construct($appName, $request);
     }
@@ -98,6 +100,7 @@ class SettingsController extends Controller {
             "templates" => $this->getGlobalTemplates(),
             "unknownAuthor" => $this->appConfig->getUnknownAuthor()
         ];
+        $this->initialState->provideInitialState('admin-settings', $data);
         return new TemplateResponse($this->appName, "settings", $data, "blank");
     }
 
