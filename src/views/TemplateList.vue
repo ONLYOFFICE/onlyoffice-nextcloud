@@ -79,3 +79,9 @@ onUnmounted(() => {
 	document.getElementById('onlyofficeAddTemplate')?.removeEventListener('change', handleAdd)
 })
 </script>
+
+<style scoped>
+.onlyoffice-template-container li {
+    margin-bottom: 10px;
+}
+</style>

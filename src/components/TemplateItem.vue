@@ -47,3 +47,34 @@ const handleDownload = () => {
 	location.href = generateUrl('apps/onlyoffice/downloadas?fileId={fileId}&template=true', { fileId: props.template.id })
 }
 </script>
+
+<style scoped>
+.onlyoffice-template-item img,
+.onlyoffice-template-delete,
+.onlyoffice-template-download,
+.onlyoffice-template-item p {
+    display: inline-block;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.onlyoffice-template-delete,
+.onlyoffice-template-download {
+    margin-bottom: -4px;
+}
+
+.onlyoffice-template-delete {
+    opacity: .6;
+}
+
+.onlyoffice-template-download {
+    background-image: url("../../../core/img/actions/download.svg");
+    height: 16px;
+    width: 16px;
+    opacity: .6;
+}
+
+.onlyoffice-template-item img {
+    float: left;
+}
+</style>
