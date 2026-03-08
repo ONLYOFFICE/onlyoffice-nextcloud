@@ -26,52 +26,6 @@
  *
  */
 
-import { createApp } from 'vue'
-import { t } from '@nextcloud/l10n'
-import { loadState } from '@nextcloud/initial-state'
-import AppDarkSvg from '../img/app-dark.svg?raw'
-import ShareTab from './views/share/ShareTab.vue'
-import { getFileExtension } from './utils/files.ts'
-
-const formats = loadState('onlyoffice', 'settings', { formats: {} }).formats ?? {}
-
-let appInstance = null
-let componentVm = null
-
-const advancedTab = new OCA.Files.Sidebar.Tab({
-	id: 'onlyofficeSharingTabView',
-	name: t('onlyoffice', 'Advanced'),
-	iconSvg: AppDarkSvg,
-
-	mount(el, fileInfo) {
-		appInstance = createApp(ShareTab)
-		componentVm = appInstance.mount(el)
-		componentVm.update(fileInfo)
-	},
-
-	update(fileInfo) {
-		componentVm?.update(fileInfo)
-	},
-
-	destroy() {
-		appInstance?.unmount()
-		appInstance = null
-		componentVm = null
-	},
-
-	enabled(fileInfo) {
-		if (fileInfo.isDirectory()) return false
-		const ext = getFileExtension(fileInfo.name)
-		const format = formats[ext]
-		if (!(format && (format.review || format.comment || format.fillForms || format.modifyFilter))) return false
-		const sharingTabActive = document.querySelector('#sharing.active, #tab-button-sharing.active')
-		if (sharingTabActive && componentVm) {
-			componentVm.update(fileInfo)
-		}
-		return true
-	},
-})
-
-if (OCA.Files?.Sidebar?.registerTab) {
-	OCA.Files.Sidebar.registerTab(advancedTab)
+export function getFileExtension(fileName: string): string {
+	return fileName.slice(fileName.lastIndexOf('.') + 1).toLowerCase()
 }

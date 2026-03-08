@@ -68,7 +68,7 @@ class FilesListener implements IEventListener {
             if ($this->appConfig->getAdvanced()
                 && Server::get(\OCP\App\IAppManager::class)->isEnabledForAnyone("files_sharing")) {
                 Util::addScript("onlyoffice", "onlyoffice-share");
-                Util::addStyle("onlyoffice", "share");
+                Util::addStyle("onlyoffice", "onlyoffice-share");
             }
 
             $this->initialState->provideLazyInitialState("settings", fn() => Server::get(SettingsData::class));
