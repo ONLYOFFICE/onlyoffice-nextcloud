@@ -74,7 +74,6 @@ class FilesListener implements IEventListener {
             $this->initialState->provideLazyInitialState("settings", fn() => Server::get(SettingsData::class));
 
             Util::addStyle("onlyoffice", "main");
-            Util::addStyle("onlyoffice", "template");
             Util::addStyle("onlyoffice", "format");
         }
     }
