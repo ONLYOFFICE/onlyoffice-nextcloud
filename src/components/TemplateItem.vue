@@ -27,7 +27,7 @@
 	<li class="onlyoffice-template-item" :data-id="template.id">
 		<img :src="template.icon" />
 		<p @click="handleOpen">{{ template.name }}</p>
-		<span class="onlyoffice-template-download" @click="handleDownload" />
+		<span class="onlyoffice-template-download icon-download" @click="handleDownload" />
 		<span class="onlyoffice-template-delete icon-delete" @click="emit('delete', template.id)" />
 	</li>
 </template>
@@ -61,16 +61,6 @@ const handleDownload = () => {
 .onlyoffice-template-delete,
 .onlyoffice-template-download {
     margin-bottom: -4px;
-}
-
-.onlyoffice-template-delete {
-    opacity: .6;
-}
-
-.onlyoffice-template-download {
-    background-image: url("../../../core/img/actions/download.svg");
-    height: 16px;
-    width: 16px;
     opacity: .6;
 }
 
