@@ -1,3 +1,9 @@
 /js
 /node_modules
 /vendor
+
+# Playwright
+/test-results/
+/playwright-report/
+/tests/e2e/.cache/
+/tests/e2e/.auth/
