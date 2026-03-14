@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System SIA 2025
+ * (c) Copyright Ascensio System SIA 2026
  *
  * This program is a free software product.
  * You can redistribute it and/or modify it under the terms of the GNU Affero General Public License
@@ -27,7 +27,7 @@
  *
  */
 
-script("onlyoffice", "directeditor");
+\OCP\Util::addScript("onlyoffice", "directeditor", 'core');
 ?>
 <div class="guest-box" id="directEditorError">
     <h2><?php p($l->t('Error')); ?></h2>

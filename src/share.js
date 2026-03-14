@@ -1,6 +1,6 @@
 /**
  *
- * (c) Copyright Ascensio System SIA 2025
+ * (c) Copyright Ascensio System SIA 2026
  *
  * This program is a free software product.
  * You can redistribute it and/or modify it under the terms of the GNU Affero General Public License
@@ -26,12 +26,11 @@
  *
  */
 
-/* eslint-disable import/no-webpack-loader-syntax */
 /* eslint-disable import/no-unresolved */
 
 /* global _, jQuery */
 
-import AppDarkSvg from '!!raw-loader!../img/app-dark.svg';
+import AppDarkSvg from '../img/app-dark.svg?raw';
 
 /**
  * @param {object} $ JQueryStatic object

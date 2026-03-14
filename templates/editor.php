@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System SIA 2025
+ * (c) Copyright Ascensio System SIA 2026
  *
  * This program is a free software product.
  * You can redistribute it and/or modify it under the terms of the GNU Affero General Public License
@@ -28,11 +28,11 @@
  */
 
     style("onlyoffice", "editor");
-    script("onlyoffice", "onlyoffice-desktop");
+    \OCP\Util::addScript("onlyoffice", "onlyoffice-desktop", 'core');
 if (!empty($_["directToken"])) {
-    script("onlyoffice", "onlyoffice-directeditor");
+    \OCP\Util::addScript("onlyoffice", "onlyoffice-directeditor", 'core');
 }
-    script("onlyoffice", "onlyoffice-editor");
+    \OCP\Util::addScript("onlyoffice", "onlyoffice-editor", 'core');
 ?>
 
 <div id="app"

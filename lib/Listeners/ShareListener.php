@@ -27,47 +27,40 @@
  *
  */
 
-namespace OCA\Onlyoffice;
+namespace OCA\Onlyoffice\Listeners;
 
-use OCP\Files\File;
-use OCP\Files\Template\ICustomTemplateProvider;
-use OCP\Files\Template\Template;
-use OCP\IURLGenerator;
+use Exception;
+use OCA\Onlyoffice\ExtraPermissions;
+use OCP\EventDispatcher\Event;
+use OCP\EventDispatcher\IEventListener;
+use OCP\Share\Events\ShareDeletedEvent;
+use OCP\Share\IShare;
+use Psr\Log\LoggerInterface;
 
-class TemplateProvider implements ICustomTemplateProvider {
+/**
+ * OCP\Share events listener
+ */
+class ShareListener implements IEventListener {
 
     public function __construct(
-        private readonly string $appName,
-        private readonly IURLGenerator $urlGenerator
+        private readonly LoggerInterface $logger,
+        private readonly ExtraPermissions $extraPermissions
     ) {}
 
-    /**
-     * Return a list of additional templates that the template provider is offering
-     */
-    public function getCustomTemplates(string $mimetype) : array {
-        $templates = [];
-
-        $templateFiles = TemplateManager::getGlobalTemplates($mimetype);
-
-        foreach ($templateFiles as $templateFile) {
-            $template = new Template(
-                TemplateProvider::class,
-                $templateFile->getId(),
-                $templateFile
-            );
-
-            $template->setCustomPreviewUrl($this->urlGenerator->linkToRouteAbsolute($this->appName . ".template.preview", ["fileId" => $templateFile->getId()]));
-
-            $templates[] = $template;
+    public function handle(Event $event): void {
+        if ($event instanceof ShareDeletedEvent) {
+            $this->shareDeleted($event->getShare());
         }
-
-        return $templates;
     }
 
-    /**
-     * Return the file for a given template id
-     */
-    public function getCustomTemplate(string $templateId): File {
-        return TemplateManager::getTemplate((int)$templateId);
+    public function shareDeleted(IShare $share): void {
+        try {
+            $this->extraPermissions->delete($share->getId());
+        } catch (Exception $e) {
+            $this->logger->error(
+                "ShareDeletedEvent: deleting extra permissions for share {$share->getId()}",
+                ["exception" => $e]
+            );
+        }
     }
 }

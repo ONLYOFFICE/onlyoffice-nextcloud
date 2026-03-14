@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System SIA 2025
+ * (c) Copyright Ascensio System SIA 2026
  *
  * This program is a free software product.
  * You can redistribute it and/or modify it under the terms of the GNU Affero General Public License
@@ -29,13 +29,11 @@
 
     style("onlyoffice", "settings");
     style("onlyoffice", "template");
-    script("onlyoffice", "onlyoffice-settings");
-    script("onlyoffice", "onlyoffice-template");
+    \OCP\Util::addScript("onlyoffice", "onlyoffice-settings", 'core');
+    \OCP\Util::addScript("onlyoffice", "onlyoffice-template", 'core');
 
 if ($_["tagsEnabled"]) {
-    script("core", [
-        "dist/systemtags",
-    ]);
+    \OCP\Util::addScript("core", "dist/systemtags");
 }
 ?>
 <div class="section section-onlyoffice section-onlyoffice-addr">

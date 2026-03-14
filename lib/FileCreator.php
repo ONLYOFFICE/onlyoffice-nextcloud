@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System SIA 2025
+ * (c) Copyright Ascensio System SIA 2026
  *
  * This program is a free software product.
  * You can redistribute it and/or modify it under the terms of the GNU Affero General Public License
@@ -31,6 +31,7 @@ namespace OCA\Onlyoffice;
 
 use OCP\DirectEditing\ACreateEmpty;
 use OCP\Files\File;
+use OCP\Files\NotPermittedException;
 use OCP\IL10N;
 use Psr\Log\LoggerInterface;
 
@@ -42,12 +43,11 @@ use Psr\Log\LoggerInterface;
 class FileCreator extends ACreateEmpty {
 
     public function __construct(
-        private string $AppName,
-        private IL10N $trans,
-        private LoggerInterface $logger,
-        private string $format
-    ) {
-    }
+        private readonly string $appName,
+        private readonly IL10N $trans,
+        private readonly LoggerInterface $logger,
+        private readonly string $format
+    ) {}
 
     /**
      * Unique id for the creator to filter templates
@@ -59,14 +59,13 @@ class FileCreator extends ACreateEmpty {
     /**
      * Descriptive name for the create action
      */
-    public function getName(): string {
-        switch ($this->format) {
-            case "xlsx":
-                return $this->trans->t("New spreadsheet");
-            case "pptx":
-                return $this->trans->t("New presentation");
-        }
-        return $this->trans->t("New document");
+    public function getName(): string
+    {
+        return match ($this->format) {
+            "xlsx" => $this->trans->t("New spreadsheet"),
+            "pptx" => $this->trans->t("New presentation"),
+            default => $this->trans->t("New document"),
+        };
     }
 
     /**
@@ -79,14 +78,13 @@ class FileCreator extends ACreateEmpty {
     /**
      * Mimetype of the resulting created file
      */
-    public function getMimetype(): string {
-        switch ($this->format) {
-            case "xlsx":
-                return "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-            case "pptx":
-                return "application/vnd.openxmlformats-officedocument.presentationml.presentation";
-        }
-        return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+    public function getMimetype(): string
+    {
+        return match ($this->format) {
+            "xlsx" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            "pptx" => "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+            default => "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        };
     }
 
     /**

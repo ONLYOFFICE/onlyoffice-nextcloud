@@ -153,6 +153,20 @@ OC.L10N.register(
     "Select file": "Selecionar arquivo",
     "Enable sharing (might increase editors loading time)": "Habilitar compartilhamento (pode aumentar o tempo de carregamento dos editores)",
     "Same as system": "O mesmo que sistema",
-    "Enable live-viewing mode when accessing file by public link" : "Habilitar o modo de visualização ao vivo ao acessar o arquivo por link público"
+    "Enable live-viewing mode when accessing file by public link" : "Habilitar o modo de visualização ao vivo ao acessar o arquivo por link público",
+    "Are you sure you want to clear metadata?": "Tem certeza de que deseja limpar os metadados?",
+    "Confirm metadata removal": "Confirmar remoção de metadados",
+    "Welcome to ONLYOFFICE Docs!": "Bem-vindo ao ONLYOFFICE Docs!",
+    "Edit and collaborate on text documents, spreadsheets, presentations, and PDFs within Nextcloud using ONLYOFFICE Docs.": "Edite e colabore em documentos de texto, planilhas, apresentações e PDFs no Nextcloud usando o ONLYOFFICE Docs.",
+    "Learn more": "Saiba mais",
+    "Suggest a feature": "Sugerir um recurso",
+    "Server settings have been successfully updated": "As configurações do servidor foram atualizadas com sucesso",
+    "Common settings have been successfully updated": "As configurações comuns foram atualizadas com sucesso",
+    "Security settings have been successfully updated": "As configurações de segurança foram atualizadas com sucesso",
+    "To ensure the security of important parameters in ONLYOFFICE Docs requests, please set a Secret Key on the Settings page. To learn more, <a href=\"{url}\" target=\"_blank\">click here</a>.": "Para garantir a segurança de parâmetros importantes nas solicitações do ONLYOFFICE Docs, defina uma Chave Secreta na página Configurações. Para saber mais, <a href=\"{url}\" target=\"_blank\">clique aqui</a>.",
+    "Info": "Informações",
+    "Open": "Abrir",
+    "%1$s could not be saved. Please open the file again.": "%1\$s não pôde ser salvo. Por favor, abra o arquivo novamente.",
+    "{file} could not be saved. Please open the file again.": "{arquivo} não pôde ser salvo. Por favor, abra o arquivo novamente."
 },
 "nplurals=2; plural=(n > 1);");

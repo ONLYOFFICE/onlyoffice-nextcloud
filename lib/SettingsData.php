@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System SIA 2025
+ * (c) Copyright Ascensio System SIA 2026
  *
  * This program is a free software product.
  * You can redistribute it and/or modify it under the terms of the GNU Affero General Public License
@@ -31,25 +31,14 @@ namespace OCA\Onlyoffice;
 
 class SettingsData implements \JsonSerializable {
 
-    /**
-     * Application configuration
-     *
-     * @var AppConfig
-     */
-    private $appConfig;
-
-    public function __construct(AppConfig $appConfig) {
-        $this->appConfig = $appConfig;
-    }
+    public function __construct(private readonly AppConfig $appConfig) {}
 
     public function jsonSerialize(): array {
-        $data = [
+        return [
             "formats" => $this->appConfig->formatsSetting(),
             "sameTab" => $this->appConfig->getSameTab(),
             "enableSharing" => $this->appConfig->getEnableSharing(),
             "disableDownload" => $this->appConfig->getDisableDownload()
         ];
-
-        return $data;
     }
 }

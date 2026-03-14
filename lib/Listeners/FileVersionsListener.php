@@ -1,5 +1,4 @@
 <?php
-
 /**
  *
  * (c) Copyright Ascensio System SIA 2026
@@ -30,36 +29,67 @@
 
 namespace OCA\Onlyoffice\Listeners;
 
-use OCP\AppFramework\Http\ContentSecurityPolicy;
+use Exception;
+use OCA\Files_Versions\Events\VersionRestoredEvent;
+use OCA\Files_Versions\Versions\IVersion;
+use OCA\Onlyoffice\FileVersions;
+use OCA\Onlyoffice\KeyManager;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
-use OCP\IRequest;
-use OCP\Security\CSP\AddContentSecurityPolicyEvent;
+use Psr\Log\LoggerInterface;
+use OCP\Files\File;
 
 /**
- * Content Security Policy Listener
+ * OCA\Files_Versions events listener
  */
-class ContentSecurityPolicyListener implements IEventListener {
+class FileVersionsListener implements IEventListener {
 
-    public function __construct(private readonly IRequest $request) {}
+    public function __construct(
+        private readonly LoggerInterface $logger,
+        private readonly KeyManager $keyManager
+    ) {}
 
     public function handle(Event $event): void {
-        if (!$event instanceof AddContentSecurityPolicyEvent) {
-            return;
+        if ($event instanceof VersionRestoredEvent) {
+            $this->versionRestored($event->getVersion());
         }
-
-        if (!$this->isMainPage()) {
-            return;
-        }
-
-        $policy = new ContentSecurityPolicy();
-        $policy->addAllowedFrameDomain("'self'");
-
-        $event->addPolicy($policy);
     }
 
-    private function isMainPage(): bool {
-        $scriptName = explode('/', (string) $this->request->getScriptName());
-        return end($scriptName) === 'index.php';
+    public function versionRestored(IVersion $version): void {
+        $file = $version->getSourceFile();
+
+        if (!$file instanceof File) {
+            return;
+        }
+
+        if (empty($file->getOwner())) {
+            return;
+        }
+
+        $this->deleteKeyForFile($file);
+        $this->deleteVersion($version);
+    }
+
+    private function deleteKeyForFile(File $file, bool $unlock = false): void {
+        try {
+            $this->keyManager->delete($file->getId(), $unlock);
+        } catch (Exception $e) {
+            $this->logger->error(
+                "VersionRestoredEvent: deleting key for file {$file->getId()}",
+                ["exception" => $e]
+            );
+        }
+    }
+
+    private function deleteVersion(IVersion $version): void {
+        $file = $version->getSourceFile();
+        try {
+            FileVersions::deleteVersion($file->getOwner()->getUID(), $file, $version->getRevisionId());
+        } catch (Exception $e) {
+            $this->logger->error(
+                "VersionRestoredEvent: deleting version for file {$file->getId()}",
+                ["exception" => $e]
+            );
+        }
     }
 }

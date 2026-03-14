@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * (c) Copyright Ascensio System SIA 2025
+ * (c) Copyright Ascensio System SIA 2026
  *
  * This program is a free software product.
  * You can redistribute it and/or modify it under the terms of the GNU Affero General Public License
@@ -40,31 +40,10 @@ use OCP\EventDispatcher\IEventListener;
  */
 class DirectEditorListener implements IEventListener {
 
-    /**
-     * Application configuration
-     *
-     * @var AppConfig
-     */
-    private $appConfig;
-
-    /**
-     * Direct editor
-     *
-     * @var DirectEditor
-     */
-    private $editor;
-
-    /**
-     * @param AppConfig $config - application configuration
-     * @param DirectEditor $editor - direct editor
-     */
     public function __construct(
-        AppConfig $appConfig,
-        DirectEditor $editor
-    ) {
-        $this->appConfig = $appConfig;
-        $this->editor = $editor;
-    }
+        private readonly AppConfig $appConfig,
+        private readonly DirectEditor $editor
+    ) {}
 
     public function handle(Event $event): void {
         if (!$event instanceof RegisterDirectEditorEvent) {

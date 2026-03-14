@@ -27,47 +27,39 @@
  *
  */
 
-namespace OCA\Onlyoffice;
+namespace OCA\Onlyoffice\Listeners;
 
-use OCP\Files\File;
-use OCP\Files\Template\ICustomTemplateProvider;
-use OCP\Files\Template\Template;
-use OCP\IURLGenerator;
+use Exception;
+use OCA\Onlyoffice\FileVersions;
+use OCP\EventDispatcher\Event;
+use OCP\EventDispatcher\IEventListener;
+use OCP\IUser;
+use OCP\User\Events\UserDeletedEvent;
+use Psr\Log\LoggerInterface;
 
-class TemplateProvider implements ICustomTemplateProvider {
+/**
+ * OCP\User events listener
+ */
+class UserListener implements IEventListener {
 
     public function __construct(
-        private readonly string $appName,
-        private readonly IURLGenerator $urlGenerator
+        private readonly LoggerInterface $logger,
     ) {}
 
-    /**
-     * Return a list of additional templates that the template provider is offering
-     */
-    public function getCustomTemplates(string $mimetype) : array {
-        $templates = [];
-
-        $templateFiles = TemplateManager::getGlobalTemplates($mimetype);
-
-        foreach ($templateFiles as $templateFile) {
-            $template = new Template(
-                TemplateProvider::class,
-                $templateFile->getId(),
-                $templateFile
-            );
-
-            $template->setCustomPreviewUrl($this->urlGenerator->linkToRouteAbsolute($this->appName . ".template.preview", ["fileId" => $templateFile->getId()]));
-
-            $templates[] = $template;
+    public function handle(Event $event): void {
+        if ($event instanceof UserDeletedEvent) {
+            $this->userDeleted($event->getUser());
         }
-
-        return $templates;
     }
 
-    /**
-     * Return the file for a given template id
-     */
-    public function getCustomTemplate(string $templateId): File {
-        return TemplateManager::getTemplate((int)$templateId);
+    public function userDeleted(IUser $user): void {
+        try {
+            FileVersions::deleteAllVersions($user->getUID());
+        } catch (Exception $e) {
+            $this->logger->error(
+                "ShareDeletedEvent: userId {$user->getUID()}",
+                ["exception" => $e]
+            );
+        }
     }
 }

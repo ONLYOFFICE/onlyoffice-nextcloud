@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /**
  *
- * (c) Copyright Ascensio System SIA 2025
+ * (c) Copyright Ascensio System SIA 2026
  *
  * This program is a free software product.
  * You can redistribute it and/or modify it under the terms of the GNU Affero General Public License
@@ -39,15 +39,10 @@ use OCP\EventDispatcher\Event;
  */
 class DocumentUnsavedEvent extends Event {
 
-    /**
-     * @param string $userId
-     * @param int $fileId
-     * @param string $fileName
-     */
     public function __construct(
-        private string $userId,
-        private int $fileId,
-        private string $fileName,
+        private readonly string $userId,
+        private readonly int $fileId,
+        private readonly string $fileName,
     ) {
         parent::__construct();
     }
