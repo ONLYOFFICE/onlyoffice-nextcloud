@@ -24,7 +24,7 @@ test.afterEach(async ({ user }) => {
 test('docx shared in Talk opens in ONLYOFFICE viewer', async ({ userPage }) => {
 	await userPage.goto(`/index.php/call/${roomToken}`)
 
-	const file = userPage.getByText(FILE_NAME)
+	const file = userPage.getByLabel('Conversation messages').getByText(FILE_NAME)
 	await expect(file).toBeVisible()
 	await file.click()
 
