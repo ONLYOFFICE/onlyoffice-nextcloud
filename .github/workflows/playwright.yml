@@ -9,6 +9,8 @@ permissions:
 env:
   CI: true
   PLAYWRIGHT_BASEURL: http://localhost:8080
+  DOCUMENT_SERVER_URL: http://localhost:8081
+  JWT_SECRET: secret
 
 jobs:
   matrix:
@@ -34,7 +36,7 @@ jobs:
         ports:
           - 8081:80
         env:
-          JWT_SECRET: secret
+          JWT_SECRET: ${{ env.JWT_SECRET }}
           JWT_HEADER: Authorization
           JWT_ENABLED: true
         options: >-
@@ -51,7 +53,7 @@ jobs:
           php-version: ${{ needs.matrix.outputs.php-min }}
           node-version: 24
           install: true
-      
+
       - name: Checkout viewer
         uses: actions/checkout@v6
         with:
@@ -66,7 +68,7 @@ jobs:
           persist-credentials: false
           submodules: true
           path: nextcloud/apps/onlyoffice
-      
+
       - name: Install composer dependencies
         working-directory: nextcloud/apps/onlyoffice
         run: composer install --no-dev
@@ -76,17 +78,18 @@ jobs:
         run: |
           php -f index.php
           PHP_CLI_SERVER_WORKERS=20 php -S 0.0.0.0:8080 &
-          export OC_PASS=password
-          php occ user:add --password-from-env user1
-          php occ user:add --password-from-env user2
           php occ config:system:set force_language --value en
+          php occ app:install spreed
           php occ app:enable --force onlyoffice
+          php occ config:system:set auth.bruteforce.protection.enabled --value false --type bool
+          php occ config:system:set ratelimit.protection.enabled --value false --type bool
           php occ config:system:set trusted_domains 1 --value="172.17.0.1"
-          php occ config:app:set onlyoffice DocumentServerUrl --value="http://localhost:8081/"
-          php occ config:app:set onlyoffice jwt_secret --value="secret"
+          php occ config:app:set onlyoffice DocumentServerUrl --value="${{ env.DOCUMENT_SERVER_URL }}/"
+          php occ config:app:set onlyoffice jwt_secret --value="${{ env.JWT_SECRET }}"
           php occ config:app:set onlyoffice StorageUrl --value="http://172.17.0.1:8080/"
           php occ config:system:set allow_local_remote_servers --value true --type bool
 
+          php occ app:list
           php occ onlyoffice:documentserver --check
 
       - name: Build onlyoffice
