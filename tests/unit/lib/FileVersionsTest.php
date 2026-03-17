@@ -1,0 +1,100 @@
+<?php
+
+declare(strict_types=1);
+
+/**
+ *
+ * (c) Copyright Ascensio System SIA 2026
+ *
+ * This program is a free software product.
+ * You can redistribute it and/or modify it under the terms of the GNU Affero General Public License
+ * (AGPL) version 3 as published by the Free Software Foundation.
+ * In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended to the effect
+ * that Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
+ *
+ * This program is distributed WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * For details, see the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * You can contact Ascensio System SIA at 20A-12 Ernesta Birznieka-Upisha street, Riga, Latvia, EU, LV-1050.
+ *
+ * The interactive user interfaces in modified source and object code versions of the Program
+ * must display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+ *
+ * Pursuant to Section 7(b) of the License you must retain the original Product logo when distributing the program.
+ * Pursuant to Section 7(e) we decline to grant you any rights under trademark law for use of our trademarks.
+ *
+ * All the Product's GUI elements, including illustrations and icon sets, as well as technical
+ * writing content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0 International.
+ * See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
+ *
+ */
+
+namespace OCA\Onlyoffice\Tests\PHP;
+
+use OCA\Onlyoffice\FileVersions;
+use PHPUnit\Framework\Attributes\CoversClass;
+use Test\TestCase;
+
+#[CoversClass(FileVersions::class)]
+class FileVersionsTest extends TestCase {
+
+    /**
+     * Verifies that an empty string is rejected without attempting regex parsing.
+     */
+    public function testSplitPathVersionReturnsFalseForEmptyString(): void {
+        $this->assertFalse(FileVersions::splitPathVersion(""));
+    }
+
+    /**
+     * Verifies that a path with no version suffix returns false,
+     * as the input is a plain file path with no version component.
+     */
+    public function testSplitPathVersionReturnsFalseWhenNoVersionSuffix(): void {
+        $this->assertFalse(FileVersions::splitPathVersion("/files/document.docx"));
+    }
+
+    /**
+     * Verifies that a non-numeric version suffix returns false,
+     * as the version identifier must be a numeric timestamp.
+     */
+    public function testSplitPathVersionReturnsFalseForNonNumericVersion(): void {
+        $this->assertFalse(FileVersions::splitPathVersion("/files/document.docx.vabc"));
+    }
+
+    /**
+     * Verifies that a correctly suffixed path is split into the base file path
+     * and the numeric version identifier.
+     */
+    public function testSplitPathVersionReturnsPathAndVersionForValidInput(): void {
+        $result = FileVersions::splitPathVersion("/files/document.docx.v1234567890");
+
+        $this->assertIsArray($result);
+        $this->assertSame("/files/document.docx", $result[0]);
+        $this->assertSame("1234567890", $result[1]);
+    }
+
+    /**
+     * Verifies that nested directory paths are handled correctly and the full
+     * path up to the version suffix is returned as the file path component.
+     */
+    public function testSplitPathVersionHandlesNestedPath(): void {
+        $result = FileVersions::splitPathVersion("/users/alice/files/report.xlsx.v1234567890");
+
+        $this->assertIsArray($result);
+        $this->assertSame("/users/alice/files/report.xlsx", $result[0]);
+        $this->assertSame("1234567890", $result[1]);
+    }
+
+    /**
+     * Verifies that filenames containing multiple dots are parsed correctly,
+     * with only the trailing .v{digits} treated as the version suffix.
+     */
+    public function testSplitPathVersionHandlesFilenameWithMultipleDots(): void {
+        $result = FileVersions::splitPathVersion("/files/report.final.v2.docx.v1234567890");
+
+        $this->assertIsArray($result);
+        $this->assertSame("/files/report.final.v2.docx", $result[0]);
+        $this->assertSame("1234567890", $result[1]);
+    }
+}
