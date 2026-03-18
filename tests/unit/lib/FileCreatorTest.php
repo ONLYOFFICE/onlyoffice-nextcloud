@@ -33,6 +33,8 @@ declare(strict_types=1);
 namespace OCA\Onlyoffice\Tests\PHP;
 
 use OCA\Onlyoffice\FileCreator;
+use OCP\Files\File;
+use OCP\Files\NotPermittedException;
 use OCP\IL10N;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -133,5 +135,42 @@ class FileCreatorTest extends TestCase {
         $this->assertSame("docx", $this->make("docx")->getExtension());
         $this->assertSame("xlsx", $this->make("xlsx")->getExtension());
         $this->assertSame("pptx", $this->make("pptx")->getExtension());
+    }
+
+    /**
+     * create() writes the bundled template content into the file when a known extension is given.
+     */
+    public function testCreateWritesTemplateContentToFile(): void {
+        $file = $this->createMock(File::class);
+        $file->method("getName")->willReturn("new.docx");
+        $file->method("getId")->willReturn(1);
+        $file->expects($this->once())->method("putContent")->with($this->isString());
+
+        $this->make("docx")->create($file);
+    }
+
+    /**
+     * create() does not write anything when no bundled template exists for the extension.
+     */
+    public function testCreateDoesNotWriteWhenTemplateNotFound(): void {
+        $file = $this->createMock(File::class);
+        $file->method("getName")->willReturn("new.unknown");
+        $file->method("getId")->willReturn(1);
+        $file->expects($this->never())->method("putContent");
+
+        $this->make("unknown")->create($file);
+    }
+
+    /**
+     * create() catches NotPermittedException and does not propagate it.
+     */
+    public function testCreateCatchesNotPermittedException(): void {
+        $file = $this->createMock(File::class);
+        $file->method("getName")->willReturn("new.docx");
+        $file->method("getId")->willReturn(1);
+        $file->method("putContent")->willThrowException(new NotPermittedException());
+
+        $this->make("docx")->create($file);
+        $this->addToAssertionCount(1);
     }
 }
