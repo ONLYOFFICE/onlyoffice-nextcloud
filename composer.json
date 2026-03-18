@@ -12,6 +12,9 @@
             "OCA\\Onlyoffice\\": "./lib/"
         }
     },
+    "scripts": {
+        "test:unit": "vendor/bin/phpunit"
+    },
     "require": {
         "php": ">=8.1 <8.5",
         "firebase/php-jwt": "^6.0"
