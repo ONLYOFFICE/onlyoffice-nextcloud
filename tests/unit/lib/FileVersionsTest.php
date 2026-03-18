@@ -40,31 +40,28 @@ use Test\TestCase;
 class FileVersionsTest extends TestCase {
 
     /**
-     * Verifies that an empty string is rejected without attempting regex parsing.
+     * Rejects an empty string without attempting regex parsing.
      */
     public function testSplitPathVersionReturnsFalseForEmptyString(): void {
         $this->assertFalse(FileVersions::splitPathVersion(""));
     }
 
     /**
-     * Verifies that a path with no version suffix returns false,
-     * as the input is a plain file path with no version component.
+     * Returns false for a plain file path that has no version suffix.
      */
     public function testSplitPathVersionReturnsFalseWhenNoVersionSuffix(): void {
         $this->assertFalse(FileVersions::splitPathVersion("/files/document.docx"));
     }
 
     /**
-     * Verifies that a non-numeric version suffix returns false,
-     * as the version identifier must be a numeric timestamp.
+     * Returns false when the version suffix is non-numeric, as the version identifier must be a timestamp.
      */
     public function testSplitPathVersionReturnsFalseForNonNumericVersion(): void {
         $this->assertFalse(FileVersions::splitPathVersion("/files/document.docx.vabc"));
     }
 
     /**
-     * Verifies that a correctly suffixed path is split into the base file path
-     * and the numeric version identifier.
+     * Splits a correctly suffixed path into the base file path and the numeric version identifier.
      */
     public function testSplitPathVersionReturnsPathAndVersionForValidInput(): void {
         $result = FileVersions::splitPathVersion("/files/document.docx.v1234567890");
@@ -75,8 +72,7 @@ class FileVersionsTest extends TestCase {
     }
 
     /**
-     * Verifies that nested directory paths are handled correctly and the full
-     * path up to the version suffix is returned as the file path component.
+     * Handles nested directory paths, returning the full path up to the version suffix as the file component.
      */
     public function testSplitPathVersionHandlesNestedPath(): void {
         $result = FileVersions::splitPathVersion("/users/alice/files/report.xlsx.v1234567890");
@@ -87,8 +83,7 @@ class FileVersionsTest extends TestCase {
     }
 
     /**
-     * Verifies that filenames containing multiple dots are parsed correctly,
-     * with only the trailing .v{digits} treated as the version suffix.
+     * Parses filenames containing multiple dots correctly, treating only the trailing .v{digits} as the version.
      */
     public function testSplitPathVersionHandlesFilenameWithMultipleDots(): void {
         $result = FileVersions::splitPathVersion("/files/report.final.v2.docx.v1234567890");

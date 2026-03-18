@@ -64,8 +64,7 @@ class DirectEditorTest extends TestCase {
     }
 
     /**
-     * Verifies that an empty array is returned when the user is not allowed to use
-     * the app, without inspecting the format settings at all.
+     * Returns an empty array when the user is not allowed to use the app, without inspecting format settings.
      */
     public function testGetMimetypesReturnsEmptyWhenUserNotAllowed(): void {
         $this->appConfig->method("isUserAllowedToUse")->willReturn(false);
@@ -74,8 +73,7 @@ class DirectEditorTest extends TestCase {
     }
 
     /**
-     * Verifies that only the mime types of formats marked as default (def=true)
-     * are returned, filtering out non-default formats.
+     * Returns only the mime types of formats marked as default (def=true), filtering out non-default formats.
      */
     public function testGetMimetypesReturnsOnlyDefaultFormats(): void {
         $this->appConfig->method("isUserAllowedToUse")->willReturn(true);
@@ -94,7 +92,7 @@ class DirectEditorTest extends TestCase {
     }
 
     /**
-     * Verifies that an empty array is returned when no formats are marked as default.
+     * Returns an empty array when no formats are marked as default.
      */
     public function testGetMimetypesReturnsEmptyWhenNoDefaultFormats(): void {
         $this->appConfig->method("isUserAllowedToUse")->willReturn(true);
@@ -106,8 +104,7 @@ class DirectEditorTest extends TestCase {
     }
 
     /**
-     * Verifies that an empty array is returned when the user is not allowed to use
-     * the app, without inspecting the format settings at all.
+     * Returns an empty array when the user is not allowed to use the app, without inspecting format settings.
      */
     public function testGetMimetypesOptionalReturnsEmptyWhenUserNotAllowed(): void {
         $this->appConfig->method("isUserAllowedToUse")->willReturn(false);
@@ -116,8 +113,7 @@ class DirectEditorTest extends TestCase {
     }
 
     /**
-     * Verifies that only the mime types of formats not marked as default (def absent
-     * or false) are returned, complementing getMimetypes().
+     * Returns only the mime types of formats not marked as default, complementing getMimetypes().
      */
     public function testGetMimetypesOptionalReturnsNonDefaultFormats(): void {
         $this->appConfig->method("isUserAllowedToUse")->willReturn(true);
@@ -136,8 +132,7 @@ class DirectEditorTest extends TestCase {
     }
 
     /**
-     * Verifies that getMimetypes() and getMimetypesOptional() together cover all
-     * formats with no overlap, forming a complete and disjoint partition.
+     * Partitions all formats between getMimetypes() and getMimetypesOptional() with no overlap.
      */
     public function testGetMimetypesAndOptionalAreDisjointAndComplete(): void {
         $this->appConfig->method("isUserAllowedToUse")->willReturn(true);
@@ -156,8 +151,7 @@ class DirectEditorTest extends TestCase {
     }
 
     /**
-     * Verifies that an empty array is returned when the user is not allowed to use
-     * the app, so no file creation options are presented.
+     * Returns an empty array when the user is not allowed to use the app, presenting no file creation options.
      */
     public function testGetCreatorsReturnsEmptyWhenUserNotAllowed(): void {
         $this->appConfig->method("isUserAllowedToUse")->willReturn(false);
@@ -166,8 +160,7 @@ class DirectEditorTest extends TestCase {
     }
 
     /**
-     * Verifies that exactly three creators are returned (docx, xlsx, pptx) when
-     * the user is allowed, one for each supported creation format.
+     * Returns exactly three creators (docx, xlsx, pptx) when the user is allowed, one per supported format.
      */
     public function testGetCreatorsReturnsThreeCreatorsWhenAllowed(): void {
         $this->appConfig->method("isUserAllowedToUse")->willReturn(true);

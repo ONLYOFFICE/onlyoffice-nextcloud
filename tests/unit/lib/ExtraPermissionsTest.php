@@ -106,8 +106,7 @@ class ExtraPermissionsTest extends TestCase {
     }
 
     /**
-     * Verifies that an empty array is returned immediately when no shares are
-     * provided, without making any database calls.
+     * Returns an empty array immediately when no shares are provided, without making any database calls.
      */
     public function testGetExtrasReturnsEmptyArrayWhenNoSharesGiven(): void {
         $result = $this->extraPermissions->getExtras([]);
@@ -115,8 +114,7 @@ class ExtraPermissionsTest extends TestCase {
     }
 
     /**
-     * Verifies that null is returned when the share cannot be resolved by either
-     * the internal or room share provider, indicating the share does not exist.
+     * Returns null when the share cannot be resolved by any provider, indicating the share does not exist.
      */
     public function testGetExtraReturnsNullWhenShareNotFound(): void {
         $this->shareManager->method("getShareById")->willThrowException(new ShareNotFound());
@@ -127,8 +125,7 @@ class ExtraPermissionsTest extends TestCase {
     }
 
     /**
-     * Verifies that null is returned for non-link shares that carry PERMISSION_SHARE,
-     * as re-sharing capability supersedes extra permissions.
+     * Returns null for non-link shares that carry PERMISSION_SHARE, as re-sharing supersedes extra permissions.
      */
     public function testGetExtraReturnsNullWhenShareHasPermissionShareAndIsNotLink(): void {
         $share = $this->makeShare("1", IShare::TYPE_USER, Constants::PERMISSION_SHARE);
@@ -141,8 +138,7 @@ class ExtraPermissionsTest extends TestCase {
     }
 
     /**
-     * Verifies that null is returned when the shared file's extension is not
-     * registered in the format settings, as no extra permissions are defined for it.
+     * Returns null when the shared file's extension is not registered in the format settings.
      */
     public function testGetExtraReturnsNullWhenFileFormatIsUnknown(): void {
         $share = $this->makeShare("2", IShare::TYPE_LINK, Constants::PERMISSION_UPDATE, "file.xyz");
@@ -156,8 +152,7 @@ class ExtraPermissionsTest extends TestCase {
     }
 
     /**
-     * Verifies that the REVIEW bit is set in the available permissions bitmask
-     * when the file format declares review support.
+     * Sets the REVIEW bit in the available permissions bitmask when the file format declares review support.
      */
     public function testGetExtraReturnsAvailableReviewForReviewCapableFormat(): void {
         $share = $this->makeShare("3", IShare::TYPE_LINK, Constants::PERMISSION_UPDATE, "file.docx");
@@ -174,8 +169,7 @@ class ExtraPermissionsTest extends TestCase {
     }
 
     /**
-     * Verifies that the COMMENT bit is available when the format supports comments
-     * and the REVIEW permission is not already set on the share.
+     * Makes the COMMENT bit available when the format supports comments and REVIEW is not set on the share.
      */
     public function testGetExtraReturnsAvailableCommentWhenReviewNotChecked(): void {
         $share = $this->makeShare("4", IShare::TYPE_LINK, Constants::PERMISSION_UPDATE, "file.docx");
@@ -192,8 +186,7 @@ class ExtraPermissionsTest extends TestCase {
     }
 
     /**
-     * Verifies that the FILLFORMS bit is available when the format supports form filling
-     * and the REVIEW permission is not already set on the share.
+     * Makes the FILLFORMS bit available when the format supports form filling and REVIEW is not set on the share.
      */
     public function testGetExtraReturnsAvailableFillFormsWhenReviewNotChecked(): void {
         $share = $this->makeShare("5", IShare::TYPE_LINK, Constants::PERMISSION_UPDATE, "file.pdf");
@@ -210,8 +203,7 @@ class ExtraPermissionsTest extends TestCase {
     }
 
     /**
-     * Verifies that the MODIFYFILTER bit is available when the format supports it
-     * and the COMMENT permission is not already set on the share.
+     * Makes the MODIFYFILTER bit available when the format supports it and COMMENT is not set on the share.
      */
     public function testGetExtraReturnsAvailableModifyFilterWhenCommentNotSet(): void {
         $share = $this->makeShare("6", IShare::TYPE_LINK, Constants::PERMISSION_UPDATE, "file.xlsx");
@@ -228,9 +220,7 @@ class ExtraPermissionsTest extends TestCase {
     }
 
     /**
-     * Verifies that when no extra permissions row exists in the database, the result
-     * is seeded with id=-1 and the share id so the caller can distinguish a default
-     * record from a persisted one.
+     * Seeds the result with id=-1 and the share id when no extra permissions row exists in the database.
      */
     public function testGetExtraInitialisesDefaultsWhenNoExtraStored(): void {
         $share = $this->makeShare("7", IShare::TYPE_LINK, Constants::PERMISSION_UPDATE, "file.docx");
@@ -248,8 +238,7 @@ class ExtraPermissionsTest extends TestCase {
     }
 
     /**
-     * Verifies that the result is enriched with share metadata (type, shareWith,
-     * shareWithName) so callers do not need to re-fetch the share object.
+     * Enriches the result with share metadata (type, shareWith, shareWithName) to avoid re-fetching the share.
      */
     public function testGetExtraIncludesShareMetadataInResult(): void {
         $share = $this->makeShare("8", IShare::TYPE_LINK, Constants::PERMISSION_UPDATE, "file.docx");

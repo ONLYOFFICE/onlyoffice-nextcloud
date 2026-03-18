@@ -63,8 +63,7 @@ class FileCreatorTest extends TestCase {
     }
 
     /**
-     * Verifies that getId() combines the app name and format with an underscore,
-     * producing a unique creator identifier per format.
+     * Combines the app name and format with an underscore to produce a unique creator identifier per format.
      */
     public function testGetIdCombinesAppNameAndFormat(): void {
         $this->assertSame("onlyoffice_docx", $this->make("docx")->getId());
@@ -72,22 +71,21 @@ class FileCreatorTest extends TestCase {
     }
 
     /**
-     * Verifies that xlsx maps to the spreadsheet creation label.
+     * Maps xlsx to the spreadsheet creation label.
      */
     public function testGetNameReturnsSpreadsheetForXlsx(): void {
         $this->assertSame("New spreadsheet", $this->make("xlsx")->getName());
     }
 
     /**
-     * Verifies that pptx maps to the presentation creation label.
+     * Maps pptx to the presentation creation label.
      */
     public function testGetNameReturnsPresentationForPptx(): void {
         $this->assertSame("New presentation", $this->make("pptx")->getName());
     }
 
     /**
-     * Verifies that any format other than xlsx or pptx falls back to the
-     * generic document creation label.
+     * Falls back to the generic document creation label for any format other than xlsx or pptx.
      */
     public function testGetNameReturnsDocumentForDocxAndUnknownFormats(): void {
         $this->assertSame("New document", $this->make("docx")->getName());
@@ -95,7 +93,7 @@ class FileCreatorTest extends TestCase {
     }
 
     /**
-     * Verifies that xlsx maps to the spreadsheet mime type.
+     * Maps xlsx to the spreadsheet mime type.
      */
     public function testGetMimetypeReturnsSpreadsheetMimeForXlsx(): void {
         $this->assertSame(
@@ -105,7 +103,7 @@ class FileCreatorTest extends TestCase {
     }
 
     /**
-     * Verifies that pptx maps to the presentation mime type.
+     * Maps pptx to the presentation mime type.
      */
     public function testGetMimetypeReturnsPresentationMimeForPptx(): void {
         $this->assertSame(
@@ -115,8 +113,7 @@ class FileCreatorTest extends TestCase {
     }
 
     /**
-     * Verifies that any format other than xlsx or pptx falls back to the
-     * word processing document mime type.
+     * Falls back to the word processing document mime type for any format other than xlsx or pptx.
      */
     public function testGetMimetypeReturnsDocumentMimeForDocxAndUnknownFormats(): void {
         $this->assertSame(
@@ -130,8 +127,7 @@ class FileCreatorTest extends TestCase {
     }
 
     /**
-     * Verifies that getExtension() returns the format string passed at construction,
-     * so the file system receives the correct extension for the new file.
+     * Returns the format string passed at construction so the file system receives the correct extension.
      */
     public function testGetExtensionReturnsFormat(): void {
         $this->assertSame("docx", $this->make("docx")->getExtension());

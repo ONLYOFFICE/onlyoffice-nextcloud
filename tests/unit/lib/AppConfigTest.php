@@ -77,8 +77,7 @@ class AppConfigTest extends TestCase {
     }
 
     /**
-     * Verifies that passing $system=true reads directly from the root system config,
-     * bypassing the app-specific config section.
+     * Reads directly from the root system config when $system=true, bypassing the app-specific section.
      */
     public function testGetSystemValueFromRootConfig(): void {
         $this->config->method("getSystemValue")
@@ -91,8 +90,7 @@ class AppConfigTest extends TestCase {
     }
 
     /**
-     * Verifies that without $system=true the value is read from the app-specific
-     * section of the system config when the key exists there.
+     * Reads from the app-specific section of the system config when $system is not set and the key exists there.
      */
     public function testGetSystemValueFromAppSection(): void {
         $this->config->method("getSystemValue")
@@ -105,8 +103,7 @@ class AppConfigTest extends TestCase {
     }
 
     /**
-     * Verifies that null is returned when the requested key is absent
-     * from the app-specific config section.
+     * Returns null when the requested key is absent from the app-specific config section.
      */
     public function testGetSystemValueReturnsNullWhenKeyMissing(): void {
         $this->config->method("getSystemValue")
@@ -119,8 +116,7 @@ class AppConfigTest extends TestCase {
     }
 
     /**
-     * Verifies that getDemoData() returns available=true and enabled=false
-     * when no demo data has been stored yet.
+     * Returns available=true and enabled=false when no demo data has been stored yet.
      */
     public function testGetDemoDataReturnsDefaultsWhenNoneStored(): void {
         $this->appConfig->method("getValueString")->willReturn("");
@@ -132,8 +128,7 @@ class AppConfigTest extends TestCase {
     }
 
     /**
-     * Verifies that the demo is available and enabled when the trial start date
-     * is within the 30-day trial window.
+     * Reports the demo as available and enabled when the trial start date is within the 30-day window.
      */
     public function testGetDemoDataReturnsAvailableWhenWithinTrialPeriod(): void {
         $start = new DateTime();
@@ -149,8 +144,7 @@ class AppConfigTest extends TestCase {
     }
 
     /**
-     * Verifies that the demo is marked unavailable and forcibly disabled
-     * once the 30-day trial period has elapsed.
+     * Marks the demo as unavailable and forcibly disabled once the 30-day trial period has elapsed.
      */
     public function testGetDemoDataReturnsUnavailableWhenTrialExpired(): void {
         $start = new DateTime();
@@ -166,8 +160,7 @@ class AppConfigTest extends TestCase {
     }
 
     /**
-     * Verifies that a URL without a scheme is prefixed with http://
-     * before being stored.
+     * Prefixes a URL that has no scheme with http:// before storing it.
      */
     public function testSetDocumentServerUrlAddsHttpSchemeWhenMissing(): void {
         $this->appConfig->expects($this->once())
@@ -178,7 +171,7 @@ class AppConfigTest extends TestCase {
     }
 
     /**
-     * Verifies that an existing https:// scheme is preserved unchanged.
+     * Preserves an existing https:// scheme unchanged when storing the URL.
      */
     public function testSetDocumentServerUrlKeepsHttpsScheme(): void {
         $this->appConfig->expects($this->once())
@@ -189,8 +182,7 @@ class AppConfigTest extends TestCase {
     }
 
     /**
-     * Verifies that a trailing slash is always present on the stored URL,
-     * normalising URLs that already include one.
+     * Ensures a trailing slash is always present on the stored URL, normalising URLs that already include one.
      */
     public function testSetDocumentServerUrlAddsTrailingSlash(): void {
         $this->appConfig->expects($this->once())
@@ -201,8 +193,7 @@ class AppConfigTest extends TestCase {
     }
 
     /**
-     * Verifies that leading and trailing whitespace is stripped from the URL
-     * before normalisation and storage.
+     * Strips leading and trailing whitespace from the URL before normalisation and storage.
      */
     public function testSetDocumentServerUrlTrimsWhitespace(): void {
         $this->appConfig->expects($this->once())
@@ -213,8 +204,7 @@ class AppConfigTest extends TestCase {
     }
 
     /**
-     * Verifies that an empty string is stored as-is, allowing the server URL
-     * to be cleared without triggering scheme or slash normalisation.
+     * Stores an empty string as-is, allowing the server URL to be cleared without triggering normalisation.
      */
     public function testSetDocumentServerUrlStoresEmptyStringAsIs(): void {
         $this->appConfig->expects($this->once())
@@ -225,8 +215,7 @@ class AppConfigTest extends TestCase {
     }
 
     /**
-     * Verifies that the hardcoded demo server address is returned instead of
-     * the configured URL when the demo mode is active.
+     * Returns the hardcoded demo server address instead of the configured URL when demo mode is active.
      */
     public function testGetDocumentServerUrlReturnsDemoUrlWhenDemoEnabled(): void {
         $start = new DateTime();
@@ -244,8 +233,7 @@ class AppConfigTest extends TestCase {
     }
 
     /**
-     * Verifies that the administrator-configured server URL is returned
-     * when demo mode is not active.
+     * Returns the administrator-configured server URL when demo mode is not active.
      */
     public function testGetDocumentServerUrlReturnsConfiguredUrlWhenDemoDisabled(): void {
         $this->appConfig->method("getValueString")

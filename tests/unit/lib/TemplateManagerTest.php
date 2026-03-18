@@ -51,8 +51,7 @@ class TemplateManagerTest extends TestCase {
 
     #[DataProvider("mimeToTypeProvider")]
     /**
-     * Verifies that each Office mime type maps to its corresponding template type
-     * string, and that unrecognised mime types return an empty string.
+     * Maps each Office mime type to its corresponding template type string, returning empty for unknown types.
      */
     public function testGetTypeTemplateReturnsExpectedType(string $mime, string $expected): void {
         $this->assertSame($expected, TemplateManager::getTypeTemplate($mime));
@@ -69,8 +68,7 @@ class TemplateManagerTest extends TestCase {
 
     #[DataProvider("typeToMimeProvider")]
     /**
-     * Verifies that each template type string maps back to its full Office mime type,
-     * and that unrecognised type strings return an empty string.
+     * Maps each template type string back to its full Office mime type, returning empty for unknown types.
      */
     public function testGetMimeTemplateReturnsExpectedMime(string $type, string $expected): void {
         $this->assertSame($expected, TemplateManager::getMimeTemplate($type));
@@ -89,16 +87,14 @@ class TemplateManagerTest extends TestCase {
 
     #[DataProvider("templateTypeProvider")]
     /**
-     * Verifies that docx, xlsx, and pptx files are recognised as template types
-     * (case-insensitively), while all other extensions and bare filenames are not.
+     * Recognises docx, xlsx, and pptx as template types (case-insensitively) and rejects all other extensions.
      */
     public function testIsTemplateTypeReturnsExpectedResult(string $name, bool $expected): void {
         $this->assertSame($expected, TemplateManager::isTemplateType($name));
     }
 
     /**
-     * Verifies that a known language code is mapped to its BCP 47 locale folder
-     * and that the path ends with the expected filename.
+     * Maps a known language code to its BCP 47 locale folder and ends the path with the expected filename.
      */
     public function testGetEmptyTemplatePathContainsLocaleFolderForKnownLanguage(): void {
         $path = TemplateManager::getEmptyTemplatePath("en", ".docx");
@@ -107,8 +103,7 @@ class TemplateManagerTest extends TestCase {
     }
 
     /**
-     * Verifies that an unrecognised language code falls back to the "default"
-     * locale folder rather than throwing or producing a broken path.
+     * Falls back to the "default" locale folder for an unrecognised language code without throwing.
      */
     public function testGetEmptyTemplatePathFallsBackToDefaultForUnknownLanguage(): void {
         $path = TemplateManager::getEmptyTemplatePath("xx", ".xlsx");
@@ -117,8 +112,7 @@ class TemplateManagerTest extends TestCase {
     }
 
     /**
-     * Verifies that underscore-separated locale variants (e.g. de_DE, pt_BR, zh_CN)
-     * are correctly resolved to their hyphenated BCP 47 counterparts.
+     * Resolves underscore-separated locale variants (e.g. de_DE, pt_BR, zh_CN) to their hyphenated BCP 47 counterparts.
      */
     public function testGetEmptyTemplatePathMapsLocaleVariantsCorrectly(): void {
         $this->assertStringContainsString("de-DE", TemplateManager::getEmptyTemplatePath("de_DE", ".pptx"));

@@ -49,14 +49,14 @@ class AdminSettingsTest extends TestCase {
     }
 
     /**
-     * Verifies that getSection() returns the onlyoffice section identifier.
+     * Returns the onlyoffice section identifier.
      */
     public function testGetSection(): void {
         $this->assertSame("onlyoffice", $this->adminSettings->getSection());
     }
 
     /**
-     * Verifies that getPriority() returns a positive integer.
+     * Returns a positive integer as the settings priority.
      */
     public function testGetPriority(): void {
         $this->assertGreaterThan(0, $this->adminSettings->getPriority());

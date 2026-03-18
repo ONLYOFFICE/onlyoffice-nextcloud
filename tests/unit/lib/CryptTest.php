@@ -54,9 +54,7 @@ class CryptTest extends TestCase {
     }
 
     /**
-     * Verifies the round-trip contract between getHash() and readHash():
-     * a token produced by getHash() must decode back to the original payload,
-     * with no error message in the second element of the result.
+     * Encodes a payload with getHash() and decodes it back to the original via readHash(), with no error.
      */
     public function testGetHashAndReadHash(): void {
         $data = [
@@ -74,8 +72,7 @@ class CryptTest extends TestCase {
     }
 
     /**
-     * Verifies that readHash() returns a null payload and a descriptive error message
-     * when given an empty string, rather than throwing an exception.
+     * Returns a null payload and a descriptive error message for an empty token, rather than throwing.
      */
     public function testReadHashWithEmptyToken(): void {
         $decoded = $this->crypt->readHash("");
@@ -85,8 +82,7 @@ class CryptTest extends TestCase {
     }
 
     /**
-     * Verifies that readHash() returns a null payload and a non-null error message
-     * when given a malformed token that cannot be decoded.
+     * Returns a null payload and a non-null error message when given a malformed token that cannot be decoded.
      */
     public function testReadHashWithInvalidToken(): void {
         $decoded = $this->crypt->readHash("invalid_token");

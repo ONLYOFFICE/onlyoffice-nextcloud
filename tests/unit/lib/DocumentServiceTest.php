@@ -67,8 +67,7 @@ class DocumentServiceTest extends TestCase {
     }
 
     /**
-     * Verifies that a key of 20 characters or fewer is returned as-is
-     * without hashing or truncation.
+     * Returns a key of 20 characters or fewer as-is, without hashing or truncation.
      */
     public function testGenerateRevisionIdReturnsShortKeyUnchanged(): void {
         $result = DocumentService::generateRevisionId("short_key");
@@ -76,8 +75,7 @@ class DocumentServiceTest extends TestCase {
     }
 
     /**
-     * Verifies that a key longer than 20 characters is replaced with its CRC32
-     * hash before being used as a revision identifier.
+     * Replaces a key longer than 20 characters with its CRC32 hash before using it as a revision identifier.
      */
     public function testGenerateRevisionIdCrc32sKeysLongerThanTwentyChars(): void {
         $longKey = str_repeat("a", 21);
@@ -86,8 +84,7 @@ class DocumentServiceTest extends TestCase {
     }
 
     /**
-     * Verifies that the resulting revision id never exceeds 20 characters,
-     * regardless of input length.
+     * Produces a revision id that never exceeds 20 characters, regardless of input length.
      */
     public function testGenerateRevisionIdTruncatesResultToTwentyChars(): void {
         $key = str_repeat("b", 20);
@@ -111,8 +108,7 @@ class DocumentServiceTest extends TestCase {
 
     #[DataProvider("conversionErrorProvider")]
     /**
-     * Verifies that each known conversion service error code produces an exception
-     * whose message contains the expected human-readable description.
+     * Throws an exception with a human-readable description for each known conversion service error code.
      */
     public function testProcessConvServResponceErrorThrowsWithExpectedMessage(int $code, string $fragment): void {
         $this->expectException(\Exception::class);
@@ -122,8 +118,7 @@ class DocumentServiceTest extends TestCase {
     }
 
     /**
-     * Verifies that an unrecognised conversion error code is included verbatim
-     * in the exception message so callers can diagnose unexpected responses.
+     * Includes the unrecognised conversion error code verbatim in the exception message for caller diagnostics.
      */
     public function testProcessConvServResponceErrorIncludesCodeForUnknownErrors(): void {
         $this->expectException(\Exception::class);
@@ -142,8 +137,7 @@ class DocumentServiceTest extends TestCase {
 
     #[DataProvider("commandErrorProvider")]
     /**
-     * Verifies that each known command service error code produces an exception
-     * whose message contains the expected human-readable description.
+     * Throws an exception with a human-readable description for each known command service error code.
      */
     public function testProcessCommandServResponceErrorThrowsWithExpectedMessage(int $code, string $fragment): void {
         $this->expectException(\Exception::class);
@@ -153,8 +147,7 @@ class DocumentServiceTest extends TestCase {
     }
 
     /**
-     * Verifies that error code 0 is treated as success and no exception is thrown,
-     * unlike the conversion service which always throws.
+     * Treats error code 0 as success and does not throw, unlike the conversion service which always throws.
      */
     public function testProcessCommandServResponceErrorDoesNotThrowOnSuccess(): void {
         $this->documentService->processCommandServResponceError(0);
@@ -162,8 +155,7 @@ class DocumentServiceTest extends TestCase {
     }
 
     /**
-     * Verifies that an unrecognised command error code is included verbatim
-     * in the exception message so callers can diagnose unexpected responses.
+     * Includes the unrecognised command error code verbatim in the exception message for caller diagnostics.
      */
     public function testProcessCommandServResponceErrorIncludesCodeForUnknownErrors(): void {
         $this->expectException(\Exception::class);

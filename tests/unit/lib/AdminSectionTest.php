@@ -55,8 +55,7 @@ class AdminSectionTest extends TestCase {
     }
 
     /**
-     * Verifies that getIcon() requests the correct app icon path from the URL generator
-     * and returns a non-empty string.
+     * Requests the correct app icon path from the URL generator and returns a non-empty string.
      */
     public function testGetIcon(): void {
         $this->url->expects($this->once())
@@ -67,21 +66,21 @@ class AdminSectionTest extends TestCase {
     }
 
     /**
-     * Verifies that getID() returns the onlyoffice section identifier.
+     * Returns the onlyoffice section identifier.
      */
     public function testGetID(): void {
         $this->assertSame("onlyoffice", $this->adminSection->getID());
     }
 
     /**
-     * Verifies that getName() returns the human-readable section name.
+     * Returns the human-readable section name.
      */
     public function testGetName(): void {
         $this->assertSame("ONLYOFFICE", $this->adminSection->getName());
     }
 
     /**
-     * Verifies that getPriority() returns a positive integer.
+     * Returns a positive integer as the section priority.
      */
     public function testGetPriority(): void {
         $this->assertGreaterThan(0, $this->adminSection->getPriority());

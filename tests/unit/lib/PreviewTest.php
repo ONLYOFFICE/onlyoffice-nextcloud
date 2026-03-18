@@ -74,8 +74,7 @@ class PreviewTest extends TestCase {
     }
 
     /**
-     * Verifies that getMimeTypeRegex() produces a syntactically valid PCRE regex
-     * that matches at least one known supported mime type.
+     * Produces a syntactically valid PCRE regex that matches at least one known supported mime type.
      */
     public function testGetMimeTypeRegexReturnsValidRegex(): void {
         $regex = Preview::getMimeTypeRegex();
@@ -83,8 +82,7 @@ class PreviewTest extends TestCase {
     }
 
     /**
-     * Verifies that the regex matches every mime type declared in the capabilities
-     * list.
+     * Matches every mime type declared in the capabilities list.
      */
     public function testGetMimeTypeRegexMatchesAllCapabilities(): void {
         $regex = Preview::getMimeTypeRegex();
@@ -94,8 +92,7 @@ class PreviewTest extends TestCase {
     }
 
     /**
-     * Verifies that the regex does not match mime types outside the capabilities
-     * list, ensuring it acts as an allowlist rather than matching everything.
+     * Does not match mime types outside the capabilities list, acting as an allowlist.
      */
     public function testGetMimeTypeRegexDoesNotMatchUnknownMime(): void {
         $regex = Preview::getMimeTypeRegex();
@@ -120,8 +117,7 @@ class PreviewTest extends TestCase {
     }
 
     /**
-     * Verifies that isAvailable() returns false when the preview feature is
-     * disabled in the app configuration, regardless of the file.
+     * Returns false when the preview feature is disabled in the app configuration, regardless of the file.
      */
     public function testIsAvailableReturnsFalseWhenPreviewIsDisabled(): void {
         $this->appConfig->method("getPreview")->willReturn(false);
@@ -131,8 +127,7 @@ class PreviewTest extends TestCase {
     }
 
     /**
-     * Verifies that empty files are rejected, as there is nothing to generate
-     * a thumbnail from.
+     * Rejects empty files as there is nothing to generate a thumbnail from.
      */
     public function testIsAvailableReturnsFalseWhenFileSizeIsZero(): void {
         $this->appConfig->method("getPreview")->willReturn(true);
@@ -143,8 +138,7 @@ class PreviewTest extends TestCase {
     }
 
     /**
-     * Verifies that files larger than the configured thumbnail size limit are
-     * rejected to avoid excessive memory and processing overhead.
+     * Rejects files larger than the configured thumbnail size limit to avoid excessive overhead.
      */
     public function testIsAvailableReturnsFalseWhenFileSizeExceedsLimit(): void {
         $this->appConfig->method("getPreview")->willReturn(true);
@@ -155,8 +149,7 @@ class PreviewTest extends TestCase {
     }
 
     /**
-     * Verifies that files with a mime type not in the capabilities list are
-     * rejected, as the document service cannot convert them to a thumbnail.
+     * Rejects files with a mime type not in the capabilities list, as they cannot be converted to a thumbnail.
      */
     public function testIsAvailableReturnsFalseWhenMimeTypeNotSupported(): void {
         $this->appConfig->method("getPreview")->willReturn(true);
@@ -167,8 +160,7 @@ class PreviewTest extends TestCase {
     }
 
     /**
-     * Verifies that files on external sharing storage are rejected, as the
-     * document service cannot reach them through the internal storage path.
+     * Rejects files on external sharing storage, as they cannot be reached through the internal storage path.
      */
     public function testIsAvailableReturnsFalseForExternalSharingStorage(): void {
         $this->appConfig->method("getPreview")->willReturn(true);
@@ -179,8 +171,7 @@ class PreviewTest extends TestCase {
     }
 
     /**
-     * Verifies that a non-empty, supported, local file within the size limit
-     * is accepted when preview generation is enabled.
+     * Accepts a non-empty, supported, local file within the size limit when preview generation is enabled.
      */
     public function testIsAvailableReturnsTrueForSupportedLocalFile(): void {
         $this->appConfig->method("getPreview")->willReturn(true);

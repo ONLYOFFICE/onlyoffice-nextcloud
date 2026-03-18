@@ -92,8 +92,7 @@ class EmailManagerTest extends TestCase {
     }
 
     /**
-     * Verifies that false is returned immediately when the recipient user
-     * does not exist in the user manager, preventing a null-dereference.
+     * Returns false immediately when the recipient user does not exist in the user manager.
      */
     public function testNotifyMentionEmailReturnsFalseWhenRecipientNotFound(): void {
         $this->userManager->method("get")->willReturn(null);
@@ -104,8 +103,7 @@ class EmailManagerTest extends TestCase {
     }
 
     /**
-     * Verifies that false is returned when the recipient exists but has no
-     * email address configured, since there is nowhere to send the notification.
+     * Returns false when the recipient exists but has no email address configured.
      */
     public function testNotifyMentionEmailReturnsFalseWhenRecipientHasNoEmail(): void {
         $recipient = $this->makeUser("");
@@ -117,8 +115,7 @@ class EmailManagerTest extends TestCase {
     }
 
     /**
-     * Verifies that false is returned when the notifier user does not exist,
-     * as their display name is required to build the email body.
+     * Returns false when the notifier user does not exist, as their display name is needed to build the email.
      */
     public function testNotifyMentionEmailReturnsFalseWhenNotifierNotFound(): void {
         $recipient = $this->makeUser("recipient@example.com");
@@ -133,8 +130,7 @@ class EmailManagerTest extends TestCase {
     }
 
     /**
-     * Verifies that true is returned when both users exist, have email addresses,
-     * and the mailer sends the message without errors.
+     * Returns true when both users exist, have email addresses, and the mailer sends successfully.
      */
     public function testNotifyMentionEmailReturnsTrueOnSuccess(): void {
         $recipient = $this->makeUser("recipient@example.com", "Recipient");
@@ -157,8 +153,7 @@ class EmailManagerTest extends TestCase {
     }
 
     /**
-     * Verifies that a mailer exception is caught gracefully and false is returned,
-     * preventing the exception from propagating to the caller.
+     * Catches a mailer exception gracefully and returns false instead of propagating it.
      */
     public function testNotifyMentionEmailReturnsFalseWhenMailerThrows(): void {
         $recipient = $this->makeUser("recipient@example.com", "Recipient");
@@ -187,8 +182,7 @@ class EmailManagerTest extends TestCase {
     }
 
     /**
-     * Verifies that false is returned immediately when the target user
-     * does not exist in the user manager.
+     * Returns false immediately when the target user does not exist in the user manager.
      */
     public function testNotifyEditorsCheckEmailReturnsFalseWhenUserNotFound(): void {
         $this->userManager->method("get")->willReturn(null);
@@ -199,8 +193,7 @@ class EmailManagerTest extends TestCase {
     }
 
     /**
-     * Verifies that false is returned when the user has no email address,
-     * since the downtime alert cannot be delivered.
+     * Returns false when the user has no email address, as the downtime alert cannot be delivered.
      */
     public function testNotifyEditorsCheckEmailReturnsFalseWhenUserHasNoEmail(): void {
         $user = $this->makeUser("");
@@ -212,8 +205,7 @@ class EmailManagerTest extends TestCase {
     }
 
     /**
-     * Verifies that true is returned when the user exists, has an email address,
-     * and the mailer delivers the message without errors.
+     * Returns true when the user exists, has an email address, and the mailer delivers without errors.
      */
     public function testNotifyEditorsCheckEmailReturnsTrueOnSuccess(): void {
         $user = $this->makeUser("admin@example.com", "Admin");
@@ -228,8 +220,7 @@ class EmailManagerTest extends TestCase {
     }
 
     /**
-     * Verifies that false is returned when the mailer reports delivery failures
-     * via a non-empty errors array, indicating the message was not fully delivered.
+     * Returns false when the mailer reports delivery failures via a non-empty errors array.
      */
     public function testNotifyEditorsCheckEmailReturnsFalseWhenMailerReturnsErrors(): void {
         $user = $this->makeUser("admin@example.com", "Admin");
