@@ -623,7 +623,7 @@ import { loadState } from '@nextcloud/initial-state'
 
 						const attributes = JSON.parse(files[0].attributes['share-attributes'])
 						const downloadAttribute = attributes.find((attribute) => attribute.scope === 'permissions' && attribute.key === 'download')
-						if (downloadAttribute !== undefined && downloadAttribute.enabled === false) { return false }
+						if (downloadAttribute !== undefined && downloadAttribute.value === false) { return false }
 					}
 
 					return true
@@ -649,7 +649,7 @@ import { loadState } from '@nextcloud/initial-state'
 
 						const attributes = JSON.parse(files[0].attributes['share-attributes'])
 						const downloadAttribute = attributes.find((attribute) => attribute.scope === 'permissions' && attribute.key === 'download')
-						if (downloadAttribute !== undefined && downloadAttribute.enabled === false) { return false }
+						if (downloadAttribute !== undefined && downloadAttribute.value === false) { return false }
 					}
 
 					return true
@@ -676,7 +676,7 @@ import { loadState } from '@nextcloud/initial-state'
 						if (files[0].attributes['mount-type'] === 'shared') {
 							const attributes = JSON.parse(files[0].attributes['share-attributes'])
 							const downloadAttribute = attributes.find((attribute) => attribute.scope === 'permissions' && attribute.key === 'download')
-							if (downloadAttribute !== undefined && downloadAttribute.enabled === false) { return false }
+							if (downloadAttribute !== undefined && downloadAttribute.value === false) { return false }
 						}
 
 						return true
