@@ -21,6 +21,14 @@ $profile = (new Profile('default', [
             '' => '%paths.base%/../features/bootstrap',
         ],
     ]))->withSuite(
+        (new Suite('core'))
+            ->withPaths('%paths.base%/../features/core')
+            ->addContext(CoreContext::class, [
+                'baseUrl' => $baseUrl,
+                'adminUser' => $adminUser,
+                'adminPassword' => $adminPassword,
+            ])
+    )->withSuite(
         (new Suite('admin'))
             ->withPaths('%paths.base%/../features/admin')
             ->addContext(AdminContext::class, [
