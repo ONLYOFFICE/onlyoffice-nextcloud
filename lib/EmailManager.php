@@ -43,71 +43,14 @@ use OCP\IUserManager;
  */
 class EmailManager {
 
-    /**
-     * Application name
-     *
-     * @var string
-     */
-    private $appName;
-
-    /**
-     * l10n service
-     *
-     * @var IL10N
-     */
-    private $trans;
-
-    /**
-     * Logger
-     *
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
-     * Mailer
-     *
-     * @var IMailer
-     */
-    private $mailer;
-
-    /**
-     * User manager
-     *
-     * @var IUserManager
-     */
-    private $userManager;
-
-    /**
-     * Url generator service
-     *
-     * @var IURLGenerator
-     */
-    private $urlGenerator;
-
-    /**
-     * @param string $appName - application name
-     * @param IL10N $trans - l10n service
-     * @param LoggerInterface $logger - logger
-     * @param IMailer $mailer - mailer
-     * @param IUserManager $userManager - user manager
-     * @param IURLGenerator $urlGenerator - URL generator
-     */
     public function __construct(
-        $appName,
-        IL10N $trans,
-        LoggerInterface $logger,
-        IMailer $mailer,
-        IUserManager $userManager,
-        IURLGenerator $urlGenerator,
-    ) {
-        $this->appName = $appName;
-        $this->trans = $trans;
-        $this->logger = $logger;
-        $this->mailer = $mailer;
-        $this->userManager = $userManager;
-        $this->urlGenerator = $urlGenerator;
-    }
+        private readonly string $appName,
+        private readonly IL10N $trans,
+        private readonly LoggerInterface $logger,
+        private readonly IMailer $mailer,
+        private readonly IUserManager $userManager,
+        private readonly IURLGenerator $urlGenerator,
+    ) {}
 
     /**
      * Send notification about mention via email
@@ -127,7 +70,7 @@ class EmailManager {
         string $fileName,
         string $anchor,
         string $notificationObjectId
-    ) {
+    ): bool {
         $recipient = $this->userManager->get($recipientId);
         if (empty($recipient)) {
             $this->logger->error("recipient $recipientId is null");
@@ -176,7 +119,7 @@ class EmailManager {
      *
      * @return bool
      */
-    public function notifyEditorsCheckEmail(string $uid) {
+    public function notifyEditorsCheckEmail(string $uid): bool {
         $user = $this->userManager->get($uid);
         if (empty($user)) {
             $this->logger->error("recipient $uid is null");
@@ -212,7 +155,12 @@ class EmailManager {
      *
      * @return IEMailTemplate
      */
-    private function buildEmailTemplate(string $subject, string $heading, string $body, array $button = []) {
+    private function buildEmailTemplate(
+        string $subject,
+        string $heading,
+        string $body,
+        array $button = []
+    ): IEMailTemplate {
         $template = $this->mailer->createEMailTemplate("onlyoffice.NotifyEmail");
         $template->setSubject($subject);
         $template->addHeader();
@@ -232,10 +180,8 @@ class EmailManager {
      * @param IEMailTemplate $template - e-mail template
      * @param string $email - e-mail address
      * @param string $recipientName - recipient name
-     *
-     * @return bool
      */
-    private function sendEmailNotification(IEMailTemplate $template, string $email, string $recipientName) {
+    private function sendEmailNotification(IEMailTemplate $template, string $email, string $recipientName): bool {
         try {
             $message = $this->mailer->createMessage();
             $message->setTo([$email => $recipientName]);

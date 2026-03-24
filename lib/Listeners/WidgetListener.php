@@ -40,19 +40,7 @@ use OCP\Util;
  */
 class WidgetListener implements IEventListener {
 
-    /**
-     * Application configuration
-     *
-     * @var AppConfig
-     */
-    private $appConfig;
-
-    /**
-     * @param AppConfig $config - application configuration
-     */
-    public function __construct(AppConfig $appConfig) {
-        $this->appConfig = $appConfig;
-    }
+    public function __construct(private readonly AppConfig $appConfig) {}
 
     public function handle(Event $event): void {
         if (!($event instanceof HttpBeforeTemplateRenderedEvent)) {

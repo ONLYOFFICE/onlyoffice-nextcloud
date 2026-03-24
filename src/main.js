@@ -26,7 +26,6 @@
  *
  */
 
-/* eslint-disable import/no-webpack-loader-syntax */
 /* eslint-disable import/no-unresolved */
 
 /* global _, $, _oc_appswebroots */
@@ -44,11 +43,11 @@ import {
 	davResultToNode,
 } from '@nextcloud/files'
 import { emit } from '@nextcloud/event-bus'
-import AppDarkSvg from '!!raw-loader!../img/app-dark.svg'
-import NewDocxSvg from '!!raw-loader!../img/new-docx.svg'
-import NewXlsxSvg from '!!raw-loader!../img/new-xlsx.svg'
-import NewPptxSvg from '!!raw-loader!../img/new-pptx.svg'
-import NewPdfSvg from '!!raw-loader!../img/new-pdf.svg'
+import AppDarkSvg from '../img/app-dark.svg?raw'
+import NewDocxSvg from '../img/new-docx.svg?raw'
+import NewXlsxSvg from '../img/new-xlsx.svg?raw'
+import NewPptxSvg from '../img/new-pptx.svg?raw'
+import NewPdfSvg from '../img/new-pdf.svg?raw'
 import { isPublicShare, getSharingToken } from '@nextcloud/sharing/public'
 import { loadState } from '@nextcloud/initial-state'
 
@@ -184,8 +183,6 @@ import { loadState } from '@nextcloud/initial-state'
 			|| (!OCA.Onlyoffice.setting.sameTab && !isDefault)) {
 			OCA.Onlyoffice.SetDefaultUrl()
 			winEditor = window.open(url, '_blank')
-		} else if (isPublicShare() && OCA.Onlyoffice.isViewIsFile()) {
-			location.href = url
 		} else {
 			if (OCA.Onlyoffice.setting.enableSharing
 				&& !isPublicShare()
@@ -246,10 +243,12 @@ import { loadState } from '@nextcloud/initial-state'
 	}
 
 	OCA.Onlyoffice.SetDefaultUrl = function() {
+		// eslint-disable-next-line no-unused-vars
+		const { openfile, enableSharing, ...query } = OCP.Files.Router.query
 		window.OCP?.Files?.Router?.goToRoute(
 			null, // use default route
 			{ view: 'files', fileid: undefined },
-			{ ...OCP.Files.Router.query, openfile: undefined, enableSharing: undefined },
+			query,
 		)
 	}
 
@@ -286,7 +285,9 @@ import { loadState } from '@nextcloud/initial-state'
 	}
 
 	OCA.Onlyoffice.FileClickExec = async function(file, view, dir, isDefault = true) {
-		if (OCA.Onlyoffice.context !== null && OCA.Onlyoffice.setting.sameTab && !OCA.Onlyoffice.Desktop) {
+		if (OCA.Onlyoffice.context !== null
+			&& document.querySelector('.onlyoffice-iframe-container')
+			&& !OCA.Onlyoffice.Desktop) {
 			return null
 		}
 
@@ -884,23 +885,26 @@ import { loadState } from '@nextcloud/initial-state'
 				return
 			}
 
-			const editorUrl = OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/s/' + encodeURIComponent(getSharingToken()))
+			registerFileAction(new FileAction({
+				id: 'onlyoffice-public-open',
+				displayName: () => t(OCA.Onlyoffice.AppName, 'Open in ONLYOFFICE'),
+				iconSvgInline: () => AppDarkSvg,
+				enabled: (files) => {
+					if (Permission.READ !== (files[0].permissions & Permission.READ)) { return false }
 
-			if (_oc_appswebroots.richdocuments
-				|| (_oc_appswebroots.files_pdfviewer && extension === 'pdf')
-				|| (_oc_appswebroots.text && extension === 'txt')) {
+					return true
+				},
+				exec(file, view, dir) {
+					OCA.Onlyoffice.FileClickExec(file, view, dir, false)
+				},
+			}))
 
-				const button = document.createElement('a')
-				button.href = editorUrl
-				button.className = 'onlyoffice-public-open button'
-				button.innerText = t(OCA.Onlyoffice.AppName, 'Open in ONLYOFFICE')
+			if (config.def
+				&& !_oc_appswebroots.richdocuments
+				&& !(_oc_appswebroots.files_pdfviewer && extension === 'pdf')
+				&& !(_oc_appswebroots.text && extension === 'txt')) {
+				const editorUrl = OC.generateUrl('apps/' + OCA.Onlyoffice.AppName + '/s/' + encodeURIComponent(getSharingToken()))
 
-				if (!OCA.Onlyoffice.setting.sameTab) {
-					button.target = '_blank'
-				}
-
-				$('#preview').prepend(button)
-			} else {
 				OCA.Onlyoffice.frameSelector = '#onlyofficeFrame'
 				const container = document.createElement('div')
 				container.classList.add('onlyoffice-iframe-container')

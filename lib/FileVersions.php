@@ -33,6 +33,7 @@ use OC\Files\Node\File;
 use OC\Files\View;
 use OC\User\Database;
 use OCA\Files_Sharing\External\Storage as SharingExternalStorage;
+use OCA\GroupFolders\Mount\GroupFolderStorage;
 use OCP\Files\FileInfo;
 use OCP\Files\IRootFolder;
 use OCP\IUser;
@@ -46,47 +47,33 @@ class FileVersions {
 
     /**
      * Application name
-     *
-     * @var string
      */
-    private static $appName = "onlyoffice";
+    private static string $appName = "onlyoffice";
 
     /**
      * Changes file extension
-     *
-     * @var string
      */
-    private static $changesExt = ".zip";
+    private static string $changesExt = ".zip";
 
     /**
      * History file extension
-     *
-     * @var string
      */
-    private static $historyExt = ".json";
+    private static string $historyExt = ".json";
 
     /**
      * File name contain author
-     *
-     * @var string
      */
-    private static $authorExt = "_author.json";
+    private static string $authorExt = "_author.json";
 
     /**
      * Groupfolder name
-     *
-     * @var string
      */
-    private static $groupFolderName = "__groupfolders";
+    private static string $groupFolderName = "__groupfolders";
 
     /**
      * Split file path and version id
-     *
-     * @param string $pathVersion - version path
-     *
-     * @return array
      */
-    public static function splitPathVersion($pathVersion) {
+    public static function splitPathVersion(string $pathVersion): false|array {
         if (empty($pathVersion)) {
             return false;
         }
@@ -97,19 +84,17 @@ class FileVersions {
     }
 
     /**
-     * Check if folder is not exist
+     * Check if folder exists
      *
      * @param View $view - view
      * @param string $path - folder path
-     * @param bool $createIfNotExist - create folder if not exist
-     *
-     * @return bool
+     * @param bool $create - create folder if it does not exist
      */
-    private static function checkFolderExist($view, $path, $createIfNotExist = false) {
+    private static function checkFolderExist(View $view, string $path, bool $create = false): bool {
         if ($view->is_dir($path)) {
             return true;
         }
-        if (!$createIfNotExist) {
+        if (!$create) {
             return false;
         }
         $view->mkdir($path);
@@ -122,14 +107,12 @@ class FileVersions {
      * @param string $userId - user id
      * @param FileInfo $fileInfo - file info
      * @param bool $createIfNotExist - create folder if not exist
-     *
-     * @return array
      */
-    private static function getView($userId, $fileInfo, $createIfNotExist = false) {
+    private static function getView(string $userId, $fileInfo, bool $createIfNotExist = false): array {
         $fileId = null;
         if ($fileInfo !== null) {
             $fileId = $fileInfo->getId();
-            if ($fileInfo->getStorage()->instanceOfStorage(\OCA\GroupFolders\Mount\GroupFolderStorage::class)) {
+            if ($fileInfo->getStorage()->instanceOfStorage(GroupFolderStorage::class)) {
                 $view = new View("/" . self::$groupFolderName);
             } else {
                 $view = new View("/" . $userId);
@@ -165,7 +148,7 @@ class FileVersions {
      *
      * @return array
      */
-    public static function getHistoryData($ownerId, $fileInfo, $versionId, $prevVersion) {
+    public static function getHistoryData(?string $ownerId, ?FileInfo $fileInfo, string $versionId, ?string $prevVersion): ?array {
         $logger = \OCP\Log\logger('onlyoffice');
 
         if ($ownerId === null || $fileInfo === null) {
@@ -173,7 +156,7 @@ class FileVersions {
         }
 
         $fileId = $fileInfo->getId();
-        list($view, $path) = self::getView($ownerId, $fileInfo);
+        [$view, $path] = self::getView($ownerId, $fileInfo);
         if ($view === null) {
             return null;
         }
@@ -186,7 +169,7 @@ class FileVersions {
         $historyDataString = $view->file_get_contents($historyPath);
 
         try {
-            $historyData = json_decode($historyDataString, true);
+            $historyData = json_decode((string) $historyDataString, true);
 
             if ($historyData["prev"] !== $prevVersion) {
                 $logger->debug("getHistoryData: previous $prevVersion != " . $historyData["prev"], ["app" => self::$appName]);
@@ -218,12 +201,12 @@ class FileVersions {
      *
      * @return bool
      */
-    public static function hasChanges($ownerId, $fileInfo, $versionId) {
+    public static function hasChanges(?string $ownerId, ?FileInfo $fileInfo, string $versionId) {
         if ($ownerId === null || $fileInfo === null) {
             return false;
         }
 
-        list($view, $path) = self::getView($ownerId, $fileInfo);
+        [$view, $path] = self::getView($ownerId, $fileInfo);
         if ($view === null) {
             return false;
         }
@@ -241,13 +224,13 @@ class FileVersions {
      *
      * @return File
      */
-    public static function getChangesFile($ownerId, $fileInfo, $versionId) {
+    public static function getChangesFile(?string $ownerId, ?FileInfo $fileInfo, string $versionId): ?File {
         if ($ownerId === null || $fileInfo === null) {
             return null;
         }
         $fileId = $fileInfo->getId();
 
-        list($view, $path) = self::getView($ownerId, $fileInfo);
+        [$view, $path] = self::getView($ownerId, $fileInfo);
         if ($view === null) {
             return null;
         }
@@ -275,7 +258,7 @@ class FileVersions {
      * @param string $changes - file changes
      * @param string $prevVersion - previous version for check
      */
-    public static function saveHistory($fileInfo, $history, $changes, $prevVersion) {
+    public static function saveHistory(?FileInfo $fileInfo, ?array $history, ?string $changes, ?string $prevVersion): void {
         $logger = \OCP\Log\logger('onlyoffice');
 
         if ($fileInfo === null) {
@@ -299,7 +282,7 @@ class FileVersions {
         $fileId = $fileInfo->getId();
         $versionId = $fileInfo->getMtime();
 
-        list($view, $path) = self::getView($ownerId, $fileInfo, true);
+        [$view, $path] = self::getView($ownerId, $fileInfo, true);
 
         try {
             $changesPath = $path . "/" . $versionId . self::$changesExt;
@@ -323,7 +306,7 @@ class FileVersions {
      * @param string $ownerId - file owner id
      * @param FileInfo $fileInfo - file info
      */
-    public static function deleteAllVersions($ownerId, $fileInfo = null) {
+    public static function deleteAllVersions(?string $ownerId, ?FileInfo $fileInfo = null): void {
         $logger = \OCP\Log\logger('onlyoffice');
         $fileId = null;
         if ($fileInfo !== null) {
@@ -336,7 +319,7 @@ class FileVersions {
             return;
         }
 
-        list($view, $path) = self::getView($ownerId, $fileInfo);
+        [$view, $path] = self::getView($ownerId, $fileInfo);
         if ($view === null) {
             return;
         }
@@ -351,11 +334,8 @@ class FileVersions {
      * @param FileInfo $fileInfo - file info
      * @param string $versionId - file version
      */
-    public static function deleteVersion($ownerId, $fileInfo, $versionId) {
-        if ($ownerId === null) {
-            return;
-        }
-        if ($fileInfo === null || empty($versionId)) {
+    public static function deleteVersion(?string $ownerId, ?FileInfo $fileInfo, ?string $versionId): void {
+        if ($ownerId === null || $fileInfo === null || empty($versionId)) {
             return;
         }
 
@@ -363,9 +343,9 @@ class FileVersions {
         $fileId = $fileInfo->getId();
         $logger->debug("deleteVersion $fileId ($versionId)", ["app" => self::$appName]);
 
-        list($view, $path) = self::getView($ownerId, $fileInfo);
+        [$view, $path] = self::getView($ownerId, $fileInfo);
         if ($view === null) {
-            return null;
+            return;
         }
 
         $historyPath = $path . "/" . $versionId . self::$historyExt;
@@ -384,7 +364,7 @@ class FileVersions {
     /**
      * Clear all version history
      */
-    public static function clearHistory() {
+    public static function clearHistory(): void {
         $logger = \OCP\Log\logger('onlyoffice');
 
         $userDatabase = new Database();
@@ -414,7 +394,7 @@ class FileVersions {
      * @param FileInfo $fileInfo - file info
      * @param IUser $author - version author
      */
-    public static function saveAuthor($fileInfo, $author) {
+    public static function saveAuthor(?FileInfo $fileInfo, ?IUser $author): void {
         $logger = \OCP\Log\logger('onlyoffice');
 
         if ($fileInfo === null || $author === null) {
@@ -434,7 +414,7 @@ class FileVersions {
         $fileId = $fileInfo->getId();
         $versionId = $fileInfo->getMtime();
 
-        list($view, $path) = self::getView($ownerId, $fileInfo, true);
+        [$view, $path] = self::getView($ownerId, $fileInfo, true);
 
         try {
             $authorPath = $path . "/" . $versionId . self::$authorExt;
@@ -461,13 +441,13 @@ class FileVersions {
      *
      * @return array
      */
-    public static function getAuthor($ownerId, $fileInfo, $versionId) {
+    public static function getAuthor(?string $ownerId, ?FileInfo $fileInfo, string $versionId): ?array {
         if ($ownerId === null || $fileInfo === null) {
             return null;
         }
 
         $fileId = $fileInfo->getId();
-        list($view, $path) = self::getView($ownerId, $fileInfo);
+        [$view, $path] = self::getView($ownerId, $fileInfo);
         if ($view === null) {
             return null;
         }
@@ -478,7 +458,7 @@ class FileVersions {
         }
 
         $authorDataString = $view->file_get_contents($authorPath);
-        $author = json_decode($authorDataString, true);
+        $author = json_decode((string) $authorDataString, true);
 
         \OCP\Log\logger('onlyoffice')->debug("getAuthor: $fileId v.$versionId for $ownerId get author $authorPath", ["app" => self::$appName]);
 
@@ -492,23 +472,20 @@ class FileVersions {
      * @param FileInfo $fileInfo - file info
      * @param string $versionId - file version
      */
-    public static function deleteAuthor($ownerId, $fileInfo, $versionId) {
+    public static function deleteAuthor(?string $ownerId, ?FileInfo $fileInfo, ?string $versionId): void {
         $logger = \OCP\Log\logger('onlyoffice');
 
         $fileId = $fileInfo->getId();
 
         $logger->debug("deleteAuthor $fileId ($versionId)", ["app" => self::$appName]);
 
-        if ($ownerId === null) {
-            return;
-        }
-        if ($fileInfo === null || empty($versionId)) {
+        if ($ownerId === null || $fileInfo === null || empty($versionId)) {
             return;
         }
 
-        list($view, $path) = self::getView($ownerId, $fileInfo);
+        [$view, $path] = self::getView($ownerId, $fileInfo);
         if ($view === null) {
-            return null;
+            return;
         }
 
         $authorPath = $path . "/" . $versionId . self::$authorExt;
@@ -521,8 +498,8 @@ class FileVersions {
     /**
      * Get version compare with files_versions
      */
-    public static function getFilesVersionAppInfoCompareResult() {
-        $filesVersionAppInfo = \OC::$server->getAppManager()->getAppInfo("files_versions");
+    public static function getFilesVersionAppInfoCompareResult(): int {
+        $filesVersionAppInfo = \OCP\Server::get(\OCP\App\IAppManager::class)->getAppInfo("files_versions");
         return \version_compare($filesVersionAppInfo["version"], "1.19");
     }
 
@@ -531,7 +508,7 @@ class FileVersions {
      *
      * @param array $versions - versions array
      */
-    public static function processVersionsArray($versions) {
+    public static function processVersionsArray(array $versions): array {
         if (self::getFilesVersionAppInfoCompareResult() === -1) {
             return array_reverse($versions);
         } else {

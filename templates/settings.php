@@ -29,13 +29,11 @@
 
     style("onlyoffice", "settings");
     style("onlyoffice", "template");
-    script("onlyoffice", "onlyoffice-settings");
-    script("onlyoffice", "onlyoffice-template");
+    \OCP\Util::addScript("onlyoffice", "onlyoffice-settings", 'core');
+    \OCP\Util::addScript("onlyoffice", "onlyoffice-template", 'core');
 
 if ($_["tagsEnabled"]) {
-    script("core", [
-        "dist/systemtags",
-    ]);
+    \OCP\Util::addScript("core", "dist/systemtags");
 }
 ?>
 <div class="section section-onlyoffice section-onlyoffice-addr">

@@ -39,15 +39,10 @@ use OCP\EventDispatcher\Event;
  */
 class DocumentUnsavedEvent extends Event {
 
-    /**
-     * @param string $userId
-     * @param int $fileId
-     * @param string $fileName
-     */
     public function __construct(
-        private string $userId,
-        private int $fileId,
-        private string $fileName,
+        private readonly string $userId,
+        private readonly int $fileId,
+        private readonly string $fileName,
     ) {
         parent::__construct();
     }

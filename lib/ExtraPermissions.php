@@ -31,7 +31,7 @@ namespace OCA\Onlyoffice;
 
 use OCA\Talk\Manager as TalkManager;
 use OCP\Constants;
-use OCP\Files\File;
+use OCP\IDBConnection;
 use OCP\Share\Exceptions\ShareNotFound;
 use OCP\Share\IManager;
 use OCP\Share\IShare;
@@ -43,41 +43,6 @@ use Psr\Log\LoggerInterface;
  * @package OCA\Onlyoffice
  */
 class ExtraPermissions {
-
-    /**
-     * Application name
-     *
-     * @var string
-     */
-    private $appName;
-
-    /**
-     * Logger
-     *
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
-     * Share manager
-     *
-     * @var IManager
-     */
-    private $shareManager;
-
-    /**
-     * Application configuration
-     *
-     * @var AppConfig
-     */
-    private $config;
-
-    /**
-     * Talk manager
-     *
-     * @var TalkManager
-     */
-    private $talkManager;
 
     /**
      * Table name
@@ -95,56 +60,34 @@ class ExtraPermissions {
     public const FILLFORMS = 4;
     public const MODIFYFILTER = 8;
 
-    /**
-     * @param string $AppName - application name
-     * @param LoggerInterface $logger - logger
-     * @param AppConfig $config - application configuration
-     * @param IManager $shareManager - Share manager
-     */
     public function __construct(
-        $AppName,
-        LoggerInterface $logger,
-        IManager $shareManager,
-        AppConfig $config
-    ) {
-        $this->appName = $AppName;
-        $this->logger = $logger;
-        $this->shareManager = $shareManager;
-        $this->config = $config;
-
-        if (\OC::$server->getAppManager()->isInstalled("spreed")) {
-            try {
-                $this->talkManager = \OC::$server->query(TalkManager::class);
-            } catch (QueryException $e) {
-                $this->logger->error("TalkManager init error", ["exception" => $e]);
-            }
-        }
-    }
+        private readonly LoggerInterface $logger,
+        private readonly IManager $shareManager,
+        private readonly AppConfig $appConfig,
+        private readonly IDBConnection $connection,
+        private readonly ?TalkManager $talkManager,
+    ) {}
 
     /**
      * Get extra permissions by shareId
-     *
-     * @param integer $shareId - share identifier
-     *
-     * @return array
      */
-    public function getExtra($shareId) {
+    public function getExtra(string $shareId): ?array {
         $share = $this->getShare($shareId);
-        if (empty($share)) {
+        if (!$share instanceof IShare) {
             return null;
         }
 
         $shareId = $share->getId();
-        $extra = self::get($shareId);
+        $extra = $this->get($shareId);
 
         $wasInit = isset($extra["permissions"]);
         $checkExtra = $wasInit ? (int)$extra["permissions"] : self::NONE;
-        list($availableExtra, $defaultPermissions) = $this->validation($share, $checkExtra, $wasInit);
+        [$availableExtra, $defaultPermissions] = $this->validation($share, $checkExtra, $wasInit);
 
         if ($availableExtra === 0
             || ($availableExtra & $checkExtra) !== $checkExtra) {
             if (!empty($extra)) {
-                self::delete($shareId);
+                $this->delete($shareId);
             }
 
             $this->logger->debug("Share " . $shareId . " does not support extra permissions");
@@ -167,24 +110,20 @@ class ExtraPermissions {
 
     /**
      * Get list extra permissions by shares
-     *
-     * @param array $shares - array of shares
-     *
-     * @return array
      */
-    public function getExtras($shares) {
+    public function getExtras(array $shares): array {
         $result = [];
 
         $shareIds = [];
         foreach ($shares as $share) {
-            array_push($shareIds, $share->getId());
+            $shareIds[] = $share->getId();
         }
 
         if (empty($shareIds)) {
             return $result;
         }
 
-        $extras = self::getList($shareIds);
+        $extras = $this->getList($shareIds);
 
         $noActualList = [];
         foreach ($shares as $share) {
@@ -197,14 +136,11 @@ class ExtraPermissions {
 
             $wasInit = isset($currentExtra["permissions"]);
             $checkExtra = $wasInit ? (int)$currentExtra["permissions"] : self::NONE;
-            list($availableExtra, $defaultPermissions) = $this->validation($share, $checkExtra, $wasInit);
+            [$availableExtra, $defaultPermissions] = $this->validation($share, $checkExtra, $wasInit);
 
-            if ($availableExtra === 0
-                || ($availableExtra & $checkExtra) !== $checkExtra) {
-                if (!empty($currentExtra)) {
-                    array_push($noActualList, $share->getId());
-                    $currentExtra = [];
-                }
+            if (($availableExtra === 0 || ($availableExtra & $checkExtra) !== $checkExtra) && !empty($currentExtra)) {
+                $noActualList[] = $share->getId();
+                $currentExtra = [];
             }
 
             if ($availableExtra > 0) {
@@ -229,12 +165,12 @@ class ExtraPermissions {
                     }
                 }
 
-                array_push($result, $currentExtra);
+                $result[] = $currentExtra;
             }
         }
 
         if (!empty($noActualList)) {
-            self::deleteList($noActualList);
+            $this->deleteList($noActualList);
         }
 
         return $result;
@@ -244,44 +180,35 @@ class ExtraPermissions {
      * Get extra permissions by share
      *
      * @param integer $shareId - share identifier
-     * @param integer $permissions - value extra permissions
+     * @param integer $permissions - extra permissions bitmask
      * @param integer $extraId - extra permission identifier
      *
      * @return bool
      */
-    public function setExtra($shareId, $permissions, $extraId) {
+    public function setExtra(string $shareId, int $permissions, int $extraId): bool {
         $result = false;
 
         $share = $this->getShare($shareId);
-        if (empty($share)) {
+        if (!$share instanceof IShare) {
             return $result;
         }
 
-        list($availableExtra, $defaultPermissions) = $this->validation($share, $permissions);
+        [$availableExtra, $defaultPermissions] = $this->validation($share, $permissions);
         if (($availableExtra & $permissions) !== $permissions) {
             $this->logger->debug("Share " . $shareId . " does not available to extend permissions");
             return $result;
         }
 
-        if ($extraId > 0) {
-            $result = self::update($share->getId(), $permissions);
-        } else {
-            $result = self::insert($share->getId(), $permissions);
-        }
+        $result = $extraId > 0 ? $this->update($share->getId(), $permissions) : $this->insert($share->getId(), $permissions);
 
         return $result;
     }
 
     /**
      * Delete extra permissions for share
-     *
-     * @param integer $shareId - file identifier
-     *
-     * @return bool
      */
-    public static function delete($shareId) {
-        $connection = \OC::$server->getDatabaseConnection();
-        $delete = $connection->prepare("
+    public function delete(string $shareId): bool {
+        $delete = $this->connection->prepare("
             DELETE FROM `*PREFIX*" . self::TABLENAME_KEY . "`
             WHERE `share_id` = ?
         ");
@@ -292,20 +219,17 @@ class ExtraPermissions {
      * Delete list extra permissions
      *
      * @param array $shareIds - array of share identifiers
-     *
-     * @return bool
      */
-    public static function deleteList($shareIds) {
-        $connection = \OC::$server->getDatabaseConnection();
-
+    public function deleteList(array $shareIds): bool {
         $condition = "";
         if (count($shareIds) > 1) {
-            for ($i = 1; $i < count($shareIds); $i++) {
-                $condition = $condition . " OR `share_id` = ?";
+            $counter = count($shareIds);
+            for ($i = 1; $i < $counter; $i++) {
+                $condition .= " OR `share_id` = ?";
             }
         }
 
-        $delete = $connection->prepare("
+        $delete = $this->connection->prepare("
             DELETE FROM `*PREFIX*" . self::TABLENAME_KEY . "`
             WHERE `share_id` = ?
         " . $condition);
@@ -314,22 +238,15 @@ class ExtraPermissions {
 
     /**
      * Get extra permissions for share
-     *
-     * @param integer $shareId - share identifier
-     *
-     * @return array
      */
-    private static function get($shareId) {
-        $connection = \OC::$server->getDatabaseConnection();
-        $select = $connection->prepare("
+    private function get(string $shareId): array {
+        $select = $this->connection->prepare("
             SELECT id, share_id, permissions
             FROM  `*PREFIX*" . self::TABLENAME_KEY . "`
             WHERE `share_id` = ?
         ");
         $result = $select->execute([$shareId]);
-
-        $values = $result ? $select->fetch() : [];
-
+        $values = $result->fetch();
         $value = is_array($values) ? $values : [];
 
         $result = [];
@@ -346,39 +263,33 @@ class ExtraPermissions {
 
     /**
      * Get list extra permissions
-     *
-     * @param array $shareIds - array of share identifiers
-     *
-     * @return array
      */
-    private static function getList($shareIds) {
-        $connection = \OC::$server->getDatabaseConnection();
-
+    private function getList(array $shareIds): array {
         $condition = "";
         if (count($shareIds) > 1) {
-            for ($i = 1; $i < count($shareIds); $i++) {
-                $condition = $condition . " OR `share_id` = ?";
+            $counter = count($shareIds);
+            for ($i = 1; $i < $counter; $i++) {
+                $condition .= " OR `share_id` = ?";
             }
         }
 
-        $select = $connection->prepare("
+        $select = $this->connection->prepare("
             SELECT id, share_id, permissions
             FROM  `*PREFIX*" . self::TABLENAME_KEY . "`
             WHERE `share_id` = ?
         " . $condition);
 
         $result = $select->execute($shareIds);
-
-        $values = $result ? $select->fetchAll() : [];
+        $values = $result->fetchAll();
 
         $result = [];
         if (is_array($values)) {
             foreach ($values as $value) {
-                array_push($result, [
+                $result[] = [
                     "id" => (int)$value["id"],
                     "share_id" => (string)$value["share_id"],
                     "permissions" => (int)$value["permissions"]
-                ]);
+                ];
             }
         }
 
@@ -388,14 +299,11 @@ class ExtraPermissions {
     /**
      * Store extra permissions for share
      *
-     * @param integer $shareId - share identifier
-     * @param integer $permissions - value permissions
-     *
-     * @return bool
+     * @param string $shareId - share identifier
+     * @param integer $permissions - permissions bitmask
      */
-    private static function insert($shareId, $permissions) {
-        $connection = \OC::$server->getDatabaseConnection();
-        $insert = $connection->prepare("
+    private function insert(string $shareId, int $permissions): bool {
+        $insert = $this->connection->prepare("
             INSERT INTO `*PREFIX*" . self::TABLENAME_KEY . "`
                 (`share_id`, `permissions`)
             VALUES (?, ?)
@@ -406,14 +314,11 @@ class ExtraPermissions {
     /**
      * Update extra permissions for share
      *
-     * @param integer $shareId - share identifier
-     * @param bool $permissions - value permissions
-     *
-     * @return bool
+     * @param string $shareId - share identifier
+     * @param bool $permissions - permissions bitmask
      */
-    private static function update($shareId, $permissions) {
-        $connection = \OC::$server->getDatabaseConnection();
-        $update = $connection->prepare("
+    private function update(string $shareId, int $permissions): bool {
+        $update = $this->connection->prepare("
             UPDATE `*PREFIX*" . self::TABLENAME_KEY . "`
             SET `permissions` = ?
             WHERE `share_id` = ?
@@ -425,12 +330,10 @@ class ExtraPermissions {
      * Validation share on extend capability by extra permissions
      *
      * @param IShare $share - share
-     * @param int $checkExtra - checkable extra permissions
+     * @param int $checkExtra - checkable extra permissions bitmask
      * @param bool $wasInit - was initialization extra
-     *
-     * @return array
      */
-    private function validation($share, $checkExtra, $wasInit = true) {
+    private function validation(IShare $share, int $checkExtra, bool $wasInit = true): array {
         $availableExtra = self::NONE;
         $defaultExtra = self::NONE;
 
@@ -440,8 +343,8 @@ class ExtraPermissions {
         }
 
         $node = $share->getNode();
-        $ext = strtolower(pathinfo($node->getName(), PATHINFO_EXTENSION));
-        $format = !empty($ext) && array_key_exists($ext, $this->config->formatsSetting()) ? $this->config->formatsSetting()[$ext] : null;
+        $ext = strtolower(pathinfo((string) $node->getName(), PATHINFO_EXTENSION));
+        $format = !empty($ext) && array_key_exists($ext, $this->appConfig->formatsSetting()) ? $this->appConfig->formatsSetting()[$ext] : null;
         if (!isset($format)) {
             return [$availableExtra, $defaultExtra];
         }
@@ -465,10 +368,8 @@ class ExtraPermissions {
                 $availableExtra |= self::FILLFORMS;
             }
 
-            if (!$wasInit) {
-                if (($defaultExtra & self::MODIFYFILTER) === self::MODIFYFILTER) {
-                    $availableExtra ^= self::COMMENT;
-                }
+            if (!$wasInit && ($defaultExtra & self::MODIFYFILTER) === self::MODIFYFILTER) {
+                $availableExtra ^= self::COMMENT;
             }
         }
 
@@ -477,21 +378,15 @@ class ExtraPermissions {
 
     /**
      * Get origin share
-     *
-     * @param integer $shareId - share identifier
-     *
-     * @return IShare
      */
-    private function getShare($shareId) {
+    private function getShare(string $shareId): ?IShare {
         try {
-            $share = $this->shareManager->getShareById("ocinternal:" . $shareId);
-            return $share;
-        } catch (ShareNotFound $e) {}
+            return $this->shareManager->getShareById("ocinternal:" . $shareId);
+        } catch (ShareNotFound) {}
 
         try {
-            $share = $this->shareManager->getShareById("ocRoomShare:" . $shareId);
-            return $share;
-        } catch (ShareNotFound $e) {}
+            return $this->shareManager->getShareById("ocRoomShare:" . $shareId);
+        } catch (ShareNotFound) {}
 
         $this->logger->error("getShare: share not found: " . $shareId);
 

@@ -52,17 +52,11 @@ class DocumentUnsavedListener implements IEventListener {
      */
     private $trans;
     
-    /**
-     * @param \OCP\IConfig $config
-     * @param \Psr\Log\LoggerInterface $logger
-     * @param \OCP\Notification\IManager $notificationManager
-     * @param \OCP\L10N\IFactory $l10nFactory
-     */
     public function __construct(
-        private IConfig $config,
-        private LoggerInterface $logger,
-        private NotificationIManager $notificationManager,
-        private IFactory $l10nFactory,
+        private readonly IConfig $config,
+        private readonly LoggerInterface $logger,
+        private readonly NotificationIManager $notificationManager,
+        private readonly IFactory $l10nFactory,
     ) {}
 
     public function handle(Event $event): void {
@@ -75,7 +69,7 @@ class DocumentUnsavedListener implements IEventListener {
         $this->notifySender($event->getUserId(), $event->getFileId(), $event->getFileName());
     }
 
-    private function notifySender($uid, $fileId, $fileName) {
+    private function notifySender(string $uid, int $fileId, string $fileName): void {
         try {
             $notification = $this->notificationManager->createNotification();
             $notification->setApp(Application::APP_ID)

@@ -29,6 +29,8 @@
 
 namespace OCA\Onlyoffice;
 
+use OCP\IDBConnection;
+
 /**
  * Key manager
  *
@@ -36,44 +38,33 @@ namespace OCA\Onlyoffice;
  */
 class KeyManager {
 
+    public function __construct(private IDBConnection $connection) {}
+
     /**
      * Table name
      */
     private const TABLENAME_KEY = "onlyoffice_filekey";
 
     /**
-     * Get document identifier
-     *
-     * @param integer $fileId - file identifier
-     *
-     * @return string
+     * Get document identifier by file id
      */
-    public static function get($fileId) {
-        $connection = \OC::$server->getDatabaseConnection();
-        $select = $connection->prepare("
+    public function get(int $fileId): string {
+        $select = $this->connection->prepare("
             SELECT `key`
             FROM  `*PREFIX*" . self::TABLENAME_KEY . "`
             WHERE `file_id` = ?
         ");
         $result = $select->execute([$fileId]);
+        $keys = $result->fetch();
 
-        $keys = $result ? $select->fetch() : [];
-        $key = is_array($keys) && isset($keys["key"]) ? $keys["key"] : "";
-
-        return $key;
+        return is_array($keys) && isset($keys["key"]) ? $keys["key"] : "";
     }
 
     /**
      * Store document identifier
-     *
-     * @param integer $fileId - file identifier
-     * @param integer $key - file key
-     *
-     * @return bool
      */
-    public static function set($fileId, $key) {
-        $connection = \OC::$server->getDatabaseConnection();
-        $insert = $connection->prepare("
+    public function set(int $fileId, string $key): bool {
+        $insert = $this->connection->prepare("
             INSERT INTO `*PREFIX*" . self::TABLENAME_KEY . "`
                 (`file_id`, `key`)
             VALUES (?, ?)
@@ -86,12 +77,9 @@ class KeyManager {
      *
      * @param integer $fileId - file identifier
      * @param bool $unlock - delete even with lock label
-     *
-     * @return bool
      */
-    public static function delete($fileId, $unlock = false) {
-        $connection = \OC::$server->getDatabaseConnection();
-        $delete = $connection->prepare(
+    public function delete(int $fileId, bool $unlock = false): bool {
+        $delete = $this->connection->prepare(
             "
             DELETE FROM `*PREFIX*" . self::TABLENAME_KEY . "`
             WHERE `file_id` = ?
@@ -105,12 +93,9 @@ class KeyManager {
      *
      * @param integer $fileId - file identifier
      * @param bool $lock - status
-     *
-     * @return bool
      */
-    public static function lock($fileId, $lock = true) {
-        $connection = \OC::$server->getDatabaseConnection();
-        $update = $connection->prepare("
+    public function lock(int $fileId, bool $lock = true): bool {
+        $update = $this->connection->prepare("
             UPDATE `*PREFIX*" . self::TABLENAME_KEY . "`
             SET `lock` = ?
             WHERE `file_id` = ?
@@ -123,12 +108,9 @@ class KeyManager {
      *
      * @param integer $fileId - file identifier
      * @param bool $fs - status
-     *
-     * @return bool
      */
-    public static function setForcesave($fileId, $fs = true) {
-        $connection = \OC::$server->getDatabaseConnection();
-        $update = $connection->prepare("
+    public function setForcesave(int $fileId, bool $fs = true): bool {
+        $update = $this->connection->prepare("
             UPDATE `*PREFIX*" . self::TABLENAME_KEY . "`
             SET `fs` = ?
             WHERE `file_id` = ?
@@ -140,19 +122,15 @@ class KeyManager {
      * Get forcesave status
      *
      * @param integer $fileId - file identifier
-     *
-     * @return bool
      */
-    public static function wasForcesave($fileId) {
-        $connection = \OC::$server->getDatabaseConnection();
-        $select = $connection->prepare("
+    public function wasForcesave(int $fileId): bool {
+        $select = $this->connection->prepare("
             SELECT `fs`
             FROM  `*PREFIX*" . self::TABLENAME_KEY . "`
             WHERE `file_id` = ?
         ");
         $result = $select->execute([$fileId]);
-
-        $rows = $result ? $select->fetch() : [];
+        $rows = $result->fetch();
         $fs = is_array($rows) && isset($rows["fs"]) ? $rows["fs"] : 0;
 
         return $fs === 1 || $fs === "1";

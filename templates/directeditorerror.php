@@ -27,7 +27,7 @@
  *
  */
 
-script("onlyoffice", "directeditor");
+\OCP\Util::addScript("onlyoffice", "directeditor", 'core');
 ?>
 <div class="guest-box" id="directEditorError">
     <h2><?php p($l->t('Error')); ?></h2>

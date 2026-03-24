@@ -47,7 +47,7 @@ jobs:
           rm ./package.json
           rm ./ruleset.xml
           rm ./stylelint.config.js
-          rm ./webpack.js
+          rm ./vite.config.mjs
           cd $cwd
           tar -czvf onlyoffice.tar.gz onlyoffice
       - name: Upload Artifact

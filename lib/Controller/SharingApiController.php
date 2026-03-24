@@ -29,6 +29,7 @@
 
 namespace OCA\Onlyoffice\Controller;
 
+use OCA\Files_Sharing\SharedStorage;
 use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\ExtraPermissions;
 use OCP\AppFramework\Http;
@@ -39,7 +40,6 @@ use OCP\AppFramework\OCSController;
 use OCP\Files\File;
 use OCP\Files\IRootFolder;
 use OCP\IRequest;
-use OCP\IUserManager;
 use OCP\IUserSession;
 use OCP\Share\IManager;
 use OCP\Share\IShare;
@@ -50,88 +50,17 @@ use Psr\Log\LoggerInterface;
  */
 class SharingApiController extends OCSController {
 
-    /**
-     * Current user session
-     *
-     * @var IUserSession
-     */
-    private $userSession;
-
-    /**
-     * User manager
-     *
-     * @var IUserManager
-     */
-    private $userManager;
-
-    /**
-     * Root folder
-     *
-     * @var IRootFolder
-     */
-    private $root;
-
-    /**
-     * Logger
-     *
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
-     * Application configuration
-     *
-     * @var AppConfig
-     */
-    private $appConfig;
-
-    /**
-     * Share manager
-     *
-     * @var IManager
-     */
-    private $shareManager;
-
-    /**
-     * Extra permissions
-     *
-     * @var ExtraPermissions
-     */
-    private $extraPermissions;
-
-    /**
-     * @param string $AppName - application name
-     * @param IRequest $request - request object
-     * @param IRootFolder $root - root folder
-     * @param LoggerInterface $logger - logger
-     * @param IUserSession $userSession - current user session
-     * @param IUserManager $userManager - user manager
-     * @param IManager $shareManager - Share manager
-     * @param AppConfig $appConfig - application configuration
-     */
     public function __construct(
-        $AppName,
+        string $appName,
         IRequest $request,
-        IRootFolder $root,
-        LoggerInterface $logger,
-        IUserSession $userSession,
-        IUserManager $userManager,
-        IManager $shareManager,
-        AppConfig $appConfig
+        private readonly IRootFolder $root,
+        private readonly LoggerInterface $logger,
+        private readonly IUserSession $userSession,
+        private readonly IManager $shareManager,
+        private readonly AppConfig $appConfig,
+        private readonly ExtraPermissions $extraPermissions
     ) {
-        parent::__construct($AppName, $request);
-
-        $this->root = $root;
-        $this->logger = $logger;
-        $this->userSession = $userSession;
-        $this->userManager = $userManager;
-        $this->shareManager = $shareManager;
-        $this->appConfig = $appConfig;
-
-        if ($this->appConfig->getAdvanced()
-            && \OC::$server->getAppManager()->isInstalled("files_sharing")) {
-            $this->extraPermissions = new ExtraPermissions($AppName, $logger, $shareManager, $appConfig);
-        }
+        parent::__construct($appName, $request);
     }
 
     /**
@@ -143,8 +72,8 @@ class SharingApiController extends OCSController {
      */
     #[NoAdminRequired]
     #[NoCSRFRequired]
-    public function getShares($fileId) {
-        if ($this->extraPermissions === null) {
+    public function getShares(int $fileId): DataResponse {
+        if (!$this->appConfig->getAdvanced()) {
             $this->logger->debug("extraPermissions isn't init");
             return new DataResponse([], Http::STATUS_BAD_REQUEST);
         }
@@ -154,7 +83,7 @@ class SharingApiController extends OCSController {
 
         $sourceFile = $this->getFile($fileId, $userId);
         $fileStorage = $sourceFile->getStorage();
-        if ($fileStorage->instanceOfStorage("\OCA\Files_Sharing\SharedStorage")) {
+        if ($fileStorage->instanceOfStorage(SharedStorage::class)) {
             return new DataResponse([]);
         }
 
@@ -172,16 +101,16 @@ class SharingApiController extends OCSController {
      * Set shares for file
      *
      * @param integer $extraId - extra permission identifier
-     * @param integer $shareId - share identifier
+     * @param string $shareId - share identifier
      * @param integer $fileId - file identifier
-     * @param integer $permissions - permissions value
+     * @param integer $permissions - permissions bitmask
      *
      * @return DataResponse
      */
     #[NoAdminRequired]
     #[NoCSRFRequired]
-    public function setShares($extraId, $shareId, $fileId, $permissions) {
-        if ($this->extraPermissions === null) {
+    public function setShares(int $extraId, string $shareId, int $fileId, int $permissions): DataResponse {
+        if (!$this->appConfig->getAdvanced()) {
             $this->logger->debug("extraPermissions isn't init");
             return new DataResponse([], Http::STATUS_BAD_REQUEST);
         }
@@ -191,7 +120,7 @@ class SharingApiController extends OCSController {
 
         $sourceFile = $this->getFile($fileId, $userId);
         $fileStorage = $sourceFile->getStorage();
-        if ($fileStorage->instanceOfStorage("\OCA\Files_Sharing\SharedStorage")) {
+        if ($fileStorage->instanceOfStorage(SharedStorage::class)) {
             return new DataResponse([], Http::STATUS_BAD_REQUEST);
         }
 
@@ -213,7 +142,7 @@ class SharingApiController extends OCSController {
      *
      * @return File
      */
-    private function getFile($fileId, $userId) {
+    private function getFile(int $fileId, string $userId): ?File {
         try {
             $folder = $this->root->getUserFolder($userId);
             $files = $folder->getById($fileId);

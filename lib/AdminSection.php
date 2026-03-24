@@ -37,50 +37,33 @@ use OCP\Settings\IIconSection;
  */
 class AdminSection implements IIconSection {
 
-    /** @var IURLGenerator */
-    private $urlGenerator;
-
-    /**
-     * @param IURLGenerator $urlGenerator - url generator service
-     */
-    public function __construct(IURLGenerator $urlGenerator) {
-        $this->urlGenerator = $urlGenerator;
-    }
-
+    public function __construct(private readonly IURLGenerator $urlGenerator) {}
 
     /**
      * Path to an 16*16 icons
-     *
-     * @return strings
      */
-    public function getIcon() {
+    public function getIcon(): string {
         return $this->urlGenerator->imagePath("onlyoffice", "app-dark.svg");
     }
 
     /**
      * ID of the section
-     *
-     * @returns string
      */
-    public function getID() {
+    public function getID(): string {
         return "onlyoffice";
     }
 
     /**
      * Name of the section
-     *
-     * @return string
      */
-    public function getName() {
+    public function getName(): string {
         return "ONLYOFFICE";
     }
 
     /**
      * Get priority order
-     *
-     * @return int
      */
-    public function getPriority() {
+    public function getPriority(): int {
         return 50;
     }
 }
