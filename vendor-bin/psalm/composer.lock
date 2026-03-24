@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "653348ffb34f9bfb6f787555207de95d",
+    "content-hash": "7bb51f08580ed97e7a3263c635366426",
     "packages": [],
     "packages-dev": [
         {
@@ -1628,16 +1628,16 @@
         },
         {
             "name": "nextcloud/ocp",
-            "version": "dev-stable31",
+            "version": "dev-stable32",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nextcloud-deps/ocp.git",
-                "reference": "57cd9c3fbdbba2263544dabeca8f5a3874aa8ced"
+                "reference": "5d6430816fd4afb6b87251b06e7eabcefba47610"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nextcloud-deps/ocp/zipball/57cd9c3fbdbba2263544dabeca8f5a3874aa8ced",
-                "reference": "57cd9c3fbdbba2263544dabeca8f5a3874aa8ced",
+                "url": "https://api.github.com/repos/nextcloud-deps/ocp/zipball/5d6430816fd4afb6b87251b06e7eabcefba47610",
+                "reference": "5d6430816fd4afb6b87251b06e7eabcefba47610",
                 "shasum": ""
             },
             "require": {
@@ -1650,7 +1650,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-stable31": "31.0.0-dev"
+                    "dev-stable32": "32.0.0-dev"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -1670,9 +1670,9 @@
             "description": "Composer package containing Nextcloud's public OCP API and the unstable NCU API",
             "support": {
                 "issues": "https://github.com/nextcloud-deps/ocp/issues",
-                "source": "https://github.com/nextcloud-deps/ocp/tree/stable31"
+                "source": "https://github.com/nextcloud-deps/ocp/tree/stable32"
             },
-            "time": "2026-02-20T01:07:07+00:00"
+            "time": "2026-03-21T01:05:00+00:00"
         },
         {
             "name": "nikic/php-parser",
