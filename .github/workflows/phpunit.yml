@@ -50,12 +50,21 @@ jobs:
       mysql:
         image: mysql:8.4
         ports:
-          - 4444:3306/tcp
+          - 3306:3306
         env:
           MYSQL_ROOT_PASSWORD: rootpassword
         options: --health-cmd="mysqladmin ping" --health-interval 5s --health-timeout 2s --health-retries 10
 
     steps:
+      - name: Detect database host
+        id: db
+        run: |
+          if [ "$GITEA_ACTIONS" = "true" ]; then
+            echo "host=mysql" >> $GITHUB_OUTPUT
+          else
+            echo "host=127.0.0.1" >> $GITHUB_OUTPUT
+          fi
+
       - name: Set up Nextcloud env
         uses: ChristophWurst/setup-nextcloud@v0.4.2
         with:
@@ -78,11 +87,9 @@ jobs:
 
       - name: Start server and configure Nextcloud
         working-directory: nextcloud
-        env:
-          DB_PORT: 4444
         run: |
           mkdir data
-          php occ maintenance:install --verbose --database=mysql --database-name=nextcloud --database-host=127.0.0.1 --database-port=$DB_PORT --database-user=root --database-pass=rootpassword --admin-user admin --admin-pass admin
+          php occ maintenance:install --verbose --database=mysql --database-name=nextcloud --database-host=${{ steps.db.outputs.host }} --database-port=3306 --database-user=root --database-pass=rootpassword --admin-user admin --admin-pass admin
           php occ app:enable --force files_external
           php occ app:enable --force onlyoffice
 
