@@ -137,7 +137,7 @@ class EmailManagerTest extends TestCase {
         $notifier  = $this->makeUser("notifier@example.com", "Notifier");
 
         $this->userManager->method("get")->willReturnCallback(
-            fn($id) => match($id) {
+            fn($id) => match ($id) {
                 "recipient" => $recipient,
                 "notifier"  => $notifier,
                 default     => null,
@@ -160,7 +160,7 @@ class EmailManagerTest extends TestCase {
         $notifier  = $this->makeUser("notifier@example.com", "Notifier");
 
         $this->userManager->method("get")->willReturnCallback(
-            fn($id) => match($id) {
+            fn($id) => match ($id) {
                 "recipient" => $recipient,
                 "notifier"  => $notifier,
                 default     => null,

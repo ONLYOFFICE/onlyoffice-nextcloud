@@ -224,8 +224,7 @@ class AppConfigTest extends TestCase {
 
         $this->appConfig->method("getValueString")
             ->willReturnCallback(fn($app, $key, $default) =>
-                $key === "demo" ? $stored : ""
-            );
+                $key === "demo" ? $stored : "");
 
         $url = $this->subject->getDocumentServerUrl();
 
@@ -238,8 +237,7 @@ class AppConfigTest extends TestCase {
     public function testGetDocumentServerUrlReturnsConfiguredUrlWhenDemoDisabled(): void {
         $this->appConfig->method("getValueString")
             ->willReturnCallback(fn($app, $key, $default) =>
-                $key === "DocumentServerUrl" ? "https://myserver.com/" : ""
-            );
+                $key === "DocumentServerUrl" ? "https://myserver.com/" : "");
 
         $url = $this->subject->getDocumentServerUrl();
 
