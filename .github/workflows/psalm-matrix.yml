@@ -24,7 +24,7 @@ permissions:
 
 jobs:
   matrix:
-    runs-on: ubuntu-slim
+    runs-on: ubuntu-latest
     outputs:
       ocp-matrix: ${{ steps.versions.outputs.ocp-matrix }}
       php-min: ${{ steps.versions.outputs.php-min }}
@@ -81,7 +81,7 @@ jobs:
         run: composer run psalm -- --threads=1 --monochrome --no-progress --output-format=github
 
   summary:
-    runs-on: ubuntu-slim
+    runs-on: ubuntu-latest
     needs: static-analysis
 
     if: always()

@@ -28,7 +28,7 @@ permissions:
 
 jobs:
   matrix:
-    runs-on: ubuntu-slim
+    runs-on: ubuntu-latest
     outputs:
       php-max: ${{ steps.versions.outputs.php-max }}
       branches-min: ${{ steps.versions.outputs.branches-min }}
