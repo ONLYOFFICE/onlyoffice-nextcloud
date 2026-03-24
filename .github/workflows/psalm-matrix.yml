@@ -24,9 +24,10 @@ permissions:
 
 jobs:
   matrix:
-    runs-on: ubuntu-latest-low
+    runs-on: ubuntu-slim
     outputs:
       ocp-matrix: ${{ steps.versions.outputs.ocp-matrix }}
+      php-min: ${{ steps.versions.outputs.php-min }}
     steps:
       - name: Checkout app
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -55,10 +56,10 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Set up php${{ matrix.php-min }}
+      - name: Set up php${{ needs.matrix.outputs.php-min }}
         uses: shivammathur/setup-php@44454db4f0199b8b9685a5d763dc37cbf79108e1 # v2.36.0
         with:
-          php-version: ${{ matrix.php-min }}
+          php-version: ${{ needs.matrix.outputs.php-min }}
           extensions: bz2, ctype, curl, dom, fileinfo, gd, iconv, intl, json, libxml, mbstring, openssl, pcntl, posix, session, simplexml, xmlreader, xmlwriter, zip, zlib, sqlite, pdo_sqlite
           coverage: none
           ini-file: development
@@ -69,20 +70,18 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer remove nextcloud/ocp --dev --no-scripts
-          composer i
-
-      - name: Check for vulnerable PHP dependencies
-        run: composer require --dev roave/security-advisories:dev-latest
+          composer install
+          composer bin psalm remove nextcloud/ocp --dev --no-scripts
+          composer bin psalm install
 
       - name: Install dependencies # zizmor: ignore[template-injection]
-        run: composer require --dev 'nextcloud/ocp:${{ matrix.ocp-version }}' --ignore-platform-reqs --with-dependencies
+        run: composer bin psalm require --dev 'nextcloud/ocp:${{ matrix.ocp-version }}' --ignore-platform-reqs --with-dependencies
 
       - name: Run coding standards check
         run: composer run psalm -- --threads=1 --monochrome --no-progress --output-format=github
 
   summary:
-    runs-on: ubuntu-latest-low
+    runs-on: ubuntu-slim
     needs: static-analysis
 
     if: always()
