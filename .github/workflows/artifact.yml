@@ -38,6 +38,7 @@ jobs:
           rm -rf ./node_modules/
           rm -rf ./src/
           rm -rf ./vendor-bin/
+          rm -rf ./tests/
           rm ./.eslintrc.js
           rm ./.gitignore
           rm ./.gitmodules
