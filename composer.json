@@ -14,6 +14,9 @@
     },
     "scripts": {
         "test:unit": "vendor/bin/phpunit"
+        "psalm": "psalm --no-cache --threads=$(nproc)",
+        "psalm:dev": "@psalm",
+        "psalm:update-baseline": "psalm --threads=1 --update-baseline --set-baseline=tests/psalm-baseline.xml"
     },
     "require": {
         "php": ">=8.1 <8.5",

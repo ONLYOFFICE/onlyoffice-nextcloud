@@ -1121,9 +1121,9 @@ class EditorController extends Controller {
         $userId = $user->getUID();
         $userFolder = $this->root->getUserFolder($userId);
 
-        $file = $userFolder->get($filePath);
-
-        if ($file === null) {
+        try {
+            $file = $userFolder->get($filePath);
+        } catch (\OCP\Files\NotFoundException) {
             $this->logger->error("File for generate presigned url was not found: $filePath");
             return new DataResponse(["error" => $this->trans->t("File not found")]);
         }
@@ -1520,9 +1520,10 @@ class EditorController extends Controller {
      * @param string $userId - current user identifier
      */
     private function getUserId(string $userId): string {
-        if (str_contains($userId, "_")) {
-            $userIdExp = explode("_", $userId);
-            $userId = end($userIdExp);
+        $instanceId = $this->appConfig->getSystemValue("instanceid", true);
+        $prefix = $instanceId . "_";
+        if (str_starts_with($userId, $prefix)) {
+            return substr($userId, strlen($prefix));
         }
         return $userId;
     }
