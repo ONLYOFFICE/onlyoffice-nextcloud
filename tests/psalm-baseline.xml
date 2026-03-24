@@ -13,109 +13,103 @@
   <file src="lib/AppConfig.php">
     <InvalidOperand>
       <code><![CDATA[$parsedUrl["port"]]]></code>
-      <code><![CDATA[$value]]></code>
     </InvalidOperand>
-    <InvalidReturnStatement>
-      <code><![CDATA["all"]]></code>
-      <code><![CDATA["owner"]]></code>
-      <code><![CDATA[$this->getSystemValue($this->_verification)]]></code>
-    </InvalidReturnStatement>
-    <InvalidReturnType>
-      <code><![CDATA[bool]]></code>
-      <code><![CDATA[bool]]></code>
-    </InvalidReturnType>
     <MissingDependency>
       <code><![CDATA[Application]]></code>
     </MissingDependency>
     <NullableReturnStatement>
-      <code><![CDATA[$url]]></code>
       <code><![CDATA[null]]></code>
     </NullableReturnStatement>
     <RedundantCast>
-      <code><![CDATA[(integer)$interval]]></code>
+      <code><![CDATA[(int)$interval]]></code>
+      <code><![CDATA[(string) $storageUrl]]></code>
     </RedundantCast>
+    <RedundantCondition>
+      <code><![CDATA[$onlyofficeFormats !== false]]></code>
+    </RedundantCondition>
     <UndefinedAttributeClass>
       <code><![CDATA[NoAdminRequired]]></code>
     </UndefinedAttributeClass>
     <UndefinedClass>
       <code><![CDATA[$cacheFactory]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
       <code><![CDATA[$this->cache]]></code>
       <code><![CDATA[$this->cache]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
-      <code><![CDATA[$this->config]]></code>
       <code><![CDATA[$this->config]]></code>
       <code><![CDATA[$this->config]]></code>
       <code><![CDATA[$this->config]]></code>
       <code><![CDATA[$this->config]]></code>
       <code><![CDATA[ICache]]></code>
       <code><![CDATA[ICacheFactory]]></code>
-      <code><![CDATA[\OC]]></code>
-      <code><![CDATA[\OC]]></code>
+      <code><![CDATA[\OCP\Server]]></code>
+      <code><![CDATA[\OCP\Server]]></code>
+      <code><![CDATA[private]]></code>
       <code><![CDATA[private]]></code>
     </UndefinedClass>
   </file>
@@ -126,25 +120,10 @@
     </UndefinedClass>
   </file>
   <file src="lib/Command/DocumentServer.php">
-    <InvalidArgument>
-      <code><![CDATA[$this->crypt]]></code>
-      <code><![CDATA[$this->urlGenerator]]></code>
-    </InvalidArgument>
-    <MethodSignatureMismatch>
-      <code><![CDATA[protected function execute(InputInterface $input, OutputInterface $output) {]]></code>
-    </MethodSignatureMismatch>
     <MissingOverrideAttribute>
-      <code><![CDATA[protected function configure() {]]></code>
-      <code><![CDATA[protected function execute(InputInterface $input, OutputInterface $output) {]]></code>
+      <code><![CDATA[protected function configure(): void {]]></code>
+      <code><![CDATA[protected function execute(InputInterface $input, OutputInterface $output): int {]]></code>
     </MissingOverrideAttribute>
-    <UndefinedClass>
-      <code><![CDATA[IL10N]]></code>
-      <code><![CDATA[IURLGenerator]]></code>
-    </UndefinedClass>
-    <UndefinedDocblockClass>
-      <code><![CDATA[IL10N]]></code>
-      <code><![CDATA[IURLGenerator]]></code>
-    </UndefinedDocblockClass>
   </file>
   <file src="lib/Controller/CallbackController.php">
     <UndefinedClass>
@@ -198,69 +177,55 @@
   </file>
   <file src="lib/DocumentService.php">
     <InvalidArgument>
-      <code><![CDATA["post"]]></code>
-      <code><![CDATA["post"]]></code>
+      <code><![CDATA[(int)$data["error"]]]></code>
     </InvalidArgument>
-    <InvalidParamDefault>
-      <code><![CDATA[array]]></code>
-    </InvalidParamDefault>
-    <InvalidPropertyFetch>
-      <code><![CDATA[$responceFromConvertService->endConvert]]></code>
-      <code><![CDATA[$responceFromConvertService->error]]></code>
-      <code><![CDATA[$responceFromConvertService->fileUrl]]></code>
-    </InvalidPropertyFetch>
-    <InvalidReturnType>
-      <code><![CDATA[null]]></code>
-      <code><![CDATA[null]]></code>
-    </InvalidReturnType>
+    <MismatchingDocblockParamType>
+      <code><![CDATA[string]]></code>
+    </MismatchingDocblockParamType>
     <UndefinedClass>
-      <code><![CDATA[IL10N]]></code>
-      <code><![CDATA[\OC]]></code>
+      <code><![CDATA[$this->trans]]></code>
+      <code><![CDATA[$this->trans]]></code>
+      <code><![CDATA[$this->trans]]></code>
+      <code><![CDATA[$this->trans]]></code>
+      <code><![CDATA[$this->trans]]></code>
+      <code><![CDATA[$this->trans]]></code>
+      <code><![CDATA[$this->trans]]></code>
+      <code><![CDATA[$this->trans]]></code>
+      <code><![CDATA[$this->trans]]></code>
+      <code><![CDATA[$this->trans]]></code>
+      <code><![CDATA[$this->urlGenerator]]></code>
+      <code><![CDATA[$this->urlGenerator]]></code>
+      <code><![CDATA[$this->urlGenerator]]></code>
+      <code><![CDATA[\OCP\Server]]></code>
+      <code><![CDATA[private]]></code>
+      <code><![CDATA[private]]></code>
     </UndefinedClass>
-    <UndefinedDocblockClass>
-      <code><![CDATA[$this->trans]]></code>
-      <code><![CDATA[$this->trans]]></code>
-      <code><![CDATA[$this->trans]]></code>
-      <code><![CDATA[$this->trans]]></code>
-      <code><![CDATA[$this->trans]]></code>
-      <code><![CDATA[$this->trans]]></code>
-      <code><![CDATA[IL10N]]></code>
-      <code><![CDATA[OCA\Onlyoffice\Crypt]]></code>
-      <code><![CDATA[OCP\IURLGenerator]]></code>
-    </UndefinedDocblockClass>
   </file>
   <file src="lib/EmailManager.php">
     <ImplicitToStringCast>
       <code><![CDATA[$bodyHtml]]></code>
     </ImplicitToStringCast>
     <UndefinedClass>
+      <code><![CDATA[$this->trans]]></code>
+      <code><![CDATA[$this->trans]]></code>
+      <code><![CDATA[$this->trans]]></code>
+      <code><![CDATA[$this->trans]]></code>
+      <code><![CDATA[$this->trans]]></code>
+      <code><![CDATA[$this->trans]]></code>
+      <code><![CDATA[$this->trans]]></code>
+      <code><![CDATA[$this->urlGenerator]]></code>
+      <code><![CDATA[$this->urlGenerator]]></code>
+      <code><![CDATA[$this->urlGenerator]]></code>
+      <code><![CDATA[$this->userManager]]></code>
+      <code><![CDATA[$this->userManager]]></code>
+      <code><![CDATA[$this->userManager]]></code>
       <code><![CDATA[IEMailTemplate]]></code>
-      <code><![CDATA[IL10N]]></code>
-      <code><![CDATA[IMailer]]></code>
-      <code><![CDATA[IURLGenerator]]></code>
-      <code><![CDATA[IUserManager]]></code>
+      <code><![CDATA[IEMailTemplate]]></code>
+      <code><![CDATA[private]]></code>
+      <code><![CDATA[private]]></code>
+      <code><![CDATA[private]]></code>
+      <code><![CDATA[private]]></code>
     </UndefinedClass>
-    <UndefinedDocblockClass>
-      <code><![CDATA[$this->mailer]]></code>
-      <code><![CDATA[$this->trans]]></code>
-      <code><![CDATA[$this->trans]]></code>
-      <code><![CDATA[$this->trans]]></code>
-      <code><![CDATA[$this->trans]]></code>
-      <code><![CDATA[$this->trans]]></code>
-      <code><![CDATA[$this->trans]]></code>
-      <code><![CDATA[$this->trans]]></code>
-      <code><![CDATA[$this->urlGenerator]]></code>
-      <code><![CDATA[$this->urlGenerator]]></code>
-      <code><![CDATA[$this->urlGenerator]]></code>
-      <code><![CDATA[$this->userManager]]></code>
-      <code><![CDATA[$this->userManager]]></code>
-      <code><![CDATA[$this->userManager]]></code>
-      <code><![CDATA[IEMailTemplate]]></code>
-      <code><![CDATA[IL10N]]></code>
-      <code><![CDATA[IMailer]]></code>
-      <code><![CDATA[IURLGenerator]]></code>
-      <code><![CDATA[IUserManager]]></code>
-    </UndefinedDocblockClass>
   </file>
   <file src="lib/Events/DocumentUnsavedEvent.php">
     <UndefinedClass>
@@ -268,46 +233,39 @@
     </UndefinedClass>
   </file>
   <file src="lib/ExtraPermissions.php">
-    <InvalidArgument>
-      <code><![CDATA[$permissions]]></code>
-    </InvalidArgument>
-    <InvalidNullableReturnType>
-      <code><![CDATA[array]]></code>
-    </InvalidNullableReturnType>
-    <NullableReturnStatement>
-      <code><![CDATA[null]]></code>
-      <code><![CDATA[null]]></code>
-      <code><![CDATA[null]]></code>
-    </NullableReturnStatement>
+    <InvalidScalarArgument>
+      <code><![CDATA[$shareId]]></code>
+    </InvalidScalarArgument>
+    <MismatchingDocblockParamType>
+      <code><![CDATA[bool]]></code>
+      <code><![CDATA[integer]]></code>
+    </MismatchingDocblockParamType>
     <UndefinedClass>
-      <code><![CDATA[IManager]]></code>
-      <code><![CDATA[IShare]]></code>
-      <code><![CDATA[ShareNotFound]]></code>
-      <code><![CDATA[ShareNotFound]]></code>
-      <code><![CDATA[\OC]]></code>
-      <code><![CDATA[\OC]]></code>
-      <code><![CDATA[\OC]]></code>
-      <code><![CDATA[\OC]]></code>
-      <code><![CDATA[\OC]]></code>
-      <code><![CDATA[\OC]]></code>
-      <code><![CDATA[\OC]]></code>
-    </UndefinedClass>
-    <UndefinedDocblockClass>
       <code><![CDATA[$share]]></code>
       <code><![CDATA[$share]]></code>
       <code><![CDATA[$share]]></code>
       <code><![CDATA[$share]]></code>
       <code><![CDATA[$share]]></code>
-      <code><![CDATA[$share]]></code>
-      <code><![CDATA[$share]]></code>
+      <code><![CDATA[$this->connection]]></code>
+      <code><![CDATA[$this->connection]]></code>
+      <code><![CDATA[$this->connection]]></code>
+      <code><![CDATA[$this->connection]]></code>
+      <code><![CDATA[$this->connection]]></code>
+      <code><![CDATA[$this->connection]]></code>
       <code><![CDATA[$this->shareManager]]></code>
       <code><![CDATA[$this->shareManager]]></code>
       <code><![CDATA[$this->talkManager]]></code>
-      <code><![CDATA[IManager]]></code>
+      <code><![CDATA[?IShare]]></code>
       <code><![CDATA[IShare]]></code>
       <code><![CDATA[IShare]]></code>
-      <code><![CDATA[TalkManager]]></code>
-    </UndefinedDocblockClass>
+      <code><![CDATA[IShare]]></code>
+      <code><![CDATA[IShare]]></code>
+      <code><![CDATA[ShareNotFound]]></code>
+      <code><![CDATA[ShareNotFound]]></code>
+      <code><![CDATA[private]]></code>
+      <code><![CDATA[private]]></code>
+      <code><![CDATA[private]]></code>
+    </UndefinedClass>
   </file>
   <file src="lib/FileCreator.php">
     <UndefinedClass>
@@ -316,15 +274,6 @@
   </file>
   <file src="lib/FileUtility.php">
     <UndefinedClass>
-      <code><![CDATA[Constants]]></code>
-      <code><![CDATA[Folder]]></code>
-      <code><![CDATA[IL10N]]></code>
-      <code><![CDATA[IManager]]></code>
-      <code><![CDATA[ISession]]></code>
-      <code><![CDATA[NotFoundException]]></code>
-      <code><![CDATA[ShareNotFound]]></code>
-    </UndefinedClass>
-    <UndefinedDocblockClass>
       <code><![CDATA[$this->session]]></code>
       <code><![CDATA[$this->shareManager]]></code>
       <code><![CDATA[$this->trans]]></code>
@@ -332,29 +281,23 @@
       <code><![CDATA[$this->trans]]></code>
       <code><![CDATA[$this->trans]]></code>
       <code><![CDATA[$this->trans]]></code>
+      <code><![CDATA[Constants]]></code>
       <code><![CDATA[File]]></code>
-      <code><![CDATA[IL10N]]></code>
-      <code><![CDATA[IManager]]></code>
-      <code><![CDATA[ISession]]></code>
+      <code><![CDATA[Folder]]></code>
       <code><![CDATA[IShare]]></code>
       <code><![CDATA[IShare]]></code>
-      <code><![CDATA[OCA\Files_Versions\Versions\IVersion]]></code>
-    </UndefinedDocblockClass>
+      <code><![CDATA[NotFoundException]]></code>
+      <code><![CDATA[ShareNotFound]]></code>
+      <code><![CDATA[\OCA\Files_Versions\Versions\IVersion]]></code>
+      <code><![CDATA[private]]></code>
+      <code><![CDATA[private]]></code>
+      <code><![CDATA[private]]></code>
+    </UndefinedClass>
   </file>
   <file src="lib/FileVersions.php">
-    <FalsableReturnStatement>
-      <code><![CDATA[false]]></code>
-      <code><![CDATA[false]]></code>
-    </FalsableReturnStatement>
     <UndefinedClass>
+      <code><![CDATA[?File]]></code>
       <code><![CDATA[Database]]></code>
-      <code><![CDATA[View]]></code>
-      <code><![CDATA[View]]></code>
-      <code><![CDATA[\OC]]></code>
-    </UndefinedClass>
-    <UndefinedDocblockClass>
-      <code><![CDATA[File]]></code>
-      <code><![CDATA[FileInfo]]></code>
       <code><![CDATA[FileInfo]]></code>
       <code><![CDATA[FileInfo]]></code>
       <code><![CDATA[FileInfo]]></code>
@@ -366,6 +309,12 @@
       <code><![CDATA[FileInfo]]></code>
       <code><![CDATA[IUser]]></code>
       <code><![CDATA[View]]></code>
+      <code><![CDATA[View]]></code>
+      <code><![CDATA[View]]></code>
+      <code><![CDATA[\OCP\Server]]></code>
+    </UndefinedClass>
+    <UndefinedDocblockClass>
+      <code><![CDATA[FileInfo]]></code>
     </UndefinedDocblockClass>
     <UndefinedFunction>
       <code><![CDATA[\OCP\Log\logger('onlyoffice')]]></code>
@@ -373,26 +322,19 @@
   </file>
   <file src="lib/Hooks.php">
     <UndefinedClass>
-      <code><![CDATA[File]]></code>
-      <code><![CDATA[Filesystem]]></code>
-      <code><![CDATA[Filesystem]]></code>
-      <code><![CDATA[Filesystem]]></code>
-      <code><![CDATA[Filesystem]]></code>
       <code><![CDATA[Filesystem]]></code>
       <code><![CDATA[Util]]></code>
     </UndefinedClass>
-    <UndefinedFunction>
-      <code><![CDATA[\OCP\Log\logger('onlyoffice')]]></code>
-    </UndefinedFunction>
   </file>
   <file src="lib/KeyManager.php">
     <UndefinedClass>
-      <code><![CDATA[\OC]]></code>
-      <code><![CDATA[\OC]]></code>
-      <code><![CDATA[\OC]]></code>
-      <code><![CDATA[\OC]]></code>
-      <code><![CDATA[\OC]]></code>
-      <code><![CDATA[\OC]]></code>
+      <code><![CDATA[$this->connection]]></code>
+      <code><![CDATA[$this->connection]]></code>
+      <code><![CDATA[$this->connection]]></code>
+      <code><![CDATA[$this->connection]]></code>
+      <code><![CDATA[$this->connection]]></code>
+      <code><![CDATA[$this->connection]]></code>
+      <code><![CDATA[private]]></code>
     </UndefinedClass>
   </file>
   <file src="lib/Listeners/ContentSecurityPolicyListener.php">
@@ -415,12 +357,32 @@
       <code><![CDATA[IEventListener]]></code>
     </UndefinedClass>
   </file>
+  <file src="lib/Listeners/FileListener.php">
+    <UndefinedClass>
+      <code><![CDATA[IEventListener]]></code>
+    </UndefinedClass>
+  </file>
   <file src="lib/Listeners/FileSharingListener.php">
     <UndefinedClass>
       <code><![CDATA[IEventListener]]></code>
     </UndefinedClass>
   </file>
+  <file src="lib/Listeners/FileVersionsListener.php">
+    <UndefinedClass>
+      <code><![CDATA[IEventListener]]></code>
+    </UndefinedClass>
+  </file>
   <file src="lib/Listeners/FilesListener.php">
+    <UndefinedClass>
+      <code><![CDATA[IEventListener]]></code>
+    </UndefinedClass>
+  </file>
+  <file src="lib/Listeners/ShareListener.php">
+    <UndefinedClass>
+      <code><![CDATA[IEventListener]]></code>
+    </UndefinedClass>
+  </file>
+  <file src="lib/Listeners/UserListener.php">
     <UndefinedClass>
       <code><![CDATA[IEventListener]]></code>
     </UndefinedClass>
@@ -461,20 +423,15 @@
     </UndefinedClass>
   </file>
   <file src="lib/RemoteInstance.php">
-    <InvalidNullableReturnType>
-      <code><![CDATA[bool]]></code>
-    </InvalidNullableReturnType>
     <UndefinedClass>
-      <code><![CDATA[\OC]]></code>
-      <code><![CDATA[\OC]]></code>
-      <code><![CDATA[\OC]]></code>
-      <code><![CDATA[\OC]]></code>
+      <code><![CDATA[File]]></code>
+      <code><![CDATA[File]]></code>
+      <code><![CDATA[File]]></code>
+      <code><![CDATA[Server]]></code>
+      <code><![CDATA[Server]]></code>
+      <code><![CDATA[Server]]></code>
+      <code><![CDATA[Server]]></code>
     </UndefinedClass>
-    <UndefinedDocblockClass>
-      <code><![CDATA[File]]></code>
-      <code><![CDATA[File]]></code>
-      <code><![CDATA[File]]></code>
-    </UndefinedDocblockClass>
     <UndefinedFunction>
       <code><![CDATA[\OCP\Log\logger('onlyoffice')]]></code>
     </UndefinedFunction>
@@ -485,25 +442,15 @@
     </MissingOverrideAttribute>
   </file>
   <file src="lib/TemplateManager.php">
-    <InvalidArgument>
-      <code><![CDATA[$fileId]]></code>
-    </InvalidArgument>
-    <NullableReturnStatement>
-      <code><![CDATA[null]]></code>
-      <code><![CDATA[null]]></code>
-      <code><![CDATA[null]]></code>
-    </NullableReturnStatement>
     <UndefinedClass>
-      <code><![CDATA[\OC]]></code>
-      <code><![CDATA[\OC]]></code>
-    </UndefinedClass>
-    <UndefinedDocblockClass>
       <code><![CDATA[$templateDir]]></code>
       <code><![CDATA[$templateDir]]></code>
       <code><![CDATA[$templateDir]]></code>
-      <code><![CDATA[File]]></code>
+      <code><![CDATA[?File]]></code>
       <code><![CDATA[Folder]]></code>
-    </UndefinedDocblockClass>
+      <code><![CDATA[Server]]></code>
+      <code><![CDATA[Server]]></code>
+    </UndefinedClass>
     <UndefinedFunction>
       <code><![CDATA[\OCP\Log\logger('onlyoffice')]]></code>
     </UndefinedFunction>
@@ -512,17 +459,5 @@
     <UndefinedClass>
       <code><![CDATA[ICustomTemplateProvider]]></code>
     </UndefinedClass>
-  </file>
-  <file src="vendor-bin/psalm/vendor/symfony/console/Command/Command.php">
-    <InvalidFunctionCall>
-      <code><![CDATA[$this(...)]]></code>
-    </InvalidFunctionCall>
-    <InvalidPropertyAssignment>
-      <code><![CDATA[$this]]></code>
-    </InvalidPropertyAssignment>
-    <NoValue>
-      <code><![CDATA[$this]]></code>
-      <code><![CDATA[$this]]></code>
-    </NoValue>
   </file>
 </files>
