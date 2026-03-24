@@ -51,6 +51,7 @@ jobs:
           rm ./stylelint.config.js
           rm ./vite.config.mjs
           rm ./phpunit.xml
+          rm ./psalm.xml
           cd $cwd
           tar -czvf onlyoffice.tar.gz onlyoffice
       - name: Upload Artifact
