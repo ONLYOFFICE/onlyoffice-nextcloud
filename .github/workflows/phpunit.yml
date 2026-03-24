@@ -4,8 +4,24 @@ on:
   workflow_dispatch:
   push:
     branches: [master, develop]
+    paths:
+      - 'lib/**'
+      - 'tests/**'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'phpunit.xml'
+      - 'vendor-bin/phpunit/**'
+      - '.github/workflows/phpunit.yml'
   pull_request:
     branches: [master, develop]
+    paths:
+      - 'lib/**'
+      - 'tests/**'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'phpunit.xml'
+      - 'vendor-bin/phpunit/**'
+      - '.github/workflows/phpunit.yml'
 
 permissions:
   contents: read
