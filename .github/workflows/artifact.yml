@@ -37,6 +37,7 @@ jobs:
           rm -rf ./assets/document-formats/.git
           rm -rf ./node_modules/
           rm -rf ./src/
+          rm -rf ./tests/
           rm ./.eslintrc.js
           rm ./.gitignore
           rm ./.gitmodules
