@@ -48,6 +48,7 @@ jobs:
           rm ./ruleset.xml
           rm ./stylelint.config.js
           rm ./vite.config.mjs
+          rm ./playwright.config.ts
           cd $cwd
           tar -czvf onlyoffice.tar.gz onlyoffice
       - name: Upload Artifact
