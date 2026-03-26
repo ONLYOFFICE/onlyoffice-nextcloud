@@ -1,4 +1,4 @@
-import { test, expect } from '../fixtures'
+import { test } from '../fixtures'
 import { deleteFile } from '../helpers/webdav'
 import { createPublicShare, deleteShare, ShareInfo } from '../helpers/shares'
 import { uploadNewTemplate } from '../helpers/templates'
