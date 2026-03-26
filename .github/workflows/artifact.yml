@@ -38,6 +38,7 @@ jobs:
           rm -rf ./node_modules/
           rm -rf ./src/
           rm -rf ./tests/
+          rm -rf ./vendor-bin/
           rm ./.eslintrc.js
           rm ./.gitignore
           rm ./.gitmodules
@@ -49,7 +50,9 @@ jobs:
           rm ./ruleset.xml
           rm ./stylelint.config.js
           rm ./vite.config.mjs
+          rm ./phpunit.xml
           rm ./playwright.config.ts
+          rm ./psalm.xml
           cd $cwd
           tar -czvf onlyoffice.tar.gz onlyoffice
       - name: Upload Artifact

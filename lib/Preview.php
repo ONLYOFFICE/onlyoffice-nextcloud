@@ -111,7 +111,7 @@ class Preview implements IProviderV2 {
             if (!empty($mimeTypeRegex)) {
                 $mimeTypeRegex .= "|";
             }
-            $mimeTypeRegex .= str_replace("/", "\/", $format);
+            $mimeTypeRegex .= preg_quote($format, "/");
         }
 
         return "/" . $mimeTypeRegex . "/";
