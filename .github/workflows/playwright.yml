@@ -1,0 +1,119 @@
+name: Playwright Tests
+on:
+  workflow_dispatch:
+  push:
+    branches: [ master ]
+
+permissions:
+  contents: read
+
+env:
+  CI: true
+  PLAYWRIGHT_BASEURL: http://localhost:8080
+  DOCUMENT_SERVER_URL: http://onlyoffice
+  JWT_SECRET: secret
+
+jobs:
+  matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      php-min: ${{ steps.versions.outputs.php-min }}
+      branches-min: ${{ steps.versions.outputs.branches-min }}
+    steps:
+      - name: Checkout app
+        uses: actions/checkout@v6
+      - name: Get version matrix
+        id: versions
+        uses: icewind1991/nextcloud-version-matrix@v1.3.2
+
+  playwright:
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+    needs: matrix
+    container: node:24
+
+    services:
+      onlyoffice:
+        image: onlyoffice/documentserver
+        env:
+          JWT_SECRET: secret
+          JWT_HEADER: Authorization
+          JWT_ENABLED: true
+        options: >-
+          --health-cmd "curl -sf http://localhost/healthcheck | grep -q 'true'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 30
+
+    steps:
+      - name: Set up Nextcloud env
+        uses: ChristophWurst/setup-nextcloud@v0.4.2
+        with:
+          nextcloud-version: ${{ needs.matrix.outputs.branches-min }}
+          php-version: ${{ needs.matrix.outputs.php-min }}
+          node-version: false
+          install: true
+
+      - name: Checkout viewer
+        run: git clone --depth 1 --branch ${{ needs.matrix.outputs.branches-min }} https://github.com/nextcloud/viewer nextcloud/apps/viewer
+
+      - name: Checkout onlyoffice
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+          submodules: true
+          path: nextcloud/apps/onlyoffice
+
+      - name: Install composer dependencies
+        working-directory: nextcloud/apps/onlyoffice
+        run: composer install --no-dev
+
+      - name: Start server and configure Nextcloud
+        working-directory: nextcloud
+        run: |
+          php -f index.php
+          PHP_CLI_SERVER_WORKERS=20 php -S 0.0.0.0:8080 &
+          CONTAINER_IP=$(hostname -I | awk '{print $1}')
+          php occ config:system:set force_language --value en
+          php occ app:install spreed
+          php occ app:enable --force onlyoffice
+          php occ config:system:set auth.bruteforce.protection.enabled --value false --type bool
+          php occ config:system:set ratelimit.protection.enabled --value false --type bool
+          php occ config:system:set trusted_domains 1 --value="$CONTAINER_IP"
+          php occ config:app:set onlyoffice DocumentServerUrl --value="${{ env.DOCUMENT_SERVER_URL }}/"
+          php occ config:app:set onlyoffice jwt_secret --value="${{ env.JWT_SECRET }}"
+          php occ config:app:set onlyoffice StorageUrl --value="http://$CONTAINER_IP:8080/"
+          php occ config:system:set allow_local_remote_servers --value true --type bool
+
+          php occ app:list
+          php occ onlyoffice:documentserver --check
+
+      - name: Build onlyoffice
+        working-directory: nextcloud/apps/onlyoffice
+        run: |
+          npm ci
+          npm run build
+
+      - name: Install Playwright Browsers
+        working-directory: nextcloud/apps/onlyoffice
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Playwright tests
+        working-directory: nextcloud/apps/onlyoffice
+        run: npx playwright test
+
+      - name: Upload test report
+        uses: actions/upload-artifact@v4
+        if: ${{ always() }}
+        with:
+          name: playwright-report
+          path: nextcloud/apps/onlyoffice/playwright-report/
+          retention-days: 5
+
+      - name: Upload nextcloud logs
+        uses: actions/upload-artifact@v4
+        if: ${{ always() }}
+        with:
+          name: nextcloud-log
+          path: nextcloud/data/nextcloud.log
+          retention-days: 5
