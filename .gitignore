@@ -1,3 +1,5 @@
 /js
 /node_modules
 /vendor
+/vendor-bin/*/vendor
+/.phpunit.cache
