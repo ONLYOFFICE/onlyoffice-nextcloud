@@ -16,6 +16,7 @@ test.describe.serial('Admin settings', () => {
 
 	test.describe('Server settings', () => {
 		test('Save with invalid url', async ({ adminPage }) => {
+			await adminPage.clearServerSettings()
 			await adminPage.fillUrl('http://onlyoffice.example.invalid')
 			await adminPage.fillSecret(jwtSecret)
 			await adminPage.saveServerSettings()

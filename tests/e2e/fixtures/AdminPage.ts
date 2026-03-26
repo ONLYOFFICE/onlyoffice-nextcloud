@@ -87,6 +87,22 @@ export class AdminPage {
 		await this.secret().fill(secret)
 	}
 
+	async fillInternalUrl(url: string): Promise<void> {
+		const input = this.internalUrl()
+		if (!await input.isVisible()) {
+			await this.advancedToggle().click()
+		}
+		await input.fill(url)
+	}
+
+	async clearServerSettings(): Promise<void> {
+		await this.url().fill('')
+		await this.secret().fill('')
+		await this.fillInternalUrl('')
+		await this.storageUrl().fill('')
+		await this.jwtHeader().fill('')
+	}
+
 	async saveServerSettings(): Promise<void> {
 		await this.saveServerSettingsButton().click()
 	}
