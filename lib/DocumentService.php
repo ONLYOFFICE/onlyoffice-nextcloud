@@ -148,7 +148,7 @@ class DocumentService {
         }
 
         $document_revision_id = self::generateRevisionId($document_revision_id);
-        $urlToConverter = $urlToConverter . "?shardKey=" . $document_revision_id;
+        $urlToConverter = $urlToConverter . "?shardkey=" . $document_revision_id;
 
         if (empty($from_extension)) {
             $from_extension = pathinfo($document_uri)["extension"];
