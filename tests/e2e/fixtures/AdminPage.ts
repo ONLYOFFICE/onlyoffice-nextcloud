@@ -12,15 +12,15 @@ export class AdminPage {
 	}
 
 	url(): Locator {
-		return this.page.locator('#onlyofficeUrl')
+		return this.page.locator('#onlyoffice-url')
 	}
 
 	secret(): Locator {
-		return this.page.locator('#onlyofficeSecret')
+		return this.page.locator('#onlyoffice-secret')
 	}
 
 	saveServerSettingsButton(): Locator {
-		return this.page.locator('#onlyofficeAddrSave')
+		return this.page.locator('#onlyoffice-server-save')
 	}
 
 	errorToast(): Locator {
@@ -48,19 +48,35 @@ export class AdminPage {
 	}
 
 	forcesaveCheckbox(): Locator {
-		return this.page.locator('#onlyofficeForcesave')
+		return this.page.locator('#onlyoffice-forcesave')
 	}
 
 	forcesaveLabel(): Locator {
-		return this.page.locator('label[for="onlyofficeForcesave"]')
+		return this.page.locator('label[for="onlyoffice-forcesave"]')
 	}
 
 	pluginsCheckbox(): Locator {
-		return this.page.locator('#onlyofficePlugins')
+		return this.page.locator('#onlyoffice-plugins')
 	}
 
 	pluginsLabel(): Locator {
-		return this.page.locator('label[for="onlyofficePlugins"]')
+		return this.page.locator('label[for="onlyoffice-plugins"]')
+	}
+
+	advancedToggle(): Locator {
+		return this.page.locator('.onlyoffice-adv a')
+	}
+
+	internalUrl(): Locator {
+		return this.page.locator('#onlyoffice-internal-url')
+	}
+
+	storageUrl(): Locator {
+		return this.page.locator('#onlyoffice-storage-url')
+	}
+
+	jwtHeader(): Locator {
+		return this.page.locator('#onlyoffice-jwt-header')
 	}
 
 	async fillUrl(url: string): Promise<void> {
@@ -84,10 +100,10 @@ export class AdminPage {
 	}
 
 	async saveCommonSettings(): Promise<void> {
-		await this.page.locator('#onlyofficeSave').click()
+		await this.page.locator('#onlyoffice-common-save').click()
 	}
 
 	async saveSecuritySettings(): Promise<void> {
-		await this.page.locator('#onlyofficeSecuritySave').click()
+		await this.page.locator('#onlyoffice-security-save').click()
 	}
 }
