@@ -157,7 +157,7 @@ async function save() {
 		<br>
 
 		<div class="onlyoffice-addr-bottom">
-			<NcButton class="onlyoffice-addr-save" :disabled="saving" @click="save" variant="primary">
+			<NcButton id="onlyoffice-server-save" :disabled="saving" @click="save" variant="primary">
 				{{ t('onlyoffice', 'Save') }}
 			</NcButton>
 

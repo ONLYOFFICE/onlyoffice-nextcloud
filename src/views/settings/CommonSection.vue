@@ -318,7 +318,7 @@ async function save() {
 		<br>
 
 		<p>
-			<NcButton :disabled="saving" @click="save" variant="primary">
+			<NcButton id="onlyoffice-common-save" :disabled="saving" @click="save" variant="primary">
 				{{ t('onlyoffice', 'Save') }}
 			</NcButton>
 		</p>
