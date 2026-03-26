@@ -43,6 +43,7 @@ jobs:
           rm ./.gitignore
           rm ./.gitmodules
           rm ./.stylelintrc.json
+          rm ./CLAUDE.md
           rm ./composer.json
           rm ./composer.lock
           rm ./npm-shrinkwrap.json
