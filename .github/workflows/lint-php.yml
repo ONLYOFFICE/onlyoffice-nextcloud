@@ -26,6 +26,7 @@ jobs:
         with:
           php-version: ${{ matrix.php-versions }}
           coverage: none
+          tools: phpcs
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -33,3 +34,7 @@ jobs:
         run: |
           cd ${{ github.workspace }}
           find . -name \\*.php -not -path './lib/composer/*' -not -path './build/stubs/*' -print0 | xargs -0 -n1 php -l
+
+      - name: Run phpcs
+        run: |
+          phpcs --standard=./ruleset.xml --extensions=php,module,inc,install --ignore=node_modules,bower_components,vendor,3rdparty,Migration --warning-severity=0 ./
