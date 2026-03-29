@@ -33,6 +33,7 @@ declare(strict_types=1);
 namespace OCA\Onlyoffice\Tests\Integration;
 
 use OCA\Onlyoffice\AppConfig;
+use OCP\Config\IUserConfig;
 use OCP\IAppConfig;
 use OCP\IConfig;
 use OCP\ICacheFactory;
@@ -59,6 +60,7 @@ class AppConfigTest extends TestCase {
             $this->appName,
             $this->iAppConfig,
             Server::get(IConfig::class),
+            Server::get(IUserConfig::class),
             $this->createStub(LoggerInterface::class),
             Server::get(ICacheFactory::class),
         );
