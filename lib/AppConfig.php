@@ -1125,7 +1125,7 @@ class AppConfig {
      * Get the limit on size document when generating thumbnails
      */
     public function getLimitThumbSize(): int {
-        $limitSize = (integer)$this->getSystemValue($this->_limitThumbSize);
+        $limitSize = (int)$this->getSystemValue($this->_limitThumbSize);
 
         if (!empty($limitSize)) {
             return $limitSize;
@@ -1172,7 +1172,7 @@ class AppConfig {
      * Get the Jwt Leeway
      */
     public function getJwtLeeway(): int {
-        return (integer)$this->getSystemValue($this->_jwtLeeway);
+        return (int)$this->getSystemValue($this->_jwtLeeway);
     }
 
     /**
@@ -1268,7 +1268,7 @@ class AppConfig {
     public function getEditorsCheckInterval(): int {
         $interval = $this->getSystemValue($this->_editors_check_interval);
         if ($interval !== null && !is_int($interval)) {
-            $interval = is_string($interval) && !ctype_digit($interval) ? null : (integer)$interval;
+            $interval = is_string($interval) && !ctype_digit($interval) ? null : (int)$interval;
         }
 
         if (empty($interval) && $interval !== 0) {
@@ -1286,7 +1286,7 @@ class AppConfig {
         if (empty($jwtExp)) {
             return 5;
         }
-        return (integer)$jwtExp;
+        return (int)$jwtExp;
     }
 
     /**
