@@ -585,7 +585,7 @@ class EditorController extends Controller {
         $userId = $user->getUID();
 
         $file = null;
-        $fileId = (integer)($referenceData["fileKey"] ?? 0);
+        $fileId = (int)($referenceData["fileKey"] ?? 0);
         if (!empty($fileId)
             && $referenceData["instanceId"] === $this->appConfig->getSystemValue("instanceid", true)) {
             [$file, $error, $share] = $this->getFile($userId, $fileId);
