@@ -912,19 +912,19 @@ import { loadState } from '@nextcloud/initial-state'
 				return
 			}
 
-			registerFileAction(new FileAction({
+			registerFileAction({
 				id: 'onlyoffice-public-open',
 				displayName: () => t(OCA.Onlyoffice.AppName, 'Open in ONLYOFFICE'),
 				iconSvgInline: () => AppDarkSvg,
-				enabled: (files) => {
-					if (Permission.READ !== (files[0].permissions & Permission.READ)) { return false }
+				enabled: ({ nodes }) => {
+					if (Permission.READ !== (nodes[0].permissions & Permission.READ)) { return false }
 
 					return true
 				},
-				exec(file, view, dir) {
-					OCA.Onlyoffice.FileClickExec(file, view, dir, false)
+				exec({ nodes, view, dir }) {
+					OCA.Onlyoffice.FileClickExec({ nodes, view, dir, isDefault: false })
 				},
-			}))
+			})
 
 			if (config.def
 				&& !_oc_appswebroots.richdocuments
