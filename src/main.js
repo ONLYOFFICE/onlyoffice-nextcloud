@@ -576,7 +576,7 @@ import { createFile, convertFile } from './services/FileService.ts'
 	}
 
 	OCA.Onlyoffice.getFileExtension = function(fileName) {
-		const extension = fileName.substr(fileName.lastIndexOf('.') + 1).toLowerCase()
+		const extension = fileName.slice(fileName.lastIndexOf('.') + 1).toLowerCase()
 		return extension
 	}
 
