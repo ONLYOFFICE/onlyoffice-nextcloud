@@ -432,13 +432,14 @@ import { createFile, convertFile } from './services/FileService.ts'
 			displayName: () => t(OCA.Onlyoffice.AppName, 'Open in ONLYOFFICE'),
 			iconSvgInline: () => AppDarkSvg,
 			enabled: (files) => {
-				const config = getConfig(files[0])
+				const fileExt = OCA.Onlyoffice.getFileExtension(files[0]?.extension || files[0]?.displayname)
+				const config = formats[fileExt]
 
 				if (!config
 					|| !config.def
 					|| OCA.Onlyoffice.isPublicFileShare() && (_oc_appswebroots.richdocuments
-						|| (_oc_appswebroots.files_pdfviewer && extension === 'pdf')
-						|| (_oc_appswebroots.text && extension === 'txt'))) {
+						|| (_oc_appswebroots.files_pdfviewer && fileExt === 'pdf')
+						|| (_oc_appswebroots.text && fileExt === 'txt'))) {
 					return false
 				}
 
