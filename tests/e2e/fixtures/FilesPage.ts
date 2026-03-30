@@ -49,7 +49,7 @@ export class FilesPage {
 	}
 
 	downloadPickerDialog(): Locator {
-		return this.page.locator('#download-picker');
+		return this.page.locator('.onlyoffice-download-picker');
 	}
 
 	downloadPickerSelect(): Locator {
