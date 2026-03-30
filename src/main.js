@@ -188,19 +188,27 @@ import { createFile, convertFile } from './services/FileService.ts'
 				return
 			}
 			OCA.Onlyoffice.frameSelector = '#onlyofficeFrame'
-			const $iframe = $('<div class="onlyoffice-iframe-container"><iframe id="onlyofficeFrame" nonce="' + btoa(OC.requestToken) + '" scrolling="no" allowfullscreen src="' + url + '&inframe=true" /></div>')
+			const iframeEl = document.createElement('iframe')
+			iframeEl.id = 'onlyofficeFrame'
+			iframeEl.setAttribute('nonce', btoa(OC.requestToken))
+			iframeEl.setAttribute('scrolling', 'no')
+			iframeEl.setAttribute('allowfullscreen', '')
+			iframeEl.src = url + '&inframe=true'
+			const iframeContainer = document.createElement('div')
+			iframeContainer.className = 'onlyoffice-iframe-container'
+			iframeContainer.append(iframeEl)
 
-			const frameContainer = $('#app-content').length > 0 ? $('#app-content') : $('#app-content-vue')
-			frameContainer.append($iframe)
+			const frameContainer = document.getElementById('app-content') ?? document.getElementById('app-content-vue')
+			frameContainer.append(iframeContainer)
 
-			$('body').addClass('onlyoffice-inline')
+			document.body.classList.add('onlyoffice-inline')
 
 			if (OCA.Files.Sidebar) {
 				OCA.Files.Sidebar.close()
 			}
 
-			const scrollTop = $('#app-content').scrollTop()
-			$(OCA.Onlyoffice.frameSelector).css('top', scrollTop)
+			const scrollTop = document.getElementById('app-content')?.scrollTop ?? 0
+			document.querySelector(OCA.Onlyoffice.frameSelector).style.top = scrollTop + 'px'
 
 			const currentQuery = { ...OCP.Files.Router.query }
 			if (isDefault) {
@@ -218,7 +226,7 @@ import { createFile, convertFile } from './services/FileService.ts'
 	}
 
 	OCA.Onlyoffice.CloseEditor = function() {
-		$('body').removeClass('onlyoffice-inline')
+		document.body.classList.remove('onlyoffice-inline')
 
 		const iframeContainer = document.querySelector('.onlyoffice-iframe-container')
 		if (iframeContainer !== null) {
@@ -242,7 +250,7 @@ import { createFile, convertFile } from './services/FileService.ts'
 
 	OCA.Onlyoffice.OpenShareDialog = function() {
 		if (OCA.Onlyoffice.context) {
-			if (!$('#app-sidebar-vue').is(':visible')) {
+			if (!document.getElementById('app-sidebar-vue')?.offsetParent) {
 				OCA.Files.Sidebar.open(OCA.Onlyoffice.context.dir + '/' + OCA.Onlyoffice.context.fileName)
 				OCA.Files.Sidebar.setActiveTab('sharing')
 			} else {
@@ -253,7 +261,7 @@ import { createFile, convertFile } from './services/FileService.ts'
 
 	OCA.Onlyoffice.RefreshVersionsDialog = function() {
 		if (OCA.Onlyoffice.context) {
-			if ($('#app-sidebar-vue').is(':visible')) {
+			if (document.getElementById('app-sidebar-vue')?.offsetParent) {
 				OCA.Files.Sidebar.close()
 				OCA.Files.Sidebar.open(OCA.Onlyoffice.context.dir + '/' + OCA.Onlyoffice.context.fileName)
 				OCA.Files.Sidebar.setActiveTab('versionsTabView')
@@ -323,30 +331,30 @@ import { createFile, convertFile } from './services/FileService.ts'
 					dialog_title: t('onlyoffice', 'Download as'),
 				})
 
-				$(dialog[0].querySelectorAll('p')).text(t(OCA.Onlyoffice.AppName, 'Choose a format to convert {fileName}', { fileName }))
+				dialog[0].querySelector('p').textContent = t(OCA.Onlyoffice.AppName, 'Choose a format to convert {fileName}', { fileName })
 
 				const extension = OCA.Onlyoffice.getFileExtension(fileName)
 				const selectNode = dialog[0].querySelectorAll('select')[0]
 				const optionNodeOrigin = selectNode.querySelectorAll('option')[0]
 
-				$(optionNodeOrigin).attr('data-value', extension)
-				$(optionNodeOrigin).text(t(OCA.Onlyoffice.AppName, 'Origin format'))
+				optionNodeOrigin.setAttribute('data-value', extension)
+				optionNodeOrigin.textContent = t(OCA.Onlyoffice.AppName, 'Origin format')
 
 				dialog[0].dataset.format = extension
 				selectNode.onchange = function() {
-					dialog[0].dataset.format = $('#onlyoffice-download-select option:selected').attr('data-value')
+					dialog[0].dataset.format = selectNode.options[selectNode.selectedIndex].dataset.value
 				}
 
 				OCA.Onlyoffice.setting.formats[extension].saveas.forEach(ext => {
 					const optionNode = optionNodeOrigin.cloneNode(true)
 
-					$(optionNode).attr('data-value', ext)
-					$(optionNode).text(ext)
+					optionNode.setAttribute('data-value', ext)
+					optionNode.textContent = ext
 
 					selectNode.append(optionNode)
 				})
 
-				$('body').append(dialog)
+				document.body.append(dialog[0])
 
 				$('#download-picker').ocdialog({
 					closeOnEscape: true,
