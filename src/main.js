@@ -28,7 +28,7 @@
 
 /* eslint-disable import/no-unresolved */
 
-/* global _, $, _oc_appswebroots */
+/* global _, _oc_appswebroots */
 
 import {
 	File,
@@ -49,6 +49,8 @@ import { loadState } from '@nextcloud/initial-state'
 import { t } from '@nextcloud/l10n'
 import { generateUrl } from '@nextcloud/router'
 import { createFile, convertFile } from './services/FileService.ts'
+import { spawnDialog } from '@nextcloud/vue/functions/dialog'
+import DownloadPicker from './views/DownloadPicker.vue'
 
 /**
  * @param {object} OCA Nextcloud OCA object
@@ -323,64 +325,15 @@ import { createFile, convertFile } from './services/FileService.ts'
 	OCA.Onlyoffice.FileDownloadAsHandler = async function(file) {
 		const fileName = file.basename
 		const fileId = file.fileid
+		const extension = OCA.Onlyoffice.getFileExtension(fileName)
+		const saveasFormats = OCA.Onlyoffice.setting.formats[extension].saveas
 
-		$.get(OC.filePath(OCA.Onlyoffice.AppName, 'templates', 'downloadPicker.html'),
-			function(tmpl) {
-				const dialog = $(tmpl).octemplate({
-					dialog_name: 'download-picker',
-					dialog_title: t('onlyoffice', 'Download as'),
-				})
-
-				dialog[0].querySelector('p').textContent = t(OCA.Onlyoffice.AppName, 'Choose a format to convert {fileName}', { fileName })
-
-				const extension = OCA.Onlyoffice.getFileExtension(fileName)
-				const selectNode = dialog[0].querySelectorAll('select')[0]
-				const optionNodeOrigin = selectNode.querySelectorAll('option')[0]
-
-				optionNodeOrigin.setAttribute('data-value', extension)
-				optionNodeOrigin.textContent = t(OCA.Onlyoffice.AppName, 'Origin format')
-
-				dialog[0].dataset.format = extension
-				selectNode.onchange = function() {
-					dialog[0].dataset.format = selectNode.options[selectNode.selectedIndex].dataset.value
-				}
-
-				OCA.Onlyoffice.setting.formats[extension].saveas.forEach(ext => {
-					const optionNode = optionNodeOrigin.cloneNode(true)
-
-					optionNode.setAttribute('data-value', ext)
-					optionNode.textContent = ext
-
-					selectNode.append(optionNode)
-				})
-
-				document.body.append(dialog[0])
-
-				$('#download-picker').ocdialog({
-					closeOnEscape: true,
-					modal: true,
-					buttons: [{
-						text: t('core', 'Cancel'),
-						classes: 'cancel',
-						click() {
-							$(this).ocdialog('close')
-						},
-					}, {
-						text: t('onlyoffice', 'Download'),
-						classes: 'primary',
-						click() {
-							const format = this.dataset.format
-							const downloadLink = generateUrl('apps/' + OCA.Onlyoffice.AppName + '/downloadas?fileId={fileId}&toExtension={toExtension}', {
-								fileId,
-								toExtension: format,
-							})
-
-							location.href = downloadLink
-							$(this).ocdialog('close')
-						},
-					}],
-				})
-			})
+		spawnDialog(DownloadPicker, {
+			fileName,
+			fileId,
+			extension,
+			saveasFormats,
+		})
 
 		return null
 	}
