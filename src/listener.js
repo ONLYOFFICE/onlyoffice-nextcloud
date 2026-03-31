@@ -114,6 +114,8 @@
 	}
 
 	OCA.Onlyoffice.onDocumentReady = function() {
+		// eslint-disable-next-line no-console
+		console.log('ONLYOFFICE Editor is loaded')
 		OCA.Onlyoffice.setViewport()
 	}
 

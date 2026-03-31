@@ -10,7 +10,7 @@ test('New file buttons are present on the files page', async ({ filesPage }) => 
 })
 
 for (const fileType of ['document', 'presentation', 'spreadsheet']) {
-	test(`Create new ${fileType} file`, async ({ filesPage, editorPage }) => {
+	test(`Create new ${fileType} file`, async ({ filesPage }) => {
 		await filesPage.goto()
 		await filesPage.openNewMenu()
 
@@ -18,7 +18,6 @@ for (const fileType of ['document', 'presentation', 'spreadsheet']) {
 		const createButton = filesPage.page.locator('button[data-cy-files-new-node-dialog-submit=""]').filter({ hasText: 'Create' })
 		await expect(createButton).toBeVisible()
 		await createButton.click()
-		await expect(editorPage.editorIFrame()).toBeVisible()
-		await expect(editorPage.documentContent()).toBeVisible()
+		await filesPage.page.waitForEvent('console', msg => msg.text() === 'ONLYOFFICE Editor is loaded')
 	})
 }

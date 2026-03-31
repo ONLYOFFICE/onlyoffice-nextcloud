@@ -28,7 +28,5 @@ test('docx shared in Talk opens in ONLYOFFICE viewer', async ({ userPage }) => {
 	await expect(file).toBeVisible()
 	await file.click()
 
-	const viewerFrame = userPage.locator('#onlyofficeViewerFrame')
-	await expect(viewerFrame).toBeVisible()
-	await expect(viewerFrame.contentFrame().locator('iframe[name="frameEditor"]').contentFrame().locator('body')).toBeVisible()
+	await userPage.waitForEvent('console', msg => msg.text() === 'ONLYOFFICE Editor is loaded')
 })

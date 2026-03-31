@@ -20,15 +20,16 @@ export default defineConfig({
 
 	projects: [
 		{
-			name: 'admin',
-			testMatch: '**/admin/**/*.spec.ts',
+			name: 'serial',
+			workers: 1,
+			testMatch: '**/serial/**/*.spec.ts',
 			use: {
 				...devices['Desktop Chrome'],
 			},
 		},
 		{
 			name: 'common',
-			dependencies: ['admin'],
+			dependencies: ['serial'],
 			testMatch: '**/common/**/*.spec.ts',
 			use: {
 				...devices['Desktop Chrome'],
