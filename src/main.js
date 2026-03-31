@@ -28,7 +28,7 @@
 
 /* eslint-disable import/no-unresolved */
 
-/* global _, _oc_appswebroots */
+/* global _oc_appswebroots */
 
 import {
 	File,
@@ -52,506 +52,505 @@ import { createFile, convertFile } from './services/FileService.ts'
 import { spawnDialog } from '@nextcloud/vue/functions/dialog'
 import DownloadPicker from './views/DownloadPicker.vue'
 
-/**
- * @param {object} OCA Nextcloud OCA object
- */
-(function(OCA) {
+OCA.Onlyoffice = Object.assign({
+	AppName: 'onlyoffice',
+	context: null,
+	frameSelector: null,
+}, OCA.Onlyoffice)
 
-	OCA.Onlyoffice = _.extend({
-		AppName: 'onlyoffice',
-		context: null,
-		frameSelector: null,
-	}, OCA.Onlyoffice)
-
-	OCA.Onlyoffice.setting = loadState(OCA.Onlyoffice.AppName, 'settings')
-	OCA.Onlyoffice.mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini|Macintosh/i.test(navigator.userAgent)
+OCA.Onlyoffice.setting = loadState(OCA.Onlyoffice.AppName, 'settings')
+OCA.Onlyoffice.mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini|Macintosh/i.test(navigator.userAgent)
 							&& navigator.maxTouchPoints && navigator.maxTouchPoints > 1
 
-	OCA.Onlyoffice.CreateFileOverload = function(name, context, templateId, targetId, open = true, filesContext = null) {
-		if (!context.view) {
-			context.view = OCP.Files.Router._router.app.currentView
-		}
-
-		OCA.Onlyoffice.CreateFileProcess(name, context.dir, templateId, targetId, open, async (response) => {
-			if (!context.view && filesContext !== null) {
-				const file = new File({
-					source: filesContext.source + '/' + response.name,
-					id: response.id,
-					mtime: new Date(),
-					mime: response.mimetype,
-					name: response.name,
-					owner: getCurrentUser().uid || null,
-					permissions: Permission.ALL,
-					type: 'file',
-					root: filesContext?.root || '/files/' + getCurrentUser().uid,
-				})
-				emit('files:node:created', file)
-			} else {
-				const viewContents = await context.view.getContents(context.dir)
-				if (viewContents.folder && (viewContents.folder.fileid === response.parentId)) {
-					const newFile = viewContents.contents.find(node => node.fileid === response.id)
-					if (newFile) emit('files:node:created', newFile)
-				}
-			}
-		})
+function createFileOverload(name, context, templateId, targetId, open = true, filesContext = null) {
+	if (!context.view) {
+		context.view = OCP.Files.Router._router.app.currentView
 	}
 
-	OCA.Onlyoffice.CreateFileProcess = function(name, dir, templateId, targetId, open, callback) {
-		let winEditor = null
-		if (((!OCA.Onlyoffice.setting.sameTab && !OCA.Onlyoffice.setting.enableSharing) || OCA.Onlyoffice.mobile || OCA.Onlyoffice.Desktop) && open) {
-			const loaderUrl = OCA.Onlyoffice.Desktop ? '' : OC.filePath(OCA.Onlyoffice.AppName, 'templates', 'loader.html')
-			winEditor = window.open(loaderUrl)
-		}
-
-		const createData = {
-			name,
-			dir,
-		}
-
-		if (templateId) {
-			createData.templateId = templateId
-		}
-
-		if (targetId) {
-			createData.targetId = targetId
-		}
-
-		if (isPublicShare()) {
-			createData.shareToken = encodeURIComponent(getSharingToken())
-		}
-
-		createFile(createData).then((response) => {
-			if (response.error) {
-				if (winEditor) {
-					winEditor.close()
-				}
-				showError(response.error)
-				return
-			}
-
-			callback(response)
-
-			if (open) {
-				const fileName = response.name
-				OCA.Onlyoffice.OpenEditor(response.id, dir, fileName, winEditor)
-
-				OCA.Onlyoffice.context = {
-					fileName: response.name,
-					dir,
-				}
-			}
-
-			showSuccess(t(OCA.Onlyoffice.AppName, 'File created'))
-		})
-	}
-
-	OCA.Onlyoffice.OpenEditor = function(fileId, fileDir, fileName, winEditor, isDefault = true) {
-		let filePath = ''
-		if (fileName) {
-			filePath = fileDir.replace(/\/$/, '') + '/' + fileName
-		}
-		let url = generateUrl('/apps/' + OCA.Onlyoffice.AppName + '/{fileId}?filePath={filePath}',
-			{
-				fileId,
-				filePath,
+	createFileProcess(name, context.dir, templateId, targetId, open, async (response) => {
+		if (!context.view && filesContext !== null) {
+			const file = new File({
+				source: filesContext.source + '/' + response.name,
+				id: response.id,
+				mtime: new Date(),
+				mime: response.mimetype,
+				name: response.name,
+				owner: getCurrentUser().uid || null,
+				permissions: Permission.ALL,
+				type: 'file',
+				root: filesContext?.root || '/files/' + getCurrentUser().uid,
 			})
-
-		if (isPublicShare()) {
-			url = generateUrl('apps/' + OCA.Onlyoffice.AppName + '/s/{shareToken}?fileId={fileId}',
-				{
-					shareToken: encodeURIComponent(getSharingToken()),
-					fileId,
-				})
-		}
-
-		if (winEditor && winEditor.location) {
-			OCA.Onlyoffice.SetDefaultUrl()
-			winEditor.location.href = url
-		} else if ((!OCA.Onlyoffice.setting.sameTab && !OCA.Onlyoffice.setting.enableSharing)
-			|| OCA.Onlyoffice.mobile || OCA.Onlyoffice.Desktop || (isPublicShare() && !OCA.Onlyoffice.isPublicFileShare()
-			&& !OCA.Onlyoffice.setting.sameTab && OCA.Onlyoffice.setting.enableSharing)
-			|| (!OCA.Onlyoffice.setting.sameTab && !isDefault)) {
-			OCA.Onlyoffice.SetDefaultUrl()
-			winEditor = window.open(url, '_blank')
+			emit('files:node:created', file)
 		} else {
-			if (OCA.Onlyoffice.setting.enableSharing
-				&& !isPublicShare()
-				&& (window.OCP?.Files?.Router?.query?.openfile === undefined || window.OCP?.Files?.Router?.query?.openfile === 'false'
-					|| window.OCP?.Files?.Router?.query?.enableSharing === undefined
-				)) {
-				window.OCP?.Files?.Router?.goToRoute(
-					null, // use default route
-					{ view: 'files', fileid: fileId },
-					{ ...OCP.Files.Router.query, openfile: 'true', enableSharing: 'true' },
-				)
-				url = window.location.href
-				OCA.Onlyoffice.SetDefaultUrl()
-				window.open(url, '_blank')
-				return
-			}
-			OCA.Onlyoffice.frameSelector = '#onlyofficeFrame'
-			const iframeEl = document.createElement('iframe')
-			iframeEl.id = 'onlyofficeFrame'
-			iframeEl.setAttribute('nonce', btoa(OC.requestToken))
-			iframeEl.setAttribute('scrolling', 'no')
-			iframeEl.setAttribute('allowfullscreen', '')
-			iframeEl.src = url + '&inframe=true'
-			const iframeContainer = document.createElement('div')
-			iframeContainer.className = 'onlyoffice-iframe-container'
-			iframeContainer.append(iframeEl)
-
-			const frameContainer = document.getElementById('app-content') ?? document.getElementById('app-content-vue')
-			frameContainer.append(iframeContainer)
-
-			document.body.classList.add('onlyoffice-inline')
-
-			if (OCA.Files.Sidebar) {
-				OCA.Files.Sidebar.close()
-			}
-
-			const scrollTop = document.getElementById('app-content')?.scrollTop ?? 0
-			document.querySelector(OCA.Onlyoffice.frameSelector).style.top = scrollTop + 'px'
-
-			const currentQuery = { ...OCP.Files.Router.query }
-			if (isDefault) {
-				currentQuery.openfile = 'true'
-			} else {
-				delete currentQuery.openfile
-			}
-
-			window.OCP?.Files?.Router?.goToRoute(
-				null, // use default route
-				{ view: 'files', fileid: fileId },
-				currentQuery,
-			)
-		}
-	}
-
-	OCA.Onlyoffice.CloseEditor = function() {
-		document.body.classList.remove('onlyoffice-inline')
-
-		const iframeContainer = document.querySelector('.onlyoffice-iframe-container')
-		if (iframeContainer !== null) {
-			iframeContainer.remove()
-		}
-
-		OCA.Onlyoffice.context = null
-
-		OCA.Onlyoffice.SetDefaultUrl()
-	}
-
-	OCA.Onlyoffice.SetDefaultUrl = function() {
-		// eslint-disable-next-line no-unused-vars
-		const { openfile, enableSharing, ...query } = OCP.Files.Router.query
-		window.OCP?.Files?.Router?.goToRoute(
-			null, // use default route
-			{ view: 'files', fileid: undefined },
-			query,
-		)
-	}
-
-	OCA.Onlyoffice.OpenShareDialog = function() {
-		if (OCA.Onlyoffice.context) {
-			if (!document.getElementById('app-sidebar-vue')?.offsetParent) {
-				OCA.Files.Sidebar.open(OCA.Onlyoffice.context.dir + '/' + OCA.Onlyoffice.context.fileName)
-				OCA.Files.Sidebar.setActiveTab('sharing')
-			} else {
-				OCA.Files.Sidebar.close()
-			}
-		}
-	}
-
-	OCA.Onlyoffice.RefreshVersionsDialog = function() {
-		if (OCA.Onlyoffice.context) {
-			if (document.getElementById('app-sidebar-vue')?.offsetParent) {
-				OCA.Files.Sidebar.close()
-				OCA.Files.Sidebar.open(OCA.Onlyoffice.context.dir + '/' + OCA.Onlyoffice.context.fileName)
-				OCA.Files.Sidebar.setActiveTab('versionsTabView')
-			}
-		}
-	}
-
-	OCA.Onlyoffice.FileOpenHandler = async function(file, view, dir, isDefault = true) {
-		if (OCA.Onlyoffice.context !== null
-			&& document.querySelector('.onlyoffice-iframe-container')
-			&& !OCA.Onlyoffice.Desktop) {
-			return null
-		}
-
-		OCA.Onlyoffice.OpenEditor(file.fileid, dir, file.basename, 0, isDefault)
-
-		OCA.Onlyoffice.context = {
-			fileName: file.basename,
-			dir,
-		}
-
-		return null
-	}
-
-	OCA.Onlyoffice.FileConvertHandler = async function(file, view, dir) {
-		OCA.Onlyoffice.FileConvert(file.fileid, async (response) => {
-			const viewContents = await view.getContents(dir)
-
+			const viewContents = await context.view.getContents(context.dir)
 			if (viewContents.folder && (viewContents.folder.fileid === response.parentId)) {
 				const newFile = viewContents.contents.find(node => node.fileid === response.id)
 				if (newFile) emit('files:node:created', newFile)
 			}
-		})
+		}
+	})
+}
 
-		return null
+function createFileProcess(name, dir, templateId, targetId, open, callback) {
+	let winEditor = null
+	if (((!OCA.Onlyoffice.setting.sameTab && !OCA.Onlyoffice.setting.enableSharing) || OCA.Onlyoffice.mobile || OCA.Onlyoffice.Desktop) && open) {
+		const loaderUrl = OCA.Onlyoffice.Desktop ? '' : OC.filePath(OCA.Onlyoffice.AppName, 'templates', 'loader.html')
+		winEditor = window.open(loaderUrl)
 	}
 
-	OCA.Onlyoffice.FileConvert = function(fileId, callback) {
-		const convertData = {
-			fileId,
-		}
+	const createData = {
+		name,
+		dir,
+	}
 
-		if (isPublicShare()) {
-			convertData.shareToken = encodeURIComponent(getSharingToken())
-		}
+	if (templateId) {
+		createData.templateId = templateId
+	}
 
-		convertFile(convertData).then((response) => {
-			if (response.error) {
-				showError(response.error)
-				return
+	if (targetId) {
+		createData.targetId = targetId
+	}
+
+	if (isPublicShare()) {
+		createData.shareToken = encodeURIComponent(getSharingToken())
+	}
+
+	createFile(createData).then((response) => {
+		if (response.error) {
+			if (winEditor) {
+				winEditor.close()
 			}
-
-			callback(response)
-
-			showSuccess(t(OCA.Onlyoffice.AppName, 'File has been converted. Its content might look different.'))
-		})
-	}
-
-	OCA.Onlyoffice.FileDownloadAsHandler = async function(file) {
-		const fileName = file.basename
-		const fileId = file.fileid
-		const extension = OCA.Onlyoffice.getFileExtension(fileName)
-		const saveasFormats = OCA.Onlyoffice.setting.formats[extension].saveas
-
-		spawnDialog(DownloadPicker, {
-			fileName,
-			fileId,
-			extension,
-			saveasFormats,
-		})
-
-		return null
-	}
-
-	OCA.Onlyoffice.OpenFormPicker = function(name, filelist, filesContext = null) {
-		const filterMimes = [
-			'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-		]
-
-		const startDir = filelist.getCurrentDirectory ? filelist.getCurrentDirectory() : filelist.dir
-
-		getFilePickerBuilder(t(OCA.Onlyoffice.AppName, 'Create new PDF form'))
-			.setMimeTypeFilter(filterMimes)
-			.startAt(startDir)
-			.addButton({
-				label: t(OCA.Onlyoffice.AppName, 'Blank'),
-				callback: () => OCA.Onlyoffice.CreateFileOverload(name, filelist, 0, 0, true, filesContext),
-			})
-			.addButton({
-				label: t(OCA.Onlyoffice.AppName, 'From text document'),
-				callback: (nodes) => {
-					if (!nodes[0]) return
-					const targetId = nodes[0].id ?? 0
-					OCA.Onlyoffice.CreateFileOverload(name, filelist, 0, targetId, true, filesContext)
-				},
-				variant: 'primary',
-			})
-			.build()
-			.pickNodes()
-			.catch(() => {})
-	}
-
-	OCA.Onlyoffice.FileCreateFormHandler = async function(file, view, dir) {
-		const name = file.basename.replace(/\.[^.]+$/, '.pdf')
-		const context = {
-			dir,
-			view,
-		}
-
-		OCA.Onlyoffice.CreateFileOverload(name, context, 0, file.fileid, false)
-
-		return null
-	}
-
-	OCA.Onlyoffice.registerFileActions = function() {
-		const formats = OCA.Onlyoffice.setting.formats
-
-		const getConfig = function(file) {
-			const fileExt = OCA.Onlyoffice.getFileExtension(file?.extension || file?.displayname)
-			const config = formats[fileExt]
-
-			return config
-		}
-
-		registerFileAction(new FileAction({
-			id: 'onlyoffice-open-def',
-			displayName: () => t(OCA.Onlyoffice.AppName, 'Open in ONLYOFFICE'),
-			iconSvgInline: () => AppDarkSvg,
-			enabled: (files) => {
-				const fileExt = OCA.Onlyoffice.getFileExtension(files[0]?.extension || files[0]?.displayname)
-				const config = formats[fileExt]
-
-				if (!config
-					|| !config.def
-					|| OCA.Onlyoffice.isPublicFileShare() && (_oc_appswebroots.richdocuments
-						|| (_oc_appswebroots.files_pdfviewer && fileExt === 'pdf')
-						|| (_oc_appswebroots.text && fileExt === 'txt'))) {
-					return false
-				}
-
-				if (Permission.READ !== (files[0].permissions & Permission.READ)) { return false }
-
-				return true
-			},
-			exec: OCA.Onlyoffice.FileOpenHandler,
-			default: DefaultType.HIDDEN,
-			order: -1,
-		}))
-
-		registerFileAction(new FileAction({
-			id: 'onlyoffice-open',
-			displayName: () => t(OCA.Onlyoffice.AppName, 'Open in ONLYOFFICE'),
-			iconSvgInline: () => AppDarkSvg,
-			enabled: (files) => {
-				const config = getConfig(files[0])
-
-				if (!config) return false
-				if (config.def) return false
-
-				if (Permission.READ !== (files[0].permissions & Permission.READ)) { return false }
-
-				return true
-			},
-			exec(file, view, dir) {
-				OCA.Onlyoffice.FileOpenHandler(file, view, dir, false)
-			},
-		}))
-
-		// Skip the rest if the page is public file share
-		if (OCA.Onlyoffice.isPublicFileShare()) {
+			showError(response.error)
 			return
 		}
 
-		registerFileAction(new FileAction({
-			id: 'onlyoffice-convert',
-			displayName: () => t(OCA.Onlyoffice.AppName, 'Convert with ONLYOFFICE'),
-			iconSvgInline: () => AppDarkSvg,
-			enabled: (files) => {
-				const config = getConfig(files[0])
+		callback(response)
 
-				if (!config) return false
-				if (!config.conv) return false
+		if (open) {
+			const fileName = response.name
+			openEditor(response.id, dir, fileName, winEditor)
 
-				const required = isPublicShare() ? Permission.UPDATE : Permission.READ
-				if (required !== (files[0].permissions & required)) { return false }
-
-				if (files[0].attributes['mount-type'] === 'shared') {
-					if (required !== (files[0].attributes['share-permissions'] & required)) { return false }
-
-					const attributes = JSON.parse(files[0].attributes['share-attributes'])
-					const downloadAttribute = attributes.find((attribute) => attribute.scope === 'permissions' && attribute.key === 'download')
-					if (downloadAttribute !== undefined && downloadAttribute.value === false) { return false }
-				}
-
-				return true
-			},
-			exec: OCA.Onlyoffice.FileConvertHandler,
-		}))
-
-		registerFileAction(new FileAction({
-			id: 'onlyoffice-create-form',
-			displayName: () => t(OCA.Onlyoffice.AppName, 'Create form'),
-			iconSvgInline: () => AppDarkSvg,
-			enabled: (files) => {
-				const config = getConfig(files[0])
-
-				if (!config) return false
-				if (!config.createForm) return false
-
-				const required = isPublicShare() ? Permission.UPDATE : Permission.READ
-				if (required !== (files[0].permissions & required)) { return false }
-
-				if (files[0].attributes['mount-type'] === 'shared') {
-					if (required !== (files[0].attributes['share-permissions'] & required)) { return false }
-
-					const attributes = JSON.parse(files[0].attributes['share-attributes'])
-					const downloadAttribute = attributes.find((attribute) => attribute.scope === 'permissions' && attribute.key === 'download')
-					if (downloadAttribute !== undefined && downloadAttribute.value === false) { return false }
-				}
-
-				return true
-			},
-			exec: OCA.Onlyoffice.FileCreateFormHandler,
-		}))
-
-		if (!isPublicShare()) {
-			registerFileAction(new FileAction({
-				id: 'onlyoffice-download-as',
-				displayName: () => t(OCA.Onlyoffice.AppName, 'Download as'),
-				iconSvgInline: () => AppDarkSvg,
-				enabled: (files) => {
-					if (OCA.Onlyoffice.setting.disableDownload) {
-						return false
-					}
-					const config = getConfig(files[0])
-
-					if (!config) return false
-					if (!config.saveas) return false
-
-					if (Permission.READ !== (files[0].permissions & Permission.READ)) { return false }
-
-					if (files[0].attributes['mount-type'] === 'shared') {
-						const attributes = JSON.parse(files[0].attributes['share-attributes'])
-						const downloadAttribute = attributes.find((attribute) => attribute.scope === 'permissions' && attribute.key === 'download')
-						if (downloadAttribute !== undefined && downloadAttribute.value === false) { return false }
-					}
-
-					return true
-				},
-				exec: OCA.Onlyoffice.FileDownloadAsHandler,
-			}))
+			OCA.Onlyoffice.context = {
+				fileName: response.name,
+				dir,
+			}
 		}
-	}
 
-	OCA.Onlyoffice.registerNewFileMenu = function() {
-		// PDF Form
-		addNewFileMenuEntry({
-			id: 'new-onlyoffice-pdf',
-			displayName: t(OCA.Onlyoffice.AppName, 'New PDF form'),
-			enabled: folder => {
-				return (folder.permissions & Permission.CREATE) !== 0
-			},
-			iconSvgInline: NewPdfSvg,
-			order: 24,
-			handler: context => {
-				const name = t(OCA.Onlyoffice.AppName, 'New PDF form')
-				const dirContext = { dir: context.path }
-				OCA.Onlyoffice.OpenFormPicker(name + '.pdf', dirContext, context)
-			},
+		showSuccess(t(OCA.Onlyoffice.AppName, 'File created'))
+	})
+}
+
+function openEditor(fileId, fileDir, fileName, winEditor, isDefault = true) {
+	let filePath = ''
+	if (fileName) {
+		filePath = fileDir.replace(/\/$/, '') + '/' + fileName
+	}
+	let url = generateUrl('/apps/' + OCA.Onlyoffice.AppName + '/{fileId}?filePath={filePath}',
+		{
+			fileId,
+			filePath,
 		})
+
+	if (isPublicShare()) {
+		url = generateUrl('apps/' + OCA.Onlyoffice.AppName + '/s/{shareToken}?fileId={fileId}',
+			{
+				shareToken: encodeURIComponent(getSharingToken()),
+				fileId,
+			})
 	}
 
-	OCA.Onlyoffice.getFileExtension = function(fileName) {
-		const extension = fileName.slice(fileName.lastIndexOf('.') + 1).toLowerCase()
-		return extension
-	}
+	if (winEditor && winEditor.location) {
+		setDefaultUrl()
+		winEditor.location.href = url
+	} else if ((!OCA.Onlyoffice.setting.sameTab && !OCA.Onlyoffice.setting.enableSharing)
+		|| OCA.Onlyoffice.mobile || OCA.Onlyoffice.Desktop || (isPublicShare() && !isPublicFileShare()
+		&& !OCA.Onlyoffice.setting.sameTab && OCA.Onlyoffice.setting.enableSharing)
+		|| (!OCA.Onlyoffice.setting.sameTab && !isDefault)) {
+		setDefaultUrl()
+		winEditor = window.open(url, '_blank')
+	} else {
+		if (OCA.Onlyoffice.setting.enableSharing
+			&& !isPublicShare()
+			&& (window.OCP?.Files?.Router?.query?.openfile === undefined || window.OCP?.Files?.Router?.query?.openfile === 'false'
+				|| window.OCP?.Files?.Router?.query?.enableSharing === undefined
+			)) {
+			window.OCP?.Files?.Router?.goToRoute(
+				null, // use default route
+				{ view: 'files', fileid: fileId },
+				{ ...OCP.Files.Router.query, openfile: 'true', enableSharing: 'true' },
+			)
+			url = window.location.href
+			setDefaultUrl()
+			window.open(url, '_blank')
+			return
+		}
+		OCA.Onlyoffice.frameSelector = '#onlyofficeFrame'
+		const iframeEl = document.createElement('iframe')
+		iframeEl.id = 'onlyofficeFrame'
+		iframeEl.setAttribute('nonce', btoa(OC.requestToken))
+		iframeEl.setAttribute('scrolling', 'no')
+		iframeEl.setAttribute('allowfullscreen', '')
+		iframeEl.src = url + '&inframe=true'
+		const iframeContainer = document.createElement('div')
+		iframeContainer.className = 'onlyoffice-iframe-container'
+		iframeContainer.append(iframeEl)
 
-	OCA.Onlyoffice.isPublicFileShare = function() {
-		return loadState('files_sharing', 'view', null) === 'public-file-share'
-	}
+		const frameContainer = document.getElementById('app-content') ?? document.getElementById('app-content-vue')
+		frameContainer.append(iframeContainer)
 
-	const initPage = function() {
-		if (!OCA.Onlyoffice.isPublicFileShare()) {
-			OCA.Onlyoffice.registerNewFileMenu()
+		document.body.classList.add('onlyoffice-inline')
+
+		if (OCA.Files.Sidebar) {
+			OCA.Files.Sidebar.close()
 		}
 
-		OCA.Onlyoffice.registerFileActions()
-	}
-	initPage()
+		const scrollTop = document.getElementById('app-content')?.scrollTop ?? 0
+		document.querySelector(OCA.Onlyoffice.frameSelector).style.top = scrollTop + 'px'
 
-})(OCA)
+		const currentQuery = { ...OCP.Files.Router.query }
+		if (isDefault) {
+			currentQuery.openfile = 'true'
+		} else {
+			delete currentQuery.openfile
+		}
+
+		window.OCP?.Files?.Router?.goToRoute(
+			null, // use default route
+			{ view: 'files', fileid: fileId },
+			currentQuery,
+		)
+	}
+}
+
+function closeEditor() {
+	document.body.classList.remove('onlyoffice-inline')
+
+	const iframeContainer = document.querySelector('.onlyoffice-iframe-container')
+	if (iframeContainer !== null) {
+		iframeContainer.remove()
+	}
+
+	OCA.Onlyoffice.context = null
+
+	setDefaultUrl()
+}
+
+function setDefaultUrl() {
+	// eslint-disable-next-line no-unused-vars
+	const { openfile, enableSharing, ...query } = OCP.Files.Router.query
+	window.OCP?.Files?.Router?.goToRoute(
+		null, // use default route
+		{ view: 'files', fileid: undefined },
+		query,
+	)
+}
+
+function openShareDialog() {
+	if (OCA.Onlyoffice.context) {
+		if (!document.getElementById('app-sidebar-vue')?.offsetParent) {
+			OCA.Files.Sidebar.open(OCA.Onlyoffice.context.dir + '/' + OCA.Onlyoffice.context.fileName)
+			OCA.Files.Sidebar.setActiveTab('sharing')
+		} else {
+			OCA.Files.Sidebar.close()
+		}
+	}
+}
+
+function refreshVersionsDialog() {
+	if (OCA.Onlyoffice.context) {
+		if (document.getElementById('app-sidebar-vue')?.offsetParent) {
+			OCA.Files.Sidebar.close()
+			OCA.Files.Sidebar.open(OCA.Onlyoffice.context.dir + '/' + OCA.Onlyoffice.context.fileName)
+			OCA.Files.Sidebar.setActiveTab('versionsTabView')
+		}
+	}
+}
+
+async function fileOpenHandler(file, _view, dir, isDefault = true) {
+	if (OCA.Onlyoffice.context !== null
+		&& document.querySelector('.onlyoffice-iframe-container')
+		&& !OCA.Onlyoffice.Desktop) {
+		return null
+	}
+
+	openEditor(file.fileid, dir, file.basename, 0, isDefault)
+
+	OCA.Onlyoffice.context = {
+		fileName: file.basename,
+		dir,
+	}
+
+	return null
+}
+
+async function fileConvertHandler(file, view, dir) {
+	fileConvert(file.fileid, async (response) => {
+		const viewContents = await view.getContents(dir)
+
+		if (viewContents.folder && (viewContents.folder.fileid === response.parentId)) {
+			const newFile = viewContents.contents.find(node => node.fileid === response.id)
+			if (newFile) emit('files:node:created', newFile)
+		}
+	})
+
+	return null
+}
+
+function fileConvert(fileId, callback) {
+	const convertData = {
+		fileId,
+	}
+
+	if (isPublicShare()) {
+		convertData.shareToken = encodeURIComponent(getSharingToken())
+	}
+
+	convertFile(convertData).then((response) => {
+		if (response.error) {
+			showError(response.error)
+			return
+		}
+
+		callback(response)
+
+		showSuccess(t(OCA.Onlyoffice.AppName, 'File has been converted. Its content might look different.'))
+	})
+}
+
+async function fileDownloadAsHandler(file) {
+	const fileName = file.basename
+	const fileId = file.fileid
+	const extension = getFileExtension(fileName)
+	const saveasFormats = OCA.Onlyoffice.setting.formats[extension].saveas
+
+	spawnDialog(DownloadPicker, {
+		fileName,
+		fileId,
+		extension,
+		saveasFormats,
+	})
+
+	return null
+}
+
+function openFormPicker(name, filelist, filesContext = null) {
+	const filterMimes = [
+		'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+	]
+
+	const startDir = filelist.getCurrentDirectory ? filelist.getCurrentDirectory() : filelist.dir
+
+	getFilePickerBuilder(t(OCA.Onlyoffice.AppName, 'Create new PDF form'))
+		.setMimeTypeFilter(filterMimes)
+		.startAt(startDir)
+		.addButton({
+			label: t(OCA.Onlyoffice.AppName, 'Blank'),
+			callback: () => createFileOverload(name, filelist, 0, 0, true, filesContext),
+		})
+		.addButton({
+			label: t(OCA.Onlyoffice.AppName, 'From text document'),
+			callback: (nodes) => {
+				if (!nodes[0]) return
+				const targetId = nodes[0].id ?? 0
+				createFileOverload(name, filelist, 0, targetId, true, filesContext)
+			},
+			variant: 'primary',
+		})
+		.build()
+		.pickNodes()
+}
+
+async function fileCreateFormHandler(file, view, dir) {
+	const name = file.basename.replace(/\.[^.]+$/, '.pdf')
+	const context = {
+		dir,
+		view,
+	}
+
+	createFileOverload(name, context, 0, file.fileid, false)
+
+	return null
+}
+
+function registerFileActions() {
+	const formats = OCA.Onlyoffice.setting.formats
+
+	const getConfig = function(file) {
+		const fileExt = getFileExtension(file?.extension || file?.displayname)
+		const config = formats[fileExt]
+
+		return config
+	}
+
+	registerFileAction(new FileAction({
+		id: 'onlyoffice-open-def',
+		displayName: () => t(OCA.Onlyoffice.AppName, 'Open in ONLYOFFICE'),
+		iconSvgInline: () => AppDarkSvg,
+		enabled: (files) => {
+			const fileExt = getFileExtension(files[0]?.extension || files[0]?.displayname)
+			const config = formats[fileExt]
+
+			if (!config
+				|| !config.def
+				|| isPublicFileShare() && (_oc_appswebroots.richdocuments
+					|| (_oc_appswebroots.files_pdfviewer && fileExt === 'pdf')
+					|| (_oc_appswebroots.text && fileExt === 'txt'))) {
+				return false
+			}
+
+			if (Permission.READ !== (files[0].permissions & Permission.READ)) { return false }
+
+			return true
+		},
+		exec: fileOpenHandler,
+		default: DefaultType.HIDDEN,
+		order: -1,
+	}))
+
+	registerFileAction(new FileAction({
+		id: 'onlyoffice-open',
+		displayName: () => t(OCA.Onlyoffice.AppName, 'Open in ONLYOFFICE'),
+		iconSvgInline: () => AppDarkSvg,
+		enabled: (files) => {
+			const config = getConfig(files[0])
+
+			if (!config) return false
+			if (config.def) return false
+
+			if (Permission.READ !== (files[0].permissions & Permission.READ)) { return false }
+
+			return true
+		},
+		exec(file, view, dir) {
+			fileOpenHandler(file, view, dir, false)
+		},
+	}))
+
+	// Skip the rest if the page is public file share
+	if (isPublicFileShare()) {
+		return
+	}
+
+	registerFileAction(new FileAction({
+		id: 'onlyoffice-convert',
+		displayName: () => t(OCA.Onlyoffice.AppName, 'Convert with ONLYOFFICE'),
+		iconSvgInline: () => AppDarkSvg,
+		enabled: (files) => {
+			const config = getConfig(files[0])
+
+			if (!config) return false
+			if (!config.conv) return false
+
+			const required = isPublicShare() ? Permission.UPDATE : Permission.READ
+			if (required !== (files[0].permissions & required)) { return false }
+
+			if (files[0].attributes['mount-type'] === 'shared') {
+				if (required !== (files[0].attributes['share-permissions'] & required)) { return false }
+
+				const attributes = JSON.parse(files[0].attributes['share-attributes'])
+				const downloadAttribute = attributes.find((attribute) => attribute.scope === 'permissions' && attribute.key === 'download')
+				if (downloadAttribute !== undefined && downloadAttribute.enabled === false) { return false }
+			}
+
+			return true
+		},
+		exec: fileConvertHandler,
+	}))
+
+	registerFileAction(new FileAction({
+		id: 'onlyoffice-create-form',
+		displayName: () => t(OCA.Onlyoffice.AppName, 'Create form'),
+		iconSvgInline: () => AppDarkSvg,
+		enabled: (files) => {
+			const config = getConfig(files[0])
+
+			if (!config) return false
+			if (!config.createForm) return false
+
+			const required = isPublicShare() ? Permission.UPDATE : Permission.READ
+			if (required !== (files[0].permissions & required)) { return false }
+
+			if (files[0].attributes['mount-type'] === 'shared') {
+				if (required !== (files[0].attributes['share-permissions'] & required)) { return false }
+
+				const attributes = JSON.parse(files[0].attributes['share-attributes'])
+				const downloadAttribute = attributes.find((attribute) => attribute.scope === 'permissions' && attribute.key === 'download')
+				if (downloadAttribute !== undefined && downloadAttribute.enabled === false) { return false }
+			}
+
+			return true
+		},
+		exec: fileCreateFormHandler,
+	}))
+
+	if (!isPublicShare()) {
+		registerFileAction(new FileAction({
+			id: 'onlyoffice-download-as',
+			displayName: () => t(OCA.Onlyoffice.AppName, 'Download as'),
+			iconSvgInline: () => AppDarkSvg,
+			enabled: (files) => {
+				if (OCA.Onlyoffice.setting.disableDownload) {
+					return false
+				}
+				const config = getConfig(files[0])
+
+				if (!config) return false
+				if (!config.saveas) return false
+
+				if (Permission.READ !== (files[0].permissions & Permission.READ)) { return false }
+
+				if (files[0].attributes['mount-type'] === 'shared') {
+					const attributes = JSON.parse(files[0].attributes['share-attributes'])
+					const downloadAttribute = attributes.find((attribute) => attribute.scope === 'permissions' && attribute.key === 'download')
+					if (downloadAttribute !== undefined && downloadAttribute.enabled === false) { return false }
+				}
+
+				return true
+			},
+			exec: fileDownloadAsHandler,
+		}))
+	}
+}
+
+function registerNewFileMenu() {
+	// PDF Form
+	addNewFileMenuEntry({
+		id: 'new-onlyoffice-pdf',
+		displayName: t(OCA.Onlyoffice.AppName, 'New PDF form'),
+		enabled: folder => {
+			return (folder.permissions & Permission.CREATE) !== 0
+		},
+		iconSvgInline: NewPdfSvg,
+		order: 24,
+		handler: context => {
+			const name = t(OCA.Onlyoffice.AppName, 'New PDF form')
+			const dirContext = { dir: context.path }
+			openFormPicker(name + '.pdf', dirContext, context)
+		},
+	})
+}
+
+function getFileExtension(fileName) {
+	const extension = fileName.slice(fileName.lastIndexOf('.') + 1).toLowerCase()
+	return extension
+}
+
+function isPublicFileShare() {
+	return loadState('files_sharing', 'view', null) === 'public-file-share'
+}
+
+// Expose cross-bundle API surface consumed by listener.js and share.js
+Object.assign(OCA.Onlyoffice, {
+	CloseEditor: closeEditor,
+	OpenShareDialog: openShareDialog,
+	RefreshVersionsDialog: refreshVersionsDialog,
+	getFileExtension,
+})
+
+if (!OCA.Onlyoffice._initialized) {
+	OCA.Onlyoffice._initialized = true
+	if (!isPublicFileShare()) {
+		registerNewFileMenu()
+	}
+	registerFileActions()
+}
