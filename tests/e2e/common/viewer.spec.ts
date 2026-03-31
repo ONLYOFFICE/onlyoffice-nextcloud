@@ -21,12 +21,12 @@ test.afterEach(async ({ user }) => {
 	await deleteFile(FILE_PATH, user)
 })
 
-test('docx shared in Talk opens in ONLYOFFICE viewer', async ({ userPage }) => {
-	await userPage.goto(`/index.php/call/${roomToken}`)
+test('docx shared in Talk opens in ONLYOFFICE viewer', async ({ editorPage }) => {
+	await editorPage.page.goto(`/index.php/call/${roomToken}`)
 
-	const file = userPage.getByLabel('Conversation messages').getByText(FILE_NAME)
+	const file = editorPage.page.getByLabel('Conversation messages').getByText(FILE_NAME)
 	await expect(file).toBeVisible()
 	await file.click()
 
-	await userPage.waitForEvent('console', msg => msg.text() === 'ONLYOFFICE Editor is loaded')
+	await editorPage.waitForEditor()
 })
