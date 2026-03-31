@@ -22,7 +22,7 @@ test.describe('Create PDF form from docx', () => {
 		await deleteFile('/New PDF form.pdf', user)
 	})
 
-	test('Creates PDF form from docx file', async ({ filesPage, editorPage }) => {
+	test('Creates PDF form from docx file', async ({ filesPage }) => {
 		await filesPage.openNewMenu()
 		await filesPage.menuItem('New PDF form').click()
 
@@ -30,12 +30,11 @@ test.describe('Create PDF form from docx', () => {
 		await dialog.locator(`tr[data-filename="${SOURCE_FILE}"]`).click()
 		await dialog.getByRole('button', { name: 'From text document' }).click()
 
-		await expect(editorPage.editorIFrame()).toBeVisible()
-		await expect(editorPage.documentContent()).toBeVisible()
+		await filesPage.page.waitForEvent('console', msg => msg.text() === 'ONLYOFFICE Editor is loaded')
 	})
 })
 
-test('Create new PDF form from blank template', async ({ filesPage, editorPage }) => {
+test('Create new PDF form from blank template', async ({ filesPage }) => {
 	await filesPage.goto()
 	await filesPage.openNewMenu()
 
@@ -45,6 +44,5 @@ test('Create new PDF form from blank template', async ({ filesPage, editorPage }
 	await expect(blankButton).toBeVisible()
 	await blankButton.click()
 
-	await expect(editorPage.editorIFrame()).toBeVisible()
-	await expect(editorPage.documentContent()).toBeVisible()
+	await filesPage.page.waitForEvent('console', msg => msg.text() === 'ONLYOFFICE Editor is loaded')
 })

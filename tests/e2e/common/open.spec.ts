@@ -1,4 +1,4 @@
-import { test, expect } from '../fixtures'
+import { test } from '../fixtures'
 import path from 'node:path'
 import { uploadFile, deleteFile } from '../helpers/webdav'
 import { uploadNewTemplate } from '../helpers/templates'
@@ -17,11 +17,10 @@ test.describe('Open in ONLYOFFICE action', () => {
         await deleteFile(`/${SAMPLE_TXT}`, user)
     })
 
-    test('Opens txt file in ONLYOFFICE editor', async ({ filesPage, editorPage }) => {
+    test('Opens txt file in ONLYOFFICE editor', async ({ filesPage }) => {
         await filesPage.rightClickFile(SAMPLE_TXT)
         await filesPage.menuItem('Open in ONLYOFFICE').click()
-        await expect(editorPage.editorIFrame()).toBeVisible()
-        await expect(editorPage.documentContent()).toBeVisible()
+        await filesPage.page.waitForEvent('console', msg => msg.text() === 'ONLYOFFICE Editor is loaded')
     })
 })
 
@@ -38,10 +37,9 @@ for (const fileType of ['docx', 'xlsx', 'pptx']) {
             await deleteFile(`/${fileName}`, user)
         })
 
-        test(`Editor opens for ${fileType} file`, async ({ filesPage, editorPage }) => {
+        test(`Editor opens for ${fileType} file`, async ({ filesPage }) => {
             await filesPage.dblClickFile(fileName)
-            await expect(editorPage.editorIFrame()).toBeVisible()
-            await expect(editorPage.documentContent()).toBeVisible()
+            await filesPage.page.waitForEvent('console', msg => msg.text() === 'ONLYOFFICE Editor is loaded')
         })
     })
 }
