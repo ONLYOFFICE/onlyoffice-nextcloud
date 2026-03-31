@@ -21,6 +21,7 @@ export default defineConfig({
 	projects: [
 		{
 			name: 'serial',
+			workers: 1,
 			testMatch: '**/serial/**/*.spec.ts',
 			use: {
 				...devices['Desktop Chrome'],
