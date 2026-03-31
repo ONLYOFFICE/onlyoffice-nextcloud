@@ -26,4 +26,8 @@ export class EditorPage {
 			.contentFrame()
 			.getByRole('button', { name: 'Close file' })
 	}
+
+	async waitForEditor(): Promise<void> {
+		await this.page.waitForEvent('console', msg => msg.text() === 'ONLYOFFICE Editor is loaded')
+	}
 }
