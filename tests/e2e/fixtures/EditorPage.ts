@@ -18,4 +18,12 @@ export class EditorPage {
 			.contentFrame()
 			.locator('body');
 	}
+
+	closeButton(): Locator {
+		return this.page.locator('#onlyofficeFrame')
+			.contentFrame()
+			.locator('iframe[name="frameEditor"]')
+			.contentFrame()
+			.getByRole('button', { name: 'Close file' })
+	}
 }
