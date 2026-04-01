@@ -26,6 +26,8 @@
  *
  */
 
+import { getRootUrl } from '@nextcloud/router'
+
 /* global $, _, _oc_appswebroots, oc_current_user  */
 
 /**
@@ -49,7 +51,7 @@
 	$('html').addClass('AscDesktopEditor')
 
 	let domain = /^http(s)?:\/\/[^\\/]+/.exec(location)[0]
-	domain += OC.getRootPath()
+	domain += getRootUrl()
 
 	const data = {
 		displayName: oc_current_user,
