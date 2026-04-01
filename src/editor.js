@@ -30,7 +30,7 @@ import { getCurrentUser } from '@nextcloud/auth'
 import '@nextcloud/dialogs/style.css'
 import { showError, showSuccess, getFilePickerBuilder } from '@nextcloud/dialogs'
 import { t } from '@nextcloud/l10n'
-import { generateUrl, generateOcsUrl } from '@nextcloud/router'
+import { generateUrl, generateOcsUrl, imagePath } from '@nextcloud/router'
 import {
 	getConfig,
 	getHistory,
@@ -214,7 +214,7 @@ import {
 						$('#app > iframe').css('height', 'calc(100% - 50px)')
 					}
 
-					const favicon = OC.filePath(OCA.Onlyoffice.AppName, 'img', OCA.Onlyoffice.documentType + '.ico')
+					const favicon = imagePath(OCA.Onlyoffice.AppName, OCA.Onlyoffice.documentType + '.ico')
 					if (OCA.Onlyoffice.inframe) {
 						window.parent.postMessage({
 							method: 'changeFavicon',

@@ -47,7 +47,7 @@ import { isPublicShare, getSharingToken } from '@nextcloud/sharing/public'
 import { getCurrentUser } from '@nextcloud/auth'
 import { loadState } from '@nextcloud/initial-state'
 import { t } from '@nextcloud/l10n'
-import { generateUrl } from '@nextcloud/router'
+import { generateFilePath, generateUrl } from '@nextcloud/router'
 import { createFile, convertFile } from './services/FileService.ts'
 import { spawnDialog } from '@nextcloud/vue/functions/dialog'
 import DownloadPicker from './views/DownloadPicker.vue'
@@ -94,7 +94,7 @@ function createFileOverload(name, context, templateId, targetId, open = true, fi
 function createFileProcess(name, dir, templateId, targetId, open, callback) {
 	let winEditor = null
 	if (((!OCA.Onlyoffice.setting.sameTab && !OCA.Onlyoffice.setting.enableSharing) || OCA.Onlyoffice.mobile || OCA.Onlyoffice.Desktop) && open) {
-		const loaderUrl = OCA.Onlyoffice.Desktop ? '' : OC.filePath(OCA.Onlyoffice.AppName, 'templates', 'loader.html')
+		const loaderUrl = OCA.Onlyoffice.Desktop ? '' : generateFilePath(OCA.Onlyoffice.AppName, 'template', 'loader.html')
 		winEditor = window.open(loaderUrl)
 	}
 
