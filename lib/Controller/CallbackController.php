@@ -175,7 +175,7 @@ class CallbackController extends Controller {
         }
 
         $shareToken = $hashData->shareToken ?? null;
-        [$file, $error, $share] = empty($shareToken) ? $this->getFile($userId, $fileId, $filePath, $changes ? null : $version, $template) : $this->getFileByToken($fileId, $shareToken, $changes ? null : $version);
+        [$file, $error, $share] = empty($shareToken) ? $this->getFile($userId, $fileId, $filePath, $changes ? 0 : $version, $template) : $this->getFileByToken($fileId, $shareToken, $changes ? 0 : $version);
 
         if (isset($error)) {
             return $error;
