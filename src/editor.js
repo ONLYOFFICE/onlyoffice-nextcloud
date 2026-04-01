@@ -29,7 +29,7 @@
 import { getCurrentUser } from '@nextcloud/auth'
 import '@nextcloud/dialogs/style.css'
 import { showError, showSuccess, getFilePickerBuilder } from '@nextcloud/dialogs'
-import { t } from '@nextcloud/l10n'
+import { getCanonicalLocale, t } from '@nextcloud/l10n'
 import { generateUrl, generateOcsUrl, imagePath } from '@nextcloud/router'
 import {
 	getConfig,
@@ -46,7 +46,7 @@ import {
 } from './services/EditorService.ts'
 import { encodePath } from '@nextcloud/paths'
 
-/* global _, DocsAPI, moment, oc_defaults */
+/* global _, DocsAPI, oc_defaults */
 
 /**
  * @param {object} OCA Nextcloud OCA object
@@ -694,10 +694,11 @@ import { encodePath } from '@nextcloud/paths'
 					currentVersion = fileVersion.version
 				}
 
-				fileVersion.created = moment(fileVersion.created * 1000).format('L LTS')
+				const formatter = new Intl.DateTimeFormat(getCanonicalLocale(), { dateStyle: 'short', timeStyle: 'medium' })
+				fileVersion.created = formatter.format(new Date(fileVersion.created * 1000))
 				if (fileVersion.changes) {
 					fileVersion.changes.forEach((change) => {
-						change.created = moment(change.created + '+00:00').format('L LTS')
+						change.created = formatter.format(new Date(change.created + '+00:00'))
 					})
 				}
 			})
