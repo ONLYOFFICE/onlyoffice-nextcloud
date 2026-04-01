@@ -1,0 +1,98 @@
+name: PHPUnit Tests
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master, develop]
+    paths:
+      - 'lib/**'
+      - 'tests/**'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'phpunit.xml'
+      - 'vendor-bin/phpunit/**'
+      - '.github/workflows/phpunit.yml'
+  pull_request:
+    branches: [master, develop]
+    paths:
+      - 'lib/**'
+      - 'tests/**'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'phpunit.xml'
+      - 'vendor-bin/phpunit/**'
+      - '.github/workflows/phpunit.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      php-max: ${{ steps.versions.outputs.php-max }}
+      branches-min: ${{ steps.versions.outputs.branches-min }}
+    steps:
+      - name: Checkout app
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Get version matrix
+        id: versions
+        uses: icewind1991/nextcloud-version-matrix@v1.3.2
+
+  phpunit:
+    runs-on: ubuntu-latest
+    needs: matrix
+
+    services:
+      mysql:
+        image: mysql:8.4
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_ROOT_PASSWORD: rootpassword
+        options: --health-cmd="mysqladmin ping" --health-interval 5s --health-timeout 2s --health-retries 10
+
+    steps:
+      - name: Detect database host
+        id: db
+        run: |
+          if [ "$GITEA_ACTIONS" = "true" ]; then
+            echo "host=mysql" >> $GITHUB_OUTPUT
+          else
+            echo "host=127.0.0.1" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Set up Nextcloud env
+        uses: ChristophWurst/setup-nextcloud@v0.4.2
+        with:
+          nextcloud-version: ${{ needs.matrix.outputs.branches-min }}
+          php-version: ${{ needs.matrix.outputs.php-max }}
+          node-version: false
+
+      - name: Checkout onlyoffice
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+          submodules: true
+          path: nextcloud/apps/onlyoffice
+
+      - name: Install composer dependencies
+        working-directory: nextcloud/apps/onlyoffice
+        run: |
+          composer install
+          composer bin phpunit install
+
+      - name: Start server and configure Nextcloud
+        working-directory: nextcloud
+        run: |
+          mkdir data
+          php occ maintenance:install --verbose --database=mysql --database-name=nextcloud --database-host=${{ steps.db.outputs.host }} --database-port=3306 --database-user=root --database-pass=rootpassword --admin-user admin --admin-pass admin
+          php occ app:enable --force files_external
+          php occ app:enable --force onlyoffice
+
+      - name: Run tests
+        working-directory: nextcloud/apps/onlyoffice
+        run: composer run test:unit

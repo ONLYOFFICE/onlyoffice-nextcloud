@@ -271,6 +271,8 @@
 	}
 
 	OCA.Onlyoffice.onDocumentReady = function() {
+		// eslint-disable-next-line no-console
+		console.log('ONLYOFFICE Editor is loaded')
 		if (OCA.Onlyoffice.inframe) {
 			window.parent.postMessage({
 				method: 'onDocumentReady',

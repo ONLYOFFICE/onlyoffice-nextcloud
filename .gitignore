@@ -1,3 +1,11 @@
 /js
 /node_modules
 /vendor
+/vendor-bin/*/vendor
+/.phpunit.cache
+
+# Playwright
+/test-results/
+/playwright-report/
+/tests/e2e/.cache/
+/tests/e2e/.auth/
