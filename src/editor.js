@@ -44,6 +44,7 @@ import {
 	sendMention,
 	setFavorite,
 } from './services/EditorService.ts'
+import { encodePath } from '@nextcloud/paths'
 
 /* global _, DocsAPI, jQuery, moment, oc_defaults */
 
@@ -611,7 +612,7 @@ import {
 		const filePath = event.data.path
 		const fileId = event.data.referenceData.fileKey
 		const windowName = event.data.windowName
-		const sourceUrl = generateUrl(`apps/${OCA.Onlyoffice.AppName}/${fileId}?filePath=${OC.encodePath(filePath)}`)
+		const sourceUrl = generateUrl(`apps/${OCA.Onlyoffice.AppName}/${fileId}?filePath=${encodePath(filePath)}`)
 		window.open(sourceUrl, windowName)
 	}
 
