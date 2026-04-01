@@ -46,13 +46,12 @@ import {
 } from './services/EditorService.ts'
 import { encodePath } from '@nextcloud/paths'
 
-/* global _, DocsAPI, jQuery, moment, oc_defaults */
+/* global _, DocsAPI, moment, oc_defaults */
 
 /**
- * @param {object} $ JQueryStatic object
  * @param {object} OCA Nextcloud OCA object
  */
-(function($, OCA) {
+(function(OCA) {
 
 	OCA.Onlyoffice = _.extend({
 		AppName: 'onlyoffice',
@@ -65,14 +64,15 @@ import { encodePath } from '@nextcloud/paths'
 
 	OCA.Onlyoffice.InitEditor = function() {
 
-		OCA.Onlyoffice.fileId = $('#iframeEditor').data('id')
-		OCA.Onlyoffice.shareToken = $('#iframeEditor').data('sharetoken')
-		OCA.Onlyoffice.directToken = $('#iframeEditor').data('directtoken')
-		OCA.Onlyoffice.template = $('#iframeEditor').data('template')
-		OCA.Onlyoffice.inframe = !!$('#iframeEditor').data('inframe')
-		OCA.Onlyoffice.inviewer = !!$('#iframeEditor').data('inviewer')
-		OCA.Onlyoffice.filePath = $('#iframeEditor').data('path')
-		OCA.Onlyoffice.anchor = $('#iframeEditor').attr('data-anchor')
+		const iframeEditor = document.getElementById('iframeEditor')
+		OCA.Onlyoffice.fileId = iframeEditor.dataset.id
+		OCA.Onlyoffice.shareToken = iframeEditor.dataset.sharetoken
+		OCA.Onlyoffice.directToken = iframeEditor.dataset.directtoken
+		OCA.Onlyoffice.template = iframeEditor.dataset.template
+		OCA.Onlyoffice.inframe = !!iframeEditor.dataset.inframe
+		OCA.Onlyoffice.inviewer = !!iframeEditor.dataset.inviewer
+		OCA.Onlyoffice.filePath = iframeEditor.dataset.path
+		OCA.Onlyoffice.anchor = iframeEditor.getAttribute('data-anchor')
 		OCA.Onlyoffice.currentWindow = window
 		OCA.Onlyoffice.currentUser = getCurrentUser()
 
@@ -211,8 +211,8 @@ import { encodePath } from '@nextcloud/paths'
 					}
 
 					if (!OCA.Onlyoffice.directEditor
-						&& config.type === 'mobile' && $('#app > iframe').css('position') === 'fixed') {
-						$('#app > iframe').css('height', 'calc(100% - 50px)')
+						&& config.type === 'mobile' && window.getComputedStyle(document.querySelector('#app > iframe')).position === 'fixed') {
+						document.querySelector('#app > iframe').style.height = 'calc(100% - 50px)'
 					}
 
 					const favicon = imagePath(OCA.Onlyoffice.AppName, OCA.Onlyoffice.documentType + '.ico')
@@ -223,7 +223,7 @@ import { encodePath } from '@nextcloud/paths'
 						},
 						'*')
 					} else {
-						$('link[rel="icon"]').attr('href', favicon)
+						document.querySelector('link[rel="icon"]')?.setAttribute('href', favicon)
 					}
 				}
 				document.head.appendChild(script)
@@ -689,14 +689,14 @@ import { encodePath } from '@nextcloud/paths'
 			data = { error: response.error }
 		} else {
 			let currentVersion = 0
-			$.each(response, function(i, fileVersion) {
+			response.forEach((fileVersion) => {
 				if (fileVersion.version >= currentVersion) {
 					currentVersion = fileVersion.version
 				}
 
 				fileVersion.created = moment(fileVersion.created * 1000).format('L LTS')
 				if (fileVersion.changes) {
-					$.each(fileVersion.changes, function(j, change) {
+					fileVersion.changes.forEach((change) => {
 						change.created = moment(change.created + '+00:00').format('L LTS')
 					})
 				}
@@ -719,12 +719,12 @@ import { encodePath } from '@nextcloud/paths'
 			return
 		}
 
-		const headerHeight = $('#header').length > 0 ? $('#header').height() : 50
-		const wrapEl = $('#app>iframe')
-		if (wrapEl.length > 0) {
-			wrapEl[0].style.height = (screen.availHeight - headerHeight) + 'px'
+		const headerHeight = document.getElementById('header')?.offsetHeight ?? 50
+		const wrapEl = document.querySelector('#app>iframe')
+		if (wrapEl) {
+			wrapEl.style.height = (screen.availHeight - headerHeight) + 'px'
 			window.scrollTo(0, -1)
-			wrapEl[0].style.height = (window.top.innerHeight - headerHeight) + 'px'
+			wrapEl.style.height = (window.top.innerHeight - headerHeight) + 'px'
 		}
 	}
 
@@ -755,7 +755,7 @@ import { encodePath } from '@nextcloud/paths'
 			params.push('shareToken=' + encodeURIComponent(OCA.Onlyoffice.shareToken))
 		}
 		if (OCA.Onlyoffice.directToken) {
-			$('html').addClass('onlyoffice-full-page')
+			document.documentElement.classList.add('onlyoffice-full-page')
 			params.push('directToken=' + encodeURIComponent(OCA.Onlyoffice.directToken))
 		}
 		if (OCA.Onlyoffice.template) {
@@ -788,4 +788,4 @@ import { encodePath } from '@nextcloud/paths'
 
 	OCA.Onlyoffice.InitEditor()
 
-})(jQuery, OCA)
+})(OCA)
