@@ -26,9 +26,10 @@
  *
  */
 
+import { getCurrentUser } from '@nextcloud/auth'
 import { getRootUrl } from '@nextcloud/router'
 
-/* global _, _oc_appswebroots, oc_current_user  */
+/* global _, _oc_appswebroots  */
 
 /**
  * @param {object} OCA Nextcloud OCA object
@@ -54,7 +55,7 @@ import { getRootUrl } from '@nextcloud/router'
 	domain += getRootUrl()
 
 	const data = {
-		displayName: oc_current_user,
+		displayName: getCurrentUser()?.uid,
 		domain,
 		provider: 'Nextcloud',
 	}
