@@ -62,6 +62,14 @@ OCA.Onlyoffice.setting = loadState(OCA.Onlyoffice.AppName, 'settings')
 OCA.Onlyoffice.mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini|Macintosh/i.test(navigator.userAgent)
 							&& navigator.maxTouchPoints && navigator.maxTouchPoints > 1
 
+/**
+ * @param {string} name file name
+ * @param {object} context files context with dir and view
+ * @param {number} templateId template file id
+ * @param {number} targetId target file id to convert from
+ * @param {boolean} open whether to open the editor after creation
+ * @param {object|null} filesContext files app context for node creation
+ */
 function createFileOverload(name, context, templateId, targetId, open = true, filesContext = null) {
 	if (!context.view) {
 		context.view = OCP.Files.Router._router.app.currentView
@@ -91,6 +99,14 @@ function createFileOverload(name, context, templateId, targetId, open = true, fi
 	})
 }
 
+/**
+ * @param {string} name file name
+ * @param {string} dir directory path
+ * @param {number} templateId template file id
+ * @param {number} targetId target file id to convert from
+ * @param {boolean} open whether to open the editor after creation
+ * @param {Function} callback called with the created file response
+ */
 function createFileProcess(name, dir, templateId, targetId, open, callback) {
 	let winEditor = null
 	if (((!OCA.Onlyoffice.setting.sameTab && !OCA.Onlyoffice.setting.enableSharing) || OCA.Onlyoffice.mobile || OCA.Onlyoffice.Desktop) && open) {
@@ -140,6 +156,13 @@ function createFileProcess(name, dir, templateId, targetId, open, callback) {
 	})
 }
 
+/**
+ * @param {number} fileId file id
+ * @param {string} fileDir directory path
+ * @param {string} fileName file name
+ * @param {Window|null} winEditor pre-opened editor window
+ * @param {boolean} isDefault whether this is the default open action
+ */
 function openEditor(fileId, fileDir, fileName, winEditor, isDefault = true) {
 	let filePath = ''
 	if (fileName) {
@@ -222,6 +245,9 @@ function openEditor(fileId, fileDir, fileName, winEditor, isDefault = true) {
 	}
 }
 
+/**
+ * Close the inline editor and restore the Files app view
+ */
 function closeEditor() {
 	document.body.classList.remove('onlyoffice-inline')
 
@@ -235,6 +261,9 @@ function closeEditor() {
 	setDefaultUrl()
 }
 
+/**
+ * Reset the Files router URL, removing openfile and enableSharing query params
+ */
 function setDefaultUrl() {
 	// eslint-disable-next-line no-unused-vars
 	const { openfile, enableSharing, ...query } = OCP.Files.Router.query
@@ -245,6 +274,9 @@ function setDefaultUrl() {
 	)
 }
 
+/**
+ * Open or close the sharing sidebar for the currently open file
+ */
 function openShareDialog() {
 	if (OCA.Onlyoffice.context) {
 		if (!document.getElementById('app-sidebar-vue')?.offsetParent) {
@@ -256,6 +288,9 @@ function openShareDialog() {
 	}
 }
 
+/**
+ * Refresh the versions sidebar tab for the currently open file
+ */
 function refreshVersionsDialog() {
 	if (OCA.Onlyoffice.context) {
 		if (document.getElementById('app-sidebar-vue')?.offsetParent) {
@@ -266,6 +301,13 @@ function refreshVersionsDialog() {
 	}
 }
 
+/**
+ * @param {object} file Nextcloud file node
+ * @param {object} _view current files view
+ * @param {string} dir current directory path
+ * @param {boolean} isDefault whether triggered as the default action
+ * @return {null} null
+ */
 async function fileOpenHandler(file, _view, dir, isDefault = true) {
 	if (OCA.Onlyoffice.context !== null
 		&& document.querySelector('.onlyoffice-iframe-container')
@@ -283,6 +325,12 @@ async function fileOpenHandler(file, _view, dir, isDefault = true) {
 	return null
 }
 
+/**
+ * @param {object} file Nextcloud file node
+ * @param {object} view current files view
+ * @param {string} dir current directory path
+ * @return {null} null
+ */
 async function fileConvertHandler(file, view, dir) {
 	fileConvert(file.fileid, async (response) => {
 		const viewContents = await view.getContents(dir)
@@ -296,6 +344,10 @@ async function fileConvertHandler(file, view, dir) {
 	return null
 }
 
+/**
+ * @param {number} fileId file id to convert
+ * @param {Function} callback called with the converted file response
+ */
 function fileConvert(fileId, callback) {
 	const convertData = {
 		fileId,
@@ -317,6 +369,10 @@ function fileConvert(fileId, callback) {
 	})
 }
 
+/**
+ * @param {object} file Nextcloud file node
+ * @return {null} null
+ */
 async function fileDownloadAsHandler(file) {
 	const fileName = file.basename
 	const fileId = file.fileid
@@ -333,6 +389,11 @@ async function fileDownloadAsHandler(file) {
 	return null
 }
 
+/**
+ * @param {string} name new file name
+ * @param {object} filelist files list context with dir
+ * @param {object|null} filesContext files app context for node creation
+ */
 function openFormPicker(name, filelist, filesContext = null) {
 	const filterMimes = [
 		'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
@@ -360,6 +421,12 @@ function openFormPicker(name, filelist, filesContext = null) {
 		.pickNodes()
 }
 
+/**
+ * @param {object} file Nextcloud file node to create a form from
+ * @param {object} view current files view
+ * @param {string} dir current directory path
+ * @return {null} null
+ */
 async function fileCreateFormHandler(file, view, dir) {
 	const name = file.basename.replace(/\.[^.]+$/, '.pdf')
 	const context = {
@@ -372,6 +439,9 @@ async function fileCreateFormHandler(file, view, dir) {
 	return null
 }
 
+/**
+ * Register all ONLYOFFICE file actions with the Nextcloud Files app
+ */
 function registerFileActions() {
 	const formats = OCA.Onlyoffice.setting.formats
 
@@ -512,6 +582,9 @@ function registerFileActions() {
 	}
 }
 
+/**
+ * Register ONLYOFFICE entries in the new file menu
+ */
 function registerNewFileMenu() {
 	// PDF Form
 	addNewFileMenuEntry({
@@ -530,11 +603,18 @@ function registerNewFileMenu() {
 	})
 }
 
+/**
+ * @param {string} fileName file name
+ * @return {string} lowercased file extension without the dot
+ */
 function getFileExtension(fileName) {
 	const extension = fileName.slice(fileName.lastIndexOf('.') + 1).toLowerCase()
 	return extension
 }
 
+/**
+ * @return {boolean} true if the current page is a public file share
+ */
 function isPublicFileShare() {
 	return loadState('files_sharing', 'view', null) === 'public-file-share'
 }
