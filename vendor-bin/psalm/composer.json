@@ -1,0 +1,12 @@
+{
+    "config": {
+		"platform": {
+			"php": "8.2"
+		},
+		"sort-packages": true
+	},
+    "require-dev": {
+        "vimeo/psalm": "^6.13",
+        "nextcloud/ocp": "dev-stable33"
+    }
+}
