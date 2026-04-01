@@ -392,9 +392,9 @@ function registerFileActions() {
 
 			if (!config
 				|| !config.def
-				|| isPublicFileShare() && (_oc_appswebroots.richdocuments
+				|| (isPublicFileShare() && (_oc_appswebroots.richdocuments
 					|| (_oc_appswebroots.files_pdfviewer && fileExt === 'pdf')
-					|| (_oc_appswebroots.text && fileExt === 'txt'))) {
+					|| (_oc_appswebroots.text && fileExt === 'txt')))) {
 				return false
 			}
 
