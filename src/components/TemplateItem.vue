@@ -25,8 +25,10 @@
 -->
 <template>
 	<li class="onlyoffice-template-item" :data-id="template.id">
-		<img :src="template.icon" />
-		<p @click="handleOpen">{{ template.name }}</p>
+		<img :src="template.icon">
+		<p @click="handleOpen">
+			{{ template.name }}
+		</p>
 		<span class="onlyoffice-template-download icon-download" @click="handleDownload" />
 		<span class="onlyoffice-template-delete icon-delete" @click="emit('delete', template.id)" />
 	</li>

@@ -78,6 +78,9 @@ const watermark = ref<WatermarkSettings>({
 	linkTagsList: ((props.watermark.linkTagsList as string[] | undefined) ?? []).map(Number),
 })
 
+/**
+ * Persists all security settings (watermark, plugins, macros, protection) to the backend.
+ */
 async function save() {
 	saving.value = true
 	try {
@@ -106,12 +109,18 @@ async function save() {
 		<h2>{{ t('onlyoffice', 'Security') }}</h2>
 
 		<p>
-			<input type="checkbox" class="checkbox" id="onlyoffice-plugins" v-model="plugins" />
+			<input id="onlyoffice-plugins"
+				v-model="plugins"
+				type="checkbox"
+				class="checkbox">
 			<label for="onlyoffice-plugins">{{ t('onlyoffice', 'Enable plugins') }}</label>
 		</p>
 
 		<p>
-			<input type="checkbox" class="checkbox" id="onlyoffice-macros" v-model="macros" />
+			<input id="onlyoffice-macros"
+				v-model="macros"
+				type="checkbox"
+				class="checkbox">
 			<label for="onlyoffice-macros">{{ t('onlyoffice', 'Run document macros') }}</label>
 		</p>
 
@@ -121,11 +130,21 @@ async function save() {
 		</p>
 		<div class="onlyoffice-tables">
 			<div>
-				<input type="radio" class="radio" id="onlyoffice-protection-all" v-model="protection" value="all" name="protection" />
+				<input id="onlyoffice-protection-all"
+					v-model="protection"
+					type="radio"
+					class="radio"
+					value="all"
+					name="protection">
 				<label for="onlyoffice-protection-all">{{ t('onlyoffice', 'All users') }}</label>
 			</div>
 			<div>
-				<input type="radio" class="radio" id="onlyoffice-protection-owner" v-model="protection" value="owner" name="protection" />
+				<input id="onlyoffice-protection-owner"
+					v-model="protection"
+					type="radio"
+					class="radio"
+					value="owner"
+					name="protection">
 				<label for="onlyoffice-protection-owner">{{ t('onlyoffice', 'Owner only') }}</label>
 			</div>
 		</div>
@@ -137,7 +156,10 @@ async function save() {
 			{{ t('onlyoffice', 'Secure view enables you to secure documents by embedding a watermark') }}
 		</p>
 		<p>
-			<input type="checkbox" class="checkbox" id="onlyoffice-watermark-enabled" v-model="watermark.enabled" />
+			<input id="onlyoffice-watermark-enabled"
+				v-model="watermark.enabled"
+				type="checkbox"
+				class="checkbox">
 			<label for="onlyoffice-watermark-enabled">{{ t('onlyoffice', 'Enable watermarking') }}</label>
 		</p>
 
@@ -151,46 +173,59 @@ async function save() {
 			<p>
 				{{ t('onlyoffice', 'Supported placeholders') }}: {userId}, {userDisplayName}, {email}, {date}, {themingName}
 			</p>
-			<p><input id="onlyoffice-watermark-text" v-model="watermark.text" type="text" :placeholder="t('onlyoffice', 'DO NOT SHARE THIS') + ' {userId} {date}'" /></p>
+			<p>
+				<input id="onlyoffice-watermark-text"
+					v-model="watermark.text"
+					type="text"
+					:placeholder="t('onlyoffice', 'DO NOT SHARE THIS') + ' {userId} {date}'">
+			</p>
 
 			<br>
 
 			<!-- Tags -->
 			<template v-if="tagsEnabled">
 				<p>
-					<input type="checkbox" class="checkbox" id="onlyoffice-watermark-all-tags" v-model="watermark.allTags" />
+					<input id="onlyoffice-watermark-all-tags"
+						v-model="watermark.allTags"
+						type="checkbox"
+						class="checkbox">
 					<label for="onlyoffice-watermark-all-tags">{{ t('onlyoffice', 'Show watermark on tagged files') }}</label>
 				</p>
 				<p class="block-inline">
-					<NcSelectTags
-						v-if="watermark.allTags"
+					<NcSelectTags v-if="watermark.allTags"
 						v-model="watermark.allTagsList"
-						:multiple="true"
-					/>
+						:multiple="true" />
 				</p>
 			</template>
 
 			<!-- Groups -->
 			<p>
-				<input type="checkbox" class="checkbox" id="onlyoffice-watermark-all-groups" v-model="watermark.allGroups" />
+				<input id="onlyoffice-watermark-all-groups"
+					v-model="watermark.allGroups"
+					type="checkbox"
+					class="checkbox">
 				<label for="onlyoffice-watermark-all-groups">{{ t('onlyoffice', 'Show watermark for users of groups') }}</label>
 			</p>
 			<p class="block-inline">
-				<NcSettingsSelectGroup
-					v-if="watermark.allGroups"
+				<NcSettingsSelectGroup v-if="watermark.allGroups"
 					v-model="watermark.allGroupsList"
-					:label="t('core', 'Groups')"
-				/>
+					:label="t('core', 'Groups')" />
 			</p>
 
 			<!-- Share-based watermarks -->
 			<p>
-				<input type="checkbox" class="checkbox" id="onlyoffice-watermark-share-all" v-model="watermark.shareAll" />
+				<input id="onlyoffice-watermark-share-all"
+					v-model="watermark.shareAll"
+					type="checkbox"
+					class="checkbox">
 				<label for="onlyoffice-watermark-share-all">{{ t('onlyoffice', 'Show watermark for all shares') }}</label>
 			</p>
 			<!-- shareRead is hidden when shareAll is on (already implied) -->
 			<p v-if="!watermark.shareAll">
-				<input type="checkbox" class="checkbox" id="onlyoffice-watermark-share-read" v-model="watermark.shareRead" />
+				<input id="onlyoffice-watermark-share-read"
+					v-model="watermark.shareRead"
+					type="checkbox"
+					class="checkbox">
 				<label for="onlyoffice-watermark-share-read">{{ t('onlyoffice', 'Show watermark for read only shares') }}</label>
 			</p>
 
@@ -199,30 +234,40 @@ async function save() {
 			<!-- Link-based watermarks -->
 			<p>{{ t('onlyoffice', 'Link shares') }}</p>
 			<p>
-				<input type="checkbox" class="checkbox" id="onlyoffice-watermark-link-all" v-model="watermark.linkAll" />
+				<input id="onlyoffice-watermark-link-all"
+					v-model="watermark.linkAll"
+					type="checkbox"
+					class="checkbox">
 				<label for="onlyoffice-watermark-link-all">{{ t('onlyoffice', 'Show watermark for all link shares') }}</label>
 			</p>
 			<!-- link-specific options hidden when linkAll is on (already implies all) -->
 			<template v-if="!watermark.linkAll">
 				<p>
-					<input type="checkbox" class="checkbox" id="onlyoffice-watermark-link-secure" v-model="watermark.linkSecure" />
+					<input id="onlyoffice-watermark-link-secure"
+						v-model="watermark.linkSecure"
+						type="checkbox"
+						class="checkbox">
 					<label for="onlyoffice-watermark-link-secure">{{ t('onlyoffice', 'Show watermark for download hidden shares') }}</label>
 				</p>
 				<p>
-					<input type="checkbox" class="checkbox" id="onlyoffice-watermark-link-read" v-model="watermark.linkRead" />
+					<input id="onlyoffice-watermark-link-read"
+						v-model="watermark.linkRead"
+						type="checkbox"
+						class="checkbox">
 					<label for="onlyoffice-watermark-link-read">{{ t('onlyoffice', 'Show watermark for read only link shares') }}</label>
 				</p>
 				<template v-if="tagsEnabled">
 					<p>
-						<input type="checkbox" class="checkbox" id="onlyoffice-watermark-link-tags" v-model="watermark.linkTags" />
+						<input id="onlyoffice-watermark-link-tags"
+							v-model="watermark.linkTags"
+							type="checkbox"
+							class="checkbox">
 						<label for="onlyoffice-watermark-link-tags">{{ t('onlyoffice', 'Show watermark on link shares with specific system tags') }}</label>
 					</p>
 					<p class="block-inline">
-						<NcSelectTags
-							v-if="watermark.linkTags"
+						<NcSelectTags v-if="watermark.linkTags"
 							v-model="watermark.linkTagsList"
-							:multiple="true"
-						/>
+							:multiple="true" />
 					</p>
 				</template>
 			</template>
@@ -231,7 +276,10 @@ async function save() {
 		<br>
 
 		<p>
-			<NcButton id="onlyoffice-security-save" :disabled="saving" @click="save" variant="primary">
+			<NcButton id="onlyoffice-security-save"
+				:disabled="saving"
+				variant="primary"
+				@click="save">
 				{{ t('onlyoffice', 'Save') }}
 			</NcButton>
 		</p>

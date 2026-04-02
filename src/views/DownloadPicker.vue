@@ -31,8 +31,12 @@
 		<div class="onlyoffice-download-container">
 			<p>{{ t('onlyoffice', 'Choose a format to convert {fileName}', { fileName }) }}</p>
 			<select id="onlyoffice-download-select" v-model="selectedFormat">
-				<option :value="extension">{{ t('onlyoffice', 'Origin format') }}</option>
-				<option v-for="ext in saveasFormats" :key="ext" :value="ext">{{ ext }}</option>
+				<option :value="extension">
+					{{ t('onlyoffice', 'Origin format') }}
+				</option>
+				<option v-for="ext in saveasFormats" :key="ext" :value="ext">
+					{{ ext }}
+				</option>
 			</select>
 		</div>
 	</NcDialog>

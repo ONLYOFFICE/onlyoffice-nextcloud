@@ -41,6 +41,12 @@ const format = ref<Record<string, boolean>>({})
 const saving = ref(false)
 const loading = ref(false)
 
+/**
+ * Loads sharing permissions for the given file into the tab.
+ * @param {{ id: number, name: string }} fileInfo the file to display sharing settings for
+ * @param {number} fileInfo.id file ID used to fetch existing shares
+ * @param {string} fileInfo.name file name used to resolve the format configuration
+ */
 async function update(fileInfo: { id: number; name: string }) {
 	fileId.value = fileInfo.id
 	format.value = formats[getFileExtension(fileInfo.name)] ?? {}
@@ -51,6 +57,12 @@ async function update(fileInfo: { id: number; name: string }) {
 
 defineExpose({ update })
 
+/**
+ * Computes a combined permissions bitmask from a map of permission flags,
+ * enforcing mutual-exclusion rules (e.g. Comment requires no Review or ModifyFilter).
+ * @param {Record<number, boolean>} values map of permission constant to enabled state
+ * @return {number} combined permissions bitmask
+ */
 function computePermissions(values: Record<number, boolean>): number {
 	let p = Permissions.None
 	if (values[Permissions.Review]) p |= Permissions.Review
@@ -64,6 +76,12 @@ function computePermissions(values: Record<number, boolean>): number {
 	return p
 }
 
+/**
+ * Handles a permission toggle for a share, recomputes the bitmask, and persists the update.
+ * @param {ShareExtra} extra the share entry whose permissions are being changed
+ * @param {number} changedKey the permission constant that was toggled
+ * @param {boolean} changedValue the new state of the toggled permission
+ */
 async function onPermissionChange(extra: ShareExtra, changedKey: number, changedValue: boolean) {
 	const values: Record<number, boolean> = {
 		[Permissions.Review]: (Permissions.Review & extra.permissions) === Permissions.Review,
@@ -100,14 +118,12 @@ async function onPermissionChange(extra: ShareExtra, changedKey: number, changed
 		<template v-if="!loading">
 			<div>{{ t('onlyoffice', 'Provide advanced document permissions using ONLYOFFICE Docs') }}</div>
 			<ul>
-				<ShareItem
-					v-for="extra in collection"
+				<ShareItem v-for="extra in collection"
 					:key="extra.share_id"
 					:extra="extra"
 					:format="format"
 					:disabled="saving"
-					@change="(key: number, val: boolean) => onPermissionChange(extra, key, val)"
-				/>
+					@change="(key: number, val: boolean) => onPermissionChange(extra, key, val)" />
 			</ul>
 		</template>
 	</div>

@@ -31,7 +31,6 @@ import NcButton from '@nextcloud/vue/components/NcButton'
 import { saveAddressSettings } from '../../services/SettingsService'
 import AppDescription from './AppDescription.vue'
 
-
 const props = defineProps<{
 	documentserver: string
 	documentserverInternal: string
@@ -60,6 +59,10 @@ const saving = ref(false)
 const showSecret = ref(false)
 const currentServer = window.location.origin + '/'
 
+/**
+ * Persists the Document Server address and JWT settings to the backend.
+ * Clears advanced fields (internal URL, storage URL, secret) when the server URL is removed.
+ */
 async function save() {
 	if (!url.value && !demoEnabled.value) {
 		// Clearing the server — reset advanced fields too
@@ -119,20 +122,42 @@ async function save() {
 		<AppDescription />
 
 		<h2>{{ t('onlyoffice', 'Server settings') }}</h2>
-		<p class="settings-description">{{ t('onlyoffice', 'ONLYOFFICE Docs Location specifies the address of the server with the document services installed. Please change the \'\<documentserver\>\' for the server address in the below line.', {}, { sanitize: false }) }}</p>
+		<p class="settings-description">
+			{{ t('onlyoffice', 'ONLYOFFICE Docs Location specifies the address of the server with the document services installed. Please change the \'\<documentserver\>\' for the server address in the below line.', {}, { sanitize: false }) }}
+		</p>
 
 		<p>{{ t('onlyoffice', 'ONLYOFFICE Docs address') }}</p>
-		<p><input id="onlyoffice-url" v-model="url" type="text" placeholder="https://<documentserver>/" :disabled="demoEnabled" @keypress.enter="save" /></p>
+		<p>
+			<input id="onlyoffice-url"
+				v-model="url"
+				type="text"
+				placeholder="https://<documentserver>/"
+				:disabled="demoEnabled"
+				@keypress.enter="save">
+		</p>
 
 		<p>
-			<input type="checkbox" class="checkbox" id="onlyoffice-verify-peer-off" v-model="verifyPeerOff" :disabled="demoEnabled" />
+			<input id="onlyoffice-verify-peer-off"
+				v-model="verifyPeerOff"
+				type="checkbox"
+				class="checkbox"
+				:disabled="demoEnabled">
 			<label for="onlyoffice-verify-peer-off">{{ t('onlyoffice', 'Disable certificate verification (insecure)') }}</label>
 		</p>
 
 		<p>{{ t('onlyoffice', 'Secret key (leave blank to disable)') }}</p>
 		<p class="groupbottom">
-			<input id="onlyoffice-secret" v-model="secret" :type="showSecret ? 'text' : 'password'" placeholder="secret" :disabled="demoEnabled" @keypress.enter="save" />
-			<input type="checkbox" id="personal-show" class="hidden-visually" v-model="showSecret" name="show" />
+			<input id="onlyoffice-secret"
+				v-model="secret"
+				:type="showSecret ? 'text' : 'password'"
+				placeholder="secret"
+				:disabled="demoEnabled"
+				@keypress.enter="save">
+			<input id="personal-show"
+				v-model="showSecret"
+				type="checkbox"
+				class="hidden-visually"
+				name="show">
 			<label id="onlyoffice-secret-show" for="personal-show" class="personal-show-label" />
 		</p>
 
@@ -145,24 +170,52 @@ async function save() {
 
 		<div v-show="showAdvanced">
 			<p>{{ t('onlyoffice', 'Authorization header (leave blank to use default header)') }}</p>
-			<p><input id="onlyoffice-jwt-header" v-model="jwtHeader" type="text" placeholder="Authorization" :disabled="demoEnabled" @keypress.enter="save" /></p>
+			<p>
+				<input id="onlyoffice-jwt-header"
+					v-model="jwtHeader"
+					type="text"
+					placeholder="Authorization"
+					:disabled="demoEnabled"
+					@keypress.enter="save">
+			</p>
 
 			<p>{{ t('onlyoffice', 'ONLYOFFICE Docs address for internal requests from the server') }}</p>
-			<p><input id="onlyoffice-internal-url" v-model="internalUrl" type="text" placeholder="https://<documentserver>/" :disabled="demoEnabled" @keypress.enter="save" /></p>
+			<p>
+				<input id="onlyoffice-internal-url"
+					v-model="internalUrl"
+					type="text"
+					placeholder="https://<documentserver>/"
+					:disabled="demoEnabled"
+					@keypress.enter="save">
+			</p>
 
 			<p>{{ t('onlyoffice', 'Server address for internal requests from ONLYOFFICE Docs') }}</p>
-			<p><input id="onlyoffice-storage-url" v-model="storageUrl" type="text" :placeholder="currentServer" :disabled="demoEnabled" @keypress.enter="save" /></p>
+			<p>
+				<input id="onlyoffice-storage-url"
+					v-model="storageUrl"
+					type="text"
+					:placeholder="currentServer"
+					:disabled="demoEnabled"
+					@keypress.enter="save">
+			</p>
 		</div>
 
 		<br>
 
 		<div class="onlyoffice-addr-bottom">
-			<NcButton id="onlyoffice-server-save" :disabled="saving" @click="save" variant="primary">
+			<NcButton id="onlyoffice-server-save"
+				:disabled="saving"
+				variant="primary"
+				@click="save">
 				{{ t('onlyoffice', 'Save') }}
 			</NcButton>
 
 			<div>
-				<input type="checkbox" class="checkbox" id="onlyoffice-demo" v-model="demoEnabled" :disabled="!demo.available" />
+				<input id="onlyoffice-demo"
+					v-model="demoEnabled"
+					type="checkbox"
+					class="checkbox"
+					:disabled="!demo.available">
 				<label for="onlyoffice-demo">{{ t('onlyoffice', 'Connect to demo ONLYOFFICE Docs server') }}</label>
 				<br>
 				<em v-if="demo.available">{{ t('onlyoffice', 'This is a public test server, please do not use it for private sensitive data. The server will be available during a 30-day period.') }}</em>

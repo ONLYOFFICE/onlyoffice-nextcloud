@@ -104,6 +104,9 @@ watch(useGroups, (val) => {
 	if (!val) limitGroups.value = []
 })
 
+/**
+ * Prompts the user for confirmation, then clears all document co-editing history.
+ */
 async function onClearHistory() {
 	const confirmed = await showConfirmation({
 		name: t('onlyoffice', 'Confirm metadata removal'),
@@ -124,6 +127,9 @@ async function onClearHistory() {
 	}
 }
 
+/**
+ * Persists all common settings to the backend.
+ */
 async function save() {
 	saving.value = true
 	try {
@@ -163,68 +169,98 @@ async function save() {
 
 		<!-- Group access restriction -->
 		<p>
-			<input type="checkbox" class="checkbox" id="onlyoffice-groups" v-model="useGroups" />
+			<input id="onlyoffice-groups"
+				v-model="useGroups"
+				type="checkbox"
+				class="checkbox">
 			<label for="onlyoffice-groups">{{ t('onlyoffice', 'Allow the following groups to access the editors') }}</label>
 		</p>
 		<p class="block-inline">
-			<NcSettingsSelectGroup
-				v-if="useGroups"
+			<NcSettingsSelectGroup v-if="useGroups"
 				v-model="limitGroups"
-				:label="t('core', 'Groups')"
-			/>
+				:label="t('core', 'Groups')" />
 		</p>
 
 		<!-- Behaviour -->
 		<p>
-			<input type="checkbox" class="checkbox" id="onlyoffice-preview" v-model="preview" />
+			<input id="onlyoffice-preview"
+				v-model="preview"
+				type="checkbox"
+				class="checkbox">
 			<label for="onlyoffice-preview">{{ t('onlyoffice', 'Use ONLYOFFICE to generate a document preview (it will take up disk space)') }}</label>
 		</p>
 
 		<p>
-			<input type="checkbox" class="checkbox" id="onlyoffice-same-tab" v-model="sameTab" />
+			<input id="onlyoffice-same-tab"
+				v-model="sameTab"
+				type="checkbox"
+				class="checkbox">
 			<label for="onlyoffice-same-tab">{{ t('onlyoffice', 'Open file in the same tab') }}</label>
 		</p>
 
 		<div v-show="!sameTab" id="onlyoffice-enable-sharing-block">
 			<p>
-				<input type="checkbox" class="checkbox" id="onlyoffice-enable-sharing" v-model="enableSharing" />
+				<input id="onlyoffice-enable-sharing"
+					v-model="enableSharing"
+					type="checkbox"
+					class="checkbox">
 				<label for="onlyoffice-enable-sharing">{{ t('onlyoffice', 'Enable sharing (might increase editors loading time)') }}</label>
 			</p>
 		</div>
 
 		<p>
-			<input type="checkbox" class="checkbox" id="onlyoffice-advanced" v-model="advanced" />
+			<input id="onlyoffice-advanced"
+				v-model="advanced"
+				type="checkbox"
+				class="checkbox">
 			<label for="onlyoffice-advanced">{{ t('onlyoffice', 'Provide advanced document permissions using ONLYOFFICE Docs') }}</label>
 		</p>
 
 		<p class="onlyoffice-version-history">
-			<div>
-				<input type="checkbox" class="checkbox" id="onlyoffice-version-history" v-model="versionHistory" />
+			<span>
+				<input id="onlyoffice-version-history"
+					v-model="versionHistory"
+					type="checkbox"
+					class="checkbox">
 				<label for="onlyoffice-version-history">{{ t('onlyoffice', 'Keep metadata for each version once the document is edited (it will take up disk space)') }}</label>
-			</div>
+			</span>
 			<NcButton :disabled="saving" @click="onClearHistory">
 				{{ t('onlyoffice', 'Clear') }}
 			</NcButton>
 		</p>
 
 		<p>
-			<input type="checkbox" class="checkbox" id="onlyoffice-cron-checker" v-model="cronChecker" />
+			<input id="onlyoffice-cron-checker"
+				v-model="cronChecker"
+				type="checkbox"
+				class="checkbox">
 			<label for="onlyoffice-cron-checker">{{ t('onlyoffice', 'Enable background connection check to the editors') }}</label>
 		</p>
 
 		<p>
-			<input type="checkbox" class="checkbox" id="onlyoffice-email-notifications" v-model="emailNotifications" />
+			<input id="onlyoffice-email-notifications"
+				v-model="emailNotifications"
+				type="checkbox"
+				class="checkbox">
 			<label for="onlyoffice-email-notifications">{{ t('onlyoffice', 'Enable e-mail notifications') }}</label>
 		</p>
 
 		<p>{{ t('onlyoffice', 'Unknown author display name') }}</p>
-		<p><input id="onlyoffice-unknown-author" v-model="unknownAuthor" type="text" placeholder="" /></p>
+		<p>
+			<input id="onlyoffice-unknown-author"
+				v-model="unknownAuthor"
+				type="text"
+				placeholder="">
+		</p>
 
 		<!-- Default formats -->
 		<p>{{ t('onlyoffice', 'The default application for opening the format') }}</p>
 		<div class="onlyoffice-exts">
 			<div v-for="[name] in previewFormats" :key="'def-' + name">
-				<input type="checkbox" class="checkbox" :id="'onlyoffice-def-format' + name" v-model="defFormats[name]" />
+				<input :id="'onlyoffice-def-format' + name"
+					v-model="defFormats[name]"
+					type="checkbox"
+					class="checkbox">
 				<label :for="'onlyoffice-def-format' + name">{{ name }}</label>
 			</div>
 		</div>
@@ -233,7 +269,10 @@ async function save() {
 		<p>{{ t('onlyoffice', 'Open the file for editing (due to format restrictions, the data might be lost when saving to the formats from the list below)') }}</p>
 		<div class="onlyoffice-exts">
 			<div v-for="[name] in editableFormats" :key="'edit-' + name">
-				<input type="checkbox" class="checkbox" :id="'onlyoffice-edit-format' + name" v-model="editFormats[name]" />
+				<input :id="'onlyoffice-edit-format' + name"
+					v-model="editFormats[name]"
+					type="checkbox"
+					class="checkbox">
 				<label :for="'onlyoffice-edit-format' + name">{{ name }}</label>
 			</div>
 		</div>
@@ -244,12 +283,18 @@ async function save() {
 		<h2>{{ t('onlyoffice', 'Editor customization settings') }}</h2>
 
 		<p>
-			<input type="checkbox" class="checkbox" id="onlyoffice-forcesave" v-model="forcesave" />
+			<input id="onlyoffice-forcesave"
+				v-model="forcesave"
+				type="checkbox"
+				class="checkbox">
 			<label for="onlyoffice-forcesave">{{ t('onlyoffice', 'Keep intermediate versions when editing (forcesave)') }}</label>
 		</p>
 
 		<p>
-			<input type="checkbox" class="checkbox" id="onlyoffice-live-view-on-share" v-model="liveViewOnShare" />
+			<input id="onlyoffice-live-view-on-share"
+				v-model="liveViewOnShare"
+				type="checkbox"
+				class="checkbox">
 			<label for="onlyoffice-live-view-on-share">{{ t('onlyoffice', 'Enable live-viewing mode when accessing file by public link') }}</label>
 		</p>
 
@@ -258,22 +303,34 @@ async function save() {
 		</p>
 
 		<p>
-			<input type="checkbox" class="checkbox" id="onlyoffice-chat" v-model="chat" />
+			<input id="onlyoffice-chat"
+				v-model="chat"
+				type="checkbox"
+				class="checkbox">
 			<label for="onlyoffice-chat">{{ t('onlyoffice', 'Display Chat menu button') }}</label>
 		</p>
 
 		<p>
-			<input type="checkbox" class="checkbox" id="onlyoffice-compact-header" v-model="compactHeader" />
+			<input id="onlyoffice-compact-header"
+				v-model="compactHeader"
+				type="checkbox"
+				class="checkbox">
 			<label for="onlyoffice-compact-header">{{ t('onlyoffice', 'Display the header more compact') }}</label>
 		</p>
 
 		<p>
-			<input type="checkbox" class="checkbox" id="onlyoffice-feedback" v-model="feedback" />
+			<input id="onlyoffice-feedback"
+				v-model="feedback"
+				type="checkbox"
+				class="checkbox">
 			<label for="onlyoffice-feedback">{{ t('onlyoffice', 'Display Feedback & Support menu button') }}</label>
 		</p>
 
 		<p>
-			<input type="checkbox" class="checkbox" id="onlyoffice-help" v-model="help" />
+			<input id="onlyoffice-help"
+				v-model="help"
+				type="checkbox"
+				class="checkbox">
 			<label for="onlyoffice-help">{{ t('onlyoffice', 'Display Help menu button') }}</label>
 		</p>
 
@@ -283,15 +340,30 @@ async function save() {
 		</p>
 		<div class="onlyoffice-tables">
 			<div>
-				<input type="radio" class="radio" id="onlyoffice-review-display-markup" v-model="reviewDisplay" value="markup" name="reviewDisplay" />
+				<input id="onlyoffice-review-display-markup"
+					v-model="reviewDisplay"
+					type="radio"
+					class="radio"
+					value="markup"
+					name="reviewDisplay">
 				<label for="onlyoffice-review-display-markup">{{ t('onlyoffice', 'Markup') }}</label>
 			</div>
 			<div>
-				<input type="radio" class="radio" id="onlyoffice-review-display-final" v-model="reviewDisplay" value="final" name="reviewDisplay" />
+				<input id="onlyoffice-review-display-final"
+					v-model="reviewDisplay"
+					type="radio"
+					class="radio"
+					value="final"
+					name="reviewDisplay">
 				<label for="onlyoffice-review-display-final">{{ t('onlyoffice', 'Final') }}</label>
 			</div>
 			<div>
-				<input type="radio" class="radio" id="onlyoffice-review-display-original" v-model="reviewDisplay" value="original" name="reviewDisplay" />
+				<input id="onlyoffice-review-display-original"
+					v-model="reviewDisplay"
+					type="radio"
+					class="radio"
+					value="original"
+					name="reviewDisplay">
 				<label for="onlyoffice-review-display-original">{{ t('onlyoffice', 'Original') }}</label>
 			</div>
 		</div>
@@ -302,15 +374,30 @@ async function save() {
 		</p>
 		<div class="onlyoffice-tables">
 			<div>
-				<input type="radio" class="radio" id="onlyoffice-theme-theme-system" v-model="theme" value="theme-system" name="theme" />
+				<input id="onlyoffice-theme-theme-system"
+					v-model="theme"
+					type="radio"
+					class="radio"
+					value="theme-system"
+					name="theme">
 				<label for="onlyoffice-theme-theme-system">{{ t('onlyoffice', 'Same as system') }}</label>
 			</div>
 			<div>
-				<input type="radio" class="radio" id="onlyoffice-theme-default-light" v-model="theme" value="default-light" name="theme" />
+				<input id="onlyoffice-theme-default-light"
+					v-model="theme"
+					type="radio"
+					class="radio"
+					value="default-light"
+					name="theme">
 				<label for="onlyoffice-theme-default-light">{{ t('onlyoffice', 'Light') }}</label>
 			</div>
 			<div>
-				<input type="radio" class="radio" id="onlyoffice-theme-default-dark" v-model="theme" value="default-dark" name="theme" />
+				<input id="onlyoffice-theme-default-dark"
+					v-model="theme"
+					type="radio"
+					class="radio"
+					value="default-dark"
+					name="theme">
 				<label for="onlyoffice-theme-default-dark">{{ t('onlyoffice', 'Dark') }}</label>
 			</div>
 		</div>
@@ -318,7 +405,10 @@ async function save() {
 		<br>
 
 		<p>
-			<NcButton id="onlyoffice-common-save" :disabled="saving" @click="save" variant="primary">
+			<NcButton id="onlyoffice-common-save"
+				:disabled="saving"
+				variant="primary"
+				@click="save">
 				{{ t('onlyoffice', 'Save') }}
 			</NcButton>
 		</p>

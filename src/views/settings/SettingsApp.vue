@@ -45,6 +45,13 @@ onMounted(() => {
 	}
 })
 
+/**
+ * Handles the address-saved event from ServerSection.
+ * Shows the empty JWT warning dialog when the server was saved successfully but no JWT secret is set.
+ * @param result address-saved event payload
+ * @param {boolean} result.successful whether the save request succeeded
+ * @param {boolean} result.hasSecret whether a JWT secret is currently configured
+ */
 function onAddressSaved({ successful: ok, hasSecret }: { successful: boolean, hasSecret: boolean }) {
 	successful.value = ok
 	if (ok && !hasSecret) {
@@ -55,19 +62,16 @@ function onAddressSaved({ successful: ok, hasSecret }: { successful: boolean, ha
 
 <template>
 	<div>
-		<ServerSection
-			:documentserver="state.documentserver as string"
+		<ServerSection :documentserver="state.documentserver as string"
 			:documentserver-internal="state.documentserverInternal as string"
 			:storage-url="state.storageUrl as string"
 			:verify-peer-off="state.verifyPeerOff as boolean"
 			:secret="state.secret as string"
 			:jwt-header="state.jwtHeader as string"
 			:demo="state.demo as { enabled: boolean, available: boolean }"
-			@address-saved="onAddressSaved"
-		/>
+			@address-saved="onAddressSaved" />
 		<template v-if="successful">
-			<CommonSection
-				:formats="state.formats as Record<string, Record<string, unknown>>"
+			<CommonSection :formats="state.formats as Record<string, Record<string, unknown>>"
 				:same-tab="state.sameTab as boolean"
 				:enable-sharing="state.enableSharing as boolean"
 				:preview="state.preview as boolean"
@@ -84,8 +88,7 @@ function onAddressSaved({ successful: ok, hasSecret }: { successful: boolean, ha
 				:help="state.help as boolean"
 				:review-display="state.reviewDisplay as string"
 				:theme="state.theme as string"
-				:unknown-author="state.unknownAuthor as string"
-			/>
+				:unknown-author="state.unknownAuthor as string" />
 			<div class="section section-onlyoffice section-onlyoffice-templates">
 				<h2>
 					{{ t('onlyoffice', 'Common templates') }}
@@ -94,13 +97,11 @@ function onAddressSaved({ successful: ok, hasSecret }: { successful: boolean, ha
 				</h2>
 				<TemplateList />
 			</div>
-			<SecuritySection
-				:plugins="state.plugins as boolean"
+			<SecuritySection :plugins="state.plugins as boolean"
 				:macros="state.macros as boolean"
 				:protection="state.protection as string"
 				:watermark="state.watermark as Record<string, unknown>"
-				:tags-enabled="state.tagsEnabled as boolean"
-			/>
+				:tags-enabled="state.tagsEnabled as boolean" />
 		</template>
 	</div>
 </template>

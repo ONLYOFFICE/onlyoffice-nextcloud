@@ -25,12 +25,10 @@
 -->
 <template>
 	<ul class="onlyoffice-template-container">
-		<TemplateItem
-			v-for="template in templates"
+		<TemplateItem v-for="template in templates"
 			:key="template.id"
 			:template="template"
-			@delete="handleDelete"
-		/>
+			@delete="handleDelete" />
 	</ul>
 </template>
 

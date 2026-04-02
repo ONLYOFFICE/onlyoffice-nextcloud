@@ -80,28 +80,24 @@ const attributes = computed(() => {
 	<NcListItem :name="name" :force-display-actions="true">
 		<template #icon>
 			<div v-if="extra.type === ShareType.Link" class="onlyoffice-share-link-avatar">
-				<img :src="generateFilePath('onlyoffice', 'img', 'public.svg')" />
+				<img :src="generateFilePath('onlyoffice', 'img', 'public.svg')">
 			</div>
-			<NcAvatar
-				v-else
+			<NcAvatar v-else
 				:user="isUserShare ? extra.shareWith : undefined"
 				:is-guest="!isUserShare"
 				:display-name="extra.shareWith"
 				:size="32"
 				:disable-menu="true"
 				:disable-tooltip="true"
-				:show-user-status="false"
-			/>
+				:show-user-status="false" />
 		</template>
 		<template #actions>
-			<NcActionCheckbox
-				v-for="attr in attributes"
+			<NcActionCheckbox v-for="attr in attributes"
 				:key="attr.key"
 				:model-value="attr.checked"
 				:disabled="disabled"
 				@check="emit('change', attr.key, true)"
-				@uncheck="emit('change', attr.key, false)"
-			>
+				@uncheck="emit('change', attr.key, false)">
 				{{ attr.label }}
 			</NcActionCheckbox>
 		</template>
