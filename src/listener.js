@@ -30,14 +30,12 @@ import '@nextcloud/dialogs/style.css'
 import { showError, showSuccess, getFilePickerBuilder } from '@nextcloud/dialogs'
 import { t } from '@nextcloud/l10n'
 
-/* global _ */
-
 /**
  * @param {object} OCA Nextcloud OCA object
  */
 (function(OCA) {
 
-	OCA.Onlyoffice = _.extend({
+	OCA.Onlyoffice = Object.assign({
 		AppName: 'onlyoffice',
 		frameSelector: null,
 		titleBase: window.document.title,
