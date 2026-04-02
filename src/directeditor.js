@@ -26,66 +26,59 @@
  *
  */
 
-/**
- * @param {object} OCA Nextcloud OCA object
- */
-(function(OCA) {
+OCA.Onlyoffice = Object.assign({}, OCA.Onlyoffice)
 
-	OCA.Onlyoffice = Object.assign({}, OCA.Onlyoffice)
-
-	const callMobileMessage = function(messageName, attributes) {
-		let message = messageName
-		if (typeof attributes !== 'undefined') {
-			message = {
-				MessageName: messageName,
-				Values: attributes,
-			}
+const callMobileMessage = function(messageName, attributes) {
+	let message = messageName
+	if (typeof attributes !== 'undefined') {
+		message = {
+			MessageName: messageName,
+			Values: attributes,
 		}
-		let attributesString = null
-		try {
-			attributesString = JSON.stringify(attributes)
-		} catch (e) {
-			attributesString = null
-		}
-
-		// Forward to mobile handler
-		if (window.DirectEditingMobileInterface && typeof window.DirectEditingMobileInterface[messageName] === 'function') {
-			if (attributesString === null || typeof attributesString === 'undefined') {
-				window.DirectEditingMobileInterface[messageName]()
-			} else {
-				window.DirectEditingMobileInterface[messageName](attributesString)
-			}
-		}
-
-		// iOS webkit fallback
-		if (window.webkit
-            && window.webkit.messageHandlers
-            && window.webkit.messageHandlers.DirectEditingMobileInterface) {
-			window.webkit.messageHandlers.DirectEditingMobileInterface.postMessage(message)
-		}
-
-		window.postMessage(message)
+	}
+	let attributesString = null
+	try {
+		attributesString = JSON.stringify(attributes)
+	} catch (e) {
+		attributesString = null
 	}
 
-	OCA.Onlyoffice.directEditor = {
-		close() {
-			callMobileMessage('close')
-		},
-		loaded() {
-			callMobileMessage('loaded')
-		},
-	}
-
-	window.onload = function() {
-		const directEditorError = document.getElementById('directEditorError')
-
-		if (directEditorError) {
-			OCA.Onlyoffice.directEditor.loaded()
-			const directEditorErrorButton = document.getElementById('directEditorErrorButton')
-			directEditorErrorButton.addEventListener('click', function() {
-				OCA.Onlyoffice.directEditor.close()
-			})
+	// Forward to mobile handler
+	if (window.DirectEditingMobileInterface && typeof window.DirectEditingMobileInterface[messageName] === 'function') {
+		if (attributesString === null || typeof attributesString === 'undefined') {
+			window.DirectEditingMobileInterface[messageName]()
+		} else {
+			window.DirectEditingMobileInterface[messageName](attributesString)
 		}
 	}
 
-})(OCA)
+	// iOS webkit fallback
+	if (window.webkit
+        && window.webkit.messageHandlers
+        && window.webkit.messageHandlers.DirectEditingMobileInterface) {
+		window.webkit.messageHandlers.DirectEditingMobileInterface.postMessage(message)
+	}
+
+	window.postMessage(message)
+}
+
+OCA.Onlyoffice.directEditor = {
+	close() {
+		callMobileMessage('close')
+	},
+	loaded() {
+		callMobileMessage('loaded')
+	},
+}
+
+window.onload = function() {
+	const directEditorError = document.getElementById('directEditorError')
+
+	if (directEditorError) {
+		OCA.Onlyoffice.directEditor.loaded()
+		const directEditorErrorButton = document.getElementById('directEditorErrorButton')
+		directEditorErrorButton.addEventListener('click', function() {
+			OCA.Onlyoffice.directEditor.close()
+		})
+	}
+}
