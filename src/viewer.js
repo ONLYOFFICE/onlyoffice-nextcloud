@@ -29,14 +29,7 @@
 import { loadState } from '@nextcloud/initial-state'
 import { generateUrl } from '@nextcloud/router'
 
-/**
- * @param {object} OCA Nextcloud OCA object
- */
-(function(OCA) {
-	if (OCA.Onlyoffice) {
-		return
-	}
-
+if (!OCA.Onlyoffice) {
 	OCA.Onlyoffice = {
 		AppName: 'onlyoffice',
 		frameSelector: null,
@@ -97,5 +90,4 @@ import { generateUrl } from '@nextcloud/router'
 			component: OnlyofficeViewerVue,
 		})
 	}
-
-})(OCA)
+}
