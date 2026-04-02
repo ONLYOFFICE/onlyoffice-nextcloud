@@ -26,8 +26,6 @@
  *
  */
 
-/* eslint-disable import/no-unresolved */
-
 /* global _oc_appswebroots */
 
 import {
