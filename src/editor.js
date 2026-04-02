@@ -46,14 +46,14 @@ import {
 } from './services/EditorService.ts'
 import { encodePath } from '@nextcloud/paths'
 
-/* global _, DocsAPI, oc_defaults */
+/* global DocsAPI, oc_defaults */
 
 /**
  * @param {object} OCA Nextcloud OCA object
  */
 (function(OCA) {
 
-	OCA.Onlyoffice = _.extend({
+	OCA.Onlyoffice = Object.assign({
 		AppName: 'onlyoffice',
 		inframe: false,
 		inviewer: false,
