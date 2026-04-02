@@ -42,7 +42,7 @@ import { emit } from '@nextcloud/event-bus'
 import AppDarkSvg from '../img/app-dark.svg?raw'
 import NewPdfSvg from '../img/new-pdf.svg?raw'
 import { isPublicShare, getSharingToken } from '@nextcloud/sharing/public'
-import { getCurrentUser } from '@nextcloud/auth'
+import { getCurrentUser, getRequestToken } from '@nextcloud/auth'
 import { loadState } from '@nextcloud/initial-state'
 import { t } from '@nextcloud/l10n'
 import { generateFilePath, generateUrl } from '@nextcloud/router'
@@ -209,7 +209,7 @@ function openEditor(fileId, fileDir, fileName, winEditor, isDefault = true) {
 		OCA.Onlyoffice.frameSelector = '#onlyofficeFrame'
 		const iframeEl = document.createElement('iframe')
 		iframeEl.id = 'onlyofficeFrame'
-		iframeEl.setAttribute('nonce', btoa(OC.requestToken))
+		iframeEl.setAttribute('nonce', btoa(getRequestToken()))
 		iframeEl.setAttribute('scrolling', 'no')
 		iframeEl.setAttribute('allowfullscreen', '')
 		iframeEl.src = url + '&inframe=true'

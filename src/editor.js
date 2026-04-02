@@ -26,7 +26,7 @@
  *
  */
 
-import { getCurrentUser } from '@nextcloud/auth'
+import { getCurrentUser, getRequestToken } from '@nextcloud/auth'
 import '@nextcloud/dialogs/style.css'
 import { showError, showSuccess, getFilePickerBuilder } from '@nextcloud/dialogs'
 import { getCanonicalLocale, t } from '@nextcloud/l10n'
@@ -107,7 +107,7 @@ OCA.Onlyoffice.InitEditor = function() {
 
 			const script = document.createElement('script')
 			script.src = config.documentServerUrl + 'web-apps/apps/api/documents/api.js?shardKey=' + config.document.key
-			script.setAttribute('nonce', btoa(OC.requestToken))
+			script.setAttribute('nonce', btoa(getRequestToken()))
 			script.onerror = function() {
 				OCA.Onlyoffice.showMessage(t(OCA.Onlyoffice.AppName, 'ONLYOFFICE cannot be reached. Please contact admin'), 'error', { timeout: -1 })
 			}
