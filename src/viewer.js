@@ -82,7 +82,7 @@ if (!OCA.Onlyoffice) {
 
 		const mimes = Object.values(OCA.Onlyoffice.setting.formats)
 			.filter(format => format.def)
-			.map(format => format.mime)
+			.flatMap(format => format.mime)
 		OCA.Viewer.registerHandler({
 			id: OCA.Onlyoffice.AppName,
 			group: null,
