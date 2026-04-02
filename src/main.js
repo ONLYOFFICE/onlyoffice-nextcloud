@@ -49,6 +49,7 @@ import { loadState } from '@nextcloud/initial-state'
 import { t } from '@nextcloud/l10n'
 import { generateFilePath, generateUrl } from '@nextcloud/router'
 import { createFile, convertFile } from './services/FileService.ts'
+import { getFileExtension } from './utils/files.ts'
 import { spawnDialog } from '@nextcloud/vue/functions/dialog'
 import DownloadPicker from './views/DownloadPicker.vue'
 
@@ -604,15 +605,6 @@ function registerNewFileMenu() {
 }
 
 /**
- * @param {string} fileName file name
- * @return {string} lowercased file extension without the dot
- */
-function getFileExtension(fileName) {
-	const extension = fileName.slice(fileName.lastIndexOf('.') + 1).toLowerCase()
-	return extension
-}
-
-/**
  * @return {boolean} true if the current page is a public file share
  */
 function isPublicFileShare() {
@@ -624,7 +616,6 @@ Object.assign(OCA.Onlyoffice, {
 	CloseEditor: closeEditor,
 	OpenShareDialog: openShareDialog,
 	RefreshVersionsDialog: refreshVersionsDialog,
-	getFileExtension,
 })
 
 if (!OCA.Onlyoffice._initialized) {
