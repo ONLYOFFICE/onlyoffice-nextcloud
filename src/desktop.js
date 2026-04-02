@@ -29,14 +29,14 @@
 import { getCurrentUser } from '@nextcloud/auth'
 import { getRootUrl } from '@nextcloud/router'
 
-/* global _, _oc_appswebroots  */
+/* global _oc_appswebroots  */
 
 /**
  * @param {object} OCA Nextcloud OCA object
  */
 (function(OCA) {
 
-	OCA.Onlyoffice = _.extend({}, OCA.Onlyoffice)
+	OCA.Onlyoffice = Object.assign({}, OCA.Onlyoffice)
 
 	if (!window.AscDesktopEditor) {
 		return
