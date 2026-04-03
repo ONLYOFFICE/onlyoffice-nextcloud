@@ -52,6 +52,20 @@ export class FilesPage {
 		await expect(this.successToast()).toBeVisible()
 	}
 
+	templatePickerDialog(): Locator {
+		return this.page.locator('.templates-picker')
+	}
+
+	templatePickerItem(name: string): Locator {
+		return this.templatePickerDialog()
+			.locator('.template-picker__item')
+			.filter({ hasText: name })
+	}
+
+	templatePickerSubmit(): Locator {
+		return this.templatePickerDialog().locator('input[type="submit"]')
+	}
+
 	downloadPickerDialog(): Locator {
 		return this.page.locator('.onlyoffice-download-picker');
 	}
