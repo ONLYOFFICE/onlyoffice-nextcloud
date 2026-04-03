@@ -1,4 +1,5 @@
 import { test, expect } from '../fixtures'
+import { Locator } from '@playwright/test'
 import path from 'node:path'
 import { DOCUMENT_TEMPLATES_PATH } from '../helpers/templates'
 
@@ -43,20 +44,26 @@ test.describe.serial('Admin settings', () => {
 	})
 
 	test.describe('Common settings', () => {
-		test('Forcesave setting persists after reload', async ({ adminPage }) => {
-			const checkbox = adminPage.forcesaveCheckbox()
-			const initial = await checkbox.evaluate((el: HTMLInputElement) => el.checked)
+		test('Settings persist after save and reload', async ({ adminPage }) => {
+			type CheckboxSetting = { checkbox: Locator; label: Locator; value: boolean }
 
-			await adminPage.forcesaveLabel().click()
+			const settings: CheckboxSetting[] = [
+				{ checkbox: adminPage.forcesaveCheckbox(), label: adminPage.forcesaveLabel(), value: true },
+			]
+
+			for (const setting of settings) {
+				const current = await setting.checkbox.evaluate((el: HTMLInputElement) => el.checked)
+				if (current !== setting.value) await setting.label.click()
+			}
+
 			await adminPage.saveCommonSettings()
 			await adminPage.waitForSuccess()
 
 			await adminPage.goto()
-			await expect(checkbox).toBeChecked({ checked: !initial })
 
-			// restore
-			await adminPage.forcesaveLabel().click()
-			await adminPage.saveCommonSettings()
+			for (const setting of settings) {
+				await expect(setting.checkbox).toBeChecked({ checked: setting.value })
+			}
 		})
 	})
 
