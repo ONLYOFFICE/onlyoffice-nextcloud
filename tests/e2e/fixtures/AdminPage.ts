@@ -35,6 +35,10 @@ export class AdminPage {
 		await expect(this.successToast()).toBeVisible()
 	}
 
+	async waitForError(): Promise<void> {
+		await expect(this.errorToast()).toBeVisible()
+	}
+
 	commonSettingsSection(): Locator {
 		return this.page.locator('.section-onlyoffice-common')
 	}

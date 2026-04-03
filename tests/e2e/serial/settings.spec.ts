@@ -21,7 +21,7 @@ test.describe.serial('Admin settings', () => {
 			await adminPage.fillSecret(jwtSecret)
 			await adminPage.saveServerSettings()
 
-			await expect(adminPage.errorToast()).toBeVisible()
+			await adminPage.waitForError()
 			await expect(adminPage.commonSettingsSection()).toBeHidden()
 			await expect(adminPage.templatesSection()).toBeHidden()
 			await expect(adminPage.securitySection()).toBeHidden()
