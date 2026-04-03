@@ -11,7 +11,7 @@ const TEMPLATE_NAME = 'new.docx'
 const TEMPLATE_PATH = path.join(`${DOCUMENT_TEMPLATES_PATH}/${TEMPLATE_NAME}`)
 
 
-test.describe.serial('Admin settings', () => {
+test.describe('Admin settings', () => {
 	test.beforeEach(async ({ adminPage }) => {
 		await adminPage.goto()
 	})
