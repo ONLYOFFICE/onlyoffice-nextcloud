@@ -405,6 +405,7 @@ function openFormPicker(name, filelist, filesContext = null) {
 		.startAt(startDir)
 		.addButton({
 			label: t(OCA.Onlyoffice.AppName, 'Blank'),
+			variant: 'secondary',
 			callback: () => createFileOverload(name, filelist, 0, 0, true, filesContext),
 		})
 		.addButton({
