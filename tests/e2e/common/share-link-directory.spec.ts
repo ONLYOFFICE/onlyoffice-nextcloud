@@ -50,7 +50,7 @@ test.describe('Public edit directory share', () => {
 			const filesPage = new FilesPage(guestPage)
 			await filesPage.rightClickFile(SOURCE_FILE)
 			await filesPage.menuItem('Convert with ONLYOFFICE').click()
-			await expect(filesPage.successToast()).toBeVisible()
+			await filesPage.waitForSuccess()
 			await expect(filesPage.fileRow(CONVERTED_FILE)).toBeVisible()
 		})
 	})

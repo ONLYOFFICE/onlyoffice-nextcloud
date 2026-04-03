@@ -1,4 +1,4 @@
-import { Page, Locator } from '@playwright/test';
+import { Page, Locator, expect } from '@playwright/test';
 
 export class FilesPage {
 	readonly page: Page;
@@ -46,6 +46,10 @@ export class FilesPage {
 
 	successToast(): Locator {
 		return this.page.locator('.toast-success');
+	}
+
+	async waitForSuccess(): Promise<void> {
+		await expect(this.successToast()).toBeVisible()
 	}
 
 	downloadPickerDialog(): Locator {
