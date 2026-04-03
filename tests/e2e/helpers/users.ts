@@ -1,4 +1,5 @@
 import { createAPIRequest, ocsHeadersWithAuth } from './ocs';
+import { randomName } from './utils';
 
 export interface User {
 	username: string
@@ -40,7 +41,7 @@ export async function deleteUser(user: User): Promise<void> {
 
 export async function createRandomUser(): Promise<User> {
 	const user: User = {
-		username: `user-${crypto.randomUUID().slice(0, 8)}`,
+		username: `user-${randomName()}`,
 		password: 'password',
 	}
 	await createUser(user)
