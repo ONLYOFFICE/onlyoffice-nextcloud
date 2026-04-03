@@ -2,6 +2,8 @@ import { test, expect } from '../fixtures'
 import { Locator } from '@playwright/test'
 import path from 'node:path'
 import { DOCUMENT_TEMPLATES_PATH } from '../helpers/templates'
+import { createGroup, deleteGroup } from '../helpers/groups'
+import { randomName } from '../helpers/utils'
 import { saveCommonSettings } from '../helpers/adminSettings'
 
 const docsUrl = process.env.DOCUMENT_SERVER_URL ?? 'http://localhost:8080'
@@ -69,6 +71,35 @@ test.describe('Admin settings', () => {
 			for (const setting of settings) {
 				await expect(setting.checkbox).toBeChecked({ checked: setting.value })
 			}
+		})
+
+		test.describe('Allow groups', () => {
+			let group: string
+
+			test.beforeAll(async () => {
+				group = `group-${randomName()}`
+				await createGroup(group)
+			})
+
+			test.afterAll(async () => {
+				await deleteGroup(group)
+			})
+
+			test('selector appears and selected group persists', async ({ adminPage }) => {
+				await expect(adminPage.groupsSelector()).toBeHidden()
+				await adminPage.useGroupsLabel().click()
+				await expect(adminPage.groupsSelector()).toBeVisible()
+
+				await adminPage.groupsSelector().fill(group)
+				await adminPage.groupsOption(group).waitFor()
+				await adminPage.groupsOption(group).click()
+
+				await adminPage.saveCommonSettings()
+				await adminPage.waitForSuccess()
+
+				await adminPage.goto()
+				await expect(adminPage.groupsSelected(group)).toBeVisible()
+			})
 		})
 	})
 

@@ -55,6 +55,26 @@ export class AdminPage {
 		return this.page.locator('.onlyoffice-template-item').filter({ has: this.page.locator('p', { hasText: name }) })
 	}
 
+	useGroupsCheckbox(): Locator {
+		return this.page.locator('#onlyoffice-groups')
+	}
+
+	useGroupsLabel(): Locator {
+		return this.page.locator('label[for="onlyoffice-groups"]')
+	}
+
+	groupsSelector(): Locator {
+		return this.page.locator('p.block-inline .vs__search')
+	}
+
+	groupsOption(name: string): Locator {
+		return this.page.locator('.vs__dropdown-option', { hasText: name })
+	}
+
+	groupsSelected(name: string): Locator {
+		return this.page.locator('.vs__selected', { hasText: name })
+	}
+
 	forcesaveCheckbox(): Locator {
 		return this.page.locator('#onlyoffice-forcesave')
 	}
