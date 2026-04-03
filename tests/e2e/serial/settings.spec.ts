@@ -32,7 +32,7 @@ test.describe.serial('Admin settings', () => {
 			await adminPage.fillSecret(jwtSecret)
 			await adminPage.saveServerSettings()
 
-			await expect(adminPage.successToast()).toBeVisible()
+			await adminPage.waitForSuccess()
 			await expect(adminPage.commonSettingsSection()).toBeVisible()
 			await expect(adminPage.templatesSection()).toBeVisible()
 			await expect(adminPage.securitySection()).toBeVisible()
@@ -49,7 +49,7 @@ test.describe.serial('Admin settings', () => {
 
 			await adminPage.forcesaveLabel().click()
 			await adminPage.saveCommonSettings()
-			await expect(adminPage.successToast()).toBeVisible()
+			await adminPage.waitForSuccess()
 
 			await adminPage.goto()
 			await expect(checkbox).toBeChecked({ checked: !initial })
@@ -67,7 +67,7 @@ test.describe.serial('Admin settings', () => {
 
 			await adminPage.pluginsLabel().click()
 			await adminPage.saveSecuritySettings()
-			await expect(adminPage.successToast()).toBeVisible()
+			await adminPage.waitForSuccess()
 
 			await adminPage.goto()
 			await expect(checkbox).toBeChecked({ checked: !initial })
@@ -82,14 +82,14 @@ test.describe.serial('Admin settings', () => {
 		test('Upload template', async ({ adminPage }) => {
 			await adminPage.uploadTemplate(TEMPLATE_PATH)
 
-			await expect(adminPage.successToast()).toBeVisible()
+			await adminPage.waitForSuccess()
 			await expect(adminPage.templateItem(TEMPLATE_NAME)).toBeVisible()
 		})
 
 		test('Delete template', async ({ adminPage }) => {
 			await adminPage.deleteTemplate(TEMPLATE_NAME)
 
-			await expect(adminPage.successToast()).toBeVisible()
+			await adminPage.waitForSuccess()
 			await expect(adminPage.templateItem(TEMPLATE_NAME)).toBeHidden()
 		})
 	})

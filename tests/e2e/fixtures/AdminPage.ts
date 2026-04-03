@@ -1,4 +1,4 @@
-import { Locator, Page } from "@playwright/test";
+import { Locator, Page, expect } from "@playwright/test";
 
 export class AdminPage {
 	readonly page: Page
@@ -29,6 +29,10 @@ export class AdminPage {
 
 	successToast(): Locator {
 		return this.page.locator('.toast-success')
+	}
+
+	async waitForSuccess(): Promise<void> {
+		await expect(this.successToast()).toBeVisible()
 	}
 
 	commonSettingsSection(): Locator {
