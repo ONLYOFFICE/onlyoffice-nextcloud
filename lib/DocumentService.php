@@ -332,7 +332,7 @@ class DocumentService {
                 $errorMessage = $errorMessageTemplate . ": Invalid token";
                 break;
             case 5:
-                $errorMessage = $errorMessageTemplate . ": Command not correсt";
+                $errorMessage = $errorMessageTemplate . ": Command not correct";
                 break;
             case 3:
                 $errorMessage = $errorMessageTemplate . ": Internal server error";

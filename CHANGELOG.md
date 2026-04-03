@@ -553,7 +553,7 @@
 ## Changed
 - initialization script
 - case sensitivity in extension
-- сreating files with an existing name
+- creating files with an existing name
 
 ## 1.1.6
 ## Changed
