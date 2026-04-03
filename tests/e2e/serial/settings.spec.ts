@@ -2,6 +2,7 @@ import { test, expect } from '../fixtures'
 import { Locator } from '@playwright/test'
 import path from 'node:path'
 import { DOCUMENT_TEMPLATES_PATH } from '../helpers/templates'
+import { saveCommonSettings } from '../helpers/adminSettings'
 
 const docsUrl = process.env.DOCUMENT_SERVER_URL ?? 'http://localhost:8080'
 const jwtSecret = process.env.JWT_SECRET ?? 'secret'
@@ -44,6 +45,10 @@ test.describe.serial('Admin settings', () => {
 	})
 
 	test.describe('Common settings', () => {
+		test.afterEach(async () => {
+			await saveCommonSettings({})
+		})
+
 		test('Settings persist after save and reload', async ({ adminPage }) => {
 			type CheckboxSetting = { checkbox: Locator; label: Locator; value: boolean }
 
