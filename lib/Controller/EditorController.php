@@ -570,7 +570,7 @@ class EditorController extends Controller {
      */
     #[NoAdminRequired]
     #[PublicPage]
-    public function reference(array $referenceData, string $path = "", string $link = ""): DataResponse {
+    public function reference(array $referenceData, ?string $path = null, ?string $link = null): DataResponse {
         $this->logger->debug("reference: " . json_encode($referenceData) . " $path");
 
         if (!$this->appConfig->isUserAllowedToUse()) {
@@ -593,7 +593,7 @@ class EditorController extends Controller {
 
         $userFolder = $this->root->getUserFolder($userId);
         if ($file === null
-            && $path !== ""
+            && $path !== null
             && $userFolder->nodeExists($path)) {
             $node = $userFolder->get($path);
             if ($node instanceof File
@@ -656,7 +656,7 @@ class EditorController extends Controller {
      */
     #[NoAdminRequired]
     #[PublicPage]
-    public function convert(int $fileId, string $shareToken = ""): DataResponse {
+    public function convert(int $fileId, ?string $shareToken = null): DataResponse {
         $this->logger->debug("Convert: $fileId");
 
         if (empty($shareToken) && !$this->appConfig->isUserAllowedToUse()) {
@@ -1219,7 +1219,7 @@ class EditorController extends Controller {
         $ext = strtolower(pathinfo((string) $fileName, PATHINFO_EXTENSION));
         $toExtension = strtolower((string) $toExtension);
 
-        if ($toExtension === null
+        if ($toExtension === ""
             || $ext === $toExtension
             || $template) {
             return new DataDownloadResponse($file->getContent(), $fileName, $file->getMimeType());
