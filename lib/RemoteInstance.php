@@ -77,8 +77,9 @@ class RemoteInstance {
             WHERE `remote` = ?
         ");
         $result = $select->execute([$remote]);
+        $row = $result->fetch();
 
-        return $result->fetch();
+        return $row === false ? null : $row;
     }
 
     /**
