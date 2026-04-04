@@ -9,3 +9,7 @@
 /playwright-report/
 /tests/e2e/.cache/
 /tests/e2e/.auth/
+
+# Styles
+/css/*.chunk.css
+/css/onlyoffice-*.css
