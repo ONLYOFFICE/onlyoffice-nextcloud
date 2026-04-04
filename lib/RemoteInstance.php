@@ -160,7 +160,7 @@ class RemoteInstance {
             self::update($remote, $status);
         }
 
-        $logger->debug("Remote instance " . $remote . " was stored to database status " . $dbremote["status"], ["app" => self::APP_NAME]);
+        $logger->debug("Remote instance " . $remote . " was stored to database status " . $status, ["app" => self::APP_NAME]);
 
         self::$healthRemote[$remote] = $status;
 
