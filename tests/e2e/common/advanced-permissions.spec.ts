@@ -30,7 +30,7 @@ test.describe('User share without reshare permission', () => {
 	test('Review only permission can be toggled', async ({ filesPage }) => {
 		await filesPage.openSidebar(USER_SHARE_FILE)
 		await filesPage.sidebarTab('sharing').click()
-		await expect(filesPage.page.getByText(`${shareRecipient.username} Custom`)).toBeVisible()
+		await expect(filesPage.page.locator('.sharing-entry__summary__desc', { hasText: shareRecipient.username })).toBeVisible()
 
 		await filesPage.sidebarTab('onlyofficeSharingTabView').click()
 
