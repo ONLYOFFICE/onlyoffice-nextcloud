@@ -28,9 +28,6 @@ test.describe('Public edit directory share', () => {
 			const filesPage = new FilesPage(guestPage)
 			await filesPage.openNewMenu()
 			await filesPage.menuItem(`New ${fileType}`).click()
-			const createButton = filesPage.page.locator('button[data-cy-files-new-node-dialog-submit=""]').filter({ hasText: 'Create' })
-			await expect(createButton).toBeVisible()
-			await createButton.click()
 
 			const editorPage = new EditorPage(guestPage)
 			await editorPage.waitForEditor()
