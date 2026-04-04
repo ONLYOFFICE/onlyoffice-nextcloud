@@ -35,11 +35,15 @@ import {
 	Permission,
 	DefaultType,
 	addNewFileMenuEntry,
+	getNewFileMenuEntries,
 } from '@nextcloud/files'
 import '@nextcloud/dialogs/style.css'
 import { showError, showSuccess, getFilePickerBuilder } from '@nextcloud/dialogs'
 import { emit } from '@nextcloud/event-bus'
 import AppDarkSvg from '../img/app-dark.svg?raw'
+import NewDocxSvg from '../img/new-docx.svg?raw'
+import NewXlsxSvg from '../img/new-xlsx.svg?raw'
+import NewPptxSvg from '../img/new-pptx.svg?raw'
 import NewPdfSvg from '../img/new-pdf.svg?raw'
 import { isPublicShare, getSharingToken } from '@nextcloud/sharing/public'
 import { getCurrentUser, getRequestToken } from '@nextcloud/auth'
@@ -586,6 +590,58 @@ function registerFileActions() {
  * Register ONLYOFFICE entries in the new file menu
  */
 function registerNewFileMenu() {
+	const alreadyRegistered = getNewFileMenuEntries().some(menu => menu.id.includes('onlyoffice'))
+
+	if (isPublicShare() && !alreadyRegistered) {
+		// Document
+		addNewFileMenuEntry({
+			id: 'new-onlyoffice-docx',
+			displayName: t(OCA.Onlyoffice.AppName, 'New document'),
+			enabled: (folder) => {
+				return (folder.permissions & Permission.CREATE) !== 0
+			},
+			iconSvgInline: NewDocxSvg,
+			order: 21,
+			handler: (context) => {
+				const name = t(OCA.Onlyoffice.AppName, 'New document')
+				const dirContext = { dir: context.path }
+				createFileOverload(name + '.docx', dirContext, null, null, true, context)
+			},
+		})
+
+		// Spreadsheet
+		addNewFileMenuEntry({
+			id: 'new-onlyoffice-xlsx',
+			displayName: t(OCA.Onlyoffice.AppName, 'New spreadsheet'),
+			enabled: (folder) => {
+				return (folder.permissions & Permission.CREATE) !== 0
+			},
+			iconSvgInline: NewXlsxSvg,
+			order: 22,
+			handler: (context) => {
+				const name = t(OCA.Onlyoffice.AppName, 'New spreadsheet')
+				const dirContext = { dir: context.path }
+				createFileOverload(name + '.xlsx', dirContext, null, null, true, context)
+			},
+		})
+
+		// Presentation
+		addNewFileMenuEntry({
+			id: 'new-onlyoffice-pptx',
+			displayName: t(OCA.Onlyoffice.AppName, 'New presentation'),
+			enabled: (context) => {
+				return (context.permissions & Permission.CREATE) !== 0
+			},
+			iconSvgInline: NewPptxSvg,
+			order: 23,
+			handler: (context) => {
+				const name = t(OCA.Onlyoffice.AppName, 'New presentation')
+				const dirContext = { dir: context.path }
+				createFileOverload(name + '.pptx', dirContext, null, null, true, context)
+			},
+		})
+	}
+
 	// PDF Form
 	addNewFileMenuEntry({
 		id: 'new-onlyoffice-pdf',
