@@ -885,7 +885,7 @@ class EditorController extends Controller {
                 $historyItem["user"] = [
                     "name" => $authorName,
                 ];
-            } else {
+            } elseif ($owner !== null) {
                 $authorName = $owner->getDisplayName();
                 $authorId = $owner->getUID();
                 $historyItem["user"] = [
@@ -927,7 +927,7 @@ class EditorController extends Controller {
             $historyItem["user"] = [
                 "name" => $authorName,
             ];
-        } else {
+        } elseif ($owner !== null) {
             $authorName = $owner->getDisplayName();
             $authorId = $owner->getUID();
             $historyItem["user"] = [
