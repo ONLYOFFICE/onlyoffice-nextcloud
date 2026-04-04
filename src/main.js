@@ -82,7 +82,7 @@ function createFileOverload(name, context, templateId, targetId, open = true, fi
 				mtime: new Date(),
 				mime: response.mimetype,
 				name: response.name,
-				owner: getCurrentUser().uid || null,
+				owner: getCurrentUser()?.uid || null,
 				permissions: Permission.ALL,
 				type: 'file',
 				root: filesContext?.root || '/files/' + getCurrentUser().uid,
