@@ -113,15 +113,15 @@ class EditorApiController extends OCSController {
     #[PublicPage]
     public function config(
         int $fileId,
-        string $filePath = "",
-        string $shareToken = "",
-        string $directToken = "",
+        ?string $filePath = null,
+        ?string $shareToken = null,
+        ?string $directToken = null,
         bool $inframe = false,
         bool $inviewer = false,
         bool $desktop = false,
-        string $guestName = "",
+        ?string $guestName = null,
         bool $template = false,
-        string $anchor = ""
+        ?string $anchor = null
     ): JSONResponse {
 
         if (!empty($directToken)) {
@@ -478,7 +478,7 @@ class EditorApiController extends OCSController {
             $params["editorConfig"]["tenant"] = $this->appConfig->getSystemValue("instanceid", true);
         }
 
-        if ($anchor !== "") {
+        if (!empty($anchor)) {
             try {
                 $actionLink = json_decode($anchor, true);
 
@@ -515,7 +515,7 @@ class EditorApiController extends OCSController {
      * @param string $filePath - file path
      * @param bool $template - file is template
      */
-    private function getFile(?string $userId, ?int $fileId, string $filePath = "", bool $template = false): array {
+    private function getFile(?string $userId, ?int $fileId, ?string $filePath = null, bool $template = false): array {
         if (empty($userId)) {
             return [null, $this->trans->t("UserId is empty"), null];
         }
@@ -570,7 +570,7 @@ class EditorApiController extends OCSController {
     private function getUrl(
         File $file,
         ?IUser $user = null,
-        string $shareToken = "",
+        ?string $shareToken = null,
         bool $changes = false,
         bool $template = false
     ): string {
