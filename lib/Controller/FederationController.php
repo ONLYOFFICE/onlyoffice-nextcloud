@@ -97,7 +97,7 @@ class FederationController extends OCSController {
     #[NoAdminRequired]
     #[NoCSRFRequired]
     #[PublicPage]
-    public function keylock(string $shareToken, string $path, bool $lock, bool $fs): DataResponse {
+    public function keylock(string $shareToken, string $path, bool $lock, ?bool $fs): DataResponse {
         [$file, $error, $share] = $this->fileUtility->getFileByToken(null, $shareToken, $path);
 
         if (isset($error)) {

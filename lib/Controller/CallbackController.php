@@ -337,14 +337,14 @@ class CallbackController extends Controller {
         string $doc,
         string $key,
         int $status,
-        array $actions = [],
-        array $users = [],
-        string $changesurl = "",
-        string $filetype = "",
+        ?array $actions = null,
+        ?array $users = null,
+        ?string $changesurl = null,
+        ?string $filetype = null,
         ?int $forcesavetype = null,
-        array $history = [],
-        string $url = "",
-        string $token = ""
+        ?array $history = null,
+        ?string $url = null,
+        ?string $token = null
     ): JSONResponse {
 
         [$hashData, $error] = $this->crypt->readHash($doc);
@@ -588,7 +588,7 @@ class CallbackController extends Controller {
     private function getFile(
         ?string $userId,
         ?int $fileId,
-        string $filePath = "",
+        ?string $filePath = null,
         int $version = 0,
         bool $template = false
     ): array {

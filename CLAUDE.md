@@ -115,6 +115,37 @@ E2E structure:
 - `tests/e2e/fixtures/` — Page Object Models (`FilesPage`, `EditorPage`, `AdminPage`)
 - `tests/e2e/helpers/` — shared API utilities (`auth`, `ocs`, `shares`, `users`, `webdav`, `templates`, `talk`)
 
+## Commit Message Convention
+
+Use **Conventional Commits**: `type(scope): description`
+
+**Types:** `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, `style`
+
+**Scopes** map to feature areas of the app:
+
+| Scope | What it covers |
+|---|---|
+| `editor` | Editor page — `EditorController`, `EditorApiController`, `editor.js` |
+| `callback` | Document Server callbacks — `CallbackController` |
+| `settings` | Admin settings — `SettingsController`, `settings.js`, `views/settings/` |
+| `share` | Advanced sharing — `SharingApiController`, `share.js`, `ShareTab.vue` |
+| `template` | Template management — `TemplateController`, `TemplateManager`, `template.js` |
+| `viewer` | Nextcloud Viewer integration — `viewer.js`, `ViewerListener` |
+| `preview` | File preview generation — `Preview.php` |
+| `direct` | Direct editor — `DirectEditor`, `directeditor.js` |
+| `desktop` | Desktop app integration — `desktop.js` |
+| `listener` | Same-tab postMessage listener — `listener.js` |
+| `main` | Files app integration — `main.js` (file actions, new-file menu) |
+| `federation` | Federated sharing — `FederationController`, `RemoteInstance` |
+| `config` | App configuration — `AppConfig` |
+| `crypt` | Token/encryption — `Crypt.php` |
+| `key` | Document key management — `KeyManager` |
+| `email` | Email notifications — `EmailManager`, `Notifier` |
+| `watermark` | Watermark logic |
+| `deps` | Package/dependency changes |
+| `build` | Webpack/Vite config |
+| `eslint` | Linting config |
+
 ## Notes
 
 **CSS bundles are not auto-loaded.** Vite extracts CSS into `css/onlyoffice-*.css`. Each must be explicitly registered in the PHP listener alongside its script via `Util::addStyle()`.

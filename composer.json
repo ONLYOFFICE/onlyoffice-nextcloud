@@ -13,11 +13,11 @@
         }
     },
     "scripts": {
-        "test:unit": "vendor/bin/phpunit",
-        "psalm": "psalm --no-cache --threads=$(nproc)",
+        "test:unit": "vendor-bin/phpunit/vendor/bin/phpunit",
+        "psalm": "vendor-bin/psalm/vendor/bin/psalm --no-cache --threads=$(nproc)",
         "psalm:dev": "@psalm",
-        "psalm:update-baseline": "psalm --threads=1 --update-baseline --set-baseline=tests/psalm-baseline.xml",
-        "test:integration": "vendor/bin/behat --config tests/integration/behat/config/behat.php"
+        "psalm:update-baseline": "vendor-bin/psalm/vendor/bin/psalm --threads=1 --update-baseline --set-baseline=tests/psalm-baseline.xml",
+        "test:integration": "vendor-bin/behat/vendor/bin/behat --config tests/integration/behat/config/behat.php"
     },
     "require": {
         "php": ">=8.2 <8.6",
@@ -29,6 +29,11 @@
     "config": {
         "allow-plugins": {
             "bamarni/composer-bin-plugin": true
+        }
+    },
+    "extra": {
+        "bamarni-bin": {
+            "bin-links": false
         }
     }
 }
