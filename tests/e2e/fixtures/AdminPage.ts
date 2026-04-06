@@ -64,7 +64,7 @@ export class AdminPage {
 	}
 
 	groupsSelector(): Locator {
-		return this.page.locator('p.block-inline .vs__search')
+		return this.commonSettingsSection().getByPlaceholder('Groups')
 	}
 
 	groupsOption(name: string): Locator {
