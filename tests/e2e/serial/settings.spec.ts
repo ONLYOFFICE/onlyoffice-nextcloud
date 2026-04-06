@@ -32,6 +32,7 @@ test.describe('Admin settings', () => {
 		})
 
 		test('Save with valid url', async ({ adminPage }) => {
+			await adminPage.clearServerSettings()
 			await adminPage.fillUrl(docsUrl)
 			await adminPage.fillSecret(jwtSecret)
 			await adminPage.saveServerSettings()
