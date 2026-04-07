@@ -58,22 +58,22 @@ class FilesListener implements IEventListener {
             && $this->appConfig->isUserAllowedToUse()) {
             Util::addScript("onlyoffice", "onlyoffice-desktop");
             Util::addScript("onlyoffice", "onlyoffice-main");
-            Util::addScript("onlyoffice", "onlyoffice-template");
+            Util::addStyle("onlyoffice", "onlyoffice-main");
 
             if ($this->appConfig->getSameTab()) {
                 Util::addScript("onlyoffice", "onlyoffice-listener");
+                Util::addStyle("onlyoffice", "onlyoffice-listener");
             }
 
             if ($this->appConfig->getAdvanced()
                 && Server::get(\OCP\App\IAppManager::class)->isEnabledForAnyone("files_sharing")) {
                 Util::addScript("onlyoffice", "onlyoffice-share");
-                Util::addStyle("onlyoffice", "share");
+                Util::addStyle("onlyoffice", "onlyoffice-share");
             }
 
             $this->initialState->provideLazyInitialState("settings", fn() => Server::get(SettingsData::class));
 
             Util::addStyle("onlyoffice", "main");
-            Util::addStyle("onlyoffice", "template");
             Util::addStyle("onlyoffice", "format");
         }
     }

@@ -35,43 +35,32 @@
 	</NcDialog>
 </template>
 
-<script>
+<script setup>
 import NcDialog from '@nextcloud/vue/components/NcDialog'
 import { t } from '@nextcloud/l10n'
+import { computed } from 'vue'
 
-export default {
-	name: 'EmptyJwtInfoDialog',
+const emit = defineEmits(['close'])
 
-	components: { NcDialog },
-
-	emits: ['close'],
-
-	data() {
-		return {
-			successText: t('onlyoffice', 'Server settings have been successfully updated'),
-			dialogName: t('onlyoffice', 'Info'),
-			buttons: [
-				{
-					label: t('core', 'Ok'),
-					variant: 'primary',
-					callback: () => this.$emit('close', true),
-				},
-			],
-		}
+const successText = t('onlyoffice', 'Server settings have been successfully updated')
+const dialogName = t('onlyoffice', 'Info')
+const buttons = [
+	{
+		label: t('core', 'Ok'),
+		variant: 'primary',
+		callback: () => emit('close', true),
 	},
+]
 
-	computed: {
-		warningHtml() {
-			const securityUrl = 'https://api.onlyoffice.com/docs/docs-api/get-started/how-it-works/security/'
-			return t(
-				'onlyoffice',
-				'To ensure the security of important parameters in ONLYOFFICE Docs requests, please set a Secret Key on the Settings page. To learn more, <a href="{url}" target="_blank">click here</a>.',
-				{ url: securityUrl },
-				{ escape: false, sanitize: false },
-			)
-		},
-	},
-}
+const warningHtml = computed(() => {
+	const securityUrl = 'https://api.onlyoffice.com/docs/docs-api/get-started/how-it-works/security/'
+	return t(
+		'onlyoffice',
+		'To ensure the security of important parameters in ONLYOFFICE Docs requests, please set a Secret Key on the Settings page. To learn more, <a href="{url}" target="_blank">click here</a>.',
+		{ url: securityUrl },
+		{ escape: false, sanitize: false },
+	)
+})
 </script>
 
 <style scoped lang="scss">

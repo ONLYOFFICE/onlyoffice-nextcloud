@@ -37,9 +37,9 @@ for (const fileType of ['docx', 'xlsx', 'pptx']) {
             await deleteFile(`/${fileName}`, user)
         })
 
-        test(`Editor opens for ${fileType} file`, async ({ filesPage }) => {
+        test(`Editor opens for ${fileType} file`, async ({ filesPage, editorPage }) => {
             await filesPage.dblClickFile(fileName)
-            await filesPage.page.waitForEvent('console', msg => msg.text() === 'ONLYOFFICE Editor is loaded')
+            await editorPage.waitForEditor()
         })
     })
 }

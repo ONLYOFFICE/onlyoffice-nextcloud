@@ -1,4 +1,4 @@
-import { Locator, Page } from "@playwright/test";
+import { Locator, Page, expect } from "@playwright/test";
 
 export class AdminPage {
 	readonly page: Page
@@ -12,15 +12,15 @@ export class AdminPage {
 	}
 
 	url(): Locator {
-		return this.page.locator('#onlyofficeUrl')
+		return this.page.locator('#onlyoffice-url')
 	}
 
 	secret(): Locator {
-		return this.page.locator('#onlyofficeSecret')
+		return this.page.locator('#onlyoffice-secret')
 	}
 
 	saveServerSettingsButton(): Locator {
-		return this.page.locator('#onlyofficeAddrSave')
+		return this.page.locator('#onlyoffice-server-save')
 	}
 
 	errorToast(): Locator {
@@ -29,6 +29,14 @@ export class AdminPage {
 
 	successToast(): Locator {
 		return this.page.locator('.toast-success')
+	}
+
+	async waitForSuccess(): Promise<void> {
+		await expect(this.successToast()).toBeVisible()
+	}
+
+	async waitForError(): Promise<void> {
+		await expect(this.errorToast()).toBeVisible()
 	}
 
 	commonSettingsSection(): Locator {
@@ -47,20 +55,56 @@ export class AdminPage {
 		return this.page.locator('.onlyoffice-template-item').filter({ has: this.page.locator('p', { hasText: name }) })
 	}
 
+	useGroupsCheckbox(): Locator {
+		return this.page.locator('#onlyoffice-groups')
+	}
+
+	useGroupsLabel(): Locator {
+		return this.page.locator('label[for="onlyoffice-groups"]')
+	}
+
+	groupsSelector(): Locator {
+		return this.commonSettingsSection().getByPlaceholder('Groups')
+	}
+
+	groupsOption(name: string): Locator {
+		return this.page.locator('.vs__dropdown-option', { hasText: name })
+	}
+
+	groupsSelected(name: string): Locator {
+		return this.page.locator('.vs__selected', { hasText: name })
+	}
+
 	forcesaveCheckbox(): Locator {
-		return this.page.locator('#onlyofficeForcesave')
+		return this.page.locator('#onlyoffice-forcesave')
 	}
 
 	forcesaveLabel(): Locator {
-		return this.page.locator('label[for="onlyofficeForcesave"]')
+		return this.page.locator('label[for="onlyoffice-forcesave"]')
 	}
 
 	pluginsCheckbox(): Locator {
-		return this.page.locator('#onlyofficePlugins')
+		return this.page.locator('#onlyoffice-plugins')
 	}
 
 	pluginsLabel(): Locator {
-		return this.page.locator('label[for="onlyofficePlugins"]')
+		return this.page.locator('label[for="onlyoffice-plugins"]')
+	}
+
+	advancedToggle(): Locator {
+		return this.page.locator('.onlyoffice-adv a')
+	}
+
+	internalUrl(): Locator {
+		return this.page.locator('#onlyoffice-internal-url')
+	}
+
+	storageUrl(): Locator {
+		return this.page.locator('#onlyoffice-storage-url')
+	}
+
+	jwtHeader(): Locator {
+		return this.page.locator('#onlyoffice-jwt-header')
 	}
 
 	async fillUrl(url: string): Promise<void> {
@@ -69,6 +113,22 @@ export class AdminPage {
 
 	async fillSecret(secret: string): Promise<void> {
 		await this.secret().fill(secret)
+	}
+
+	async fillInternalUrl(url: string): Promise<void> {
+		const input = this.internalUrl()
+		if (!await input.isVisible()) {
+			await this.advancedToggle().click()
+		}
+		await input.fill(url)
+	}
+
+	async clearServerSettings(): Promise<void> {
+		await this.url().fill('')
+		await this.secret().fill('')
+		await this.fillInternalUrl('')
+		await this.storageUrl().fill('')
+		await this.jwtHeader().fill('')
 	}
 
 	async saveServerSettings(): Promise<void> {
@@ -84,10 +144,10 @@ export class AdminPage {
 	}
 
 	async saveCommonSettings(): Promise<void> {
-		await this.page.locator('#onlyofficeSave').click()
+		await this.page.locator('#onlyoffice-common-save').click()
 	}
 
 	async saveSecuritySettings(): Promise<void> {
-		await this.page.locator('#onlyofficeSecuritySave').click()
+		await this.page.locator('#onlyoffice-security-save').click()
 	}
 }

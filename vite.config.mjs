@@ -8,6 +8,5 @@ export default createAppConfig({
     listener: 'src/listener.js',
     settings: 'src/settings.js',
     share: 'src/share.js',
-    template: 'src/template.js',
     viewer: 'src/viewer.js',
 })

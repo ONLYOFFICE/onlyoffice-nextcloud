@@ -10,10 +10,13 @@
             "license": "AGPL-3.0",
             "dependencies": {
                 "@nextcloud/auth": "^2.5.3",
+                "@nextcloud/axios": "^2.5.2",
+                "@nextcloud/dialogs": "^7.3.0",
                 "@nextcloud/event-bus": "^3.3.3",
                 "@nextcloud/files": "^4.0.0",
                 "@nextcloud/initial-state": "^3.0.0",
                 "@nextcloud/l10n": "^3.4.1",
+                "@nextcloud/paths": "^2.4.0",
                 "@nextcloud/router": "^3.1.0",
                 "@nextcloud/sharing": "^0.4.0",
                 "@nextcloud/vue": "^9.5.0",
@@ -26,8 +29,10 @@
                 "@nextcloud/vite-config": "^2.5.2",
                 "@playwright/test": "^1.58.2",
                 "@types/node": "^25.4.0",
+                "@vue/tsconfig": "^0.5.1",
                 "stylelint": "^17.4.0",
                 "stylelint-config-standard": "^40.0.0",
+                "typescript": "^5.9.3",
                 "vite": "^7.3.1"
             }
         },
@@ -1063,6 +1068,12 @@
             "dev": true,
             "license": "MIT"
         },
+        "node_modules/@mdi/js": {
+            "version": "7.4.47",
+            "resolved": "https://registry.npmjs.org/@mdi/js/-/js-7.4.47.tgz",
+            "integrity": "sha512-KPnNOtm5i2pMabqZxpUz7iQf+mfrYZyKCZ8QNz85czgEt7cuHcGorWfdzUMWYA0SD+a6Hn4FmJ+YhzzzjkTZrQ==",
+            "license": "Apache-2.0"
+        },
         "node_modules/@microsoft/api-extractor": {
             "version": "7.57.6",
             "dev": true,
@@ -1225,6 +1236,44 @@
                 "node": "^20.0.0 || ^22.0.0 || ^24.0.0"
             }
         },
+        "node_modules/@nextcloud/dialogs": {
+            "version": "7.3.0",
+            "resolved": "https://registry.npmjs.org/@nextcloud/dialogs/-/dialogs-7.3.0.tgz",
+            "integrity": "sha512-pFuM10Dkvip+wSBaElcbSAN7Jynp41HJUh5kndRYpJipYl0SpNfjIe32+uNfOI43/tln4ScTlrfjIX6cK+3uHg==",
+            "license": "AGPL-3.0-or-later",
+            "dependencies": {
+                "@mdi/js": "^7.4.47",
+                "@nextcloud/auth": "^2.5.3",
+                "@nextcloud/axios": "^2.5.2",
+                "@nextcloud/browser-storage": "^0.5.0",
+                "@nextcloud/event-bus": "^3.3.3",
+                "@nextcloud/files": "^4.0.0",
+                "@nextcloud/initial-state": "^3.0.0",
+                "@nextcloud/l10n": "^3.4.1",
+                "@nextcloud/paths": "^3.0.0",
+                "@nextcloud/router": "^3.1.0",
+                "@nextcloud/sharing": "^0.4.0",
+                "@nextcloud/vue": "^9.5.0",
+                "@types/toastify-js": "^1.12.4",
+                "@vueuse/core": "^14.2.1",
+                "p-queue": "^9.0.1",
+                "toastify-js": "^1.12.0",
+                "vue": "^3.5.28",
+                "webdav": "^5.8.0"
+            },
+            "engines": {
+                "node": "^20 || ^22 || ^24"
+            }
+        },
+        "node_modules/@nextcloud/dialogs/node_modules/@nextcloud/paths": {
+            "version": "3.1.0",
+            "resolved": "https://registry.npmjs.org/@nextcloud/paths/-/paths-3.1.0.tgz",
+            "integrity": "sha512-vtFYA/kthaUDzu6KejTOL1OwnOy7/yynq5zdB/UBpYacAWjUX5Ddh4OMWx3rEavkBJ9/QGhrFryNJLjNfe8OQA==",
+            "license": "GPL-3.0-or-later",
+            "engines": {
+                "node": "^20.0.0 || ^22.0.0 || ^24.0.0"
+            }
+        },
         "node_modules/@nextcloud/eslint-config": {
             "version": "9.0.0-rc.8",
             "dev": true,
@@ -1301,6 +1350,15 @@
                 "node": "^20.0.0 || ^22.0.0 || ^24.0.0"
             }
         },
+        "node_modules/@nextcloud/files/node_modules/@nextcloud/paths": {
+            "version": "3.1.0",
+            "resolved": "https://registry.npmjs.org/@nextcloud/paths/-/paths-3.1.0.tgz",
+            "integrity": "sha512-vtFYA/kthaUDzu6KejTOL1OwnOy7/yynq5zdB/UBpYacAWjUX5Ddh4OMWx3rEavkBJ9/QGhrFryNJLjNfe8OQA==",
+            "license": "GPL-3.0-or-later",
+            "engines": {
+                "node": "^20.0.0 || ^22.0.0 || ^24.0.0"
+            }
+        },
         "node_modules/@nextcloud/files/node_modules/@nextcloud/sharing": {
             "version": "0.3.0",
             "license": "GPL-3.0-or-later",
@@ -1347,7 +1405,9 @@
             }
         },
         "node_modules/@nextcloud/paths": {
-            "version": "3.1.0",
+            "version": "2.4.0",
+            "resolved": "https://registry.npmjs.org/@nextcloud/paths/-/paths-2.4.0.tgz",
+            "integrity": "sha512-35hykjqzaJCw8pBYWuKbLLw2wyKMuf9+T8K8GoYiS84AIi8SO16nuEu0fyl/gwCuiDqX5tCCup4wqljf0hdvaw==",
             "license": "GPL-3.0-or-later",
             "engines": {
                 "node": "^20.0.0 || ^22.0.0 || ^24.0.0"
@@ -1499,6 +1559,16 @@
                 "typescript-event-target": "^1.1.1",
                 "webdav": "^5.8.0"
             },
+            "engines": {
+                "node": "^20.0.0 || ^22.0.0 || ^24.0.0"
+            }
+        },
+        "node_modules/@nextcloud/vue/node_modules/@nextcloud/paths": {
+            "version": "3.1.0",
+            "resolved": "https://registry.npmjs.org/@nextcloud/paths/-/paths-3.1.0.tgz",
+            "integrity": "sha512-vtFYA/kthaUDzu6KejTOL1OwnOy7/yynq5zdB/UBpYacAWjUX5Ddh4OMWx3rEavkBJ9/QGhrFryNJLjNfe8OQA==",
+            "license": "GPL-3.0-or-later",
+            "optional": true,
             "engines": {
                 "node": "^20.0.0 || ^22.0.0 || ^24.0.0"
             }
@@ -1783,6 +1853,8 @@
         },
         "node_modules/@parcel/watcher-linux-x64-musl": {
             "version": "2.5.6",
+            "resolved": "https://registry.npmjs.org/@parcel/watcher-linux-x64-musl/-/watcher-linux-x64-musl-2.5.6.tgz",
+            "integrity": "sha512-1JRFeC+h7RdXwldHzTsmdtYR/Ku8SylLgTU/reMuqdVD7CtLwf0VR1FqeprZ0eHQkO0vqsbvFLXUmYm/uNKJBg==",
             "cpu": [
                 "x64"
             ],
@@ -2200,6 +2272,8 @@
         },
         "node_modules/@rollup/rollup-linux-x64-musl": {
             "version": "4.59.0",
+            "resolved": "https://registry.npmjs.org/@rollup/rollup-linux-x64-musl/-/rollup-linux-x64-musl-4.59.0.tgz",
+            "integrity": "sha512-2UdiwS/9cTAx7qIUZB/fWtToJwvt0Vbo0zmnYt7ED35KPg13Q0ym1g442THLC7VyI6JfYTP4PiSOWyoMdV2/xg==",
             "cpu": [
                 "x64"
             ],
@@ -2567,6 +2641,12 @@
         },
         "node_modules/@types/sizzle": {
             "version": "2.3.10",
+            "license": "MIT"
+        },
+        "node_modules/@types/toastify-js": {
+            "version": "1.12.4",
+            "resolved": "https://registry.npmjs.org/@types/toastify-js/-/toastify-js-1.12.4.tgz",
+            "integrity": "sha512-zfZHU4tKffPCnZRe7pjv/eFKzTVHozKewFCKaCjZ4gFinKgJRz/t0bkZiMCXJxPhv/ZoeDGNOeRD09R0kQZ/nw==",
             "license": "MIT"
         },
         "node_modules/@types/trusted-types": {
@@ -3038,6 +3118,13 @@
         },
         "node_modules/@vue/shared": {
             "version": "3.5.29",
+            "license": "MIT"
+        },
+        "node_modules/@vue/tsconfig": {
+            "version": "0.5.1",
+            "resolved": "https://registry.npmjs.org/@vue/tsconfig/-/tsconfig-0.5.1.tgz",
+            "integrity": "sha512-VcZK7MvpjuTPx2w6blwnwZAu5/LgBUtejFOi3pPGQFXQN5Ela03FUtd2Qtg4yWGGissVL0dr6Ro1LfOFh+PCuQ==",
+            "dev": true,
             "license": "MIT"
         },
         "node_modules/@vuepic/vue-datepicker": {
@@ -8977,6 +9064,12 @@
                 "url": "https://github.com/sponsors/sindresorhus"
             }
         },
+        "node_modules/toastify-js": {
+            "version": "1.12.0",
+            "resolved": "https://registry.npmjs.org/toastify-js/-/toastify-js-1.12.0.tgz",
+            "integrity": "sha512-HeMHCO9yLPvP9k0apGSdPUWrUbLnxUKNFzgUoZp1PHCLploIX/4DSQ7V8H25ef+h4iO9n0he7ImfcndnN6nDrQ==",
+            "license": "MIT"
+        },
         "node_modules/tributejs": {
             "version": "5.1.3",
             "license": "MIT"
@@ -9048,7 +9141,6 @@
             "version": "5.9.3",
             "devOptional": true,
             "license": "Apache-2.0",
-            "peer": true,
             "bin": {
                 "tsc": "bin/tsc",
                 "tsserver": "bin/tsserver"

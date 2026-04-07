@@ -30,18 +30,16 @@ test.describe('User share without reshare permission', () => {
 	test('Review only permission can be toggled', async ({ filesPage }) => {
 		await filesPage.openSidebar(USER_SHARE_FILE)
 		await filesPage.sidebarTab('sharing').click()
-		await expect(filesPage.page.getByText(`${shareRecipient.username} Custom`)).toBeVisible()
+		await expect(filesPage.page.locator('.sharing-entry__summary__desc', { hasText: shareRecipient.username })).toBeVisible()
 
 		await filesPage.sidebarTab('onlyofficeSharingTabView').click()
 
-		const shareItem = filesPage.page.locator('.onlyoffice-share-item')
+		const shareItem = filesPage.page.getByRole('listitem').filter({ hasText: shareRecipient.username })
 		await expect(shareItem).toBeVisible()
-		await shareItem.locator('#onlyoffice-share-action').click()
 
-		const popup = filesPage.page.locator('#onlyoffice-share-popup-menu')
-		await expect(popup).toBeVisible()
+		await filesPage.page.getByRole('tabpanel', { name: 'Advanced' }).getByLabel('Actions').click()
 
-		const reviewCheckbox = popup.getByText('Review only')
+		const reviewCheckbox = filesPage.page.getByRole('menuitemcheckbox', { name: 'Review only' })
 		await reviewCheckbox.click()
 		await expect(reviewCheckbox).toBeChecked()
 	})
@@ -68,14 +66,12 @@ test.describe('Public share with edit permission', () => {
 
 		await filesPage.sidebarTab('onlyofficeSharingTabView').click()
 
-		const shareItem = filesPage.page.locator('.onlyoffice-share-item')
+		const shareItem = filesPage.page.getByRole('listitem').filter({ hasText: 'Share link' })
 		await expect(shareItem).toBeVisible()
-		await shareItem.locator('#onlyoffice-share-action').click()
 
-		const popup = filesPage.page.locator('#onlyoffice-share-popup-menu')
-		await expect(popup).toBeVisible()
+		await filesPage.page.getByRole('tabpanel', { name: 'Advanced' }).getByLabel('Actions').click()
 
-		const reviewCheckbox = popup.getByText('Review only')
+		const reviewCheckbox = filesPage.page.getByRole('menuitemcheckbox', { name: 'Review only' })
 		await reviewCheckbox.click()
 		await expect(reviewCheckbox).toBeChecked()
 	})

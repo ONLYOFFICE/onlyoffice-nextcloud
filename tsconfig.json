@@ -1,0 +1,23 @@
+{
+    "extends": "@vue/tsconfig",  
+    "include": ["src/**/*.ts", "src/**/*.vue"],
+    "exclude": ["node_modules", "vendor"],
+    "compilerOptions": {
+        "outDir": "./js",
+        "allowJs": true,
+        "checkJs": false,
+        "allowImportingTsExtensions": true,
+        "strictNullChecks": true,
+        "target": "ESNext",
+        "module": "ESNext",
+        "moduleResolution": "bundler",
+        "allowSyntheticDefaultImports": true,
+        "strict": true,
+        "noImplicitAny": false,
+        "rewriteRelativeImportExtensions": true,
+        "resolveJsonModule": true,
+        "declaration": false,
+        "lib": ["ESNext", "DOM", "DOM.Iterable"],
+        "types": []
+    }
+}

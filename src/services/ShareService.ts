@@ -26,58 +26,37 @@
  *
  */
 
-.onlyoffice-template-container li {
-    margin-bottom: 10px;
+import axios from '@nextcloud/axios'
+import { generateOcsUrl } from '@nextcloud/router'
+
+export interface ShareExtra {
+	id: number
+	share_id: string
+	shareWith: string
+	shareWithName: string
+	type: number
+	permissions: number
+	available: number
 }
 
-.onlyoffice-template-item img,
-.onlyoffice-template-delete,
-.onlyoffice-template-download,
-.onlyoffice-template-item p {
-    display: inline-block;
-    margin-right: 10px;
-    cursor: pointer;
+export interface SetShareData {
+	extraId: number
+	shareId: string
+	fileId: string
+	permissions: number
 }
 
-.onlyoffice-template-delete,
-.onlyoffice-template-download {
-    margin-bottom: -4px;
+export const getShares = async (fileId: string): Promise<ShareExtra[]> => {
+	const response = await axios.get<{ ocs: { data: ShareExtra[] } }>(
+		generateOcsUrl(`apps/onlyoffice/api/v1/shares/${fileId}`),
+	)
+	return response.data.ocs.data
 }
 
-.onlyoffice-template-delete {
-    opacity: .6;
-}
-
-.onlyoffice-template-download {
-    background-image: url("../../../core/img/actions/download.svg");
-    height: 16px;
-    width: 16px;
-    opacity: .6;
-}
-
-.section-onlyoffice-templates .icon-add {
-    opacity: 0.5;
-    padding-left: 44px;
-}
-
-.section-onlyoffice-templates .icon-add:hover {
-    opacity: 0.7;
-}
-
-.onlyoffice-template-item img {
-    float: left;
-    margin-top: 5px;
-}
-
-.onlyoffice-template-item input {
-    position: absolute;
-    left: -10000px;
-}
-
-.onlyoffice-template-item input:checked + label {
-    color: rgb(55, 137, 243);
-}
-
-.section-onlyoffice-templates input {
-    display: none;
+export const setShares = async (data: SetShareData): Promise<ShareExtra> => {
+	const response = await axios.put<{ ocs: { data: ShareExtra } }>(
+		generateOcsUrl('apps/onlyoffice/api/v1/shares'),
+		data,
+	)
+	return response.data.ocs.data
 }

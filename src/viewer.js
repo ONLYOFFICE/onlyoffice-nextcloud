@@ -26,23 +26,17 @@
  *
  */
 
-/* global $ */
+import { loadState } from '@nextcloud/initial-state'
+import { generateUrl } from '@nextcloud/router'
 
-/**
- * @param {object} OCA Nextcloud OCA object
- */
-(function(OCA) {
-	if (OCA.Onlyoffice) {
-		return
-	}
-
+if (!OCA.Onlyoffice) {
 	OCA.Onlyoffice = {
 		AppName: 'onlyoffice',
 		frameSelector: null,
 		setting: {},
 	}
 
-	OCA.Onlyoffice.setting = OCP.InitialState.loadState(OCA.Onlyoffice.AppName, 'settings')
+	OCA.Onlyoffice.setting = loadState(OCA.Onlyoffice.AppName, 'settings')
 
 	const OnlyofficeViewerVue = {
 		name: 'OnlyofficeViewerVue',
@@ -74,7 +68,7 @@
 		},
 		data() {
 			return {
-				url: OC.generateUrl('/apps/' + OCA.Onlyoffice.AppName + '/{fileId}?filePath={filePath}',
+				url: generateUrl('/apps/' + OCA.Onlyoffice.AppName + '/{fileId}?filePath={filePath}',
 					{
 						fileId: this.fileid,
 						filePath: this.filename,
@@ -86,12 +80,9 @@
 	if (OCA.Viewer) {
 		OCA.Onlyoffice.frameSelector = '#onlyofficeViewerFrame'
 
-		const mimes = $.map(OCA.Onlyoffice.setting.formats, function(format) {
-			if (format.def) {
-				return format.mime
-			}
-		})
-		mimes.flat()
+		const mimes = Object.values(OCA.Onlyoffice.setting.formats)
+			.filter(format => format.def)
+			.flatMap(format => format.mime)
 		OCA.Viewer.registerHandler({
 			id: OCA.Onlyoffice.AppName,
 			group: null,
@@ -99,5 +90,4 @@
 			component: OnlyofficeViewerVue,
 		})
 	}
-
-})(OCA)
+}
