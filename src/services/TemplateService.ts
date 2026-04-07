@@ -26,58 +26,25 @@
  *
  */
 
-.icon-onlyoffice-sharing {
-    background-color: var(--color-main-text);
-    mask: url("../img/app-dark.svg") no-repeat 50% 50%;
-    mask-size: 16px 16px;
-    -webkit-mask: url("../img/app-dark.svg") no-repeat 50% 50%;
-    -webkit-mask-size: 16px 16px;
+import axios from '@nextcloud/axios'
+import { generateUrl } from '@nextcloud/router'
+import type { ApiError, Template } from '../types'
+
+const templateUrl = generateUrl('apps/onlyoffice/ajax/template')
+
+export const getTemplates = async (): Promise<Template[]> => {
+	const response = await axios.get<Template[]>(templateUrl)
+	return response.data
 }
 
-.onlyoffice-share-item {
-    display: flex;
-    list-style-type: none;
+export const addTemplate = async (file: File): Promise<Template | ApiError> => {
+	const data = new FormData()
+	data.append('file', file)
+	const response = await axios.post<Template | ApiError>(templateUrl, data)
+	return response.data
 }
 
-.onlyoffice-share-item img {
-    width: 32px;
-    height: 32px;
-}
-
-.onlyoffice-share-popup {
-    margin-right: 14px;
-    margin-top: 44px;
-}
-
-.onlyoffice-share-item span {
-    margin-left: 10px;
-    margin-top: 5px;
-}
-
-#onlyoffice-share-menu {
-    margin-left: auto;
-}
-
-.onlyoffice-share-action {
-    line-height: 44px;
-}
-
-.onlyoffice-share-label {
-    padding-right: 14px !important;
-    padding-left: 14px !important;
-    opacity: .7;
-}
-
-.onlyoffice-share-link-avatar {
-    height: 32px;
-    width: 32px;
-    background: var(--color-background-dark);
-    align-items: center;
-    display: flex;
-    justify-content: center;
-}
-
-.onlyoffice-share-link-avatar img {
-    height: 16px;
-    width: 16px;
+export const deleteTemplate = async (templateId: number): Promise<ApiError | []> => {
+	const response = await axios.delete<ApiError | []>(templateUrl, { params: { templateId } })
+	return response.data
 }

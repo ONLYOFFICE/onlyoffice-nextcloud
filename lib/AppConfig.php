@@ -953,7 +953,7 @@ class AppConfig {
     public function setWatermarkSettings(array $settings): void {
         $this->logger->info("Set watermark enabled: " . $settings["enabled"], ["app" => $this->appName]);
 
-        if ($settings["enabled"] !== "true") {
+        if (!$settings["enabled"]) {
             $this->appConfig->setValueString(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_enabled", "no");
             return;
         }
@@ -975,7 +975,7 @@ class AppConfig {
             if (empty($settings[$key])) {
                 $settings[$key] = [];
             }
-            $value = $settings[$key] === "true" ? "yes" : "no";
+            $value = !empty($settings[$key]) ? "yes" : "no";
             $this->appConfig->setValueString(AppConfig::WATERMARK_APP_NAMESPACE, "watermark_" . $key, $value);
         }
 

@@ -18,4 +18,16 @@ export class EditorPage {
 			.contentFrame()
 			.locator('body');
 	}
+
+	closeButton(): Locator {
+		return this.page.locator('#onlyofficeFrame')
+			.contentFrame()
+			.locator('iframe[name="frameEditor"]')
+			.contentFrame()
+			.getByRole('button', { name: 'Close file' })
+	}
+
+	async waitForEditor(): Promise<void> {
+		await this.page.waitForEvent('console', msg => msg.text() === 'ONLYOFFICE Editor is loaded')
+	}
 }

@@ -32,6 +32,7 @@
 if (!empty($_["directToken"])) {
     \OCP\Util::addScript("onlyoffice", "onlyoffice-directeditor", 'core');
 }
+    \OCP\Util::addStyle("onlyoffice", "onlyoffice-editor");
     \OCP\Util::addScript("onlyoffice", "onlyoffice-editor", 'core');
 ?>
 

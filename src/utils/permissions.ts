@@ -26,58 +26,10 @@
  *
  */
 
-.onlyoffice-template-container li {
-    margin-bottom: 10px;
-}
-
-.onlyoffice-template-item img,
-.onlyoffice-template-delete,
-.onlyoffice-template-download,
-.onlyoffice-template-item p {
-    display: inline-block;
-    margin-right: 10px;
-    cursor: pointer;
-}
-
-.onlyoffice-template-delete,
-.onlyoffice-template-download {
-    margin-bottom: -4px;
-}
-
-.onlyoffice-template-delete {
-    opacity: .6;
-}
-
-.onlyoffice-template-download {
-    background-image: url("../../../core/img/actions/download.svg");
-    height: 16px;
-    width: 16px;
-    opacity: .6;
-}
-
-.section-onlyoffice-templates .icon-add {
-    opacity: 0.5;
-    padding-left: 44px;
-}
-
-.section-onlyoffice-templates .icon-add:hover {
-    opacity: 0.7;
-}
-
-.onlyoffice-template-item img {
-    float: left;
-    margin-top: 5px;
-}
-
-.onlyoffice-template-item input {
-    position: absolute;
-    left: -10000px;
-}
-
-.onlyoffice-template-item input:checked + label {
-    color: rgb(55, 137, 243);
-}
-
-.section-onlyoffice-templates input {
-    display: none;
-}
+export const Permissions = {
+	None: 0,
+	Review: 1,
+	Comment: 2,
+	FillForms: 4,
+	ModifyFilter: 8,
+} as const

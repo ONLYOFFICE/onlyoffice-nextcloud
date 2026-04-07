@@ -21,7 +21,7 @@ test.describe('Convert with ONLYOFFICE', () => {
 		await filesPage.rightClickFile(SOURCE_FILE)
 		await filesPage.menuItem('Convert with ONLYOFFICE').click()
 
-		await expect(filesPage.successToast()).toBeVisible()
+		await filesPage.waitForSuccess()
 		await expect(filesPage.fileRow(CONVERTED_FILE)).toBeVisible()
 	})
 })

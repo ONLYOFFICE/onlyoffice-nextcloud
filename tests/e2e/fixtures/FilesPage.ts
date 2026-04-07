@@ -1,4 +1,4 @@
-import { Page, Locator } from '@playwright/test';
+import { Page, Locator, expect } from '@playwright/test';
 
 export class FilesPage {
 	readonly page: Page;
@@ -48,8 +48,26 @@ export class FilesPage {
 		return this.page.locator('.toast-success');
 	}
 
+	async waitForSuccess(): Promise<void> {
+		await expect(this.successToast()).toBeVisible()
+	}
+
+	templatePickerDialog(): Locator {
+		return this.page.locator('.templates-picker')
+	}
+
+	templatePickerItem(name: string): Locator {
+		return this.templatePickerDialog()
+			.locator('.template-picker__item')
+			.filter({ hasText: name })
+	}
+
+	templatePickerSubmit(): Locator {
+		return this.templatePickerDialog().locator('input[type="submit"]')
+	}
+
 	downloadPickerDialog(): Locator {
-		return this.page.locator('#download-picker');
+		return this.page.locator('.onlyoffice-download-picker');
 	}
 
 	downloadPickerSelect(): Locator {
