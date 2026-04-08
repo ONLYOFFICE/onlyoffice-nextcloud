@@ -28,7 +28,7 @@
 
 /**
  * @param fileName file name including extension
- * @return {string} lowercased file extension without the leading dot
+ * @return lowercased file extension without the leading dot
  */
 export function getFileExtension(fileName: string): string {
 	return fileName.slice(fileName.lastIndexOf('.') + 1).toLowerCase()

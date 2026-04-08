@@ -68,11 +68,10 @@ if (!OCA.Onlyoffice) {
 		},
 		data() {
 			return {
-				url: generateUrl('/apps/' + OCA.Onlyoffice.AppName + '/{fileId}?filePath={filePath}',
-					{
-						fileId: this.fileid,
-						filePath: this.filename,
-					}),
+				url: generateUrl('/apps/' + OCA.Onlyoffice.AppName + '/{fileId}?filePath={filePath}', {
+					fileId: this.fileid,
+					filePath: this.filename,
+				}),
 			}
 		},
 	}
@@ -81,8 +80,8 @@ if (!OCA.Onlyoffice) {
 		OCA.Onlyoffice.frameSelector = '#onlyofficeViewerFrame'
 
 		const mimes = Object.values(OCA.Onlyoffice.setting.formats)
-			.filter(format => format.def)
-			.flatMap(format => format.mime)
+			.filter((format) => format.def)
+			.flatMap((format) => format.mime)
 		OCA.Viewer.registerHandler({
 			id: OCA.Onlyoffice.AppName,
 			group: null,

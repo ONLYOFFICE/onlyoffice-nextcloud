@@ -27,38 +27,31 @@
  */
 
 import { getCurrentUser, getRequestToken } from '@nextcloud/auth'
-import '@nextcloud/dialogs/style.css'
-import { showError, showSuccess, getFilePickerBuilder } from '@nextcloud/dialogs'
+import { getFilePickerBuilder, showError, showSuccess } from '@nextcloud/dialogs'
 import { getCanonicalLocale, t } from '@nextcloud/l10n'
-import { generateUrl, generateOcsUrl, imagePath } from '@nextcloud/router'
+import { encodePath } from '@nextcloud/paths'
+import { generateOcsUrl, generateUrl, imagePath } from '@nextcloud/router'
 import {
+	fetchReference,
 	getConfig,
+	getFileUrl,
 	getHistory,
+	getUserInfo,
+	getUsers,
 	getVersionData,
 	restoreVersion,
 	saveAs,
-	getFileUrl,
-	fetchReference,
-	getUserInfo,
-	getUsers,
 	sendMention,
 	setFavorite,
 } from './services/EditorService.ts'
-import { encodePath } from '@nextcloud/paths'
+
+import '@nextcloud/dialogs/style.css'
 
 /* global DocsAPI, oc_defaults */
 
-OCA.Onlyoffice = Object.assign({
-	AppName: 'onlyoffice',
-	inframe: false,
-	inviewer: false,
-	fileId: null,
-	shareToken: null,
-	insertImageType: null,
-}, OCA.Onlyoffice)
+OCA.Onlyoffice = { AppName: 'onlyoffice', inframe: false, inviewer: false, fileId: null, shareToken: null, insertImageType: null, ...OCA.Onlyoffice }
 
 OCA.Onlyoffice.InitEditor = function() {
-
 	const iframeEditor = document.getElementById('iframeEditor')
 	OCA.Onlyoffice.fileId = iframeEditor.dataset.id
 	OCA.Onlyoffice.shareToken = iframeEditor.dataset.sharetoken
@@ -95,7 +88,7 @@ OCA.Onlyoffice.InitEditor = function() {
 				return
 			}
 
-			if (config.error != null) {
+			if (config.error !== undefined && config.error !== null) {
 				OCA.Onlyoffice.showMessage(config.error, 'error', { timeout: -1 })
 				return
 			}
@@ -215,8 +208,7 @@ OCA.Onlyoffice.InitEditor = function() {
 					window.parent.postMessage({
 						method: 'changeFavicon',
 						param: favicon,
-					},
-					'*')
+					}, '*')
 				} else {
 					document.querySelector('link[rel="icon"]')?.setAttribute('href', favicon)
 				}
@@ -255,8 +247,7 @@ OCA.Onlyoffice.onRequestRestore = function(event) {
 		if (OCA.Onlyoffice.inframe) {
 			window.parent.postMessage({
 				method: 'onRefreshVersionsDialog',
-			},
-			'*')
+			}, '*')
 		}
 	})
 }
@@ -266,14 +257,12 @@ OCA.Onlyoffice.onRequestHistoryClose = function() {
 }
 
 OCA.Onlyoffice.onDocumentReady = function() {
-	// eslint-disable-next-line no-console
 	console.log('ONLYOFFICE Editor is loaded')
 	if (OCA.Onlyoffice.inframe) {
 		window.parent.postMessage({
 			method: 'onDocumentReady',
 			param: {},
-		},
-		'*')
+		}, '*')
 	}
 
 	OCA.Onlyoffice.resize()
@@ -297,8 +286,7 @@ OCA.Onlyoffice.onRequestSaveAs = function(event) {
 		window.parent.postMessage({
 			method: 'editorRequestSaveAs',
 			param: saveData,
-		},
-		'*')
+		}, '*')
 	} else {
 		getFilePickerBuilder(t(OCA.Onlyoffice.AppName, 'Save as'))
 			.setMimeTypeFilter(['httpd/unix-directory'])
@@ -307,7 +295,9 @@ OCA.Onlyoffice.onRequestSaveAs = function(event) {
 			.addButton({
 				label: t('core', 'Choose'),
 				callback: (nodes) => {
-					if (!nodes[0]) return
+					if (!nodes[0]) {
+						return
+					}
 					saveData.dir = nodes[0].path
 					OCA.Onlyoffice.editorSaveAs(saveData)
 				},
@@ -332,10 +322,20 @@ OCA.Onlyoffice.editorSaveAs = function(saveData) {
 
 OCA.Onlyoffice.onRequestInsertImage = function(event) {
 	const imageMimes = [
-		'image/bmp', 'image/x-bmp', 'image/x-bitmap', 'application/bmp',
-		'image/gif', 'image/tiff',
-		'image/jpeg', 'image/jpg', 'application/jpg', 'application/x-jpg',
-		'image/png', 'image/x-png', 'application/png', 'application/x-png',
+		'image/bmp',
+		'image/x-bmp',
+		'image/x-bitmap',
+		'application/bmp',
+		'image/gif',
+		'image/tiff',
+		'image/jpeg',
+		'image/jpg',
+		'application/jpg',
+		'application/x-jpg',
+		'image/png',
+		'image/x-png',
+		'application/png',
+		'application/x-png',
 		'image/svg+xml',
 	]
 
@@ -347,14 +347,18 @@ OCA.Onlyoffice.onRequestInsertImage = function(event) {
 		window.parent.postMessage({
 			method: 'editorRequestInsertImage',
 			param: imageMimes,
-		},
-		'*')
+		}, '*')
 	} else {
 		getFilePickerBuilder(t(OCA.Onlyoffice.AppName, 'Insert image'))
 			.setMimeTypeFilter(imageMimes)
 			.addButton({
 				label: t('core', 'Choose'),
-				callback: (nodes) => { if (!nodes[0]) return; OCA.Onlyoffice.editorInsertImage(nodes[0].path) },
+				callback: (nodes) => {
+					if (!nodes[0]) {
+						return
+					}
+					OCA.Onlyoffice.editorInsertImage(nodes[0].path)
+				},
 				variant: 'primary',
 			})
 			.build()
@@ -387,14 +391,18 @@ OCA.Onlyoffice.onRequestMailMergeRecipients = function() {
 		window.parent.postMessage({
 			method: 'editorRequestMailMergeRecipients',
 			param: recipientMimes,
-		},
-		'*')
+		}, '*')
 	} else {
 		getFilePickerBuilder(t(OCA.Onlyoffice.AppName, 'Select recipients'))
 			.setMimeTypeFilter(recipientMimes)
 			.addButton({
 				label: t('core', 'Choose'),
-				callback: (nodes) => { if (!nodes[0]) return; OCA.Onlyoffice.editorSetRecipient(nodes[0].path) },
+				callback: (nodes) => {
+					if (!nodes[0]) {
+						return
+					}
+					OCA.Onlyoffice.editorSetRecipient(nodes[0].path)
+				},
 				variant: 'primary',
 			})
 			.build()
@@ -439,15 +447,13 @@ OCA.Onlyoffice.onRequestClose = function() {
 
 	window.parent.postMessage({
 		method: 'editorRequestClose',
-	},
-	'*')
+	}, '*')
 }
 
 OCA.Onlyoffice.onRequestSharingSettings = function() {
 	window.parent.postMessage({
 		method: 'editorRequestSharingSettings',
-	},
-	'*')
+	}, '*')
 }
 
 OCA.Onlyoffice.onRequestSelectDocument = function(event) {
@@ -460,28 +466,32 @@ OCA.Onlyoffice.onRequestSelectDocument = function(event) {
 			method: 'editorRequestSelectDocument',
 			param: revisedMimes,
 			documentSelectionType: event.data.c,
-		},
-		'*')
+		}, '*')
 	} else {
 		let title
 		switch (event.data.c) {
-		case 'combine':
-			title = t(OCA.Onlyoffice.AppName, 'Select file to combine')
-			break
-		case 'compare':
-			title = t(OCA.Onlyoffice.AppName, 'Select file to compare')
-			break
-		case 'insert-text':
-			title = t(OCA.Onlyoffice.AppName, 'Select file to insert text')
-			break
-		default:
-			title = t(OCA.Onlyoffice.AppName, 'Select file')
+			case 'combine':
+				title = t(OCA.Onlyoffice.AppName, 'Select file to combine')
+				break
+			case 'compare':
+				title = t(OCA.Onlyoffice.AppName, 'Select file to compare')
+				break
+			case 'insert-text':
+				title = t(OCA.Onlyoffice.AppName, 'Select file to insert text')
+				break
+			default:
+				title = t(OCA.Onlyoffice.AppName, 'Select file')
 		}
 		getFilePickerBuilder(title)
 			.setMimeTypeFilter(revisedMimes)
 			.addButton({
 				label: t('core', 'Choose'),
-				callback: (nodes) => { if (!nodes[0]) return; OCA.Onlyoffice.editorSetRequested.call({ documentSelectionType: event.data.c }, nodes[0].path) },
+				callback: (nodes) => {
+					if (!nodes[0]) {
+						return
+					}
+					OCA.Onlyoffice.editorSetRequested.call({ documentSelectionType: event.data.c }, nodes[0].path)
+				},
 				variant: 'primary',
 			})
 			.build()
@@ -534,35 +544,35 @@ OCA.Onlyoffice.onMakeActionLink = function(event) {
 OCA.Onlyoffice.onRequestUsers = function(event) {
 	const operationType = typeof (event.data.c) !== 'undefined' ? event.data.c : null
 	switch (operationType) {
-	case 'info': {
-		getUserInfo(event.data.id).then((response) => {
-			OCA.Onlyoffice.docEditor.setUsers({
-				c: operationType,
-				users: response,
+		case 'info': {
+			getUserInfo(event.data.id).then((response) => {
+				OCA.Onlyoffice.docEditor.setUsers({
+					c: operationType,
+					users: response,
+				})
 			})
-		})
-		break
-	}
-	default: {
-		getUsers({
-			fileId: OCA.Onlyoffice.fileId || 0,
-			operationType,
-			...(typeof event.data.search !== 'undefined' && {
-				from: event.data.from,
-				count: event.data.count,
-				search: event.data.search,
-			}),
-		}).then((response) => {
-			OCA.Onlyoffice.docEditor.setUsers({
-				c: operationType,
-				users: response,
-				// support v9.0
-				total: 1 + (!event.data.count || response.length < event.data.count ? 0 : (event.data.from + event.data.count)),
-				// since v9.0.1
-				isPaginated: true,
+			break
+		}
+		default: {
+			getUsers({
+				fileId: OCA.Onlyoffice.fileId || 0,
+				operationType,
+				...(typeof event.data.search !== 'undefined' && {
+					from: event.data.from,
+					count: event.data.count,
+					search: event.data.search,
+				}),
+			}).then((response) => {
+				OCA.Onlyoffice.docEditor.setUsers({
+					c: operationType,
+					users: response,
+					// support v9.0
+					total: 1 + (!event.data.count || response.length < event.data.count ? 0 : (event.data.from + event.data.count)),
+					// since v9.0.1
+					isPaginated: true,
+				})
 			})
-		})
-	}
+		}
 	}
 }
 
@@ -619,14 +629,18 @@ OCA.Onlyoffice.onRequestReferenceSource = function(event) {
 		window.parent.postMessage({
 			method: 'editorRequestReferenceSource',
 			param: referenceSourceMimes,
-		},
-		'*')
+		}, '*')
 	} else {
 		getFilePickerBuilder(t(OCA.Onlyoffice.AppName, 'Select data source'))
 			.setMimeTypeFilter(referenceSourceMimes)
 			.addButton({
 				label: t('core', 'Choose'),
-				callback: (nodes) => { if (!nodes[0]) return; OCA.Onlyoffice.editorReferenceSource(nodes[0].path) },
+				callback: (nodes) => {
+					if (!nodes[0]) {
+						return
+					}
+					OCA.Onlyoffice.editorReferenceSource(nodes[0].path)
+				},
 				variant: 'primary',
 			})
 			.build()
@@ -663,23 +677,22 @@ OCA.Onlyoffice.showMessage = function(message, type = 'success', props = null) {
 				type,
 				props,
 			},
-		},
-		'*')
+		}, '*')
 		return
 	}
 
 	switch (type) {
-	case 'success':
-		showSuccess(message, props)
-		break
-	case 'error':
-		showError(message, props)
-		break
+		case 'success':
+			showSuccess(message, props)
+			break
+		case 'error':
+			showError(message, props)
+			break
 	}
 }
 
 OCA.Onlyoffice.refreshHistory = function(response, version) {
-	let data = {}
+	let data
 	if (response.error) {
 		data = { error: response.error }
 	} else {

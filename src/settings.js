@@ -26,8 +26,9 @@
  *
  */
 
-import '@nextcloud/dialogs/style.css'
 import { createApp } from 'vue'
 import SettingsApp from './views/settings/SettingsApp.vue'
+
+import '@nextcloud/dialogs/style.css'
 
 createApp(SettingsApp).mount('#onlyoffice-settings')

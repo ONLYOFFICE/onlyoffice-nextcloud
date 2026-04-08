@@ -24,12 +24,12 @@
   See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 -->
 <script setup lang="ts">
-import { ref } from 'vue'
 import { showError, showSuccess } from '@nextcloud/dialogs'
 import { t } from '@nextcloud/l10n'
+import { ref } from 'vue'
 import NcButton from '@nextcloud/vue/components/NcButton'
-import { saveAddressSettings } from '../../services/SettingsService'
 import AppDescription from './AppDescription.vue'
+import { saveAddressSettings } from '../../services/SettingsService.ts'
 
 const props = defineProps<{
 	documentserver: string
@@ -42,7 +42,7 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-	(e: 'address-saved', payload: { successful: boolean, hasSecret: boolean }): void
+	(e: 'addressSaved', payload: { successful: boolean, hasSecret: boolean }): void
 }>()
 
 const url = ref(props.documentserver ?? '')
@@ -52,9 +52,7 @@ const verifyPeerOff = ref(props.verifyPeerOff)
 const secret = ref(props.secret ?? '')
 const jwtHeader = ref(props.jwtHeader ?? '')
 const demoEnabled = ref(props.demo.enabled)
-const showAdvanced = ref(
-	!!(props.documentserverInternal || props.storageUrl || props.jwtHeader),
-)
+const showAdvanced = ref(!!(props.documentserverInternal || props.storageUrl || props.jwtHeader))
 const saving = ref(false)
 const showSecret = ref(false)
 const currentServer = window.location.origin + '/'
@@ -84,7 +82,7 @@ async function save() {
 			demo: demoEnabled.value,
 		})
 
-		if (response.documentserver != null || demoEnabled.value) {
+		if ((response.documentserver !== undefined && response.documentserver !== null) || demoEnabled.value) {
 			url.value = response.documentserver ?? ''
 			internalUrl.value = response.documentserverInternal ?? ''
 			storageUrl.value = response.storageUrl ?? ''
@@ -97,20 +95,20 @@ async function save() {
 
 			if (response.error) {
 				showError(t('onlyoffice', 'Error when trying to connect') + ' (' + response.error + ')' + versionMessage)
-				emit('address-saved', { successful: false, hasSecret: false })
+				emit('addressSaved', { successful: false, hasSecret: false })
 			} else {
 				const hasSecret = response.secret !== null
 				if (hasSecret) {
 					showSuccess(t('onlyoffice', 'Server settings have been successfully updated') + versionMessage)
 				}
-				emit('address-saved', { successful: true, hasSecret })
+				emit('addressSaved', { successful: true, hasSecret })
 			}
 		} else {
-			emit('address-saved', { successful: false, hasSecret: false })
+			emit('addressSaved', { successful: false, hasSecret: false })
 		}
 	} catch {
 		showError(t('onlyoffice', 'Error when trying to connect'))
-		emit('address-saved', { successful: false, hasSecret: false })
+		emit('addressSaved', { successful: false, hasSecret: false })
 	} finally {
 		saving.value = false
 	}
@@ -128,7 +126,8 @@ async function save() {
 
 		<p>{{ t('onlyoffice', 'ONLYOFFICE Docs address') }}</p>
 		<p>
-			<input id="onlyoffice-url"
+			<input
+				id="onlyoffice-url"
 				v-model="url"
 				type="text"
 				placeholder="https://<documentserver>/"
@@ -137,7 +136,8 @@ async function save() {
 		</p>
 
 		<p>
-			<input id="onlyoffice-verify-peer-off"
+			<input
+				id="onlyoffice-verify-peer-off"
 				v-model="verifyPeerOff"
 				type="checkbox"
 				class="checkbox"
@@ -147,13 +147,15 @@ async function save() {
 
 		<p>{{ t('onlyoffice', 'Secret key (leave blank to disable)') }}</p>
 		<p class="groupbottom">
-			<input id="onlyoffice-secret"
+			<input
+				id="onlyoffice-secret"
 				v-model="secret"
 				:type="showSecret ? 'text' : 'password'"
 				placeholder="secret"
 				:disabled="demoEnabled"
 				@keypress.enter="save">
-			<input id="personal-show"
+			<input
+				id="personal-show"
 				v-model="showSecret"
 				type="checkbox"
 				class="hidden-visually"
@@ -171,7 +173,8 @@ async function save() {
 		<div v-show="showAdvanced">
 			<p>{{ t('onlyoffice', 'Authorization header (leave blank to use default header)') }}</p>
 			<p>
-				<input id="onlyoffice-jwt-header"
+				<input
+					id="onlyoffice-jwt-header"
 					v-model="jwtHeader"
 					type="text"
 					placeholder="Authorization"
@@ -181,7 +184,8 @@ async function save() {
 
 			<p>{{ t('onlyoffice', 'ONLYOFFICE Docs address for internal requests from the server') }}</p>
 			<p>
-				<input id="onlyoffice-internal-url"
+				<input
+					id="onlyoffice-internal-url"
 					v-model="internalUrl"
 					type="text"
 					placeholder="https://<documentserver>/"
@@ -191,7 +195,8 @@ async function save() {
 
 			<p>{{ t('onlyoffice', 'Server address for internal requests from ONLYOFFICE Docs') }}</p>
 			<p>
-				<input id="onlyoffice-storage-url"
+				<input
+					id="onlyoffice-storage-url"
 					v-model="storageUrl"
 					type="text"
 					:placeholder="currentServer"
@@ -203,7 +208,8 @@ async function save() {
 		<br>
 
 		<div class="onlyoffice-addr-bottom">
-			<NcButton id="onlyoffice-server-save"
+			<NcButton
+				id="onlyoffice-server-save"
 				:disabled="saving"
 				variant="primary"
 				@click="save">
@@ -211,7 +217,8 @@ async function save() {
 			</NcButton>
 
 			<div>
-				<input id="onlyoffice-demo"
+				<input
+					id="onlyoffice-demo"
 					v-model="demoEnabled"
 					type="checkbox"
 					class="checkbox"

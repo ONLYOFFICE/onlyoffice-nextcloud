@@ -28,48 +28,45 @@
 
 /* global _oc_appswebroots */
 
+import { getCurrentUser, getRequestToken } from '@nextcloud/auth'
+import { getFilePickerBuilder, showError, showSuccess } from '@nextcloud/dialogs'
+import { emit } from '@nextcloud/event-bus'
 import {
-	File,
-	getSidebar,
-	registerFileAction,
-	Permission,
-	DefaultType,
 	addNewFileMenuEntry,
+	DefaultType,
+	File,
 	getNewFileMenuEntries,
+	getSidebar,
+	Permission,
+	registerFileAction,
 } from '@nextcloud/files'
 import {
 	getClient,
-	getRootPath,
 	getDefaultPropfind,
+	getRootPath,
 	resultToNode,
 } from '@nextcloud/files/dav'
-import '@nextcloud/dialogs/style.css'
-import { showError, showSuccess, getFilePickerBuilder } from '@nextcloud/dialogs'
-import { emit } from '@nextcloud/event-bus'
-import AppDarkSvg from '../img/app-dark.svg?raw'
-import NewDocxSvg from '../img/new-docx.svg?raw'
-import NewXlsxSvg from '../img/new-xlsx.svg?raw'
-import NewPptxSvg from '../img/new-pptx.svg?raw'
-import NewPdfSvg from '../img/new-pdf.svg?raw'
-import { isPublicShare, getSharingToken } from '@nextcloud/sharing/public'
-import { getCurrentUser, getRequestToken } from '@nextcloud/auth'
 import { loadState } from '@nextcloud/initial-state'
 import { t } from '@nextcloud/l10n'
 import { generateFilePath, generateUrl } from '@nextcloud/router'
-import { createFile, convertFile } from './services/FileService.ts'
-import { getFileExtension } from './utils/files.ts'
+import { getSharingToken, isPublicShare } from '@nextcloud/sharing/public'
 import { spawnDialog } from '@nextcloud/vue/functions/dialog'
 import DownloadPicker from './views/DownloadPicker.vue'
+import AppDarkSvg from '../img/app-dark.svg?raw'
+import NewDocxSvg from '../img/new-docx.svg?raw'
+import NewPdfSvg from '../img/new-pdf.svg?raw'
+import NewPptxSvg from '../img/new-pptx.svg?raw'
+import NewXlsxSvg from '../img/new-xlsx.svg?raw'
+import { convertFile, createFile } from './services/FileService.ts'
+import { getFileExtension } from './utils/files.ts'
 
-OCA.Onlyoffice = Object.assign({
-	AppName: 'onlyoffice',
-	context: null,
-	frameSelector: null,
-}, OCA.Onlyoffice)
+import '@nextcloud/dialogs/style.css'
+
+OCA.Onlyoffice = { AppName: 'onlyoffice', context: null, frameSelector: null, ...OCA.Onlyoffice }
 
 OCA.Onlyoffice.setting = loadState(OCA.Onlyoffice.AppName, 'settings')
 OCA.Onlyoffice.mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini|Macintosh/i.test(navigator.userAgent)
-							&& navigator.maxTouchPoints && navigator.maxTouchPoints > 1
+	&& navigator.maxTouchPoints && navigator.maxTouchPoints > 1
 
 /**
  * @param {string} name file name
@@ -101,8 +98,10 @@ function createFileOverload(name, context, templateId, targetId, open = true, fi
 		} else {
 			const viewContents = await context.view.getContents(context.dir)
 			if (viewContents.folder && (viewContents.folder.fileid === response.parentId)) {
-				const newFile = viewContents.contents.find(node => node.fileid === response.id)
-				if (newFile) emit('files:node:created', newFile)
+				const newFile = viewContents.contents.find((node) => node.fileid === response.id)
+				if (newFile) {
+					emit('files:node:created', newFile)
+				}
 			}
 		}
 	})
@@ -177,18 +176,16 @@ function openEditor(fileId, fileDir, fileName, winEditor, isDefault = true) {
 	if (fileName) {
 		filePath = fileDir.replace(/\/$/, '') + '/' + fileName
 	}
-	let url = generateUrl('/apps/' + OCA.Onlyoffice.AppName + '/{fileId}?filePath={filePath}',
-		{
-			fileId,
-			filePath,
-		})
+	let url = generateUrl('/apps/' + OCA.Onlyoffice.AppName + '/{fileId}?filePath={filePath}', {
+		fileId,
+		filePath,
+	})
 
 	if (isPublicShare()) {
-		url = generateUrl('apps/' + OCA.Onlyoffice.AppName + '/s/{shareToken}?fileId={fileId}',
-			{
-				shareToken: encodeURIComponent(getSharingToken()),
-				fileId,
-			})
+		url = generateUrl('apps/' + OCA.Onlyoffice.AppName + '/s/{shareToken}?fileId={fileId}', {
+			shareToken: encodeURIComponent(getSharingToken()),
+			fileId,
+		})
 	}
 
 	if (winEditor && winEditor.location) {
@@ -196,10 +193,10 @@ function openEditor(fileId, fileDir, fileName, winEditor, isDefault = true) {
 		winEditor.location.href = url
 	} else if ((!OCA.Onlyoffice.setting.sameTab && !OCA.Onlyoffice.setting.enableSharing)
 		|| OCA.Onlyoffice.mobile || OCA.Onlyoffice.Desktop || (isPublicShare() && !isPublicFileShare()
-		&& !OCA.Onlyoffice.setting.sameTab && OCA.Onlyoffice.setting.enableSharing)
+			&& !OCA.Onlyoffice.setting.sameTab && OCA.Onlyoffice.setting.enableSharing)
 		|| (!OCA.Onlyoffice.setting.sameTab && !isDefault)) {
 		setDefaultUrl()
-		winEditor = window.open(url, '_blank')
+		window.open(url, '_blank')
 	} else {
 		if (OCA.Onlyoffice.setting.enableSharing
 			&& !isPublicShare()
@@ -275,7 +272,6 @@ function closeEditor() {
  * Reset the Files router URL, removing openfile and enableSharing query params
  */
 function setDefaultUrl() {
-	// eslint-disable-next-line no-unused-vars
 	const { openfile, enableSharing, ...query } = OCP.Files.Router.query
 	window.OCP?.Files?.Router?.goToRoute(
 		null, // use default route
@@ -330,10 +326,11 @@ function refreshVersionsDialog() {
 }
 
 /**
- * @param {object} file Nextcloud file node
- * @param {object} _view current files view
- * @param {string} dir current directory path
- * @param {boolean} isDefault whether triggered as the default action
+ * @param {object} params
+ * @param {object[]} params.nodes Nextcloud file nodes
+ * @param {object} params.view current files view
+ * @param {string} params.dir current directory path
+ * @param {boolean} params.isDefault whether triggered as the default action
  * @return {null} null
  */
 async function fileOpenHandler({ nodes, view, dir, isDefault = true }) {
@@ -355,9 +352,10 @@ async function fileOpenHandler({ nodes, view, dir, isDefault = true }) {
 }
 
 /**
- * @param {object} file Nextcloud file node
- * @param {object} view current files view
- * @param {string} dir current directory path
+ * @param {object} params
+ * @param {object[]} params.nodes Nextcloud file nodes
+ * @param {object} params.view current files view
+ * @param {string} params.dir current directory path
  * @return {null} null
  */
 async function fileConvertHandler({ nodes, view, dir }) {
@@ -366,8 +364,10 @@ async function fileConvertHandler({ nodes, view, dir }) {
 		const viewContents = await view.getContents(dir)
 
 		if (viewContents.folder && (viewContents.folder.fileid === response.parentId)) {
-			const newFile = viewContents.contents.find(node => node.fileid === response.id)
-			if (newFile) emit('files:node:created', newFile)
+			const newFile = viewContents.contents.find((node) => node.fileid === response.id)
+			if (newFile) {
+				emit('files:node:created', newFile)
+			}
 		}
 	})
 
@@ -401,6 +401,7 @@ function fileConvert(fileId, callback) {
 
 /**
  * @param {object} file Nextcloud file node
+ * @param file.nodes
  * @return {null} null
  */
 async function fileDownloadAsHandler({ nodes }) {
@@ -443,7 +444,9 @@ function openFormPicker(name, filelist, filesContext = null) {
 		.addButton({
 			label: t(OCA.Onlyoffice.AppName, 'From text document'),
 			callback: (nodes) => {
-				if (!nodes[0]) return
+				if (!nodes[0]) {
+					return
+				}
 				const targetId = nodes[0].id ?? 0
 				createFileOverload(name, filelist, 0, targetId, true, filesContext)
 			},
@@ -454,9 +457,10 @@ function openFormPicker(name, filelist, filesContext = null) {
 }
 
 /**
- * @param {object} file Nextcloud file node to create a form from
- * @param {object} view current files view
- * @param {string} dir current directory path
+ * @param {object} params
+ * @param {object[]} params.nodes Nextcloud file nodes
+ * @param {object} params.view current files view
+ * @param {string} params.dir current directory path
  * @return {null} null
  */
 async function fileCreateFormHandler({ nodes, view, dir }) {
@@ -501,7 +505,9 @@ function registerFileActions() {
 				return false
 			}
 
-			if (Permission.READ !== (nodes[0].permissions & Permission.READ)) { return false }
+			if (Permission.READ !== (nodes[0].permissions & Permission.READ)) {
+				return false
+			}
 
 			return true
 		},
@@ -517,10 +523,16 @@ function registerFileActions() {
 		enabled: ({ nodes }) => {
 			const config = getConfig(nodes[0])
 
-			if (!config) return false
-			if (config.def) return false
+			if (!config) {
+				return false
+			}
+			if (config.def) {
+				return false
+			}
 
-			if (Permission.READ !== (nodes[0].permissions & Permission.READ)) { return false }
+			if (Permission.READ !== (nodes[0].permissions & Permission.READ)) {
+				return false
+			}
 
 			return true
 		},
@@ -541,18 +553,28 @@ function registerFileActions() {
 		enabled: ({ nodes }) => {
 			const config = getConfig(nodes[0])
 
-			if (!config) return false
-			if (!config.conv) return false
+			if (!config) {
+				return false
+			}
+			if (!config.conv) {
+				return false
+			}
 
 			const required = isPublicShare() ? Permission.UPDATE : Permission.READ
-			if (required !== (nodes[0].permissions & required)) { return false }
+			if (required !== (nodes[0].permissions & required)) {
+				return false
+			}
 
 			if (nodes[0].attributes['mount-type'] === 'shared') {
-				if (required !== (nodes[0].attributes['share-permissions'] & required)) { return false }
+				if (required !== (nodes[0].attributes['share-permissions'] & required)) {
+					return false
+				}
 
 				const attributes = JSON.parse(nodes[0].attributes['share-attributes'])
 				const downloadAttribute = attributes.find((attribute) => attribute.scope === 'permissions' && attribute.key === 'download')
-				if (downloadAttribute !== undefined && downloadAttribute.value === false) { return false }
+				if (downloadAttribute !== undefined && downloadAttribute.value === false) {
+					return false
+				}
 			}
 
 			return true
@@ -567,18 +589,28 @@ function registerFileActions() {
 		enabled: ({ nodes }) => {
 			const config = getConfig(nodes[0])
 
-			if (!config) return false
-			if (!config.createForm) return false
+			if (!config) {
+				return false
+			}
+			if (!config.createForm) {
+				return false
+			}
 
 			const required = isPublicShare() ? Permission.UPDATE : Permission.READ
-			if (required !== (nodes[0].permissions & required)) { return false }
+			if (required !== (nodes[0].permissions & required)) {
+				return false
+			}
 
 			if (nodes[0].attributes['mount-type'] === 'shared') {
-				if (required !== (nodes[0].attributes['share-permissions'] & required)) { return false }
+				if (required !== (nodes[0].attributes['share-permissions'] & required)) {
+					return false
+				}
 
 				const attributes = JSON.parse(nodes[0].attributes['share-attributes'])
 				const downloadAttribute = attributes.find((attribute) => attribute.scope === 'permissions' && attribute.key === 'download')
-				if (downloadAttribute !== undefined && downloadAttribute.value === false) { return false }
+				if (downloadAttribute !== undefined && downloadAttribute.value === false) {
+					return false
+				}
 			}
 
 			return true
@@ -597,15 +629,23 @@ function registerFileActions() {
 				}
 				const config = getConfig(nodes[0])
 
-				if (!config) return false
-				if (!config.saveas) return false
+				if (!config) {
+					return false
+				}
+				if (!config.saveas) {
+					return false
+				}
 
-				if (Permission.READ !== (nodes[0].permissions & Permission.READ)) { return false }
+				if (Permission.READ !== (nodes[0].permissions & Permission.READ)) {
+					return false
+				}
 
 				if (nodes[0].attributes['mount-type'] === 'shared') {
 					const attributes = JSON.parse(nodes[0].attributes['share-attributes'])
 					const downloadAttribute = attributes.find((attribute) => attribute.scope === 'permissions' && attribute.key === 'download')
-					if (downloadAttribute !== undefined && downloadAttribute.value === false) { return false }
+					if (downloadAttribute !== undefined && downloadAttribute.value === false) {
+						return false
+					}
 				}
 
 				return true
@@ -619,19 +659,19 @@ function registerFileActions() {
  * Register ONLYOFFICE entries in the new file menu
  */
 function registerNewFileMenu() {
-	const alreadyRegistered = getNewFileMenuEntries().some(menu => menu.id.includes('onlyoffice'))
+	const alreadyRegistered = getNewFileMenuEntries().some((menu) => menu.id.includes('onlyoffice'))
 
 	if (isPublicShare() && !alreadyRegistered) {
 		// Document
 		addNewFileMenuEntry({
 			id: 'new-onlyoffice-docx',
 			displayName: t(OCA.Onlyoffice.AppName, 'New document'),
-			enabled: folder => {
+			enabled: (folder) => {
 				return (folder.permissions & Permission.CREATE) !== 0
 			},
 			iconSvgInline: NewDocxSvg,
 			order: 21,
-			handler: context => {
+			handler: (context) => {
 				const name = t(OCA.Onlyoffice.AppName, 'New document')
 				const dirContext = { dir: context.path }
 				createFileOverload(name + '.docx', dirContext, null, null, true, context)
@@ -642,12 +682,12 @@ function registerNewFileMenu() {
 		addNewFileMenuEntry({
 			id: 'new-onlyoffice-xlsx',
 			displayName: t(OCA.Onlyoffice.AppName, 'New spreadsheet'),
-			enabled: folder => {
+			enabled: (folder) => {
 				return (folder.permissions & Permission.CREATE) !== 0
 			},
 			iconSvgInline: NewXlsxSvg,
 			order: 22,
-			handler: context => {
+			handler: (context) => {
 				const name = t(OCA.Onlyoffice.AppName, 'New spreadsheet')
 				const dirContext = { dir: context.path }
 				createFileOverload(name + '.xlsx', dirContext, null, null, true, context)
@@ -658,12 +698,12 @@ function registerNewFileMenu() {
 		addNewFileMenuEntry({
 			id: 'new-onlyoffice-pptx',
 			displayName: t(OCA.Onlyoffice.AppName, 'New presentation'),
-			enabled: folder => {
+			enabled: (folder) => {
 				return (folder.permissions & Permission.CREATE) !== 0
 			},
 			iconSvgInline: NewPptxSvg,
 			order: 23,
-			handler: context => {
+			handler: (context) => {
 				const name = t(OCA.Onlyoffice.AppName, 'New presentation')
 				const dirContext = { dir: context.path }
 				createFileOverload(name + '.pptx', dirContext, null, null, true, context)
@@ -675,12 +715,12 @@ function registerNewFileMenu() {
 	addNewFileMenuEntry({
 		id: 'new-onlyoffice-pdf',
 		displayName: t(OCA.Onlyoffice.AppName, 'New PDF form'),
-		enabled: folder => {
+		enabled: (folder) => {
 			return (folder.permissions & Permission.CREATE) !== 0
 		},
 		iconSvgInline: NewPdfSvg,
 		order: 24,
-		handler: context => {
+		handler: (context) => {
 			const name = t(OCA.Onlyoffice.AppName, 'New PDF form')
 			const dirContext = { dir: context.path }
 			openFormPicker(name + '.pdf', dirContext, context)

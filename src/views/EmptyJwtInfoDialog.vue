@@ -24,7 +24,8 @@
   See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 -->
 <template>
-	<NcDialog class="empty-jwt-info-dialog"
+	<NcDialog
+		class="empty-jwt-info-dialog"
 		:name="dialogName"
 		:buttons="buttons"
 		@update:open="$emit('close', false)">
@@ -36,9 +37,9 @@
 </template>
 
 <script setup>
-import NcDialog from '@nextcloud/vue/components/NcDialog'
 import { t } from '@nextcloud/l10n'
 import { computed } from 'vue'
+import NcDialog from '@nextcloud/vue/components/NcDialog'
 
 const emit = defineEmits(['close'])
 

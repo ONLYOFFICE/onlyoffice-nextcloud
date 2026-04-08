@@ -24,17 +24,16 @@
   See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 -->
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { loadState } from '@nextcloud/initial-state'
 import { showError } from '@nextcloud/dialogs'
+import { loadState } from '@nextcloud/initial-state'
 import { t } from '@nextcloud/l10n'
 import { spawnDialog } from '@nextcloud/vue/functions/dialog'
-
+import { onMounted, ref } from 'vue'
 import EmptyJwtInfoDialog from '../EmptyJwtInfoDialog.vue'
 import TemplateList from '../TemplateList.vue'
-import ServerSection from './ServerSection.vue'
 import CommonSection from './CommonSection.vue'
 import SecuritySection from './SecuritySection.vue'
+import ServerSection from './ServerSection.vue'
 
 const state = loadState<Record<string, unknown>>('onlyoffice', 'admin-settings')
 const successful = ref(state.successful as boolean)
@@ -46,11 +45,12 @@ onMounted(() => {
 })
 
 /**
- * Handles the address-saved event from ServerSection.
+ * Handles the addressSaved event from ServerSection.
  * Shows the empty JWT warning dialog when the server was saved successfully but no JWT secret is set.
- * @param result address-saved event payload
- * @param {boolean} result.successful whether the save request succeeded
- * @param {boolean} result.hasSecret whether a JWT secret is currently configured
+ *
+ * @param result addressSaved event payload
+ * @param result.successful whether the save request succeeded
+ * @param result.hasSecret whether a JWT secret is currently configured
  */
 function onAddressSaved({ successful: ok, hasSecret }: { successful: boolean, hasSecret: boolean }) {
 	successful.value = ok
@@ -62,33 +62,35 @@ function onAddressSaved({ successful: ok, hasSecret }: { successful: boolean, ha
 
 <template>
 	<div>
-		<ServerSection :documentserver="state.documentserver as string"
-			:documentserver-internal="state.documentserverInternal as string"
-			:storage-url="state.storageUrl as string"
-			:verify-peer-off="state.verifyPeerOff as boolean"
+		<ServerSection
+			:documentserver="state.documentserver as string"
+			:documentserverInternal="state.documentserverInternal as string"
+			:storageUrl="state.storageUrl as string"
+			:verifyPeerOff="state.verifyPeerOff as boolean"
 			:secret="state.secret as string"
-			:jwt-header="state.jwtHeader as string"
+			:jwtHeader="state.jwtHeader as string"
 			:demo="state.demo as { enabled: boolean, available: boolean }"
-			@address-saved="onAddressSaved" />
+			@addressSaved="onAddressSaved" />
 		<template v-if="successful">
-			<CommonSection :formats="state.formats as Record<string, Record<string, unknown>>"
-				:same-tab="state.sameTab as boolean"
-				:enable-sharing="state.enableSharing as boolean"
+			<CommonSection
+				:formats="state.formats as Record<string, Record<string, unknown>>"
+				:sameTab="state.sameTab as boolean"
+				:enableSharing="state.enableSharing as boolean"
 				:preview="state.preview as boolean"
 				:advanced="state.advanced as boolean"
-				:cron-checker="state.cronChecker as boolean"
-				:email-notifications="state.emailNotifications as boolean"
-				:version-history="state.versionHistory as boolean"
-				:limit-groups="state.limitGroups as string[]"
+				:cronChecker="state.cronChecker as boolean"
+				:emailNotifications="state.emailNotifications as boolean"
+				:versionHistory="state.versionHistory as boolean"
+				:limitGroups="state.limitGroups as string[]"
 				:chat="state.chat as boolean"
-				:compact-header="state.compactHeader as boolean"
+				:compactHeader="state.compactHeader as boolean"
 				:feedback="state.feedback as boolean"
 				:forcesave="state.forcesave as boolean"
-				:live-view-on-share="state.liveViewOnShare as boolean"
+				:liveViewOnShare="state.liveViewOnShare as boolean"
 				:help="state.help as boolean"
-				:review-display="state.reviewDisplay as string"
+				:reviewDisplay="state.reviewDisplay as string"
 				:theme="state.theme as string"
-				:unknown-author="state.unknownAuthor as string" />
+				:unknownAuthor="state.unknownAuthor as string" />
 			<div class="section section-onlyoffice section-onlyoffice-templates">
 				<h2>
 					{{ t('onlyoffice', 'Common templates') }}
@@ -97,11 +99,12 @@ function onAddressSaved({ successful: ok, hasSecret }: { successful: boolean, ha
 				</h2>
 				<TemplateList />
 			</div>
-			<SecuritySection :plugins="state.plugins as boolean"
+			<SecuritySection
+				:plugins="state.plugins as boolean"
 				:macros="state.macros as boolean"
 				:protection="state.protection as string"
 				:watermark="state.watermark as Record<string, unknown>"
-				:tags-enabled="state.tagsEnabled as boolean" />
+				:tagsEnabled="state.tagsEnabled as boolean" />
 		</template>
 	</div>
 </template>

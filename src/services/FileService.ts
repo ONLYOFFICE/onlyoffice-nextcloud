@@ -26,9 +26,10 @@
  *
  */
 
+import type { FileInfo } from '../types.ts'
+
 import axios from '@nextcloud/axios'
 import { generateUrl } from '@nextcloud/router'
-import type { FileInfo } from '../types'
 
 export interface CreateFileData {
 	name: string
@@ -43,7 +44,11 @@ export interface ConvertFileData {
 	shareToken?: string
 }
 
-export const createFile = async (data: CreateFileData): Promise<FileInfo> => {
+/**
+ *
+ * @param data
+ */
+export async function createFile(data: CreateFileData): Promise<FileInfo> {
 	const response = await axios.post<FileInfo>(
 		generateUrl('apps/onlyoffice/ajax/new'),
 		data,
@@ -51,7 +56,11 @@ export const createFile = async (data: CreateFileData): Promise<FileInfo> => {
 	return response.data
 }
 
-export const convertFile = async (data: ConvertFileData): Promise<FileInfo> => {
+/**
+ *
+ * @param data
+ */
+export async function convertFile(data: ConvertFileData): Promise<FileInfo> {
 	const response = await axios.post<FileInfo>(
 		generateUrl('apps/onlyoffice/ajax/convert'),
 		data,

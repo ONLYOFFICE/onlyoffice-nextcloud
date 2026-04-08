@@ -26,13 +26,13 @@
  *
  */
 
-import { t } from '@nextcloud/l10n'
-import { loadState } from '@nextcloud/initial-state'
-import AppDarkSvg from '../img/app-dark.svg?raw'
-import ShareTab from './views/share/ShareTab.vue'
-import { getFileExtension } from './utils/files.ts'
 import { FileType, registerSidebarTab } from '@nextcloud/files'
+import { loadState } from '@nextcloud/initial-state'
+import { t } from '@nextcloud/l10n'
 import { defineCustomElement } from 'vue'
+import ShareTab from './views/share/ShareTab.vue'
+import AppDarkSvg from '../img/app-dark.svg?raw'
+import { getFileExtension } from './utils/files.ts'
 
 const formats = loadState('onlyoffice', 'settings', { formats: {} }).formats ?? {}
 const tagName = 'onlyoffice-files-advanced-sidebar-tab'

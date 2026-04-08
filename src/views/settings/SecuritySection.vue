@@ -24,13 +24,13 @@
   See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 -->
 <script setup lang="ts">
-import { ref } from 'vue'
 import { showError, showSuccess } from '@nextcloud/dialogs'
 import { t } from '@nextcloud/l10n'
+import { ref } from 'vue'
 import NcButton from '@nextcloud/vue/components/NcButton'
-import NcSettingsSelectGroup from '@nextcloud/vue/components/NcSettingsSelectGroup'
 import NcSelectTags from '@nextcloud/vue/components/NcSelectTags'
-import { saveSecuritySettings } from '../../services/SettingsService'
+import NcSettingsSelectGroup from '@nextcloud/vue/components/NcSettingsSelectGroup'
+import { saveSecuritySettings } from '../../services/SettingsService.ts'
 
 interface WatermarkSettings {
 	enabled: boolean
@@ -109,7 +109,8 @@ async function save() {
 		<h2>{{ t('onlyoffice', 'Security') }}</h2>
 
 		<p>
-			<input id="onlyoffice-plugins"
+			<input
+				id="onlyoffice-plugins"
 				v-model="plugins"
 				type="checkbox"
 				class="checkbox">
@@ -117,7 +118,8 @@ async function save() {
 		</p>
 
 		<p>
-			<input id="onlyoffice-macros"
+			<input
+				id="onlyoffice-macros"
 				v-model="macros"
 				type="checkbox"
 				class="checkbox">
@@ -130,7 +132,8 @@ async function save() {
 		</p>
 		<div class="onlyoffice-tables">
 			<div>
-				<input id="onlyoffice-protection-all"
+				<input
+					id="onlyoffice-protection-all"
 					v-model="protection"
 					type="radio"
 					class="radio"
@@ -139,7 +142,8 @@ async function save() {
 				<label for="onlyoffice-protection-all">{{ t('onlyoffice', 'All users') }}</label>
 			</div>
 			<div>
-				<input id="onlyoffice-protection-owner"
+				<input
+					id="onlyoffice-protection-owner"
 					v-model="protection"
 					type="radio"
 					class="radio"
@@ -156,7 +160,8 @@ async function save() {
 			{{ t('onlyoffice', 'Secure view enables you to secure documents by embedding a watermark') }}
 		</p>
 		<p>
-			<input id="onlyoffice-watermark-enabled"
+			<input
+				id="onlyoffice-watermark-enabled"
 				v-model="watermark.enabled"
 				type="checkbox"
 				class="checkbox">
@@ -174,7 +179,8 @@ async function save() {
 				{{ t('onlyoffice', 'Supported placeholders') }}: {userId}, {userDisplayName}, {email}, {date}, {themingName}
 			</p>
 			<p>
-				<input id="onlyoffice-watermark-text"
+				<input
+					id="onlyoffice-watermark-text"
 					v-model="watermark.text"
 					type="text"
 					:placeholder="t('onlyoffice', 'DO NOT SHARE THIS') + ' {userId} {date}'">
@@ -185,14 +191,16 @@ async function save() {
 			<!-- Tags -->
 			<template v-if="tagsEnabled">
 				<p>
-					<input id="onlyoffice-watermark-all-tags"
+					<input
+						id="onlyoffice-watermark-all-tags"
 						v-model="watermark.allTags"
 						type="checkbox"
 						class="checkbox">
 					<label for="onlyoffice-watermark-all-tags">{{ t('onlyoffice', 'Show watermark on tagged files') }}</label>
 				</p>
 				<p class="block-inline">
-					<NcSelectTags v-if="watermark.allTags"
+					<NcSelectTags
+						v-if="watermark.allTags"
 						v-model="watermark.allTagsList"
 						:multiple="true" />
 				</p>
@@ -200,21 +208,24 @@ async function save() {
 
 			<!-- Groups -->
 			<p>
-				<input id="onlyoffice-watermark-all-groups"
+				<input
+					id="onlyoffice-watermark-all-groups"
 					v-model="watermark.allGroups"
 					type="checkbox"
 					class="checkbox">
 				<label for="onlyoffice-watermark-all-groups">{{ t('onlyoffice', 'Show watermark for users of groups') }}</label>
 			</p>
 			<p class="block-inline">
-				<NcSettingsSelectGroup v-if="watermark.allGroups"
+				<NcSettingsSelectGroup
+					v-if="watermark.allGroups"
 					v-model="watermark.allGroupsList"
 					:label="t('core', 'Groups')" />
 			</p>
 
 			<!-- Share-based watermarks -->
 			<p>
-				<input id="onlyoffice-watermark-share-all"
+				<input
+					id="onlyoffice-watermark-share-all"
 					v-model="watermark.shareAll"
 					type="checkbox"
 					class="checkbox">
@@ -222,7 +233,8 @@ async function save() {
 			</p>
 			<!-- shareRead is hidden when shareAll is on (already implied) -->
 			<p v-if="!watermark.shareAll">
-				<input id="onlyoffice-watermark-share-read"
+				<input
+					id="onlyoffice-watermark-share-read"
 					v-model="watermark.shareRead"
 					type="checkbox"
 					class="checkbox">
@@ -234,7 +246,8 @@ async function save() {
 			<!-- Link-based watermarks -->
 			<p>{{ t('onlyoffice', 'Link shares') }}</p>
 			<p>
-				<input id="onlyoffice-watermark-link-all"
+				<input
+					id="onlyoffice-watermark-link-all"
 					v-model="watermark.linkAll"
 					type="checkbox"
 					class="checkbox">
@@ -243,14 +256,16 @@ async function save() {
 			<!-- link-specific options hidden when linkAll is on (already implies all) -->
 			<template v-if="!watermark.linkAll">
 				<p>
-					<input id="onlyoffice-watermark-link-secure"
+					<input
+						id="onlyoffice-watermark-link-secure"
 						v-model="watermark.linkSecure"
 						type="checkbox"
 						class="checkbox">
 					<label for="onlyoffice-watermark-link-secure">{{ t('onlyoffice', 'Show watermark for download hidden shares') }}</label>
 				</p>
 				<p>
-					<input id="onlyoffice-watermark-link-read"
+					<input
+						id="onlyoffice-watermark-link-read"
 						v-model="watermark.linkRead"
 						type="checkbox"
 						class="checkbox">
@@ -258,14 +273,16 @@ async function save() {
 				</p>
 				<template v-if="tagsEnabled">
 					<p>
-						<input id="onlyoffice-watermark-link-tags"
+						<input
+							id="onlyoffice-watermark-link-tags"
 							v-model="watermark.linkTags"
 							type="checkbox"
 							class="checkbox">
 						<label for="onlyoffice-watermark-link-tags">{{ t('onlyoffice', 'Show watermark on link shares with specific system tags') }}</label>
 					</p>
 					<p class="block-inline">
-						<NcSelectTags v-if="watermark.linkTags"
+						<NcSelectTags
+							v-if="watermark.linkTags"
 							v-model="watermark.linkTagsList"
 							:multiple="true" />
 					</p>
@@ -276,7 +293,8 @@ async function save() {
 		<br>
 
 		<p>
-			<NcButton id="onlyoffice-security-save"
+			<NcButton
+				id="onlyoffice-security-save"
 				:disabled="saving"
 				variant="primary"
 				@click="save">

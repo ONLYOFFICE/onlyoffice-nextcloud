@@ -24,12 +24,12 @@
   See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 -->
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
 import { showConfirmation, showError, showSuccess } from '@nextcloud/dialogs'
 import { t } from '@nextcloud/l10n'
+import { computed, ref, watch } from 'vue'
 import NcButton from '@nextcloud/vue/components/NcButton'
 import NcSettingsSelectGroup from '@nextcloud/vue/components/NcSettingsSelectGroup'
-import { clearHistory, saveCommonSettings } from '../../services/SettingsService'
+import { clearHistory, saveCommonSettings } from '../../services/SettingsService.ts'
 
 const props = defineProps<{
 	formats: Record<string, Record<string, unknown>>
@@ -53,28 +53,16 @@ const props = defineProps<{
 }>()
 
 // Build defFormats and editFormats from the formats object
-const defFormats = ref<Record<string, boolean>>(
-	Object.fromEntries(
-		Object.entries(props.formats)
-			.filter(([, fmt]) => fmt.mime != null)
-			.map(([name, fmt]) => [name, !!(fmt.def)]),
-	),
-)
-const editFormats = ref<Record<string, boolean>>(
-	Object.fromEntries(
-		Object.entries(props.formats)
-			.filter(([, fmt]) => fmt.editable)
-			.map(([name, fmt]) => [name, !!(fmt.edit)]),
-	),
-)
+const defFormats = ref<Record<string, boolean>>(Object.fromEntries(Object.entries(props.formats)
+	.filter(([, fmt]) => fmt.mime !== undefined && fmt.mime !== null)
+	.map(([name, fmt]) => [name, !!(fmt.def)])))
+const editFormats = ref<Record<string, boolean>>(Object.fromEntries(Object.entries(props.formats)
+	.filter(([, fmt]) => fmt.editable)
+	.map(([name, fmt]) => [name, !!(fmt.edit)])))
 
 // Computed filtered views of formats
-const previewFormats = computed(() =>
-	Object.entries(props.formats).filter(([, fmt]) => fmt.mime != null),
-)
-const editableFormats = computed(() =>
-	Object.entries(props.formats).filter(([, fmt]) => fmt.editable),
-)
+const previewFormats = computed(() => Object.entries(props.formats).filter(([, fmt]) => fmt.mime !== undefined && fmt.mime !== null))
+const editableFormats = computed(() => Object.entries(props.formats).filter(([, fmt]) => fmt.editable))
 
 const sameTab = ref(props.sameTab)
 const enableSharing = ref(props.enableSharing)
@@ -97,11 +85,15 @@ const unknownAuthor = ref(props.unknownAuthor ?? '')
 const saving = ref(false)
 
 watch(sameTab, (val) => {
-	if (val) enableSharing.value = false
+	if (val) {
+		enableSharing.value = false
+	}
 })
 
 watch(useGroups, (val) => {
-	if (!val) limitGroups.value = []
+	if (!val) {
+		limitGroups.value = []
+	}
 })
 
 /**
@@ -114,7 +106,9 @@ async function onClearHistory() {
 		labelReject: t('core', 'Cancel'),
 		severity: 'info',
 	})
-	if (!confirmed) return
+	if (!confirmed) {
+		return
+	}
 
 	saving.value = true
 	try {
@@ -169,21 +163,24 @@ async function save() {
 
 		<!-- Group access restriction -->
 		<p>
-			<input id="onlyoffice-groups"
+			<input
+				id="onlyoffice-groups"
 				v-model="useGroups"
 				type="checkbox"
 				class="checkbox">
 			<label for="onlyoffice-groups">{{ t('onlyoffice', 'Allow the following groups to access the editors') }}</label>
 		</p>
 		<p class="block-inline">
-			<NcSettingsSelectGroup v-if="useGroups"
+			<NcSettingsSelectGroup
+				v-if="useGroups"
 				v-model="limitGroups"
 				:label="t('core', 'Groups')" />
 		</p>
 
 		<!-- Behaviour -->
 		<p>
-			<input id="onlyoffice-preview"
+			<input
+				id="onlyoffice-preview"
 				v-model="preview"
 				type="checkbox"
 				class="checkbox">
@@ -191,7 +188,8 @@ async function save() {
 		</p>
 
 		<p>
-			<input id="onlyoffice-same-tab"
+			<input
+				id="onlyoffice-same-tab"
 				v-model="sameTab"
 				type="checkbox"
 				class="checkbox">
@@ -200,7 +198,8 @@ async function save() {
 
 		<div v-show="!sameTab" id="onlyoffice-enable-sharing-block">
 			<p>
-				<input id="onlyoffice-enable-sharing"
+				<input
+					id="onlyoffice-enable-sharing"
 					v-model="enableSharing"
 					type="checkbox"
 					class="checkbox">
@@ -209,7 +208,8 @@ async function save() {
 		</div>
 
 		<p>
-			<input id="onlyoffice-advanced"
+			<input
+				id="onlyoffice-advanced"
 				v-model="advanced"
 				type="checkbox"
 				class="checkbox">
@@ -218,7 +218,8 @@ async function save() {
 
 		<p class="onlyoffice-version-history">
 			<span>
-				<input id="onlyoffice-version-history"
+				<input
+					id="onlyoffice-version-history"
 					v-model="versionHistory"
 					type="checkbox"
 					class="checkbox">
@@ -230,7 +231,8 @@ async function save() {
 		</p>
 
 		<p>
-			<input id="onlyoffice-cron-checker"
+			<input
+				id="onlyoffice-cron-checker"
 				v-model="cronChecker"
 				type="checkbox"
 				class="checkbox">
@@ -238,7 +240,8 @@ async function save() {
 		</p>
 
 		<p>
-			<input id="onlyoffice-email-notifications"
+			<input
+				id="onlyoffice-email-notifications"
 				v-model="emailNotifications"
 				type="checkbox"
 				class="checkbox">
@@ -247,7 +250,8 @@ async function save() {
 
 		<p>{{ t('onlyoffice', 'Unknown author display name') }}</p>
 		<p>
-			<input id="onlyoffice-unknown-author"
+			<input
+				id="onlyoffice-unknown-author"
 				v-model="unknownAuthor"
 				type="text"
 				placeholder="">
@@ -257,7 +261,8 @@ async function save() {
 		<p>{{ t('onlyoffice', 'The default application for opening the format') }}</p>
 		<div class="onlyoffice-exts">
 			<div v-for="[name] in previewFormats" :key="'def-' + name">
-				<input :id="'onlyoffice-def-format' + name"
+				<input
+					:id="'onlyoffice-def-format' + name"
 					v-model="defFormats[name]"
 					type="checkbox"
 					class="checkbox">
@@ -269,7 +274,8 @@ async function save() {
 		<p>{{ t('onlyoffice', 'Open the file for editing (due to format restrictions, the data might be lost when saving to the formats from the list below)') }}</p>
 		<div class="onlyoffice-exts">
 			<div v-for="[name] in editableFormats" :key="'edit-' + name">
-				<input :id="'onlyoffice-edit-format' + name"
+				<input
+					:id="'onlyoffice-edit-format' + name"
 					v-model="editFormats[name]"
 					type="checkbox"
 					class="checkbox">
@@ -283,7 +289,8 @@ async function save() {
 		<h2>{{ t('onlyoffice', 'Editor customization settings') }}</h2>
 
 		<p>
-			<input id="onlyoffice-forcesave"
+			<input
+				id="onlyoffice-forcesave"
 				v-model="forcesave"
 				type="checkbox"
 				class="checkbox">
@@ -291,7 +298,8 @@ async function save() {
 		</p>
 
 		<p>
-			<input id="onlyoffice-live-view-on-share"
+			<input
+				id="onlyoffice-live-view-on-share"
 				v-model="liveViewOnShare"
 				type="checkbox"
 				class="checkbox">
@@ -303,7 +311,8 @@ async function save() {
 		</p>
 
 		<p>
-			<input id="onlyoffice-chat"
+			<input
+				id="onlyoffice-chat"
 				v-model="chat"
 				type="checkbox"
 				class="checkbox">
@@ -311,7 +320,8 @@ async function save() {
 		</p>
 
 		<p>
-			<input id="onlyoffice-compact-header"
+			<input
+				id="onlyoffice-compact-header"
 				v-model="compactHeader"
 				type="checkbox"
 				class="checkbox">
@@ -319,7 +329,8 @@ async function save() {
 		</p>
 
 		<p>
-			<input id="onlyoffice-feedback"
+			<input
+				id="onlyoffice-feedback"
 				v-model="feedback"
 				type="checkbox"
 				class="checkbox">
@@ -327,7 +338,8 @@ async function save() {
 		</p>
 
 		<p>
-			<input id="onlyoffice-help"
+			<input
+				id="onlyoffice-help"
 				v-model="help"
 				type="checkbox"
 				class="checkbox">
@@ -340,7 +352,8 @@ async function save() {
 		</p>
 		<div class="onlyoffice-tables">
 			<div>
-				<input id="onlyoffice-review-display-markup"
+				<input
+					id="onlyoffice-review-display-markup"
 					v-model="reviewDisplay"
 					type="radio"
 					class="radio"
@@ -349,7 +362,8 @@ async function save() {
 				<label for="onlyoffice-review-display-markup">{{ t('onlyoffice', 'Markup') }}</label>
 			</div>
 			<div>
-				<input id="onlyoffice-review-display-final"
+				<input
+					id="onlyoffice-review-display-final"
 					v-model="reviewDisplay"
 					type="radio"
 					class="radio"
@@ -358,7 +372,8 @@ async function save() {
 				<label for="onlyoffice-review-display-final">{{ t('onlyoffice', 'Final') }}</label>
 			</div>
 			<div>
-				<input id="onlyoffice-review-display-original"
+				<input
+					id="onlyoffice-review-display-original"
 					v-model="reviewDisplay"
 					type="radio"
 					class="radio"
@@ -374,7 +389,8 @@ async function save() {
 		</p>
 		<div class="onlyoffice-tables">
 			<div>
-				<input id="onlyoffice-theme-theme-system"
+				<input
+					id="onlyoffice-theme-theme-system"
 					v-model="theme"
 					type="radio"
 					class="radio"
@@ -383,7 +399,8 @@ async function save() {
 				<label for="onlyoffice-theme-theme-system">{{ t('onlyoffice', 'Same as system') }}</label>
 			</div>
 			<div>
-				<input id="onlyoffice-theme-default-light"
+				<input
+					id="onlyoffice-theme-default-light"
 					v-model="theme"
 					type="radio"
 					class="radio"
@@ -392,7 +409,8 @@ async function save() {
 				<label for="onlyoffice-theme-default-light">{{ t('onlyoffice', 'Light') }}</label>
 			</div>
 			<div>
-				<input id="onlyoffice-theme-default-dark"
+				<input
+					id="onlyoffice-theme-default-dark"
 					v-model="theme"
 					type="radio"
 					class="radio"
@@ -405,7 +423,8 @@ async function save() {
 		<br>
 
 		<p>
-			<NcButton id="onlyoffice-common-save"
+			<NcButton
+				id="onlyoffice-common-save"
 				:disabled="saving"
 				variant="primary"
 				@click="save">

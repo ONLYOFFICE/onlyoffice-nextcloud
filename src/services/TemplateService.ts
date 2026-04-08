@@ -26,25 +26,37 @@
  *
  */
 
+import type { ApiError, Template } from '../types.ts'
+
 import axios from '@nextcloud/axios'
 import { generateUrl } from '@nextcloud/router'
-import type { ApiError, Template } from '../types'
 
 const templateUrl = generateUrl('apps/onlyoffice/ajax/template')
 
-export const getTemplates = async (): Promise<Template[]> => {
+/**
+ *
+ */
+export async function getTemplates(): Promise<Template[]> {
 	const response = await axios.get<Template[]>(templateUrl)
 	return response.data
 }
 
-export const addTemplate = async (file: File): Promise<Template | ApiError> => {
+/**
+ *
+ * @param file
+ */
+export async function addTemplate(file: File): Promise<Template | ApiError> {
 	const data = new FormData()
 	data.append('file', file)
 	const response = await axios.post<Template | ApiError>(templateUrl, data)
 	return response.data
 }
 
-export const deleteTemplate = async (templateId: number): Promise<ApiError | []> => {
+/**
+ *
+ * @param templateId
+ */
+export async function deleteTemplate(templateId: number): Promise<ApiError | []> {
 	const response = await axios.delete<ApiError | []>(templateUrl, { params: { templateId } })
 	return response.data
 }

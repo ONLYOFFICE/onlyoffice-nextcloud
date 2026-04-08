@@ -31,7 +31,7 @@ import { getRootUrl } from '@nextcloud/router'
 
 /* global _oc_appswebroots  */
 
-OCA.Onlyoffice = Object.assign({}, OCA.Onlyoffice)
+OCA.Onlyoffice = { ...OCA.Onlyoffice }
 
 if (window.AscDesktopEditor) {
 	OCA.Onlyoffice.Desktop = true

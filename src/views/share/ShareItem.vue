@@ -24,15 +24,16 @@
   See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 -->
 <script setup lang="ts">
-import { computed } from 'vue'
+import type { ShareExtra } from '../../services/ShareService.ts'
+
 import { t } from '@nextcloud/l10n'
+import { generateFilePath } from '@nextcloud/router'
 import { ShareType } from '@nextcloud/sharing'
+import { computed } from 'vue'
+import NcActionCheckbox from '@nextcloud/vue/components/NcActionCheckbox'
 import NcAvatar from '@nextcloud/vue/components/NcAvatar'
 import NcListItem from '@nextcloud/vue/components/NcListItem'
-import NcActionCheckbox from '@nextcloud/vue/components/NcActionCheckbox'
-import type { ShareExtra } from '../../services/ShareService'
-import { Permissions } from '../../utils/permissions'
-import { generateFilePath } from '@nextcloud/router'
+import { Permissions } from '../../utils/permissions.ts'
 
 const props = defineProps<{
 	extra: ShareExtra
@@ -45,20 +46,24 @@ const emit = defineEmits<{
 }>()
 
 const name = computed(() => {
-	if (props.extra.type === ShareType.Link) return t('onlyoffice', 'Share link')
-	if (props.extra.type === ShareType.Group) return `${props.extra.shareWith} (${t('onlyoffice', 'group')})`
-	if (props.extra.type === ShareType.Room) return `${props.extra.shareWith} (${t('onlyoffice', 'conversation')})`
+	if (props.extra.type === ShareType.Link) {
+		return t('onlyoffice', 'Share link')
+	}
+	if (props.extra.type === ShareType.Group) {
+		return `${props.extra.shareWith} (${t('onlyoffice', 'group')})`
+	}
+	if (props.extra.type === ShareType.Room) {
+		return `${props.extra.shareWith} (${t('onlyoffice', 'conversation')})`
+	}
 	return props.extra.shareWithName
 })
 
-const isUserShare = computed(() =>
-	props.extra.type !== ShareType.Link
+const isUserShare = computed(() => props.extra.type !== ShareType.Link
 	&& props.extra.type !== ShareType.Group
-	&& props.extra.type !== ShareType.Room,
-)
+	&& props.extra.type !== ShareType.Room)
 
 const attributes = computed(() => {
-	const attrs: Array<{ key: number; label: string; checked: boolean }> = []
+	const attrs: Array<{ key: number, label: string, checked: boolean }> = []
 	const { available, permissions } = props.extra
 	if (props.format.review && (Permissions.Review & available) === Permissions.Review) {
 		attrs.push({ key: Permissions.Review, label: t('onlyoffice', 'Review only'), checked: (Permissions.Review & permissions) === Permissions.Review })
@@ -77,24 +82,26 @@ const attributes = computed(() => {
 </script>
 
 <template>
-	<NcListItem :name="name" :force-display-actions="true">
+	<NcListItem :name="name" :forceDisplayActions="true">
 		<template #icon>
 			<div v-if="extra.type === ShareType.Link" class="onlyoffice-share-link-avatar">
 				<img :src="generateFilePath('onlyoffice', 'img', 'public.svg')">
 			</div>
-			<NcAvatar v-else
+			<NcAvatar
+				v-else
 				:user="isUserShare ? extra.shareWith : undefined"
-				:is-guest="!isUserShare"
-				:display-name="extra.shareWith"
+				:isGuest="!isUserShare"
+				:displayName="extra.shareWith"
 				:size="32"
-				:disable-menu="true"
-				:disable-tooltip="true"
-				:show-user-status="false" />
+				:disableMenu="true"
+				:disableTooltip="true"
+				:showUserStatus="false" />
 		</template>
 		<template #actions>
-			<NcActionCheckbox v-for="attr in attributes"
+			<NcActionCheckbox
+				v-for="attr in attributes"
 				:key="attr.key"
-				:model-value="attr.checked"
+				:modelValue="attr.checked"
 				:disabled="disabled"
 				@check="emit('change', attr.key, true)"
 				@uncheck="emit('change', attr.key, false)">

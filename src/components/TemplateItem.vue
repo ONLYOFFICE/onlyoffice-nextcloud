@@ -35,17 +35,24 @@
 </template>
 
 <script setup lang="ts">
+import type { Template } from '../types.ts'
+
 import { generateUrl } from '@nextcloud/router'
-import type { Template } from '../types'
 
 const props = defineProps<{ template: Template }>()
 const emit = defineEmits<{ delete: [id: number] }>()
 
-const handleOpen = () => {
+/**
+ *
+ */
+function handleOpen() {
 	window.open(generateUrl('/apps/onlyoffice/{fileId}?template=true', { fileId: props.template.id }))
 }
 
-const handleDownload = () => {
+/**
+ *
+ */
+function handleDownload() {
 	location.href = generateUrl('apps/onlyoffice/downloadas?fileId={fileId}&template=true', { fileId: props.template.id })
 }
 </script>
