@@ -91,7 +91,7 @@ jobs:
       - name: Build onlyoffice
         working-directory: nextcloud/apps/onlyoffice
         run: |
-          npm ci
+          npm install
           npm run build
 
       - name: Install Playwright Browsers
