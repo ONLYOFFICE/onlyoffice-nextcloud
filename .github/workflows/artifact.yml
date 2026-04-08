@@ -39,13 +39,13 @@ jobs:
           rm -rf ./src/
           rm -rf ./tests/
           rm -rf ./vendor-bin/
-          rm ./.eslintrc.js
           rm ./.gitignore
           rm ./.gitmodules
           rm ./.stylelintrc.json
           rm ./CLAUDE.md
           rm ./composer.json
           rm ./composer.lock
+          rm ./eslint.config.mjs
           rm ./npm-shrinkwrap.json
           rm ./package.json
           rm ./ruleset.xml
