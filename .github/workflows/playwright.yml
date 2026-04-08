@@ -100,7 +100,9 @@ jobs:
 
       - name: Run Playwright tests
         working-directory: nextcloud/apps/onlyoffice
-        run: npx playwright test
+        run: |
+          CONTAINER_IP=$(hostname -I | awk '{print $1}')
+          DOCUMENT_STORAGE_URL="http://$CONTAINER_IP:8080/" npx playwright test
 
       - name: Upload test report
         uses: actions/upload-artifact@v4
