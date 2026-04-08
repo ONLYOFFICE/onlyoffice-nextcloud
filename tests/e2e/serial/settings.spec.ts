@@ -7,7 +7,10 @@ import { randomName } from '../helpers/utils'
 import { saveCommonSettings } from '../helpers/adminSettings'
 
 const docsUrl = process.env.DOCUMENT_SERVER_URL ?? 'http://localhost:8080'
+const internalUrl = process.env.DOCUMENT_SERVER_INTERNAL_URL ?? ''
+const storageUrl = process.env.DOCUMENT_STORAGE_URL ?? ''
 const jwtSecret = process.env.JWT_SECRET ?? 'secret'
+const jwtHeader = process.env.JWT_HEADER ?? ''
 
 const TEMPLATE_NAME = 'new.docx'
 const TEMPLATE_PATH = path.join(`${DOCUMENT_TEMPLATES_PATH}/${TEMPLATE_NAME}`)
@@ -35,6 +38,9 @@ test.describe('Admin settings', () => {
 			await adminPage.clearServerSettings()
 			await adminPage.fillUrl(docsUrl)
 			await adminPage.fillSecret(jwtSecret)
+			await adminPage.fillInternalUrl(internalUrl)
+			await adminPage.fillStorageUrl(storageUrl)
+			await adminPage.fillJwtHeader(jwtHeader)
 			await adminPage.saveServerSettings()
 
 			await adminPage.waitForSuccess()

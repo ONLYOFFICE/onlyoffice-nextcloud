@@ -123,12 +123,28 @@ export class AdminPage {
 		await input.fill(url)
 	}
 
+	async fillStorageUrl(url: string): Promise<void> {
+		const input = this.storageUrl()
+		if (!await input.isVisible()) {
+			await this.advancedToggle().click()
+		}
+		await input.fill(url)
+	}
+
+	async fillJwtHeader(header: string): Promise<void> {
+		const input = this.jwtHeader()
+		if (!await input.isVisible()) {
+			await this.advancedToggle().click()
+		}
+		await input.fill(header)
+	}
+
 	async clearServerSettings(): Promise<void> {
 		await this.url().fill('')
 		await this.secret().fill('')
 		await this.fillInternalUrl('')
-		await this.storageUrl().fill('')
-		await this.jwtHeader().fill('')
+		await this.fillStorageUrl('')
+		await this.fillJwtHeader('')
 	}
 
 	async saveServerSettings(): Promise<void> {

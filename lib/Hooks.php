@@ -56,7 +56,11 @@ class Hooks {
         }
 
         try {
-            [$filePath, $versionId] = FileVersions::splitPathVersion($pathVersion);
+            $result = FileVersions::splitPathVersion($pathVersion);
+            if ($result === false) {
+                return;
+            }
+            [$filePath, $versionId] = $result;
             if (empty($filePath)) {
                 return;
             }
