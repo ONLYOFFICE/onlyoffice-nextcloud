@@ -31,3 +31,19 @@ Feature: Share extra permissions
     When I set the review permission on that share
     Then the extra permissions request should succeed
     And the share should have the review permission set
+
+  Scenario: Another user cannot set extra permissions using a share ID they do not own
+    Given the advanced feature is enabled
+    And another user exists
+    And the file is shared with that user with update permission and without resharing
+    And a third user exists with a "docx" file
+    When the third user sets the review permission using the first user's share on their own file
+    Then the extra permissions request should fail
+
+  Scenario: Share recipient cannot set extra permissions on the share
+    Given the advanced feature is enabled
+    And another user exists
+    And the file is shared with that user with update permission and without resharing
+    And I am logged in as that share recipient
+    When I set the review permission on that share
+    Then the extra permissions request should fail

@@ -47,6 +47,7 @@ class CoreContext implements Context
     private ?array $lastHealthcheckResponse = null;
     private bool $advancedEnabled = false;
     private array $lastAddressSettings = [];
+    private ?int $otherFileId = null;
 
     public function __construct(
         private string $baseUrl,
@@ -908,6 +909,52 @@ class CoreContext implements Context
     public function theShareShouldHaveTheReviewPermissionSet(): void
     {
         Assert::assertSame(1, $this->lastExtraPermissionsResponse['permissions'] ?? null);
+    }
+
+    #[Given('a third user exists with a :ext file')]
+    public function aThirdUserExistsWithAFile(string $ext): void
+    {
+        $this->createTestUser('attacker', null);
+
+        $name = "attackerfile.$ext";
+        $client = new Client();
+        $response = $client->put("{$this->baseUrl}/remote.php/webdav/$name", [
+            'auth'    => ['attacker', self::TEST_PASSWORD],
+            'body'    => 'placeholder',
+            'headers' => ['OCS-ApiRequest' => 'true'],
+        ]);
+
+        $fileId = $response->getHeaderLine('OC-FileId');
+        Assert::assertNotEmpty($fileId, "WebDAV upload did not return OC-FileId for $name");
+
+        $this->otherFileId = (int) $fileId;
+        $this->createdFiles[] = ['attacker', "/$name"];
+    }
+
+    #[When('the third user sets the review permission using the first user\'s share on their own file')]
+    public function theThirdUserSetsTheReviewPermissionUsingTheFirstUsersShare(): void
+    {
+        Assert::assertNotNull($this->lastShareId, 'No share has been created in this scenario');
+        Assert::assertNotNull($this->otherFileId, 'No attacker file has been created in this scenario');
+
+        $previousUser = $this->setCurrentUser('attacker');
+        $this->sendOcsRequest('PUT', '/apps/onlyoffice/api/v1/shares', [
+            'extraId'     => 0,
+            'shareId'     => $this->lastShareId,
+            'fileId'      => $this->otherFileId,
+            'permissions' => 1,
+        ]);
+        $this->response->getBody()->rewind();
+        $body = json_decode($this->response->getBody()->getContents(), true);
+        $this->lastExtraPermissionsResponse = $body['ocs']['data'] ?? null;
+        $this->setCurrentUser($previousUser);
+    }
+
+    #[Given('I am logged in as that share recipient')]
+    public function iAmLoggedInAsThatShareRecipient(): void
+    {
+        Assert::assertNotNull($this->lastCreatedUser, 'No other user has been created in this scenario');
+        $this->setCurrentUser($this->lastCreatedUser);
     }
 
     #[Given('I have updated the file content')]
