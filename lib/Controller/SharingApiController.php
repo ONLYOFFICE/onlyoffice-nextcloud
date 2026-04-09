@@ -120,6 +120,12 @@ class SharingApiController extends OCSController {
             return new DataResponse([], Http::STATUS_BAD_REQUEST);
         }
 
+        $shares = $this->getSharesByOwner($userId, $sourceFile);
+        if (!array_filter($shares, fn (IShare $share) => $share->getId() === $shareId)) {
+            $this->logger->error("setShares: share $shareId not found for file $fileId.");
+            return new DataResponse([], Http::STATUS_BAD_REQUEST);
+        }
+
         if (!$this->extraPermissions->setExtra($shareId, $permissions, $extraId)) {
             $this->logger->error("setShares: couldn't set extra permissions for: " . $shareId);
             return new DataResponse([], Http::STATUS_BAD_REQUEST);
