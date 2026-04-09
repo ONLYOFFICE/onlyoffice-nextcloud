@@ -87,11 +87,7 @@ class SharingApiController extends OCSController {
             return new DataResponse([]);
         }
 
-        $sharesUser = $this->shareManager->getSharesBy($userId, IShare::TYPE_USER, $sourceFile, true);
-        $sharesGroup = $this->shareManager->getSharesBy($userId, IShare::TYPE_GROUP, $sourceFile, true);
-        $sharesRoom = $this->shareManager->getSharesBy($userId, IShare::TYPE_ROOM, $sourceFile, true);
-        $sharesLink = $this->shareManager->getSharesBy($userId, IShare::TYPE_LINK, $sourceFile, true);
-        $shares = array_merge($sharesUser, $sharesGroup, $sharesRoom, $sharesLink);
+        $shares = $this->getSharesByOwner($userId, $sourceFile);
         $extras = $this->extraPermissions->getExtras($shares);
 
         return new DataResponse($extras);
@@ -157,5 +153,20 @@ class SharingApiController extends OCSController {
         }
 
         return $files[0];
+    }
+
+    /**
+     * Get all shares for a file created by the given user
+     * @param string $userId
+     * @param File $file
+     * @return IShare[]
+     */
+    private function getSharesByOwner(string $userId, File $file): array {
+        $sharesUser = $this->shareManager->getSharesBy($userId, IShare::TYPE_USER, $file);
+        $sharesGroup = $this->shareManager->getSharesBy($userId, IShare::TYPE_GROUP, $file);
+        $sharesRoom = $this->shareManager->getSharesBy($userId, IShare::TYPE_ROOM, $file);
+        $sharesLink = $this->shareManager->getSharesBy($userId, IShare::TYPE_LINK, $file);
+        
+        return array_merge($sharesUser, $sharesGroup, $sharesRoom, $sharesLink);
     }
 }
