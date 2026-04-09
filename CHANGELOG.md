@@ -2,6 +2,7 @@
 
 ##
 ## Changed
+- fixed insecure direct object reference in share extra permissions API
 - updated PHP codebase to Nextcloud 32 API
 - adopted PHP 8.1 syntax
 - improved PHP type coverage
