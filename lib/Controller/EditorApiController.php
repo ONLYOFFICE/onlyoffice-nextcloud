@@ -168,6 +168,10 @@ class EditorApiController extends OCSController {
             return new JSONResponse(["error" => $error]);
         }
 
+        if ($this->appConfig->getRestrictExternalStorage() && $this->isExternalStorage($file)) {
+            return new JSONResponse(["error" => $this->trans->t("Opening files with ONLYOFFICE from external storages is restricted. Please contact the admin.")]);
+        }
+
         $checkUserAllowGroups = $userId;
         if (!empty($share)) {
             $checkUserAllowGroups = $share->getSharedBy();
@@ -554,6 +558,32 @@ class EditorApiController extends OCSController {
         }
 
         return [$file, null, null];
+    }
+
+    /**
+     * Check if file is stored on external storage, including shared files
+     * that originate from external storage
+     *
+     * @param File $file - file to check
+     */
+    private function isExternalStorage(File $file): bool {
+        if ($file->getMountPoint() instanceof \OCA\Files_External\Config\ExternalMountPoint) {
+            return true;
+        }
+
+        $owner = $file->getOwner();
+        if ($owner === null) {
+            return false;
+        }
+
+        try {
+            $ownerFiles = $this->root->getUserFolder($owner->getUID())->getById($file->getId());
+        } catch (\Exception $e) {
+            $this->logger->warning("isExternalStorage: could not resolve owner file: " . $file->getId(), ["exception" => $e]);
+            return false;
+        }
+
+        return !empty($ownerFiles) && $ownerFiles[0]->getMountPoint() instanceof \OCA\Files_External\Config\ExternalMountPoint;
     }
 
     /**
