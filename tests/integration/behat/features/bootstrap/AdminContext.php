@@ -96,6 +96,7 @@ class AdminContext implements Context
             'json' => [
                 'defFormats'         => [],
                 'editFormats'        => [],
+                'restrictExternalStorage' => false,
                 'sameTab'            => false,
                 'enableSharing'      => false,
                 'preview'            => false,
