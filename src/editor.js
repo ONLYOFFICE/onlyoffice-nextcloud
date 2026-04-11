@@ -160,7 +160,7 @@ OCA.Onlyoffice.InitEditor = function() {
 				}
 
 				if ((OCA.Onlyoffice.inframe && !OCA.Onlyoffice.shareToken)
-					|| (OCA.Onlyoffice.currentUser.uid)) {
+					|| (OCA.Onlyoffice.currentUser?.uid)) {
 					config.events.onRequestSaveAs = OCA.Onlyoffice.onRequestSaveAs
 					config.events.onRequestInsertImage = OCA.Onlyoffice.onRequestInsertImage
 					config.events.onRequestMailMergeRecipients = OCA.Onlyoffice.onRequestMailMergeRecipients
@@ -173,7 +173,7 @@ OCA.Onlyoffice.InitEditor = function() {
 					config.events.onMetaChange = OCA.Onlyoffice.onMetaChange
 					config.events.onRequestRefreshFile = OCA.Onlyoffice.onRequestRefreshFile
 
-					if (OCA.Onlyoffice.currentUser.uid) {
+					if (OCA.Onlyoffice.currentUser?.uid) {
 						config.events.onRequestUsers = OCA.Onlyoffice.onRequestUsers
 					}
 
