@@ -99,7 +99,7 @@ async function save() {
 				showError(t('onlyoffice', 'Error when trying to connect') + ' (' + response.error + ')' + versionMessage)
 				emit('address-saved', { successful: false, hasSecret: false })
 			} else {
-				const hasSecret = response.secret !== null
+				const hasSecret = !!response.secret
 				if (hasSecret) {
 					showSuccess(t('onlyoffice', 'Server settings have been successfully updated') + versionMessage)
 				}
