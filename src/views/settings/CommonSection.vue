@@ -175,10 +175,10 @@ async function save() {
 				class="checkbox">
 			<label for="onlyoffice-groups">{{ t('onlyoffice', 'Allow the following groups to access the editors') }}</label>
 		</p>
-		<p class="block-inline">
-			<NcSettingsSelectGroup v-if="useGroups"
-				v-model="limitGroups"
+		<p v-if="useGroups" class="block-inline">
+			<NcSettingsSelectGroup v-model="limitGroups"
 				:label="t('core', 'Groups')" />
+			<span>{{ t('onlyoffice', 'The user who creates a public link sets its access permissions') }}</span>
 		</p>
 
 		<!-- Behaviour -->
