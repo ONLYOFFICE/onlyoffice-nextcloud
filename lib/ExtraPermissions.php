@@ -31,6 +31,7 @@ namespace OCA\Onlyoffice;
 
 use OCA\Talk\Manager as TalkManager;
 use OCP\Constants;
+use OCP\IAppConfig;
 use OCP\IDBConnection;
 use OCP\Share\Exceptions\ShareNotFound;
 use OCP\Share\IManager;
@@ -63,6 +64,7 @@ class ExtraPermissions {
     public function __construct(
         private readonly LoggerInterface $logger,
         private readonly IManager $shareManager,
+        private readonly IAppConfig $config,
         private readonly AppConfig $appConfig,
         private readonly IDBConnection $connection,
         private readonly ?TalkManager $talkManager,
@@ -338,7 +340,8 @@ class ExtraPermissions {
         $defaultExtra = self::NONE;
 
         if ($share->getShareType() !== IShare::TYPE_LINK
-            && ($share->getPermissions() & Constants::PERMISSION_SHARE) === Constants::PERMISSION_SHARE) {
+            && ($share->getPermissions() & Constants::PERMISSION_SHARE) === Constants::PERMISSION_SHARE
+            && $this->config->getValueString('core', 'shareapi_allow_resharing', 'yes') === 'yes') {
             return [$availableExtra, $defaultExtra];
         }
 
