@@ -143,6 +143,25 @@ class ExtraPermissionsTest extends TestCase {
     }
 
     /**
+     * Returns extra permissions for a non-link share with PERMISSION_SHARE when the admin has
+     * disabled resharing.
+     */
+    public function testGetExtraReturnsExtraPermissionsWhenShareHasPermissionShareButResharingDisabled(): void {
+        $share = $this->makeShare("9", IShare::TYPE_USER, Constants::PERMISSION_SHARE | Constants::PERMISSION_UPDATE, "file.docx");
+        $this->shareManager->method("getShareById")->willReturn($share);
+        $this->config->method("getValueString")->willReturn('no');
+        $this->appConfig->method("formatsSetting")->willReturn([
+            "docx" => ["review" => true]
+        ]);
+        $this->stubDbEmpty();
+
+        $result = $this->extraPermissions->getExtra("9");
+
+        $this->assertNotNull($result);
+        $this->assertSame(ExtraPermissions::REVIEW, $result["available"] & ExtraPermissions::REVIEW);
+    }
+
+    /**
      * Returns null when the shared file's extension is not registered in the format settings.
      */
     public function testGetExtraReturnsNullWhenFileFormatIsUnknown(): void {
