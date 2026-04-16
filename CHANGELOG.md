@@ -2,6 +2,8 @@
 
 ##
 ## Changed
+
+- fixed createUrl and template URLs being incorrectly decoded, causing broken links for names containing special characters
 - fixed extra permissions being unavailable for user shares when admin resharing is disabled
 - fixed insecure direct object reference in share extra permissions API
 - updated PHP codebase to Nextcloud 32 API
