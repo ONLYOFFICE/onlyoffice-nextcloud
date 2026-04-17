@@ -38,6 +38,7 @@ use OCP\Constants;
 use OCP\DB\IPreparedStatement;
 use OCP\DB\IResult;
 use OCP\Files\Node;
+use OCP\IAppConfig;
 use OCP\IDBConnection;
 use OCP\Share\Exceptions\ShareNotFound;
 use OCP\Share\IManager;
@@ -54,6 +55,7 @@ class ExtraPermissionsTest extends TestCase {
 
     private LoggerInterface&MockObject $logger;
     private IManager&MockObject $shareManager;
+    private IAppConfig&MockObject $config;
     private AppConfig&MockObject $appConfig;
     private IDBConnection&MockObject $connection;
     private ExtraPermissions $extraPermissions;
@@ -63,12 +65,14 @@ class ExtraPermissionsTest extends TestCase {
 
         $this->logger       = $this->createMock(LoggerInterface::class);
         $this->shareManager = $this->createMock(IManager::class);
+        $this->config       = $this->createMock(IAppConfig::class);
         $this->appConfig    = $this->createMock(AppConfig::class);
         $this->connection   = $this->createMock(IDBConnection::class);
 
         $this->extraPermissions = new ExtraPermissions(
             $this->logger,
             $this->shareManager,
+            $this->config,
             $this->appConfig,
             $this->connection,
             null,
@@ -125,16 +129,36 @@ class ExtraPermissionsTest extends TestCase {
     }
 
     /**
-     * Returns null for non-link shares that carry PERMISSION_SHARE, as re-sharing supersedes extra permissions.
+     * Returns null for non-link shares that carry PERMISSION_SHARE when resharing is enabled.
      */
     public function testGetExtraReturnsNullWhenShareHasPermissionShareAndIsNotLink(): void {
         $share = $this->makeShare("1", IShare::TYPE_USER, Constants::PERMISSION_SHARE);
         $this->shareManager->method("getShareById")->willReturn($share);
+        $this->config->method("getValueString")->willReturn('yes');
         $this->stubDbEmpty();
 
         $result = $this->extraPermissions->getExtra("1");
 
         $this->assertNull($result);
+    }
+
+    /**
+     * Returns extra permissions for a non-link share with PERMISSION_SHARE when the admin has
+     * disabled resharing.
+     */
+    public function testGetExtraReturnsExtraPermissionsWhenShareHasPermissionShareButResharingDisabled(): void {
+        $share = $this->makeShare("9", IShare::TYPE_USER, Constants::PERMISSION_SHARE | Constants::PERMISSION_UPDATE, "file.docx");
+        $this->shareManager->method("getShareById")->willReturn($share);
+        $this->config->method("getValueString")->willReturn('no');
+        $this->appConfig->method("formatsSetting")->willReturn([
+            "docx" => ["review" => true]
+        ]);
+        $this->stubDbEmpty();
+
+        $result = $this->extraPermissions->getExtra("9");
+
+        $this->assertNotNull($result);
+        $this->assertSame(ExtraPermissions::REVIEW, $result["available"] & ExtraPermissions::REVIEW);
     }
 
     /**
