@@ -28,16 +28,13 @@ import { ref, onMounted } from 'vue'
 import { loadState } from '@nextcloud/initial-state'
 import { showError } from '@nextcloud/dialogs'
 import { t } from '@nextcloud/l10n'
-import { spawnDialog } from '@nextcloud/vue/functions/dialog'
-
-import EmptyJwtInfoDialog from '../EmptyJwtInfoDialog.vue'
 import TemplateList from '../TemplateList.vue'
 import ServerSection from './ServerSection.vue'
 import CommonSection from './CommonSection.vue'
 import SecuritySection from './SecuritySection.vue'
 
 const state = loadState<Record<string, unknown>>('onlyoffice', 'admin-settings')
-const successful = ref(state.successful as boolean)
+const showSections = ref(!!(state.successful && (state.documentserver || (state.demo as { enabled: boolean }).enabled)))
 
 onMounted(() => {
 	if (state.settingsError) {
@@ -47,16 +44,10 @@ onMounted(() => {
 
 /**
  * Handles the address-saved event from ServerSection.
- * Shows the empty JWT warning dialog when the server was saved successfully but no JWT secret is set.
- * @param result address-saved event payload
- * @param {boolean} result.successful whether the save request succeeded
- * @param {boolean} result.hasSecret whether a JWT secret is currently configured
+ * @param {boolean} showSections whether non-server sections should be visible
  */
-function onAddressSaved({ successful: ok, hasSecret }: { successful: boolean, hasSecret: boolean }) {
-	successful.value = ok
-	if (ok && !hasSecret) {
-		spawnDialog(EmptyJwtInfoDialog)
-	}
+function onAddressSaved({ showSections: show }: { showSections: boolean }) {
+	showSections.value = show
 }
 </script>
 
@@ -70,7 +61,7 @@ function onAddressSaved({ successful: ok, hasSecret }: { successful: boolean, ha
 			:jwt-header="state.jwtHeader as string"
 			:demo="state.demo as { enabled: boolean, available: boolean }"
 			@address-saved="onAddressSaved" />
-		<template v-if="successful">
+		<template v-if="showSections">
 			<CommonSection :formats="state.formats as Record<string, Record<string, unknown>>"
 				:restrict-external-storage="state.restrictExternalStorage as boolean"
 				:same-tab="state.sameTab as boolean"
