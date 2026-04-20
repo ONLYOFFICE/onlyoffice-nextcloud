@@ -44,7 +44,9 @@ onMounted(() => {
 
 /**
  * Handles the address-saved event from ServerSection.
- * @param {boolean} showSections whether non-server sections should be visible
+ *
+ * @param payload event payload from ServerSection
+ * @param payload.showSections whether non-server sections should be visible
  */
 function onAddressSaved({ showSections: show }: { showSections: boolean }) {
 	showSections.value = show

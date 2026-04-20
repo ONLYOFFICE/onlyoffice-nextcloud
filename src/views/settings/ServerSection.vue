@@ -26,12 +26,12 @@
 <script setup lang="ts">
 import { showError, showSuccess } from '@nextcloud/dialogs'
 import { t } from '@nextcloud/l10n'
+import { spawnDialog } from '@nextcloud/vue/functions/dialog'
 import { ref } from 'vue'
 import NcButton from '@nextcloud/vue/components/NcButton'
-import { saveAddressSettings } from '../../services/SettingsService.ts'
-import { spawnDialog } from '@nextcloud/vue/functions/dialog'
-import AppDescription from './AppDescription.vue'
 import EmptyJwtInfoDialog from '../EmptyJwtInfoDialog.vue'
+import AppDescription from './AppDescription.vue'
+import { saveAddressSettings } from '../../services/SettingsService.ts'
 
 const props = defineProps<{
 	documentserver: string
