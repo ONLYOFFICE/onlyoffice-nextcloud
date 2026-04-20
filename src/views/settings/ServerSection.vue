@@ -28,8 +28,10 @@ import { showError, showSuccess } from '@nextcloud/dialogs'
 import { t } from '@nextcloud/l10n'
 import { ref } from 'vue'
 import NcButton from '@nextcloud/vue/components/NcButton'
-import AppDescription from './AppDescription.vue'
 import { saveAddressSettings } from '../../services/SettingsService.ts'
+import { spawnDialog } from '@nextcloud/vue/functions/dialog'
+import AppDescription from './AppDescription.vue'
+import EmptyJwtInfoDialog from '../EmptyJwtInfoDialog.vue'
 
 const props = defineProps<{
 	documentserver: string
@@ -42,7 +44,7 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-	(e: 'addressSaved', payload: { successful: boolean, hasSecret: boolean }): void
+	(e: 'addressSaved', payload: { showSections: boolean }): void
 }>()
 
 const url = ref(props.documentserver ?? '')
@@ -95,20 +97,22 @@ async function save() {
 
 			if (response.error) {
 				showError(t('onlyoffice', 'Error when trying to connect') + ' (' + response.error + ')' + versionMessage)
-				emit('addressSaved', { successful: false, hasSecret: false })
+				emit('addressSaved', { showSections: false })
 			} else {
 				const hasSecret = !!response.secret
-				if (hasSecret) {
+				if (response.documentserver && !hasSecret) {
+					spawnDialog(EmptyJwtInfoDialog)
+				} else {
 					showSuccess(t('onlyoffice', 'Server settings have been successfully updated') + versionMessage)
 				}
-				emit('addressSaved', { successful: true, hasSecret })
+				emit('addressSaved', { showSections: !!(url.value || demoEnabled.value) })
 			}
 		} else {
-			emit('addressSaved', { successful: false, hasSecret: false })
+			emit('addressSaved', { showSections: false })
 		}
 	} catch {
 		showError(t('onlyoffice', 'Error when trying to connect'))
-		emit('addressSaved', { successful: false, hasSecret: false })
+		emit('addressSaved', { showSections: false })
 	} finally {
 		saving.value = false
 	}

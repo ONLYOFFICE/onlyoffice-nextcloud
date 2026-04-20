@@ -27,16 +27,14 @@
 import { showError } from '@nextcloud/dialogs'
 import { loadState } from '@nextcloud/initial-state'
 import { t } from '@nextcloud/l10n'
-import { spawnDialog } from '@nextcloud/vue/functions/dialog'
 import { onMounted, ref } from 'vue'
-import EmptyJwtInfoDialog from '../EmptyJwtInfoDialog.vue'
 import TemplateList from '../TemplateList.vue'
 import CommonSection from './CommonSection.vue'
 import SecuritySection from './SecuritySection.vue'
 import ServerSection from './ServerSection.vue'
 
 const state = loadState<Record<string, unknown>>('onlyoffice', 'admin-settings')
-const successful = ref(state.successful as boolean)
+const showSections = ref(!!(state.successful && (state.documentserver || (state.demo as { enabled: boolean }).enabled)))
 
 onMounted(() => {
 	if (state.settingsError) {
@@ -45,18 +43,11 @@ onMounted(() => {
 })
 
 /**
- * Handles the addressSaved event from ServerSection.
- * Shows the empty JWT warning dialog when the server was saved successfully but no JWT secret is set.
- *
- * @param result addressSaved event payload
- * @param result.successful whether the save request succeeded
- * @param result.hasSecret whether a JWT secret is currently configured
+ * Handles the address-saved event from ServerSection.
+ * @param {boolean} showSections whether non-server sections should be visible
  */
-function onAddressSaved({ successful: ok, hasSecret }: { successful: boolean, hasSecret: boolean }) {
-	successful.value = ok
-	if (ok && !hasSecret) {
-		spawnDialog(EmptyJwtInfoDialog)
-	}
+function onAddressSaved({ showSections: show }: { showSections: boolean }) {
+	showSections.value = show
 }
 </script>
 
@@ -71,7 +62,7 @@ function onAddressSaved({ successful: ok, hasSecret }: { successful: boolean, ha
 			:jwtHeader="state.jwtHeader as string"
 			:demo="state.demo as { enabled: boolean, available: boolean }"
 			@addressSaved="onAddressSaved" />
-		<template v-if="successful">
+		<template v-if="showSections">
 			<CommonSection
 				:formats="state.formats as Record<string, Record<string, unknown>>"
 				:restrictExternalStorage="state.restrictExternalStorage as boolean"
