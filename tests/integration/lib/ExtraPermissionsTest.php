@@ -34,6 +34,7 @@ namespace OCA\Onlyoffice\Tests\Integration;
 
 use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\ExtraPermissions;
+use OCP\IAppConfig;
 use OCP\IDBConnection;
 use OCP\Server;
 use OCP\Share\IManager;
@@ -62,6 +63,7 @@ class ExtraPermissionsTest extends TestCase {
         $this->extraPermissions = new ExtraPermissions(
             $this->createStub(LoggerInterface::class),
             $this->createStub(IManager::class),
+            $this->createStub(IAppConfig::class),
             $this->createStub(AppConfig::class),
             $this->connection,
             null,

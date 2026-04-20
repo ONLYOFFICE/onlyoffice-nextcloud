@@ -27,7 +27,7 @@
  */
 
 #content.app-onlyoffice,
-#body-public #content.app-onlyoffice {
+#body-public #content.app-public {
     min-height: calc(100% - 50px);
 }
 
@@ -46,6 +46,10 @@
 #content.app-onlyoffice #app > iframe {
     height: calc(100dvh - 50px);
     margin-top: 0px;
+}
+
+.onlyoffice-full-page #app > iframe {
+    height: 100dvh;
 }
 
 .onlyoffice-inviewer > iframe {

@@ -3,6 +3,9 @@
 ##
 ## Changed
 - disable editor for external storage files when the restrict external storage setting is on
+
+- fixed createUrl and template URLs being incorrectly decoded, causing broken links for names containing special characters
+- fixed extra permissions being unavailable for user shares when admin resharing is disabled
 - fixed insecure direct object reference in share extra permissions API
 - updated PHP codebase to Nextcloud 32 API
 - adopted PHP 8.1 syntax
@@ -74,7 +77,7 @@
 ## 9.8.0
 ## Added
 - sharing panel when editing in a new tab
-- shardKey param to url for requests to Docs
+- shardkey param to url for requests to Docs
 
 ## Changed
 - fix opening share link on Nextcloud 29

@@ -417,7 +417,7 @@ class EditorApiController extends OCSController {
                 $createParam["name"] = $createName;
 
                 $createUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".editor.create_new", $createParam);
-                $params["editorConfig"]["createUrl"] = urldecode((string) $createUrl);
+                $params["editorConfig"]["createUrl"] = $createUrl;
             }
 
             $templatesList = TemplateManager::getGlobalTemplates($file->getMimeType());
@@ -430,7 +430,7 @@ class EditorApiController extends OCSController {
                     $templates[] = [
                         "image" => "",
                         "title" => $templateItem->getName(),
-                        "url" => urldecode((string) $this->urlGenerator->linkToRouteAbsolute($this->appName . ".editor.create_new", $createParam))
+                        "url" => $this->urlGenerator->linkToRouteAbsolute($this->appName . ".editor.create_new", $createParam)
                     ];
                 }
 
