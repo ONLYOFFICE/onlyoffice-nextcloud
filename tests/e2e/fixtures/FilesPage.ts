@@ -52,6 +52,14 @@ export class FilesPage {
 		await expect(this.successToast()).toBeVisible()
 	}
 
+	errorToast(): Locator {
+		return this.page.locator('.toast-error');
+	}
+
+	async waitForError(): Promise<void> {
+		await expect(this.errorToast()).toBeVisible()
+	}
+
 	templatePickerDialog(): Locator {
 		return this.page.locator('.templates-picker')
 	}

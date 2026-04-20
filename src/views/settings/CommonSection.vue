@@ -33,6 +33,7 @@ import { clearHistory, saveCommonSettings } from '../../services/SettingsService
 
 const props = defineProps<{
 	formats: Record<string, Record<string, unknown>>
+	restrictExternalStorage: boolean
 	sameTab: boolean
 	enableSharing: boolean
 	preview: boolean
@@ -64,6 +65,7 @@ const editFormats = ref<Record<string, boolean>>(Object.fromEntries(Object.entri
 const previewFormats = computed(() => Object.entries(props.formats).filter(([, fmt]) => fmt.mime !== undefined && fmt.mime !== null))
 const editableFormats = computed(() => Object.entries(props.formats).filter(([, fmt]) => fmt.editable))
 
+const restrictExternalStorage = ref(props.restrictExternalStorage)
 const sameTab = ref(props.sameTab)
 const enableSharing = ref(props.enableSharing)
 const preview = ref(props.preview)
@@ -130,6 +132,7 @@ async function save() {
 		await saveCommonSettings({
 			defFormats: defFormats.value,
 			editFormats: editFormats.value,
+			restrictExternalStorage: restrictExternalStorage.value,
 			sameTab: sameTab.value,
 			enableSharing: enableSharing.value,
 			preview: preview.value,
@@ -178,6 +181,15 @@ async function save() {
 		</p>
 
 		<!-- Behaviour -->
+		<p>
+			<input
+				id="onlyoffice-restrict-external-storage"
+				v-model="restrictExternalStorage"
+				type="checkbox"
+				class="checkbox">
+			<label for="onlyoffice-restrict-external-storage">{{ t('onlyoffice', 'Restrict access to ONLYOFFICE for files from external storages') }}</label>
+		</p>
+
 		<p>
 			<input
 				id="onlyoffice-preview"

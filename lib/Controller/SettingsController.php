@@ -74,6 +74,7 @@ class SettingsController extends Controller {
             "demo" => $this->appConfig->getDemoData(),
             "currentServer" => $this->urlGenerator->getAbsoluteURL("/"),
             "formats" => $this->appConfig->formatsSetting(),
+            "restrictExternalStorage" => $this->appConfig->getRestrictExternalStorage(),
             "sameTab" => $this->appConfig->getSameTab(),
             "enableSharing" => $this->appConfig->getEnableSharing(),
             "preview" => $this->appConfig->getPreview(),
@@ -163,6 +164,7 @@ class SettingsController extends Controller {
      *
      * @param array $defFormats - formats array with default action
      * @param array $editFormats - editable formats array
+     * @param bool $restrictExternalStorage - restrict access from external storage
      * @param bool $sameTab - open in the same tab
      * @param bool $enableSharing - enable sharingsameTab
      * @param bool $preview - generate preview files
@@ -183,6 +185,7 @@ class SettingsController extends Controller {
     public function saveCommon(
         array $defFormats,
         array $editFormats,
+        bool $restrictExternalStorage,
         bool $sameTab,
         bool $enableSharing,
         bool $preview,
@@ -205,6 +208,7 @@ class SettingsController extends Controller {
         $this->appConfig->setDefaultFormats($defFormats);
         $this->appConfig->setEditableFormats($editFormats);
         $this->appConfig->setEnableSharing($enableSharing);
+        $this->appConfig->setRestrictExternalStorage($restrictExternalStorage);
         $this->appConfig->setSameTab($sameTab);
         $this->appConfig->setPreview($preview);
         $this->appConfig->setAdvanced($advanced);

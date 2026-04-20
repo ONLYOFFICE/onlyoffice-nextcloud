@@ -99,6 +99,8 @@
       <code><![CDATA[$this->appConfig]]></code>
       <code><![CDATA[$this->appConfig]]></code>
       <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
+      <code><![CDATA[$this->appConfig]]></code>
       <code><![CDATA[$this->cache]]></code>
       <code><![CDATA[$this->cache]]></code>
       <code><![CDATA[$this->config]]></code>

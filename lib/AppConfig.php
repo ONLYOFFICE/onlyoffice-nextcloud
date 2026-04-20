@@ -93,6 +93,11 @@ class AppConfig {
     private string $_enableSharing = "enableSharing";
 
     /**
+     * The config key for restricting file actions on external storage
+     */
+    private string $_restrictExternalStorage = "restrictExternalStorage";
+
+    /**
      * The config key for the generate preview
      */
     private string $_preview = "preview";
@@ -655,6 +660,22 @@ class AppConfig {
      */
     public function getEnableSharing(): bool {
         return $this->appConfig->getValueString($this->appName, $this->_enableSharing, "false") === "true";
+    }
+
+    /**
+     * Save the restrict external storage setting
+     */
+    public function setRestrictExternalStorage(bool $value): void {
+        $this->logger->info("Set restrict external storage: " . json_encode($value), ["app" => $this->appName]);
+
+        $this->appConfig->setValueString($this->appName, $this->_restrictExternalStorage, json_encode($value));
+    }
+
+    /**
+     * Get the restrict external storage setting
+     */
+    public function getRestrictExternalStorage(): bool {
+        return $this->appConfig->getValueString($this->appName, $this->_restrictExternalStorage, "false") === "true";
     }
 
     /**

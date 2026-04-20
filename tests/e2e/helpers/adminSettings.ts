@@ -6,6 +6,7 @@ const SETTINGS_BASE = '/index.php/apps/onlyoffice/ajax/settings'
 interface CommonSettings {
 	defFormats: object
 	editFormats: object
+	restrictExternalStorage: boolean
 	sameTab: boolean
 	enableSharing: boolean
 	preview: boolean
@@ -28,6 +29,7 @@ interface CommonSettings {
 const commonDefaults: CommonSettings = {
 	defFormats: {},
 	editFormats: {},
+	restrictExternalStorage: false,
 	sameTab: true,
 	enableSharing: false,
 	preview: true,

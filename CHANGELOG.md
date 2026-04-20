@@ -2,6 +2,7 @@
 
 ##
 ## Changed
+- disable editor for external storage files when the restrict external storage setting is on
 
 - fixed createUrl and template URLs being incorrectly decoded, causing broken links for names containing special characters
 - fixed extra permissions being unavailable for user shares when admin resharing is disabled
@@ -17,6 +18,9 @@
 ## 10.0.0
 ## Changed
 - compatible with Nextcloud 33
+
+## Added
+- restrict external storage admin setting
 
 ## 9.13.0
 ## Changed
@@ -76,7 +80,7 @@
 ## 9.8.0
 ## Added
 - sharing panel when editing in a new tab
-- shardKey param to url for requests to Docs
+- shardkey param to url for requests to Docs
 
 ## Changed
 - fix opening share link on Nextcloud 29

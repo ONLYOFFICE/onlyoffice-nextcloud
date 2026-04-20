@@ -44,6 +44,7 @@ export interface AddressSettingsData {
 export interface CommonSettingsData {
 	defFormats: Record<string, boolean>
 	editFormats: Record<string, boolean>
+	restrictExternalStorage: boolean
 	sameTab: boolean
 	enableSharing: boolean
 	preview: boolean

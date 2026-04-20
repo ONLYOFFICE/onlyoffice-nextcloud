@@ -494,6 +494,11 @@ function registerFileActions() {
 		displayName: () => t(OCA.Onlyoffice.AppName, 'Open in ONLYOFFICE'),
 		iconSvgInline: () => AppDarkSvg,
 		enabled: ({ nodes }) => {
+			if (OCA.Onlyoffice.setting.restrictExternalStorage
+				&& (nodes[0].attributes['mount-type'] === 'external' || nodes[0].attributes['mount-type'] === 'external-root')) {
+				return false
+			}
+
 			const fileExt = getFileExtension(nodes[0]?.extension || nodes[0]?.displayname)
 			const config = formats[fileExt]
 
@@ -521,6 +526,11 @@ function registerFileActions() {
 		displayName: () => t(OCA.Onlyoffice.AppName, 'Open in ONLYOFFICE'),
 		iconSvgInline: () => AppDarkSvg,
 		enabled: ({ nodes }) => {
+			if (OCA.Onlyoffice.setting.restrictExternalStorage
+				&& (nodes[0].attributes['mount-type'] === 'external' || nodes[0].attributes['mount-type'] === 'external-root')) {
+				return false
+			}
+
 			const config = getConfig(nodes[0])
 
 			if (!config) {
