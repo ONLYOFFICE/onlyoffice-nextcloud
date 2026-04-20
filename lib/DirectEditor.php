@@ -150,6 +150,11 @@ class DirectEditor implements IEditor {
                 return $this->renderError($this->trans->t("Not permitted"));
             }
 
+            if ($this->appConfig->getRestrictExternalStorage()
+                && $file->getMountPoint() instanceof \OCA\Files_External\Config\ExternalMountPoint) {
+                return $this->renderError($this->trans->t("Opening files with ONLYOFFICE from external storages is restricted. Please contact the admin."));
+            }
+
             $documentServerUrl = $this->appConfig->getDocumentServerUrl();
 
             if (empty($documentServerUrl)) {

@@ -72,6 +72,7 @@ function onAddressSaved({ successful: ok, hasSecret }: { successful: boolean, ha
 			@address-saved="onAddressSaved" />
 		<template v-if="successful">
 			<CommonSection :formats="state.formats as Record<string, Record<string, unknown>>"
+				:restrict-external-storage="state.restrictExternalStorage as boolean"
 				:same-tab="state.sameTab as boolean"
 				:enable-sharing="state.enableSharing as boolean"
 				:preview="state.preview as boolean"

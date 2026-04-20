@@ -2,6 +2,7 @@
 
 ##
 ## Changed
+- disable editor for external storage files when the restrict external storage setting is on
 
 - fixed createUrl and template URLs being incorrectly decoded, causing broken links for names containing special characters
 - fixed extra permissions being unavailable for user shares when admin resharing is disabled
@@ -14,6 +15,9 @@
 - migrated from legacy hooks to event listeners
 - fixed opening editor for shared link
 - Nextcloud v31 is no longer supported
+
+## Added
+- restrict external storage admin setting
 
 ## 9.13.0
 ## Changed
