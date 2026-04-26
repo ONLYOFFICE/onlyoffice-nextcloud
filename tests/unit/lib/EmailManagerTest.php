@@ -40,6 +40,9 @@ use OCP\IUserManager;
 use OCP\Mail\IEMailTemplate;
 use OCP\Mail\IMailer;
 use OCP\Mail\IMessage;
+use OCP\Mail\Provider\IAddress;
+use OCP\Mail\Provider\IManager as MailProviderIManager;
+use OCP\Mail\Provider\IService;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -53,6 +56,7 @@ class EmailManagerTest extends TestCase {
     private IMailer&MockObject $mailer;
     private IUserManager&MockObject $userManager;
     private IURLGenerator&MockObject $urlGenerator;
+    private MailProviderIManager&MockObject $mailManager;
     private EmailManager $emailManager;
 
     public function setUp(): void {
@@ -64,6 +68,7 @@ class EmailManagerTest extends TestCase {
         $this->mailer       = $this->createMock(IMailer::class);
         $this->userManager  = $this->createMock(IUserManager::class);
         $this->urlGenerator = $this->createMock(IURLGenerator::class);
+        $this->mailManager  = $this->createMock(MailProviderIManager::class);
 
         $this->emailManager = new EmailManager(
             "onlyoffice",
@@ -72,6 +77,7 @@ class EmailManagerTest extends TestCase {
             $this->mailer,
             $this->userManager,
             $this->urlGenerator,
+            $this->mailManager,
         );
     }
 
@@ -238,5 +244,80 @@ class EmailManagerTest extends TestCase {
         $result = $this->emailManager->notifyEditorsCheckEmail("admin");
 
         $this->assertFalse($result);
+    }
+
+    /**
+     * Returns an empty array when the mail manager reports no services for the user.
+     */
+    public function testGetSenderAddressesForReturnsEmptyWhenNoServices(): void {
+        $this->mailManager->method("services")->willReturn([]);
+
+        $result = $this->emailManager->getSenderAddressesFor("user1");
+
+        $this->assertSame([], $result);
+    }
+
+    /**
+     * Services that lack the MessageSend capability are excluded from the result.
+     */
+    public function testGetSenderAddressesForFiltersOutNonSendCapableServices(): void {
+        $service = $this->createStub(IService::class);
+        $service->method("capable")->willReturn(false);
+
+        $this->mailManager->method("services")->willReturn([[$service]]);
+
+        $result = $this->emailManager->getSenderAddressesFor("user1");
+
+        $this->assertSame([], $result);
+    }
+
+    /**
+     * Returns the primary address of a service that has the MessageSend capability.
+     */
+    public function testGetSenderAddressesForReturnsAddressOfCapableService(): void {
+        $address = $this->createStub(IAddress::class);
+        $address->method("getAddress")->willReturn("sender@example.com");
+
+        $service = $this->createStub(IService::class);
+        $service->method("capable")->willReturn(true);
+        $service->method("getPrimaryAddress")->willReturn($address);
+
+        $this->mailManager->method("services")->willReturn([[$service]]);
+
+        $result = $this->emailManager->getSenderAddressesFor("user1");
+
+        $this->assertSame(["sender@example.com"], $result);
+    }
+
+    /**
+     * Capable and non-capable services across multiple providers are merged correctly,
+     * with only capable service addresses included.
+     */
+    public function testGetSenderAddressesForHandlesMultipleProvidersAndServices(): void {
+        $address1 = $this->createStub(IAddress::class);
+        $address1->method("getAddress")->willReturn("a@example.com");
+
+        $capableService = $this->createStub(IService::class);
+        $capableService->method("capable")->willReturn(true);
+        $capableService->method("getPrimaryAddress")->willReturn($address1);
+
+        $incapableService = $this->createStub(IService::class);
+        $incapableService->method("capable")->willReturn(false);
+
+        $address2 = $this->createStub(IAddress::class);
+        $address2->method("getAddress")->willReturn("b@example.com");
+
+        $anotherCapableService = $this->createStub(IService::class);
+        $anotherCapableService->method("capable")->willReturn(true);
+        $anotherCapableService->method("getPrimaryAddress")->willReturn($address2);
+
+        $this->mailManager->method("services")->willReturn([
+            [$capableService, $incapableService],
+            [$anotherCapableService],
+        ]);
+
+        $result = $this->emailManager->getSenderAddressesFor("user1");
+
+        $this->assertSame(["a@example.com", "b@example.com"], $result);
     }
 }
