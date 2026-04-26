@@ -48,6 +48,7 @@ class CoreContext implements Context
     private bool $advancedEnabled = false;
     private array $lastAddressSettings = [];
     private ?int $otherFileId = null;
+    private ?array $lastEmailsResponse = null;
 
     public function __construct(
         private string $baseUrl,
@@ -98,6 +99,7 @@ class CoreContext implements Context
         $this->lastKeyOperationResponse = null;
         $this->lastFederationKeyResponse = null;
         $this->lastHealthcheckResponse = null;
+        $this->lastEmailsResponse = null;
 
         if ($this->advancedEnabled) {
             $this->disableAdvancedMode();
@@ -1414,5 +1416,34 @@ class CoreContext implements Context
         } catch (ServerException $e) {
             $this->response = $e->getResponse();
         }
+    }
+
+    #[When('I request the email address list')]
+    public function iRequestTheEmailAddressList(): void
+    {
+        $this->sendFrontpageRequest('GET', 'apps/onlyoffice/ajax/emails');
+        $this->response->getBody()->rewind();
+        $this->lastEmailsResponse = json_decode($this->response->getBody()->getContents(), true);
+    }
+
+    #[Then('the email list response should succeed')]
+    public function theEmailListResponseShouldSucceed(): void
+    {
+        Assert::assertSame(200, $this->response->getStatusCode());
+        Assert::assertIsArray($this->lastEmailsResponse, 'Response body is not valid JSON');
+    }
+
+    #[Then('the response should contain an emails key')]
+    public function theResponseShouldContainAnEmailsKey(): void
+    {
+        Assert::assertArrayHasKey('emails', $this->lastEmailsResponse ?? []);
+        Assert::assertIsArray($this->lastEmailsResponse['emails']);
+    }
+
+    #[Then('the emails array should be empty')]
+    public function theEmailsArrayShouldBeEmpty(): void
+    {
+        Assert::assertArrayHasKey('emails', $this->lastEmailsResponse ?? []);
+        Assert::assertEmpty($this->lastEmailsResponse['emails']);
     }
 }
