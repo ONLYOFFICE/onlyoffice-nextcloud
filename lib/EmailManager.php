@@ -35,6 +35,7 @@ use OCP\IL10N;
 use Psr\Log\LoggerInterface;
 use OCP\IURLGenerator;
 use OCP\IUserManager;
+use OCP\Mail\Provider\IManager;
 
 /**
  * Email manager
@@ -50,6 +51,7 @@ class EmailManager {
         private readonly IMailer $mailer,
         private readonly IUserManager $userManager,
         private readonly IURLGenerator $urlGenerator,
+        private readonly IManager $mailManager,
     ) {}
 
     /**
@@ -198,5 +200,25 @@ class EmailManager {
         }
 
         return true;
+    }
+
+    /**
+     * Get user emails list that can send email messages
+     * @param string $uid
+     * @return array
+     */
+    public function getSenderAddressesFor(string $uid): array {
+        $emails = [];
+
+        $mailProviders = $this->mailManager->services($uid);
+
+        foreach ($mailProviders as $mailServices) {
+            $serviceEmails = array_filter(array_map(function ($service) {
+                return $service->capable('MessageSend') ? $service->getPrimaryAddress()->getAddress(): null;
+            }, $mailServices));
+            array_push($emails, ...$serviceEmails);
+        }
+
+        return $emails;
     }
 }
