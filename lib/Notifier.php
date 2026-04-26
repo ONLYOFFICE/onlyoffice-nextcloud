@@ -142,6 +142,21 @@ class Notifier implements INotifier {
                     ])
                     ->setIcon($this->urlGenerator->getAbsoluteURL($this->urlGenerator->imagePath($this->appName, 'app-dark.svg')));
                 break;
+            case 'mailmerge_ended':
+                $totalCount = $parameters["totalCount"];
+                $errorCount = $parameters["errorCount"];
+                $success = $errorCount < 1;
+                $subject = $success
+                    ? $trans->t("Files. Mailing is completed successfully")
+                    : $trans->t(
+                        "Files. Mailing is completed with some errors.\n At least %1\$s mail messages could not be sent. Please check the Mail module to review the reasons for the failure.",
+                        [$errorCount]
+                    );
+
+                $notification->setIcon($this->urlGenerator->getAbsoluteURL($this->urlGenerator->imagePath($this->appName, "app-dark.svg")))
+                    ->setParsedSubject($subject)
+                    ->setRichSubject($subject);
+                break;
             default:
                 $this->logger->info("Unsupported notification object: ".$notification->getObjectType());
         }
