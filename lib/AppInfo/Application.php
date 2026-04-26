@@ -53,11 +53,13 @@ use OCA\Onlyoffice\Listeners\DirectEditorListener;
 use OCA\Onlyoffice\Listeners\ViewerListener;
 use OCA\Onlyoffice\Listeners\WidgetListener;
 use OCA\Onlyoffice\Events\DocumentUnsavedEvent;
+use OCA\Onlyoffice\Events\MailMergeEndedEvent;
 use OCA\Onlyoffice\Hooks;
 use OCA\Onlyoffice\Listeners\ContentSecurityPolicyListener;
 use OCA\Onlyoffice\Listeners\DocumentUnsavedListener;
 use OCA\Onlyoffice\Listeners\FileListener;
 use OCA\Onlyoffice\Listeners\FileVersionsListener;
+use OCA\Onlyoffice\Listeners\MailMergeEndedListener;
 use OCA\Onlyoffice\Listeners\ShareListener;
 use OCA\Onlyoffice\Listeners\UserListener;
 use OCA\Onlyoffice\Notifier;
@@ -99,6 +101,7 @@ class Application extends App implements IBootstrap {
         $context->registerEventListener(ShareDeletedEvent::class, ShareListener::class);
         $context->registerEventListener(UserDeletedEvent::class, UserListener::class);
         $context->registerEventListener(VersionRestoredEvent::class, FileVersionsListener::class);
+        $context->registerEventListener(MailMergeEndedEvent::class, MailMergeEndedListener::class);
 
         if (interface_exists(\OCP\Files\Template\ICustomTemplateProvider::class)) {
             $context->registerTemplateProvider(TemplateProvider::class);

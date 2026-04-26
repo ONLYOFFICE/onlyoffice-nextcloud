@@ -117,11 +117,11 @@ class MailMergeEndedListener implements IEventListener {
                 : $this->trans->t('Mailing is completed with some errors');
             $body = $success
                 ? $this->trans->t(
-                    "You’re receiving this email to confirm that your request to send %1\$s messages has been completed. The successfully sent mail messages can be found in your <a href=\"%2\$s\">Sent</a> folder of the Mail module.",
+                    "You're receiving this email to confirm that your request to send %1\$s messages has been completed. The successfully sent mail messages can be found in your <a href=\"%2\$s\">Sent</a> folder of the Mail module.",
                     [$totalCount, $sentFolderUrl]
                 )
                 : $this->trans->t(
-                    "You’re receiving this email to confirm that your request to send %1\$s messages has been processed. However, %2\$s messages could not be sent. Please check the Mail module to review the reasons for the failure.\nThe successfully sent mail messages can be found in your <a href=\"%3\$s\">Sent</a> folder of the Mail module.",
+                    "You're receiving this email to confirm that your request to send %1\$s messages has been processed. However, %2\$s messages could not be sent. Please check the Mail module to review the reasons for the failure.\nThe successfully sent mail messages can be found in your <a href=\"%3\$s\">Sent</a> folder of the Mail module.",
                     [$totalCount, $errorCount, $sentFolderUrl]
                 );
             $message = $this->prepareMailMessage($email, $subject, $body);
