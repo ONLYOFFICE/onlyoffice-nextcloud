@@ -33,6 +33,7 @@ use OCA\DAV\CalDAV\TimezoneService;
 use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\Crypt;
 use OCA\Onlyoffice\DocumentService;
+use OCA\Onlyoffice\EmailManager;
 use OCA\Onlyoffice\ExtraPermissions;
 use OCA\Onlyoffice\FileUtility;
 use OCA\Onlyoffice\TemplateManager;
@@ -88,7 +89,8 @@ class EditorApiController extends OCSController {
         private readonly TimezoneService $timezoneService,
         private readonly FileUtility $fileUtility,
         private readonly IAvatarManager $avatarManager,
-        private readonly ExtraPermissions $extraPermissions
+        private readonly ExtraPermissions $extraPermissions,
+        private readonly EmailManager $emailManager,
     ) {
         parent::__construct($appName, $request);
     }
@@ -495,6 +497,8 @@ class EditorApiController extends OCSController {
         if (!empty($this->appConfig->getDocumentServerUrl())) {
             $params["documentServerUrl"] = $this->appConfig->getDocumentServerUrl();
         }
+
+        $params['userHasMailAccounts'] = !empty($userId) && !empty($this->emailManager->getSenderAddressesFor($userId));
 
         if (!empty($this->appConfig->getDocumentServerSecret())) {
             $now = time();
