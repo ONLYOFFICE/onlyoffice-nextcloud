@@ -35,9 +35,13 @@ use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\Crypt;
 use OCA\Onlyoffice\DocumentService;
 use OCA\Onlyoffice\Events\DocumentUnsavedEvent;
+use OCA\Onlyoffice\Events\MailMergeEndedEvent;
 use OCA\Onlyoffice\FileVersions;
 use OCA\Onlyoffice\FileUtility;
 use OCA\Onlyoffice\KeyManager;
+use OCA\Onlyoffice\MailMergeMessage;
+use OCA\Onlyoffice\MailMergeAttachment;
+use OCA\Onlyoffice\MailMergeService;
 use OCA\Onlyoffice\RemoteInstance;
 use OCA\Onlyoffice\TemplateManager;
 use OCP\AppFramework\Controller;
@@ -84,8 +88,12 @@ class CallbackController extends Controller {
     private const TRACKERSTATUS_MUSTSAVE = 2;
     private const TRACKERSTATUS_CORRUPTED = 3;
     private const TRACKERSTATUS_CLOSED = 4;
+    private const TRACKERSTATUS_MAILMERGE = 5;
     private const TRACKERSTATUS_FORCESAVE = 6;
     private const TRACKERSTATUS_CORRUPTEDFORCESAVE = 7;
+
+    private const int TYPE_HTML = 0;
+    private const int TYPE_ATTACH_DOCX = 1;
 
     public function __construct(
         string $appName,
@@ -103,7 +111,8 @@ class CallbackController extends Controller {
         private readonly ?IVersionManager $versionManager,
         private readonly DocumentService $documentService,
         private readonly KeyManager $keyManager,
-        private readonly SetupManager $setupManager
+        private readonly SetupManager $setupManager,
+        private readonly MailMergeService $mailMergeService
     ) {
         parent::__construct($appName, $request);
     }
@@ -391,6 +400,7 @@ class CallbackController extends Controller {
             $key = $payload->key;
             $status = $payload->status;
             $url = $payload->url ?? null;
+            $mailMergeData = $payload->mailMerge ?? null;
         }
 
         $shareToken = $hashData->shareToken ?? null;
@@ -556,6 +566,85 @@ class CallbackController extends Controller {
                     //     $this->eventDispatcher->dispatchTyped(new DocumentUnsavedEvent($userId, $fileId, $file->getName()));
                     // }
                 }
+                break;
+
+            case self::TRACKERSTATUS_MAILMERGE:
+                $mailMergeStatusMessage = null;
+
+                if (empty($url)) {
+                    $this->logger->error("MailMerge: file url cannot be empty");
+                    return new JSONResponse(["message" => "Url not found"], Http::STATUS_BAD_REQUEST);
+                }
+
+                if (empty($user)) {
+                    $this->logger->error("MailMerge: user not found");
+                    return new JSONResponse(["message" => "User not found"], Http::STATUS_BAD_REQUEST);
+                }
+
+                if ($mailMergeData === null) {
+                    $this->logger->error("MailMerge: data cannot be empty");
+                    return new JSONResponse(["message" => "MailMerge data not found"], Http::STATUS_BAD_REQUEST);
+                }
+
+                try {
+                    $url = $this->appConfig->replaceDocumentServerUrlToInternal($url);
+                    $data = $this->documentService->request($url);
+                    $isHtml = $mailMergeData->type === self::TYPE_HTML;
+                    $bodyPlain = $mailMergeData->message ?? '';
+                    $bodyHtml = $isHtml ? $data : '';
+
+                    $mailMergeMessage = (new MailMergeMessage())
+                        ->setFrom($mailMergeData->from)
+                        ->setTo($mailMergeData->to)
+                        ->setSubject($mailMergeData->subject)
+                        ->setBodyPlain($bodyPlain)
+                        ->setBodyHtml($bodyHtml);
+
+                    if (!$isHtml) {
+                        $attachmentExtension = $mailMergeData->type === self::TYPE_ATTACH_DOCX ? 'docx' : 'pdf';
+                        $attachmentName = pathinfo($mailMergeData->title ?? 'Attach', PATHINFO_FILENAME) . ".$attachmentExtension";
+                        $mailMergeAttachment = (new MailMergeAttachment())
+                            ->setName($attachmentName)
+                            ->setExtension($attachmentExtension)
+                            ->setContent($data);
+                        $mailMergeMessage->setAttachment($mailMergeAttachment);
+                    }
+                
+                    $this->mailMergeService->send($userId, $mailMergeMessage);
+                    $recordIndex = $mailMergeData->recordIndex + 1;
+                    $this->logger->info(
+                        "DocService MailMerge {$recordIndex}/{$mailMergeData->recordCount}"
+                    );
+                } catch (\Exception $e) {
+                    $recordCounterString = empty($mailMergeData) ? "" : " {$mailMergeData->recordIndex}/{$mailMergeData->recordCount} ";
+                    $userIdString = $userId ?? "";
+                    $urlString = $url ?? "";
+                    $this->logger->error(
+                        "DocService MailMerge$recordCounterString error: userId - $userIdString, url - $urlString",
+                        ['exception' => $e]
+                    );
+                    $mailMergeStatusMessage = $e->getMessage();
+                }
+
+                if ($mailMergeData !== null && $mailMergeData->recordIndex === ($mailMergeData->recordCount - 1)) {
+                    $errorCount = !$mailMergeStatusMessage ? $mailMergeData->recordErrorCount : $mailMergeData->recordErrorCount + 1;
+                    $mailMergeEndedEvent = new MailMergeEndedEvent(
+                        $userId,
+                        $mailMergeData->from,
+                        $mailMergeData->recordCount,
+                        $errorCount
+                    );
+                    $this->eventDispatcher->dispatchTyped($mailMergeEndedEvent);
+                }
+
+                if ($mailMergeStatusMessage) {
+                    return new JSONResponse(
+                        ["error" => 1, "message" => $mailMergeStatusMessage],
+                        Http::STATUS_BAD_REQUEST
+                    );
+                }
+
+                $result = 0;
                 break;
 
             case self::TRACKERSTATUS_EDITING:
