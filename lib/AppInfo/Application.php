@@ -60,6 +60,7 @@ use OCA\Onlyoffice\Listeners\FileListener;
 use OCA\Onlyoffice\Listeners\FileVersionsListener;
 use OCA\Onlyoffice\Listeners\ShareListener;
 use OCA\Onlyoffice\Listeners\UserListener;
+use OCA\Onlyoffice\Middleware\DesktopMiddleware;
 use OCA\Onlyoffice\Notifier;
 use OCA\Onlyoffice\Preview;
 use OCA\Onlyoffice\TemplateProvider;
@@ -85,6 +86,8 @@ class Application extends App implements IBootstrap {
 
         // Set the leeway for the JWT library in case the system clock is a second off
         \Firebase\JWT\JWT::$leeway = $this->appConfig->getJwtLeeway();
+
+        $context->registerMiddleware(DesktopMiddleware::class, true);
 
         $context->registerEventListener(FileCreatedFromTemplateEvent::class, CreateFromTemplateListener::class);
         $context->registerEventListener(LoadAdditionalScriptsEvent::class, FilesListener::class);
