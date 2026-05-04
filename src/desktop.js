@@ -29,27 +29,21 @@
 import { getCurrentUser } from '@nextcloud/auth'
 import { getRootUrl } from '@nextcloud/router'
 
-/* global _oc_appswebroots  */
-
 OCA.Onlyoffice = Object.assign({}, OCA.Onlyoffice)
 
 if (window.AscDesktopEditor) {
 	OCA.Onlyoffice.Desktop = true
 
-	if (location.pathname.indexOf(_oc_appswebroots.dashboard) !== -1) {
-		location.pathname = location.pathname.split(_oc_appswebroots.dashboard)[0] + _oc_appswebroots.files + '/'
-	} else {
-		document.documentElement.classList.add('AscDesktopEditor')
+	document.documentElement.classList.add('AscDesktopEditor')
 
-		let domain = /^http(s)?:\/\/[^\\/]+/.exec(location)[0]
-		domain += getRootUrl()
+	let domain = /^http(s)?:\/\/[^\\/]+/.exec(location)[0]
+	domain += getRootUrl()
 
-		const data = {
-			displayName: getCurrentUser()?.uid,
-			domain,
-			provider: 'Nextcloud',
-		}
-
-		window.AscDesktopEditor.execCommand('portal:login', JSON.stringify(data))
+	const data = {
+		displayName: getCurrentUser()?.uid,
+		domain,
+		provider: 'Nextcloud',
 	}
+
+	window.AscDesktopEditor.execCommand('portal:login', JSON.stringify(data))
 }
