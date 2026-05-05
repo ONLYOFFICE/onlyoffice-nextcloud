@@ -395,9 +395,9 @@
       <code><![CDATA[IEventListener]]></code>
     </UndefinedClass>
   </file>
-  <file src="lib/Listeners/WidgetListener.php">
+  <file src="lib/Middleware/DesktopMiddleware.php">
     <UndefinedClass>
-      <code><![CDATA[IEventListener]]></code>
+      <code><![CDATA[Middleware]]></code>
     </UndefinedClass>
   </file>
   <file src="lib/Migration/Version070000Date20210417111111.php">
