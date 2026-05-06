@@ -1,4 +1,5 @@
 <?php
+
 /**
  *
  * (c) Copyright Ascensio System SIA 2026
@@ -27,34 +28,6 @@
  *
  */
 
-namespace OCA\Onlyoffice\Listeners;
+namespace OCA\Onlyoffice\Exceptions;
 
-use OCP\AppFramework\Http\Events\BeforeTemplateRenderedEvent as HttpBeforeTemplateRenderedEvent;
-use OCA\Onlyoffice\AppConfig;
-use OCP\EventDispatcher\Event;
-use OCP\EventDispatcher\IEventListener;
-use OCP\Util;
-
-/**
- * Widget listener
- */
-class WidgetListener implements IEventListener {
-
-    public function __construct(private readonly AppConfig $appConfig) {}
-
-    public function handle(Event $event): void {
-        if (!($event instanceof HttpBeforeTemplateRenderedEvent)) {
-            return;
-        }
-
-        if ($event->getResponse()->getApp() !== "dashboard") {
-            return;
-        }
-
-        if (!empty($this->appConfig->getDocumentServerUrl())
-            && $this->appConfig->settingsAreSuccessful()
-            && $this->appConfig->isUserAllowedToUse()) {
-            Util::addScript("onlyoffice", "onlyoffice-desktop");
-        }
-    }
-}
+class DesktopRedirectException extends \Exception {}

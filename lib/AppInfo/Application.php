@@ -33,7 +33,6 @@ use OCP\AppFramework\App;
 use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
-use OCP\AppFramework\Http\Events\BeforeTemplateRenderedEvent as HttpBeforeTemplateRenderedEvent;
 use OCP\DirectEditing\RegisterDirectEditorEvent;
 use OCP\Files\Template\FileCreatedFromTemplateEvent;
 use OCP\Files\Template\ITemplateManager;
@@ -51,7 +50,6 @@ use OCA\Onlyoffice\Listeners\FilesListener;
 use OCA\Onlyoffice\Listeners\FileSharingListener;
 use OCA\Onlyoffice\Listeners\DirectEditorListener;
 use OCA\Onlyoffice\Listeners\ViewerListener;
-use OCA\Onlyoffice\Listeners\WidgetListener;
 use OCA\Onlyoffice\Events\DocumentUnsavedEvent;
 use OCA\Onlyoffice\Hooks;
 use OCA\Onlyoffice\Listeners\ContentSecurityPolicyListener;
@@ -60,6 +58,7 @@ use OCA\Onlyoffice\Listeners\FileListener;
 use OCA\Onlyoffice\Listeners\FileVersionsListener;
 use OCA\Onlyoffice\Listeners\ShareListener;
 use OCA\Onlyoffice\Listeners\UserListener;
+use OCA\Onlyoffice\Middleware\DesktopMiddleware;
 use OCA\Onlyoffice\Notifier;
 use OCA\Onlyoffice\Preview;
 use OCA\Onlyoffice\TemplateProvider;
@@ -86,13 +85,14 @@ class Application extends App implements IBootstrap {
         // Set the leeway for the JWT library in case the system clock is a second off
         \Firebase\JWT\JWT::$leeway = $this->appConfig->getJwtLeeway();
 
+        $context->registerMiddleware(DesktopMiddleware::class, true);
+
         $context->registerEventListener(FileCreatedFromTemplateEvent::class, CreateFromTemplateListener::class);
         $context->registerEventListener(LoadAdditionalScriptsEvent::class, FilesListener::class);
         $context->registerEventListener(RegisterDirectEditorEvent::class, DirectEditorListener::class);
         $context->registerEventListener(LoadViewer::class, ViewerListener::class);
         $context->registerEventListener(AddContentSecurityPolicyEvent::class, ContentSecurityPolicyListener::class);
         $context->registerEventListener(BeforeTemplateRenderedEvent::class, FileSharingListener::class);
-        $context->registerEventListener(HttpBeforeTemplateRenderedEvent::class, WidgetListener::class);
         $context->registerEventListener(DocumentUnsavedEvent::class, DocumentUnsavedListener::class);
         $context->registerEventListener(NodeDeletedEvent::class, FileListener::class);
         $context->registerEventListener(NodeWrittenEvent::class, FileListener::class);
