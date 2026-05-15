@@ -615,7 +615,9 @@ class CoreContext implements Context
     public function theDownloadedFileShouldHaveTheExtension(string $ext): void
     {
         $disposition = $this->lastDownloadResponse->getHeaderLine('Content-Disposition');
-        Assert::assertMatchesRegularExpression('/filename="[^"]+\.' . preg_quote($ext, '/') . '"/', $disposition);
+        Assert::assertSame(1, preg_match('/filename=(?:"(?<quoted>[^"]+)"|(?<unquoted>[^";\s]+))/', $disposition, $matches));
+        $filename = $matches['quoted'] !== '' ? $matches['quoted'] : $matches['unquoted'];
+        Assert::assertSame($ext, pathinfo($filename, PATHINFO_EXTENSION));
     }
 
     #[Then('no file should be served for download')]
