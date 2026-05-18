@@ -34,40 +34,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-namespace OCA\Onlyoffice\Listeners;
+namespace OCA\Onlyoffice\Exceptions;
 
-use Exception;
-use OCA\Onlyoffice\ExtraPermissions;
-use OCP\EventDispatcher\Event;
-use OCP\EventDispatcher\IEventListener;
-use OCP\Share\Events\ShareDeletedEvent;
-use OCP\Share\IShare;
-use Psr\Log\LoggerInterface;
-
-/**
- * OCP\Share events listener
- */
-class ShareListener implements IEventListener {
-
-    public function __construct(
-        private readonly LoggerInterface $logger,
-        private readonly ExtraPermissions $extraPermissions
-    ) {}
-
-    public function handle(Event $event): void {
-        if ($event instanceof ShareDeletedEvent) {
-            $this->shareDeleted($event->getShare());
-        }
-    }
-
-    public function shareDeleted(IShare $share): void {
-        try {
-            $this->extraPermissions->delete($share->getId());
-        } catch (Exception $e) {
-            $this->logger->error(
-                "ShareDeletedEvent: deleting extra permissions for share {$share->getId()}",
-                ["exception" => $e]
-            );
-        }
-    }
-}
+class DesktopRedirectException extends \Exception {}
