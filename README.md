@@ -1,6 +1,6 @@
 # ![](screenshots/icon.png) ONLYOFFICE app for Nextcloud
 
-This app enables users to edit office documents from [Nextcloud](https://nextcloud.com) using ONLYOFFICE Docs packaged as Document Server - [Community or Enterprise Edition](#onlyoffice-docs-editions).
+This app enables users to edit office documents from Nextcloud using ONLYOFFICE Docs packaged as Document Server - [Community or Enterprise Edition](#onlyoffice-docs-editions).
 
 ## Features ✨
 
