@@ -1,27 +1,23 @@
 # Change Log
 
 ##
-## Changed
-- disable editor for external storage files when the restrict external storage setting is on
+## Added
+- restrict external storage admin setting
+- send mail merge messages using the Nextcloud Mail provider
 
-- fixed createUrl and template URLs being incorrectly decoded, causing broken links for names containing special characters
+## Changed
+- fixed createUrl and template URLs being incorrectly decoded
 - fixed extra permissions being unavailable for user shares when admin resharing is disabled
 - fixed insecure direct object reference in share extra permissions API
 - updated PHP codebase to Nextcloud 33 API
-- adopted PHP 8.1 syntax
-- improved PHP type coverage
-- removed unused PHP code
-- internal PHP refactoring
+- adopted PHP 8.1 syntax, internal PHP refactoring
 - migrated from legacy hooks to event listeners
 - fixed opening editor for shared link
 
 ## 10.0.0
 ## Changed
 - compatible with Nextcloud 33
-
-## Added
-- restrict external storage admin setting
-- send mail merge messages using the Nextcloud Mail provider
+- Nextcloud v32 is no longer supported
 
 ## 9.13.0
 ## Changed
