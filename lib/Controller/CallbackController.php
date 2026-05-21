@@ -99,8 +99,8 @@ class CallbackController extends Controller {
     private const TRACKERSTATUS_FORCESAVE = 6;
     private const TRACKERSTATUS_CORRUPTEDFORCESAVE = 7;
 
-    private const int TYPE_HTML = 0;
-    private const int TYPE_ATTACH_DOCX = 1;
+    private const TYPE_HTML = 0;
+    private const TYPE_ATTACH_DOCX = 1;
 
     public function __construct(
         string $appName,
