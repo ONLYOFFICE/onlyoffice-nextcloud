@@ -144,6 +144,11 @@ export async function fetchReference(data: Record<string, unknown>): Promise<unk
 	return response.data
 }
 
+export const fetchEmails = async (): Promise<unknown> => {
+	const response = await axios.get<unknown[]>(generateUrl('apps/onlyoffice/ajax/emails'))
+	return response.data
+}
+
 /**
  *
  * @param userIds

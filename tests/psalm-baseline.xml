@@ -209,6 +209,7 @@
       <code><![CDATA[$bodyHtml]]></code>
     </ImplicitToStringCast>
     <UndefinedClass>
+      <code><![CDATA[$this->mailManager]]></code>
       <code><![CDATA[$this->trans]]></code>
       <code><![CDATA[$this->trans]]></code>
       <code><![CDATA[$this->trans]]></code>
@@ -224,6 +225,7 @@
       <code><![CDATA[$this->userManager]]></code>
       <code><![CDATA[IEMailTemplate]]></code>
       <code><![CDATA[IEMailTemplate]]></code>
+      <code><![CDATA[private]]></code>
       <code><![CDATA[private]]></code>
       <code><![CDATA[private]]></code>
       <code><![CDATA[private]]></code>
@@ -231,6 +233,11 @@
     </UndefinedClass>
   </file>
   <file src="lib/Events/DocumentUnsavedEvent.php">
+    <UndefinedClass>
+      <code><![CDATA[Event]]></code>
+    </UndefinedClass>
+  </file>
+  <file src="lib/Events/MailMergeEndedEvent.php">
     <UndefinedClass>
       <code><![CDATA[Event]]></code>
     </UndefinedClass>
@@ -381,6 +388,11 @@
       <code><![CDATA[IEventListener]]></code>
     </UndefinedClass>
   </file>
+  <file src="lib/Listeners/MailMergeEndedListener.php">
+    <UndefinedClass>
+      <code><![CDATA[IEventListener]]></code>
+    </UndefinedClass>
+  </file>
   <file src="lib/Listeners/ShareListener.php">
     <UndefinedClass>
       <code><![CDATA[IEventListener]]></code>
@@ -399,6 +411,15 @@
   <file src="lib/Middleware/DesktopMiddleware.php">
     <UndefinedClass>
       <code><![CDATA[Middleware]]></code>
+    </UndefinedClass>
+  </file>
+  <file src="lib/MailMergeService.php">
+    <UndefinedClass>
+      <code><![CDATA[$this->mailManager]]></code>
+      <code><![CDATA[Address]]></code>
+      <code><![CDATA[Address]]></code>
+      <code><![CDATA[Attachment]]></code>
+      <code><![CDATA[\OCP\Mail\Provider\IManager]]></code>
     </UndefinedClass>
   </file>
   <file src="lib/Migration/Version070000Date20210417111111.php">

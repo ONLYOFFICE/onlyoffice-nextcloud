@@ -50,6 +50,7 @@ import {
 	saveAs,
 	sendMention,
 	setFavorite,
+	fetchEmails,
 } from './services/EditorService.ts'
 
 import '@nextcloud/dialogs/style.css'
@@ -175,6 +176,11 @@ OCA.Onlyoffice.InitEditor = function() {
 
 					if (OCA.Onlyoffice.currentUser?.uid) {
 						config.events.onRequestUsers = OCA.Onlyoffice.onRequestUsers
+					}
+
+					if (OCA.Onlyoffice.currentUser?.uid && config.userHasMailAccounts) {
+						config.events.onRequestEmailAddresses = OCA.Onlyoffice.onRequestEmailAddresses
+						config.events.onRequestStartMailMerge = OCA.Onlyoffice.onRequestStartMailMerge
 					}
 
 					if (!OCA.Onlyoffice.filePath) {
@@ -416,6 +422,22 @@ OCA.Onlyoffice.onRequestMailMergeRecipients = function() {
 			.pickNodes()
 			.catch(() => {})
 	}
+}
+
+OCA.Onlyoffice.onRequestEmailAddresses = async function() {
+	const response = await fetchEmails()
+	if (response.error) {
+		OCA.Onlyoffice.showMessage(response.error, 'error')
+		return
+	}
+
+	if (response.emails) {
+		OCA.Onlyoffice.docEditor.setEmailAddresses({ emailAddresses: response.emails })
+	}
+}
+
+OCA.Onlyoffice.onRequestStartMailMerge = function() {
+	OCA.Onlyoffice.docEditor.processMailMerge(true)
 }
 
 OCA.Onlyoffice.editorSetRecipient = function(filePath) {

@@ -21,6 +21,7 @@
 
 ## Added
 - restrict external storage admin setting
+- send mail merge messages using the Nextcloud Mail provider
 
 ## 9.13.0
 ## Changed

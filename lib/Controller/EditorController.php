@@ -368,6 +368,23 @@ class EditorController extends Controller {
     }
 
     /**
+     * List all emails of the user which is currently logged-in
+     */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
+    public function emails(): DataResponse {
+        $user = $this->userSession->getUser();
+
+        if ($user === null) {
+            return new DataResponse(["error" => $this->trans->t("Not permitted")]);
+        }
+
+        $emails = $this->emailManager->getSenderAddressesFor($user->getUID());
+
+        return new DataResponse(['emails' => $emails]);
+    }
+
+    /**
      * Checking if the user matches the filter
      *
      * @param IUser $user - user

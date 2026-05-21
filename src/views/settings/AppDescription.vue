@@ -45,7 +45,7 @@ import { t } from '@nextcloud/l10n'
 			<p>{{ t('onlyoffice', 'Edit and collaborate on text documents, spreadsheets, presentations, and PDFs within Nextcloud using ONLYOFFICE Docs.') }}</p>
 			<div class="useful-links">
 				<a href="https://helpcenter.onlyoffice.com/integration/nextcloud.aspx" target="_blank">{{ t('onlyoffice', 'Learn more') }}</a>
-				<a href="https://feedback.onlyoffice.com/forums/966080-your-voice-matters?category_id=519288" target="_blank">{{ t('onlyoffice', 'Suggest a feature') }}</a>
+				<a href="https://community.onlyoffice.com/c/suggestions/integrations/56" target="_blank">{{ t('onlyoffice', 'Suggest a feature') }}</a>
 			</div>
 		</div>
 	</div>
