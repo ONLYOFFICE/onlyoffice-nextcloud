@@ -39,6 +39,7 @@ import { getCanonicalLocale, t } from '@nextcloud/l10n'
 import { encodePath } from '@nextcloud/paths'
 import { generateOcsUrl, generateUrl, imagePath } from '@nextcloud/router'
 import {
+	fetchEmails,
 	fetchReference,
 	getConfig,
 	getFileUrl,
@@ -50,7 +51,6 @@ import {
 	saveAs,
 	sendMention,
 	setFavorite,
-	fetchEmails,
 } from './services/EditorService.ts'
 
 import '@nextcloud/dialogs/style.css'

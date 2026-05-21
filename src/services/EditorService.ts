@@ -144,7 +144,12 @@ export async function fetchReference(data: Record<string, unknown>): Promise<unk
 	return response.data
 }
 
-export const fetchEmails = async (): Promise<unknown> => {
+/**
+ * Fetches all sender email addresses for the currently logged-in user.
+ *
+ * @return A promise resolving to the list of email addresses from the server.
+ */
+export async function fetchEmails(): Promise<unknown> {
 	const response = await axios.get<unknown[]>(generateUrl('apps/onlyoffice/ajax/emails'))
 	return response.data
 }
