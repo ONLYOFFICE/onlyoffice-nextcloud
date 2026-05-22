@@ -495,7 +495,12 @@ class AppConfig {
 
             if (!preg_match("/^https?:\/\//i", $from)) {
                 $parsedUrl = parse_url($url);
-                $from = $parsedUrl["scheme"] . "://" . $parsedUrl["host"] . (array_key_exists("port", $parsedUrl) ? (":" . $parsedUrl["port"]) : "") . $from;
+                if (\is_array($parsedUrl) && isset($parsedUrl["scheme"], $parsedUrl["host"])) {
+                    $scheme = $parsedUrl["scheme"];
+                    $host = $parsedUrl["host"];
+                    $port = isset($parsedUrl["port"]) ? ":" . (string)$parsedUrl["port"] : "";
+                    $from = $scheme . "://" . $host . $port . $from;
+                }
             }
 
             if ($from !== $documentServerUrl) {
