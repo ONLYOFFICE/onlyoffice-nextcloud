@@ -510,7 +510,7 @@ class AppConfig {
     /**
      * Save the Nextcloud address available from document server to the application configuration
      *
-     * @param string $documentServer - document service address
+     * @param string $storageUrl - document service address
      */
     public function setStorageUrl(string $storageUrl): void {
         $storageUrl = rtrim(trim((string) $storageUrl), "/");

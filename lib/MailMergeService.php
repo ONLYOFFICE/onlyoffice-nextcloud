@@ -38,7 +38,6 @@ class MailMergeService {
 
     /**
      * @param \OCP\Mail\Provider\IManager $mailManager
-     * @param \Psr\Log\LoggerInterface $logger
      */
     public function __construct(
         private IManager $mailManager,
