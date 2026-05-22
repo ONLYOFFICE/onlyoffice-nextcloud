@@ -46,14 +46,14 @@
 ## Added
 - pagination support in getUser
 - insert svg to editor
-- view vsdx, vssx, vstx, vsdm, vssm, vstm
-- view odg, md
+- view vsdx, vssx, vstx, vsdm, vssm, vstm (DocumentServer 9.0 required)
+- view odg, md (DocumentServer 9.0 required)
 - setting for enabling live-view for shared docs
 - refresh file when connection is restored
 
 ## Changed
 - select user for protected region in team folder
-- edit xlsb
+- edit xlsb (DocumentServer 9.0 required)
 - customization_goback setting removed
 - there are only system, light and dark themes
 - toolbarNoTabs setting removed
@@ -80,7 +80,8 @@
 
 ## 9.7.0
 ## Added
-- support hwp, hwpx, pages, numbers, key formats
+- support hwp, hwpx, pages, numbers, key formats (DocumentServer 8.3 required)
+
 ## Changed
 - compatible with Nextcloud 31
 
