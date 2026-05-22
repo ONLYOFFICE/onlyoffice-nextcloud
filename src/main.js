@@ -33,8 +33,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-/* global _oc_appswebroots */
-
 import {
 	File,
 	FileAction,
@@ -477,10 +475,7 @@ function registerFileActions() {
 			const config = formats[fileExt]
 
 			if (!config
-				|| !config.def
-				|| (isPublicFileShare() && (_oc_appswebroots.richdocuments
-					|| (_oc_appswebroots.files_pdfviewer && fileExt === 'pdf')
-					|| (_oc_appswebroots.text && fileExt === 'txt')))) {
+				|| !config.def) {
 				return false
 			}
 
