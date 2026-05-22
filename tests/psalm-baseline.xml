@@ -17,12 +17,8 @@
     <MissingDependency>
       <code><![CDATA[Application]]></code>
     </MissingDependency>
-    <NullableReturnStatement>
-      <code><![CDATA[null]]></code>
-    </NullableReturnStatement>
     <RedundantCast>
       <code><![CDATA[(int)$interval]]></code>
-      <code><![CDATA[(string) $storageUrl]]></code>
     </RedundantCast>
     <RedundantCondition>
       <code><![CDATA[$onlyofficeFormats !== false]]></code>
@@ -178,12 +174,6 @@
     </UndefinedClass>
   </file>
   <file src="lib/DocumentService.php">
-    <InvalidArgument>
-      <code><![CDATA[(int)$data["error"]]]></code>
-    </InvalidArgument>
-    <MismatchingDocblockParamType>
-      <code><![CDATA[string]]></code>
-    </MismatchingDocblockParamType>
     <UndefinedClass>
       <code><![CDATA[$this->trans]]></code>
       <code><![CDATA[$this->trans]]></code>
@@ -242,13 +232,6 @@
     </UndefinedClass>
   </file>
   <file src="lib/ExtraPermissions.php">
-    <InvalidScalarArgument>
-      <code><![CDATA[$shareId]]></code>
-    </InvalidScalarArgument>
-    <MismatchingDocblockParamType>
-      <code><![CDATA[bool]]></code>
-      <code><![CDATA[integer]]></code>
-    </MismatchingDocblockParamType>
     <UndefinedClass>
       <code><![CDATA[$share]]></code>
       <code><![CDATA[$share]]></code>
@@ -407,11 +390,6 @@
       <code><![CDATA[IEventListener]]></code>
     </UndefinedClass>
   </file>
-  <file src="lib/Middleware/DesktopMiddleware.php">
-    <UndefinedClass>
-      <code><![CDATA[Middleware]]></code>
-    </UndefinedClass>
-  </file>
   <file src="lib/MailMergeService.php">
     <UndefinedClass>
       <code><![CDATA[$this->mailManager]]></code>
@@ -419,6 +397,11 @@
       <code><![CDATA[Address]]></code>
       <code><![CDATA[Attachment]]></code>
       <code><![CDATA[\OCP\Mail\Provider\IManager]]></code>
+    </UndefinedClass>
+  </file>
+  <file src="lib/Middleware/DesktopMiddleware.php">
+    <UndefinedClass>
+      <code><![CDATA[Middleware]]></code>
     </UndefinedClass>
   </file>
   <file src="lib/Migration/Version070000Date20210417111111.php">
