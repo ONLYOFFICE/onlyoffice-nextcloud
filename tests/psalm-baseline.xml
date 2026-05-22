@@ -11,18 +11,9 @@
     </UndefinedClass>
   </file>
   <file src="lib/AppConfig.php">
-    <InvalidOperand>
-      <code><![CDATA[$parsedUrl["port"]]]></code>
-    </InvalidOperand>
     <MissingDependency>
       <code><![CDATA[Application]]></code>
     </MissingDependency>
-    <RedundantCast>
-      <code><![CDATA[(int)$interval]]></code>
-    </RedundantCast>
-    <RedundantCondition>
-      <code><![CDATA[$onlyofficeFormats !== false]]></code>
-    </RedundantCondition>
     <UndefinedAttributeClass>
       <code><![CDATA[NoAdminRequired]]></code>
     </UndefinedAttributeClass>
