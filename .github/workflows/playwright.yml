@@ -52,10 +52,10 @@ jobs:
           SHARE1: "share;/shared;yes;no;no;all"
           PERMISSIONS: "true"
         options: >-
-          --health-cmd "smbclient -L //localhost -U nextcloud%nextcloud -N || exit 1"
-          --health-interval 5s
-          --health-timeout 3s
-          --health-retries 10
+          --health-cmd "nc -z localhost 445"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 30
 
     steps:
       - name: Set up Nextcloud env
