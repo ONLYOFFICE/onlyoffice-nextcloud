@@ -827,10 +827,8 @@ class CallbackController extends Controller {
      * Parse user identifier for current instance
      *
      * @param string $userId - unique user identifier
-     *
-     * @return string
      */
-    private function parseUserId(string $userId) {
+    private function parseUserId(string $userId): string {
         $instanceId = $this->appConfig->getSystemValue("instanceid", true);
         $instanceId .= "_";
 
