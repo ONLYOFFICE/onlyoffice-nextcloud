@@ -148,8 +148,6 @@ class SharingApiController extends OCSController {
      *
      * @param integer $fileId - file identifier
      * @param string $userId - user identifier
-     *
-     * @return File
      */
     private function getFile(int $fileId, string $userId): ?File {
         try {

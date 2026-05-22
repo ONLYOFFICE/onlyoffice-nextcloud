@@ -188,7 +188,7 @@ class ExtraPermissions {
     /**
      * Get extra permissions by share
      *
-     * @param integer $shareId - share identifier
+     * @param string $shareId - share identifier
      * @param integer $permissions - extra permissions bitmask
      * @param integer $extraId - extra permission identifier
      *
@@ -323,7 +323,7 @@ class ExtraPermissions {
      * Update extra permissions for share
      *
      * @param string $shareId - share identifier
-     * @param bool $permissions - permissions bitmask
+     * @param int $permissions - permissions bitmask
      */
     private function update(string $shareId, int $permissions): bool {
         $update = $this->connection->prepare("

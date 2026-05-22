@@ -84,8 +84,6 @@ class FileCreator extends ACreateEmpty {
 
     /**
      * Mimetype of the resulting created file
-     *
-     * @return array
      */
     public function getMimetype(): string
     {
@@ -98,10 +96,6 @@ class FileCreator extends ACreateEmpty {
 
     /**
      * Add content when creating empty files
-     *
-     * @param File $file - empty file
-     * @param string $creatorId - creator id
-     * @param string $templateId - teamplate id
      */
     public function create(File $file, ?string $creatorId = null, ?string $templateId = null): void {
         $this->logger->debug("FileCreator: " . $file->getId() . " " . $file->getName() . " $creatorId $templateId");

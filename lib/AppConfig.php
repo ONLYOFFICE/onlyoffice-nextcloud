@@ -325,7 +325,7 @@ class AppConfig {
      * @param string $key - key configuration
      * @param bool $system - get from root or from app section
      *
-     * @return string
+     * @return string|null
      */
     public function getSystemValue(string $key, bool $system = false) {
         if ($system) {
@@ -512,10 +512,10 @@ class AppConfig {
     /**
      * Save the Nextcloud address available from document server to the application configuration
      *
-     * @param string $documentServer - document service address
+     * @param string $storageUrl - document service address
      */
     public function setStorageUrl(string $storageUrl): void {
-        $storageUrl = rtrim(trim((string) $storageUrl), "/");
+        $storageUrl = rtrim(trim($storageUrl), "/");
         if ($storageUrl !== '') {
             $storageUrl .= "/";
             if (!preg_match("/^https?:\/\//i", $storageUrl)) {

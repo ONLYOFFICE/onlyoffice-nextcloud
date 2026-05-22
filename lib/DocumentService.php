@@ -328,7 +328,7 @@ class DocumentService {
     /**
      * Generate an error code table of command
      *
-     * @param string $errorCode - Error code
+     * @param int $errorCode - Error code
      */
     public function processCommandServResponceError(int $errorCode): void {
         $errorMessageTemplate = $this->trans->t("Error occurred in the document service");

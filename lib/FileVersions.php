@@ -228,8 +228,6 @@ class FileVersions {
      * @param string $ownerId - file owner id
      * @param FileInfo $fileInfo - file info
      * @param string $versionId - file version
-     *
-     * @return File
      */
     public static function getChangesFile(?string $ownerId, ?FileInfo $fileInfo, string $versionId): ?File {
         if ($ownerId === null || $fileInfo === null) {
@@ -445,8 +443,6 @@ class FileVersions {
      * @param string $ownerId - file owner id
      * @param FileInfo $fileInfo - file info
      * @param string $versionId - file version
-     *
-     * @return array
      */
     public static function getAuthor(?string $ownerId, ?FileInfo $fileInfo, string $versionId): ?array {
         if ($ownerId === null || $fileInfo === null) {
