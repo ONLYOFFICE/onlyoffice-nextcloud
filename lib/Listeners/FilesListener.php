@@ -63,20 +63,49 @@ class FilesListener implements IEventListener {
      * @var IServerContainer
      */
     private $serverContainer;
+    /**
+     * Url generator service
+     *
+     * @var IURLGenerator
+     */
+    private $urlGenerator;
+
+    /**
+     * Hash generator
+     *
+     * @var Crypt
+     */
+    private $crypt;
+
+    /**
+     * l10n service
+     *
+     * @var IL10N
+     */
+    private $trans;
 
     /**
      * @param AppConfig $config - application configuration
      * @param IInitialState $initialState - initial state
      * @param IServerContainer $serverContainer - server container
+     * @param IL10N $trans - l10n service
+     * @param IURLGenerator $urlGenerator - url generator service
+     * @param Crypt $crypt - hash generator
      */
     public function __construct(
         AppConfig $appConfig,
         IInitialState $initialState,
-        IServerContainer $serverContainer
+        IServerContainer $serverContainer,
+        IL10N $trans,
+        IURLGenerator $urlGenerator,
+        Crypt $crypt
     ) {
         $this->appConfig = $appConfig;
         $this->initialState = $initialState;
         $this->serverContainer = $serverContainer;
+        $this->trans = $trans;
+        $this->urlGenerator = $urlGenerator;
+        $this->crypt = $crypt;
     }
 
     public function handle(Event $event): void {
@@ -84,31 +113,39 @@ class FilesListener implements IEventListener {
             return;
         }
 
-        if (!empty($this->appConfig->getDocumentServerUrl())
-            && $this->appConfig->settingsAreSuccessful()
-            && $this->appConfig->isUserAllowedToUse()) {
-            Util::addScript("onlyoffice", "onlyoffice-desktop");
-            Util::addScript("onlyoffice", "onlyoffice-main");
-            Util::addScript("onlyoffice", "onlyoffice-template");
-
-            if ($this->appConfig->getSameTab()) {
-                Util::addScript("onlyoffice", "onlyoffice-listener");
+        if (!empty($this->appConfig->getDocumentServerUrl())){
+            // check settings again in case the failure was temporary
+            if(!$this->appConfig->settingsAreSuccessful()){
+                $documentService = new DocumentService($this->trans, $this->appConfig);
+                list($error, $version) = $documentService->checkDocServiceUrl($this->urlGenerator, $this->crypt);
+                $this->appConfig->setSettingsError($error);
             }
 
-            if ($this->appConfig->getAdvanced()
-                && \OC::$server->getAppManager()->isInstalled("files_sharing")) {
-                Util::addScript("onlyoffice", "onlyoffice-share");
-                Util::addStyle("onlyoffice", "share");
+            if ($this->appConfig->settingsAreSuccessful()
+                && $this->appConfig->isUserAllowedToUse()) {
+                Util::addScript("onlyoffice", "onlyoffice-desktop");
+                Util::addScript("onlyoffice", "onlyoffice-main");
+                Util::addScript("onlyoffice", "onlyoffice-template");
+
+                if ($this->appConfig->getSameTab()) {
+                    Util::addScript("onlyoffice", "onlyoffice-listener");
+                }
+
+                if ($this->appConfig->getAdvanced()
+                    && \OC::$server->getAppManager()->isInstalled("files_sharing")) {
+                    Util::addScript("onlyoffice", "onlyoffice-share");
+                    Util::addStyle("onlyoffice", "share");
+                }
+
+                $container = $this->serverContainer;
+                $this->initialState->provideLazyInitialState("settings", function () use ($container) {
+                    return $container->query(SettingsData::class);
+                });
+
+                Util::addStyle("onlyoffice", "main");
+                Util::addStyle("onlyoffice", "template");
+                Util::addStyle("onlyoffice", "format");
             }
-
-            $container = $this->serverContainer;
-            $this->initialState->provideLazyInitialState("settings", function () use ($container) {
-                return $container->query(SettingsData::class);
-            });
-
-            Util::addStyle("onlyoffice", "main");
-            Util::addStyle("onlyoffice", "template");
-            Util::addStyle("onlyoffice", "format");
         }
     }
 }
