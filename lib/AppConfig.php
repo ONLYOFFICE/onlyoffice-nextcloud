@@ -1331,28 +1331,26 @@ class AppConfig {
             $result = [];
             $additionalFormats = $this->getAdditionalFormatAttributes();
 
-            if ($onlyofficeFormats !== false) {
-                foreach ($onlyofficeFormats as $onlyOfficeFormat) {
-                    if ($onlyOfficeFormat["name"]
-                        && $onlyOfficeFormat["mime"]
-                        && $onlyOfficeFormat["type"]
-                        && $onlyOfficeFormat["actions"]
-                        && $onlyOfficeFormat["convert"]) {
-                        $result[$onlyOfficeFormat["name"]] = [
-                            "mime" => $onlyOfficeFormat["mime"],
-                            "type" => $onlyOfficeFormat["type"],
-                            "edit" => in_array("edit", $onlyOfficeFormat["actions"], true),
-                            "editable" => in_array("lossy-edit", $onlyOfficeFormat["actions"], true),
-                            "conv" => in_array("auto-convert", $onlyOfficeFormat["actions"], true),
-                            "fillForms" => in_array("fill", $onlyOfficeFormat["actions"], true),
-                            "comment" => in_array("comment", $onlyOfficeFormat["actions"], true),
-                            "saveas" => $onlyOfficeFormat["convert"],
-                            "review" => in_array("review", $onlyOfficeFormat["actions"], true),
-                            "modifyFilter" => in_array("customfilter", $onlyOfficeFormat["actions"], true),
-                        ];
-                        if (isset($additionalFormats[$onlyOfficeFormat["name"]])) {
-                            $result[$onlyOfficeFormat["name"]] = array_merge($result[$onlyOfficeFormat["name"]], $additionalFormats[$onlyOfficeFormat["name"]]);
-                        }
+            foreach ($onlyofficeFormats as $onlyOfficeFormat) {
+                if ($onlyOfficeFormat["name"]
+                    && $onlyOfficeFormat["mime"]
+                    && $onlyOfficeFormat["type"]
+                    && $onlyOfficeFormat["actions"]
+                    && $onlyOfficeFormat["convert"]) {
+                    $result[$onlyOfficeFormat["name"]] = [
+                        "mime" => $onlyOfficeFormat["mime"],
+                        "type" => $onlyOfficeFormat["type"],
+                        "edit" => in_array("edit", $onlyOfficeFormat["actions"], true),
+                        "editable" => in_array("lossy-edit", $onlyOfficeFormat["actions"], true),
+                        "conv" => in_array("auto-convert", $onlyOfficeFormat["actions"], true),
+                        "fillForms" => in_array("fill", $onlyOfficeFormat["actions"], true),
+                        "comment" => in_array("comment", $onlyOfficeFormat["actions"], true),
+                        "saveas" => $onlyOfficeFormat["convert"],
+                        "review" => in_array("review", $onlyOfficeFormat["actions"], true),
+                        "modifyFilter" => in_array("customfilter", $onlyOfficeFormat["actions"], true),
+                    ];
+                    if (isset($additionalFormats[$onlyOfficeFormat["name"]])) {
+                        $result[$onlyOfficeFormat["name"]] = array_merge($result[$onlyOfficeFormat["name"]], $additionalFormats[$onlyOfficeFormat["name"]]);
                     }
                 }
             }
