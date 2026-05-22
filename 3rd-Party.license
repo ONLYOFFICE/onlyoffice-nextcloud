@@ -19,3 +19,35 @@ License File:   licenses/@nextcloud.initial-state.license
 JWT           - A simple library to encode and decode JSON Web Tokens (JWT) in PHP. Should conform to the current spec. (https://github.com/firebase/php-jwt/blob/master/LICENSE)
 License:        BSD-3-Clause
 License File:   licenses/php-jwt-license.license
+
+@nextcloud/auth - Nextcloud helpers related to authentication and the current user (https://github.com/nextcloud/nextcloud-auth/blob/main/LICENSE)
+License:        GPL-3.0-or-later
+License File:   licenses/@nextcloud.auth.license
+
+@nextcloud/axios - Axios client for Nextcloud (https://github.com/nextcloud-libraries/nextcloud-axios/blob/main/LICENSE)
+License:        GPL-3.0-or-later
+License File:   licenses/@nextcloud.axios.license
+
+@nextcloud/dialogs - Nextcloud dialog helpers (https://github.com/nextcloud-libraries/nextcloud-dialogs/blob/main/LICENSE)
+License:        AGPL-3.0-or-later
+License File:   licenses/@nextcloud.dialogs.license
+
+@nextcloud/l10n - Nextcloud localization and translation helpers for apps and libraries (https://github.com/nextcloud-libraries/nextcloud-l10n/blob/main/LICENSE)
+License:        GPL-3.0-or-later
+License File:   licenses/@nextcloud.l10n.license
+
+@nextcloud/paths - Helper functions for working with paths in Nextcloud apps (https://github.com/nextcloud-libraries/nextcloud-paths/blob/main/LICENSE)
+License:        GPL-3.0-or-later
+License File:   licenses/@nextcloud.paths.license
+
+@nextcloud/router - Utils for generating Nextcloud URLs (https://github.com/nextcloud-libraries/nextcloud-router/blob/main/LICENSE)
+License:        GPL-3.0-or-later
+License File:   licenses/@nextcloud.router.license
+
+@nextcloud/vue - Nextcloud vue components (https://github.com/nextcloud-libraries/nextcloud-vue/blob/main/LICENSES/AGPL-3.0-or-later.txt)
+License:        AGPL-3.0-or-later
+License File:   licenses/@nextcloud.vue.license
+
+vue - The progressive JavaScript framework for building modern web UI. (https://github.com/vuejs/core/blob/main/LICENSE)
+License:        MIT
+License File:   licenses/vue.license
