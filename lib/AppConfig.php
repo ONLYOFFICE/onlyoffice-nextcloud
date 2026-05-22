@@ -1307,7 +1307,7 @@ class AppConfig {
         if (empty($interval) && $interval !== 0) {
             $interval = 60 * 60 * 24;
         }
-        return (int)$interval;
+        return $interval;
     }
 
     /**
