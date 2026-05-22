@@ -49,7 +49,6 @@ class MailMergeService {
      * @param string $uid
      * @param \OCA\Onlyoffice\MailMergeMessage $mailMergeMessage
      * @throws \Exception
-     * @return void
      */
     public function send(string $uid, MailMergeMessage $mailMergeMessage): void {
         $mailService = $this->mailManager->findServiceByAddress($uid, $mailMergeMessage->getFrom());

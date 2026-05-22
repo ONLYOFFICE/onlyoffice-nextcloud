@@ -73,8 +73,6 @@ class RemoteInstance {
      * Get remote instance
      *
      * @param string $remote - remote instance
-     *
-     * @return array
      */
     private static function get(string $remote): ?array {
         $connection = Server::get(IDBConnection::class);
@@ -178,8 +176,6 @@ class RemoteInstance {
      * Generate unique document identifier in federated share
      *
      * @param File $file - file
-     *
-     * @return string
      */
     public static function getRemoteKey(File $file): ?string {
         $logger = \OCP\Log\logger('onlyoffice');

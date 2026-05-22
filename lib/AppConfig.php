@@ -323,7 +323,7 @@ class AppConfig {
      * @param string $key - key configuration
      * @param bool $system - get from root or from app section
      *
-     * @return string
+     * @return string|null
      */
     public function getSystemValue(string $key, bool $system = false) {
         if ($system) {
