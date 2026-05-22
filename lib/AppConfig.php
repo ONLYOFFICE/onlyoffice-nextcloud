@@ -513,7 +513,7 @@ class AppConfig {
      * @param string $storageUrl - document service address
      */
     public function setStorageUrl(string $storageUrl): void {
-        $storageUrl = rtrim(trim((string) $storageUrl), "/");
+        $storageUrl = rtrim(trim($storageUrl), "/");
         if ($storageUrl !== '') {
             $storageUrl .= "/";
             if (!preg_match("/^https?:\/\//i", $storageUrl)) {
