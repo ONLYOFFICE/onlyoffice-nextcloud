@@ -75,7 +75,7 @@ OC.L10N.register(
     "Show watermark on link shares with specific system tags" : "Visa vattenmärke för länkdelningar med specifika systemtaggar",
     "Select tag" : "Välj tagg",
     "Select file to compare" : "Välj fil att jämföra",
-    "Review mode for viewing": "Granskningsläge för visning",
+    "REVIEW mode for viewing": "Granskningsläge för visning",
     "Markup": "Markering",
     "Final": "Slutgiltig",
     "Original": "Ursprunglig",
@@ -172,6 +172,8 @@ OC.L10N.register(
     "Files. Mailing is completed successfully": "Filer. Utskicket har slutförts",
     "Files. Mailing is completed with some errors.\n At least %1$s mail messages could not be sent. Please check the Mail module to review the reasons for the failure.": "Filer. Utskicket slutfördes med vissa fel.\n Minst %1$s e-postmeddelanden kunde inte skickas. Kontrollera e-postmodulen för att se orsakerna till felet.",
     "You're receiving this email to confirm that your request to send %1$s messages has been completed. The successfully sent mail messages can be found in your <a href=\"%2$s\">Sent</a> folder of the Mail module.": "Du får det här e-postmeddelandet för att bekräfta att din begäran om att skicka %1$s meddelanden har slutförts. De framgångsrikt skickade e-postmeddelandena finns i din mapp <a href=\"%2$s\">Skickat</a> i e-postmodulen.",
-    "You're receiving this email to confirm that your request to send %1$s messages has been processed. However, %2$s messages could not be sent. Please check the Mail module to review the reasons for the failure.\nThe successfully sent mail messages can be found in your <a href=\"%3$s\">Sent</a> folder of the Mail module.": "Du får det här e-postmeddelandet för att bekräfta att din begäran om att skicka %1$s meddelanden har behandlats. Dock kunde %2$s meddelanden inte skickas. Kontrollera e-postmodulen för att se orsakerna till felet.\nDe framgångsrikt skickade e-postmeddelandena finns i din mapp <a href=\"%3$s\">Skickat</a> i e-postmodulen."
+    "You're receiving this email to confirm that your request to send %1$s messages has been processed. However, %2$s messages could not be sent. Please check the Mail module to review the reasons for the failure.\nThe successfully sent mail messages can be found in your <a href=\"%3$s\">Sent</a> folder of the Mail module.": "Du får det här e-postmeddelandet för att bekräfta att din begäran om att skicka %1$s meddelanden har behandlats. Dock kunde %2$s meddelanden inte skickas. Kontrollera e-postmodulen för att se orsakerna till felet.\nDe framgångsrikt skickade e-postmeddelandena finns i din mapp <a href=\"%3$s\">Skickat</a> i e-postmodulen.",
+    "Bad healthcheck status": "Ogiltigt hälsokontrollstatus",
+    "UserId is empty": "Användar-ID är tomt"
 },
 "nplurals=2; plural=(n != 1);");

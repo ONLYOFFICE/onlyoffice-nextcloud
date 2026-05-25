@@ -75,7 +75,7 @@ OC.L10N.register(
     "Show watermark on link shares with specific system tags" : "Wasserzeichen auf Link-Freigaben mit bestimmten System-Tags anzeigen",
     "Select tag" : "Wählen Sie ein Tag",
     "Select file to compare" : "Datei zum Vergleich auswählen",
-    "Review mode for viewing": "Review-Modus zum Anzeigen",
+    "REVIEW mode for viewing": "REVIEW-Modus zum Anzeigen",
     "Markup": "Markup",
     "Final": "Endgültig",
     "Original": "Original",
@@ -186,6 +186,8 @@ OC.L10N.register(
     "Files. Mailing is completed successfully": "Dateien. Der Versand wurde erfolgreich abgeschlossen",
     "Files. Mailing is completed with some errors.\n At least %1$s mail messages could not be sent. Please check the Mail module to review the reasons for the failure.": "Dateien. Der Versand wurde mit einigen Fehlern abgeschlossen.\n Mindestens %1$s E-Mail-Nachrichten konnten nicht gesendet werden. Bitte überprüfen Sie das Mail-Modul, um die Gründe für den Fehler zu sehen.",
     "You're receiving this email to confirm that your request to send %1$s messages has been completed. The successfully sent mail messages can be found in your <a href=\"%2$s\">Sent</a> folder of the Mail module.": "Sie erhalten diese E-Mail zur Bestätigung, dass Ihre Anfrage zum Senden von %1$s Nachrichten abgeschlossen wurde. Die erfolgreich gesendeten E-Mails finden Sie in Ihrem Ordner <a href=\"%2$s\">Gesendet</a> des Mail-Moduls.",
-    "You're receiving this email to confirm that your request to send %1$s messages has been processed. However, %2$s messages could not be sent. Please check the Mail module to review the reasons for the failure.\nThe successfully sent mail messages can be found in your <a href=\"%3$s\">Sent</a> folder of the Mail module.": "Sie erhalten diese E-Mail zur Bestätigung, dass Ihre Anfrage zum Senden von %1$s Nachrichten verarbeitet wurde. Jedoch konnten %2$s Nachrichten nicht gesendet werden. Bitte überprüfen Sie das Mail-Modul, um die Gründe für den Fehler zu sehen.\nDie erfolgreich gesendeten E-Mails finden Sie in Ihrem Ordner <a href=\"%3$s\">Gesendet</a> des Mail-Moduls."
+    "You're receiving this email to confirm that your request to send %1$s messages has been processed. However, %2$s messages could not be sent. Please check the Mail module to review the reasons for the failure.\nThe successfully sent mail messages can be found in your <a href=\"%3$s\">Sent</a> folder of the Mail module.": "Sie erhalten diese E-Mail zur Bestätigung, dass Ihre Anfrage zum Senden von %1$s Nachrichten verarbeitet wurde. Jedoch konnten %2$s Nachrichten nicht gesendet werden. Bitte überprüfen Sie das Mail-Modul, um die Gründe für den Fehler zu sehen.\nDie erfolgreich gesendeten E-Mails finden Sie in Ihrem Ordner <a href=\"%3$s\">Gesendet</a> des Mail-Moduls.",
+    "Bad healthcheck status": "Ungültiger Healthcheck-Status",
+    "UserId is empty": "Benutzer-ID ist leer"
     },
 "nplurals=2; plural=(n != 1);");

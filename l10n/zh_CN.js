@@ -75,7 +75,7 @@ OC.L10N.register(
     "Show watermark on link shares with specific system tags" : "在有特定系统标签的分享链接中展示水印",
     "Select tag" : "选择标签",
     "Select file to compare" : "选择文件比较",
-    "Review mode for viewing": "审阅模式浏览",
+    "REVIEW mode for viewing": "审阅模式浏览",
     "Markup": "修订",
     "Final": "最终版",
     "Original": "原始版本",
@@ -186,6 +186,8 @@ OC.L10N.register(
     "Files. Mailing is completed successfully": "文件。邮件发送已成功完成",
     "Files. Mailing is completed with some errors.\n At least %1$s mail messages could not be sent. Please check the Mail module to review the reasons for the failure.": "文件。邮件发送完成，但存在一些错误。\n 至少 %1$s 封邮件无法发送。请检查邮件模块以查看失败原因。",
     "You're receiving this email to confirm that your request to send %1$s messages has been completed. The successfully sent mail messages can be found in your <a href=\"%2$s\">Sent</a> folder of the Mail module.": "您收到此邮件是为了确认您发送 %1$s 条消息的请求已完成。成功发送的邮件可在邮件模块的<a href=\"%2$s\">已发送</a>文件夹中找到。",
-    "You're receiving this email to confirm that your request to send %1$s messages has been processed. However, %2$s messages could not be sent. Please check the Mail module to review the reasons for the failure.\nThe successfully sent mail messages can be found in your <a href=\"%3$s\">Sent</a> folder of the Mail module.": "您收到此邮件是为了确认您发送 %1$s 条消息的请求已处理。但是，%2$s 条消息无法发送。请检查邮件模块以查看失败原因。\n成功发送的邮件可在邮件模块的<a href=\"%3$s\">已发送</a>文件夹中找到。"
+    "You're receiving this email to confirm that your request to send %1$s messages has been processed. However, %2$s messages could not be sent. Please check the Mail module to review the reasons for the failure.\nThe successfully sent mail messages can be found in your <a href=\"%3$s\">Sent</a> folder of the Mail module.": "您收到此邮件是为了确认您发送 %1$s 条消息的请求已处理。但是，%2$s 条消息无法发送。请检查邮件模块以查看失败原因。\n成功发送的邮件可在邮件模块的<a href=\"%3$s\">已发送</a>文件夹中找到。",
+    "Bad healthcheck status": "健康检查状态异常",
+    "UserId is empty": "用户ID为空"
 },
 "nplurals=1; plural=0;");

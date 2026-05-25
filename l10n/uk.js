@@ -75,7 +75,7 @@ OC.L10N.register(
     "Show watermark on link shares with specific system tags" : "Показувати водяний знак при доступі за посиланням для визначених системних міток",
     "Select tag" : "Виберіте мітку",
     "Select file to compare" : "Вибрати файл для порівняння",
-    "Review mode for viewing": "Режим рецензування при перегляді",
+    "REVIEW mode for viewing": "Режим рецензування при перегляді",
     "Markup": "Зміни",
     "Final": "Кінцевий документ",
     "Original": "Вихідний документ",
@@ -171,6 +171,8 @@ OC.L10N.register(
     "Files. Mailing is completed successfully": "Файли. Розсилку завершено успішно",
     "Files. Mailing is completed with some errors.\n At least %1$s mail messages could not be sent. Please check the Mail module to review the reasons for the failure.": "Файли. Розсилку завершено з помилками.\n Щонайменше %1$s поштових повідомлень не вдалося надіслати. Будь ласка, перевірте поштовий модуль для ознайомлення з причинами збоїв.",
     "You're receiving this email to confirm that your request to send %1$s messages has been completed. The successfully sent mail messages can be found in your <a href=\"%2$s\">Sent</a> folder of the Mail module.": "Ви отримуєте цей лист для підтвердження того, що ваш запит на надсилання %1$s повідомлень виконано. Успішно надіслані листи можна знайти в папці <a href=\"%2$s\">Надіслані</a> поштового модуля.",
-    "You're receiving this email to confirm that your request to send %1$s messages has been processed. However, %2$s messages could not be sent. Please check the Mail module to review the reasons for the failure.\nThe successfully sent mail messages can be found in your <a href=\"%3$s\">Sent</a> folder of the Mail module.": "Ви отримуєте цей лист для підтвердження того, що ваш запит на надсилання %1$s повідомлень було оброблено. Проте %2$s повідомлень не вдалося надіслати. Будь ласка, перевірте поштовий модуль для ознайомлення з причинами збоїв.\nУспішно надіслані листи можна знайти в папці <a href=\"%3$s\">Надіслані</a> поштового модуля."
+    "You're receiving this email to confirm that your request to send %1$s messages has been processed. However, %2$s messages could not be sent. Please check the Mail module to review the reasons for the failure.\nThe successfully sent mail messages can be found in your <a href=\"%3$s\">Sent</a> folder of the Mail module.": "Ви отримуєте цей лист для підтвердження того, що ваш запит на надсилання %1$s повідомлень було оброблено. Проте %2$s повідомлень не вдалося надіслати. Будь ласка, перевірте поштовий модуль для ознайомлення з причинами збоїв.\nУспішно надіслані листи можна знайти в папці <a href=\"%3$s\">Надіслані</a> поштового модуля.",
+    "Bad healthcheck status": "Невірний статус перевірки працездатності",
+    "UserId is empty": "Ідентифікатор користувача порожній"
 },
 "nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != 11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || (n % 100 >=11 && n % 100 <=14 )) ? 2: 3);");

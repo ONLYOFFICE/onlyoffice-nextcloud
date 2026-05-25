@@ -73,7 +73,7 @@
     "Show watermark on link shares with specific system tags": "Mostrar marca d'aigua per a usos compartits d'enllaços amb etiquetes de sistema específics",
     "Select tag": "Seleccionar etiqueta",
     "Select file to compare": "Seleccioni un arxiu per comparar",
-    "Review mode for viewing": "Mode de revisió per visualització",
+    "REVIEW mode for viewing": "Mode de revisió per visualització",
     "Markup": "Canvis",
     "Final": "Final",
     "Original": "Original",
@@ -170,6 +170,8 @@
     "Files. Mailing is completed successfully": "Fitxers. L'enviament s'ha completat correctament",
     "Files. Mailing is completed with some errors.\n At least %1$s mail messages could not be sent. Please check the Mail module to review the reasons for the failure.": "Fitxers. L'enviament s'ha completat amb alguns errors.\n Com a mínim %1$s missatges de correu no s'han pogut enviar. Consulteu el mòdul de correu per revisar els motius de l'error.",
     "You're receiving this email to confirm that your request to send %1$s messages has been completed. The successfully sent mail messages can be found in your <a href=\"%2$s\">Sent</a> folder of the Mail module.": "Rebeu aquest correu electrònic per confirmar que la vostra sol·licitud d'enviament de %1$s missatges s'ha completat. Els missatges enviats correctament es poden trobar a la carpeta <a href=\"%2$s\">Enviats</a> del mòdul de correu.",
-    "You're receiving this email to confirm that your request to send %1$s messages has been processed. However, %2$s messages could not be sent. Please check the Mail module to review the reasons for the failure.\nThe successfully sent mail messages can be found in your <a href=\"%3$s\">Sent</a> folder of the Mail module.": "Rebeu aquest correu electrònic per confirmar que la vostra sol·licitud d'enviament de %1$s missatges ha estat processada. No obstant això, %2$s missatges no s'han pogut enviar. Consulteu el mòdul de correu per revisar els motius de l'error.\nEls missatges enviats correctament es poden trobar a la carpeta <a href=\"%3$s\">Enviats</a> del mòdul de correu."
+    "You're receiving this email to confirm that your request to send %1$s messages has been processed. However, %2$s messages could not be sent. Please check the Mail module to review the reasons for the failure.\nThe successfully sent mail messages can be found in your <a href=\"%3$s\">Sent</a> folder of the Mail module.": "Rebeu aquest correu electrònic per confirmar que la vostra sol·licitud d'enviament de %1$s missatges ha estat processada. No obstant això, %2$s missatges no s'han pogut enviar. Consulteu el mòdul de correu per revisar els motius de l'error.\nEls missatges enviats correctament es poden trobar a la carpeta <a href=\"%3$s\">Enviats</a> del mòdul de correu.",
+    "Bad healthcheck status": "Estat de comprovació de salut incorrecte",
+    "UserId is empty": "L'identificador d'usuari és buit"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

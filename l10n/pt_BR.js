@@ -75,7 +75,7 @@ OC.L10N.register(
     "Show watermark on link shares with specific system tags" : "Exibir marca d'água para compartilhamentos de links com tags de sistema específicas",
     "Select tag" : "Selecionar etiqueta",
     "Select file to compare" : "Selecionar arquivo para comparar",
-    "Review mode for viewing": "Modo de revisão para visualização",
+    "REVIEW mode for viewing": "Modo de revisão para visualização",
     "Markup": "Markup",
     "Final": "Final",
     "Original": "Original",
@@ -186,6 +186,8 @@ OC.L10N.register(
     "Files. Mailing is completed successfully": "Arquivos. O envio foi concluído com sucesso",
     "Files. Mailing is completed with some errors.\n At least %1$s mail messages could not be sent. Please check the Mail module to review the reasons for the failure.": "Arquivos. O envio foi concluído com alguns erros.\n Pelo menos %1$s mensagens de e-mail não puderam ser enviadas. Verifique o módulo de e-mail para analisar os motivos da falha.",
     "You're receiving this email to confirm that your request to send %1$s messages has been completed. The successfully sent mail messages can be found in your <a href=\"%2$s\">Sent</a> folder of the Mail module.": "Você está recebendo este e-mail para confirmar que sua solicitação de envio de %1$s mensagens foi concluída. As mensagens enviadas com sucesso podem ser encontradas na sua pasta <a href=\"%2$s\">Enviados</a> do módulo de e-mail.",
-    "You're receiving this email to confirm that your request to send %1$s messages has been processed. However, %2$s messages could not be sent. Please check the Mail module to review the reasons for the failure.\nThe successfully sent mail messages can be found in your <a href=\"%3$s\">Sent</a> folder of the Mail module.": "Você está recebendo este e-mail para confirmar que sua solicitação de envio de %1$s mensagens foi processada. No entanto, %2$s mensagens não puderam ser enviadas. Verifique o módulo de e-mail para analisar os motivos da falha.\nAs mensagens enviadas com sucesso podem ser encontradas na sua pasta <a href=\"%3$s\">Enviados</a> do módulo de e-mail."
+    "You're receiving this email to confirm that your request to send %1$s messages has been processed. However, %2$s messages could not be sent. Please check the Mail module to review the reasons for the failure.\nThe successfully sent mail messages can be found in your <a href=\"%3$s\">Sent</a> folder of the Mail module.": "Você está recebendo este e-mail para confirmar que sua solicitação de envio de %1$s mensagens foi processada. No entanto, %2$s mensagens não puderam ser enviadas. Verifique o módulo de e-mail para analisar os motivos da falha.\nAs mensagens enviadas com sucesso podem ser encontradas na sua pasta <a href=\"%3$s\">Enviados</a> do módulo de e-mail.",
+    "Bad healthcheck status": "Status de verificação de integridade inválido",
+    "UserId is empty": "O ID do usuário está vazio"
 },
 "nplurals=2; plural=(n > 1);");
