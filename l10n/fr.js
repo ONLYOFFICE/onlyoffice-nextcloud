@@ -167,6 +167,9 @@ OC.L10N.register(
     "Info": "Information",
     "Open": "Ouvrir",
     "%1$s could not be saved. Please open the file again.": "%1$s n'a pas pu être enregistré. Veuillez rouvrir le fichier.",
-    "{file} could not be saved. Please open the file again.": "Impossible d'enregistrer le fichier {file}. Veuillez rouvrir le fichier."
+    "{file} could not be saved. Please open the file again.": "Impossible d'enregistrer le fichier {file}. Veuillez rouvrir le fichier.",
+    "The user who creates a public link sets its access permissions": "L'utilisateur qui crée un lien public définit ses autorisations d'accès",
+    "Restrict access to ONLYOFFICE for files from external storages": "Restreindre l'accès à ONLYOFFICE pour les fichiers provenant de stockages externes",
+    "Opening files with ONLYOFFICE from external storages is restricted. Please contact the admin.": "L'ouverture de fichiers avec ONLYOFFICE depuis des stockages externes est restreinte. Veuillez contacter l'administrateur."
 },
 "nplurals=2; plural=(n > 1);");

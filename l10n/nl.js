@@ -156,6 +156,9 @@ OC.L10N.register(
     "Enable live-viewing mode when accessing file by public link" : "Aktivera livevisningsläge vid åtkomst till fil via offentlig länk",
     "Welcome to ONLYOFFICE Docs!": "Welkom bij ONLYOFFICE Docs!",
     "Learn more": "Meer informatie",
-    "Suggest a feature": "Stel een functie voor"
+    "Suggest a feature": "Stel een functie voor",
+    "The user who creates a public link sets its access permissions": "De gebruiker die een openbare link maakt, stelt de toegangsrechten in",
+    "Restrict access to ONLYOFFICE for files from external storages": "Toegang tot ONLYOFFICE beperken voor bestanden van externe opslag",
+    "Opening files with ONLYOFFICE from external storages is restricted. Please contact the admin.": "Het openen van bestanden met ONLYOFFICE vanuit externe opslag is beperkt. Neem contact op met de beheerder."
 },
 "nplurals=2; plural=(n != 1);");

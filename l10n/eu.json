@@ -151,6 +151,9 @@
     "Select file": "Hautatu fitxategia",
     "Enable sharing (might increase editors loading time)" : "Gaitu partekatzea (editoreen kargatzeko denbora handitu dezake)",
     "Same as system": "Sistemako berdina",
-    "Enable live-viewing mode when accessing file by public link" : "Gaitu zuzeneko ikusteko modua fitxategira esteka publiko baten bidez sartzean"
+    "Enable live-viewing mode when accessing file by public link" : "Gaitu zuzeneko ikusteko modua fitxategira esteka publiko baten bidez sartzean",
+    "The user who creates a public link sets its access permissions": "Esteka publikoa sortzen duen erabiltzaileak sarbide-baimenak ezartzen ditu",
+    "Restrict access to ONLYOFFICE for files from external storages": "Mugatu ONLYOFFICE-rako sarbidea kanpoko biltegietako fitxategietarako",
+    "Opening files with ONLYOFFICE from external storages is restricted. Please contact the admin.": "Kanpoko biltegietako fitxategiak ONLYOFFICE-rekin irekitzea mugatuta dago. Mesedez, jarri harremanetan administratzailearekin."
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

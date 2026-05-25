@@ -167,6 +167,9 @@ OC.L10N.register(
     "Info": "情報",
     "Open": "開く",
     "%1$s could not be saved. Please open the file again.": "%1$sを保存できませんでした。ファイルを再度開いてください。",
-    "{file} could not be saved. Please open the file again.": "{file}を保存できませんでした。ファイルを再度開いてください。"
+    "{file} could not be saved. Please open the file again.": "{file}を保存できませんでした。ファイルを再度開いてください。",
+    "The user who creates a public link sets its access permissions": "公開リンクを作成したユーザーがアクセス権限を設定します",
+    "Restrict access to ONLYOFFICE for files from external storages": "外部ストレージのファイルに対するONLYOFFICEへのアクセスを制限する",
+    "Opening files with ONLYOFFICE from external storages is restricted. Please contact the admin.": "外部ストレージからONLYOFFICEでファイルを開くことは制限されています。管理者にお問い合わせください。"
 },
 "nplurals=1; plural=0;");

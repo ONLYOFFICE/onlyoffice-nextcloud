@@ -165,6 +165,9 @@
     "Info": "Info",
     "Open": "Apri",
     "%1$s could not be saved. Please open the file again.": "Non è stato possibile salvare %1$s. Apri nuovamente il file.",
-    "{file} could not be saved. Please open the file again.": "Non è stato possibile salvare {file}. Apri nuovamente il file."
+    "{file} could not be saved. Please open the file again.": "Non è stato possibile salvare {file}. Apri nuovamente il file.",
+    "The user who creates a public link sets its access permissions": "L'utente che crea un link pubblico ne imposta le autorizzazioni di accesso",
+    "Restrict access to ONLYOFFICE for files from external storages": "Limita l'accesso a ONLYOFFICE per i file provenienti da archivi esterni",
+    "Opening files with ONLYOFFICE from external storages is restricted. Please contact the admin.": "L'apertura di file con ONLYOFFICE da archivi esterni è limitata. Contatta l'amministratore."
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

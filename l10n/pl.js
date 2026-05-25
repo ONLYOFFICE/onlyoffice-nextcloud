@@ -156,6 +156,9 @@ OC.L10N.register(
     "Enable live-viewing mode when accessing file by public link" : "Włącz tryb podglądu na żywo podczas uzyskiwania dostępu do pliku za pomocą łącza publicznego",
     "Welcome to ONLYOFFICE Docs!": "Witaj w ONLYOFFICE Docs!",
     "Learn more": "Dowiedz się więcej",
-    "Suggest a feature": "Zasugeruj funkcję"
+    "Suggest a feature": "Zasugeruj funkcję",
+    "The user who creates a public link sets its access permissions": "Użytkownik tworzący publiczny link określa uprawnienia dostępu do niego",
+    "Restrict access to ONLYOFFICE for files from external storages": "Ogranicz dostęp do ONLYOFFICE dla plików z zewnętrznych magazynów",
+    "Opening files with ONLYOFFICE from external storages is restricted. Please contact the admin.": "Otwieranie plików w ONLYOFFICE z zewnętrznych magazynów jest ograniczone. Skontaktuj się z administratorem."
 },
 "nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);");

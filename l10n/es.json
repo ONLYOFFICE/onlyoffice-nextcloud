@@ -165,6 +165,9 @@
     "Info": "Información",
     "Open": "Abrir",
     "%1$s could not be saved. Please open the file again.": "%1$s no se pudo guardar. Por favor, abra el archivo de nuevo.",
-    "{file} could not be saved. Please open the file again.": "{file} no se pudo guardar. Por favor, abra el archivo de nuevo."
+    "{file} could not be saved. Please open the file again.": "{file} no se pudo guardar. Por favor, abra el archivo de nuevo.",
+    "The user who creates a public link sets its access permissions": "El usuario que crea un enlace público establece sus permisos de acceso",
+    "Restrict access to ONLYOFFICE for files from external storages": "Restringir el acceso a ONLYOFFICE para archivos de almacenamientos externos",
+    "Opening files with ONLYOFFICE from external storages is restricted. Please contact the admin.": "La apertura de archivos con ONLYOFFICE desde almacenamientos externos está restringida. Por favor, contacte al administrador."
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

@@ -151,6 +151,9 @@
     "Select file": "Selecciona el fitxer",
     "Enable sharing (might increase editors loading time)" : "Habilita la compartició (pot augmentar el temps de càrrega dels editors)",
     "Same as system": "Igual que el sistema",
-    "Enable live-viewing mode when accessing file by public link" : "Habilita el mode de visualització en viu quan accedeixes al fitxer mitjançant l'enllaç públic"
+    "Enable live-viewing mode when accessing file by public link" : "Habilita el mode de visualització en viu quan accedeixes al fitxer mitjançant l'enllaç públic",
+    "The user who creates a public link sets its access permissions": "L'usuari que crea un enllaç públic estableix els seus permisos d'accés",
+    "Restrict access to ONLYOFFICE for files from external storages": "Restringeix l'accés a ONLYOFFICE per a fitxers d'emmagatzematges externs",
+    "Opening files with ONLYOFFICE from external storages is restricted. Please contact the admin.": "L'obertura de fitxers amb ONLYOFFICE des d'emmagatzematges externs està restringida. Poseu-vos en contacte amb l'administrador."
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

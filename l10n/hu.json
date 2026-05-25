@@ -165,6 +165,9 @@
     "Info": "Info",
     "Open": "Megnyitás",
     "%1$s could not be saved. Please open the file again.": "%1$s nem menthető. Kérjük, nyissa meg újra a fájlt.",
-    "{file} could not be saved. Please open the file again.": "{file} nem menthető. Kérjük, nyissa meg újra a fájlt."
+    "{file} could not be saved. Please open the file again.": "{file} nem menthető. Kérjük, nyissa meg újra a fájlt.",
+    "The user who creates a public link sets its access permissions": "A nyilvános hivatkozást létrehozó felhasználó határozza meg a hozzáférési engedélyeket",
+    "Restrict access to ONLYOFFICE for files from external storages": "ONLYOFFICE-hozzáférés korlátozása külső tárhelyekről származó fájlok esetén",
+    "Opening files with ONLYOFFICE from external storages is restricted. Please contact the admin.": "A külső tárhelyekről származó fájlok ONLYOFFICE-szal való megnyitása korlátozott. Kérjük, vegye fel a kapcsolatot az adminisztrátorral."
 },"pluralForm": "nplurals=2; plural=(n != 1);"
 }

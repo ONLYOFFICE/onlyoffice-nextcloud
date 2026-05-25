@@ -153,6 +153,9 @@ OC.L10N.register(
     "Select file": "Välj fil",
     "Enable sharing (might increase editors loading time)": "Aktivera delning (kan öka redigerarens laddningstid)",
     "Same as system": "Samma som systemet",
-    "Enable live-viewing mode when accessing file by public link" : "Aktivera livevisningsläge vid åtkomst till fil via offentlig länk"
+    "Enable live-viewing mode when accessing file by public link" : "Aktivera livevisningsläge vid åtkomst till fil via offentlig länk",
+    "The user who creates a public link sets its access permissions": "Användaren som skapar en offentlig länk anger dess åtkomstbehörigheter",
+    "Restrict access to ONLYOFFICE for files from external storages": "Begränsa åtkomst till ONLYOFFICE för filer från externa lagringar",
+    "Opening files with ONLYOFFICE from external storages is restricted. Please contact the admin.": "Att öppna filer med ONLYOFFICE från externa lagringar är begränsat. Kontakta administratören."
 },
 "nplurals=2; plural=(n != 1);");

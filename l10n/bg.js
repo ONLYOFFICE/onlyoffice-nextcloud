@@ -153,6 +153,9 @@ OC.L10N.register(
     "Select file": "Избери файл",
     "Enable sharing (might increase editors loading time)": "Активиране на споделянето (може да увеличи времето за зареждане на редакторите)",
     "Same as system": "Същото като в системата",
-    "Enable live-viewing mode when accessing file by public link" : "Активирайте режима на живо извеждане при достъп до файл чрез публична връзка"
+    "Enable live-viewing mode when accessing file by public link" : "Активирайте режима на живо извеждане при достъп до файл чрез публична връзка",
+    "The user who creates a public link sets its access permissions": "Потребителят, който създава публична връзка, задава нейните права за достъп",
+    "Restrict access to ONLYOFFICE for files from external storages": "Ограничи достъпа до ONLYOFFICE за файлове от външни хранилища",
+    "Opening files with ONLYOFFICE from external storages is restricted. Please contact the admin.": "Отварянето на файлове с ONLYOFFICE от външни хранилища е ограничено. Моля, свържете се с администратора."
 },
 "nplurals=2; plural=(n != 1);");
