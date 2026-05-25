@@ -41,6 +41,11 @@ import { getShares, setShares } from '../../services/ShareService'
 import ShareItem from './ShareItem.vue'
 import { Permissions } from '../../utils/permissions'
 import { getFileExtension } from '../../utils/files'
+import NcButton from '@nextcloud/vue/components/NcButton'
+import NcIconSvgWrapper from '@nextcloud/vue/components/NcIconSvgWrapper'
+import NcPopover from '@nextcloud/vue/components/NcPopover'
+
+const infoIconPath = 'M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z'
 
 const formats = loadState<{ formats: Record<string, Record<string, boolean>> }>('onlyoffice', 'settings', { formats: {} }).formats ?? {}
 
@@ -125,7 +130,31 @@ async function onPermissionChange(extra: ShareExtra, changedKey: number, changed
 <template>
 	<div :class="{ 'icon-loading': loading }">
 		<template v-if="!loading">
-			<div>{{ t('onlyoffice', 'Provide advanced document permissions using ONLYOFFICE Docs') }}</div>
+			<div class="onlyoffice-share-header">
+				<span>{{ t('onlyoffice', 'Provide advanced document permissions using ONLYOFFICE Docs') }}</span>
+				<NcPopover popup-role="dialog">
+					<template #trigger>
+						<NcButton class="onlyoffice-share-hint-icon"
+							variant="tertiary-no-background"
+							:aria-label="t('onlyoffice', 'Advanced permissions explanation')">
+							<template #icon>
+								<span class="onlyoffice-share-hint-icon">
+									<NcIconSvgWrapper :path="infoIconPath" :size="20" />
+								</span>
+							</template>
+						</NcButton>
+					</template>
+					<div class="onlyoffice-share-hint-body">
+						<p>{{ t('onlyoffice', 'Limit access permissions for files shared with Custom permissions (Edit enabled, Share disabled) or via a public link with edit permission:') }}</p>
+						<ul>
+							<li><strong>{{ t('onlyoffice', 'Document') }}</strong> — {{ t('onlyoffice', 'Review/Comment') }}</li>
+							<li><strong>{{ t('onlyoffice', 'Spreadsheet') }}</strong> — {{ t('onlyoffice', 'Comment/Global filter') }}</li>
+							<li><strong>{{ t('onlyoffice', 'Presentation') }}</strong> — {{ t('onlyoffice', 'Comment') }}</li>
+							<li><strong>{{ t('onlyoffice', 'PDF') }}</strong> — {{ t('onlyoffice', 'Comment/Form filling') }}</li>
+						</ul>
+					</div>
+				</NcPopover>
+			</div>
 			<ul>
 				<ShareItem v-for="extra in collection"
 					:key="extra.share_id"
@@ -137,3 +166,25 @@ async function onPermissionChange(extra: ShareExtra, changedKey: number, changed
 		</template>
 	</div>
 </template>
+
+<style scoped>
+.onlyoffice-share-header {
+	display: flex;
+	align-items: center;
+}
+
+.onlyoffice-share-hint-icon {
+	display: flex;
+	color: var(--color-primary-element);
+}
+
+.onlyoffice-share-hint-body {
+	max-width: 300px;
+	padding: var(--border-radius-element);
+}
+
+.onlyoffice-share-hint-body ul {
+	padding-left: 16px;
+	margin: 4px 0 0;
+}
+</style>
