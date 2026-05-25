@@ -166,6 +166,12 @@ OC.L10N.register(
     "Presentation": "Aurkezpena",
     "Comment": "Iruzkina",
     "PDF": "PDF",
-    "Comment/Form filling": "Iruzkina/Inprimakiak betetzea"
+    "Comment/Form filling": "Iruzkina/Inprimakiak betetzea",
+    "Mailing is completed successfully": "Bidalketa arrakastaz osatu da",
+    "Mailing is completed with some errors": "Bidalketa zenbait errorerekin osatu da",
+    "Files. Mailing is completed successfully": "Fitxategiak. Bidalketa arrakastaz osatu da",
+    "Files. Mailing is completed with some errors.\n At least %1$s mail messages could not be sent. Please check the Mail module to review the reasons for the failure.": "Fitxategiak. Bidalketa zenbait errorerekin osatu da.\n Gutxienez %1$s posta-mezu ezin izan dira bidali. Mesedez, egiaztatu posta-modulua hutsegiteen arrazoiak ikusteko.",
+    "You're receiving this email to confirm that your request to send %1$s messages has been completed. The successfully sent mail messages can be found in your <a href=\"%2$s\">Sent</a> folder of the Mail module.": "Mezu hau jasotzen duzu %1$s mezu bidaltzeko zure eskaera osatu dela berresteko. Arrakastaz bidalitako mezu elektronikoak posta-moduluaren <a href=\"%2$s\">Bidalitakoak</a> karpetan aurki ditzakezu.",
+    "You're receiving this email to confirm that your request to send %1$s messages has been processed. However, %2$s messages could not be sent. Please check the Mail module to review the reasons for the failure.\nThe successfully sent mail messages can be found in your <a href=\"%3$s\">Sent</a> folder of the Mail module.": "Mezu hau jasotzen duzu %1$s mezu bidaltzeko zure eskaera prozesatu dela berresteko. Hala ere, %2$s mezu ezin izan dira bidali. Mesedez, egiaztatu posta-modulua hutsegiteen arrazoiak ikusteko.\nArrakastaz bidalitako mezu elektronikoak posta-moduluaren <a href=\"%3$s\">Bidalitakoak</a> karpetan aurki ditzakezu."
 },
 "nplurals=2; plural=(n != 1);");

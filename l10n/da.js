@@ -166,6 +166,12 @@ OC.L10N.register(
     "Presentation": "Præsentation",
     "Comment": "Kommentar",
     "PDF": "PDF",
-    "Comment/Form filling": "Kommentar/Udfyldning af formular"
+    "Comment/Form filling": "Kommentar/Udfyldning af formular",
+    "Mailing is completed successfully": "Udsendelsen er fuldført",
+    "Mailing is completed with some errors": "Udsendelsen er fuldført med nogle fejl",
+    "Files. Mailing is completed successfully": "Filer. Udsendelsen er fuldført",
+    "Files. Mailing is completed with some errors.\n At least %1$s mail messages could not be sent. Please check the Mail module to review the reasons for the failure.": "Filer. Udsendelsen er fuldført med nogle fejl.\n Mindst %1$s e-mailbeskeder kunne ikke sendes. Tjek venligst postmodulet for at gennemgå årsagerne til fejlen.",
+    "You're receiving this email to confirm that your request to send %1$s messages has been completed. The successfully sent mail messages can be found in your <a href=\"%2$s\">Sent</a> folder of the Mail module.": "Du modtager denne e-mail for at bekræfte, at din anmodning om at sende %1$s beskeder er fuldført. De succesfuldt sendte e-mailbeskeder findes i din <a href=\"%2$s\">Sendt</a>-mappe i postmodulet.",
+    "You're receiving this email to confirm that your request to send %1$s messages has been processed. However, %2$s messages could not be sent. Please check the Mail module to review the reasons for the failure.\nThe successfully sent mail messages can be found in your <a href=\"%3$s\">Sent</a> folder of the Mail module.": "Du modtager denne e-mail for at bekræfte, at din anmodning om at sende %1$s beskeder er behandlet. Dog kunne %2$s beskeder ikke sendes. Tjek venligst postmodulet for at gennemgå årsagerne til fejlen.\nDe succesfuldt sendte e-mailbeskeder findes i din <a href=\"%3$s\">Sendt</a>-mappe i postmodulet."
 },
 "nplurals=2; plural=(n != 1);");

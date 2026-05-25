@@ -180,6 +180,12 @@ OC.L10N.register(
     "Presentation": "プレゼンテーション",
     "Comment": "コメント",
     "PDF": "PDF",
-    "Comment/Form filling": "コメント/フォーム入力"
+    "Comment/Form filling": "コメント/フォーム入力",
+    "Mailing is completed successfully": "メール送信が正常に完了しました",
+    "Mailing is completed with some errors": "メール送信がいくつかのエラーで完了しました",
+    "Files. Mailing is completed successfully": "ファイル。メール送信が正常に完了しました",
+    "Files. Mailing is completed with some errors.\n At least %1$s mail messages could not be sent. Please check the Mail module to review the reasons for the failure.": "ファイル。メール送信がいくつかのエラーで完了しました。\n 少なくとも %1$s 件のメールを送信できませんでした。失敗の原因を確認するには、メールモジュールをご確認ください。",
+    "You're receiving this email to confirm that your request to send %1$s messages has been completed. The successfully sent mail messages can be found in your <a href=\"%2$s\">Sent</a> folder of the Mail module.": "%1$s 件のメッセージ送信リクエストが完了したことをお知らせします。正常に送信されたメールはメールモジュールの<a href=\"%2$s\">送信済み</a>フォルダーで確認できます。",
+    "You're receiving this email to confirm that your request to send %1$s messages has been processed. However, %2$s messages could not be sent. Please check the Mail module to review the reasons for the failure.\nThe successfully sent mail messages can be found in your <a href=\"%3$s\">Sent</a> folder of the Mail module.": "%1$s 件のメッセージ送信リクエストが処理されたことをお知らせします。ただし、%2$s 件のメッセージを送信できませんでした。失敗の原因を確認するには、メールモジュールをご確認ください。\n正常に送信されたメールはメールモジュールの<a href=\"%3$s\">送信済み</a>フォルダーで確認できます。"
 },
 "nplurals=1; plural=0;");

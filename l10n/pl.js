@@ -169,6 +169,12 @@ OC.L10N.register(
     "Presentation": "Prezentacja",
     "Comment": "Komentarz",
     "PDF": "PDF",
-    "Comment/Form filling": "Komentarz/Wypełnianie formularzy"
+    "Comment/Form filling": "Komentarz/Wypełnianie formularzy",
+    "Mailing is completed successfully": "Wysyłka zakończona pomyślnie",
+    "Mailing is completed with some errors": "Wysyłka zakończona z błędami",
+    "Files. Mailing is completed successfully": "Pliki. Wysyłka zakończona pomyślnie",
+    "Files. Mailing is completed with some errors.\n At least %1$s mail messages could not be sent. Please check the Mail module to review the reasons for the failure.": "Pliki. Wysyłka zakończona z błędami.\n Co najmniej %1$s wiadomości e-mail nie mogło zostać wysłanych. Sprawdź moduł poczty, aby zapoznać się z przyczynami błędów.",
+    "You're receiving this email to confirm that your request to send %1$s messages has been completed. The successfully sent mail messages can be found in your <a href=\"%2$s\">Sent</a> folder of the Mail module.": "Otrzymujesz tę wiadomość e-mail w celu potwierdzenia, że Twoje żądanie wysłania %1$s wiadomości zostało zrealizowane. Pomyślnie wysłane wiadomości e-mail znajdziesz w folderze <a href=\"%2$s\">Wysłane</a> modułu poczty.",
+    "You're receiving this email to confirm that your request to send %1$s messages has been processed. However, %2$s messages could not be sent. Please check the Mail module to review the reasons for the failure.\nThe successfully sent mail messages can be found in your <a href=\"%3$s\">Sent</a> folder of the Mail module.": "Otrzymujesz tę wiadomość e-mail w celu potwierdzenia, że Twoje żądanie wysłania %1$s wiadomości zostało przetworzone. Jednak %2$s wiadomości nie mogło zostać wysłanych. Sprawdź moduł poczty, aby zapoznać się z przyczynami błędów.\nPomyślnie wysłane wiadomości e-mail znajdziesz w folderze <a href=\"%3$s\">Wysłane</a> modułu poczty."
 },
 "nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);");

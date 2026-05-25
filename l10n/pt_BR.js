@@ -180,6 +180,12 @@ OC.L10N.register(
     "Presentation": "Apresentação",
     "Comment": "Comentário",
     "PDF": "PDF",
-    "Comment/Form filling": "Comentário/Preenchimento de formulários"
+    "Comment/Form filling": "Comentário/Preenchimento de formulários",
+    "Mailing is completed successfully": "O envio foi concluído com sucesso",
+    "Mailing is completed with some errors": "O envio foi concluído com alguns erros",
+    "Files. Mailing is completed successfully": "Arquivos. O envio foi concluído com sucesso",
+    "Files. Mailing is completed with some errors.\n At least %1$s mail messages could not be sent. Please check the Mail module to review the reasons for the failure.": "Arquivos. O envio foi concluído com alguns erros.\n Pelo menos %1$s mensagens de e-mail não puderam ser enviadas. Verifique o módulo de e-mail para analisar os motivos da falha.",
+    "You're receiving this email to confirm that your request to send %1$s messages has been completed. The successfully sent mail messages can be found in your <a href=\"%2$s\">Sent</a> folder of the Mail module.": "Você está recebendo este e-mail para confirmar que sua solicitação de envio de %1$s mensagens foi concluída. As mensagens enviadas com sucesso podem ser encontradas na sua pasta <a href=\"%2$s\">Enviados</a> do módulo de e-mail.",
+    "You're receiving this email to confirm that your request to send %1$s messages has been processed. However, %2$s messages could not be sent. Please check the Mail module to review the reasons for the failure.\nThe successfully sent mail messages can be found in your <a href=\"%3$s\">Sent</a> folder of the Mail module.": "Você está recebendo este e-mail para confirmar que sua solicitação de envio de %1$s mensagens foi processada. No entanto, %2$s mensagens não puderam ser enviadas. Verifique o módulo de e-mail para analisar os motivos da falha.\nAs mensagens enviadas com sucesso podem ser encontradas na sua pasta <a href=\"%3$s\">Enviados</a> do módulo de e-mail."
 },
 "nplurals=2; plural=(n > 1);");

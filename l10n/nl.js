@@ -169,6 +169,12 @@ OC.L10N.register(
     "Presentation": "Presentatie",
     "Comment": "Opmerking",
     "PDF": "PDF",
-    "Comment/Form filling": "Opmerking/Formulier invullen"
+    "Comment/Form filling": "Opmerking/Formulier invullen",
+    "Mailing is completed successfully": "Het verzenden is succesvol voltooid",
+    "Mailing is completed with some errors": "Het verzenden is voltooid met enkele fouten",
+    "Files. Mailing is completed successfully": "Bestanden. Het verzenden is succesvol voltooid",
+    "Files. Mailing is completed with some errors.\n At least %1$s mail messages could not be sent. Please check the Mail module to review the reasons for the failure.": "Bestanden. Het verzenden is voltooid met enkele fouten.\n Minstens %1$s e-mailberichten konden niet worden verzonden. Controleer de e-mailmodule om de oorzaken van de fout te bekijken.",
+    "You're receiving this email to confirm that your request to send %1$s messages has been completed. The successfully sent mail messages can be found in your <a href=\"%2$s\">Sent</a> folder of the Mail module.": "U ontvangt deze e-mail ter bevestiging dat uw verzoek om %1$s berichten te verzenden is voltooid. De succesvol verzonden e-mailberichten staan in uw map <a href=\"%2$s\">Verzonden</a> van de e-mailmodule.",
+    "You're receiving this email to confirm that your request to send %1$s messages has been processed. However, %2$s messages could not be sent. Please check the Mail module to review the reasons for the failure.\nThe successfully sent mail messages can be found in your <a href=\"%3$s\">Sent</a> folder of the Mail module.": "U ontvangt deze e-mail ter bevestiging dat uw verzoek om %1$s berichten te verzenden is verwerkt. %2$s berichten konden echter niet worden verzonden. Controleer de e-mailmodule om de oorzaken van de fout te bekijken.\nDe succesvol verzonden e-mailberichten staan in uw map <a href=\"%3$s\">Verzonden</a> van de e-mailmodule."
 },
 "nplurals=2; plural=(n != 1);");

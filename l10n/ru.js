@@ -180,6 +180,12 @@ OC.L10N.register(
     "Presentation": "Презентация",
     "Comment": "Комментирование",
     "PDF": "PDF",
-    "Comment/Form filling": "Комментирование/Заполнение форм"
+    "Comment/Form filling": "Комментирование/Заполнение форм",
+    "Mailing is completed successfully": "Рассылка завершена успешно",
+    "Mailing is completed with some errors": "Рассылка завершена с ошибками",
+    "Files. Mailing is completed successfully": "Файлы. Рассылка завершена успешно",
+    "Files. Mailing is completed with some errors.\n At least %1$s mail messages could not be sent. Please check the Mail module to review the reasons for the failure.": "Файлы. Рассылка завершена с ошибками.\n Не менее %1$s почтовых сообщений не удалось отправить. Пожалуйста, проверьте почтовый модуль для ознакомления с причинами сбоев.",
+    "You're receiving this email to confirm that your request to send %1$s messages has been completed. The successfully sent mail messages can be found in your <a href=\"%2$s\">Sent</a> folder of the Mail module.": "Вы получаете это письмо для подтверждения того, что ваш запрос на отправку %1$s сообщений выполнен. Успешно отправленные письма можно найти в папке <a href=\"%2$s\">Отправленные</a> почтового модуля.",
+    "You're receiving this email to confirm that your request to send %1$s messages has been processed. However, %2$s messages could not be sent. Please check the Mail module to review the reasons for the failure.\nThe successfully sent mail messages can be found in your <a href=\"%3$s\">Sent</a> folder of the Mail module.": "Вы получаете это письмо для подтверждения того, что ваш запрос на отправку %1$s сообщений был обработан. Однако %2$s сообщений не удалось отправить. Пожалуйста, проверьте почтовый модуль для ознакомления с причинами сбоев.\nУспешно отправленные письма можно найти в папке <a href=\"%3$s\">Отправленные</a> почтового модуля."
 },
 "nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);");

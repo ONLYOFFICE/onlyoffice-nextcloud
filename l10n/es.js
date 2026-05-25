@@ -180,6 +180,12 @@ OC.L10N.register(
     "Presentation": "Presentación",
     "Comment": "Comentario",
     "PDF": "PDF",
-    "Comment/Form filling": "Comentario/Relleno de formularios"
+    "Comment/Form filling": "Comentario/Relleno de formularios",
+    "Mailing is completed successfully": "El envío se ha completado correctamente",
+    "Mailing is completed with some errors": "El envío se ha completado con algunos errores",
+    "Files. Mailing is completed successfully": "Archivos. El envío se ha completado correctamente",
+    "Files. Mailing is completed with some errors.\n At least %1$s mail messages could not be sent. Please check the Mail module to review the reasons for the failure.": "Archivos. El envío se ha completado con algunos errores.\n Al menos %1$s mensajes de correo no se pudieron enviar. Por favor, consulte el módulo de correo para revisar los motivos del fallo.",
+    "You're receiving this email to confirm that your request to send %1$s messages has been completed. The successfully sent mail messages can be found in your <a href=\"%2$s\">Sent</a> folder of the Mail module.": "Está recibiendo este correo electrónico para confirmar que su solicitud de envío de %1$s mensajes se ha completado. Los mensajes enviados correctamente se pueden encontrar en su carpeta <a href=\"%2$s\">Enviados</a> del módulo de correo.",
+    "You're receiving this email to confirm that your request to send %1$s messages has been processed. However, %2$s messages could not be sent. Please check the Mail module to review the reasons for the failure.\nThe successfully sent mail messages can be found in your <a href=\"%3$s\">Sent</a> folder of the Mail module.": "Está recibiendo este correo electrónico para confirmar que su solicitud de envío de %1$s mensajes ha sido procesada. Sin embargo, %2$s mensajes no se pudieron enviar. Por favor, consulte el módulo de correo para revisar los motivos del fallo.\nLos mensajes enviados correctamente se pueden encontrar en su carpeta <a href=\"%3$s\">Enviados</a> del módulo de correo."
 },
 "nplurals=2; plural=(n != 1);");

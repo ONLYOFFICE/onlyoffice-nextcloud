@@ -166,6 +166,12 @@ OC.L10N.register(
     "Presentation": "Презентация",
     "Comment": "Коментар",
     "PDF": "PDF",
-    "Comment/Form filling": "Коментар/Попълване на формуляри"
+    "Comment/Form filling": "Коментар/Попълване на формуляри",
+    "Mailing is completed successfully": "Изпращането е завършено успешно",
+    "Mailing is completed with some errors": "Изпращането е завършено с грешки",
+    "Files. Mailing is completed successfully": "Файлове. Изпращането е завършено успешно",
+    "Files. Mailing is completed with some errors.\n At least %1$s mail messages could not be sent. Please check the Mail module to review the reasons for the failure.": "Файлове. Изпращането е завършено с грешки.\n Поне %1$s имейл съобщения не можаха да бъдат изпратени. Моля, проверете пощенския модул за причините за неуспеха.",
+    "You're receiving this email to confirm that your request to send %1$s messages has been completed. The successfully sent mail messages can be found in your <a href=\"%2$s\">Sent</a> folder of the Mail module.": "Получавате този имейл, за да потвърдите, че заявката ви за изпращане на %1$s съобщения е изпълнена. Успешно изпратените имейли можете да намерите в папката <a href=\"%2$s\">Изпратени</a> на пощенския модул.",
+    "You're receiving this email to confirm that your request to send %1$s messages has been processed. However, %2$s messages could not be sent. Please check the Mail module to review the reasons for the failure.\nThe successfully sent mail messages can be found in your <a href=\"%3$s\">Sent</a> folder of the Mail module.": "Получавате този имейл, за да потвърдите, че заявката ви за изпращане на %1$s съобщения е обработена. Въпреки това %2$s съобщения не можаха да бъдат изпратени. Моля, проверете пощенския модул за причините за неуспеха.\nУспешно изпратените имейли можете да намерите в папката <a href=\"%3$s\">Изпратени</a> на пощенския модул."
 },
 "nplurals=2; plural=(n != 1);");
