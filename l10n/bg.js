@@ -156,6 +156,16 @@ OC.L10N.register(
     "Enable live-viewing mode when accessing file by public link" : "Активирайте режима на живо извеждане при достъп до файл чрез публична връзка",
     "The user who creates a public link sets its access permissions": "Потребителят, който създава публична връзка, задава нейните права за достъп",
     "Restrict access to ONLYOFFICE for files from external storages": "Ограничи достъпа до ONLYOFFICE за файлове от външни хранилища",
-    "Opening files with ONLYOFFICE from external storages is restricted. Please contact the admin.": "Отварянето на файлове с ONLYOFFICE от външни хранилища е ограничено. Моля, свържете се с администратора."
+    "Opening files with ONLYOFFICE from external storages is restricted. Please contact the admin.": "Отварянето на файлове с ONLYOFFICE от външни хранилища е ограничено. Моля, свържете се с администратора.",
+    "Advanced permissions explanation": "Обяснение на разширените разрешения",
+    "Limit access permissions for files shared with Custom permissions (Edit enabled, Share disabled) or via a public link with edit permission:": "Ограничете правата за достъп за файлове, споделени с персонализирани разрешения (редактирането е разрешено, споделянето е забранено) или чрез публична връзка с право на редактиране:",
+    "Document": "Документ",
+    "Review/Comment": "Преглед/Коментар",
+    "Spreadsheet": "Таблица",
+    "Comment/Global filter": "Коментар/Глобален филтър",
+    "Presentation": "Презентация",
+    "Comment": "Коментар",
+    "PDF": "PDF",
+    "Comment/Form filling": "Коментар/Попълване на формуляри"
 },
 "nplurals=2; plural=(n != 1);");

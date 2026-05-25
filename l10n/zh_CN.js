@@ -170,6 +170,16 @@ OC.L10N.register(
     "{file} could not be saved. Please open the file again.": "{file} 无法保存。请重新打开文件。",
     "The user who creates a public link sets its access permissions": "创建公共链接的用户设置其访问权限",
     "Restrict access to ONLYOFFICE for files from external storages": "限制从外部存储访问 ONLYOFFICE 文件",
-    "Opening files with ONLYOFFICE from external storages is restricted. Please contact the admin.": "从外部存储使用 ONLYOFFICE 打开文件受到限制。请联系管理员。"
+    "Opening files with ONLYOFFICE from external storages is restricted. Please contact the admin.": "从外部存储使用 ONLYOFFICE 打开文件受到限制。请联系管理员。",
+    "Advanced permissions explanation": "高级权限说明",
+    "Limit access permissions for files shared with Custom permissions (Edit enabled, Share disabled) or via a public link with edit permission:": "限制以自定义权限（启用编辑、禁用共享）共享或通过具有编辑权限的公共链接共享的文件的访问权限：",
+    "Document": "文档",
+    "Review/Comment": "审阅/评论",
+    "Spreadsheet": "电子表格",
+    "Comment/Global filter": "评论/全局筛选器",
+    "Presentation": "演示文稿",
+    "Comment": "评论",
+    "PDF": "PDF",
+    "Comment/Form filling": "评论/填写表单"
 },
 "nplurals=1; plural=0;");

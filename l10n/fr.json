@@ -168,6 +168,16 @@
     "{file} could not be saved. Please open the file again.": "Impossible d'enregistrer le fichier {file}. Veuillez rouvrir le fichier.",
     "The user who creates a public link sets its access permissions": "L'utilisateur qui crée un lien public définit ses autorisations d'accès",
     "Restrict access to ONLYOFFICE for files from external storages": "Restreindre l'accès à ONLYOFFICE pour les fichiers provenant de stockages externes",
-    "Opening files with ONLYOFFICE from external storages is restricted. Please contact the admin.": "L'ouverture de fichiers avec ONLYOFFICE depuis des stockages externes est restreinte. Veuillez contacter l'administrateur."
+    "Opening files with ONLYOFFICE from external storages is restricted. Please contact the admin.": "L'ouverture de fichiers avec ONLYOFFICE depuis des stockages externes est restreinte. Veuillez contacter l'administrateur.",
+    "Advanced permissions explanation": "Explication des autorisations avancées",
+    "Limit access permissions for files shared with Custom permissions (Edit enabled, Share disabled) or via a public link with edit permission:": "Limitez les autorisations d'accès pour les fichiers partagés avec des autorisations personnalisées (modification activée, partage désactivé) ou via un lien public avec autorisation de modification :",
+    "Document": "Document",
+    "Review/Comment": "Révision/Commentaire",
+    "Spreadsheet": "Feuille de calcul",
+    "Comment/Global filter": "Commentaire/Filtre global",
+    "Presentation": "Présentation",
+    "Comment": "Commentaire",
+    "PDF": "PDF",
+    "Comment/Form filling": "Commentaire/Remplissage de formulaire"
 },"pluralForm" :"nplurals=2; plural=(n > 1);"
 }

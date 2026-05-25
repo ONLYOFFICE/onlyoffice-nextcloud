@@ -156,6 +156,16 @@ OC.L10N.register(
     "Enable live-viewing mode when accessing file by public link" : "Aktivér livevisningstilstand ved adgang til fil via et offentligt link",
     "The user who creates a public link sets its access permissions": "Den bruger, der opretter et offentligt link, angiver dets adgangstilladelser",
     "Restrict access to ONLYOFFICE for files from external storages": "Begræns adgang til ONLYOFFICE for filer fra eksterne lagre",
-    "Opening files with ONLYOFFICE from external storages is restricted. Please contact the admin.": "Åbning af filer med ONLYOFFICE fra eksterne lagre er begrænset. Kontakt venligst administratoren."
+    "Opening files with ONLYOFFICE from external storages is restricted. Please contact the admin.": "Åbning af filer med ONLYOFFICE fra eksterne lagre er begrænset. Kontakt venligst administratoren.",
+    "Advanced permissions explanation": "Forklaring af avancerede tilladelser",
+    "Limit access permissions for files shared with Custom permissions (Edit enabled, Share disabled) or via a public link with edit permission:": "Begræns adgangstilladelser for filer delt med brugerdefinerede tilladelser (redigering aktiveret, deling deaktiveret) eller via et offentligt link med redigeringstilladelse:",
+    "Document": "Dokument",
+    "Review/Comment": "Gennemgang/Kommentar",
+    "Spreadsheet": "Regneark",
+    "Comment/Global filter": "Kommentar/Globalt filter",
+    "Presentation": "Præsentation",
+    "Comment": "Kommentar",
+    "PDF": "PDF",
+    "Comment/Form filling": "Kommentar/Udfyldning af formular"
 },
 "nplurals=2; plural=(n != 1);");

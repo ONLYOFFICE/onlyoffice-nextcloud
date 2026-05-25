@@ -154,6 +154,16 @@
     "Enable live-viewing mode when accessing file by public link" : "Gaitu zuzeneko ikusteko modua fitxategira esteka publiko baten bidez sartzean",
     "The user who creates a public link sets its access permissions": "Esteka publikoa sortzen duen erabiltzaileak sarbide-baimenak ezartzen ditu",
     "Restrict access to ONLYOFFICE for files from external storages": "Mugatu ONLYOFFICE-rako sarbidea kanpoko biltegietako fitxategietarako",
-    "Opening files with ONLYOFFICE from external storages is restricted. Please contact the admin.": "Kanpoko biltegietako fitxategiak ONLYOFFICE-rekin irekitzea mugatuta dago. Mesedez, jarri harremanetan administratzailearekin."
+    "Opening files with ONLYOFFICE from external storages is restricted. Please contact the admin.": "Kanpoko biltegietako fitxategiak ONLYOFFICE-rekin irekitzea mugatuta dago. Mesedez, jarri harremanetan administratzailearekin.",
+    "Advanced permissions explanation": "Baimen aurreratuen azalpena",
+    "Limit access permissions for files shared with Custom permissions (Edit enabled, Share disabled) or via a public link with edit permission:": "Mugatu sarbide-baimenak fitxategietarako, pertsona bakoitzarentzako baimenarekin (editatzea gaituta, partekatzea desgaituta) edo esteka publiko baten bidez editatzeko baimenarekin:",
+    "Document": "Dokumentua",
+    "Review/Comment": "Berrikuspena/Iruzkina",
+    "Spreadsheet": "Kalkulu-orria",
+    "Comment/Global filter": "Iruzkina/Iragazki globala",
+    "Presentation": "Aurkezpena",
+    "Comment": "Iruzkina",
+    "PDF": "PDF",
+    "Comment/Form filling": "Iruzkina/Inprimakiak betetzea"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

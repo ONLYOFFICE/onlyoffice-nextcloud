@@ -156,6 +156,15 @@ OC.L10N.register(
     "Enable live-viewing mode when accessing file by public link" : "Увімкніть режим перегляду в реальному часі під час доступу до файлу за публічним посиланням",
     "The user who creates a public link sets its access permissions": "Користувач, який створює публічне посилання, встановлює права доступу до нього",
     "Restrict access to ONLYOFFICE for files from external storages": "Обмежити доступ до ONLYOFFICE для файлів із зовнішніх сховищ",
-    "Opening files with ONLYOFFICE from external storages is restricted. Please contact the admin.": "Відкриття файлів у ONLYOFFICE із зовнішніх сховищ обмежено. Будь ласка, зверніться до адміністратора."
+    "Opening files with ONLYOFFICE from external storages is restricted. Please contact the admin.": "Відкриття файлів у ONLYOFFICE із зовнішніх сховищ обмежено. Будь ласка, зверніться до адміністратора.",
+    "Advanced permissions explanation": "Пояснення розширених дозволів",
+    "Limit access permissions for files shared with Custom permissions (Edit enabled, Share disabled) or via a public link with edit permission:": "Обмежте права доступу для файлів, переданих із користувацькими дозволами (редагування увімкнено, спільний доступ вимкнено) або через публічне посилання з правом редагування:",
+    "Document": "Документ",
+    "Review/Comment": "Рецензування/Коментування",
+    "Spreadsheet": "Таблиця",
+    "Comment/Global filter": "Коментування/Глобальний фільтр",
+    "Presentation": "Презентація",
+    "PDF": "PDF",
+    "Comment/Form filling": "Коментування/Заповнення форм"
 },
 "nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != 11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || (n % 100 >=11 && n % 100 <=14 )) ? 2: 3);");

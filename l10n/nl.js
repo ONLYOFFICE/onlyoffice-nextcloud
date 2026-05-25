@@ -159,6 +159,16 @@ OC.L10N.register(
     "Suggest a feature": "Stel een functie voor",
     "The user who creates a public link sets its access permissions": "De gebruiker die een openbare link maakt, stelt de toegangsrechten in",
     "Restrict access to ONLYOFFICE for files from external storages": "Toegang tot ONLYOFFICE beperken voor bestanden van externe opslag",
-    "Opening files with ONLYOFFICE from external storages is restricted. Please contact the admin.": "Het openen van bestanden met ONLYOFFICE vanuit externe opslag is beperkt. Neem contact op met de beheerder."
+    "Opening files with ONLYOFFICE from external storages is restricted. Please contact the admin.": "Het openen van bestanden met ONLYOFFICE vanuit externe opslag is beperkt. Neem contact op met de beheerder.",
+    "Advanced permissions explanation": "Uitleg over geavanceerde machtigingen",
+    "Limit access permissions for files shared with Custom permissions (Edit enabled, Share disabled) or via a public link with edit permission:": "Beperk de toegangsmachtigingen voor bestanden gedeeld met aangepaste machtigingen (bewerken ingeschakeld, delen uitgeschakeld) of via een openbare link met bewerkingsmachtiging:",
+    "Document": "Document",
+    "Review/Comment": "Beoordeling/Opmerking",
+    "Spreadsheet": "Spreadsheet",
+    "Comment/Global filter": "Opmerking/Globaal filter",
+    "Presentation": "Presentatie",
+    "Comment": "Opmerking",
+    "PDF": "PDF",
+    "Comment/Form filling": "Opmerking/Formulier invullen"
 },
 "nplurals=2; plural=(n != 1);");

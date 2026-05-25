@@ -154,6 +154,16 @@
     "Enable live-viewing mode when accessing file by public link" : "Habilita el mode de visualització en viu quan accedeixes al fitxer mitjançant l'enllaç públic",
     "The user who creates a public link sets its access permissions": "L'usuari que crea un enllaç públic estableix els seus permisos d'accés",
     "Restrict access to ONLYOFFICE for files from external storages": "Restringeix l'accés a ONLYOFFICE per a fitxers d'emmagatzematges externs",
-    "Opening files with ONLYOFFICE from external storages is restricted. Please contact the admin.": "L'obertura de fitxers amb ONLYOFFICE des d'emmagatzematges externs està restringida. Poseu-vos en contacte amb l'administrador."
+    "Opening files with ONLYOFFICE from external storages is restricted. Please contact the admin.": "L'obertura de fitxers amb ONLYOFFICE des d'emmagatzematges externs està restringida. Poseu-vos en contacte amb l'administrador.",
+    "Advanced permissions explanation": "Explicació dels permisos avançats",
+    "Limit access permissions for files shared with Custom permissions (Edit enabled, Share disabled) or via a public link with edit permission:": "Limiteu els permisos d'accés per a fitxers compartits amb permisos personalitzats (edició habilitada, compartició deshabilitada) o mitjançant un enllaç públic amb permís d'edició:",
+    "Document": "Document",
+    "Review/Comment": "Revisió/Comentari",
+    "Spreadsheet": "Full de càlcul",
+    "Comment/Global filter": "Comentari/Filtre global",
+    "Presentation": "Presentació",
+    "Comment": "Comentari",
+    "PDF": "PDF",
+    "Comment/Form filling": "Comentari/Emplenament de formularis"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

@@ -170,6 +170,16 @@ OC.L10N.register(
     "{file} could not be saved. Please open the file again.": "{file} konnte nicht gespeichert werden. Bitte öffnen Sie die Datei erneut.",
     "The user who creates a public link sets its access permissions": "Der Benutzer, der einen öffentlichen Link erstellt, legt dessen Zugriffsberechtigungen fest",
     "Restrict access to ONLYOFFICE for files from external storages": "Zugriff auf ONLYOFFICE für Dateien aus externen Speichern einschränken",
-    "Opening files with ONLYOFFICE from external storages is restricted. Please contact the admin.": "Das Öffnen von Dateien mit ONLYOFFICE aus externen Speichern ist eingeschränkt. Bitte wenden Sie sich an den Administrator."
+    "Opening files with ONLYOFFICE from external storages is restricted. Please contact the admin.": "Das Öffnen von Dateien mit ONLYOFFICE aus externen Speichern ist eingeschränkt. Bitte wenden Sie sich an den Administrator.",
+    "Advanced permissions explanation": "Erklärung der erweiterten Berechtigungen",
+    "Limit access permissions for files shared with Custom permissions (Edit enabled, Share disabled) or via a public link with edit permission:": "Schränken Sie die Zugriffsberechtigungen für Dateien ein, die mit benutzerdefinierten Berechtigungen (Bearbeitung aktiviert, Freigabe deaktiviert) oder über einen öffentlichen Link mit Bearbeitungsberechtigung geteilt werden:",
+    "Document": "Dokument",
+    "Review/Comment": "Überprüfung/Kommentar",
+    "Spreadsheet": "Tabelle",
+    "Comment/Global filter": "Kommentar/Globaler Filter",
+    "Presentation": "Präsentation",
+    "Comment": "Kommentar",
+    "PDF": "PDF",
+    "Comment/Form filling": "Kommentar/Formularausfüllung"
     },
 "nplurals=2; plural=(n != 1);");

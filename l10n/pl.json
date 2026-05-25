@@ -157,6 +157,16 @@
     "Suggest a feature": "Zasugeruj funkcję",
     "The user who creates a public link sets its access permissions": "Użytkownik tworzący publiczny link określa uprawnienia dostępu do niego",
     "Restrict access to ONLYOFFICE for files from external storages": "Ogranicz dostęp do ONLYOFFICE dla plików z zewnętrznych magazynów",
-    "Opening files with ONLYOFFICE from external storages is restricted. Please contact the admin.": "Otwieranie plików w ONLYOFFICE z zewnętrznych magazynów jest ograniczone. Skontaktuj się z administratorem."
+    "Opening files with ONLYOFFICE from external storages is restricted. Please contact the admin.": "Otwieranie plików w ONLYOFFICE z zewnętrznych magazynów jest ograniczone. Skontaktuj się z administratorem.",
+    "Advanced permissions explanation": "Wyjaśnienie zaawansowanych uprawnień",
+    "Limit access permissions for files shared with Custom permissions (Edit enabled, Share disabled) or via a public link with edit permission:": "Ogranicz uprawnienia dostępu dla plików udostępnionych z uprawnieniami niestandardowymi (edycja włączona, udostępnianie wyłączone) lub za pośrednictwem publicznego linku z uprawnieniem do edycji:",
+    "Document": "Dokument",
+    "Review/Comment": "Recenzja/Komentarz",
+    "Spreadsheet": "Arkusz kalkulacyjny",
+    "Comment/Global filter": "Komentarz/Filtr globalny",
+    "Presentation": "Prezentacja",
+    "Comment": "Komentarz",
+    "PDF": "PDF",
+    "Comment/Form filling": "Komentarz/Wypełnianie formularzy"
 },"pluralForm" :"nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);"
 }

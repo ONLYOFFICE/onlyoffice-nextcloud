@@ -168,6 +168,16 @@
     "{file} could not be saved. Please open the file again.": "{file}を保存できませんでした。ファイルを再度開いてください。",
     "The user who creates a public link sets its access permissions": "公開リンクを作成したユーザーがアクセス権限を設定します",
     "Restrict access to ONLYOFFICE for files from external storages": "外部ストレージのファイルに対するONLYOFFICEへのアクセスを制限する",
-    "Opening files with ONLYOFFICE from external storages is restricted. Please contact the admin.": "外部ストレージからONLYOFFICEでファイルを開くことは制限されています。管理者にお問い合わせください。"
+    "Opening files with ONLYOFFICE from external storages is restricted. Please contact the admin.": "外部ストレージからONLYOFFICEでファイルを開くことは制限されています。管理者にお問い合わせください。",
+    "Advanced permissions explanation": "高度な権限の説明",
+    "Limit access permissions for files shared with Custom permissions (Edit enabled, Share disabled) or via a public link with edit permission:": "カスタム権限（編集有効、共有無効）または編集権限付き公開リンクで共有されたファイルのアクセス権限を制限します：",
+    "Document": "ドキュメント",
+    "Review/Comment": "レビュー/コメント",
+    "Spreadsheet": "スプレッドシート",
+    "Comment/Global filter": "コメント/グローバルフィルター",
+    "Presentation": "プレゼンテーション",
+    "Comment": "コメント",
+    "PDF": "PDF",
+    "Comment/Form filling": "コメント/フォーム入力"
 },"pluralForm" :"nplurals=1; plural=0;"
 }
