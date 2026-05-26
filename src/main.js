@@ -483,7 +483,12 @@ function registerFileActions() {
 
 			return true
 		},
-		exec: fileOpenHandler,
+		exec: (file, view, dir) => {
+			if (window.OCA?.Viewer?.file === file.path) {
+				return null
+			}
+			return fileOpenHandler(file, view, dir)
+		},
 		default: DefaultType.HIDDEN,
 		order: -1,
 	}))
