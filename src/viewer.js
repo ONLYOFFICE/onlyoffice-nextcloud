@@ -44,57 +44,57 @@ if (!OCA.Onlyoffice) {
 	}
 
 	OCA.Onlyoffice.setting = loadState(OCA.Onlyoffice.AppName, 'settings')
+}
 
-	const OnlyofficeViewerVue = {
-		name: 'OnlyofficeViewerVue',
-		render(createElement) {
-			const self = this
+const OnlyofficeViewerVue = {
+	name: 'OnlyofficeViewerVue',
+	render(createElement) {
+		const self = this
 
-			return createElement('iframe', {
-				attrs: {
-					id: 'onlyofficeViewerFrame',
-					scrolling: 'no',
-					src: self.url + '&inframe=true&inviewer=true',
-				},
-				on: {
-					load() {
-						self.doneLoading()
-					},
-				},
-			})
-		},
-		props: {
-			filename: {
-				type: String,
-				default: null,
+		return createElement('iframe', {
+			attrs: {
+				id: 'onlyofficeViewerFrame',
+				scrolling: 'no',
+				src: self.url + '&inframe=true&inviewer=true',
 			},
-			fileid: {
-				type: Number,
-				default: null,
+			on: {
+				load() {
+					self.doneLoading()
+				},
 			},
-		},
-		data() {
-			return {
-				url: generateUrl('/apps/' + OCA.Onlyoffice.AppName + '/{fileId}?filePath={filePath}',
-					{
-						fileId: this.fileid,
-						filePath: this.filename,
-					}),
-			}
-		},
-	}
-
-	if (OCA.Viewer) {
-		OCA.Onlyoffice.frameSelector = '#onlyofficeViewerFrame'
-
-		const mimes = Object.values(OCA.Onlyoffice.setting.formats)
-			.filter(format => format.def)
-			.flatMap(format => format.mime)
-		OCA.Viewer.registerHandler({
-			id: OCA.Onlyoffice.AppName,
-			group: null,
-			mimes,
-			component: OnlyofficeViewerVue,
 		})
-	}
+	},
+	props: {
+		filename: {
+			type: String,
+			default: null,
+		},
+		fileid: {
+			type: Number,
+			default: null,
+		},
+	},
+	data() {
+		return {
+			url: generateUrl('/apps/' + OCA.Onlyoffice.AppName + '/{fileId}?filePath={filePath}',
+				{
+					fileId: this.fileid,
+					filePath: this.filename,
+				}),
+		}
+	},
+}
+
+if (OCA.Viewer) {
+	OCA.Onlyoffice.frameSelector = '#onlyofficeViewerFrame'
+
+	const mimes = Object.values(OCA.Onlyoffice.setting.formats)
+		.filter(format => format.def)
+		.flatMap(format => format.mime)
+	OCA.Viewer.registerHandler({
+		id: OCA.Onlyoffice.AppName,
+		group: null,
+		mimes,
+		component: OnlyofficeViewerVue,
+	})
 }
