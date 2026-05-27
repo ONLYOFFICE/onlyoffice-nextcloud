@@ -107,6 +107,7 @@ class FileListener implements IEventListener {
             IShare::TYPE_GROUP,
             IShare::TYPE_LINK,
             IShare::TYPE_ROOM,
+            IShare::TYPE_CIRCLE,
         ];
         $shares = [];
 

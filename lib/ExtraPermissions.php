@@ -390,15 +390,13 @@ class ExtraPermissions {
      * Get origin share
      */
     private function getShare(string $shareId): ?IShare {
-        try {
-            return $this->shareManager->getShareById("ocinternal:" . $shareId);
-        } catch (ShareNotFound) {}
+        foreach (["ocinternal", "ocRoomShare", "ocCircleShare"] as $provider) {
+            try {
+                return $this->shareManager->getShareById("$provider:$shareId");
+            } catch (ShareNotFound) {}
+        }
 
-        try {
-            return $this->shareManager->getShareById("ocRoomShare:" . $shareId);
-        } catch (ShareNotFound) {}
-
-        $this->logger->error("getShare: share not found: " . $shareId);
+        $this->logger->error("getShare: share not found: $shareId");
 
         return null;
     }
