@@ -4,6 +4,7 @@
 ## Added
 - restrict external storage admin setting
 - send mail merge messages using the Nextcloud Mail provider
+- cover circle shares in advanced permissions
 
 ## Changed
 - fixed createUrl and template URLs being incorrectly decoded
