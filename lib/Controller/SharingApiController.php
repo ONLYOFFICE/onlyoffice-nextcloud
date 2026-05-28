@@ -173,11 +173,19 @@ class SharingApiController extends OCSController {
      * @return IShare[]
      */
     private function getSharesByOwner(string $userId, File $file): array {
-        $sharesUser = $this->shareManager->getSharesBy($userId, IShare::TYPE_USER, $file);
-        $sharesGroup = $this->shareManager->getSharesBy($userId, IShare::TYPE_GROUP, $file);
-        $sharesRoom = $this->shareManager->getSharesBy($userId, IShare::TYPE_ROOM, $file);
-        $sharesLink = $this->shareManager->getSharesBy($userId, IShare::TYPE_LINK, $file);
-        
-        return array_merge($sharesUser, $sharesGroup, $sharesRoom, $sharesLink);
+        $shareTypes = [
+            IShare::TYPE_USER,
+            IShare::TYPE_GROUP,
+            IShare::TYPE_ROOM,
+            IShare::TYPE_LINK,
+            IShare::TYPE_CIRCLE,
+        ];
+
+        $shares = [];
+        foreach ($shareTypes as $type) {
+            $shares = [...$shares, ...$this->shareManager->getSharesBy($userId, $type, $file)];
+        }
+
+        return $shares;
     }
 }

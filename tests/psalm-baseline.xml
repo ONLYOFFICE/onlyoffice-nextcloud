@@ -236,14 +236,12 @@
       <code><![CDATA[$this->connection]]></code>
       <code><![CDATA[$this->connection]]></code>
       <code><![CDATA[$this->shareManager]]></code>
-      <code><![CDATA[$this->shareManager]]></code>
       <code><![CDATA[$this->talkManager]]></code>
       <code><![CDATA[?IShare]]></code>
       <code><![CDATA[IShare]]></code>
       <code><![CDATA[IShare]]></code>
       <code><![CDATA[IShare]]></code>
       <code><![CDATA[IShare]]></code>
-      <code><![CDATA[ShareNotFound]]></code>
       <code><![CDATA[ShareNotFound]]></code>
       <code><![CDATA[private]]></code>
       <code><![CDATA[private]]></code>
