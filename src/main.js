@@ -63,7 +63,17 @@ import { loadState } from '@nextcloud/initial-state'
 		AppName: 'onlyoffice',
 		context: null,
 		frameSelector: null,
+		userClosedSidebar: false,
 	}, OCA.Onlyoffice)
+
+	if (window.OCA && window.OCA.Files && window.OCA.Files.Sidebar) {
+		window.OCA.Files.Sidebar.on('close', () => {
+			OCA.Onlyoffice.userClosedSidebar = true;
+		});
+	}
+	$(document).on('click', '.app-sidebar-header__action--close, .app-sidebar__close, .icon-close', function() {
+		OCA.Onlyoffice.userClosedSidebar = true;
+	});
 
 	OCA.Onlyoffice.setting = OCP.InitialState.loadState(OCA.Onlyoffice.AppName, 'settings')
 	OCA.Onlyoffice.mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini|Macintosh/i.test(navigator.userAgent)
@@ -159,6 +169,7 @@ import { loadState } from '@nextcloud/initial-state'
 	}
 
 	OCA.Onlyoffice.OpenEditor = function(fileId, fileDir, fileName, winEditor, isDefault = true) {
+		OCA.Onlyoffice.userClosedSidebar = false;
 		let filePath = ''
 		if (fileName) {
 			filePath = fileDir.replace(/\/$/, '') + '/' + fileName
@@ -269,8 +280,10 @@ import { loadState } from '@nextcloud/initial-state'
 				}).then((result) => {
 					const node = resultToNode(result.data)
 					emit('files:node:updated', node)
-					sidebar.open(node)
-					sidebar.setActiveTab('sharing')
+					if (!OCA.Onlyoffice.userClosedSidebar) {
+						sidebar.open(node)
+						sidebar.setActiveTab('sharing')
+					}
 				})
 			} else {
 				sidebar.close()
@@ -290,8 +303,10 @@ import { loadState } from '@nextcloud/initial-state'
 				}).then((result) => {
 					const node = resultToNode(result.data)
 					emit('files:node:updated', node)
-					sidebar.open(node)
-					sidebar.setActiveTab('versionsTabView')
+					if (!OCA.Onlyoffice.userClosedSidebar) {
+						sidebar.open(node)
+						sidebar.setActiveTab('versionsTabView')
+					}
 				})
 			}
 		}
