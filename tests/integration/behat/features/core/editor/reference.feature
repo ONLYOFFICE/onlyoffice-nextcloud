@@ -17,3 +17,7 @@ Feature: Editor reference
   Scenario: Resolving a non-existent file returns an error
     When I resolve a file by a path that does not exist
     Then the reference should not be found
+
+  Scenario: Resolving a reference without reference data does not error
+    When I resolve a file by path without reference data
+    Then the reference should not be found

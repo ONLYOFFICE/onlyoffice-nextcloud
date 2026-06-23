@@ -463,7 +463,7 @@ class EditorController extends Controller {
      */
     #[NoAdminRequired]
     #[NoCSRFRequired]
-    public function mention(int $fileId, string $anchor, string $comment, array $emails): DataResponse {
+    public function mention(int $fileId, string $anchor, string $comment, ?array $emails = null): DataResponse {
         $this->logger->debug("mention: from $fileId to " . json_encode($emails));
 
         if (!$this->appConfig->isUserAllowedToUse()) {
@@ -595,7 +595,8 @@ class EditorController extends Controller {
      */
     #[NoAdminRequired]
     #[PublicPage]
-    public function reference(array $referenceData, ?string $path = null, ?string $link = null): DataResponse {
+    public function reference(?array $referenceData = null, ?string $path = null, ?string $link = null): DataResponse {
+        $referenceData ??= [];
         $this->logger->debug("reference: " . json_encode($referenceData) . " $path");
 
         if (!$this->appConfig->isUserAllowedToUse()) {

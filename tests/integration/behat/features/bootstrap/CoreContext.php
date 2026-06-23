@@ -503,6 +503,16 @@ class CoreContext implements Context
         $this->lastReferenceResponse = json_decode($this->response->getBody()->getContents(), true);
     }
 
+    #[When('I resolve a file by path without reference data')]
+    public function iResolveAFileByPathWithoutReferenceData(): void
+    {
+        $this->sendFrontpageRequest('POST', 'apps/onlyoffice/ajax/reference', [
+            'json' => ['path' => 'file:///Z:/external.xlsx'],
+        ]);
+        $this->response->getBody()->rewind();
+        $this->lastReferenceResponse = json_decode($this->response->getBody()->getContents(), true);
+    }
+
     #[Then('the reference should be resolved successfully')]
     public function theReferenceShouldBeResolvedSuccessfully(): void
     {
