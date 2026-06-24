@@ -5,3 +5,6 @@
 [submodule "assets/document-formats"]
 	path = assets/document-formats
 	url = https://github.com/ONLYOFFICE/document-formats
+[submodule "assets/plugin-aiautofill"]
+	path = assets/plugin-aiautofill
+	url = https://github.com/ONLYOFFICE/plugin-aiautofill.git
