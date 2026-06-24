@@ -1,5 +1,8 @@
 # Change Log
 
+## Added
+- AI autofill plugin for fillable PDF forms
+
 ## 9.14.2
 
 ## Changed
