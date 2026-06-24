@@ -38,6 +38,7 @@ return [
     "routes" => [
        ["name" => "callback#download", "url" => "/download", "verb" => "GET"],
        ["name" => "callback#emptyfile", "url" => "/empty", "verb" => "GET"],
+       ["name" => "plugin#data", "url" => "/plugin/data", "verb" => "GET"],
        ["name" => "callback#track", "url" => "/track", "verb" => "POST"],
        ["name" => "template#preview", "url" => "/preview", "verb" => "GET"],
        ["name" => "editor#create_new", "url" => "/new", "verb" => "GET"],

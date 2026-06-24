@@ -43,6 +43,7 @@ use OCA\Onlyoffice\DocumentService;
 use OCA\Onlyoffice\EmailManager;
 use OCA\Onlyoffice\ExtraPermissions;
 use OCA\Onlyoffice\FileUtility;
+use OCA\Onlyoffice\PluginManager;
 use OCA\Onlyoffice\TemplateManager;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
@@ -99,6 +100,7 @@ class EditorApiController extends OCSController {
         private readonly IAvatarManager $avatarManager,
         private readonly ExtraPermissions $extraPermissions,
         private readonly EmailManager $emailManager,
+        private readonly PluginManager $pluginManager,
     ) {
         parent::__construct($appName, $request);
     }
@@ -508,6 +510,13 @@ class EditorApiController extends OCSController {
         }
 
         $params['userHasMailAccounts'] = !empty($userId) && !empty($this->emailManager->getSenderAddressesFor($userId));
+
+        if ($user && $params['documentType'] === 'pdf' && $canFillForms && !$params["document"]["permissions"]["comment"]) {
+            $pluginsConfig = $this->pluginManager->getAutofillConfig(["userId" => $userId, "action" => "data"]);
+            if ($pluginsConfig !== null) {
+                $params['editorConfig']['plugins'] = $pluginsConfig;
+            }
+        }
 
         if (!empty($this->appConfig->getDocumentServerSecret())) {
             $now = time();
