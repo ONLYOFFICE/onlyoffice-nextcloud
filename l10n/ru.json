@@ -186,6 +186,10 @@
     "You're receiving this email to confirm that your request to send %1$s messages has been completed. The successfully sent mail messages can be found in your <a href=\"%2$s\">Sent</a> folder of the Mail module.": "Вы получили это письмо для подтверждения выполнения вашего запроса на отправку %1$s сообщений. Успешно отправленные письма можно найти в папке <a href=\"%2$s\">Отправленные</a> почтового модуля.",
     "You're receiving this email to confirm that your request to send %1$s messages has been processed. However, %2$s messages could not be sent. Please check the Mail module to review the reasons for the failure.\nThe successfully sent mail messages can be found in your <a href=\"%3$s\">Sent</a> folder of the Mail module.": "Вы получили это письмо для подтверждения обработки вашего запроса на отправку %1$s сообщений. Однако %2$s сообщений не удалось отправить. Пожалуйста, проверьте почтовый модуль для ознакомления с причинами сбоев.\nУспешно отправленные письма можно найти в папке <a href=\"%3$s\">Отправленные</a> почтового модуля.",
     "Bad healthcheck status": "Неверный статус проверки работоспособности",
-    "UserId is empty": "Идентификатор пользователя пуст"
+    "UserId is empty": "Идентификатор пользователя пуст",
+    "Saving …": "Сохранение …",
+    "Failed to save common settings": "Не удалось сохранить общие настройки",
+    "Failed to save security settings": "Не удалось сохранить настройки безопасности",
+    "Apply": "Применить"
 },"pluralForm" :"nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);"
 }

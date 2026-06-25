@@ -188,6 +188,10 @@ OC.L10N.register(
     "You're receiving this email to confirm that your request to send %1$s messages has been completed. The successfully sent mail messages can be found in your <a href=\"%2$s\">Sent</a> folder of the Mail module.": "%1$s 件のメッセージ送信リクエストが完了したことをお知らせします。正常に送信されたメールはメールモジュールの<a href=\"%2$s\">送信済み</a>フォルダーで確認できます。",
     "You're receiving this email to confirm that your request to send %1$s messages has been processed. However, %2$s messages could not be sent. Please check the Mail module to review the reasons for the failure.\nThe successfully sent mail messages can be found in your <a href=\"%3$s\">Sent</a> folder of the Mail module.": "%1$s 件のメッセージ送信リクエストが処理されたことをお知らせします。ただし、%2$s 件のメッセージを送信できませんでした。失敗の原因を確認するには、メールモジュールをご確認ください。\n正常に送信されたメールはメールモジュールの<a href=\"%3$s\">送信済み</a>フォルダーで確認できます。",
     "Bad healthcheck status": "ヘルスチェックのステータスが不正です",
-    "UserId is empty": "ユーザーIDが空です"
+    "UserId is empty": "ユーザーIDが空です",
+    "Saving …": "保存中…",
+    "Failed to save common settings": "共通設定の保存に失敗しました",
+    "Failed to save security settings": "セキュリティ設定の保存に失敗しました",
+    "Apply": "適用"
 },
 "nplurals=1; plural=0;");

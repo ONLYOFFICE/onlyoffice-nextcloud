@@ -186,6 +186,10 @@
     "You're receiving this email to confirm that your request to send %1$s messages has been completed. The successfully sent mail messages can be found in your <a href=\"%2$s\">Sent</a> folder of the Mail module.": "Ви отримуєте цей лист для підтвердження того, що ваш запит на надсилання %1$s повідомлень виконано. Успішно надіслані поштові повідомлення можна знайти у папці <a href=\"%2$s\">Надіслані</a> модуля Пошта.",
     "You're receiving this email to confirm that your request to send %1$s messages has been processed. However, %2$s messages could not be sent. Please check the Mail module to review the reasons for the failure.\nThe successfully sent mail messages can be found in your <a href=\"%3$s\">Sent</a> folder of the Mail module.": "Ви отримуєте цей лист для підтвердження того, що ваш запит на надсилання %1$s повідомлень було оброблено. Проте %2$s повідомлень не вдалося надіслати. Будь ласка, перевірте модуль Пошта, щоб переглянути причини невдачі.\nУспішно надіслані поштові повідомлення можна знайти у папці <a href=\"%3$s\">Надіслані</a> модуля Пошта.",
     "Bad healthcheck status": "Невірний статус перевірки працездатності",
-    "UserId is empty": "Ідентифікатор користувача порожній"
+    "UserId is empty": "Ідентифікатор користувача порожній",
+    "Saving …": "Збереження …",
+    "Failed to save common settings": "Не вдалося зберегти загальні налаштування",
+    "Failed to save security settings": "Не вдалося зберегти налаштування безпеки",
+    "Apply": "Застосувати"
 },"pluralForm" :"nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != 11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || (n % 100 >=11 && n % 100 <=14 )) ? 2: 3);"
 }

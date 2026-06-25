@@ -188,6 +188,10 @@ OC.L10N.register(
     "You're receiving this email to confirm that your request to send %1$s messages has been completed. The successfully sent mail messages can be found in your <a href=\"%2$s\">Sent</a> folder of the Mail module.": "您收到此邮件，是为了确认您发送 %1$s 封邮件的请求已完成。成功发送的邮件可在邮件模块的<a href=\"%2$s\">已发送</a>文件夹中查看。",
     "You're receiving this email to confirm that your request to send %1$s messages has been processed. However, %2$s messages could not be sent. Please check the Mail module to review the reasons for the failure.\nThe successfully sent mail messages can be found in your <a href=\"%3$s\">Sent</a> folder of the Mail module.": "您收到此邮件，是为了确认您发送 %1$s 封邮件的请求已处理。但是，%2$s 封邮件未能成功发送。请查看邮件模块以了解发送失败的原因。\n成功发送的邮件可在邮件模块的<a href=\"%3$s\">已发送</a>文件夹中查看。",
     "Bad healthcheck status": "健康检查状态异常",
-    "UserId is empty": "用户ID为空"
+    "UserId is empty": "用户ID为空",
+    "Saving …": "正在保存…",
+    "Failed to save common settings": "保存常用设置失败",
+    "Failed to save security settings": "保存安全设置失败",
+    "Apply": "应用"
 },
 "nplurals=1; plural=0;");

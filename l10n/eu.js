@@ -188,6 +188,10 @@ OC.L10N.register(
     "You're receiving this email to confirm that your request to send %1$s messages has been completed. The successfully sent mail messages can be found in your <a href=\"%2$s\">Sent</a> folder of the Mail module.": "Mezu hau jasotzen ari zara zure %1s mezu bidaltzeko eskaera osatu dela baieztatzeko. Arrakastaz bidalitako posta mezuak Posta moduluaren <a href=\"%2$s\">Bidalitakoak</a> karpetan aurki ditzakezu.",
     "You're receiving this email to confirm that your request to send %1$s messages has been processed. However, %2$s messages could not be sent. Please check the Mail module to review the reasons for the failure.\nThe successfully sent mail messages can be found in your <a href=\"%3$s\">Sent</a> folder of the Mail module.": "Mezu hau jasotzen duzu %1$s mezu bidaltzeko zure eskaera prozesatu dela berresteko. Hala ere, %2$s mezu ezin izan dira bidali. Mesedez egiaztatu Posta modulua, hutsegitearen arrazoiak berrikusteko.\nArrakastaz bidalitako posta mezuak Posta moduluaren <a href=\"%3$s\">Bidalitakoak</a> karpetan aurki ditzakezu.",
     "Bad healthcheck status": "Osasun-egiaztapenaren egoera okerra",
-    "UserId is empty": "Erabiltzaile-IDa hutsik dago"
+    "UserId is empty": "Erabiltzaile-IDa hutsik dago",
+    "Saving …": "Gordetzen …",
+    "Failed to save common settings": "Ezin izan dira ezarpen orokorrak gorde",
+    "Failed to save security settings": "Ezin izan dira segurtasun-ezarpenak gorde",
+    "Apply": "Aplikatu"
 },
 "nplurals=2; plural=(n != 1);");

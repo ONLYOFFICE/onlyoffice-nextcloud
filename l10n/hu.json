@@ -186,6 +186,10 @@
     "You're receiving this email to confirm that your request to send %1$s messages has been completed. The successfully sent mail messages can be found in your <a href=\"%2$s\">Sent</a> folder of the Mail module.": "Ezt az e-mailt azért kapja, hogy megerősítse: %1$s üzenet elküldésére vonatkozó kérése teljesült. A sikeresen elküldött levelek a levelezési modul <a href=\"%2$s\">Elküldött</a> mappájában találhatók.",
     "You're receiving this email to confirm that your request to send %1$s messages has been processed. However, %2$s messages could not be sent. Please check the Mail module to review the reasons for the failure.\nThe successfully sent mail messages can be found in your <a href=\"%3$s\">Sent</a> folder of the Mail module.": "Ezt az e-mailt azért kapja, hogy megerősítse: %1$s üzenet elküldésére vonatkozó kérése feldolgozásra került. Azonban %2$s üzenetet nem sikerült elküldeni. Kérjük, ellenőrizze a levelezési modult a hibák okainak megtekintéséhez.\nA sikeresen elküldött levelek a levelezési modul <a href=\"%3$s\">Elküldött</a> mappájában találhatók.",
     "Bad healthcheck status": "Érvénytelen állapotellenőrzési státusz",
-    "UserId is empty": "A felhasználói azonosító üres"
+    "UserId is empty": "A felhasználói azonosító üres",
+    "Saving …": "Mentés …",
+    "Failed to save common settings": "Az általános beállítások mentése sikertelen",
+    "Failed to save security settings": "A biztonsági beállítások mentése sikertelen",
+    "Apply": "Alkalmaz"
 },"pluralForm": "nplurals=2; plural=(n != 1);"
 }

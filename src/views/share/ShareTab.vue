@@ -39,20 +39,20 @@ import type { ShareExtra } from '../../services/ShareService.ts'
 import { loadState } from '@nextcloud/initial-state'
 import { t } from '@nextcloud/l10n'
 import { ref, watch } from 'vue'
+import NcButton from '@nextcloud/vue/components/NcButton'
+import NcIconSvgWrapper from '@nextcloud/vue/components/NcIconSvgWrapper'
+import NcPopover from '@nextcloud/vue/components/NcPopover'
 import ShareItem from './ShareItem.vue'
 import { getShares, setShares } from '../../services/ShareService.ts'
 import { getFileExtension } from '../../utils/files.ts'
 import { Permissions } from '../../utils/permissions.ts'
-import NcButton from '@nextcloud/vue/components/NcButton'
-import NcIconSvgWrapper from '@nextcloud/vue/components/NcIconSvgWrapper'
-import NcPopover from '@nextcloud/vue/components/NcPopover'
-
-const infoIconPath = 'M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z'
 
 const props = defineProps<{
 	node: INode
 	active: boolean
 }>()
+
+const infoIconPath = 'M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z'
 
 const formats = loadState<{ formats: Record<string, Record<string, boolean>> }>('onlyoffice', 'settings', { formats: {} }).formats ?? {}
 
@@ -146,9 +146,10 @@ async function onPermissionChange(extra: ShareExtra, changedKey: number, changed
 		<template v-if="!loading">
 			<div class="onlyoffice-share-header">
 				<span>{{ t('onlyoffice', 'Provide advanced document permissions using ONLYOFFICE Docs') }}</span>
-				<NcPopover popup-role="dialog">
+				<NcPopover popupRole="dialog">
 					<template #trigger>
-						<NcButton class="onlyoffice-share-hint-icon"
+						<NcButton
+							class="onlyoffice-share-hint-icon"
 							variant="tertiary-no-background"
 							:aria-label="t('onlyoffice', 'Advanced permissions explanation')">
 							<template #icon>

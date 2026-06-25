@@ -188,6 +188,10 @@ OC.L10N.register(
     "You're receiving this email to confirm that your request to send %1$s messages has been completed. The successfully sent mail messages can be found in your <a href=\"%2$s\">Sent</a> folder of the Mail module.": "Sie erhalten diese E-Mail zur Bestätigung, dass Ihre Anfrage zum Senden von %1$s Nachrichten abgeschlossen wurde. Die erfolgreich gesendeten E-Mails finden Sie in Ihrem Ordner <a href=\"%2$s\">Gesendet</a> des E-Mail-Moduls.",
     "You're receiving this email to confirm that your request to send %1$s messages has been processed. However, %2$s messages could not be sent. Please check the Mail module to review the reasons for the failure.\nThe successfully sent mail messages can be found in your <a href=\"%3$s\">Sent</a> folder of the Mail module.": "Sie erhalten diese E-Mail zur Bestätigung, dass Ihre Anfrage zum Senden von %1$s Nachrichten verarbeitet wurde. Jedoch konnten %2$s Nachrichten nicht gesendet werden. Bitte überprüfen Sie das E-Mail-Modul, um die Gründe für den Fehler einzusehen.\nDie erfolgreich gesendeten E-Mails finden Sie in Ihrem Ordner <a href=\"%3$s\">Gesendet</a> des E-Mail-Moduls.",
     "Bad healthcheck status": "Ungültiger Healthcheck-Status",
-    "UserId is empty": "Benutzer-ID ist leer"
+    "UserId is empty": "Benutzer-ID ist leer",
+    "Saving …": "Speichern …",
+    "Failed to save common settings": "Allgemeine Einstellungen konnten nicht gespeichert werden",
+    "Failed to save security settings": "Sicherheitseinstellungen konnten nicht gespeichert werden",
+    "Apply": "Anwenden"
     },
 "nplurals=2; plural=(n != 1);");

@@ -39,7 +39,6 @@ import { spawnDialog } from '@nextcloud/vue/functions/dialog'
 import { ref } from 'vue'
 import NcButton from '@nextcloud/vue/components/NcButton'
 import EmptyJwtInfoDialog from '../EmptyJwtInfoDialog.vue'
-import AppDescription from './AppDescription.vue'
 import { saveAddressSettings } from '../../services/SettingsService.ts'
 
 const props = defineProps<{
@@ -130,9 +129,6 @@ async function save() {
 
 <template>
 	<div class="section section-onlyoffice section-onlyoffice-addr">
-		<AppDescription />
-
-		<h2>{{ t('onlyoffice', 'Server settings') }}</h2>
 		<p class="settings-description">
 			{{ t('onlyoffice', 'ONLYOFFICE Docs Location specifies the address of the server with the document services installed. Please change the \'\<documentserver\>\' for the server address in the below line.', {}, { sanitize: false }) }}
 		</p>

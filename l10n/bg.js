@@ -188,6 +188,10 @@ OC.L10N.register(
     "You're receiving this email to confirm that your request to send %1$s messages has been completed. The successfully sent mail messages can be found in your <a href=\"%2$s\">Sent</a> folder of the Mail module.": "Получавате този имейл, за да потвърдите, че заявката ви за изпращане на %1$s съобщения е изпълнена. Успешно изпратените имейли можете да намерите в папката <a href=\"%2$s\">Изпратени</a> на модула за поща.",
     "You're receiving this email to confirm that your request to send %1$s messages has been processed. However, %2$s messages could not be sent. Please check the Mail module to review the reasons for the failure.\nThe successfully sent mail messages can be found in your <a href=\"%3$s\">Sent</a> folder of the Mail module.": "Получавате този имейл, за да потвърдите, че заявката ви за изпращане на %1$s съобщения е обработена. Въпреки това %2$s съобщения не можаха да бъдат изпратени. Моля, проверете модула за поща, за да прегледате причините за неуспеха.\nУспешно изпратените имейли можете да намерите в папката <a href=\"%3$s\">Изпратени</a> на модула за поща.",
     "Bad healthcheck status": "Неправилен статус на проверката за работоспособност",
-    "UserId is empty": "Потребителският идентификатор е празен"
+    "UserId is empty": "Потребителският идентификатор е празен",
+    "Saving …": "Запазване …",
+    "Failed to save common settings": "Неуспешно запазване на общите настройки",
+    "Failed to save security settings": "Неуспешно запазване на настройките за сигурност",
+    "Apply": "Прилагане"
 },
 "nplurals=2; plural=(n != 1);");

@@ -39,6 +39,7 @@ import { computed, ref, watch } from 'vue'
 import NcButton from '@nextcloud/vue/components/NcButton'
 import NcSettingsSelectGroup from '@nextcloud/vue/components/NcSettingsSelectGroup'
 import { clearHistory, saveCommonSettings } from '../../services/SettingsService.ts'
+import { useAutosave } from './useAutosave.ts'
 
 const props = defineProps<{
 	formats: Record<string, Record<string, unknown>>
@@ -93,7 +94,9 @@ const help = ref(props.help)
 const reviewDisplay = ref(props.reviewDisplay)
 const theme = ref(props.theme)
 const unknownAuthor = ref(props.unknownAuthor ?? '')
-const saving = ref(false)
+const appliedUnknownAuthor = ref(props.unknownAuthor ?? '')
+const unknownAuthorDirty = computed(() => unknownAuthor.value !== appliedUnknownAuthor.value)
+const clearing = ref(false)
 
 watch(sameTab, (val) => {
 	if (val) {
@@ -121,58 +124,62 @@ async function onClearHistory() {
 		return
 	}
 
-	saving.value = true
+	clearing.value = true
 	try {
 		await clearHistory()
 		showSuccess(t('onlyoffice', 'All history successfully deleted'))
 	} catch {
 		showError(t('onlyoffice', 'Error'))
 	} finally {
-		saving.value = false
+		clearing.value = false
 	}
 }
 
 /**
- * Persists all common settings to the backend.
+ * Builds the common settings payload from the current form state.
  */
-async function save() {
-	saving.value = true
-	try {
-		await saveCommonSettings({
-			defFormats: defFormats.value,
-			editFormats: editFormats.value,
-			restrictExternalStorage: restrictExternalStorage.value,
-			sameTab: sameTab.value,
-			enableSharing: enableSharing.value,
-			preview: preview.value,
-			advanced: advanced.value,
-			cronChecker: cronChecker.value,
-			emailNotifications: emailNotifications.value,
-			versionHistory: versionHistory.value,
-			limitGroups: useGroups.value ? limitGroups.value : [],
-			chat: chat.value,
-			compactHeader: compactHeader.value,
-			feedback: feedback.value,
-			forcesave: forcesave.value,
-			liveViewOnShare: liveViewOnShare.value,
-			help: help.value,
-			reviewDisplay: reviewDisplay.value,
-			theme: theme.value,
-			unknownAuthor: unknownAuthor.value.trim(),
-		})
-		showSuccess(t('onlyoffice', 'Common settings have been successfully updated'))
-	} catch {
-		showError(t('onlyoffice', 'Error'))
-	} finally {
-		saving.value = false
+function buildPayload() {
+	return {
+		defFormats: defFormats.value,
+		editFormats: editFormats.value,
+		restrictExternalStorage: restrictExternalStorage.value,
+		sameTab: sameTab.value,
+		enableSharing: enableSharing.value,
+		preview: preview.value,
+		advanced: advanced.value,
+		cronChecker: cronChecker.value,
+		emailNotifications: emailNotifications.value,
+		versionHistory: versionHistory.value,
+		limitGroups: useGroups.value ? limitGroups.value : [],
+		chat: chat.value,
+		compactHeader: compactHeader.value,
+		feedback: feedback.value,
+		forcesave: forcesave.value,
+		liveViewOnShare: liveViewOnShare.value,
+		help: help.value,
+		reviewDisplay: reviewDisplay.value,
+		theme: theme.value,
+		unknownAuthor: appliedUnknownAuthor.value.trim(),
 	}
+}
+
+const { flush } = useAutosave({
+	build: buildPayload,
+	save: saveCommonSettings,
+	errorMessage: t('onlyoffice', 'Failed to save common settings'),
+})
+
+/**
+ * Commits the edited author name and saves it immediately.
+ */
+function applyUnknownAuthor() {
+	appliedUnknownAuthor.value = unknownAuthor.value
+	flush()
 }
 </script>
 
 <template>
 	<div class="section section-onlyoffice section-onlyoffice-common">
-		<h2>{{ t('onlyoffice', 'Common settings') }}</h2>
-
 		<!-- Group access restriction -->
 		<p>
 			<input
@@ -246,7 +253,7 @@ async function save() {
 					class="checkbox">
 				<label for="onlyoffice-version-history">{{ t('onlyoffice', 'Keep metadata for each version once the document is edited (it will take up disk space)') }}</label>
 			</span>
-			<NcButton :disabled="saving" @click="onClearHistory">
+			<NcButton :disabled="clearing" @click="onClearHistory">
 				{{ t('onlyoffice', 'Clear') }}
 			</NcButton>
 		</p>
@@ -270,12 +277,16 @@ async function save() {
 		</p>
 
 		<p>{{ t('onlyoffice', 'Unknown author display name') }}</p>
-		<p>
+		<p class="onlyoffice-unknown-author">
 			<input
 				id="onlyoffice-unknown-author"
 				v-model="unknownAuthor"
 				type="text"
-				placeholder="">
+				placeholder=""
+				@keyup.enter="applyUnknownAuthor">
+			<NcButton :disabled="!unknownAuthorDirty" @click="applyUnknownAuthor">
+				{{ t('onlyoffice', 'Apply') }}
+			</NcButton>
 		</p>
 
 		<!-- Default formats -->
@@ -440,22 +451,16 @@ async function save() {
 				<label for="onlyoffice-theme-default-dark">{{ t('onlyoffice', 'Dark') }}</label>
 			</div>
 		</div>
-
-		<br>
-
-		<p>
-			<NcButton
-				id="onlyoffice-common-save"
-				:disabled="saving"
-				variant="primary"
-				@click="save">
-				{{ t('onlyoffice', 'Save') }}
-			</NcButton>
-		</p>
 	</div>
 </template>
 
 <style scoped>
+.onlyoffice-unknown-author {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
 #onlyoffice-enable-sharing-block {
     margin-left: 1.5em;
 }

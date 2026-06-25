@@ -188,6 +188,10 @@ OC.L10N.register(
     "You're receiving this email to confirm that your request to send %1$s messages has been completed. The successfully sent mail messages can be found in your <a href=\"%2$s\">Sent</a> folder of the Mail module.": "Du modtager denne e-mail for at bekræfte, at din anmodning om at sende %1s beskeder er fuldført. De succesfuldt afsendte e-mails findes i din <a href=\"%2s\">Sendt</a>-mappe i Mail-modulet.",
     "You're receiving this email to confirm that your request to send %1$s messages has been processed. However, %2$s messages could not be sent. Please check the Mail module to review the reasons for the failure.\nThe successfully sent mail messages can be found in your <a href=\"%3$s\">Sent</a> folder of the Mail module.": "Du modtager denne e-mail for at bekræfte, at din anmodning om at sende %1$s beskeder er behandlet. Dog kunne %2$s beskeder ikke sendes. Kontroller venligst Mail-modulet for at gennemgå årsagerne til fejlen.\nDe succesfuldt afsendte e-mails findes i din <a href=\"%3$s\">Sendt</a>-mappe i Mail-modulet.",
     "Bad healthcheck status": "Ugyldig sundhedstjek-status",
-    "UserId is empty": "Bruger-id er tomt"
+    "UserId is empty": "Bruger-id er tomt",
+    "Saving …": "Gemmer …",
+    "Failed to save common settings": "Kunne ikke gemme de generelle indstillinger",
+    "Failed to save security settings": "Kunne ikke gemme sikkerhedsindstillingerne",
+    "Apply": "Anvend"
 },
 "nplurals=2; plural=(n != 1);");

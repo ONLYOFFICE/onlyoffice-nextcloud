@@ -188,6 +188,10 @@ OC.L10N.register(
     "You're receiving this email to confirm that your request to send %1$s messages has been completed. The successfully sent mail messages can be found in your <a href=\"%2$s\">Sent</a> folder of the Mail module.": "Rebeu aquest correu electrònic per confirmar que la vostra sol·licitud d'enviament de %1$s missatges s'ha completat. Els missatges enviats correctament es poden trobar a la carpeta <a href=\"%2$s\">Enviats</a> del mòdul de correu.",
     "You're receiving this email to confirm that your request to send %1$s messages has been processed. However, %2$s messages could not be sent. Please check the Mail module to review the reasons for the failure.\nThe successfully sent mail messages can be found in your <a href=\"%3$s\">Sent</a> folder of the Mail module.": "Rebeu aquest correu electrònic per confirmar que la vostra sol·licitud d'enviament de %1$s missatges ha estat processada. No obstant això, %2$s missatges no s'han pogut enviar. Consulteu el mòdul de correu per revisar els motius de l'error.\nEls missatges enviats correctament es poden trobar a la carpeta <a href=\"%3$s\">Enviats</a> del mòdul de correu.",
     "Bad healthcheck status": "Estat de comprovació de salut incorrecte",
-    "UserId is empty": "L'identificador d'usuari és buit"
+    "UserId is empty": "L'identificador d'usuari és buit",
+    "Saving …": "S'està guardant …",
+    "Failed to save common settings": "No s'ha pogut guardar la configuració general",
+    "Failed to save security settings": "No s'ha pogut guardar la configuració de seguretat",
+    "Apply": "Aplica"
 },
 "nplurals=2; plural=(n != 1);");

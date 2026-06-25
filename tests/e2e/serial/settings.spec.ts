@@ -45,6 +45,8 @@ test.describe('Admin settings', () => {
 			await adminPage.saveServerSettings()
 
 			await adminPage.waitForError()
+			await expect(adminPage.commonTab()).toBeDisabled()
+			await expect(adminPage.securityTab()).toBeDisabled()
 			await expect(adminPage.commonSettingsSection()).toBeHidden()
 			await expect(adminPage.templatesSection()).toBeHidden()
 			await expect(adminPage.securitySection()).toBeHidden()
@@ -60,8 +62,14 @@ test.describe('Admin settings', () => {
 			await adminPage.saveServerSettings()
 
 			await adminPage.waitForSuccess()
+			await expect(adminPage.commonTab()).toBeEnabled()
+			await expect(adminPage.securityTab()).toBeEnabled()
+
+			await adminPage.openCommonSettings()
 			await expect(adminPage.commonSettingsSection()).toBeVisible()
 			await expect(adminPage.templatesSection()).toBeVisible()
+
+			await adminPage.openSecuritySettings()
 			await expect(adminPage.securitySection()).toBeVisible()
 
 			await adminPage.goto()
@@ -70,6 +78,10 @@ test.describe('Admin settings', () => {
 	})
 
 	test.describe('Common settings', () => {
+		test.beforeEach(async ({ adminPage }) => {
+			await adminPage.openCommonSettings()
+		})
+
 		test.afterEach(async () => {
 			await saveCommonSettings({})
 		})
@@ -87,7 +99,6 @@ test.describe('Admin settings', () => {
 			}
 
 			await adminPage.saveCommonSettings()
-			await adminPage.waitForSuccess()
 
 			await adminPage.goto()
 
@@ -118,33 +129,41 @@ test.describe('Admin settings', () => {
 				await adminPage.groupsOption(group).click()
 
 				await adminPage.saveCommonSettings()
-				await adminPage.waitForSuccess()
 
 				await adminPage.goto()
+				await adminPage.openCommonSettings()
 				await expect(adminPage.groupsSelected(group)).toBeVisible()
 			})
 		})
 	})
 
 	test.describe('Security settings', () => {
+		test.beforeEach(async ({ adminPage }) => {
+			await adminPage.openSecuritySettings()
+		})
+
 		test('Plugins setting persists after reload', async ({ adminPage }) => {
 			const checkbox = adminPage.pluginsCheckbox()
 			const initial = await checkbox.evaluate((el: HTMLInputElement) => el.checked)
 
 			await adminPage.pluginsLabel().click()
 			await adminPage.saveSecuritySettings()
-			await adminPage.waitForSuccess()
 
 			await adminPage.goto()
 			await expect(checkbox).toBeChecked({ checked: !initial })
 
 			// restore
+			await adminPage.openSecuritySettings()
 			await adminPage.pluginsLabel().click()
 			await adminPage.saveSecuritySettings()
 		})
 	})
 
 	test.describe('Common templates', () => {
+		test.beforeEach(async ({ adminPage }) => {
+			await adminPage.openCommonSettings()
+		})
+
 		test('Upload template', async ({ adminPage }) => {
 			await adminPage.uploadTemplate(TEMPLATE_PATH)
 
