@@ -629,7 +629,7 @@ OCA.Onlyoffice.onRequestSendNotify = function(event) {
 
 OCA.Onlyoffice.onRequestReferenceData = function(event) {
 	const link = event.data.link
-	const referenceData = event.data.referenceData
+	const referenceData = event.data.referenceData ?? {}
 	const path = event.data.path
 
 	fetchReference({ referenceData, path, link }).then((response) => {
