@@ -53,6 +53,7 @@ import {
 	fetchEmails,
 } from './services/EditorService.ts'
 import { encodePath } from '@nextcloud/paths'
+import { setupAi } from './ai.js'
 
 /* global DocsAPI, oc_defaults */
 
@@ -291,6 +292,11 @@ OCA.Onlyoffice.onDocumentReady = function() {
 
 	OCA.Onlyoffice.resize()
 	OCA.Onlyoffice.setViewport()
+
+	const connector = OCA.Onlyoffice.docEditor.createConnector?.()
+	if (connector) {
+		setupAi(connector)
+	}
 }
 
 OCA.Onlyoffice.onRequestSaveAs = function(event) {
