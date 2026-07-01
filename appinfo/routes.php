@@ -63,6 +63,10 @@ return [
        ["name" => "template#add_template", "url" => "/ajax/template", "verb" => "POST"],
        ["name" => "template#delete_template", "url" => "/ajax/template", "verb" => "DELETE"],
        ["name" => "template#get_templates", "url" => "/ajax/template", "verb" => "GET"],
+       ["name" => "ai#config", "url" => "/ai/config", "verb" => "GET"],
+       ["name" => "ai#task", "url" => "/ai/task/{id}", "verb" => "GET", "requirements" => ["id" => "\\d+"]],
+       ["name" => "ai#cancel_task", "url" => "/ai/task/{id}/cancel", "verb" => "POST", "requirements" => ["id" => "\\d+"]],
+       ["name" => "ai#proxy", "url" => "/ai/{path}", "verb" => "POST", "requirements" => ["path" => ".+"]],
     ],
     "ocs" => [
         ["name" => "federation#key", "url" => "/api/v1/key", "verb" => "POST"],
