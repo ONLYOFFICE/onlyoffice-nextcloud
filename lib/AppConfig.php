@@ -190,6 +190,13 @@ class AppConfig {
     private string $_verification = "verify_peer_off";
 
     /**
+     * The config for mentions
+     *
+     * @var string
+     */
+    private $_mentions = "mentions";
+
+    /**
      * The config key for the secret key in jwt
      */
     private string $_jwtSecret = "jwt_secret";
@@ -1130,6 +1137,16 @@ class AppConfig {
         }
 
         return false;
+    }
+
+    /**
+     * Check if sending mentions to users is enabled
+     *
+     * @return bool
+     */
+    public function isMentionsEnabled() {
+        $value = $this->config->getAppValue($this->appName, $this->_mentions, "true");
+        return in_array($value, ["on", "yes", "true"]);
     }
 
     /**
