@@ -114,6 +114,11 @@ class AppConfig {
     private string $_advanced = "advanced";
 
     /**
+     * The config key for enabling the Nextcloud AI provider in the editor
+     */
+    private string $_aiProviderEnabled = "aiProviderEnabled";
+
+    /**
      * The config key for the cronChecker
      */
     private string $_cronChecker = "cronChecker";
@@ -711,6 +716,22 @@ class AppConfig {
         $this->logger->info("Set advanced: " . json_encode($value), ["app" => $this->appName]);
 
         $this->appConfig->setValueString($this->appName, $this->_advanced, json_encode($value));
+    }
+
+    /**
+     * Get whether the Nextcloud AI provider is exposed to the editor
+     */
+    public function getAiProviderEnabled(): bool {
+        return $this->appConfig->getValueString($this->appName, $this->_aiProviderEnabled, "false") === "true";
+    }
+
+    /**
+     * Set whether the Nextcloud AI provider is exposed to the editor
+     */
+    public function setAiProviderEnabled(bool $value): void {
+        $this->logger->info("Set aiProviderEnabled: " . json_encode($value), ["app" => $this->appName]);
+
+        $this->appConfig->setValueString($this->appName, $this->_aiProviderEnabled, json_encode($value));
     }
 
     /**

@@ -75,6 +75,7 @@ export interface SecuritySettingsData {
 	plugins: boolean
 	macros: boolean
 	protection: string
+	aiProviderEnabled: boolean
 }
 
 export const saveAddressSettings = async (data: AddressSettingsData): Promise<AddressSettingsResponse> => {

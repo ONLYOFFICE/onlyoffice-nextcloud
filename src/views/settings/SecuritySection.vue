@@ -39,6 +39,7 @@ import NcButton from '@nextcloud/vue/components/NcButton'
 import NcCheckboxRadioSwitch from '@nextcloud/vue/components/NcCheckboxRadioSwitch'
 import NcSettingsSelectGroup from '@nextcloud/vue/components/NcSettingsSelectGroup'
 import NcSelectTags from '@nextcloud/vue/components/NcSelectTags'
+import InfoHint from '../../components/InfoHint.vue'
 import { saveSecuritySettings } from '../../services/SettingsService'
 import { useAutosave } from './useAutosave'
 
@@ -61,6 +62,7 @@ const props = defineProps<{
 	plugins: boolean
 	macros: boolean
 	protection: string
+	aiProviderEnabled: boolean
 	watermark: Record<string, unknown>
 	tagsEnabled: boolean
 }>()
@@ -68,6 +70,7 @@ const props = defineProps<{
 const plugins = ref(props.plugins)
 const macros = ref(props.macros)
 const protection = ref(props.protection)
+const aiProviderEnabled = ref(props.aiProviderEnabled)
 
 // Copy watermark, converting tag ID arrays from string[] to number[]
 const watermark = ref<WatermarkSettings>({
@@ -103,6 +106,7 @@ function buildPayload() {
 		plugins: plugins.value,
 		macros: macros.value,
 		protection: protection.value,
+		aiProviderEnabled: aiProviderEnabled.value,
 	}
 }
 
@@ -137,6 +141,17 @@ function applyWatermarkText() {
 				type="checkbox"
 				class="checkbox">
 			<label for="onlyoffice-macros">{{ t('onlyoffice', 'Run document macros') }}</label>
+		</p>
+
+		<p class="onlyoffice-ai-provider">
+			<input id="onlyoffice-ai-provider"
+				v-model="aiProviderEnabled"
+				type="checkbox"
+				class="checkbox">
+			<label for="onlyoffice-ai-provider">{{ t('onlyoffice', 'Enable the Nextcloud AI provider') }}</label>
+			<InfoHint :label="t('onlyoffice', 'Nextcloud AI provider availability')">
+				<p>{{ t('onlyoffice', 'Only available with ONLYOFFICE Docs Developer.') }}</p>
+			</InfoHint>
 		</p>
 
 		<!-- Document protection -->
@@ -299,5 +314,11 @@ function applyWatermarkText() {
 	display: flex;
 	align-items: center;
 	gap: 8px;
+}
+
+.onlyoffice-ai-provider {
+	display: flex;
+	align-items: center;
+	gap: 4px;
 }
 </style>

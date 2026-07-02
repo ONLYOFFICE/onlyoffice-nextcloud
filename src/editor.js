@@ -155,6 +155,7 @@ OCA.Onlyoffice.InitEditor = function() {
 				setPageTitle(false)
 
 				OCA.Onlyoffice.documentType = config.documentType
+				OCA.Onlyoffice.aiProviderEnabled = config.aiProviderEnabled
 
 				config.events = {
 					onDocumentStateChange: setPageTitle,
@@ -294,7 +295,7 @@ OCA.Onlyoffice.onDocumentReady = function() {
 	OCA.Onlyoffice.setViewport()
 
 	const connector = OCA.Onlyoffice.docEditor.createConnector?.()
-	if (connector) {
+	if (connector && OCA.Onlyoffice.aiProviderEnabled) {
 		setupAi(connector)
 	}
 }

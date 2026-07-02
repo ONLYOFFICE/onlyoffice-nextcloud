@@ -113,6 +113,7 @@ function onAddressSaved({ showSections: show }: { showSections: boolean }) {
 				<SecuritySection :plugins="state.plugins as boolean"
 					:macros="state.macros as boolean"
 					:protection="state.protection as string"
+					:ai-provider-enabled="state.aiProviderEnabled as boolean"
 					:watermark="state.watermark as Record<string, unknown>"
 					:tags-enabled="state.tagsEnabled as boolean" />
 			</TabItem>

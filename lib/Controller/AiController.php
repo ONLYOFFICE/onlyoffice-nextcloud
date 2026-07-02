@@ -36,6 +36,7 @@
 
 namespace OCA\Onlyoffice\Controller;
 
+use OCA\Onlyoffice\AppConfig;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
@@ -72,6 +73,7 @@ class AiController extends Controller {
         IRequest $request,
         private readonly ITaskProcessingManager $taskProcessing,
         private readonly IRootFolder $rootFolder,
+        private readonly AppConfig $appConfig,
         private readonly LoggerInterface $logger,
         private readonly ?string $userId
     ) {
@@ -255,6 +257,10 @@ class AiController extends Controller {
     #[NoAdminRequired]
     #[NoCSRFRequired]
     public function config(): JSONResponse {
+        if (!$this->appConfig->getAiProviderEnabled()) {
+            return new JSONResponse(["provider" => self::PROVIDER_NAME, "models" => []]);
+        }
+
         try {
             $available = $this->taskProcessing->getAvailableTaskTypes(false, $this->userId);
         } catch (\Throwable $e) {

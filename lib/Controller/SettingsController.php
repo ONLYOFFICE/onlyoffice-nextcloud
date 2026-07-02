@@ -90,6 +90,7 @@ class SettingsController extends Controller {
             "emailNotifications" => $this->appConfig->getEmailNotifications(),
             "versionHistory" => $this->appConfig->getVersionHistory(),
             "protection" => $this->appConfig->getProtection(),
+            "aiProviderEnabled" => $this->appConfig->getAiProviderEnabled(),
             "limitGroups" => $this->appConfig->getLimitGroups(),
             "chat" => $this->appConfig->getCustomizationChat(),
             "compactHeader" => $this->appConfig->getCustomizationCompactHeader(),
@@ -243,12 +244,14 @@ class SettingsController extends Controller {
      * @param bool $plugins - enable plugins
      * @param bool $macros - run document macros
      * @param string $protection - protection
+     * @param bool $aiProviderEnabled - expose the Nextcloud AI provider to the editor
      */
     public function saveSecurity(
         array $watermarks,
         bool $plugins,
         bool $macros,
-        string $protection
+        string $protection,
+        bool $aiProviderEnabled = false
     ): DataResponse {
 
         if ($watermarks["enabled"]) {
@@ -262,6 +265,7 @@ class SettingsController extends Controller {
         $this->appConfig->setCustomizationPlugins($plugins);
         $this->appConfig->setCustomizationMacros($macros);
         $this->appConfig->setProtection($protection);
+        $this->appConfig->setAiProviderEnabled($aiProviderEnabled);
 
         return new DataResponse();
     }

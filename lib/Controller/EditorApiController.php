@@ -508,6 +508,7 @@ class EditorApiController extends OCSController {
         }
 
         $params['userHasMailAccounts'] = !empty($userId) && !empty($this->emailManager->getSenderAddressesFor($userId));
+        $params['aiProviderEnabled'] = $this->appConfig->getAiProviderEnabled();
 
         if (!empty($this->appConfig->getDocumentServerSecret())) {
             $now = time();
