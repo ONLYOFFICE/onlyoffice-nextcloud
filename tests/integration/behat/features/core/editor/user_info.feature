@@ -19,6 +19,11 @@ Feature: Editor get user info
     When I request user info for "nonexistentuser"
     Then the response should be an empty list
 
+  Scenario: A null user id is silently omitted without error
+    When I request user info for a null user
+    Then the response status code should be 200
+    And the response should be an empty list
+
   Scenario: A user without a custom avatar has no image field
     Given a user with display name "Alice Tester" and an email exists
     When I request user info for that user
