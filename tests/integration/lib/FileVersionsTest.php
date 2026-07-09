@@ -40,6 +40,7 @@ declare(strict_types=1);
 namespace OCA\Onlyoffice\Tests\Integration;
 
 use OC\Files\Node\File;
+use OC\Files\View;
 use OCA\Onlyoffice\FileVersions;
 use OCP\Files\IRootFolder;
 use OCP\IUser;
@@ -78,9 +79,28 @@ class FileVersionsTest extends TestCase {
             $this->file->delete();
         }
 
+        $groupFolderView = new View("/__groupfolders");
+        if ($groupFolderView->file_exists("onlyoffice")) {
+            $groupFolderView->unlink("onlyoffice");
+        }
+
         self::logout();
         $this->tearDownUserTrait();
         parent::tearDown();
+    }
+
+    private function getGroupFolderView(): View {
+        $rootView = new View("/");
+        if (!$rootView->is_dir("__groupfolders")) {
+            $rootView->mkdir("__groupfolders");
+        }
+
+        $view = new View("/__groupfolders");
+        if (!$view->is_dir("onlyoffice")) {
+            $view->mkdir("onlyoffice");
+        }
+
+        return $view;
     }
 
     /**
@@ -257,5 +277,35 @@ class FileVersionsTest extends TestCase {
         FileVersions::saveAuthor($this->file, null);
 
         $this->addToAssertionCount(1);
+    }
+
+    /**
+     * deleteGroupFolderVersions removes the stored history folder of a group folder file.
+     */
+    public function testDeleteGroupFolderVersionsRemovesHistoryFolder(): void {
+        $view = $this->getGroupFolderView();
+        $view->mkdir("onlyoffice/999999901");
+        $view->file_put_contents("onlyoffice/999999901/1000.zip", "changes-data");
+
+        FileVersions::deleteGroupFolderVersions(999999901);
+
+        $this->assertFalse($view->file_exists("onlyoffice/999999901"));
+    }
+
+    /**
+     * clearHistory removes the stored history of seen users and of group folders.
+     */
+    public function testClearHistoryRemovesUserAndGroupFolderHistory(): void {
+        FileVersions::saveHistory($this->file, ["key" => "v1"], "changes-data", "prev");
+        $this->assertTrue(FileVersions::hasChanges($this->userId, $this->file, $this->versionId));
+
+        $view = $this->getGroupFolderView();
+        $view->mkdir("onlyoffice/999999902");
+        $view->file_put_contents("onlyoffice/999999902/1000.zip", "changes-data");
+
+        FileVersions::clearHistory();
+
+        $this->assertFalse(FileVersions::hasChanges($this->userId, $this->file, $this->versionId));
+        $this->assertFalse($view->file_exists("onlyoffice"));
     }
 }
