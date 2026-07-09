@@ -402,6 +402,12 @@ class CoreContext implements Context
         $this->requestUserInfo([$userId]);
     }
 
+    #[When('I request user info for a null user')]
+    public function iRequestUserInfoForANullUser(): void
+    {
+        $this->requestUserInfo([null]);
+    }
+
     #[Then('the response should contain one user')]
     public function theResponseShouldContainOneUser(): void
     {
