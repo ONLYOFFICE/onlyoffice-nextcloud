@@ -1,0 +1,70 @@
+name: Connection issue
+description: Report a problem connecting this integration to ONLYOFFICE Docs.
+title: "[Connection]: "
+labels:
+  - configuration
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template for connectivity problems between the integration and ONLYOFFICE Docs. For general configuration help, try the [Community Forum](https://community.onlyoffice.com/) or [API documentation](https://api.onlyoffice.com/docs/) first.
+  - type: checkboxes
+    id: duplicate_check
+    attributes:
+      label: Before submitting
+      options:
+        - label: I searched existing issues and did not find a duplicate.
+          required: true
+  - type: checkboxes
+    id: environment
+    attributes:
+      label: Environment
+      description: Check all statements that apply to your setup.
+      options:
+        - label: HTTPS is enabled.
+        - label: A self-signed certificate is in use.
+        - label: A proxy is in use.
+        - label: The instance is publicly accessible.
+        - label: Requests from the system to the editor are working.
+        - label: Requests from the editor to the system are working.
+  - type: input
+    id: system_version
+    attributes:
+      label: System version
+      description: "Version of the system where the integration is installed (e.g. Confluence 8.5.4, Nextcloud 28.0.1)."
+      placeholder: "e.g. 1.0.0"
+    validations:
+      required: true
+  - type: input
+    id: integration_version
+    attributes:
+      label: Integration version
+      description: "Version of this integration."
+      placeholder: "e.g. 1.0.0"
+    validations:
+      required: true
+  - type: input
+    id: docs_version
+    attributes:
+      label: ONLYOFFICE Docs version
+      placeholder: "e.g. 9.0.0"
+    validations:
+      required: true
+  - type: textarea
+    id: issue_summary
+    attributes:
+      label: Expected behavior
+      placeholder: "Describe the connection problem: where it fails and any error messages shown."
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs (optional)
+      placeholder: "Paste relevant logs (e.g., editor or system logs)."
+      render: shell
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots (optional)
+      placeholder: "Attach or paste any relevant screenshots."

@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: ❓ ONLYOFFICE Community Forum
+    url: https://community.onlyoffice.com/
+    about: Ask usage and configuration questions or get community help.
+  - name: 📚 ONLYOFFICE API Documentation
+    url: https://api.onlyoffice.com/docs/
+    about: Review integration guides and API reference.
