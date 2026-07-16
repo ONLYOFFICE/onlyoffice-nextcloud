@@ -1,0 +1,36 @@
+name: Feature request
+description: Suggest an improvement for this integration.
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to suggest an improvement.
+  - type: checkboxes
+    id: duplicate_check
+    attributes:
+      label: Before submitting
+      options:
+        - label: I searched existing issues and did not find a duplicate.
+          required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem are you trying to solve?
+      placeholder: "Describe your proposed solution. If you're unsure how it should be implemented, describe the desired outcome instead."
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      placeholder: "Describe the feature briefly and how it should work."
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context (optional)
+      placeholder: "Add screenshots, links, or alternatives considered."
