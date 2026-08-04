@@ -40,6 +40,7 @@ import NcButton from '@nextcloud/vue/components/NcButton'
 import NcSettingsSelectGroup from '@nextcloud/vue/components/NcSettingsSelectGroup'
 import { clearHistory, saveCommonSettings } from '../../services/SettingsService'
 import { useAutosave } from './useAutosave'
+import HintPopover from '../../components/HintPopover.vue'
 
 const props = defineProps<{
 	formats: Record<string, Record<string, unknown>>
@@ -366,8 +367,16 @@ function applyUnknownAuthor() {
 		</p>
 
 		<!-- Review display mode -->
-		<p>
-			{{ t('onlyoffice', 'REVIEW mode for viewing') }}
+		<p class="onlyoffice-review-header">
+			<span>{{ t('onlyoffice', 'REVIEW mode for viewing') }}</span>
+			<HintPopover :label="t('onlyoffice', 'Review mode explanation')">
+				<ul>
+					<li><strong>{{ t('onlyoffice', 'Markup and balloons') }}</strong> — {{ t('onlyoffice', 'All changes (Editing)') }}</li>
+					<li><strong>{{ t('onlyoffice', 'Only markup') }}</strong> — {{ t('onlyoffice', 'All changes (Editing), no balloons') }}</li>
+					<li><strong>{{ t('onlyoffice', 'Final') }}</strong> — {{ t('onlyoffice', 'All changes accepted (Preview)') }}</li>
+					<li><strong>{{ t('onlyoffice', 'Original') }}</strong> — {{ t('onlyoffice', 'All changes rejected (Preview)') }}</li>
+				</ul>
+			</HintPopover>
 		</p>
 		<div class="onlyoffice-tables">
 			<div>
@@ -440,6 +449,11 @@ function applyUnknownAuthor() {
 	display: flex;
 	align-items: center;
 	gap: 8px;
+}
+
+.onlyoffice-review-header {
+	display: flex;
+	align-items: center;
 }
 
 #onlyoffice-enable-sharing-block {
