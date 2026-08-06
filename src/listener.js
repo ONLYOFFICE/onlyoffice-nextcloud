@@ -89,12 +89,12 @@ OCA.Onlyoffice.onRequestInsertImage = function(imageMimes) {
 		.catch(() => {})
 }
 
-OCA.Onlyoffice.onRequestMailMergeRecipients = function(recipientMimes) {
+OCA.Onlyoffice.onRequestSelectSpreadsheet = function(recipientMimes, documentSelectionType) {
 	getFilePickerBuilder(t(OCA.Onlyoffice.AppName, 'Select recipients'))
 		.setMimeTypeFilter(recipientMimes)
 		.addButton({
 			label: t('core', 'Choose'),
-			callback: (nodes) => { if (!nodes[0]) return; document.querySelector(OCA.Onlyoffice.frameSelector).contentWindow.OCA.Onlyoffice.editorSetRecipient(nodes[0].path) },
+			callback: (nodes) => { if (!nodes[0]) return; document.querySelector(OCA.Onlyoffice.frameSelector).contentWindow.OCA.Onlyoffice.editorSetRequestedSpreadsheet(nodes[0].path, documentSelectionType) },
 			variant: 'primary',
 		})
 		.build()
@@ -194,8 +194,8 @@ window.addEventListener('message', function(event) {
 	case 'editorRequestInsertImage':
 		OCA.Onlyoffice.onRequestInsertImage(event.data.param)
 		break
-	case 'editorRequestMailMergeRecipients':
-		OCA.Onlyoffice.onRequestMailMergeRecipients(event.data.param)
+	case 'editorRequestSelectSpreadsheet':
+		OCA.Onlyoffice.onRequestSelectSpreadsheet(event.data.param, event.data.documentSelectionType)
 		break
 	case 'editorRequestSelectDocument':
 		OCA.Onlyoffice.onRequestSelectDocument(event.data.param, event.data.documentSelectionType)
