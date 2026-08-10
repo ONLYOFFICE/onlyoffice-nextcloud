@@ -54,7 +54,8 @@ for (const fileType of ['docx', 'pdf', 'pptx', 'xlsx']) {
 			await filesPage.menuItem('Download as').click()
 
 			await expect(filesPage.downloadPickerDialog()).toBeVisible()
-			await filesPage.downloadPickerSelect().selectOption({ index: 0 })
+			await filesPage.downloadPickerSelect().click()
+			await filesPage.downloadPickerOption('Original format').click()
 
 			const download = filesPage.page.waitForEvent('download')
 			await filesPage.downloadPickerButton().click()

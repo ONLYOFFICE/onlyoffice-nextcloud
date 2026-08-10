@@ -101,7 +101,7 @@ OC.L10N.register(
     "File has been converted. Its content might look different.": "Il file è stato convertito. Il suo contenuto potrebbe avere un aspetto diverso.",
     "Download as": "Scaricare come",
     "Download": "Scaricare",
-    "Origin format": "Formato di origine",
+    "Original format": "Formato originale",
     "Failed to send notification": "Invio di notifica non riuscito",
     "Notification sent successfully": "Notifica è stata inviata con successo",
     "%1\$s mentioned in the %2\$s: \"%3\$s\".": "%1\$s ha menzionato in %2\$s: \"%3\$s\".",

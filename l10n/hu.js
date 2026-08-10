@@ -101,7 +101,7 @@ OC.L10N.register(
     "File has been converted. Its content might look different.":"A fájl konvertálva. Tartalma eltérő lehet.",
     "Download as":"Letöltés másként:",
     "Download":"Letöltés",
-    "Origin format":"Eredeti formátum",
+    "Original format":"Eredeti formátum",
     "Failed to send notification":"Az értesítés küldése sikertelen volt.",
     "Notification sent successfully":"Az értesítés sikeresen elküldve.",
     "%1$s mentioned in the %2$s: \"%3$s\".":"%1$s említve a(z) %2$s: \"%3$s\".",
