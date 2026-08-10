@@ -37,10 +37,14 @@
 namespace OCA\Onlyoffice\Listeners;
 
 use Exception;
+use OCA\Onlyoffice\ExtraPermissions;
 use OCA\Onlyoffice\FileVersions;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 use OCP\IUser;
+use OCP\Share\IManager;
+use OCP\Share\IShare;
+use OCP\User\Events\BeforeUserDeletedEvent;
 use OCP\User\Events\UserDeletedEvent;
 use Psr\Log\LoggerInterface;
 
@@ -49,13 +53,37 @@ use Psr\Log\LoggerInterface;
  */
 class UserListener implements IEventListener {
 
+    /**
+     * Share ids for removal
+     *
+     * @var array<string, string[]>
+     */
+    private array $pendingShareIds = [];
+
     public function __construct(
         private readonly LoggerInterface $logger,
+        private readonly IManager $shareManager,
+        private readonly ExtraPermissions $extraPermissions,
     ) {}
 
     public function handle(Event $event): void {
+        if ($event instanceof BeforeUserDeletedEvent) {
+            $this->beforeUserDeleted($event->getUser());
+        }
+
         if ($event instanceof UserDeletedEvent) {
             $this->userDeleted($event->getUser());
+        }
+    }
+
+    public function beforeUserDeleted(IUser $user): void {
+        try {
+            $this->pendingShareIds[$user->getUID()] = $this->getShareIdsForUser($user->getUID());
+        } catch (Exception $e) {
+            $this->logger->error(
+                "BeforeUserDeletedEvent: collecting shares for userId {$user->getUID()}",
+                ["exception" => $e]
+            );
         }
     }
 
@@ -64,9 +92,55 @@ class UserListener implements IEventListener {
             FileVersions::deleteAllVersions($user->getUID());
         } catch (Exception $e) {
             $this->logger->error(
-                "ShareDeletedEvent: userId {$user->getUID()}",
+                "UserDeletedEvent: userId {$user->getUID()}",
                 ["exception" => $e]
             );
+        }
+
+        try {
+            $this->deleteExtraPermissionsForUser($user->getUID());
+        } catch (Exception $e) {
+            $this->logger->error(
+                "UserDeletedEvent: deleting extra permissions for userId {$user->getUID()}",
+                ["exception" => $e]
+            );
+        }
+    }
+
+    /**
+     * Get ids of shares owned by the user, plus direct user shares received by them.
+     */
+    private function getShareIdsForUser(string $userId): array {
+        $ownedShareTypes = [
+            IShare::TYPE_USER,
+            IShare::TYPE_GROUP,
+            IShare::TYPE_LINK,
+            IShare::TYPE_ROOM,
+            IShare::TYPE_CIRCLE,
+        ];
+
+        $shareIds = [];
+        foreach ($ownedShareTypes as $shareType) {
+            foreach ($this->shareManager->getSharesBy($userId, $shareType, null, false, -1) as $share) {
+                $shareIds[] = $share->getId();
+            }
+        }
+        foreach ($this->shareManager->getSharedWith($userId, IShare::TYPE_USER, null, -1) as $share) {
+            $shareIds[] = $share->getId();
+        }
+
+        return array_unique($shareIds);
+    }
+
+    /**
+     * Delete extra permissions for shares
+     */
+    private function deleteExtraPermissionsForUser(string $userId): void {
+        $shareIds = $this->pendingShareIds[$userId] ?? [];
+        unset($this->pendingShareIds[$userId]);
+
+        if ($shareIds !== []) {
+            $this->extraPermissions->deleteList($shareIds);
         }
     }
 }
