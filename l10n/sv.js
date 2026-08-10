@@ -192,6 +192,9 @@ OC.L10N.register(
     "Saving …": "Sparar …",
     "Failed to save common settings": "Det gick inte att spara de allmänna inställningarna",
     "Failed to save security settings": "Det gick inte att spara säkerhetsinställningarna",
-    "Apply": "Verkställ"
+    "Apply": "Verkställ",
+    "No users here": "Inga användare här",
+    "Enable Custom permissions for users on the Sharing tab, ensuring Edit is turned on and Share is turned off": "Aktivera Anpassade behörigheter för användare på fliken Delning och se till att Redigera är påslaget och Dela är avstängt",
+    "Share this file": "Dela den här filen"
 },
 "nplurals=2; plural=(n != 1);");

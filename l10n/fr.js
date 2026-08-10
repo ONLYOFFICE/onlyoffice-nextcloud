@@ -192,6 +192,9 @@ OC.L10N.register(
     "Saving …": "Enregistrement …",
     "Failed to save common settings": "Échec de l'enregistrement des paramètres généraux",
     "Failed to save security settings": "Échec de l'enregistrement des paramètres de sécurité",
-    "Apply": "Appliquer"
+    "Apply": "Appliquer",
+    "No users here": "Aucun utilisateur ici",
+    "Enable Custom permissions for users on the Sharing tab, ensuring Edit is turned on and Share is turned off": "Activez les autorisations personnalisées pour les utilisateurs dans l'onglet Partage, en veillant à ce que Modifier soit activé et Partager désactivé",
+    "Share this file": "Partager ce fichier"
 },
 "nplurals=2; plural=(n > 1);");

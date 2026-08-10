@@ -192,6 +192,9 @@ OC.L10N.register(
     "Saving …": "Mentés …",
     "Failed to save common settings": "Az általános beállítások mentése sikertelen",
     "Failed to save security settings": "A biztonsági beállítások mentése sikertelen",
-    "Apply": "Alkalmaz"
+    "Apply": "Alkalmaz",
+    "No users here": "Itt nincsenek felhasználók",
+    "Enable Custom permissions for users on the Sharing tab, ensuring Edit is turned on and Share is turned off": "Engedélyezze az Egyéni jogosultságokat a felhasználók számára a Megosztás lapon, ügyelve arra, hogy a Szerkesztés be legyen kapcsolva, a Megosztás pedig ki",
+    "Share this file": "Fájl megosztása"
 },
 "nplurals=2; plural=(n != 1);");
