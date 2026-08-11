@@ -392,20 +392,18 @@ OCA.Onlyoffice.editorInsertImage = function(filePath) {
 }
 
 OCA.Onlyoffice.onRequestSelectSpreadsheet = function(event) {
-	const recipientMimes = [
-		'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-	]
+	const recipientExtensions = ['.csv', '.fods', '.ods', '.ots', '.xls', '.xlsm', '.xlsx', '.xlt', '.xltm', '.xltx']
 
 	if (OCA.Onlyoffice.inframe) {
 		window.parent.postMessage({
 			method: 'editorRequestSelectSpreadsheet',
-			param: recipientMimes,
+			param: recipientExtensions,
 			documentSelectionType: event.data.c,
 		},
 		'*')
 	} else {
 		getFilePickerBuilder(t(OCA.Onlyoffice.AppName, 'Select recipients'))
-			.setMimeTypeFilter(recipientMimes)
+			.setFilter((node) => node.type === 'folder' || recipientExtensions.includes(node.extension))
 			.addButton({
 				label: t('core', 'Choose'),
 				callback: (nodes) => { if (!nodes[0]) return; OCA.Onlyoffice.editorSetRequestedSpreadsheet(nodes[0].path, event.data.c) },

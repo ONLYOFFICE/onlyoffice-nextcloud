@@ -89,9 +89,9 @@ OCA.Onlyoffice.onRequestInsertImage = function(imageMimes) {
 		.catch(() => {})
 }
 
-OCA.Onlyoffice.onRequestSelectSpreadsheet = function(recipientMimes, documentSelectionType) {
+OCA.Onlyoffice.onRequestSelectSpreadsheet = function(recipientExtensions, documentSelectionType) {
 	getFilePickerBuilder(t(OCA.Onlyoffice.AppName, 'Select recipients'))
-		.setMimeTypeFilter(recipientMimes)
+		.setFilter((node) => node.type === 'folder' || recipientExtensions.includes(node.extension))
 		.addButton({
 			label: t('core', 'Choose'),
 			callback: (nodes) => { if (!nodes[0]) return; document.querySelector(OCA.Onlyoffice.frameSelector).contentWindow.OCA.Onlyoffice.editorSetRequestedSpreadsheet(nodes[0].path, documentSelectionType) },
