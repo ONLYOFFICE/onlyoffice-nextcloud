@@ -74,10 +74,7 @@ test('Create new PDF form from blank template', async ({ filesPage, editorPage }
 	await filesPage.openNewMenu()
 
 	await filesPage.menuItem('New PDF form').click()
-
-	const blankButton = filesPage.page.getByRole('dialog').getByRole('button', { name: 'Blank' })
-	await expect(blankButton).toBeVisible()
-	await blankButton.click()
+	await filesPage.createBlankPdfForm()
 
 	await editorPage.waitForEditor()
 })

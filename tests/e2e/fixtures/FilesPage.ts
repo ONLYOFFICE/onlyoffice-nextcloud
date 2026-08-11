@@ -101,4 +101,22 @@ export class FilesPage {
 	downloadPickerButton(): Locator {
 		return this.page.getByRole('dialog').getByRole('button', { name: 'Download', exact: true });
 	}
+
+	pdfFormBlankButton(): Locator {
+		return this.page.getByRole('dialog').getByRole('button', { name: 'Blank' });
+	}
+
+	pdfFormCreateButton(): Locator {
+		return this.page.getByRole('dialog').getByRole('button', { name: 'Create' });
+	}
+
+	async createBlankPdfForm(): Promise<void> {
+		const blankButton = this.pdfFormBlankButton();
+		await expect(blankButton).toBeVisible();
+		await blankButton.click();
+
+		const createButton = this.pdfFormCreateButton();
+		await expect(createButton).toBeVisible();
+		await createButton.click();
+	}
 }

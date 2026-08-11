@@ -115,10 +115,7 @@ test.describe('Public edit directory share', () => {
 			const filesPage = new FilesPage(guestPage)
 			await filesPage.openNewMenu()
 			await filesPage.menuItem('New PDF form').click()
-
-			const blankButton = filesPage.page.getByRole('dialog').getByRole('button', { name: 'Blank' })
-			await expect(blankButton).toBeVisible()
-			await blankButton.click()
+			await filesPage.createBlankPdfForm()
 
 			const editorPage = new EditorPage(guestPage)
 			await editorPage.waitForEditor()
