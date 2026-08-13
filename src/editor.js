@@ -212,6 +212,14 @@ OCA.Onlyoffice.InitEditor = function() {
 					config.events.onRequestSharingSettings = OCA.Onlyoffice.onRequestSharingSettings
 				}
 
+				if (OCA.Onlyoffice.anchor) {
+					try {
+						config.editorConfig.actionLink = JSON.parse(OCA.Onlyoffice.anchor)
+					} catch (e) {
+						console.error('ONLYOFFICE: failed to parse anchor', e)
+					}
+				}
+
 				OCA.Onlyoffice.docEditor = new DocsAPI.DocEditor('iframeEditor', config)
 
 				if (OCA.Onlyoffice.directEditor) {
@@ -788,9 +796,6 @@ OCA.Onlyoffice.getConfigUrl = function() {
 	}
 	if (guestName && guestName !== 'null') {
 		params.push('guestName=' + encodeURIComponent(guestName))
-	}
-	if (OCA.Onlyoffice.anchor) {
-		params.push('anchor=' + encodeURIComponent(OCA.Onlyoffice.anchor))
 	}
 
 	if (OCA.Onlyoffice.inframe || OCA.Onlyoffice.directToken) {
