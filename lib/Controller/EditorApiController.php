@@ -783,7 +783,7 @@ class EditorApiController extends OCSController {
                 "date" => (new \DateTime("now", new \DateTimeZone($timezone)))->format("Y-m-d H:i:s"),
                 "themingName" => Server::get(\OCA\Theming\ThemingDefaults::class)->getName()
             ];
-            $watermarkTemplate = preg_replace_callback("/{(.+?)}/", fn($matches) => $replacements[$matches[1]], $watermarkTemplate);
+            $watermarkTemplate = preg_replace_callback("/{(.+?)}/", fn($matches) => $replacements[$matches[1]] ?? $matches[0], $watermarkTemplate);
 
             $params["document"]["options"] = [
                 "watermark_on_draw" => [

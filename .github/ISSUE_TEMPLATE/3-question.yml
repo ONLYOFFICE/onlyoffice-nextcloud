@@ -1,0 +1,29 @@
+name: Question
+description: Ask a usage or configuration question about this integration.
+title: "[Question]: "
+labels:
+  - question
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For faster help with general usage or configuration questions, consider the [Community Forum](https://community.onlyoffice.com/) — it's often quicker than filing an issue.
+  - type: checkboxes
+    id: duplicate_check
+    attributes:
+      label: Before submitting
+      options:
+        - label: I searched existing issues and the documentation and did not find an answer.
+          required: true
+  - type: textarea
+    id: question
+    attributes:
+      label: What's your question?
+      placeholder: "Describe what you're trying to do and what you're unsure about."
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context (optional)
+      placeholder: "Versions, configuration details, screenshots, or anything else relevant."

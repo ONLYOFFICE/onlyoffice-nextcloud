@@ -17,7 +17,7 @@ The app allows to:
 
 <p align="center">
   <a href="https://www.onlyoffice.com/office-for-nextcloud?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud">
-    <img width="840" src="https://static-site.onlyoffice.com/public/images/templates/office-for-nextcloud/documents/documents-4@2x.png" alt="ONLYOFFICE Docs for Nextcloud">
+    <img width="840" src="screenshots/ONLYOFFICE and Nextcloud.png" alt="ONLYOFFICE Docs for Nextcloud">
   </a>
 </p>
 

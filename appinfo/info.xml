@@ -13,7 +13,7 @@ Furthermore, you can seamlessly connect any AI assistant, including local ones, 
 
 Whether you’re working with internal teams or external collaborators, the ONLYOFFICE app for Nextcloud enhances productivity, simplifies workflows, and ensures your files remain secure.
 ]]></description>
-    <licence>agpl</licence>
+    <licence>AGPL-3.0-only</licence>
     <author mail="dev@onlyoffice.com" homepage="https://www.onlyoffice.com/">Ascensio System SIA</author>
     <version>10.1.2</version>
     <namespace>Onlyoffice</namespace>
