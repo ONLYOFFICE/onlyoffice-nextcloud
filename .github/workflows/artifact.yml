@@ -62,7 +62,7 @@ jobs:
           cd $cwd
           tar -czvf onlyoffice.tar.gz onlyoffice
       - name: Upload Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: onlyoffice
           path: onlyoffice.tar.gz
