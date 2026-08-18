@@ -74,6 +74,7 @@ use OCA\Onlyoffice\TemplateProvider;
 use OCP\Files\Events\Node\NodeDeletedEvent;
 use OCP\Files\Events\Node\NodeWrittenEvent;
 use OCP\Share\Events\ShareDeletedEvent;
+use OCP\User\Events\BeforeUserDeletedEvent;
 use OCP\User\Events\UserDeletedEvent;
 use OCP\Server;
 
@@ -106,6 +107,7 @@ class Application extends App implements IBootstrap {
         $context->registerEventListener(NodeDeletedEvent::class, FileListener::class);
         $context->registerEventListener(NodeWrittenEvent::class, FileListener::class);
         $context->registerEventListener(ShareDeletedEvent::class, ShareListener::class);
+        $context->registerEventListener(BeforeUserDeletedEvent::class, UserListener::class);
         $context->registerEventListener(UserDeletedEvent::class, UserListener::class);
         $context->registerEventListener(VersionRestoredEvent::class, FileVersionsListener::class);
         $context->registerEventListener(MailMergeEndedEvent::class, MailMergeEndedListener::class);
