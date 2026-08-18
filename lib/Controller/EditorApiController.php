@@ -118,7 +118,6 @@ class EditorApiController extends OCSController {
      * @param bool $desktop - desktop label
      * @param string $guestName - nickname not logged user
      * @param bool $template - file is template
-     * @param string $anchor - anchor for file content
      *
      * @return JSONResponse
      */
@@ -133,8 +132,7 @@ class EditorApiController extends OCSController {
         bool $inviewer = false,
         bool $desktop = false,
         ?string $guestName = null,
-        bool $template = false,
-        ?string $anchor = null
+        bool $template = false
     ): JSONResponse {
 
         if (!empty($directToken)) {
@@ -497,16 +495,6 @@ class EditorApiController extends OCSController {
 
         if ($this->appConfig->useDemo()) {
             $params["editorConfig"]["tenant"] = $this->appConfig->getSystemValue("instanceid", true);
-        }
-
-        if (!empty($anchor)) {
-            try {
-                $actionLink = json_decode($anchor, true);
-
-                $params["editorConfig"]["actionLink"] = $actionLink;
-            } catch (\Exception $e) {
-                $this->logger->error("Config: $fileId decode $anchor", ["exception" => $e]);
-            }
         }
 
         if (!empty($this->appConfig->getDocumentServerUrl())) {
