@@ -190,6 +190,9 @@
     "Saving …": "Guardando …",
     "Failed to save common settings": "No se pudo guardar la configuración general",
     "Failed to save security settings": "No se pudo guardar la configuración de seguridad",
-    "Apply": "Aplicar"
+    "Apply": "Aplicar",
+    "No users here": "No hay usuarios aquí",
+    "Enable Custom permissions for users on the Sharing tab, ensuring Edit is turned on and Share is turned off": "Habilite los permisos personalizados para los usuarios en la pestaña Compartir, asegurándose de que Editar esté activado y Compartir esté desactivado",
+    "Share this file": "Compartir este archivo"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

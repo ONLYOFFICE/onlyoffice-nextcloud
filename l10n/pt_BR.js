@@ -192,6 +192,9 @@ OC.L10N.register(
     "Saving …": "Salvando …",
     "Failed to save common settings": "Falha ao salvar as configurações comuns",
     "Failed to save security settings": "Falha ao salvar as configurações de segurança",
-    "Apply": "Aplicar"
+    "Apply": "Aplicar",
+    "No users here": "Nenhum usuário aqui",
+    "Enable Custom permissions for users on the Sharing tab, ensuring Edit is turned on and Share is turned off": "Habilite as Permissões personalizadas para os usuários na aba Compartilhamento, garantindo que Editar esteja ativado e Compartilhar esteja desativado",
+    "Share this file": "Compartilhar este arquivo"
 },
 "nplurals=2; plural=(n > 1);");

@@ -192,6 +192,9 @@ OC.L10N.register(
     "Saving …": "保存中…",
     "Failed to save common settings": "共通設定の保存に失敗しました",
     "Failed to save security settings": "セキュリティ設定の保存に失敗しました",
-    "Apply": "適用"
+    "Apply": "適用",
+    "No users here": "ユーザーがいません",
+    "Enable Custom permissions for users on the Sharing tab, ensuring Edit is turned on and Share is turned off": "「共有」タブでユーザーに対して「カスタム権限」を有効にし、「編集」がオンで「共有」がオフになっていることを確認してください",
+    "Share this file": "このファイルを共有"
 },
 "nplurals=1; plural=0;");
