@@ -49,6 +49,8 @@ use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\Attribute\PublicPage;
 use OCP\AppFramework\OCSController;
 use OCP\Constants;
+use OCP\EventDispatcher\IEventDispatcher;
+use OCP\Files\Events\Node\BeforeNodeReadEvent;
 use OCP\Files\File;
 use OCP\Files\Folder;
 use OCP\Files\IRootFolder;
@@ -85,6 +87,7 @@ class EditorApiController extends OCSController {
         string $appName,
         IRequest $request,
         private readonly IRootFolder $root,
+        private readonly IEventDispatcher $eventDispatcher,
         private readonly IUserSession $userSession,
         private readonly IUserManager $userManager,
         private readonly IURLGenerator $urlGenerator,
@@ -177,6 +180,9 @@ class EditorApiController extends OCSController {
             $this->logger->error("Config: $fileId $error");
             return new JSONResponse(["error" => $error]);
         }
+
+        // force read operation to trigger possible audit logging
+        $this->eventDispatcher->dispatchTyped(new BeforeNodeReadEvent($file));
 
         if ($this->appConfig->getRestrictExternalStorage() && $this->isExternalStorage($file)) {
             return new JSONResponse(["error" => $this->trans->t("Opening files with ONLYOFFICE from external storages is restricted. Please contact the admin.")]);
