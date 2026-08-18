@@ -171,7 +171,7 @@ OCA.Onlyoffice.InitEditor = function() {
 					|| (OCA.Onlyoffice.currentUser?.uid)) {
 					config.events.onRequestSaveAs = OCA.Onlyoffice.onRequestSaveAs
 					config.events.onRequestInsertImage = OCA.Onlyoffice.onRequestInsertImage
-					config.events.onRequestMailMergeRecipients = OCA.Onlyoffice.onRequestMailMergeRecipients
+					config.events.onRequestSelectSpreadsheet = OCA.Onlyoffice.onRequestSelectSpreadsheet
 					config.events.onRequestCompareFile = OCA.Onlyoffice.onRequestSelectDocument // todo: remove (for editors 7.4)
 					config.events.onRequestSelectDocument = OCA.Onlyoffice.onRequestSelectDocument
 					config.events.onRequestSendNotify = OCA.Onlyoffice.onRequestSendNotify
@@ -391,23 +391,22 @@ OCA.Onlyoffice.editorInsertImage = function(filePath) {
 	})
 }
 
-OCA.Onlyoffice.onRequestMailMergeRecipients = function() {
-	const recipientMimes = [
-		'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-	]
+OCA.Onlyoffice.onRequestSelectSpreadsheet = function(event) {
+	const recipientExtensions = ['.csv', '.fods', '.ods', '.ots', '.xls', '.xlsm', '.xlsx', '.xlt', '.xltm', '.xltx']
 
 	if (OCA.Onlyoffice.inframe) {
 		window.parent.postMessage({
-			method: 'editorRequestMailMergeRecipients',
-			param: recipientMimes,
+			method: 'editorRequestSelectSpreadsheet',
+			param: recipientExtensions,
+			documentSelectionType: event.data.c,
 		},
 		'*')
 	} else {
 		getFilePickerBuilder(t(OCA.Onlyoffice.AppName, 'Select recipients'))
-			.setMimeTypeFilter(recipientMimes)
+			.setFilter((node) => node.type === 'folder' || recipientExtensions.includes(node.extension))
 			.addButton({
 				label: t('core', 'Choose'),
-				callback: (nodes) => { if (!nodes[0]) return; OCA.Onlyoffice.editorSetRecipient(nodes[0].path) },
+				callback: (nodes) => { if (!nodes[0]) return; OCA.Onlyoffice.editorSetRequestedSpreadsheet(nodes[0].path, event.data.c) },
 				variant: 'primary',
 			})
 			.build()
@@ -432,14 +431,15 @@ OCA.Onlyoffice.onRequestStartMailMerge = function() {
 	OCA.Onlyoffice.docEditor.processMailMerge(true)
 }
 
-OCA.Onlyoffice.editorSetRecipient = function(filePath) {
+OCA.Onlyoffice.editorSetRequestedSpreadsheet = function(filePath, documentSelectionType) {
 	getFileUrl(filePath).then((response) => {
 		if (response.error) {
 			OCA.Onlyoffice.showMessage(response.error, 'error')
 			return
 		}
 
-		OCA.Onlyoffice.docEditor.setMailMergeRecipients(response)
+		response.c = documentSelectionType
+		OCA.Onlyoffice.docEditor.setRequestedSpreadsheet(response)
 	})
 }
 
