@@ -192,6 +192,9 @@ OC.L10N.register(
     "Saving …": "Запазване …",
     "Failed to save common settings": "Неуспешно запазване на общите настройки",
     "Failed to save security settings": "Неуспешно запазване на настройките за сигурност",
-    "Apply": "Прилагане"
+    "Apply": "Прилагане",
+    "No users here": "Няма потребители тук",
+    "Enable Custom permissions for users on the Sharing tab, ensuring Edit is turned on and Share is turned off": "Активирайте „Персонализирани разрешения“ за потребители в раздела „Споделяне“, като се уверите, че „Редактиране“ е включено, а „Споделяне“ е изключено",
+    "Share this file": "Споделяне на файла"
 },
 "nplurals=2; plural=(n != 1);");

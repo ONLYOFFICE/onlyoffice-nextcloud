@@ -192,6 +192,9 @@ OC.L10N.register(
     "Saving …": "Zapisywanie …",
     "Failed to save common settings": "Nie udało się zapisać ustawień ogólnych",
     "Failed to save security settings": "Nie udało się zapisać ustawień zabezpieczeń",
-    "Apply": "Zastosuj"
+    "Apply": "Zastosuj",
+    "No users here": "Brak użytkowników",
+    "Enable Custom permissions for users on the Sharing tab, ensuring Edit is turned on and Share is turned off": "Włącz Uprawnienia niestandardowe dla użytkowników na karcie Udostępnianie, upewniając się, że Edycja jest włączona, a Udostępnianie wyłączone",
+    "Share this file": "Udostępnij ten plik"
 },
 "nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);");

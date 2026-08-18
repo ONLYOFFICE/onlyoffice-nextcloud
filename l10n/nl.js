@@ -192,6 +192,9 @@ OC.L10N.register(
     "Saving …": "Opslaan …",
     "Failed to save common settings": "Kan algemene instellingen niet opslaan",
     "Failed to save security settings": "Kan beveiligingsinstellingen niet opslaan",
-    "Apply": "Toepassen"
+    "Apply": "Toepassen",
+    "No users here": "Geen gebruikers hier",
+    "Enable Custom permissions for users on the Sharing tab, ensuring Edit is turned on and Share is turned off": "Schakel Aangepaste machtigingen in voor gebruikers op het tabblad Delen, en zorg dat Bewerken aan staat en Delen uit staat",
+    "Share this file": "Dit bestand delen"
 },
 "nplurals=2; plural=(n != 1);");
