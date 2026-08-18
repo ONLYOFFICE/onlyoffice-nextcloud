@@ -101,7 +101,7 @@ OC.L10N.register(
     "File has been converted. Its content might look different.": "Файл конвертовано. При цьому форматування вмісту могло змінитися.",
     "Download as": "Звантажити як",
     "Download": "Звантажити",
-    "Origin format": "Оригінальний формат",
+    "Original format": "Оригінальний формат",
     "Failed to send notification": "Помилка надсилання сповіщення",
     "Notification sent successfully": "Сповіщення успішно надіслено",
     "%1\$s mentioned in the %2\$s: \"%3\$s\".": "%1\$s згадав у %2\$s: \"%3\$s\".",
@@ -192,6 +192,9 @@ OC.L10N.register(
     "Saving …": "Збереження …",
     "Failed to save common settings": "Не вдалося зберегти загальні налаштування",
     "Failed to save security settings": "Не вдалося зберегти налаштування безпеки",
-    "Apply": "Застосувати"
+    "Apply": "Застосувати",
+    "No users here": "Тут немає користувачів",
+    "Enable Custom permissions for users on the Sharing tab, ensuring Edit is turned on and Share is turned off": "Увімкніть Власні дозволи для користувачів на вкладці «Спільний доступ», переконавшись, що «Редагування» увімкнено, а «Спільний доступ» вимкнено",
+    "Share this file": "Поділитися цим файлом"
 },
 "nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != 11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || (n % 100 >=11 && n % 100 <=14 )) ? 2: 3);");

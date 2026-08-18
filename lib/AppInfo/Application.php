@@ -42,9 +42,7 @@ use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
 use OCP\DirectEditing\RegisterDirectEditorEvent;
 use OCP\Files\Template\FileCreatedFromTemplateEvent;
-use OCP\Files\Template\ITemplateManager;
-use OCP\Files\Template\TemplateFileCreator;
-use OCP\IL10N;
+use OCP\Files\Template\RegisterTemplateCreatorEvent;
 use OCP\Security\CSP\AddContentSecurityPolicyEvent;
 use OCA\Files\Event\LoadAdditionalScriptsEvent;
 use OCA\Files_Sharing\Event\BeforeTemplateRenderedEvent;
@@ -65,6 +63,7 @@ use OCA\Onlyoffice\Listeners\DocumentUnsavedListener;
 use OCA\Onlyoffice\Listeners\FileListener;
 use OCA\Onlyoffice\Listeners\FileVersionsListener;
 use OCA\Onlyoffice\Listeners\MailMergeEndedListener;
+use OCA\Onlyoffice\Listeners\RegisterTemplateFileCreatorListener;
 use OCA\Onlyoffice\Listeners\ShareListener;
 use OCA\Onlyoffice\Listeners\UserListener;
 use OCA\Onlyoffice\Middleware\DesktopMiddleware;
@@ -74,6 +73,7 @@ use OCA\Onlyoffice\TemplateProvider;
 use OCP\Files\Events\Node\NodeDeletedEvent;
 use OCP\Files\Events\Node\NodeWrittenEvent;
 use OCP\Share\Events\ShareDeletedEvent;
+use OCP\User\Events\BeforeUserDeletedEvent;
 use OCP\User\Events\UserDeletedEvent;
 use OCP\Server;
 
@@ -106,9 +106,11 @@ class Application extends App implements IBootstrap {
         $context->registerEventListener(NodeDeletedEvent::class, FileListener::class);
         $context->registerEventListener(NodeWrittenEvent::class, FileListener::class);
         $context->registerEventListener(ShareDeletedEvent::class, ShareListener::class);
+        $context->registerEventListener(BeforeUserDeletedEvent::class, UserListener::class);
         $context->registerEventListener(UserDeletedEvent::class, UserListener::class);
         $context->registerEventListener(VersionRestoredEvent::class, FileVersionsListener::class);
         $context->registerEventListener(MailMergeEndedEvent::class, MailMergeEndedListener::class);
+        $context->registerEventListener(RegisterTemplateCreatorEvent::class, RegisterTemplateFileCreatorListener::class);
 
         if (interface_exists(\OCP\Files\Template\ICustomTemplateProvider::class)) {
             $context->registerTemplateProvider(TemplateProvider::class);
@@ -121,37 +123,5 @@ class Application extends App implements IBootstrap {
         Hooks::connectHooks();
     }
 
-    public function boot(IBootContext $context): void {
-        if (class_exists(TemplateFileCreator::class)) {
-            $context->injectFn(function (ITemplateManager $templateManager, IL10N $trans, $appName): void {
-                if (!empty($this->appConfig->getDocumentServerUrl())
-                    && $this->appConfig->settingsAreSuccessful()
-                    && $this->appConfig->isUserAllowedToUse()) {
-                    $templateManager->registerTemplateFileCreator(function () use ($appName, $trans): TemplateFileCreator {
-                        $wordTemplate = new TemplateFileCreator($appName, $trans->t("New document"), ".docx");
-                        $wordTemplate->addMimetype("application/vnd.openxmlformats-officedocument.wordprocessingml.document");
-                        $wordTemplate->setIconSvgInline(file_get_contents(__DIR__ . '/../../img/new-docx.svg'));
-                        $wordTemplate->setRatio(21/29.7);
-                        return $wordTemplate;
-                    });
-
-                    $templateManager->registerTemplateFileCreator(function () use ($appName, $trans): TemplateFileCreator {
-                        $cellTemplate = new TemplateFileCreator($appName, $trans->t("New spreadsheet"), ".xlsx");
-                        $cellTemplate->addMimetype("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-                        $cellTemplate->setIconSvgInline(file_get_contents(__DIR__ . '/../../img/new-xlsx.svg'));
-                        $cellTemplate->setRatio(21/29.7);
-                        return $cellTemplate;
-                    });
-
-                    $templateManager->registerTemplateFileCreator(function () use ($appName, $trans): TemplateFileCreator {
-                        $slideTemplate = new TemplateFileCreator($appName, $trans->t("New presentation"), ".pptx");
-                        $slideTemplate->addMimetype("application/vnd.openxmlformats-officedocument.presentationml.presentation");
-                        $slideTemplate->setIconSvgInline(file_get_contents(__DIR__ . '/../../img/new-pptx.svg'));
-                        $slideTemplate->setRatio(16/9);
-                        return $slideTemplate;
-                    });
-                }
-            });
-        }
-    }
+    public function boot(IBootContext $context): void {}
 }

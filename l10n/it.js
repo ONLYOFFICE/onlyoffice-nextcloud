@@ -101,7 +101,7 @@ OC.L10N.register(
     "File has been converted. Its content might look different.": "Il file è stato convertito. Il suo contenuto potrebbe avere un aspetto diverso.",
     "Download as": "Scaricare come",
     "Download": "Scaricare",
-    "Origin format": "Formato di origine",
+    "Original format": "Formato originale",
     "Failed to send notification": "Invio di notifica non riuscito",
     "Notification sent successfully": "Notifica è stata inviata con successo",
     "%1\$s mentioned in the %2\$s: \"%3\$s\".": "%1\$s ha menzionato in %2\$s: \"%3\$s\".",
@@ -192,6 +192,9 @@ OC.L10N.register(
     "Saving …": "Salvataggio …",
     "Failed to save common settings": "Impossibile salvare le impostazioni comuni",
     "Failed to save security settings": "Impossibile salvare le impostazioni di sicurezza",
-    "Apply": "Applica"
+    "Apply": "Applica",
+    "No users here": "Nessun utente qui",
+    "Enable Custom permissions for users on the Sharing tab, ensuring Edit is turned on and Share is turned off": "Abilita i permessi personalizzati per gli utenti nella scheda Condivisione, assicurandoti che Modifica sia attivo e Condividi sia disattivato",
+    "Share this file": "Condividi questo file"
 },
 "nplurals=2; plural=(n != 1);");

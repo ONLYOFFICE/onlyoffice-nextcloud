@@ -101,7 +101,7 @@ OC.L10N.register(
     "File has been converted. Its content might look different.": "Fitxategia bihurtu egin da. Edukia desberdin ikus daiteke.",
     "Download as": "Deskargatu honela",
     "Download": "Deskargatu",
-    "Origin format": "Jatorrizko formatua",
+    "Original format": "Jatorrizko formatua",
     "Failed to send notification": "Akatsa jakinarazpena bidaltzean",
     "Notification sent successfully": "Jakinarazpena ongi bidali da",
     "%1\$s mentioned in the %2\$s: \"%3\$s\".": "%1\$s iruzkindu du hemen %2\$s: \"%3\$s\".",
@@ -192,6 +192,9 @@ OC.L10N.register(
     "Saving …": "Gordetzen …",
     "Failed to save common settings": "Ezin izan dira ezarpen orokorrak gorde",
     "Failed to save security settings": "Ezin izan dira segurtasun-ezarpenak gorde",
-    "Apply": "Aplikatu"
+    "Apply": "Aplikatu",
+    "No users here": "Ez dago erabiltzailerik hemen",
+    "Enable Custom permissions for users on the Sharing tab, ensuring Edit is turned on and Share is turned off": "Gaitu erabiltzaileentzako baimen pertsonalizatuak Partekatzea fitxan, Edizioa piztuta eta Partekatzea itzalita dagoela ziurtatuz",
+    "Share this file": "Partekatu fitxategi hau"
 },
 "nplurals=2; plural=(n != 1);");

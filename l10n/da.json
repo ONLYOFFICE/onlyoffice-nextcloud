@@ -99,7 +99,7 @@
     "File has been converted. Its content might look different.": "Filen er blevet konverteret. Dens indhold kan se anderledes ud.",
     "Download as": "Download som",
     "Download": "Hent",
-    "Origin format": "Oprindelsesformat",
+    "Original format": "Originalt format",
     "Failed to send notification": "Kunne ikke sende notifikation",
     "Notification sent successfully": "Meddelelse sendt",
     "%1$s mentioned in the %2$s: \"%3$s\".": "%1$s nævnt i %2$s: \"%3$s\".",
@@ -190,6 +190,9 @@
     "Saving …": "Gemmer …",
     "Failed to save common settings": "Kunne ikke gemme de generelle indstillinger",
     "Failed to save security settings": "Kunne ikke gemme sikkerhedsindstillingerne",
-    "Apply": "Anvend"
+    "Apply": "Anvend",
+    "No users here": "Ingen brugere her",
+    "Enable Custom permissions for users on the Sharing tab, ensuring Edit is turned on and Share is turned off": "Aktivér Brugerdefinerede tilladelser for brugere under fanen Deling, og sørg for, at Rediger er slået til, og Del er slået fra",
+    "Share this file": "Del denne fil"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

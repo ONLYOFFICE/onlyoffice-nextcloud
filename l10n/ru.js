@@ -101,7 +101,7 @@ OC.L10N.register(
     "File has been converted. Its content might look different.": "Файл был сконвертирован. Его форматирование могло измениться.",
     "Download as": "Скачать как",
     "Download": "Скачать",
-    "Origin format": "Оригинальный формат",
+    "Original format": "Оригинальный формат",
     "Failed to send notification": "Ошибка отправки оповещения",
     "Notification sent successfully": "Оповещение успешно отправлено",
     "%1\$s mentioned in the %2\$s: \"%3\$s\".": "%1\$s упомянул в %2\$s: \"%3\$s\".",
@@ -192,6 +192,9 @@ OC.L10N.register(
     "Saving …": "Сохранение …",
     "Failed to save common settings": "Не удалось сохранить общие настройки",
     "Failed to save security settings": "Не удалось сохранить настройки безопасности",
-    "Apply": "Применить"
+    "Apply": "Применить",
+    "No users here": "Список пользователей пуст",
+    "Enable Custom permissions for users on the Sharing tab, ensuring Edit is turned on and Share is turned off": "Включите пользовательские разрешения для пользователей на вкладке «Общий доступ», убедившись, что «Редактирование» включено, а «Общий доступ» отключен",
+    "Share this file": "Поделиться этим файлом"
 },
 "nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);");

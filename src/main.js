@@ -59,6 +59,7 @@ import { createFile, convertFile } from './services/FileService.ts'
 import { getFileExtension } from './utils/files.ts'
 import { spawnDialog } from '@nextcloud/vue/functions/dialog'
 import DownloadPicker from './views/DownloadPicker.vue'
+import PdfFormNameDialog from './views/PdfFormNameDialog.vue'
 
 OCA.Onlyoffice = Object.assign({
 	AppName: 'onlyoffice',
@@ -401,13 +402,15 @@ async function fileDownloadAsHandler(file) {
  * @param {string} name new file name
  * @param {object} filelist files list context with dir
  * @param {object|null} filesContext files app context for node creation
+ * @param {object[]} content nodes already present in the target folder
  */
-function openFormPicker(name, filelist, filesContext = null) {
+function openFormPicker(name, filelist, filesContext = null, content = []) {
 	const filterMimes = [
 		'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 	]
 
 	const startDir = filelist.getCurrentDirectory ? filelist.getCurrentDirectory() : filelist.dir
+	const otherNames = content.map((node) => node.basename)
 
 	getFilePickerBuilder(t(OCA.Onlyoffice.AppName, 'Create new PDF form'))
 		.setMimeTypeFilter(filterMimes)
@@ -415,7 +418,15 @@ function openFormPicker(name, filelist, filesContext = null) {
 		.addButton({
 			label: t(OCA.Onlyoffice.AppName, 'Blank'),
 			variant: 'secondary',
-			callback: () => createFileOverload(name, filelist, 0, 0, true, filesContext),
+			callback: () => {
+				spawnDialog(PdfFormNameDialog, { name, otherNames }).then((result) => {
+					if (result?.back) {
+						openFormPicker(name, filelist, filesContext, content)
+					} else if (result?.name) {
+						createFileOverload(result.name, filelist, 0, 0, true, filesContext)
+					}
+				})
+			},
 		})
 		.addButton({
 			label: t(OCA.Onlyoffice.AppName, 'From text document'),
@@ -663,10 +674,10 @@ function registerNewFileMenu() {
 		},
 		iconSvgInline: NewPdfSvg,
 		order: 24,
-		handler: context => {
+		handler: (context, content) => {
 			const name = t(OCA.Onlyoffice.AppName, 'New PDF form')
 			const dirContext = { dir: context.path }
-			openFormPicker(name + '.pdf', dirContext, context)
+			openFormPicker(name + '.pdf', dirContext, context, content)
 		},
 	})
 }

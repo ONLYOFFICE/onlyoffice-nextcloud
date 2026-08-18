@@ -99,7 +99,7 @@
     "File has been converted. Its content might look different.": "O arquivo foi convertido. Seu conteúdo pode ser diferente.",
     "Download as": "Baixar como",
     "Download": "Baixar",
-    "Origin format": "Formato de origem",
+    "Original format": "Formato original",
     "Failed to send notification": "Falha ao enviar notificação",
     "Notification sent successfully": "Notificação enviada com sucesso",
     "%1$s mentioned in the %2$s: \"%3$s\".": "%1$s mencionado em %2$s: \"%3$s\".",
@@ -190,6 +190,9 @@
     "Saving …": "Salvando …",
     "Failed to save common settings": "Falha ao salvar as configurações comuns",
     "Failed to save security settings": "Falha ao salvar as configurações de segurança",
-    "Apply": "Aplicar"
+    "Apply": "Aplicar",
+    "No users here": "Nenhum usuário aqui",
+    "Enable Custom permissions for users on the Sharing tab, ensuring Edit is turned on and Share is turned off": "Habilite as Permissões personalizadas para os usuários na aba Compartilhamento, garantindo que Editar esteja ativado e Compartilhar esteja desativado",
+    "Share this file": "Compartilhar este arquivo"
 },"pluralForm" :"nplurals=2; plural=(n > 1);"
 }

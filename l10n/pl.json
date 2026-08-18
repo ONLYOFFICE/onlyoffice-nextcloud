@@ -99,7 +99,7 @@
     "File has been converted. Its content might look different.": "Plik został przekonwertowany. Jego zawartość może wyglądać inaczej.",
     "Download as": "Pobierz jako",
     "Download": "Pobierz",
-    "Origin format": "Oryginalny format",
+    "Original format": "Oryginalny format",
     "Failed to send notification": "Nie udało się wysłać powiadomienia",
     "Notification sent successfully": "Powiadomienie zostało wysłane",
     "%1$s mentioned in the %2$s: \"%3$s\".": "%1$s dodał(a) w %2$s następujący komentarz: \"%3$s\".",
@@ -190,6 +190,9 @@
     "Saving …": "Zapisywanie …",
     "Failed to save common settings": "Nie udało się zapisać ustawień ogólnych",
     "Failed to save security settings": "Nie udało się zapisać ustawień zabezpieczeń",
-    "Apply": "Zastosuj"
+    "Apply": "Zastosuj",
+    "No users here": "Brak użytkowników",
+    "Enable Custom permissions for users on the Sharing tab, ensuring Edit is turned on and Share is turned off": "Włącz Uprawnienia niestandardowe dla użytkowników na karcie Udostępnianie, upewniając się, że Edycja jest włączona, a Udostępnianie wyłączone",
+    "Share this file": "Udostępnij ten plik"
 },"pluralForm" :"nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);"
 }

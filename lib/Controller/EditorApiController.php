@@ -49,6 +49,8 @@ use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\Attribute\PublicPage;
 use OCP\AppFramework\OCSController;
 use OCP\Constants;
+use OCP\EventDispatcher\IEventDispatcher;
+use OCP\Files\Events\Node\BeforeNodeReadEvent;
 use OCP\Files\File;
 use OCP\Files\Folder;
 use OCP\Files\IRootFolder;
@@ -85,6 +87,7 @@ class EditorApiController extends OCSController {
         string $appName,
         IRequest $request,
         private readonly IRootFolder $root,
+        private readonly IEventDispatcher $eventDispatcher,
         private readonly IUserSession $userSession,
         private readonly IUserManager $userManager,
         private readonly IURLGenerator $urlGenerator,
@@ -115,7 +118,6 @@ class EditorApiController extends OCSController {
      * @param bool $desktop - desktop label
      * @param string $guestName - nickname not logged user
      * @param bool $template - file is template
-     * @param string $anchor - anchor for file content
      *
      * @return JSONResponse
      */
@@ -130,8 +132,7 @@ class EditorApiController extends OCSController {
         bool $inviewer = false,
         bool $desktop = false,
         ?string $guestName = null,
-        bool $template = false,
-        ?string $anchor = null
+        bool $template = false
     ): JSONResponse {
 
         if (!empty($directToken)) {
@@ -177,6 +178,9 @@ class EditorApiController extends OCSController {
             $this->logger->error("Config: $fileId $error");
             return new JSONResponse(["error" => $error]);
         }
+
+        // force read operation to trigger possible audit logging
+        $this->eventDispatcher->dispatchTyped(new BeforeNodeReadEvent($file));
 
         if ($this->appConfig->getRestrictExternalStorage() && $this->isExternalStorage($file)) {
             return new JSONResponse(["error" => $this->trans->t("Opening files with ONLYOFFICE from external storages is restricted. Please contact the admin.")]);
@@ -491,16 +495,6 @@ class EditorApiController extends OCSController {
 
         if ($this->appConfig->useDemo()) {
             $params["editorConfig"]["tenant"] = $this->appConfig->getSystemValue("instanceid", true);
-        }
-
-        if (!empty($anchor)) {
-            try {
-                $actionLink = json_decode($anchor, true);
-
-                $params["editorConfig"]["actionLink"] = $actionLink;
-            } catch (\Exception $e) {
-                $this->logger->error("Config: $fileId decode $anchor", ["exception" => $e]);
-            }
         }
 
         if (!empty($this->appConfig->getDocumentServerUrl())) {

@@ -99,7 +99,7 @@
     "File has been converted. Its content might look different.": "ファイルが変換されました。 その内容は異なって見えるかもしれません。",
     "Download as": "別の形式でダウンロード",
     "Download": "ダウンロード",
-    "Origin format": "オリジンの形式",
+    "Original format": "元の形式",
     "Failed to send notification": "通知を送信できませんでした",
     "Notification sent successfully": "通知を送信しました",
     "%1$s mentioned in the %2$s: \"%3$s\".": "%1$s は %2$s: \"%3$s\"に記載されました。",
@@ -190,6 +190,9 @@
     "Saving …": "保存中…",
     "Failed to save common settings": "共通設定の保存に失敗しました",
     "Failed to save security settings": "セキュリティ設定の保存に失敗しました",
-    "Apply": "適用"
+    "Apply": "適用",
+    "No users here": "ユーザーがいません",
+    "Enable Custom permissions for users on the Sharing tab, ensuring Edit is turned on and Share is turned off": "「共有」タブでユーザーに対して「カスタム権限」を有効にし、「編集」がオンで「共有」がオフになっていることを確認してください",
+    "Share this file": "このファイルを共有"
 },"pluralForm" :"nplurals=1; plural=0;"
 }

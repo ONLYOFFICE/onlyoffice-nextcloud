@@ -99,7 +99,7 @@
     "File has been converted. Its content might look different.": "A fájl konvertálva. Tartalma eltérő lehet.",
     "Download as": "Letöltés másként:",
     "Download": "Letöltés",
-    "Origin format": "Eredeti formátum",
+    "Original format": "Eredeti formátum",
     "Failed to send notification": "Az értesítés küldése sikertelen volt.",
     "Notification sent successfully": "Az értesítés sikeresen elküldve.",
     "%1$s mentioned in the %2$s: \"%3$s\".": "%1$s említve a(z) %2$s: \"%3$s\".",
@@ -190,6 +190,9 @@
     "Saving …": "Mentés …",
     "Failed to save common settings": "Az általános beállítások mentése sikertelen",
     "Failed to save security settings": "A biztonsági beállítások mentése sikertelen",
-    "Apply": "Alkalmaz"
+    "Apply": "Alkalmaz",
+    "No users here": "Itt nincsenek felhasználók",
+    "Enable Custom permissions for users on the Sharing tab, ensuring Edit is turned on and Share is turned off": "Engedélyezze az Egyéni jogosultságokat a felhasználók számára a Megosztás lapon, ügyelve arra, hogy a Szerkesztés be legyen kapcsolva, a Megosztás pedig ki",
+    "Share this file": "Fájl megosztása"
 },"pluralForm": "nplurals=2; plural=(n != 1);"
 }

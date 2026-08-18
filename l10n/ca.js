@@ -101,7 +101,7 @@ OC.L10N.register(
     "File has been converted. Its content might look different.": "L'arxiu s'ha convertit. El seu contingut pot ser diferent.",
     "Download as": "Descarregar com",
     "Download": "Descarregar",
-    "Origin format": "Format original",
+    "Original format": "Format original",
     "Failed to send notification": "Error en enviar la notificació",
     "Notification sent successfully": "Notificació enviada correctament",
     "%1\$s mentioned in the %2\$s: \"%3\$s\".": "%1\$s ha esmentat en %2\$s: \"%3\$s\".",
@@ -192,6 +192,9 @@ OC.L10N.register(
     "Saving …": "S'està guardant …",
     "Failed to save common settings": "No s'ha pogut guardar la configuració general",
     "Failed to save security settings": "No s'ha pogut guardar la configuració de seguretat",
-    "Apply": "Aplica"
+    "Apply": "Aplica",
+    "No users here": "Aquí no hi ha usuaris",
+    "Enable Custom permissions for users on the Sharing tab, ensuring Edit is turned on and Share is turned off": "Habiliteu els permisos personalitzats per als usuaris a la pestanya Compartir, assegurant-vos que l'edició estigui activada i que Compartir estigui desactivat",
+    "Share this file": "Comparteix aquest fitxer"
 },
 "nplurals=2; plural=(n != 1);");

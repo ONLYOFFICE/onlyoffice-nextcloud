@@ -19,7 +19,7 @@ jobs:
     name: php-lint
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up php ${{ matrix.php-versions }}
         uses: shivammathur/setup-php@v2
@@ -33,3 +33,19 @@ jobs:
         run: |
           cd ${{ github.workspace }}
           find . -name \\*.php -not -path './lib/composer/*' -not -path './lib/Vendor/*' -not -path './build/stubs/*' -print0 | xargs -0 -n1 php -l
+
+  phpcs:
+    runs-on: ubuntu-latest
+    name: phpcs
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          coverage: none
+          tools: phpcs
+      - name: Run phpcs
+        run: |
+          phpcs --standard=./ruleset.xml --extensions=php,module,inc,install --ignore=node_modules,bower_components,vendor,lib/Vendor,3rdparty,Migration --warning-severity=0 ./

@@ -21,7 +21,7 @@ jobs:
       branches-min: ${{ steps.versions.outputs.branches-min }}
     steps:
       - name: Checkout app
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Get version matrix
         id: versions
         uses: icewind1991/nextcloud-version-matrix@v1.3.2
@@ -70,7 +70,7 @@ jobs:
         run: git clone --depth 1 --branch ${{ needs.matrix.outputs.branches-min }} https://github.com/nextcloud/viewer nextcloud/apps/viewer
 
       - name: Checkout onlyoffice
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           persist-credentials: false
           submodules: true
@@ -126,7 +126,7 @@ jobs:
           DOCUMENT_STORAGE_URL="http://$CONTAINER_IP:8080/" npx playwright test
 
       - name: Upload test report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: ${{ always() }}
         with:
           name: playwright-report
@@ -134,7 +134,7 @@ jobs:
           retention-days: 5
 
       - name: Upload nextcloud logs
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: ${{ always() }}
         with:
           name: nextcloud-log
