@@ -365,6 +365,11 @@
       <code><![CDATA[IEventListener]]></code>
     </UndefinedClass>
   </file>
+  <file src="lib/Listeners/RegisterTemplateFileCreatorListener.php">
+    <UndefinedClass>
+      <code><![CDATA[IEventListener]]></code>
+    </UndefinedClass>
+  </file>
   <file src="lib/Listeners/ShareListener.php">
     <UndefinedClass>
       <code><![CDATA[IEventListener]]></code>
