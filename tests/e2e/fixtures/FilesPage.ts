@@ -95,7 +95,11 @@ export class FilesPage {
 	}
 
 	downloadPickerSelect(): Locator {
-		return this.page.locator('#onlyoffice-download-select');
+		return this.downloadPickerDialog().locator('.onlyoffice-download-select');
+	}
+
+	downloadPickerOption(name: string): Locator {
+		return this.page.locator('.vs__dropdown-option', { hasText: name });
 	}
 
 	downloadPickerButton(): Locator {
