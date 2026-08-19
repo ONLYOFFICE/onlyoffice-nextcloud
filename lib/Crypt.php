@@ -59,6 +59,19 @@ class Crypt {
     }
 
     /**
+     * Generate token for the object that expires after the given lifetime
+     *
+     * @param array $object - object to signature
+     * @param ?int $expiration - lifetime in seconds; defaults to the configured JWT lifetime
+     */
+    public function getExpiringHash(array $object, ?int $expiration = null): string {
+        $now = time();
+        $object["iat"] = $now;
+        $object["exp"] = $now + ($expiration ?? $this->appConfig->getJwtExpiration() * 60);
+        return $this->getHash($object);
+    }
+
+    /**
      * Create an object from the token
      *
      * @param string $token - token

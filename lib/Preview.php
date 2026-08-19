@@ -207,7 +207,7 @@ class Preview implements IProviderV2 {
             $data["template"] = true;
         }
 
-        $hashUrl = $this->crypt->getHash($data);
+        $hashUrl = $this->crypt->getExpiringHash($data);
 
         $fileUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.download", ["doc" => $hashUrl]);
 
