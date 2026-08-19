@@ -45,6 +45,7 @@ import {
 	restoreVersion,
 	saveAs,
 	getFileUrl,
+	getImageUrls,
 	fetchReference,
 	getUserInfo,
 	getUsers,
@@ -62,7 +63,6 @@ OCA.Onlyoffice = Object.assign({
 	inviewer: false,
 	fileId: null,
 	shareToken: null,
-	insertImageType: null,
 }, OCA.Onlyoffice)
 
 OCA.Onlyoffice.InitEditor = function() {
@@ -359,22 +359,22 @@ OCA.Onlyoffice.onRequestInsertImage = function(event) {
 		'image/svg+xml',
 	]
 
-	if (event.data) {
-		OCA.Onlyoffice.insertImageType = event.data.c
-	}
+	const insertionType = event.data ? event.data.c : undefined
 
 	if (OCA.Onlyoffice.inframe) {
 		window.parent.postMessage({
 			method: 'editorRequestInsertImage',
 			param: imageMimes,
+			documentSelectionType: insertionType,
 		},
 		'*')
 	} else {
 		getFilePickerBuilder(t(OCA.Onlyoffice.AppName, 'Insert image'))
+			.setMultiSelect(true)
 			.setMimeTypeFilter(imageMimes)
 			.addButton({
 				label: t('core', 'Choose'),
-				callback: (nodes) => { if (!nodes[0]) return; OCA.Onlyoffice.editorInsertImage(nodes[0].path) },
+				callback: (nodes) => { if (!nodes.length) return; OCA.Onlyoffice.editorInsertImage(nodes.map((node) => node.path), insertionType) },
 				variant: 'primary',
 			})
 			.build()
@@ -383,17 +383,14 @@ OCA.Onlyoffice.onRequestInsertImage = function(event) {
 	}
 }
 
-OCA.Onlyoffice.editorInsertImage = function(filePath) {
-	getFileUrl(filePath).then((response) => {
+OCA.Onlyoffice.editorInsertImage = function(imagePaths, insertionType) {
+	getImageUrls(imagePaths).then((response) => {
 		if (response.error) {
 			OCA.Onlyoffice.showMessage(response.error, 'error')
 			return
 		}
 
-		if (OCA.Onlyoffice.insertImageType) {
-			response.c = OCA.Onlyoffice.insertImageType
-		}
-
+		response.c = insertionType
 		OCA.Onlyoffice.docEditor.insertImage(response)
 	})
 }

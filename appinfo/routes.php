@@ -53,6 +53,7 @@ return [
        ["name" => "editor#convert", "url" => "/ajax/convert", "verb" => "POST"],
        ["name" => "editor#save", "url" => "/ajax/save", "verb" => "POST"],
        ["name" => "editor#url", "url" => "/ajax/url", "verb" => "GET"],
+       ["name" => "editor#image_urls", "url" => "/ajax/image-urls", "verb" => "POST"],
        ["name" => "editor#history", "url" => "/ajax/history", "verb" => "GET"],
        ["name" => "editor#version", "url" => "/ajax/version", "verb" => "GET"],
        ["name" => "editor#restore", "url" => "/ajax/restore", "verb" => "PUT"],
