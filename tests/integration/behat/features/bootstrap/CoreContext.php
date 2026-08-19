@@ -34,6 +34,8 @@ class CoreContext implements Context
     private ?array $lastMentionResponse = null;
     private ?array $lastReferenceResponse = null;
     private ?array $lastUrlResponse = null;
+    private array $lastImagePaths = [];
+    private ?array $lastImageUrlsResponse = null;
     private ?ResponseInterface $lastDownloadResponse = null;
     private ?array $lastHistoryResponse = null;
     private ?array $lastVersionResponse = null;
@@ -88,6 +90,8 @@ class CoreContext implements Context
         $this->lastMentionResponse = null;
         $this->lastReferenceResponse = null;
         $this->lastUrlResponse = null;
+        $this->lastImagePaths = [];
+        $this->lastImageUrlsResponse = null;
         $this->lastDownloadResponse = null;
         $this->lastHistoryResponse = null;
         $this->lastVersionResponse = null;
@@ -596,6 +600,71 @@ class CoreContext implements Context
     public function theUrlRequestShouldFail(): void
     {
         Assert::assertArrayHasKey('error', $this->lastUrlResponse ?? []);
+    }
+
+    #[Given('I have a :ext image file in my home folder')]
+    public function iHaveAnImageFileInMyHomeFolder(string $ext): void
+    {
+        $name = 'image' . (count($this->lastImagePaths) + 1) . ".$ext";
+        $client = new Client();
+        $response = $client->put("{$this->baseUrl}/remote.php/webdav/$name", [
+            'auth'    => [self::REGULAR_USER, self::TEST_PASSWORD],
+            'body'    => 'placeholder',
+            'headers' => ['OCS-ApiRequest' => 'true'],
+        ]);
+
+        $fileId = $response->getHeaderLine('OC-FileId');
+        Assert::assertNotEmpty($fileId, "WebDAV upload did not return OC-FileId for $name");
+
+        $this->lastImagePaths[] = "/$name";
+        $this->createdFiles[] = [self::REGULAR_USER, "/$name"];
+    }
+
+    #[When('I request image urls for the files')]
+    public function iRequestImageUrlsForTheFiles(): void
+    {
+        $this->requestImageUrls($this->lastImagePaths);
+    }
+
+    #[When('I request image urls including a file that does not exist')]
+    public function iRequestImageUrlsIncludingAFileThatDoesNotExist(): void
+    {
+        $this->requestImageUrls([...$this->lastImagePaths, '/nonexistent.png']);
+    }
+
+    private function requestImageUrls(array $imagePaths): void
+    {
+        $this->sendFrontpageRequest('POST', 'apps/onlyoffice/ajax/image-urls', [
+            'json' => ['imagePaths' => $imagePaths],
+        ]);
+        $this->response->getBody()->rewind();
+        $this->lastImageUrlsResponse = json_decode($this->response->getBody()->getContents(), true);
+    }
+
+    #[Then('the image urls request should succeed')]
+    public function theImageUrlsRequestShouldSucceed(): void
+    {
+        Assert::assertSame(200, $this->response->getStatusCode());
+        Assert::assertArrayNotHasKey('error', $this->lastImageUrlsResponse ?? [], 'Unexpected error: ' . ($this->lastImageUrlsResponse['error'] ?? ''));
+    }
+
+    #[Then('the image urls request should fail')]
+    public function theImageUrlsRequestShouldFail(): void
+    {
+        Assert::assertArrayHasKey('error', $this->lastImageUrlsResponse ?? []);
+    }
+
+    #[Then('the response should contain :count image')]
+    #[Then('the response should contain :count images')]
+    public function theResponseShouldContainImages(string $count): void
+    {
+        $images = $this->lastImageUrlsResponse['images'] ?? [];
+        Assert::assertCount((int)$count, $images);
+        foreach ($images as $image) {
+            Assert::assertArrayHasKey('fileType', $image);
+            Assert::assertArrayHasKey('url', $image);
+            Assert::assertNotEmpty($image['url']);
+        }
     }
 
     #[When('I download the file converting it to :ext')]

@@ -101,6 +101,14 @@ export const getFileUrl = async (filePath: string): Promise<unknown> => {
 	return response.data
 }
 
+export const getImageUrls = async (imagePaths: string[]): Promise<unknown> => {
+	const response = await axios.post<unknown>(
+		generateUrl('apps/onlyoffice/ajax/image-urls'),
+		{ imagePaths },
+	)
+	return response.data
+}
+
 export const fetchReference = async (data: Record<string, unknown>): Promise<unknown> => {
 	const response = await axios.post<unknown>(
 		generateUrl('apps/onlyoffice/ajax/reference'),
