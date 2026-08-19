@@ -426,13 +426,18 @@
   </file>
   <file src="lib/RemoteInstance.php">
     <UndefinedClass>
+      <code><![CDATA[?ICache]]></code>
       <code><![CDATA[File]]></code>
       <code><![CDATA[File]]></code>
       <code><![CDATA[File]]></code>
+      <code><![CDATA[ICache]]></code>
       <code><![CDATA[Server]]></code>
       <code><![CDATA[Server]]></code>
       <code><![CDATA[Server]]></code>
       <code><![CDATA[Server]]></code>
+      <code><![CDATA[Server]]></code>
+      <code><![CDATA[self::cache()]]></code>
+      <code><![CDATA[self::cache()]]></code>
     </UndefinedClass>
     <UndefinedFunction>
       <code><![CDATA[\OCP\Log\logger('onlyoffice')]]></code>

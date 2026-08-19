@@ -44,6 +44,7 @@ import {
 	getConfig,
 	getFileUrl,
 	getHistory,
+	getImageUrls,
 	getUserInfo,
 	getUsers,
 	getVersionData,
@@ -57,7 +58,7 @@ import '@nextcloud/dialogs/style.css'
 
 /* global DocsAPI, oc_defaults */
 
-OCA.Onlyoffice = { AppName: 'onlyoffice', inframe: false, inviewer: false, fileId: null, shareToken: null, insertImageType: null, ...OCA.Onlyoffice }
+OCA.Onlyoffice = { AppName: 'onlyoffice', inframe: false, inviewer: false, fileId: null, shareToken: null, ...OCA.Onlyoffice }
 
 OCA.Onlyoffice.InitEditor = function() {
 	const iframeEditor = document.getElementById('iframeEditor')
@@ -165,7 +166,6 @@ OCA.Onlyoffice.InitEditor = function() {
 					config.events.onRequestSaveAs = OCA.Onlyoffice.onRequestSaveAs
 					config.events.onRequestInsertImage = OCA.Onlyoffice.onRequestInsertImage
 					config.events.onRequestSelectSpreadsheet = OCA.Onlyoffice.onRequestSelectSpreadsheet
-					config.events.onRequestCompareFile = OCA.Onlyoffice.onRequestSelectDocument // todo: remove (for editors 7.4)
 					config.events.onRequestSelectDocument = OCA.Onlyoffice.onRequestSelectDocument
 					config.events.onRequestSendNotify = OCA.Onlyoffice.onRequestSendNotify
 					config.events.onRequestReferenceData = OCA.Onlyoffice.onRequestReferenceData
@@ -203,6 +203,14 @@ OCA.Onlyoffice.InitEditor = function() {
 					&& config._files_sharing && !OCA.Onlyoffice.shareToken
 					&& window.parent.OCA.Onlyoffice.context) {
 					config.events.onRequestSharingSettings = OCA.Onlyoffice.onRequestSharingSettings
+				}
+
+				if (OCA.Onlyoffice.anchor) {
+					try {
+						config.editorConfig.actionLink = JSON.parse(OCA.Onlyoffice.anchor)
+					} catch (e) {
+						console.error('ONLYOFFICE: failed to parse anchor', e)
+					}
 				}
 
 				OCA.Onlyoffice.docEditor = new DocsAPI.DocEditor('iframeEditor', config)
@@ -352,17 +360,17 @@ OCA.Onlyoffice.onRequestInsertImage = function(event) {
 		'image/svg+xml',
 	]
 
-	if (event.data) {
-		OCA.Onlyoffice.insertImageType = event.data.c
-	}
+	const insertionType = event.data ? event.data.c : undefined
 
 	if (OCA.Onlyoffice.inframe) {
 		window.parent.postMessage({
 			method: 'editorRequestInsertImage',
 			param: imageMimes,
+			documentSelectionType: insertionType,
 		}, '*')
 	} else {
 		getFilePickerBuilder(t(OCA.Onlyoffice.AppName, 'Insert image'))
+			.setMultiSelect(true)
 			.setMimeTypeFilter(imageMimes)
 			.addButton({
 				label: t('core', 'Choose'),
@@ -370,7 +378,7 @@ OCA.Onlyoffice.onRequestInsertImage = function(event) {
 					if (!nodes[0]) {
 						return
 					}
-					OCA.Onlyoffice.editorInsertImage(nodes[0].path)
+					OCA.Onlyoffice.editorInsertImage(nodes.map((node) => node.path), insertionType)
 				},
 				variant: 'primary',
 			})
@@ -380,17 +388,14 @@ OCA.Onlyoffice.onRequestInsertImage = function(event) {
 	}
 }
 
-OCA.Onlyoffice.editorInsertImage = function(filePath) {
-	getFileUrl(filePath).then((response) => {
+OCA.Onlyoffice.editorInsertImage = function(imagePaths, insertionType) {
+	getImageUrls(imagePaths).then((response) => {
 		if (response.error) {
 			OCA.Onlyoffice.showMessage(response.error, 'error')
 			return
 		}
 
-		if (OCA.Onlyoffice.insertImageType) {
-			response.c = OCA.Onlyoffice.insertImageType
-		}
-
+		response.c = insertionType
 		OCA.Onlyoffice.docEditor.insertImage(response)
 	})
 }
@@ -801,9 +806,6 @@ OCA.Onlyoffice.getConfigUrl = function() {
 	}
 	if (guestName && guestName !== 'null') {
 		params.push('guestName=' + encodeURIComponent(guestName))
-	}
-	if (OCA.Onlyoffice.anchor) {
-		params.push('anchor=' + encodeURIComponent(OCA.Onlyoffice.anchor))
 	}
 
 	if (OCA.Onlyoffice.inframe || OCA.Onlyoffice.directToken) {

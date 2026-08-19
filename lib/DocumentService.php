@@ -427,7 +427,7 @@ class DocumentService {
 
         $convertedFileUri = null;
         try {
-            $hashUrl = $this->crypt->getHash(["action" => "empty"]);
+            $hashUrl = $this->crypt->getExpiringHash(["action" => "empty"]);
             $fileUrl = $this->urlGenerator->linkToRouteAbsolute(self::$appName . ".callback.emptyfile", ["doc" => $hashUrl]);
             if (!$this->appConfig->useDemo() && !empty($this->appConfig->getStorageUrl())) {
                 $fileUrl = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->appConfig->getStorageUrl(), $fileUrl);

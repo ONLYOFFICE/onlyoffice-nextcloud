@@ -1193,6 +1193,78 @@ class EditorController extends Controller {
     }
 
     /**
+     * Get presigned urls to files for batch image insertion
+     *
+     * @param string[] $imagePaths - image file paths
+     *
+     * @return DataResponse
+     */
+    #[NoAdminRequired]
+    public function imageUrls(array $imagePaths): DataResponse {
+        $this->logger->debug("Request image urls for: " . json_encode($imagePaths));
+
+        if (!$this->appConfig->isUserAllowedToUse()) {
+            return new DataResponse(["error" => $this->trans->t("Not permitted")]);
+        }
+
+        $user = $this->userSession->getUser();
+        $userId = $user->getUID();
+        $userFolder = $this->root->getUserFolder($userId);
+
+        $images = [];
+        foreach ($imagePaths as $imagePath) {
+            try {
+                $file = $userFolder->get($imagePath);
+            } catch (\OCP\Files\NotFoundException) {
+                $this->logger->error("File for generate image url was not found: $imagePath");
+                continue;
+            }
+
+            $canDownload = true;
+
+            /**
+             * @var \OCP\Files\Storage\IStorage|SharedStorage
+             */
+            $fileStorage = $file->getStorage();
+            if ($fileStorage->instanceOfStorage(SharedStorage::class)) {
+                $share = $fileStorage->getShare();
+                $canDownload = FileUtility::canShareDownload($share);
+            }
+
+            if (!$file->isReadable() || !$canDownload) {
+                $this->logger->error("File without permission: $imagePath");
+                continue;
+            }
+
+            $fileName = $file->getName();
+            $ext = strtolower(pathinfo((string) $fileName, PATHINFO_EXTENSION));
+
+            $images[] = [
+                "fileType" => $ext,
+                "url" => $this->getUrl($file, $user),
+            ];
+        }
+
+        if (empty($images)) {
+            return new DataResponse(["error" => $this->trans->t("File not found")]);
+        }
+
+        $result = [
+            "images" => $images,
+        ];
+
+        if (!empty($this->appConfig->getDocumentServerSecret())) {
+            $now = time();
+            $result["iat"] = $now;
+            $result["exp"] = $now + $this->appConfig->getJwtExpiration() * 60;
+            $token = \OCA\Onlyoffice\Vendor\Firebase\JWT\JWT::encode($result, $this->appConfig->getDocumentServerSecret(), "HS256");
+            $result["token"] = $token;
+        }
+
+        return new DataResponse($result);
+    }
+
+    /**
      * Download method
      *
      * @param int $fileId - file identifier
@@ -1506,7 +1578,7 @@ class EditorController extends Controller {
             $data["template"] = true;
         }
 
-        $hashUrl = $this->crypt->getHash($data);
+        $hashUrl = $this->crypt->getExpiringHash($data);
 
         $fileUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.download", ["doc" => $hashUrl]);
 

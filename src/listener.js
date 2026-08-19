@@ -73,8 +73,9 @@ OCA.Onlyoffice.onRequestSaveAs = function(saveData) {
 		.catch(() => {})
 }
 
-OCA.Onlyoffice.onRequestInsertImage = function(imageMimes) {
+OCA.Onlyoffice.onRequestInsertImage = function(imageMimes, insertionType) {
 	getFilePickerBuilder(t(OCA.Onlyoffice.AppName, 'Insert image'))
+		.setMultiSelect(true)
 		.setMimeTypeFilter(imageMimes)
 		.addButton({
 			label: t('core', 'Choose'),
@@ -82,7 +83,7 @@ OCA.Onlyoffice.onRequestInsertImage = function(imageMimes) {
 				if (!nodes[0]) {
 					return
 				}
-				document.querySelector(OCA.Onlyoffice.frameSelector).contentWindow.OCA.Onlyoffice.editorInsertImage(nodes[0].path)
+				document.querySelector(OCA.Onlyoffice.frameSelector).contentWindow.OCA.Onlyoffice.editorInsertImage(nodes.map((node) => node.path), insertionType)
 			},
 			variant: 'primary',
 		})
@@ -208,7 +209,7 @@ window.addEventListener('message', function(event) {
 			OCA.Onlyoffice.onRequestSaveAs(event.data.param)
 			break
 		case 'editorRequestInsertImage':
-			OCA.Onlyoffice.onRequestInsertImage(event.data.param)
+			OCA.Onlyoffice.onRequestInsertImage(event.data.param, event.data.documentSelectionType)
 			break
 		case 'editorRequestSelectSpreadsheet':
 			OCA.Onlyoffice.onRequestSelectSpreadsheet(event.data.param, event.data.documentSelectionType)

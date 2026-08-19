@@ -36,9 +36,12 @@
 
 namespace OCA\Onlyoffice;
 
+use GuzzleHttp\Exception\RequestException;
 use OCA\Files_Sharing\External\Storage as SharingExternalStorage;
 use OCP\Files\File;
 use OCP\Http\Client\IClientService;
+use OCP\ICache;
+use OCP\ICacheFactory;
 use OCP\IDBConnection;
 use OCP\Server;
 
@@ -65,9 +68,19 @@ class RemoteInstance {
     private static int $ttl = 60 * 60;
 
     /**
-     * Health remote list
+     * App cache
      */
-    private static array $healthRemote = [];
+    private static ?ICache $cache = null;
+
+    /**
+     * Get app cache
+     */
+    private static function cache(): ICache {
+        if (self::$cache === null) {
+            self::$cache = Server::get(ICacheFactory::class)->createLocal(self::APP_NAME);
+        }
+        return self::$cache;
+    }
 
     /**
      * Get remote instance
@@ -130,16 +143,18 @@ class RemoteInstance {
         $logger = \OCP\Log\logger('onlyoffice');
         $remote = rtrim($remote, "/") . "/";
 
-        if (array_key_exists($remote, self::$healthRemote)) {
+        $cached = self::cache()->get($remote);
+        if ($cached !== null) {
             $logger->debug("Remote instance " . $remote . " from local cache", ["app" => self::APP_NAME]);
-            return self::$healthRemote[$remote];
+            return $cached;
         }
 
         $dbremote = self::get($remote);
         if (!empty($dbremote) && $dbremote["expire"] + self::$ttl > time()) {
             $logger->debug("Remote instance " . $remote . " from database status " . $dbremote["status"], ["app" => self::APP_NAME]);
-            self::$healthRemote[$remote] = $dbremote["status"];
-            return self::$healthRemote[$remote];
+            $status = (bool) $dbremote["status"];
+            self::cache()->set($remote, $status, self::$ttl);
+            return $status;
         }
 
         $httpClientService = Server::get(IClientService::class);
@@ -167,9 +182,9 @@ class RemoteInstance {
 
         $logger->debug("Remote instance " . $remote . " was stored to database status " . $status, ["app" => self::APP_NAME]);
 
-        self::$healthRemote[$remote] = $status;
+        self::cache()->set($remote, $status, self::$ttl);
 
-        return self::$healthRemote[$remote];
+        return $status;
     }
 
     /**
@@ -211,8 +226,9 @@ class RemoteInstance {
         } catch (\Exception $e) {
             $logger->error("Failed to request federated key " . $file->getId(), ['exception' => $e]);
 
-            if ($e->getResponse()->getStatusCode() === 404) {
+            if ($e instanceof RequestException && $e->hasResponse() && $e->getResponse()->getStatusCode() === 404) {
                 self::update($remote, false);
+                self::cache()->set($remote, false, self::$ttl);
                 $logger->debug("Changed status for remote instance $remote to false", ["app" => self::APP_NAME]);
             }
 

@@ -145,6 +145,19 @@ export async function fetchReference(data: Record<string, unknown>): Promise<unk
 }
 
 /**
+ * Fetch download URLs for the given image paths.
+ *
+ * @param imagePaths paths of the images to resolve
+ */
+export async function getImageUrls(imagePaths: string[]): Promise<unknown> {
+	const response = await axios.post<unknown>(
+		generateUrl('apps/onlyoffice/ajax/image-urls'),
+		{ imagePaths },
+	)
+	return response.data
+}
+
+/**
  * Fetches all sender email addresses for the currently logged-in user.
  *
  * @return A promise resolving to the list of email addresses from the server.
