@@ -158,7 +158,12 @@ class Preview implements IProviderV2 {
         try {
             $imageUrl = $this->documentService->getConvertedUri($fileUrl, $extension, self::THUMBEXTENSION, $key);
         } catch (\Exception $e) {
-            $this->logger->error("getConvertedUri: from $extension to " . self::THUMBEXTENSION, ["exception" => $e]);
+            $message = "getConvertedUri: from $extension to " . self::THUMBEXTENSION;
+            if (str_contains($e->getMessage(), "Incorrect password")) {
+                $this->logger->debug($message, ["exception" => $e]);
+            } else {
+                $this->logger->error($message, ["exception" => $e]);
+            }
             return null;
         }
 
