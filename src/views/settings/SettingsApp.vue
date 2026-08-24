@@ -143,9 +143,9 @@ function onAddressSaved({ showSections: show }: { showSections: boolean }) {
 .section-onlyoffice .onlyoffice-tables {
     margin-top: 4px;
     line-height: initial;
-    column-width: 140px;
-    -moz-column-width: 140px;
-    -webkit-column-width: 140px;
+    column-width: 210px;
+    -moz-column-width: 210px;
+    -webkit-column-width: 210px;
     margin-bottom: 1em;
 }
 

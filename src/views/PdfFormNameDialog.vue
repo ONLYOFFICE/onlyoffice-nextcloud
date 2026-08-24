@@ -33,29 +33,32 @@
   SPDX-License-Identifier: AGPL-3.0-only
 -->
 <template>
-	<NcDialog class="new-pdf-form-dialog"
+	<NcDialog
+		class="new-pdf-form-dialog"
 		:name="t('onlyoffice', 'New PDF form')"
 		:buttons="buttons"
-		is-form
+		isForm
 		@submit.prevent="handleCreate"
 		@update:open="$emit('close', null)">
 		<div class="new-pdf-dialog__form">
-			<NcTextField ref="input"
+			<NcTextField
+				ref="input"
 				v-model="filename"
 				:label="t('files', 'Filename')"
 				:error="validityMessage !== ''"
-				:helper-text="validityMessage" />
+				:helperText="validityMessage" />
 		</div>
 	</NcDialog>
 </template>
 
 <script setup lang="ts">
 import type { ButtonType, ButtonVariant } from '@nextcloud/vue/components/NcButton'
-import NcDialog from '@nextcloud/vue/components/NcDialog'
-import NcTextField from '@nextcloud/vue/components/NcTextField'
-import { InvalidFilenameError, InvalidFilenameErrorReason, getUniqueName, validateFilename } from '@nextcloud/files'
+
+import { getUniqueName, InvalidFilenameError, InvalidFilenameErrorReason, validateFilename } from '@nextcloud/files'
 import { t } from '@nextcloud/l10n'
 import { computed, onMounted, ref, watch } from 'vue'
+import NcDialog from '@nextcloud/vue/components/NcDialog'
+import NcTextField from '@nextcloud/vue/components/NcTextField'
 
 interface DialogButton {
 	label: string
@@ -110,14 +113,14 @@ const validityMessage = computed(() => {
 		}
 
 		switch (error.reason) {
-		case InvalidFilenameErrorReason.Character:
-			return t('files', '"{char}" is not allowed inside a filename.', { char: error.segment })
-		case InvalidFilenameErrorReason.ReservedName:
-			return t('files', '"{segment}" is a reserved name and not allowed for filenames.', { segment: error.segment })
-		case InvalidFilenameErrorReason.Extension:
-			return t('files', 'Filenames must not end with "{extension}".', { extension: error.segment })
-		default:
-			return t('files', 'Invalid filename.')
+			case InvalidFilenameErrorReason.Character:
+				return t('files', '"{char}" is not allowed inside a filename.', { char: error.segment })
+			case InvalidFilenameErrorReason.ReservedName:
+				return t('files', '"{segment}" is a reserved name and not allowed for filenames.', { segment: error.segment })
+			case InvalidFilenameErrorReason.Extension:
+				return t('files', 'Filenames must not end with "{extension}".', { extension: error.segment })
+			default:
+				return t('files', 'Invalid filename.')
 		}
 	}
 })

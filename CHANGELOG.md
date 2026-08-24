@@ -6,6 +6,7 @@
 - changed common and security admin settings to save automatically
 - added supported languages to the Help Center link
 - added a dialog to specify a name when creating a blank PDF form
+- added `simple` option for `reviewDisplay` setting and added descriptions for review display modes
 
 ## 10.1.2
 

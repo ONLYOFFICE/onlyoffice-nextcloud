@@ -899,14 +899,17 @@ class AppConfig {
      * Get review viewing mode setting
      */
     public function getCustomizationReviewDisplay(): string {
-        $value = $this->appConfig->getValueString($this->appName, $this->_customizationReviewDisplay, "original");
-        if ($value === "markup") {
-            return "markup";
+        $value = $this->appConfig->getValueString($this->appName, $this->_customizationReviewDisplay, "markup");
+        if ($value === "simple") {
+            return "simple";
         }
         if ($value === "final") {
             return "final";
         }
-        return "original";
+        if ($value === "original") {
+            return "original";
+        }
+        return "markup";
     }
 
     /**

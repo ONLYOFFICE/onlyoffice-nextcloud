@@ -40,24 +40,25 @@
 		@update:open="$emit('close', null)">
 		<div ref="containerRef" class="onlyoffice-download-container" tabindex="-1">
 			<p>{{ t('onlyoffice', 'Choose a format to convert {fileName}', { fileName }) }}</p>
-			<NcSelect v-model="selectedFormat"
-				input-id="onlyoffice-download-select"
+			<NcSelect
+				v-model="selectedFormat"
+				inputId="onlyoffice-download-select"
 				class="onlyoffice-download-select"
 				:options="selectOptions"
 				:reduce="(option) => option.id"
 				:clearable="false"
-				label-outside
+				labelOutside
 				:aria-label-combobox="t('onlyoffice', 'Format')" />
 		</div>
 	</NcDialog>
 </template>
 
 <script setup lang="ts">
-import NcSelect from '@nextcloud/vue/components/NcSelect'
 import { t } from '@nextcloud/l10n'
 import { generateUrl } from '@nextcloud/router'
 import { computed, onMounted, ref } from 'vue'
 import NcDialog from '@nextcloud/vue/components/NcDialog'
+import NcSelect from '@nextcloud/vue/components/NcSelect'
 
 declare const appName: string
 

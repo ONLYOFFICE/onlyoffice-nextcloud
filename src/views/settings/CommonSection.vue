@@ -38,6 +38,7 @@ import { t } from '@nextcloud/l10n'
 import { computed, ref, watch } from 'vue'
 import NcButton from '@nextcloud/vue/components/NcButton'
 import NcSettingsSelectGroup from '@nextcloud/vue/components/NcSettingsSelectGroup'
+import HintPopover from '../../components/HintPopover.vue'
 import { clearHistory, saveCommonSettings } from '../../services/SettingsService.ts'
 import { useAutosave } from './useAutosave.ts'
 
@@ -379,8 +380,16 @@ function applyUnknownAuthor() {
 		</p>
 
 		<!-- Review display mode -->
-		<p>
-			{{ t('onlyoffice', 'REVIEW mode for viewing') }}
+		<p class="onlyoffice-review-header">
+			<span>{{ t('onlyoffice', 'REVIEW mode for viewing') }}</span>
+			<HintPopover :label="t('onlyoffice', 'Review mode explanation')">
+				<ul>
+					<li><strong>{{ t('onlyoffice', 'Markup and balloons') }}</strong> — {{ t('onlyoffice', 'All changes (Editing)') }}</li>
+					<li><strong>{{ t('onlyoffice', 'Only markup') }}</strong> — {{ t('onlyoffice', 'All changes (Editing), no balloons') }}</li>
+					<li><strong>{{ t('onlyoffice', 'Final') }}</strong> — {{ t('onlyoffice', 'All changes accepted (Preview)') }}</li>
+					<li><strong>{{ t('onlyoffice', 'Original') }}</strong> — {{ t('onlyoffice', 'All changes rejected (Preview)') }}</li>
+				</ul>
+			</HintPopover>
 		</p>
 		<div class="onlyoffice-tables">
 			<div>
@@ -391,7 +400,17 @@ function applyUnknownAuthor() {
 					class="radio"
 					value="markup"
 					name="reviewDisplay">
-				<label for="onlyoffice-review-display-markup">{{ t('onlyoffice', 'Markup') }}</label>
+				<label for="onlyoffice-review-display-markup">{{ t('onlyoffice', 'Markup and balloons') }}</label>
+			</div>
+			<div>
+				<input
+					id="onlyoffice-review-display-simple"
+					v-model="reviewDisplay"
+					type="radio"
+					class="radio"
+					value="simple"
+					name="reviewDisplay">
+				<label for="onlyoffice-review-display-simple">{{ t('onlyoffice', 'Only markup') }}</label>
 			</div>
 			<div>
 				<input
@@ -459,6 +478,11 @@ function applyUnknownAuthor() {
 	display: flex;
 	align-items: center;
 	gap: 8px;
+}
+
+.onlyoffice-review-header {
+	display: flex;
+	align-items: center;
 }
 
 #onlyoffice-enable-sharing-block {

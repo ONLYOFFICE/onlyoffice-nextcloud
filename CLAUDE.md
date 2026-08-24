@@ -146,6 +146,10 @@ Use **Conventional Commits**: `type(scope): description`
 | `build` | Webpack/Vite config |
 | `eslint` | Linting config |
 
+## Changelog
+
+The repository keeps a `CHANGELOG.md` in the project root. When making user-facing changes (new features, bug fixes, or notable behavior changes), add an entry to the topmost section, following the existing format. Do not create a separate changelog file.
+
 ## Notes
 
 **CSS bundles are not auto-loaded.** Vite extracts CSS into `css/onlyoffice-*.css`. Each must be explicitly registered in the PHP listener alongside its script via `Util::addStyle()`.
