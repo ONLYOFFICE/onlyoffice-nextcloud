@@ -687,7 +687,7 @@ class EditorApiController extends OCSController {
         //The default value is original for viewer and markup for editor.
         $reviewDisplay = $this->appConfig->getCustomizationReviewDisplay();
         if ($reviewDisplay !== "markup") {
-            $params["editorConfig"]["customization"]["reviewDisplay"] = $reviewDisplay;
+            $params["editorConfig"]["customization"]["review"]["reviewDisplay"] = $reviewDisplay;
         }
 
         $theme = $this->appConfig->getCustomizationTheme();
