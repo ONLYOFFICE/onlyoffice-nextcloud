@@ -52,7 +52,8 @@ import {
 	sendMention,
 	setFavorite,
 } from './services/EditorService.ts'
-import { askConflictResolution, pickSaveAsTarget } from './utils/saveAs.ts'
+import { askConflictResolution } from './utils/saveAs.ts'
+import { askSaveAsTarget } from './utils/saveAsDialog.ts'
 
 import '@nextcloud/dialogs/style.css'
 
@@ -302,7 +303,7 @@ OCA.Onlyoffice.onRequestSaveAs = function(event) {
 			param: saveData,
 		}, '*')
 	} else {
-		pickSaveAsTarget(saveData.name, saveData.dir).then((target) => {
+		askSaveAsTarget(saveData.name, saveData.dir).then((target) => {
 			if (!target) {
 				return
 			}

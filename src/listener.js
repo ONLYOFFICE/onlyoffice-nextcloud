@@ -42,7 +42,8 @@ import {
 	resultToNode,
 } from '@nextcloud/files/dav'
 import { t } from '@nextcloud/l10n'
-import { askConflictResolution, pickSaveAsTarget } from './utils/saveAs.ts'
+import { askConflictResolution } from './utils/saveAs.ts'
+import { askSaveAsTarget } from './utils/saveAsDialog.ts'
 
 import '@nextcloud/dialogs/style.css'
 
@@ -70,7 +71,7 @@ function saveAsInEditor(saveData) {
 }
 
 OCA.Onlyoffice.onRequestSaveAs = function(saveData) {
-	pickSaveAsTarget(saveData.name, saveData.dir).then((target) => {
+	askSaveAsTarget(saveData.name, saveData.dir).then((target) => {
 		if (!target) {
 			return
 		}

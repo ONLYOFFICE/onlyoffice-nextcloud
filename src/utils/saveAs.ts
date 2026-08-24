@@ -46,6 +46,8 @@ export const CONFLICT_KEEP_BOTH = 'keepBoth'
 export interface SaveAsTarget {
 	dir: string
 	name: string
+	/** the user asked to name the file instead of taking the proposed name */
+	rename?: boolean
 }
 
 /**
@@ -59,27 +61,33 @@ export interface SaveAsTarget {
 export function pickSaveAsTarget(name: string, dir?: string): Promise<SaveAsTarget | null> {
 	const extension = getFileExtension(name)
 
+	const target = (nodes: INode[]): SaveAsTarget | null => {
+		const node = nodes[0]
+		if (!node) {
+			return null
+		}
+
+		return node.type === FileType.Folder
+			? { dir: node.path, name }
+			: { dir: node.dirname, name: node.basename }
+	}
+
 	return new Promise((resolve) => {
 		const builder = getFilePickerBuilder(t('onlyoffice', 'Save as'))
 			.allowDirectories()
 			.setCanPick((node: INode) => node.type === FileType.Folder
 				|| getFileExtension(node.basename) === extension)
 			.addButton({
-				label: t('core', 'Choose'),
+				label: t('onlyoffice', 'Change name'),
 				callback: (nodes: INode[]) => {
-					const node = nodes[0]
-					if (!node) {
-						resolve(null)
-						return
-					}
-
-					if (node.type === FileType.Folder) {
-						resolve({ dir: node.path, name })
-						return
-					}
-
-					resolve({ dir: node.dirname, name: node.basename })
+					const picked = target(nodes)
+					resolve(picked && { ...picked, rename: true })
 				},
+				variant: 'secondary',
+			})
+			.addButton({
+				label: t('onlyoffice', 'Save'),
+				callback: (nodes: INode[]) => resolve(target(nodes)),
 				variant: 'primary',
 			})
 
