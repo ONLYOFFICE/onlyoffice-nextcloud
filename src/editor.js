@@ -55,7 +55,7 @@ import {
 } from './services/EditorService.ts'
 import { encodePath } from '@nextcloud/paths'
 
-/* global DocsAPI, oc_defaults */
+/* global DocsAPI */
 
 OCA.Onlyoffice = Object.assign({
 	AppName: 'onlyoffice',
@@ -140,7 +140,7 @@ OCA.Onlyoffice.InitEditor = function() {
 
 					if (docIsChanged !== event.data) {
 						const titleChange = function() {
-							OCA.Onlyoffice.currentWindow.document.title = config.document.title + (event.data ? ' *' : '') + ' - ' + oc_defaults.title
+							OCA.Onlyoffice.currentWindow.document.title = config.document.title + (event.data ? ' *' : '') + ' - ' + OC.theme.title
 							docIsChanged = event.data
 						}
 
