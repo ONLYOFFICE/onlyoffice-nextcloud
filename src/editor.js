@@ -52,6 +52,7 @@ import {
 	sendMention,
 	setFavorite,
 } from './services/EditorService.ts'
+import { askConflictResolution, pickSaveAsTarget } from './utils/saveAs.ts'
 
 import '@nextcloud/dialogs/style.css'
 
@@ -301,35 +302,60 @@ OCA.Onlyoffice.onRequestSaveAs = function(event) {
 			param: saveData,
 		}, '*')
 	} else {
-		getFilePickerBuilder(t(OCA.Onlyoffice.AppName, 'Save as'))
-			.setMimeTypeFilter(['httpd/unix-directory'])
-			.allowDirectories()
-			.startAt(saveData.dir)
-			.addButton({
-				label: t('core', 'Choose'),
-				callback: (nodes) => {
-					if (!nodes[0]) {
-						return
-					}
-					saveData.dir = nodes[0].path
-					OCA.Onlyoffice.editorSaveAs(saveData)
-				},
-				variant: 'primary',
-			})
-			.build()
-			.pickNodes()
-			.catch(() => {})
+		pickSaveAsTarget(saveData.name, saveData.dir).then((target) => {
+			if (!target) {
+				return
+			}
+
+			OCA.Onlyoffice.editorSaveAs({ ...saveData, ...target })
+		})
 	}
 }
 
 OCA.Onlyoffice.editorSaveAs = function(saveData) {
 	saveAs(saveData).then((response) => {
+		if (response.exists) {
+			OCA.Onlyoffice.onSaveAsConflict(saveData)
+			return
+		}
+
 		if (response.error) {
 			OCA.Onlyoffice.showMessage(response.error, 'error')
 			return
 		}
 
+		if (OCA.Onlyoffice.inframe) {
+			window.parent.postMessage({
+				method: 'editorSaveAsResult',
+				param: {
+					dir: saveData.dir,
+					name: response.name,
+					overwritten: saveData.onConflict === 'overwrite',
+				},
+			}, '*')
+		}
+
 		OCA.Onlyoffice.showMessage(t(OCA.Onlyoffice.AppName, 'File saved') + ' (' + response.name + ')')
+	}).catch(() => {
+		OCA.Onlyoffice.showMessage(t(OCA.Onlyoffice.AppName, "Can't create file"), 'error')
+	})
+}
+
+OCA.Onlyoffice.onSaveAsConflict = function(saveData) {
+	if (OCA.Onlyoffice.inframe) {
+		window.parent.postMessage({
+			method: 'editorSaveAsConflict',
+			param: saveData,
+		}, '*')
+		return
+	}
+
+	askConflictResolution(saveData.name).then((onConflict) => {
+		if (!onConflict) {
+			return
+		}
+
+		OCA.Onlyoffice.editorSaveAs({ ...saveData, onConflict })
 	})
 }
 

@@ -34,7 +34,15 @@
  */
 
 import { getFilePickerBuilder, showError, showSuccess } from '@nextcloud/dialogs'
+import { emit } from '@nextcloud/event-bus'
+import {
+	getClient,
+	getDefaultPropfind,
+	getRootPath,
+	resultToNode,
+} from '@nextcloud/files/dav'
 import { t } from '@nextcloud/l10n'
+import { askConflictResolution, pickSaveAsTarget } from './utils/saveAs.ts'
 
 import '@nextcloud/dialogs/style.css'
 
@@ -52,25 +60,48 @@ OCA.Onlyoffice.onRequestClose = function() {
 	}
 }
 
+/**
+ * Pass the save data to the editor running in the frame
+ *
+ * @param saveData data of the file to save
+ */
+function saveAsInEditor(saveData) {
+	document.querySelector(OCA.Onlyoffice.frameSelector).contentWindow.OCA.Onlyoffice.editorSaveAs(saveData)
+}
+
 OCA.Onlyoffice.onRequestSaveAs = function(saveData) {
-	getFilePickerBuilder(t(OCA.Onlyoffice.AppName, 'Save as'))
-		.setMimeTypeFilter(['httpd/unix-directory'])
-		.allowDirectories()
-		.startAt(saveData.dir)
-		.addButton({
-			label: t('core', 'Choose'),
-			callback: (nodes) => {
-				if (!nodes[0]) {
-					return
-				}
-				saveData.dir = nodes[0].path
-				document.querySelector(OCA.Onlyoffice.frameSelector).contentWindow.OCA.Onlyoffice.editorSaveAs(saveData)
-			},
-			variant: 'primary',
+	pickSaveAsTarget(saveData.name, saveData.dir).then((target) => {
+		if (!target) {
+			return
+		}
+
+		saveAsInEditor({ ...saveData, ...target })
+	})
+}
+
+OCA.Onlyoffice.onSaveAsResult = async function({ dir, name, overwritten }) {
+	const path = (dir === '/' ? '' : dir) + '/' + name
+
+	try {
+		const result = await getClient().stat(`${getRootPath()}${path}`, {
+			details: true,
+			data: getDefaultPropfind(),
 		})
-		.build()
-		.pickNodes()
-		.catch(() => {})
+
+		emit(overwritten ? 'files:node:updated' : 'files:node:created', resultToNode(result.data))
+	} catch (error) {
+		console.error('Failed to refresh the file list', error)
+	}
+}
+
+OCA.Onlyoffice.onSaveAsConflict = function(saveData) {
+	askConflictResolution(saveData.name).then((onConflict) => {
+		if (!onConflict) {
+			return
+		}
+
+		saveAsInEditor({ ...saveData, onConflict })
+	})
 }
 
 OCA.Onlyoffice.onRequestInsertImage = function(imageMimes) {
@@ -206,6 +237,12 @@ window.addEventListener('message', function(event) {
 			break
 		case 'editorRequestSaveAs':
 			OCA.Onlyoffice.onRequestSaveAs(event.data.param)
+			break
+		case 'editorSaveAsConflict':
+			OCA.Onlyoffice.onSaveAsConflict(event.data.param)
+			break
+		case 'editorSaveAsResult':
+			OCA.Onlyoffice.onSaveAsResult(event.data.param)
 			break
 		case 'editorRequestInsertImage':
 			OCA.Onlyoffice.onRequestInsertImage(event.data.param)
