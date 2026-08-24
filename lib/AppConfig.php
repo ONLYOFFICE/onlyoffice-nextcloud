@@ -898,6 +898,9 @@ class AppConfig {
      */
     public function getCustomizationReviewDisplay(): string {
         $value = $this->appConfig->getValueString($this->appName, $this->_customizationReviewDisplay, "markup");
+        if ($value === "simple") {
+            return "simple";
+        }
         if ($value === "final") {
             return "final";
         }

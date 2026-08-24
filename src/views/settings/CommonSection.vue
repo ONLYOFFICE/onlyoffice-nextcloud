@@ -389,6 +389,15 @@ function applyUnknownAuthor() {
 				<label for="onlyoffice-review-display-markup">{{ t('onlyoffice', 'Markup') }}</label>
 			</div>
 			<div>
+				<input id="onlyoffice-review-display-simple"
+					v-model="reviewDisplay"
+					type="radio"
+					class="radio"
+					value="simple"
+					name="reviewDisplay">
+				<label for="onlyoffice-review-display-simple">{{ t('onlyoffice', 'Only markup') }}</label>
+			</div>
+			<div>
 				<input id="onlyoffice-review-display-final"
 					v-model="reviewDisplay"
 					type="radio"
