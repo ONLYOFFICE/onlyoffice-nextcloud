@@ -36,7 +36,7 @@ use OCA\Onlyoffice\AppInfo\Application;
 use OCA\Onlyoffice\Events\MailMergeEndedEvent;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
-use OCP\IConfig;
+use OCP\Config\IUserConfig;
 use OCP\IURLGenerator;
 use OCP\IUserManager;
 use OCP\Mail\IMailer;
@@ -59,7 +59,7 @@ class MailMergeEndedListener implements IEventListener {
     private $trans;
 
     public function __construct(
-        private readonly IConfig $config,
+        private readonly IUserConfig $userConfig,
         private readonly IUserManager $userManager,
         private readonly LoggerInterface $logger,
         private readonly IMailer $mailer,
@@ -76,7 +76,7 @@ class MailMergeEndedListener implements IEventListener {
 
         $user = $this->userManager->get($event->getUserId());
 
-        $lang = $user !== null ? $this->config->getUserValue($user->getUID(), 'core', 'lang', 'en') : 'en';
+        $lang = $user !== null ? $this->userConfig->getValueString($user->getUID(), 'core', 'lang', 'en') : 'en';
         $this->trans = $this->l10nFactory->get(Application::class, $lang);
 
         $this->notifySender($event->getUserId(), $event->getTotalCount(), $event->getErrorCount());
