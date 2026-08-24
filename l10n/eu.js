@@ -83,7 +83,6 @@ OC.L10N.register(
     "All changes (Editing), no balloons": "Aldaketa guztiak (Editatzen), bunbuilorik ez",
     "All changes accepted (Preview)": "Aldaketa guztiak onartuta (Aurrebista)",
     "All changes rejected (Preview)": "Aldaketa guztiak baztertuta (Aurrebista)",
-    "Markup": "Aldaketak",
     "Final": "Azkena",
     "Original": "Jatorrizkoa",
     "version": "bertsioa",

@@ -83,7 +83,6 @@ OC.L10N.register(
     "All changes (Editing), no balloons": "Alle veranderingen (Bewerken), geen ballonnen",
     "All changes accepted (Preview)": "Alle veranderingen geaccepteerd (Voorbeeld)",
     "All changes rejected (Preview)": "Alle veranderingen afgekeurd (Voorbeeld)",
-    "Markup": "Markup",
     "Final": "Einde",
     "Original": "Origineel",
     "version": "versie",

@@ -83,7 +83,6 @@ OC.L10N.register(
     "All changes (Editing), no balloons": "Усі зміни (Редагування), довідки вимкнені",
     "All changes accepted (Preview)": "Усі зміни прийняті (Попередній перегляд)",
     "All changes rejected (Preview)": "Усі зміни відхилено (Попередній перегляд)",
-    "Markup": "Зміни",
     "Final": "Кінцевий документ",
     "Original": "Вихідний документ",
     "version": "версія",

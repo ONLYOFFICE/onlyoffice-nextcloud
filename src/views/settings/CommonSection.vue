@@ -386,7 +386,7 @@ function applyUnknownAuthor() {
 					class="radio"
 					value="markup"
 					name="reviewDisplay">
-				<label for="onlyoffice-review-display-markup">{{ t('onlyoffice', 'Markup') }}</label>
+				<label for="onlyoffice-review-display-markup">{{ t('onlyoffice', 'Markup and balloons') }}</label>
 			</div>
 			<div>
 				<input id="onlyoffice-review-display-simple"

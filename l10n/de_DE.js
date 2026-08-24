@@ -83,7 +83,6 @@ OC.L10N.register(
     "All changes (Editing), no balloons": "Alle Änderungen (Bearbeitung), Sprechblasen ausblenden",
     "All changes accepted (Preview)": "Alle Änderungen akzeptiert (Vorschau)",
     "All changes rejected (Preview)": "Alle Änderungen abgelehnt (Vorschau)",
-    "Markup": "Markup",
     "Final": "Endgültig",
     "Original": "Original",
     "version": "version",

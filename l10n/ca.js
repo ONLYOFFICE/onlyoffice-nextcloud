@@ -83,7 +83,6 @@ OC.L10N.register(
     "All changes (Editing), no balloons": "Tots els canvis (Edició), sense globus",
     "All changes accepted (Preview)": "S'han acceptat tots el canvis (Visualització prèvia)",
     "All changes rejected (Preview)": "S'han rebutjat tots els canvis (Visualització prèvia)",
-    "Markup": "Canvis",
     "Final": "Final",
     "Original": "Original",
     "version": "versió",

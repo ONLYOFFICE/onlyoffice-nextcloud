@@ -83,7 +83,6 @@ OC.L10N.register(
     "All changes (Editing), no balloons": "Alla ändringar (Redigering), inga ballonger",
     "All changes accepted (Preview)": "Alla ändringar accepterade (Förhandsgranska)",
     "All changes rejected (Preview)": "Alla ändringar avvisades (Förhandsgranska)",
-    "Markup": "Markering",
     "Final": "Slutgiltig",
     "Original": "Ursprunglig",
     "version": "verzia",

@@ -83,7 +83,6 @@ OC.L10N.register(
     "All changes (Editing), no balloons": "Все изменения (Редактирование), выноски выключены",
     "All changes accepted (Preview)": "Все изменения приняты (Просмотр)",
     "All changes rejected (Preview)": "Все изменения отклонены (Просмотр)",
-    "Markup": "Изменения",
     "Final": "Измененный документ",
     "Original": "Исходный документ",
     "version": "версия",

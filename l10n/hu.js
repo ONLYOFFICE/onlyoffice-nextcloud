@@ -83,7 +83,6 @@ OC.L10N.register(
     "All changes (Editing), no balloons":"Minden módosítás (szerkesztés), szövegbuborékok eltűntetése",
     "All changes accepted (Preview)":"Minden módosítás elfogadva (Előnézet)",
     "All changes rejected (Preview)":"Minden módosítás visszautasítva (Előnézet)",
-    "Markup":"Jelölés",
     "Final":"Végleges",
     "Original":"Eredeti",
     "version":"verzió",
