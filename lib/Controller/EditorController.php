@@ -72,6 +72,7 @@ use OCP\IUser;
 use OCP\IUserManager;
 use OCP\IUserSession;
 use OCP\L10N\IFactory;
+use OCP\Lock\LockedException;
 use OCP\Server;
 use OCP\Share\IManager;
 use OCP\Share\IShare;
@@ -81,6 +82,10 @@ use Psr\Log\LoggerInterface;
  * Controller with the main functions
  */
 class EditorController extends Controller {
+
+    public const CONFLICT_ASK = "ask";
+    public const CONFLICT_OVERWRITE = "overwrite";
+    public const CONFLICT_KEEP_BOTH = "keepBoth";
 
     public function __construct(
         string $appName,
@@ -769,11 +774,13 @@ class EditorController extends Controller {
      * @param string $name - file name
      * @param string $dir - folder path
      * @param string $url - file url
+     * @param string $onConflict - what to do when the folder already contains a file with that name:
+     *                             ask the user (default), overwrite it or keep both files
      *
      * @return DataResponse
      */
     #[NoAdminRequired]
-    public function save(string $name, string $dir, string $url): DataResponse {
+    public function save(string $name, string $dir, string $url, string $onConflict = self::CONFLICT_ASK): DataResponse {
         $this->logger->debug("Save: $name");
 
         if (!$this->appConfig->isUserAllowedToUse()) {
@@ -793,10 +800,38 @@ class EditorController extends Controller {
             return new DataResponse(["error" => $this->trans->t("The required folder was not found")]);
         }
 
-        if (!($folder->isCreatable() && $folder->isUpdateable())) {
+        $name = basename($name);
+        if ($name === "" || $name === "." || $name === "..") {
+            $this->logger->error("Incorrect name for saving file: $name");
+            return new DataResponse(["error" => $this->trans->t("Can't create file")]);
+        }
+
+        $existingFile = null;
+        if ($folder->nodeExists($name)) {
+            $node = $folder->get($name);
+            if ($node instanceof File) {
+                $existingFile = $node;
+            }
+        }
+
+        if ($existingFile !== null && $onConflict === self::CONFLICT_KEEP_BOTH) {
+            $existingFile = null;
+        }
+
+        if ($existingFile !== null) {
+            if ($onConflict !== self::CONFLICT_OVERWRITE) {
+                return new DataResponse(["exists" => true, "name" => $name]);
+            }
+
+            if (!$existingFile->isUpdateable()) {
+                $this->logger->error("File for overwriting without permission: $dir/$name");
+                return new DataResponse(["error" => $this->trans->t("You don't have enough permission to update")]);
+            }
+        } elseif (!($folder->isCreatable() && $folder->isUpdateable())) {
             $this->logger->error("Folder for saving file without permission: $dir");
             return new DataResponse(["error" => $this->trans->t("You don't have enough permission to create")]);
         }
+
         $documentServerUrl = $this->appConfig->getDocumentServerUrl();
 
         if (empty($documentServerUrl)) {
@@ -822,13 +857,22 @@ class EditorController extends Controller {
             return new DataResponse(["error" => $this->trans->t("Download failed")]);
         }
 
-        $name = $folder->getNonExistingName($name);
-
         try {
-            $file = $folder->newFile($name);
+            if ($existingFile !== null) {
+                $file = $existingFile;
+            } else {
+                $name = $folder->getNonExistingName($name);
+                $file = $folder->newFile($name);
+            }
 
             $file->putContent($newData);
         } catch (NotPermittedException $e) {
+            $this->logger->error("Can't save file: $name", ["exception" => $e]);
+            return new DataResponse(["error" => $this->trans->t("Can't create file")]);
+        } catch (LockedException $e) {
+            $this->logger->error("File for saving is locked: $name", ["exception" => $e]);
+            return new DataResponse(["error" => $this->trans->t("The file is locked and can not be overwritten")]);
+        } catch (\Exception $e) {
             $this->logger->error("Can't save file: $name", ["exception" => $e]);
             return new DataResponse(["error" => $this->trans->t("Can't create file")]);
         }
