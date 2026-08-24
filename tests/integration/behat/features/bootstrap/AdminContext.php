@@ -110,7 +110,7 @@ class AdminContext implements Context
                 'forcesave'          => false,
                 'liveViewOnShare'    => false,
                 'help'               => false,
-                'reviewDisplay'      => 'original',
+                'reviewDisplay'      => 'markup',
                 'theme'              => 'default',
                 'unknownAuthor'      => '',
             ],
