@@ -3,6 +3,7 @@
 ##
 
 ### Changed
+- compatible with Nextcloud 35
 - allow inserting multiple images from Nextcloud into the document at once
 - redesigned the admin settings sections as tabbed navigation
 - changed common and security admin settings to save automatically

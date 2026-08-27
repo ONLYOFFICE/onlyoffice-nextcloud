@@ -40,7 +40,7 @@ Whether you’re working with internal teams or external collaborators, the ONLY
     <screenshot>https://raw.githubusercontent.com/ONLYOFFICE/onlyoffice-nextcloud/master/screenshots/open_form.png</screenshot>
     <dependencies>
         <php min-version="8.2" max-version="8.5"/>
-        <nextcloud min-version="33" max-version="34"/>
+        <nextcloud min-version="33" max-version="35"/>
     </dependencies>
     <settings>
         <admin>OCA\Onlyoffice\AdminSettings</admin>
