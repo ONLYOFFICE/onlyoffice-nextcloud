@@ -1,6 +1,8 @@
 # Change Log
 
-## Changed
+##
+
+### Changed
 - allow inserting multiple images from Nextcloud into the document at once
 - redesigned the admin settings sections as tabbed navigation
 - changed common and security admin settings to save automatically
@@ -10,7 +12,7 @@
 
 ## 10.1.2
 
-## Changed
+### Changed
 - stop Firefox collapsing the page when toggling checkboxes
 - fixed an issue where the editor was not using the user's preferred language
 
@@ -32,7 +34,7 @@
 - fixed opening editor for shared link
 
 ## 10.0.0
-## Changed
+### Changed
 - compatible with Nextcloud 33
 - Nextcloud v32 is no longer supported
 

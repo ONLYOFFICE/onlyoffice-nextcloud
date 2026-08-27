@@ -56,7 +56,7 @@ import {
 
 import '@nextcloud/dialogs/style.css'
 
-/* global DocsAPI, oc_defaults */
+/* global DocsAPI */
 
 OCA.Onlyoffice = { AppName: 'onlyoffice', inframe: false, inviewer: false, fileId: null, shareToken: null, ...OCA.Onlyoffice }
 
@@ -134,7 +134,7 @@ OCA.Onlyoffice.InitEditor = function() {
 
 					if (docIsChanged !== event.data) {
 						const titleChange = function() {
-							OCA.Onlyoffice.currentWindow.document.title = config.document.title + (event.data ? ' *' : '') + ' - ' + oc_defaults.title
+							OCA.Onlyoffice.currentWindow.document.title = config.document.title + (event.data ? ' *' : '') + ' - ' + OC.theme.title
 							docIsChanged = event.data
 						}
 
