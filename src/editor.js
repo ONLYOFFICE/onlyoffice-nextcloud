@@ -36,7 +36,7 @@
 import { getCurrentUser, getRequestToken } from '@nextcloud/auth'
 import '@nextcloud/dialogs/style.css'
 import { showError, showSuccess, getFilePickerBuilder } from '@nextcloud/dialogs'
-import { getCanonicalLocale, t } from '@nextcloud/l10n'
+import { t } from '@nextcloud/l10n'
 import { generateUrl, generateOcsUrl, imagePath } from '@nextcloud/router'
 import {
 	getConfig,
@@ -55,7 +55,7 @@ import {
 } from './services/EditorService.ts'
 import { encodePath } from '@nextcloud/paths'
 
-/* global DocsAPI */
+/* global DocsAPI, moment */
 
 OCA.Onlyoffice = Object.assign({
 	AppName: 'onlyoffice',
@@ -722,11 +722,10 @@ OCA.Onlyoffice.refreshHistory = function(response, version) {
 				currentVersion = fileVersion.version
 			}
 
-			const formatter = new Intl.DateTimeFormat(getCanonicalLocale(), { dateStyle: 'short', timeStyle: 'medium' })
-			fileVersion.created = formatter.format(new Date(fileVersion.created * 1000))
+			fileVersion.created = moment(fileVersion.created * 1000).format('L LTS')
 			if (fileVersion.changes) {
 				fileVersion.changes.forEach((change) => {
-					change.created = formatter.format(new Date(change.created + '+00:00'))
+					change.created = moment(change.created + '+00:00').format('L LTS')
 				})
 			}
 		})
