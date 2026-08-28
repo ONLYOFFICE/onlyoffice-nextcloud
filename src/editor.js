@@ -37,6 +37,7 @@ import { getCurrentUser, getRequestToken } from '@nextcloud/auth'
 import '@nextcloud/dialogs/style.css'
 import { showError, showSuccess, getFilePickerBuilder } from '@nextcloud/dialogs'
 import { t } from '@nextcloud/l10n'
+import moment from '@nextcloud/moment'
 import { generateUrl, generateOcsUrl, imagePath } from '@nextcloud/router'
 import {
 	getConfig,
@@ -55,7 +56,7 @@ import {
 } from './services/EditorService.ts'
 import { encodePath } from '@nextcloud/paths'
 
-/* global DocsAPI, moment */
+/* global DocsAPI */
 
 OCA.Onlyoffice = Object.assign({
 	AppName: 'onlyoffice',
