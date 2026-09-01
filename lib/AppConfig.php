@@ -1154,7 +1154,7 @@ class AppConfig {
             return $turnOff === "true";
         }
 
-        return $this->getSystemValue($this->_verification) === "true";
+        return filter_var($this->getSystemValue($this->_verification), FILTER_VALIDATE_BOOLEAN);
     }
 
     /**
