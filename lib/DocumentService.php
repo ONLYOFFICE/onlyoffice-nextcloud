@@ -389,6 +389,14 @@ class DocumentService {
     public function checkDocServiceUrl(): array {
         $version = null;
 
+        $documentServerUrl = $this->appConfig->getDocumentServerInternalUrl();
+        if (!preg_match("/^https?:\/\//i", $documentServerUrl)
+            || empty(parse_url($documentServerUrl, PHP_URL_HOST))) {
+            $this->logger->error("Unusable internal address: $documentServerUrl");
+
+            return [$this->trans->t("An HTTP or HTTPS address for ONLYOFFICE Docs is required."), $version];
+        }
+
         try {
             if (preg_match("/^https:\/\//i", (string) $this->urlGenerator->getAbsoluteURL("/"))
                 && preg_match("/^http:\/\//i", $this->appConfig->getDocumentServerUrl())) {

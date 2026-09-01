@@ -199,6 +199,7 @@
     "Apply": "Aplicar",
     "No users here": "No hay usuarios aquí",
     "Enable Custom permissions for users on the Sharing tab, ensuring Edit is turned on and Share is turned off": "Habilite los permisos personalizados para los usuarios en la pestaña Compartir, asegurándose de que Editar esté activado y Compartir esté desactivado",
-    "Share this file": "Compartir este archivo"
+    "Share this file": "Compartir este archivo",
+    "An HTTP or HTTPS address for ONLYOFFICE Docs is required." : "Se requiere una dirección HTTP o HTTPS para ONLYOFFICE Docs."
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

@@ -201,6 +201,7 @@ OC.L10N.register(
     "Apply": "Appliquer",
     "No users here": "Aucun utilisateur ici",
     "Enable Custom permissions for users on the Sharing tab, ensuring Edit is turned on and Share is turned off": "Activez les autorisations personnalisées pour les utilisateurs dans l'onglet Partage, en veillant à ce que Modifier soit activé et Partager désactivé",
-    "Share this file": "Partager ce fichier"
+    "Share this file": "Partager ce fichier",
+    "An HTTP or HTTPS address for ONLYOFFICE Docs is required.": "Une adresse HTTP ou HTTPS pour le ONLYOFFICE Docs est requise."
 },
 "nplurals=2; plural=(n > 1);");
