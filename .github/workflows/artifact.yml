@@ -25,7 +25,7 @@ jobs:
           cd ${{ github.workspace }}
           cwd=$(pwd)
           git submodule update --init --recursive
-          npm install
+          npm ci
           npm run build
           composer install --no-dev --optimize-autoloader
           composer scope-dependencies
