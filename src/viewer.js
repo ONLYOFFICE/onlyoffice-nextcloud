@@ -82,6 +82,9 @@ if (!OCA.Onlyoffice) {
 					}),
 			}
 		},
+		beforeDestroy() {
+			OCA.Onlyoffice.changeFavicon(OCA.Onlyoffice.favIconBase)
+		},
 	}
 
 	if (OCA.Viewer) {

@@ -339,6 +339,10 @@ class EditorApiController extends OCSController {
         } else {
             $params["editorConfig"]["mode"] = "view";
 
+            if (empty($userId)) {
+                $params["editorConfig"]["customization"]["anonymous"]["request"] = false;
+            }
+
             if (isset($shareToken) && empty($userId) && !$this->appConfig->getLiveViewOnShare()) {
                 $params["editorConfig"]["coEditing"] = [
                     "mode" => "strict",

@@ -9,6 +9,7 @@
 - added supported languages to the Help Center link
 - added a dialog to specify a name when creating a blank PDF form
 - added `simple` option for `reviewDisplay` setting and added descriptions for review display modes
+- disabled anonymous name requests for guests in editor view mode
 
 ## 9.14.2
 
