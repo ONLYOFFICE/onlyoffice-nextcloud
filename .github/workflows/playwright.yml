@@ -59,7 +59,7 @@ jobs:
 
     steps:
       - name: Set up Nextcloud env
-        uses: ChristophWurst/setup-nextcloud@v0.4.2
+        uses: nextcloud/setup-server-action@v0.5.0
         with:
           nextcloud-version: ${{ needs.matrix.outputs.branches-min }}
           php-version: ${{ needs.matrix.outputs.php-min }}
