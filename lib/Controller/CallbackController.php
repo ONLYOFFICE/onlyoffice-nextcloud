@@ -209,7 +209,7 @@ class CallbackController extends Controller {
         }
 
         if ((!empty($user) && !$file->isReadable()) || !$canDownload) {
-            if ($this->userSession->getUser()?->getUID() != $userId) {
+            if ($this->userSession->getUser()?->getUID() !== $userId) {
                 $this->logger->error("Download error: expected $userId instead of " . $this->userSession->getUser()?->getUID());
             }
             $this->logger->error("Download without access right");

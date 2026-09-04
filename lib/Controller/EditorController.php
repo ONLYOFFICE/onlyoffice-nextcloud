@@ -394,7 +394,7 @@ class EditorController extends Controller {
      * @param string $searchString - string for searching
      */
     private function filterUser(IUser $user, string $currentUserId, string $operationType, string $searchString): bool {
-        return $user->getUID() != $currentUserId
+        return $user->getUID() !== $currentUserId
             && (!empty($user->getEMailAddress()) || $operationType === "protect")
             && $this->searchInUser($user, $searchString);
     }
