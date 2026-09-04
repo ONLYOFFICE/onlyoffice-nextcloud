@@ -267,6 +267,6 @@ async function save() {
 }
 
 #onlyoffice-secret-show {
-    left: 205px;
+    inset-inline-start: 205px;
 }
 </style>

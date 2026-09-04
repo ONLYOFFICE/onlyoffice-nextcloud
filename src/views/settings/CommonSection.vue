@@ -486,7 +486,7 @@ function applyUnknownAuthor() {
 }
 
 #onlyoffice-enable-sharing-block {
-    margin-left: 1.5em;
+    margin-inline-start: 1.5em;
 }
 
 .onlyoffice-version-history {

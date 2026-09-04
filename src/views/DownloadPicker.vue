@@ -123,7 +123,7 @@ const buttons = computed(() => [
 
 .onlyoffice-download-picker :deep(.modal-container__close) {
 	top: 15px !important;
-	right: 15px !important;
+	inset-inline-end: 15px !important;
 }
 
 .onlyoffice-download-picker :deep(.dialog__content) {
@@ -153,5 +153,15 @@ const buttons = computed(() => [
 
 .onlyoffice-download-select {
 	width: fit-content;
+}
+
+@media only screen and (max-width: 512px) {
+	.onlyoffice-download-picker :deep(.modal-wrapper .modal-container) {
+		height: unset;
+		max-height: 90%;
+		position: relative;
+		top: unset;
+		border-radius: var(--border-radius-element);
+	}
 }
 </style>

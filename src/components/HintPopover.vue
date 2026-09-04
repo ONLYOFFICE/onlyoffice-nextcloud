@@ -80,7 +80,7 @@ const infoIconPath = 'M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,
 }
 
 .onlyoffice-hint-body :deep(ul) {
-	padding-left: 16px;
+	padding-inline-start: 16px;
 	margin: 4px 0 0;
 }
 

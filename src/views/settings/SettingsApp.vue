@@ -137,7 +137,7 @@ function onAddressSaved({ showSections: show }: { showSections: boolean }) {
 }
 
 .section-onlyoffice .block-inline {
-    margin-left: 1.5em;
+    margin-inline-start: 1.5em;
 }
 
 .section-onlyoffice .onlyoffice-tables {
@@ -163,7 +163,7 @@ function onAddressSaved({ showSections: show }: { showSections: boolean }) {
 <style scoped>
 .section-onlyoffice-templates .icon-add {
     opacity: 0.5;
-    padding-left: 44px;
+    padding-inline-start: 44px;
 }
 
 .section-onlyoffice-templates .icon-add:hover {

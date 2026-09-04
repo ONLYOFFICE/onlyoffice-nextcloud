@@ -254,4 +254,26 @@ class AppConfigTest extends TestCase {
 
         $this->assertSame("https://myserver.com/", $url);
     }
+
+    /**
+     * Marks the stored secret key as sensitive so it is encrypted at rest and hidden from config listings.
+     */
+    public function testSetDocumentServerSecretStoresValueAsSensitive(): void {
+        $this->appConfig->expects($this->once())
+            ->method("setValueString")
+            ->with($this->appName, "jwt_secret", "supersecret", false, true);
+
+        $this->subject->setDocumentServerSecret("supersecret");
+    }
+
+    /**
+     * Keeps the sensitive marking when the secret key is cleared.
+     */
+    public function testSetDocumentServerSecretStoresEmptyValueAsSensitive(): void {
+        $this->appConfig->expects($this->once())
+            ->method("setValueString")
+            ->with($this->appName, "jwt_secret", "", false, true);
+
+        $this->subject->setDocumentServerSecret("");
+    }
 }

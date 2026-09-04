@@ -72,7 +72,7 @@ function handleDownload() {
 .onlyoffice-template-download,
 .onlyoffice-template-item p {
     display: inline-block;
-    margin-right: 10px;
+    margin-inline-end: 10px;
     cursor: pointer;
 }
 
