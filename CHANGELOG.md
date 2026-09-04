@@ -10,6 +10,7 @@
 - added a dialog to specify a name when creating a blank PDF form
 - added `simple` option for `reviewDisplay` setting and added descriptions for review display modes
 - disabled anonymous name requests for guests in editor view mode
+- store the document service secret key encrypted
 
 ## 9.14.2
 

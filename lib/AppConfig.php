@@ -557,7 +557,7 @@ class AppConfig {
             $this->logger->info("Set secret key", ["app" => $this->appName]);
         }
 
-        $this->appConfig->setValueString($this->appName, $this->_jwtSecret, $secret);
+        $this->appConfig->setValueString($this->appName, $this->_jwtSecret, $secret, sensitive: true);
     }
 
     /**
