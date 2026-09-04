@@ -45,7 +45,7 @@
 #app > iframe {
     position: fixed;
     vertical-align: top;
-    left: 0px;
+    inset-inline-start: 0px;
     height: calc(100dvh - var(--header-height, 50px) - 8px);
     margin-top: calc(-1 * var(--header-height, 50px));
 }
