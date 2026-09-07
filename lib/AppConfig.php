@@ -397,18 +397,69 @@ class AppConfig {
     }
 
     /**
+     * Sanitize a server address, leaving one that is not usable unchanged
+     *
+     * @param string $url - server address
+     * @param bool $keepUserInfo - keep credentials
+     */
+    private function sanitizeServerUrl(string $url, bool $keepUserInfo = false): string {
+        $url = preg_replace('/[\x00-\x20\x7F]/', "", $url);
+        $url = str_replace("\\", "/", (string) $url);
+
+        if ($url === "") {
+            return "";
+        }
+
+        if (str_starts_with($url, "/")) {
+            return rtrim($url, "/") . "/";
+        }
+
+        if (preg_match('/^([a-z][a-z0-9+.\-]*):\/\//i', $url, $schemeMatch)
+            && !\in_array(strtolower($schemeMatch[1]), ["http", "https"], true)) {
+            return $url;
+        }
+
+        $candidate = preg_match("/^https?:\/\//i", $url) ? $url : "https://" . $url;
+
+        $parts = parse_url($candidate);
+        if ($parts === false || empty($parts["host"])) {
+            return $url;
+        }
+
+        $scheme = strtolower($parts["scheme"]);
+        $host = rtrim(strtolower($parts["host"]), ".");
+        if ($host === "") {
+            return $url;
+        }
+
+        $address = $scheme . "://";
+
+        if ($keepUserInfo && isset($parts["user"])) {
+            $address .= $parts["user"];
+            if (isset($parts["pass"])) {
+                $address .= ":" . $parts["pass"];
+            }
+            $address .= "@";
+        }
+
+        $address .= $host;
+
+        $port = $parts["port"] ?? null;
+        $isDefaultPort = ($scheme === "http" && $port === 80) || ($scheme === "https" && $port === 443);
+        if ($port !== null && !$isDefaultPort) {
+            $address .= ":" . $port;
+        }
+
+        return rtrim($address . ($parts["path"] ?? ""), "/") . "/";
+    }
+
+    /**
      * Save the document service address to the application configuration
      *
      * @param string $documentServer - document service address
      */
     public function setDocumentServerUrl(string $documentServer): void {
-        $documentServer = trim($documentServer);
-        if ($documentServer !== '') {
-            $documentServer = rtrim($documentServer, "/") . "/";
-            if (!preg_match("/(^https?:\/\/)|^\//i", $documentServer)) {
-                $documentServer = "http://" . $documentServer;
-            }
-        }
+        $documentServer = $this->sanitizeServerUrl($documentServer);
 
         $this->logger->info("setDocumentServerUrl: $documentServer", ["app" => $this->appName]);
 
@@ -446,13 +497,7 @@ class AppConfig {
      * @param string $documentServerInternal - document service address
      */
     public function setDocumentServerInternalUrl(string $documentServerInternal): void {
-        $documentServerInternal = rtrim(trim($documentServerInternal), "/");
-        if ($documentServerInternal !== '') {
-            $documentServerInternal .= "/";
-            if (!preg_match("/^https?:\/\//i", $documentServerInternal)) {
-                $documentServerInternal = "http://" . $documentServerInternal;
-            }
-        }
+        $documentServerInternal = $this->sanitizeServerUrl($documentServerInternal, true);
 
         $this->logger->info("setDocumentServerInternalUrl: $documentServerInternal", ["app" => $this->appName]);
 
@@ -505,7 +550,7 @@ class AppConfig {
 
             if ($from !== $documentServerUrl) {
                 $this->logger->debug("Replace url from $from to $documentServerUrl", ["app" => $this->appName]);
-                $url = str_replace($from, $documentServerUrl, $url);
+                $url = str_ireplace($from, $documentServerUrl, $url);
             }
         }
 
@@ -518,13 +563,7 @@ class AppConfig {
      * @param string $storageUrl - document service address
      */
     public function setStorageUrl(string $storageUrl): void {
-        $storageUrl = rtrim(trim($storageUrl), "/");
-        if ($storageUrl !== '') {
-            $storageUrl .= "/";
-            if (!preg_match("/^https?:\/\//i", $storageUrl)) {
-                $storageUrl = "http://" . $storageUrl;
-            }
-        }
+        $storageUrl = $this->sanitizeServerUrl($storageUrl);
 
         $this->logger->info("setStorageUrl: $storageUrl", ["app" => $this->appName]);
 

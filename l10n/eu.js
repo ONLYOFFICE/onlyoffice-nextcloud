@@ -201,6 +201,7 @@ OC.L10N.register(
     "Apply": "Aplikatu",
     "No users here": "Ez dago erabiltzailerik hemen",
     "Enable Custom permissions for users on the Sharing tab, ensuring Edit is turned on and Share is turned off": "Gaitu erabiltzaileentzako baimen pertsonalizatuak Partekatzea fitxan, Edizioa piztuta eta Partekatzea itzalita dagoela ziurtatuz",
-    "Share this file": "Partekatu fitxategi hau"
+    "Share this file": "Partekatu fitxategi hau",
+    "An HTTP or HTTPS address for ONLYOFFICE Docs is required.": "ONLYOFFICE Docs-erako HTTP edo HTTPS helbidea behar da."
 },
 "nplurals=2; plural=(n != 1);");

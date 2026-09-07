@@ -56,6 +56,7 @@ use Test\TestCase;
 class DocumentServiceTest extends TestCase {
 
     private IL10N&MockObject $trans;
+    private AppConfig&MockObject $appConfig;
     private DocumentService $documentService;
 
     public function setUp(): void {
@@ -64,9 +65,11 @@ class DocumentServiceTest extends TestCase {
         $this->trans = $this->createMock(IL10N::class);
         $this->trans->method("t")->willReturnArgument(0);
 
+        $this->appConfig = $this->createMock(AppConfig::class);
+
         $this->documentService = new DocumentService(
             $this->trans,
-            $this->createMock(AppConfig::class),
+            $this->appConfig,
             $this->createMock(IURLGenerator::class),
             $this->createMock(Crypt::class),
             $this->createMock(LoggerInterface::class),
@@ -169,5 +172,27 @@ class DocumentServiceTest extends TestCase {
         $this->expectExceptionMessageMatches("/ErrorCode = 42/");
 
         $this->documentService->processCommandServResponceError(42);
+    }
+
+    public static function unusableAddressProvider(): array {
+        return [
+            "path only"      => ["/onlyoffice/"],
+            "foreign scheme" => ["ftp://example.com/"],
+            "no host"        => ["http:///sub"],
+            "not configured" => [""],
+        ];
+    }
+
+    /**
+     * Reports an address that cannot be requested, without contacting the document service.
+     */
+    #[DataProvider("unusableAddressProvider")]
+    public function testCheckDocServiceUrlReportsUnusableAddress(string $address): void {
+        $this->appConfig->method("getDocumentServerInternalUrl")->willReturn($address);
+
+        [$error, $version] = $this->documentService->checkDocServiceUrl();
+
+        $this->assertSame("An HTTP or HTTPS address for ONLYOFFICE Docs is required.", $error);
+        $this->assertNull($version);
     }
 }
