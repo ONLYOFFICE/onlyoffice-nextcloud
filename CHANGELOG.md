@@ -11,6 +11,7 @@
 - added `simple` option for `reviewDisplay` setting and added descriptions for review display modes
 - disabled anonymous name requests for guests in editor view mode
 - store the document service secret key encrypted
+- stop the address check from reporting connection details of unreachable servers
 
 ## 9.14.2
 

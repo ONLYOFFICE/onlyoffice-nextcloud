@@ -319,8 +319,11 @@ class DocumentService {
         $response = $this->request($urlCommand, "post", $opts);
 
         $data = json_decode($response, true);
+        if (!is_array($data)) {
+            throw new \Exception($this->trans->t("Error occurred in the document service"));
+        }
 
-        $this->processCommandServResponceError((int)$data["error"]);
+        $this->processCommandServResponceError((int)($data["error"] ?? 0));
 
         return $data;
     }
@@ -378,7 +381,12 @@ class DocumentService {
             'allow_local_address' => true,
         ];
 
-        $response = $method === "post" ? $client->post($url, $opts) : $client->get($url, $opts);
+        try {
+            $response = $method === "post" ? $client->post($url, $opts) : $client->get($url, $opts);
+        } catch (\Throwable $e) {
+            $this->logger->error("Request to $url failed", ["exception" => $e]);
+            throw new \Exception($this->trans->t("Error occurred in the document service"));
+        }
 
         return $response->getBody();
     }
@@ -409,12 +417,12 @@ class DocumentService {
 
         try {
             $healthcheckResponse = $this->healthcheckRequest();
-            if (!$healthcheckResponse) {
-                throw new \Exception($this->trans->t("Bad healthcheck status"));
-            }
         } catch (\Exception $e) {
             $this->logger->error("healthcheckRequest on check error", ['exception' => $e]);
-            return [$e->getMessage(), $version];
+            $healthcheckResponse = false;
+        }
+        if (!$healthcheckResponse) {
+            return [$this->trans->t("Bad healthcheck status"), $version];
         }
 
         try {
