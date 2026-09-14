@@ -149,7 +149,7 @@ class SettingsController extends Controller {
         if (empty($error)) {
             $documentserver = $this->appConfig->getDocumentServerUrl();
             if (!empty($documentserver)) {
-                [$error, $version] = $this->documentService->checkDocServiceUrl();
+                [$error, $version] = $this->documentService->checkDocServiceUrl($this->appConfig->getAllowLocalAddress());
                 $this->appConfig->setSettingsError($error);
             }
         }

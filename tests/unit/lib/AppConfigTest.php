@@ -297,4 +297,28 @@ class AppConfigTest extends TestCase {
 
         $this->subject->setDocumentServerSecret("");
     }
+
+    public static function allowLocalAddressProvider(): array {
+        return [
+            "allowed for every app" => [true, [], true],
+            "allowed for this app"  => [false, ["allow_local_address" => true], true],
+            "written as a string"   => [false, ["allow_local_address" => "true"], true],
+            "not allowed"           => [false, [], false],
+        ];
+    }
+
+    /**
+     * Allows local addresses when either the setting for every app or the one for this app is enabled.
+     */
+    #[DataProvider("allowLocalAddressProvider")]
+    public function testGetAllowLocalAddress(bool $everyApp, array $appSection, bool $expected): void {
+        $this->config->method("getSystemValueBool")
+            ->with("allow_local_remote_servers", false)
+            ->willReturn($everyApp);
+        $this->config->method("getSystemValue")
+            ->with($this->appName)
+            ->willReturn($appSection);
+
+        $this->assertSame($expected, $this->subject->getAllowLocalAddress());
+    }
 }
