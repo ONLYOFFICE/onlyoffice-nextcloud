@@ -199,6 +199,7 @@
     "Apply": "Alkalmaz",
     "No users here": "Itt nincsenek felhasználók",
     "Enable Custom permissions for users on the Sharing tab, ensuring Edit is turned on and Share is turned off": "Engedélyezze az Egyéni jogosultságokat a felhasználók számára a Megosztás lapon, ügyelve arra, hogy a Szerkesztés be legyen kapcsolva, a Megosztás pedig ki",
-    "Share this file": "Fájl megosztása"
+    "Share this file": "Fájl megosztása",
+    "An HTTP or HTTPS address for ONLYOFFICE Docs is required." : "Az ONLYOFFICE Docs HTTP vagy HTTPS címre van szükség."
 },"pluralForm": "nplurals=2; plural=(n != 1);"
 }

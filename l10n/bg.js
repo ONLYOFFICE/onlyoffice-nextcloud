@@ -200,6 +200,7 @@ OC.L10N.register(
     "Apply": "Прилагане",
     "No users here": "Няма потребители тук",
     "Enable Custom permissions for users on the Sharing tab, ensuring Edit is turned on and Share is turned off": "Активирайте „Персонализирани разрешения“ за потребители в раздела „Споделяне“, като се уверите, че „Редактиране“ е включено, а „Споделяне“ е изключено",
-    "Share this file": "Споделяне на файла"
+    "Share this file": "Споделяне на файла",
+    "An HTTP or HTTPS address for ONLYOFFICE Docs is required.": "За ONLYOFFICE Docs е необходимо използването на HTTP- или HTTPS-адрес."
 },
 "nplurals=2; plural=(n != 1);");

@@ -394,7 +394,7 @@ class EditorController extends Controller {
      * @param string $searchString - string for searching
      */
     private function filterUser(IUser $user, string $currentUserId, string $operationType, string $searchString): bool {
-        return $user->getUID() != $currentUserId
+        return $user->getUID() !== $currentUserId
             && (!empty($user->getEMailAddress()) || $operationType === "protect")
             && $this->searchInUser($user, $searchString);
     }
@@ -809,7 +809,7 @@ class EditorController extends Controller {
             $documentServerUrl = $this->urlGenerator->getAbsoluteURL($documentServerUrl);
         }
 
-        if (parse_url($url, PHP_URL_HOST) !== parse_url((string) $documentServerUrl, PHP_URL_HOST)) {
+        if (strcasecmp((string) parse_url($url, PHP_URL_HOST), (string) parse_url((string) $documentServerUrl, PHP_URL_HOST)) !== 0) {
             $this->logger->error("Incorrect domain in file url");
             return new DataResponse(["error" => $this->trans->t("The domain in the file url does not match the domain of the Document server")]);
         }
@@ -1641,7 +1641,7 @@ class EditorController extends Controller {
         }
 
         $storageUrl = $this->urlGenerator->getAbsoluteURL("/");
-        if (parse_url($parsedLink, PHP_URL_HOST) !== parse_url((string) $storageUrl, PHP_URL_HOST)) {
+        if (strcasecmp((string) parse_url($parsedLink, PHP_URL_HOST), (string) parse_url((string) $storageUrl, PHP_URL_HOST)) !== 0) {
             return [null, true];
         }
 

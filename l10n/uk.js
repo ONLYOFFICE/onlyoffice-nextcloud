@@ -201,6 +201,7 @@ OC.L10N.register(
     "Apply": "Застосувати",
     "No users here": "Тут немає користувачів",
     "Enable Custom permissions for users on the Sharing tab, ensuring Edit is turned on and Share is turned off": "Увімкніть Власні дозволи для користувачів на вкладці «Спільний доступ», переконавшись, що «Редагування» увімкнено, а «Спільний доступ» вимкнено",
-    "Share this file": "Поділитися цим файлом"
+    "Share this file": "Поділитися цим файлом",
+    "An HTTP or HTTPS address for ONLYOFFICE Docs is required.": "Для користування ONLYOFFICE Docs потрібно використовувати адресу HTTP або HTTPS."
 },
 "nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != 11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || (n % 100 >=11 && n % 100 <=14 )) ? 2: 3);");

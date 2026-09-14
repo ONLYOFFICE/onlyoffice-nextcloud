@@ -199,6 +199,7 @@
     "Apply": "適用",
     "No users here": "ユーザーがいません",
     "Enable Custom permissions for users on the Sharing tab, ensuring Edit is turned on and Share is turned off": "「共有」タブでユーザーに対して「カスタム権限」を有効にし、「編集」がオンで「共有」がオフになっていることを確認してください",
-    "Share this file": "このファイルを共有"
+    "Share this file": "このファイルを共有",
+    "An HTTP or HTTPS address for ONLYOFFICE Docs is required." : "ONLYOFFICE DocsにはHTTPまたはHTTPSアドレスが必要です"
 },"pluralForm" :"nplurals=1; plural=0;"
 }

@@ -201,6 +201,7 @@ OC.L10N.register(
     "Apply": "应用",
     "No users here": "这里没有用户",
     "Enable Custom permissions for users on the Sharing tab, ensuring Edit is turned on and Share is turned off": "在“共享”选项卡中为用户启用自定义权限,确保“编辑”已开启且“共享”已关闭",
-    "Share this file": "共享此文件"
+    "Share this file": "共享此文件",
+    "An HTTP or HTTPS address for ONLYOFFICE Docs is required.": "请使用HTTP或HTTPS地址连接ONLYOFFICE Docs。"
 },
 "nplurals=1; plural=0;");

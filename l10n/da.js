@@ -201,6 +201,7 @@ OC.L10N.register(
     "Apply": "Anvend",
     "No users here": "Ingen brugere her",
     "Enable Custom permissions for users on the Sharing tab, ensuring Edit is turned on and Share is turned off": "Aktivér Brugerdefinerede tilladelser for brugere under fanen Deling, og sørg for, at Rediger er slået til, og Del er slået fra",
-    "Share this file": "Del denne fil"
+    "Share this file": "Del denne fil",
+    "An HTTP or HTTPS address for ONLYOFFICE Docs is required.": "HTTP- eller HTTPS-adresse for ONLYOFFICE Docs er påkrævet."
 },
 "nplurals=2; plural=(n != 1);");
