@@ -85,7 +85,7 @@ class DocumentServer extends Command {
         }
 
         if ($check) {
-            [$error, $version] = $this->documentService->checkDocServiceUrl();
+            [$error, $version] = $this->documentService->checkDocServiceUrl(allowLocalAddress: true);
             $this->appConfig->setSettingsError($error);
 
             if (!empty($error)) {

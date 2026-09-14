@@ -42,6 +42,9 @@ namespace OCA\Onlyoffice\Tests\PHP;
 use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\Crypt;
 use OCA\Onlyoffice\DocumentService;
+use OCP\Http\Client\IClient;
+use OCP\Http\Client\IClientService;
+use OCP\Http\Client\IResponse;
 use OCP\IL10N;
 use OCP\IURLGenerator;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
@@ -74,6 +77,27 @@ class DocumentServiceTest extends TestCase {
             $this->createMock(Crypt::class),
             $this->createMock(LoggerInterface::class),
         );
+    }
+
+    /**
+     * @param callable $handler - receives the request options and returns a response body or throws
+     */
+    private function mockHttpClient(callable $handler): void {
+        $respond = function (string $uri, array $options = []) use ($handler): IResponse {
+            $response = $this->createMock(IResponse::class);
+            $response->method("getBody")->willReturn($handler($uri, $options));
+
+            return $response;
+        };
+
+        $client = $this->createMock(IClient::class);
+        $client->method("get")->willReturnCallback($respond);
+        $client->method("post")->willReturnCallback($respond);
+
+        $clientService = $this->createMock(IClientService::class);
+        $clientService->method("newClient")->willReturn($client);
+
+        $this->overwriteService(IClientService::class, $clientService);
     }
 
     /**
@@ -194,5 +218,95 @@ class DocumentServiceTest extends TestCase {
 
         $this->assertSame("An HTTP or HTTPS address for ONLYOFFICE Docs is required.", $error);
         $this->assertNull($version);
+    }
+
+    /**
+     * Refuses addresses on the local network while checking an address that was just submitted.
+     */
+    public function testCheckDocServiceUrlForbidsLocalAddresses(): void {
+        $this->appConfig->method("getDocumentServerInternalUrl")->willReturn("http://example.com/");
+
+        $options = [];
+        $this->mockHttpClient(function (string $uri, array $requestOptions) use (&$options) {
+            $options = $requestOptions;
+
+            return "false";
+        });
+
+        $this->documentService->checkDocServiceUrl();
+
+        $this->assertFalse($options["nextcloud"]["allow_local_address"]);
+    }
+
+    /**
+     * Reaches addresses on the local network while checking an address that is already stored.
+     */
+    public function testCheckDocServiceUrlAllowsLocalAddressesWhenAsked(): void {
+        $this->appConfig->method("getDocumentServerInternalUrl")->willReturn("http://example.com/");
+
+        $options = [];
+        $this->mockHttpClient(function (string $uri, array $requestOptions) use (&$options) {
+            $options = $requestOptions;
+
+            return "false";
+        });
+
+        $this->documentService->checkDocServiceUrl(allowLocalAddress: true);
+
+        $this->assertTrue($options["nextcloud"]["allow_local_address"]);
+    }
+
+    public static function healthcheckFailureProvider(): array {
+        return [
+            "address could not be reached" => [null],
+            "unexpected answer"            => ["false"],
+        ];
+    }
+
+    /**
+     * Reports the same failure whether the address answered unexpectedly or could not be reached at all.
+     */
+    #[DataProvider("healthcheckFailureProvider")]
+    public function testCheckDocServiceUrlReportsHealthcheckFailureWithoutDetails(?string $body): void {
+        $this->appConfig->method("getDocumentServerInternalUrl")->willReturn("http://example.com/");
+
+        $this->mockHttpClient(function () use ($body) {
+            if ($body === null) {
+                throw new \RuntimeException("cURL error 7: Failed to connect to 10.0.0.5 port 8080");
+            }
+
+            return $body;
+        });
+
+        [$error] = $this->documentService->checkDocServiceUrl();
+
+        $this->assertSame("Bad healthcheck status", $error);
+    }
+
+    /**
+     * Replaces a failed request with a message that says nothing about the address that was requested.
+     */
+    public function testRequestHidesWhyTheRequestFailed(): void {
+        $this->mockHttpClient(function () {
+            throw new \RuntimeException("cURL error 7: Failed to connect to 10.0.0.5 port 8080");
+        });
+
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessageMatches("/^Error occurred in the document service$/");
+
+        $this->documentService->request("http://example.com/");
+    }
+
+    /**
+     * Rejects an answer that is not a command result instead of failing on its contents.
+     */
+    public function testCommandRequestRejectsAnswerThatIsNotACommandResult(): void {
+        $this->appConfig->method("getDocumentServerInternalUrl")->willReturn("http://example.com/");
+        $this->mockHttpClient(fn () => "<html>Forbidden</html>");
+
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessageMatches("/^Error occurred in the document service$/");
+
+        $this->documentService->commandRequest("version");
     }
 }

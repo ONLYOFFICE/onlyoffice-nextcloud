@@ -12,6 +12,7 @@
 - disabled anonymous name requests for guests in editor view mode
 - store the document service secret key encrypted
 - stop the address check from reporting connection details of unreachable servers
+- require the `allow_local_address` config option to check an ONLYOFFICE Docs address on the local network
 
 ## 9.14.2
 

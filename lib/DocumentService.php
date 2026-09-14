@@ -254,8 +254,10 @@ class DocumentService {
 
     /**
      * Request health status
+     *
+     * @param bool $allowLocalAddress - allow the address to be on the local network
      */
-    public function healthcheckRequest(): bool {
+    public function healthcheckRequest(bool $allowLocalAddress = false): bool {
 
         $documentServerUrl = $this->appConfig->getDocumentServerInternalUrl();
 
@@ -265,7 +267,7 @@ class DocumentService {
 
         $urlHealthcheck = $documentServerUrl . "healthcheck";
 
-        $response = $this->request($urlHealthcheck);
+        $response = $this->request($urlHealthcheck, "get", ["nextcloud" => ["allow_local_address" => $allowLocalAddress]]);
 
         return $response === "true";
     }
@@ -378,7 +380,7 @@ class DocumentService {
         }
 
         $opts['nextcloud'] = [
-            'allow_local_address' => true,
+            'allow_local_address' => $opts['nextcloud']['allow_local_address'] ?? true,
         ];
 
         try {
@@ -393,8 +395,10 @@ class DocumentService {
 
     /**
      * Checking document service location
+     *
+     * @param bool $allowLocalAddress - allow the address to be on the local network
      */
-    public function checkDocServiceUrl(): array {
+    public function checkDocServiceUrl(bool $allowLocalAddress = false): array {
         $version = null;
 
         $documentServerUrl = $this->appConfig->getDocumentServerInternalUrl();
@@ -416,7 +420,7 @@ class DocumentService {
         }
 
         try {
-            $healthcheckResponse = $this->healthcheckRequest();
+            $healthcheckResponse = $this->healthcheckRequest($allowLocalAddress);
         } catch (\Exception $e) {
             $this->logger->error("healthcheckRequest on check error", ['exception' => $e]);
             $healthcheckResponse = false;
@@ -460,7 +464,7 @@ class DocumentService {
         }
 
         try {
-            $this->request($convertedFileUri);
+            $this->request($convertedFileUri, "get", ["nextcloud" => ["allow_local_address" => $allowLocalAddress]]);
         } catch (\Exception $e) {
             $this->logger->error("Request converted file on check error", ['exception' => $e]);
             return [$e->getMessage(), $version];

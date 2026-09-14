@@ -94,6 +94,7 @@
       <code><![CDATA[$this->config]]></code>
       <code><![CDATA[$this->config]]></code>
       <code><![CDATA[$this->config]]></code>
+      <code><![CDATA[$this->config]]></code>
       <code><![CDATA[ICache]]></code>
       <code><![CDATA[ICacheFactory]]></code>
       <code><![CDATA[\OCP\Server]]></code>
@@ -166,6 +167,7 @@
   </file>
   <file src="lib/DocumentService.php">
     <UndefinedClass>
+      <code><![CDATA[$this->trans]]></code>
       <code><![CDATA[$this->trans]]></code>
       <code><![CDATA[$this->trans]]></code>
       <code><![CDATA[$this->trans]]></code>
