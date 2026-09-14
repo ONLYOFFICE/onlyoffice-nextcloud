@@ -1,6 +1,6 @@
 # Change Log
 
-##
+## 9.15.0
 
 ### Changed
 - allow inserting multiple images from Nextcloud into the document at once
