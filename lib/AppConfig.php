@@ -304,6 +304,11 @@ class AppConfig {
     private string $_jwt_expiration = "jwt_expiration";
 
     /**
+     * The config key for allowing requests to local addresses
+     */
+    private string $_allow_local_address = "allow_local_address";
+
+    /**
      * The config key for store cache
      */
     private readonly ICache $cache;
@@ -1339,6 +1344,18 @@ class AppConfig {
     public function getDisableDownload(): bool {
         return (bool)$this->getSystemValue($this->_disableDownload);
     }
+
+    /**
+     * Get whether requests to addresses on the local network are allowed
+     */
+    public function getAllowLocalAddress(): bool {
+        if ($this->config->getSystemValueBool("allow_local_remote_servers", false)) {
+            return true;
+        }
+
+        return filter_var($this->getSystemValue($this->_allow_local_address), FILTER_VALIDATE_BOOLEAN);
+    }
+
     /**
      * Get the editors check interval
      */
