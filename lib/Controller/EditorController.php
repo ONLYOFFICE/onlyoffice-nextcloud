@@ -394,7 +394,7 @@ class EditorController extends Controller {
      * @param string $searchString - string for searching
      */
     private function filterUser(IUser $user, string $currentUserId, string $operationType, string $searchString): bool {
-        return $user->getUID() != $currentUserId
+        return $user->getUID() !== $currentUserId
             && (!empty($user->getEMailAddress()) || $operationType === "protect")
             && $this->searchInUser($user, $searchString);
     }
@@ -595,7 +595,8 @@ class EditorController extends Controller {
      */
     #[NoAdminRequired]
     #[PublicPage]
-    public function reference(array $referenceData, ?string $path = null, ?string $link = null): DataResponse {
+    public function reference(?array $referenceData = null, ?string $path = null, ?string $link = null): DataResponse {
+        $referenceData ??= [];
         $this->logger->debug("reference: " . json_encode($referenceData) . " $path");
 
         if (!$this->appConfig->isUserAllowedToUse()) {
@@ -808,7 +809,7 @@ class EditorController extends Controller {
             $documentServerUrl = $this->urlGenerator->getAbsoluteURL($documentServerUrl);
         }
 
-        if (parse_url($url, PHP_URL_HOST) !== parse_url((string) $documentServerUrl, PHP_URL_HOST)) {
+        if (strcasecmp((string) parse_url($url, PHP_URL_HOST), (string) parse_url((string) $documentServerUrl, PHP_URL_HOST)) !== 0) {
             $this->logger->error("Incorrect domain in file url");
             return new DataResponse(["error" => $this->trans->t("The domain in the file url does not match the domain of the Document server")]);
         }
@@ -1192,6 +1193,78 @@ class EditorController extends Controller {
     }
 
     /**
+     * Get presigned urls to files for batch image insertion
+     *
+     * @param string[] $imagePaths - image file paths
+     *
+     * @return DataResponse
+     */
+    #[NoAdminRequired]
+    public function imageUrls(array $imagePaths): DataResponse {
+        $this->logger->debug("Request image urls for: " . json_encode($imagePaths));
+
+        if (!$this->appConfig->isUserAllowedToUse()) {
+            return new DataResponse(["error" => $this->trans->t("Not permitted")]);
+        }
+
+        $user = $this->userSession->getUser();
+        $userId = $user->getUID();
+        $userFolder = $this->root->getUserFolder($userId);
+
+        $images = [];
+        foreach ($imagePaths as $imagePath) {
+            try {
+                $file = $userFolder->get($imagePath);
+            } catch (\OCP\Files\NotFoundException) {
+                $this->logger->error("File for generate image url was not found: $imagePath");
+                continue;
+            }
+
+            $canDownload = true;
+
+            /**
+             * @var \OCP\Files\Storage\IStorage|SharedStorage
+             */
+            $fileStorage = $file->getStorage();
+            if ($fileStorage->instanceOfStorage(SharedStorage::class)) {
+                $share = $fileStorage->getShare();
+                $canDownload = FileUtility::canShareDownload($share);
+            }
+
+            if (!$file->isReadable() || !$canDownload) {
+                $this->logger->error("File without permission: $imagePath");
+                continue;
+            }
+
+            $fileName = $file->getName();
+            $ext = strtolower(pathinfo((string) $fileName, PATHINFO_EXTENSION));
+
+            $images[] = [
+                "fileType" => $ext,
+                "url" => $this->getUrl($file, $user),
+            ];
+        }
+
+        if (empty($images)) {
+            return new DataResponse(["error" => $this->trans->t("File not found")]);
+        }
+
+        $result = [
+            "images" => $images,
+        ];
+
+        if (!empty($this->appConfig->getDocumentServerSecret())) {
+            $now = time();
+            $result["iat"] = $now;
+            $result["exp"] = $now + $this->appConfig->getJwtExpiration() * 60;
+            $token = \OCA\Onlyoffice\Vendor\Firebase\JWT\JWT::encode($result, $this->appConfig->getDocumentServerSecret(), "HS256");
+            $result["token"] = $token;
+        }
+
+        return new DataResponse($result);
+    }
+
+    /**
      * Download method
      *
      * @param int $fileId - file identifier
@@ -1505,7 +1578,7 @@ class EditorController extends Controller {
             $data["template"] = true;
         }
 
-        $hashUrl = $this->crypt->getHash($data);
+        $hashUrl = $this->crypt->getExpiringHash($data);
 
         $fileUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.download", ["doc" => $hashUrl]);
 
@@ -1558,6 +1631,9 @@ class EditorController extends Controller {
      */
     private function getFileIdByLink(string $link): array {
         $path = parse_url($link, PHP_URL_PATH);
+        if (empty($path)) {
+            return [null, true];
+        }
         $encodedPath = array_map(urlencode(...), explode("/", $path));
         $parsedLink = str_replace($path, implode("/", $encodedPath), $link);
         if (filter_var($parsedLink, FILTER_VALIDATE_URL) === false) {
@@ -1565,7 +1641,7 @@ class EditorController extends Controller {
         }
 
         $storageUrl = $this->urlGenerator->getAbsoluteURL("/");
-        if (parse_url($parsedLink, PHP_URL_HOST) !== parse_url((string) $storageUrl, PHP_URL_HOST)) {
+        if (strcasecmp((string) parse_url($parsedLink, PHP_URL_HOST), (string) parse_url((string) $storageUrl, PHP_URL_HOST)) !== 0) {
             return [null, true];
         }
 

@@ -96,7 +96,7 @@ class EditorsCheck extends TimedJob {
 
         $this->logger->debug("ONLYOFFICE check started by cron");
 
-        [$error, $version] = $this->documentService->checkDocServiceUrl();
+        [$error, $version] = $this->documentService->checkDocServiceUrl(allowLocalAddress: true);
 
         if (!empty($error)) {
             $this->logger->info("ONLYOFFICE server is not available");

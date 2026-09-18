@@ -62,10 +62,33 @@ class PreviewTest extends TestCase {
     private AppConfig&MockObject $appConfig;
     private Preview $preview;
 
+    /**
+     * Fake formats list, shaped like AppConfig::getFormats(), used to derive the preview-capable mime types.
+     */
+    private const FORMATS = [
+        ["mime" => ["application/pdf"], "convert" => ["jpg"]],
+        ["mime" => ["application/vnd.ms-word.document.macroEnabled.12"], "convert" => ["jpg"]],
+        ["mime" => ["text/rtf"], "convert" => ["jpg"]],
+        ["mime" => ["image/png"], "convert" => []],
+    ];
+
+    /**
+     * Mime types that Preview::getPreviewMimeTypes() derives from self::FORMATS.
+     */
+    private const MIME_TYPES = [
+        "application/pdf",
+        "application/vnd.ms-word.document.macroEnabled.12",
+        "text/rtf",
+    ];
+
     public function setUp(): void {
         parent::setUp();
 
+        $this->resetPreviewMimeTypesCache();
+
         $this->appConfig = $this->createMock(AppConfig::class);
+        $this->appConfig->method("getFormats")->willReturn(self::FORMATS);
+        $this->overwriteService(AppConfig::class, $this->appConfig);
 
         $this->preview = new Preview(
             "onlyoffice",
@@ -80,6 +103,20 @@ class PreviewTest extends TestCase {
         );
     }
 
+    public function tearDown(): void {
+        $this->restoreService(AppConfig::class);
+        $this->resetPreviewMimeTypesCache();
+        parent::tearDown();
+    }
+
+    /**
+     * Preview::$previewMimeTypes is a static memoization cache; it must be cleared between tests
+     * so each test's mocked AppConfig::getFormats() is actually consulted instead of a prior test's result.
+     */
+    private function resetPreviewMimeTypesCache(): void {
+        (new \ReflectionProperty(Preview::class, "previewMimeTypes"))->setValue(null, null);
+    }
+
     /**
      * Produces a syntactically valid PCRE regex that matches at least one known supported mime type.
      */
@@ -89,12 +126,13 @@ class PreviewTest extends TestCase {
     }
 
     /**
-     * Matches every mime type declared in the capabilities list.
+     * Matches every mime type returned by AppConfig for the capabilities list, case-insensitively.
      */
     public function testGetMimeTypeRegexMatchesAllCapabilities(): void {
         $regex = Preview::getMimeTypeRegex();
-        foreach (Preview::$capabilities as $mime) {
+        foreach (self::MIME_TYPES as $mime) {
             $this->assertSame(1, preg_match($regex, $mime), "Expected regex to match: $mime");
+            $this->assertSame(1, preg_match($regex, strtolower($mime)), "Expected regex to match case-insensitively: $mime");
         }
     }
 

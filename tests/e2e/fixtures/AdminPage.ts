@@ -74,6 +74,30 @@ export class AdminPage {
 		await expect(this.errorToast()).toBeVisible()
 	}
 
+	serverTab(): Locator {
+		return this.page.getByRole('tab', { name: 'Server settings' })
+	}
+
+	commonTab(): Locator {
+		return this.page.getByRole('tab', { name: 'Common settings' })
+	}
+
+	securityTab(): Locator {
+		return this.page.getByRole('tab', { name: 'Security' })
+	}
+
+	async openServerSettings(): Promise<void> {
+		await this.serverTab().click()
+	}
+
+	async openCommonSettings(): Promise<void> {
+		await this.commonTab().click()
+	}
+
+	async openSecuritySettings(): Promise<void> {
+		await this.securityTab().click()
+	}
+
 	commonSettingsSection(): Locator {
 		return this.page.locator('.section-onlyoffice-common')
 	}
@@ -195,10 +219,18 @@ export class AdminPage {
 	}
 
 	async saveCommonSettings(): Promise<void> {
-		await this.page.locator('#onlyoffice-common-save').click()
+		await this.page.waitForResponse((response) =>
+			response.url().includes('/ajax/settings/common')
+			&& response.request().method() === 'PUT'
+			&& response.ok(),
+		)
 	}
 
 	async saveSecuritySettings(): Promise<void> {
-		await this.page.locator('#onlyoffice-security-save').click()
+		await this.page.waitForResponse((response) =>
+			response.url().includes('/ajax/settings/security')
+			&& response.request().method() === 'PUT'
+			&& response.ok(),
+		)
 	}
 }

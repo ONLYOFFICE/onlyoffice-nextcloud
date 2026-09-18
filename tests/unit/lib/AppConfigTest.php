@@ -49,6 +49,7 @@ use OCP\ICacheFactory;
 use OCP\IConfig;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
 use Test\TestCase;
@@ -170,59 +171,83 @@ class AppConfigTest extends TestCase {
         $this->assertFalse($data["enabled"]);
     }
 
-    /**
-     * Prefixes a URL that has no scheme with http:// before storing it.
-     */
-    public function testSetDocumentServerUrlAddsHttpSchemeWhenMissing(): void {
-        $this->appConfig->expects($this->once())
-            ->method("setValueString")
-            ->with($this->appName, "DocumentServerUrl", "http://example.com/");
-
-        $this->subject->setDocumentServerUrl("example.com");
+    public static function documentServerUrlProvider(): array {
+        return [
+            "adds https scheme"             => ["example.com", "https://example.com/"],
+            "keeps https scheme"            => ["https://example.com", "https://example.com/"],
+            "adds trailing slash"           => ["https://example.com/", "https://example.com/"],
+            "trims whitespace"              => ["  https://example.com  ", "https://example.com/"],
+            "clears the value"              => ["", ""],
+            "drops query and fragment"      => ["https://example.com/sub/?token=abc#part", "https://example.com/sub/"],
+            "drops credentials"             => ["https://alice@example:s3cr3t@host/", "https://host/"],
+            "lowercases scheme and host"    => ["HTTPS://Example.COM/Sub/", "https://example.com/Sub/"],
+            "drops default port"            => ["https://example.com:443/", "https://example.com/"],
+            "keeps other port"              => ["example.com:8080", "https://example.com:8080/"],
+            "drops trailing dot on host"    => ["https://example.com./", "https://example.com/"],
+            "removes inner whitespace"      => ["http://example.com\r\n/sub", "http://example.com/sub/"],
+            "backslash separates the path"  => ["http://example.com\\@evil.com/", "http://example.com/@evil.com/"],
+            "keeps foreign scheme"          => ["ftp://example.com/", "ftp://example.com/"],
+            "keeps address without host"    => ["http:///sub", "http:///sub"],
+            "keeps path only address"       => ["/onlyoffice", "/onlyoffice/"],
+            "keeps ipv6 brackets"           => ["http://[::1]:8080/", "http://[::1]:8080/"],
+            "keeps full ipv6 brackets"      => ["https://[2001:db8::1]/sub/", "https://[2001:db8::1]/sub/"],
+            "drops default port on ipv6"    => ["https://[::1]:443/", "https://[::1]/"],
+        ];
     }
 
     /**
-     * Preserves an existing https:// scheme unchanged when storing the URL.
+     * Sanitizes the document server address before storing it.
      */
-    public function testSetDocumentServerUrlKeepsHttpsScheme(): void {
+    #[DataProvider("documentServerUrlProvider")]
+    public function testSetDocumentServerUrlStoresSanitizedAddress(string $address, string $stored): void {
         $this->appConfig->expects($this->once())
             ->method("setValueString")
-            ->with($this->appName, "DocumentServerUrl", "https://example.com/");
+            ->with($this->appName, "DocumentServerUrl", $stored);
 
-        $this->subject->setDocumentServerUrl("https://example.com");
+        $this->subject->setDocumentServerUrl($address);
+    }
+
+    public static function documentServerInternalUrlProvider(): array {
+        return [
+            "keeps credentials"        => ["https://alice@example:s3cr3t@host/", "https://alice@example:s3cr3t@host/"],
+            "drops query and fragment" => ["http://example.com/?token=abc#part", "http://example.com/"],
+            "adds https scheme"        => ["example.com", "https://example.com/"],
+            "keeps ipv6 brackets"      => ["http://[::1]:8080/", "http://[::1]:8080/"],
+            "clears the value"         => ["", ""],
+        ];
     }
 
     /**
-     * Ensures a trailing slash is always present on the stored URL, normalising URLs that already include one.
+     * Sanitizes the internal document server address before storing it, keeping any credentials.
      */
-    public function testSetDocumentServerUrlAddsTrailingSlash(): void {
+    #[DataProvider("documentServerInternalUrlProvider")]
+    public function testSetDocumentServerInternalUrlStoresSanitizedAddress(string $address, string $stored): void {
         $this->appConfig->expects($this->once())
             ->method("setValueString")
-            ->with($this->appName, "DocumentServerUrl", "https://example.com/");
+            ->with($this->appName, "DocumentServerInternalUrl", $stored);
 
-        $this->subject->setDocumentServerUrl("https://example.com/");
+        $this->subject->setDocumentServerInternalUrl($address);
+    }
+
+    public static function storageUrlProvider(): array {
+        return [
+            "drops credentials"        => ["https://alice@example:s3cr3t@cloud.example.com/", "https://cloud.example.com/"],
+            "drops query and fragment" => ["https://cloud.example.com/?x=1#y", "https://cloud.example.com/"],
+            "adds https scheme"        => ["cloud.example.com", "https://cloud.example.com/"],
+            "clears the value"         => ["", ""],
+        ];
     }
 
     /**
-     * Strips leading and trailing whitespace from the URL before normalisation and storage.
+     * Sanitizes the storage address before storing it.
      */
-    public function testSetDocumentServerUrlTrimsWhitespace(): void {
+    #[DataProvider("storageUrlProvider")]
+    public function testSetStorageUrlStoresSanitizedAddress(string $address, string $stored): void {
         $this->appConfig->expects($this->once())
             ->method("setValueString")
-            ->with($this->appName, "DocumentServerUrl", "https://example.com/");
+            ->with($this->appName, "StorageUrl", $stored);
 
-        $this->subject->setDocumentServerUrl("  https://example.com  ");
-    }
-
-    /**
-     * Stores an empty string as-is, allowing the server URL to be cleared without triggering normalisation.
-     */
-    public function testSetDocumentServerUrlStoresEmptyStringAsIs(): void {
-        $this->appConfig->expects($this->once())
-            ->method("setValueString")
-            ->with($this->appName, "DocumentServerUrl", "");
-
-        $this->subject->setDocumentServerUrl("");
+        $this->subject->setStorageUrl($address);
     }
 
     /**
@@ -253,5 +278,51 @@ class AppConfigTest extends TestCase {
         $url = $this->subject->getDocumentServerUrl();
 
         $this->assertSame("https://myserver.com/", $url);
+    }
+
+    /**
+     * Marks the stored secret key as sensitive so it is encrypted at rest and hidden from config listings.
+     */
+    public function testSetDocumentServerSecretStoresValueAsSensitive(): void {
+        $this->appConfig->expects($this->once())
+            ->method("setValueString")
+            ->with($this->appName, "jwt_secret", "supersecret", false, true);
+
+        $this->subject->setDocumentServerSecret("supersecret");
+    }
+
+    /**
+     * Keeps the sensitive marking when the secret key is cleared.
+     */
+    public function testSetDocumentServerSecretStoresEmptyValueAsSensitive(): void {
+        $this->appConfig->expects($this->once())
+            ->method("setValueString")
+            ->with($this->appName, "jwt_secret", "", false, true);
+
+        $this->subject->setDocumentServerSecret("");
+    }
+
+    public static function allowLocalAddressProvider(): array {
+        return [
+            "allowed for every app" => [true, [], true],
+            "allowed for this app"  => [false, ["allow_local_address" => true], true],
+            "written as a string"   => [false, ["allow_local_address" => "true"], true],
+            "not allowed"           => [false, [], false],
+        ];
+    }
+
+    /**
+     * Allows local addresses when either the setting for every app or the one for this app is enabled.
+     */
+    #[DataProvider("allowLocalAddressProvider")]
+    public function testGetAllowLocalAddress(bool $everyApp, array $appSection, bool $expected): void {
+        $this->config->method("getSystemValueBool")
+            ->with("allow_local_remote_servers", false)
+            ->willReturn($everyApp);
+        $this->config->method("getSystemValue")
+            ->with($this->appName)
+            ->willReturn($appSection);
+
+        $this->assertSame($expected, $this->subject->getAllowLocalAddress());
     }
 }

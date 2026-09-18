@@ -17,7 +17,7 @@ The app allows to:
 
 <p align="center">
   <a href="https://www.onlyoffice.com/office-for-nextcloud?utm_source=github&utm_medium=cpc&utm_campaign=GitHubNextcloud">
-    <img width="840" src="https://static-site.onlyoffice.com/public/images/templates/office-for-nextcloud/documents/documents-4@2x.png" alt="ONLYOFFICE Docs for Nextcloud">
+    <img width="840" src="screenshots/ONLYOFFICE and Nextcloud.png" alt="ONLYOFFICE Docs for Nextcloud">
   </a>
 </p>
 
@@ -191,6 +191,7 @@ The tables below list all available Nextcloud settings along with the supported 
 | `editors_check_interval`    | Defines the interval for checking the availability of editors using cron (measured in seconds).                                                                                                                                      | 86400                                                                     | -  | -   | +          |
 | `jwt_expiration`            | Defines the JWT expiration (measured in seconds).                                                                                                                                                                                    | 5                                                                         | -  | -   | +          |
 | `permissions_modifyFilter`  | Apply the filter globally (true) affecting all the other users, or locally (false).                                                                                                                                                                     | true                                                                      | -  | -   | +          |
+| `allow_local_address`       | Allow the ONLYOFFICE Docs address check to connect to the local network. Not required when the global `allow_local_remote_servers` setting is enabled.                                                                                | true                                                                      | -  | -   | +          |
 
 ### Customization settings
 
@@ -201,7 +202,7 @@ The tables below list all available Nextcloud settings along with the supported 
 | `customizationFeedback`      | Display Feedback & Support menu button              | false                                                                                                                     | +  | +   | -          |
 | `customizationForcesave`     | Keep intermediate versions when editing (forcesave) | false                                                                                                                     | +  | +   | -          |
 | `customizationHelp`          | Display Help menu button                            | false                                                                                                                     | +  | +   | -          |
-| `customizationReviewDisplay` | Review mode for viewing                             | Possible values: `original`, `markup`, `final`. The default value is `original`.                                          | +  | +   | -          |
+| `customizationReviewDisplay` | Review mode for viewing                             | Possible values: `markup`, `simple`, `final`, `original`. The default value is `markup`.                                          | +  | +   | -          |
 | `customizationTheme`         | Default editor theme                                | Possible values: `theme-system`, `default-light`, `default-dark`. The default value is `theme-system`. | +  | +   | -          |
 | `customization_macros`       | Run document macros                                 | false                                                                                                                     | +  | +   | -          |
 | `customization_plugins`      | Enable plugins                                      | false                                                                                                                     | +  | +   | -          |

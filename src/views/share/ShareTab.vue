@@ -36,23 +36,29 @@
 import type { INode } from '@nextcloud/files'
 import type { ShareExtra } from '../../services/ShareService.ts'
 
+import { getSidebar } from '@nextcloud/files'
 import { loadState } from '@nextcloud/initial-state'
 import { t } from '@nextcloud/l10n'
 import { ref, watch } from 'vue'
+import NcButton from '@nextcloud/vue/components/NcButton'
+import NcEmptyContent from '@nextcloud/vue/components/NcEmptyContent'
+import HintPopover from '../../components/HintPopover.vue'
 import ShareItem from './ShareItem.vue'
 import { getShares, setShares } from '../../services/ShareService.ts'
 import { getFileExtension } from '../../utils/files.ts'
 import { Permissions } from '../../utils/permissions.ts'
-import NcButton from '@nextcloud/vue/components/NcButton'
-import NcIconSvgWrapper from '@nextcloud/vue/components/NcIconSvgWrapper'
-import NcPopover from '@nextcloud/vue/components/NcPopover'
-
-const infoIconPath = 'M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z'
 
 const props = defineProps<{
 	node: INode
 	active: boolean
 }>()
+
+/**
+ * Switches the sidebar to the native Sharing tab.
+ */
+function openSharingTab() {
+	getSidebar()?.setActiveTab('sharing')
+}
 
 const formats = loadState<{ formats: Record<string, Record<string, boolean>> }>('onlyoffice', 'settings', { formats: {} }).formats ?? {}
 
@@ -142,23 +148,24 @@ async function onPermissionChange(extra: ShareExtra, changedKey: number, changed
 </script>
 
 <template>
-	<div :class="{ 'icon-loading': loading }">
-		<template v-if="!loading">
-			<div class="onlyoffice-share-header">
-				<span>{{ t('onlyoffice', 'Provide advanced document permissions using ONLYOFFICE Docs') }}</span>
-				<NcPopover popup-role="dialog">
-					<template #trigger>
-						<NcButton class="onlyoffice-share-hint-icon"
-							variant="tertiary-no-background"
-							:aria-label="t('onlyoffice', 'Advanced permissions explanation')">
-							<template #icon>
-								<span class="onlyoffice-share-hint-icon">
-									<NcIconSvgWrapper :path="infoIconPath" :size="20" />
-								</span>
-							</template>
-						</NcButton>
-					</template>
-					<div class="onlyoffice-share-hint-body">
+	<div class="onlyoffice-share-tab">
+		<div v-if="loading" class="onlyoffice-share-loading icon-loading" />
+		<template v-else>
+			<NcEmptyContent
+				v-if="collection.length === 0"
+				class="onlyoffice-share-empty"
+				:name="t('onlyoffice', 'No users here')"
+				:description="t('onlyoffice', 'Enable Custom permissions for users on the Sharing tab, ensuring Edit is turned on and Share is turned off')">
+				<template #action>
+					<NcButton variant="primary" @click="openSharingTab">
+						{{ t('onlyoffice', 'Share this file') }}
+					</NcButton>
+				</template>
+			</NcEmptyContent>
+			<template v-else>
+				<div class="onlyoffice-share-header">
+					<span>{{ t('onlyoffice', 'Provide advanced document permissions using ONLYOFFICE Docs') }}</span>
+					<HintPopover :label="t('onlyoffice', 'Advanced permissions explanation')">
 						<p>{{ t('onlyoffice', 'Limit access permissions for files shared with Custom permissions (Edit enabled, Share disabled) or via a public link with edit permission:') }}</p>
 						<ul>
 							<li><strong>{{ t('onlyoffice', 'Document') }}</strong> — {{ t('onlyoffice', 'Review/Comment') }}</li>
@@ -166,40 +173,32 @@ async function onPermissionChange(extra: ShareExtra, changedKey: number, changed
 							<li><strong>{{ t('onlyoffice', 'Presentation') }}</strong> — {{ t('onlyoffice', 'Comment') }}</li>
 							<li><strong>{{ t('onlyoffice', 'PDF') }}</strong> — {{ t('onlyoffice', 'Comment/Form filling') }}</li>
 						</ul>
-					</div>
-				</NcPopover>
-			</div>
-			<ul>
-				<ShareItem
-					v-for="extra in collection"
-					:key="extra.share_id"
-					:extra="extra"
-					:format="format"
-					:disabled="saving"
-					@change="(key: number, val: boolean) => onPermissionChange(extra, key, val)" />
-			</ul>
+					</HintPopover>
+				</div>
+				<ul>
+					<ShareItem
+						v-for="extra in collection"
+						:key="extra.share_id"
+						:extra="extra"
+						:format="format"
+						:disabled="saving"
+						@change="(key: number, val: boolean) => onPermissionChange(extra, key, val)" />
+				</ul>
+			</template>
 		</template>
 	</div>
 </template>
 
 <style scoped>
+.onlyoffice-share-loading,
+.onlyoffice-share-empty {
+	position: absolute;
+	inset: 0;
+	min-height: 50vh;
+}
+
 .onlyoffice-share-header {
 	display: flex;
 	align-items: center;
-}
-
-.onlyoffice-share-hint-icon {
-	display: flex;
-	color: var(--color-primary-element);
-}
-
-.onlyoffice-share-hint-body {
-	max-width: 300px;
-	padding: var(--border-radius-element);
-}
-
-.onlyoffice-share-hint-body ul {
-	padding-left: 16px;
-	margin: 4px 0 0;
 }
 </style>

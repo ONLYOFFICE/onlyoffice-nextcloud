@@ -49,7 +49,7 @@ if (window.AscDesktopEditor) {
 	const data = {
 		displayName: getCurrentUser()?.uid,
 		domain,
-		provider: 'Nextcloud',
+		provider: 'nextcloud',
 	}
 
 	window.AscDesktopEditor.execCommand('portal:login', JSON.stringify(data))

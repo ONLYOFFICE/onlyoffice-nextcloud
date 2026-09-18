@@ -33,18 +33,38 @@
   SPDX-License-Identifier: AGPL-3.0-only
 -->
 <script setup lang="ts">
-import { t } from '@nextcloud/l10n'
+import { getLanguage, t } from '@nextcloud/l10n'
+import { computed } from 'vue'
+
+const helpcenterLanguages: Record<string, string> = {
+	de: 'de',
+	fr: 'fr',
+	es: 'es',
+	'pt-BR': 'pt-BR',
+	it: 'it',
+	'zh-CN': 'zh',
+	ja: 'ja',
+	sr: 'sr',
+}
+
+const learnMoreUrl = computed(() => {
+	const language = getLanguage()
+	const lng = helpcenterLanguages[language] ?? helpcenterLanguages[language.split(/[_-]/)[0]]
+	return lng
+		? `https://helpcenter.onlyoffice.com/${lng}/integration/nextcloud.aspx`
+		: 'https://helpcenter.onlyoffice.com/integration/nextcloud.aspx'
+})
 </script>
 
 <template>
-	<div>
+	<div class="section">
 		<h2>ONLYOFFICE</h2>
 
 		<div class="onlyoffice-description">
 			<h1>{{ t('onlyoffice', 'Welcome to ONLYOFFICE Docs!') }}</h1>
 			<p>{{ t('onlyoffice', 'Edit and collaborate on text documents, spreadsheets, presentations, and PDFs within Nextcloud using ONLYOFFICE Docs.') }}</p>
 			<div class="useful-links">
-				<a href="https://helpcenter.onlyoffice.com/integration/nextcloud.aspx" target="_blank">{{ t('onlyoffice', 'Learn more') }}</a>
+				<a :href="learnMoreUrl" target="_blank">{{ t('onlyoffice', 'Learn more') }}</a>
 				<a href="https://community.onlyoffice.com/c/suggestions/integrations/56" target="_blank">{{ t('onlyoffice', 'Suggest a feature') }}</a>
 			</div>
 		</div>
@@ -52,6 +72,14 @@ import { t } from '@nextcloud/l10n'
 </template>
 
 <style scoped>
+.section {
+	padding-bottom: 0;
+}
+
+.section:not(:last-child) {
+	border-bottom: none;
+}
+
 .onlyoffice-description {
 	display: flex;
 	flex-direction: column;

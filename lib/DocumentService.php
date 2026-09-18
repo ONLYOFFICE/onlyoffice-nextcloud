@@ -254,8 +254,10 @@ class DocumentService {
 
     /**
      * Request health status
+     *
+     * @param bool $allowLocalAddress - allow the address to be on the local network
      */
-    public function healthcheckRequest(): bool {
+    public function healthcheckRequest(bool $allowLocalAddress = false): bool {
 
         $documentServerUrl = $this->appConfig->getDocumentServerInternalUrl();
 
@@ -265,7 +267,7 @@ class DocumentService {
 
         $urlHealthcheck = $documentServerUrl . "healthcheck";
 
-        $response = $this->request($urlHealthcheck);
+        $response = $this->request($urlHealthcheck, "get", ["nextcloud" => ["allow_local_address" => $allowLocalAddress]]);
 
         return $response === "true";
     }
@@ -319,8 +321,11 @@ class DocumentService {
         $response = $this->request($urlCommand, "post", $opts);
 
         $data = json_decode($response, true);
+        if (!is_array($data)) {
+            throw new \Exception($this->trans->t("Error occurred in the document service"));
+        }
 
-        $this->processCommandServResponceError((int)$data["error"]);
+        $this->processCommandServResponceError((int)($data["error"] ?? 0));
 
         return $data;
     }
@@ -375,19 +380,34 @@ class DocumentService {
         }
 
         $opts['nextcloud'] = [
-            'allow_local_address' => true,
+            'allow_local_address' => $opts['nextcloud']['allow_local_address'] ?? true,
         ];
 
-        $response = $method === "post" ? $client->post($url, $opts) : $client->get($url, $opts);
+        try {
+            $response = $method === "post" ? $client->post($url, $opts) : $client->get($url, $opts);
+        } catch (\Throwable $e) {
+            $this->logger->error("Request to $url failed", ["exception" => $e]);
+            throw new \Exception($this->trans->t("Error occurred in the document service"));
+        }
 
         return $response->getBody();
     }
 
     /**
      * Checking document service location
+     *
+     * @param bool $allowLocalAddress - allow the address to be on the local network
      */
-    public function checkDocServiceUrl(): array {
+    public function checkDocServiceUrl(bool $allowLocalAddress = false): array {
         $version = null;
+
+        $documentServerUrl = $this->appConfig->getDocumentServerInternalUrl();
+        if (!preg_match("/^https?:\/\//i", $documentServerUrl)
+            || empty(parse_url($documentServerUrl, PHP_URL_HOST))) {
+            $this->logger->error("Unusable internal address: $documentServerUrl");
+
+            return [$this->trans->t("An HTTP or HTTPS address for ONLYOFFICE Docs is required."), $version];
+        }
 
         try {
             if (preg_match("/^https:\/\//i", (string) $this->urlGenerator->getAbsoluteURL("/"))
@@ -400,13 +420,13 @@ class DocumentService {
         }
 
         try {
-            $healthcheckResponse = $this->healthcheckRequest();
-            if (!$healthcheckResponse) {
-                throw new \Exception($this->trans->t("Bad healthcheck status"));
-            }
+            $healthcheckResponse = $this->healthcheckRequest($allowLocalAddress);
         } catch (\Exception $e) {
             $this->logger->error("healthcheckRequest on check error", ['exception' => $e]);
-            return [$e->getMessage(), $version];
+            $healthcheckResponse = false;
+        }
+        if (!$healthcheckResponse) {
+            return [$this->trans->t("Bad healthcheck status"), $version];
         }
 
         try {
@@ -427,7 +447,7 @@ class DocumentService {
 
         $convertedFileUri = null;
         try {
-            $hashUrl = $this->crypt->getHash(["action" => "empty"]);
+            $hashUrl = $this->crypt->getExpiringHash(["action" => "empty"]);
             $fileUrl = $this->urlGenerator->linkToRouteAbsolute(self::$appName . ".callback.emptyfile", ["doc" => $hashUrl]);
             if (!$this->appConfig->useDemo() && !empty($this->appConfig->getStorageUrl())) {
                 $fileUrl = str_replace($this->urlGenerator->getAbsoluteURL("/"), $this->appConfig->getStorageUrl(), $fileUrl);
@@ -444,7 +464,7 @@ class DocumentService {
         }
 
         try {
-            $this->request($convertedFileUri);
+            $this->request($convertedFileUri, "get", ["nextcloud" => ["allow_local_address" => $allowLocalAddress]]);
         } catch (\Exception $e) {
             $this->logger->error("Request converted file on check error", ['exception' => $e]);
             return [$e->getMessage(), $version];

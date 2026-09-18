@@ -304,6 +304,11 @@ class AppConfig {
     private string $_jwt_expiration = "jwt_expiration";
 
     /**
+     * The config key for allowing requests to local addresses
+     */
+    private string $_allow_local_address = "allow_local_address";
+
+    /**
      * The config key for store cache
      */
     private readonly ICache $cache;
@@ -399,18 +404,69 @@ class AppConfig {
     }
 
     /**
+     * Sanitize a server address, leaving one that is not usable unchanged
+     *
+     * @param string $url - server address
+     * @param bool $keepUserInfo - keep credentials
+     */
+    private function sanitizeServerUrl(string $url, bool $keepUserInfo = false): string {
+        $url = preg_replace('/[\x00-\x20\x7F]/', "", $url);
+        $url = str_replace("\\", "/", (string) $url);
+
+        if ($url === "") {
+            return "";
+        }
+
+        if (str_starts_with($url, "/")) {
+            return rtrim($url, "/") . "/";
+        }
+
+        if (preg_match('/^([a-z][a-z0-9+.\-]*):\/\//i', $url, $schemeMatch)
+            && !\in_array(strtolower($schemeMatch[1]), ["http", "https"], true)) {
+            return $url;
+        }
+
+        $candidate = preg_match("/^https?:\/\//i", $url) ? $url : "https://" . $url;
+
+        $parts = parse_url($candidate);
+        if ($parts === false || empty($parts["host"])) {
+            return $url;
+        }
+
+        $scheme = strtolower($parts["scheme"]);
+        $host = rtrim(strtolower($parts["host"]), ".");
+        if ($host === "") {
+            return $url;
+        }
+
+        $address = $scheme . "://";
+
+        if ($keepUserInfo && isset($parts["user"])) {
+            $address .= $parts["user"];
+            if (isset($parts["pass"])) {
+                $address .= ":" . $parts["pass"];
+            }
+            $address .= "@";
+        }
+
+        $address .= $host;
+
+        $port = $parts["port"] ?? null;
+        $isDefaultPort = ($scheme === "http" && $port === 80) || ($scheme === "https" && $port === 443);
+        if ($port !== null && !$isDefaultPort) {
+            $address .= ":" . $port;
+        }
+
+        return rtrim($address . ($parts["path"] ?? ""), "/") . "/";
+    }
+
+    /**
      * Save the document service address to the application configuration
      *
      * @param string $documentServer - document service address
      */
     public function setDocumentServerUrl(string $documentServer): void {
-        $documentServer = trim($documentServer);
-        if ($documentServer !== '') {
-            $documentServer = rtrim($documentServer, "/") . "/";
-            if (!preg_match("/(^https?:\/\/)|^\//i", $documentServer)) {
-                $documentServer = "http://" . $documentServer;
-            }
-        }
+        $documentServer = $this->sanitizeServerUrl($documentServer);
 
         $this->logger->info("setDocumentServerUrl: $documentServer", ["app" => $this->appName]);
 
@@ -448,13 +504,7 @@ class AppConfig {
      * @param string $documentServerInternal - document service address
      */
     public function setDocumentServerInternalUrl(string $documentServerInternal): void {
-        $documentServerInternal = rtrim(trim($documentServerInternal), "/");
-        if ($documentServerInternal !== '') {
-            $documentServerInternal .= "/";
-            if (!preg_match("/^https?:\/\//i", $documentServerInternal)) {
-                $documentServerInternal = "http://" . $documentServerInternal;
-            }
-        }
+        $documentServerInternal = $this->sanitizeServerUrl($documentServerInternal, true);
 
         $this->logger->info("setDocumentServerInternalUrl: $documentServerInternal", ["app" => $this->appName]);
 
@@ -507,7 +557,7 @@ class AppConfig {
 
             if ($from !== $documentServerUrl) {
                 $this->logger->debug("Replace url from $from to $documentServerUrl", ["app" => $this->appName]);
-                $url = str_replace($from, $documentServerUrl, $url);
+                $url = str_ireplace($from, $documentServerUrl, $url);
             }
         }
 
@@ -520,13 +570,7 @@ class AppConfig {
      * @param string $storageUrl - document service address
      */
     public function setStorageUrl(string $storageUrl): void {
-        $storageUrl = rtrim(trim($storageUrl), "/");
-        if ($storageUrl !== '') {
-            $storageUrl .= "/";
-            if (!preg_match("/^https?:\/\//i", $storageUrl)) {
-                $storageUrl = "http://" . $storageUrl;
-            }
-        }
+        $storageUrl = $this->sanitizeServerUrl($storageUrl);
 
         $this->logger->info("setStorageUrl: $storageUrl", ["app" => $this->appName]);
 
@@ -559,7 +603,7 @@ class AppConfig {
             $this->logger->info("Set secret key", ["app" => $this->appName]);
         }
 
-        $this->appConfig->setValueString($this->appName, $this->_jwtSecret, $secret);
+        $this->appConfig->setValueString($this->appName, $this->_jwtSecret, $secret, sensitive: true);
     }
 
     /**
@@ -899,14 +943,17 @@ class AppConfig {
      * Get review viewing mode setting
      */
     public function getCustomizationReviewDisplay(): string {
-        $value = $this->appConfig->getValueString($this->appName, $this->_customizationReviewDisplay, "original");
-        if ($value === "markup") {
-            return "markup";
+        $value = $this->appConfig->getValueString($this->appName, $this->_customizationReviewDisplay, "markup");
+        if ($value === "simple") {
+            return "simple";
         }
         if ($value === "final") {
             return "final";
         }
-        return "original";
+        if ($value === "original") {
+            return "original";
+        }
+        return "markup";
     }
 
     /**
@@ -1153,7 +1200,7 @@ class AppConfig {
             return $turnOff === "true";
         }
 
-        return $this->getSystemValue($this->_verification) === "true";
+        return filter_var($this->getSystemValue($this->_verification), FILTER_VALIDATE_BOOLEAN);
     }
 
     /**
@@ -1297,6 +1344,18 @@ class AppConfig {
     public function getDisableDownload(): bool {
         return (bool)$this->getSystemValue($this->_disableDownload);
     }
+
+    /**
+     * Get whether requests to addresses on the local network are allowed
+     */
+    public function getAllowLocalAddress(): bool {
+        if ($this->config->getSystemValueBool("allow_local_remote_servers", false)) {
+            return true;
+        }
+
+        return filter_var($this->getSystemValue($this->_allow_local_address), FILTER_VALIDATE_BOOLEAN);
+    }
+
     /**
      * Get the editors check interval
      */

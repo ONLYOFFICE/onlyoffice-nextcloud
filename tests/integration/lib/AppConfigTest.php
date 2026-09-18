@@ -107,12 +107,12 @@ class AppConfigTest extends TestCase {
     }
 
     /**
-     * Prepends http:// when no scheme is provided.
+     * Prepends https:// when no scheme is provided.
      */
-    public function testSetDocumentServerUrlPrependsHttpWhenNoScheme(): void {
+    public function testSetDocumentServerUrlPrependsHttpsWhenNoScheme(): void {
         $this->appConfig->setDocumentServerUrl("example.com");
 
-        $this->assertSame("http://example.com/", $this->appConfig->getDocumentServerUrl());
+        $this->assertSame("https://example.com/", $this->appConfig->getDocumentServerUrl());
     }
 
     /**

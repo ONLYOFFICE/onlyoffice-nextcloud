@@ -59,7 +59,7 @@ const commonDefaults: CommonSettings = {
 	forcesave: false,
 	liveViewOnShare: false,
 	help: true,
-	reviewDisplay: 'original',
+	reviewDisplay: 'markup',
 	theme: 'theme-system',
 	unknownAuthor: '',
 	limitGroups: [],

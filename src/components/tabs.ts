@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (C) Ascensio System SIA, 2009-2026
  *
  * This program is a free software product. You can redistribute it and/or
@@ -32,49 +32,52 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { type InjectionKey, type Ref } from 'vue'
+import { onMounted, onUnmounted, ref, watch } from 'vue'
 
-import { test, expect } from '../fixtures'
-import { uploadNewTemplate } from '../helpers/templates'
-import { deleteFile } from '../helpers/webdav'
+export interface TabMeta {
+	id: string
+	label: string
+	disabled: boolean
+}
 
-const SOURCE_FILE = 'source.docx'
+export interface TabListContext {
+	activeId: Ref<string>
+	register: (tab: TabMeta) => TabMeta
+	unregister: (id: string) => void
+	select: (id: string) => void
+}
 
-test('New PDF form button is present on the files page', async ({ filesPage }) => {
-	await filesPage.goto()
-	await filesPage.openNewMenu()
+export const tabListKey: InjectionKey<TabListContext> = Symbol('onlyoffice:tab-list')
 
-	await expect(filesPage.menuItem('New PDF form')).toBeVisible()
-})
+/**
+ * Sync the active tab id with the URL hash so it survives a reload.
+ *
+ * @param valid the allowed tab ids
+ * @param fallback the tab id used when the hash is empty or unknown
+ */
+export function useTabHash(valid: string[], fallback: string = valid[0] ?? ''): Ref<string> {
+	// eslint-disable-next-line jsdoc/require-jsdoc
+	function read(): string {
+		const id = window.location.hash.replace(/^#/, '')
+		return valid.includes(id) ? id : fallback
+	}
 
-test.describe('Create PDF form from docx', () => {
-	test.beforeEach(async ({ filesPage, user }) => {
-		await uploadNewTemplate('source', 'docx', user)
-		await filesPage.goto()
+	const value = ref(read())
+
+	watch(value, (id) => {
+		if (read() !== id) {
+			window.location.hash = id
+		}
 	})
 
-	test.afterEach(async ({ user }) => {
-		await deleteFile(`/${SOURCE_FILE}`, user)
-		await deleteFile('/New PDF form.pdf', user)
-	})
+	// eslint-disable-next-line jsdoc/require-jsdoc
+	function onHashChange() {
+		value.value = read()
+	}
 
-	test('Creates PDF form from docx file', async ({ filesPage, editorPage }) => {
-		await filesPage.openNewMenu()
-		await filesPage.menuItem('New PDF form').click()
+	onMounted(() => window.addEventListener('hashchange', onHashChange))
+	onUnmounted(() => window.removeEventListener('hashchange', onHashChange))
 
-		const dialog = filesPage.page.getByRole('dialog')
-		await dialog.locator(`tr[data-filename="${SOURCE_FILE}"]`).click()
-		await dialog.getByRole('button', { name: 'From text document' }).click()
-
-		await editorPage.waitForEditor()
-	})
-})
-
-test('Create new PDF form from blank template', async ({ filesPage, editorPage }) => {
-	await filesPage.goto()
-	await filesPage.openNewMenu()
-
-	await filesPage.menuItem('New PDF form').click()
-	await filesPage.createBlankPdfForm()
-
-	await editorPage.waitForEditor()
-})
+	return value
+}

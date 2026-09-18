@@ -1,8 +1,23 @@
 # Change Log
 
+## 10.2.0
+
+### Changed
+- compatible with Nextcloud 35
+- allow inserting multiple images from Nextcloud into the document at once
+- redesigned the admin settings sections as tabbed navigation
+- changed common and security admin settings to save automatically
+- added supported languages to the Help Center link
+- added a dialog to specify a name when creating a blank PDF form
+- added `simple` option for `reviewDisplay` setting and added descriptions for review display modes
+- disabled anonymous name requests for guests in editor view mode
+- store the document service secret key encrypted
+- stop the address check from reporting connection details of unreachable servers
+- require the `allow_local_address` config option to check an ONLYOFFICE Docs address on the local network
+
 ## 10.1.2
 
-## Changed
+### Changed
 - stop Firefox collapsing the page when toggling checkboxes
 - fixed an issue where the editor was not using the user's preferred language
 
@@ -24,7 +39,7 @@
 - fixed opening editor for shared link
 
 ## 10.0.0
-## Changed
+### Changed
 - compatible with Nextcloud 33
 - Nextcloud v32 is no longer supported
 

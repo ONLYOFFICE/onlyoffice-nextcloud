@@ -38,16 +38,17 @@
 		:name="t('onlyoffice', 'Download as')"
 		:buttons="buttons"
 		@update:open="$emit('close', null)">
-		<div class="onlyoffice-download-container">
+		<div ref="containerRef" class="onlyoffice-download-container" tabindex="-1">
 			<p>{{ t('onlyoffice', 'Choose a format to convert {fileName}', { fileName }) }}</p>
-			<select id="onlyoffice-download-select" v-model="selectedFormat">
-				<option :value="extension">
-					{{ t('onlyoffice', 'Origin format') }}
-				</option>
-				<option v-for="ext in saveasFormats" :key="ext" :value="ext">
-					{{ ext }}
-				</option>
-			</select>
+			<NcSelect
+				v-model="selectedFormat"
+				inputId="onlyoffice-download-select"
+				class="onlyoffice-download-select"
+				:options="selectOptions"
+				:reduce="(option) => option.id"
+				:clearable="false"
+				labelOutside
+				:aria-label-combobox="t('onlyoffice', 'Format')" />
 		</div>
 	</NcDialog>
 </template>
@@ -55,8 +56,9 @@
 <script setup lang="ts">
 import { t } from '@nextcloud/l10n'
 import { generateUrl } from '@nextcloud/router'
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import NcDialog from '@nextcloud/vue/components/NcDialog'
+import NcSelect from '@nextcloud/vue/components/NcSelect'
 
 declare const appName: string
 
@@ -72,18 +74,26 @@ const emit = defineEmits<{
 }>()
 
 const selectedFormat = ref(props.extension)
+const containerRef = ref<HTMLElement | null>(null)
+
+onMounted(() => {
+	containerRef.value?.focus()
+})
+
+const selectOptions = computed(() => [
+	{ id: props.extension, label: t('onlyoffice', 'Original format') },
+	...props.saveasFormats.map((ext) => ({ id: ext, label: ext })),
+])
 
 const buttons = computed(() => [
 	{
 		label: t('core', 'Cancel'),
-		variant: 'secondary',
-		size: 'large',
+		variant: 'secondary' as const,
 		callback: () => emit('close', null),
 	},
 	{
 		label: t('onlyoffice', 'Download'),
-		variant: 'primary',
-		size: 'large',
+		variant: 'primary' as const,
 		callback: () => {
 			location.href = generateUrl('apps/' + appName + '/downloadas?fileId={fileId}&toExtension={toExtension}', {
 				fileId: props.fileId,
@@ -98,13 +108,22 @@ const buttons = computed(() => [
 <style scoped lang="scss">
 .onlyoffice-download-picker :deep(.modal-container) {
 	width: auto !important;
-	padding: 24px !important;
+	min-width: min(558px, 90%);
+	padding-block: 15px 25px !important;
+	padding-inline: 25px !important;
 }
 
 .onlyoffice-download-picker :deep(.dialog__name) {
-	margin-top: 24px;
-	font-size: 1.8em;
-	text-align: left;
+	margin-bottom: 0;
+}
+
+.onlyoffice-download-picker :deep(.modal-container__content) {
+	row-gap: 26px;
+}
+
+.onlyoffice-download-picker :deep(.modal-container__close) {
+	top: 15px !important;
+	inset-inline-end: 15px !important;
 }
 
 .onlyoffice-download-picker :deep(.dialog__content) {
@@ -112,20 +131,37 @@ const buttons = computed(() => [
 }
 
 .onlyoffice-download-picker :deep(.dialog__actions) {
-	justify-content: space-between;
+	justify-content: flex-end;
 	margin-block: 0 !important;
 	padding-inline-end: 0;
-	padding: 0;
-	padding-top: 10px;
+	padding: 14px 0 0;
+}
+
+.onlyoffice-download-picker :deep(.dialog__actions .button-vue) {
+	--button-size: 34px;
 }
 
 .onlyoffice-download-container {
 	display: flex;
-	align-items: center;
-	column-gap: 10px;
+	flex-direction: column;
+	row-gap: 12px;
 
-	select {
-		cursor: pointer;
+	&:focus {
+		outline: none;
+	}
+}
+
+.onlyoffice-download-select {
+	width: fit-content;
+}
+
+@media only screen and (max-width: 512px) {
+	.onlyoffice-download-picker :deep(.modal-wrapper .modal-container) {
+		height: unset;
+		max-height: 90%;
+		position: relative;
+		top: unset;
+		border-radius: var(--border-radius-element);
 	}
 }
 </style>

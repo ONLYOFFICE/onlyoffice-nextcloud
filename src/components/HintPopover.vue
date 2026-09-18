@@ -32,57 +32,59 @@
 
   SPDX-License-Identifier: AGPL-3.0-only
 -->
-<template>
-	<li class="onlyoffice-template-item" :data-id="template.id">
-		<img :src="template.icon">
-		<p @click="handleOpen">
-			{{ template.name }}
-		</p>
-		<span class="onlyoffice-template-download icon-download" @click="handleDownload" />
-		<span class="onlyoffice-template-delete icon-delete" @click="emit('delete', template.id)" />
-	</li>
-</template>
-
 <script setup lang="ts">
-import type { Template } from '../types.ts'
+import NcButton from '@nextcloud/vue/components/NcButton'
+import NcIconSvgWrapper from '@nextcloud/vue/components/NcIconSvgWrapper'
+import NcPopover from '@nextcloud/vue/components/NcPopover'
 
-import { generateUrl } from '@nextcloud/router'
+defineProps<{
+	label: string
+}>()
 
-const props = defineProps<{ template: Template }>()
-const emit = defineEmits<{ delete: [id: number] }>()
-
-/**
- *
- */
-function handleOpen() {
-	window.open(generateUrl('/apps/onlyoffice/{fileId}?template=true', { fileId: props.template.id }))
-}
-
-/**
- *
- */
-function handleDownload() {
-	location.href = generateUrl('apps/onlyoffice/downloadas?fileId={fileId}&template=true', { fileId: props.template.id })
-}
+const infoIconPath = 'M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z'
 </script>
 
+<template>
+	<NcPopover popupRole="dialog">
+		<template #trigger>
+			<NcButton
+				class="onlyoffice-hint-icon"
+				variant="tertiary-no-background"
+				:aria-label="label">
+				<template #icon>
+					<span class="onlyoffice-hint-icon">
+						<NcIconSvgWrapper :path="infoIconPath" :size="20" />
+					</span>
+				</template>
+			</NcButton>
+		</template>
+		<div class="onlyoffice-hint-body">
+			<slot />
+		</div>
+	</NcPopover>
+</template>
+
 <style scoped>
-.onlyoffice-template-item img,
-.onlyoffice-template-delete,
-.onlyoffice-template-download,
-.onlyoffice-template-item p {
-    display: inline-block;
-    margin-inline-end: 10px;
-    cursor: pointer;
+.onlyoffice-hint-icon {
+	display: flex;
+	color: var(--color-primary-element);
 }
 
-.onlyoffice-template-delete,
-.onlyoffice-template-download {
-    margin-bottom: -4px;
-    opacity: .6;
+.onlyoffice-hint-body {
+	max-width: 300px;
+	padding: var(--border-radius-element);
 }
 
-.onlyoffice-template-item img {
-    float: left;
+.onlyoffice-hint-body :deep(p) {
+	margin: 0;
+}
+
+.onlyoffice-hint-body :deep(ul) {
+	padding-inline-start: 16px;
+	margin: 4px 0 0;
+}
+
+.onlyoffice-hint-body :deep(li + li) {
+	margin-top: 4px;
 }
 </style>

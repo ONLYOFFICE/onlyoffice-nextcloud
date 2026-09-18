@@ -97,4 +97,41 @@ class CryptTest extends TestCase {
         $this->assertNull($decoded[0]);
         $this->assertNotNull($decoded[1]);
     }
+
+    /**
+     * Stamps iat/exp onto the token using the configured JWT lifetime when no explicit expiration is given.
+     */
+    public function testGetExpiringHashWithDefaultExpiration(): void {
+        $this->appConfig->method("getJwtExpiration")->willReturn(5);
+
+        $token = $this->crypt->getExpiringHash(["action" => "download"]);
+
+        [$decoded, $error] = $this->crypt->readHash($token);
+        $this->assertNull($error);
+        $this->assertSame("download", $decoded->action);
+        $this->assertSame($decoded->iat + 5 * 60, $decoded->exp);
+    }
+
+    /**
+     * Uses the given expiration, in seconds, instead of the configured JWT lifetime.
+     */
+    public function testGetExpiringHashWithCustomExpiration(): void {
+        $token = $this->crypt->getExpiringHash(["action" => "direct"], 30);
+
+        [$decoded, $error] = $this->crypt->readHash($token);
+        $this->assertNull($error);
+        $this->assertSame($decoded->iat + 30, $decoded->exp);
+    }
+
+    /**
+     * readHash() rejects a token whose exp claim is already in the past.
+     */
+    public function testReadHashWithExpiredToken(): void {
+        $token = $this->crypt->getExpiringHash(["action" => "download"], -3600);
+
+        $decoded = $this->crypt->readHash($token);
+
+        $this->assertNull($decoded[0]);
+        $this->assertNotNull($decoded[1]);
+    }
 }

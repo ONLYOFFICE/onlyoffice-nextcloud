@@ -47,6 +47,7 @@ use OCP\Image;
 use OCP\IURLGenerator;
 use OCP\IUser;
 use OCP\Preview\IProviderV2;
+use OCP\Server;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -57,45 +58,14 @@ use Psr\Log\LoggerInterface;
 class Preview implements IProviderV2 {
 
     /**
-     * Capabilities mimetype
-     */
-    public static array $capabilities = [
-        "text/csv",
-        "application/msword",
-        "application/vnd.ms-word.document.macroEnabled.12",
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document.docxf",
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document.oform",
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.template",
-        "application/epub+zip",
-        "text/html",
-        "application/vnd.oasis.opendocument.presentation",
-        "application/vnd.oasis.opendocument.spreadsheet",
-        "application/vnd.oasis.opendocument.text",
-        "application/vnd.oasis.opendocument.presentation-template",
-        "application/vnd.oasis.opendocument.spreadsheet-template",
-        "application/vnd.oasis.opendocument.text-template",
-        "application/pdf",
-        "application/vnd.ms-powerpoint.template.macroEnabled.12",
-        "application/vnd.openxmlformats-officedocument.presentationml.template",
-        "application/vnd.ms-powerpoint.slideshow.macroEnabled.12",
-        "application/vnd.openxmlformats-officedocument.presentationml.slideshow",
-        "application/vnd.ms-powerpoint",
-        "application/vnd.ms-powerpoint.presentation.macroEnabled.12",
-        "application/vnd.openxmlformats-officedocument.presentationml.presentation",
-        "text/rtf",
-        "text/plain",
-        "application/vnd.ms-excel",
-        "application/vnd.ms-excel.sheet.macroEnabled.12",
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        "application/vnd.ms-excel.template.macroEnabled.12",
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.template"
-    ];
-
-    /**
      * Converted thumbnail format
      */
-    private const THUMBEXTENSION = "jpeg";
+    private const THUMBEXTENSION = "jpg";
+
+    /**
+     * The mime types of formats that the document server can convert to a thumbnail
+     */
+    private static ?array $previewMimeTypes = null;
 
     public function __construct(
         private readonly string $appName,
@@ -110,18 +80,39 @@ class Preview implements IProviderV2 {
     ) {}
 
     /**
+     * Get the mime types of formats that the document server can convert to a jpg thumbnail
+     */
+    private static function getPreviewMimeTypes(): array {
+        if (self::$previewMimeTypes !== null) {
+            return self::$previewMimeTypes;
+        }
+
+        $appConfig = Server::get(AppConfig::class);
+        $onlyofficeFormats = $appConfig->getFormats();
+        $result = [];
+
+        foreach ($onlyofficeFormats as $onlyOfficeFormat) {
+            if (!empty($onlyOfficeFormat["mime"]) && \in_array(self::THUMBEXTENSION, $onlyOfficeFormat["convert"], true)) {
+                array_push($result, ...$onlyOfficeFormat["mime"]);
+            }
+        }
+
+        return self::$previewMimeTypes = array_values(array_unique($result));
+    }
+
+    /**
      * Return mime type
      */
     public static function getMimeTypeRegex(): string {
         $mimeTypeRegex = "";
-        foreach (self::$capabilities as $format) {
+        foreach (self::getPreviewMimeTypes() as $mimeType) {
             if (!empty($mimeTypeRegex)) {
                 $mimeTypeRegex .= "|";
             }
-            $mimeTypeRegex .= preg_quote($format, "/");
+            $mimeTypeRegex .= preg_quote($mimeType, "/");
         }
 
-        return "/" . $mimeTypeRegex . "/";
+        return "/" . $mimeTypeRegex . "/i";
     }
 
     /**
@@ -145,7 +136,8 @@ class Preview implements IProviderV2 {
             || $file->getSize() > $this->appConfig->getLimitThumbSize()) {
             return false;
         }
-        if (!in_array($file->getMimetype(), self::$capabilities, true)) {
+        $mimeTypes = array_map("strtolower", self::getPreviewMimeTypes());
+        if (!in_array(strtolower($file->getMimetype()), $mimeTypes, true)) {
             return false;
         }
         return !$file->getStorage()->instanceOfStorage(SharingExternalStorage::class);
@@ -166,7 +158,12 @@ class Preview implements IProviderV2 {
         try {
             $imageUrl = $this->documentService->getConvertedUri($fileUrl, $extension, self::THUMBEXTENSION, $key);
         } catch (\Exception $e) {
-            $this->logger->error("getConvertedUri: from $extension to " . self::THUMBEXTENSION, ["exception" => $e]);
+            $message = "getConvertedUri: from $extension to " . self::THUMBEXTENSION;
+            if (str_contains($e->getMessage(), "Incorrect password")) {
+                $this->logger->debug($message, ["exception" => $e]);
+            } else {
+                $this->logger->error($message, ["exception" => $e]);
+            }
             return null;
         }
 
@@ -215,7 +212,7 @@ class Preview implements IProviderV2 {
             $data["template"] = true;
         }
 
-        $hashUrl = $this->crypt->getHash($data);
+        $hashUrl = $this->crypt->getExpiringHash($data);
 
         $fileUrl = $this->urlGenerator->linkToRouteAbsolute($this->appName . ".callback.download", ["doc" => $hashUrl]);
 

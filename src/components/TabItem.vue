@@ -32,57 +32,38 @@
 
   SPDX-License-Identifier: AGPL-3.0-only
 -->
-<template>
-	<li class="onlyoffice-template-item" :data-id="template.id">
-		<img :src="template.icon">
-		<p @click="handleOpen">
-			{{ template.name }}
-		</p>
-		<span class="onlyoffice-template-download icon-download" @click="handleDownload" />
-		<span class="onlyoffice-template-delete icon-delete" @click="emit('delete', template.id)" />
-	</li>
-</template>
-
 <script setup lang="ts">
-import type { Template } from '../types.ts'
+import { computed, inject, onBeforeUnmount, watch } from 'vue'
+import { tabListKey } from './tabs.ts'
 
-import { generateUrl } from '@nextcloud/router'
+const props = withDefaults(defineProps<{
+	id: string
+	label: string
+	disabled?: boolean
+}>(), { disabled: false })
 
-const props = defineProps<{ template: Template }>()
-const emit = defineEmits<{ delete: [id: number] }>()
-
-/**
- *
- */
-function handleOpen() {
-	window.open(generateUrl('/apps/onlyoffice/{fileId}?template=true', { fileId: props.template.id }))
+const tabList = inject(tabListKey)
+if (!tabList) {
+	throw new Error('TabItem must be used inside a TabList')
 }
 
-/**
- *
- */
-function handleDownload() {
-	location.href = generateUrl('apps/onlyoffice/downloadas?fileId={fileId}&template=true', { fileId: props.template.id })
-}
+const meta = tabList.register({ id: props.id, label: props.label, disabled: props.disabled })
+
+watch(() => props.disabled, (disabled) => {
+	meta.disabled = disabled
+})
+
+watch(() => props.label, (label) => {
+	meta.label = label
+})
+
+onBeforeUnmount(() => tabList.unregister(props.id))
+
+const isActive = computed(() => tabList.activeId.value === props.id)
 </script>
 
-<style scoped>
-.onlyoffice-template-item img,
-.onlyoffice-template-delete,
-.onlyoffice-template-download,
-.onlyoffice-template-item p {
-    display: inline-block;
-    margin-inline-end: 10px;
-    cursor: pointer;
-}
-
-.onlyoffice-template-delete,
-.onlyoffice-template-download {
-    margin-bottom: -4px;
-    opacity: .6;
-}
-
-.onlyoffice-template-item img {
-    float: left;
-}
-</style>
+<template>
+	<section v-show="isActive" role="tabpanel" class="tab-item">
+		<slot />
+	</section>
+</template>

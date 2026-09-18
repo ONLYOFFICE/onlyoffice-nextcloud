@@ -35,7 +35,8 @@
 
 import { getCurrentUser, getRequestToken } from '@nextcloud/auth'
 import { getFilePickerBuilder, showError, showSuccess } from '@nextcloud/dialogs'
-import { getCanonicalLocale, t } from '@nextcloud/l10n'
+import { t } from '@nextcloud/l10n'
+import moment from '@nextcloud/moment'
 import { encodePath } from '@nextcloud/paths'
 import { generateOcsUrl, generateUrl, imagePath } from '@nextcloud/router'
 import {
@@ -44,6 +45,7 @@ import {
 	getConfig,
 	getFileUrl,
 	getHistory,
+	getImageUrls,
 	getUserInfo,
 	getUsers,
 	getVersionData,
@@ -55,9 +57,9 @@ import {
 
 import '@nextcloud/dialogs/style.css'
 
-/* global DocsAPI, oc_defaults */
+/* global DocsAPI */
 
-OCA.Onlyoffice = { AppName: 'onlyoffice', inframe: false, inviewer: false, fileId: null, shareToken: null, insertImageType: null, ...OCA.Onlyoffice }
+OCA.Onlyoffice = { AppName: 'onlyoffice', inframe: false, inviewer: false, fileId: null, shareToken: null, ...OCA.Onlyoffice }
 
 OCA.Onlyoffice.InitEditor = function() {
 	const iframeEditor = document.getElementById('iframeEditor')
@@ -133,7 +135,7 @@ OCA.Onlyoffice.InitEditor = function() {
 
 					if (docIsChanged !== event.data) {
 						const titleChange = function() {
-							OCA.Onlyoffice.currentWindow.document.title = config.document.title + (event.data ? ' *' : '') + ' - ' + oc_defaults.title
+							OCA.Onlyoffice.currentWindow.document.title = config.document.title + (event.data ? ' *' : '') + ' - ' + OC.theme.title
 							docIsChanged = event.data
 						}
 
@@ -164,8 +166,7 @@ OCA.Onlyoffice.InitEditor = function() {
 					|| (OCA.Onlyoffice.currentUser?.uid)) {
 					config.events.onRequestSaveAs = OCA.Onlyoffice.onRequestSaveAs
 					config.events.onRequestInsertImage = OCA.Onlyoffice.onRequestInsertImage
-					config.events.onRequestMailMergeRecipients = OCA.Onlyoffice.onRequestMailMergeRecipients
-					config.events.onRequestCompareFile = OCA.Onlyoffice.onRequestSelectDocument // todo: remove (for editors 7.4)
+					config.events.onRequestSelectSpreadsheet = OCA.Onlyoffice.onRequestSelectSpreadsheet
 					config.events.onRequestSelectDocument = OCA.Onlyoffice.onRequestSelectDocument
 					config.events.onRequestSendNotify = OCA.Onlyoffice.onRequestSendNotify
 					config.events.onRequestReferenceData = OCA.Onlyoffice.onRequestReferenceData
@@ -203,6 +204,14 @@ OCA.Onlyoffice.InitEditor = function() {
 					&& config._files_sharing && !OCA.Onlyoffice.shareToken
 					&& window.parent.OCA.Onlyoffice.context) {
 					config.events.onRequestSharingSettings = OCA.Onlyoffice.onRequestSharingSettings
+				}
+
+				if (OCA.Onlyoffice.anchor) {
+					try {
+						config.editorConfig.actionLink = JSON.parse(OCA.Onlyoffice.anchor)
+					} catch (e) {
+						console.error('ONLYOFFICE: failed to parse anchor', e)
+					}
 				}
 
 				OCA.Onlyoffice.docEditor = new DocsAPI.DocEditor('iframeEditor', config)
@@ -352,17 +361,17 @@ OCA.Onlyoffice.onRequestInsertImage = function(event) {
 		'image/svg+xml',
 	]
 
-	if (event.data) {
-		OCA.Onlyoffice.insertImageType = event.data.c
-	}
+	const insertionType = event.data ? event.data.c : undefined
 
 	if (OCA.Onlyoffice.inframe) {
 		window.parent.postMessage({
 			method: 'editorRequestInsertImage',
 			param: imageMimes,
+			documentSelectionType: insertionType,
 		}, '*')
 	} else {
 		getFilePickerBuilder(t(OCA.Onlyoffice.AppName, 'Insert image'))
+			.setMultiSelect(true)
 			.setMimeTypeFilter(imageMimes)
 			.addButton({
 				label: t('core', 'Choose'),
@@ -370,7 +379,7 @@ OCA.Onlyoffice.onRequestInsertImage = function(event) {
 					if (!nodes[0]) {
 						return
 					}
-					OCA.Onlyoffice.editorInsertImage(nodes[0].path)
+					OCA.Onlyoffice.editorInsertImage(nodes.map((node) => node.path), insertionType)
 				},
 				variant: 'primary',
 			})
@@ -380,41 +389,37 @@ OCA.Onlyoffice.onRequestInsertImage = function(event) {
 	}
 }
 
-OCA.Onlyoffice.editorInsertImage = function(filePath) {
-	getFileUrl(filePath).then((response) => {
+OCA.Onlyoffice.editorInsertImage = function(imagePaths, insertionType) {
+	getImageUrls(imagePaths).then((response) => {
 		if (response.error) {
 			OCA.Onlyoffice.showMessage(response.error, 'error')
 			return
 		}
 
-		if (OCA.Onlyoffice.insertImageType) {
-			response.c = OCA.Onlyoffice.insertImageType
-		}
-
+		response.c = insertionType
 		OCA.Onlyoffice.docEditor.insertImage(response)
 	})
 }
 
-OCA.Onlyoffice.onRequestMailMergeRecipients = function() {
-	const recipientMimes = [
-		'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-	]
+OCA.Onlyoffice.onRequestSelectSpreadsheet = function(event) {
+	const recipientExtensions = ['.csv', '.fods', '.ods', '.ots', '.xls', '.xlsm', '.xlsx', '.xlt', '.xltm', '.xltx']
 
 	if (OCA.Onlyoffice.inframe) {
 		window.parent.postMessage({
-			method: 'editorRequestMailMergeRecipients',
-			param: recipientMimes,
+			method: 'editorRequestSelectSpreadsheet',
+			param: recipientExtensions,
+			documentSelectionType: event.data.c,
 		}, '*')
 	} else {
 		getFilePickerBuilder(t(OCA.Onlyoffice.AppName, 'Select recipients'))
-			.setMimeTypeFilter(recipientMimes)
+			.setFilter((node) => node.type === 'folder' || recipientExtensions.includes(node.extension))
 			.addButton({
 				label: t('core', 'Choose'),
 				callback: (nodes) => {
 					if (!nodes[0]) {
 						return
 					}
-					OCA.Onlyoffice.editorSetRecipient(nodes[0].path)
+					OCA.Onlyoffice.editorSetRequestedSpreadsheet(nodes[0].path, event.data.c)
 				},
 				variant: 'primary',
 			})
@@ -440,14 +445,15 @@ OCA.Onlyoffice.onRequestStartMailMerge = function() {
 	OCA.Onlyoffice.docEditor.processMailMerge(true)
 }
 
-OCA.Onlyoffice.editorSetRecipient = function(filePath) {
+OCA.Onlyoffice.editorSetRequestedSpreadsheet = function(filePath, documentSelectionType) {
 	getFileUrl(filePath).then((response) => {
 		if (response.error) {
 			OCA.Onlyoffice.showMessage(response.error, 'error')
 			return
 		}
 
-		OCA.Onlyoffice.docEditor.setMailMergeRecipients(response)
+		response.c = documentSelectionType
+		OCA.Onlyoffice.docEditor.setRequestedSpreadsheet(response)
 	})
 }
 
@@ -629,7 +635,7 @@ OCA.Onlyoffice.onRequestSendNotify = function(event) {
 
 OCA.Onlyoffice.onRequestReferenceData = function(event) {
 	const link = event.data.link
-	const referenceData = event.data.referenceData
+	const referenceData = event.data.referenceData ?? {}
 	const path = event.data.path
 
 	fetchReference({ referenceData, path, link }).then((response) => {
@@ -731,11 +737,10 @@ OCA.Onlyoffice.refreshHistory = function(response, version) {
 				currentVersion = fileVersion.version
 			}
 
-			const formatter = new Intl.DateTimeFormat(getCanonicalLocale(), { dateStyle: 'short', timeStyle: 'medium' })
-			fileVersion.created = formatter.format(new Date(fileVersion.created * 1000))
+			fileVersion.created = moment(fileVersion.created * 1000).format('L LTS')
 			if (fileVersion.changes) {
 				fileVersion.changes.forEach((change) => {
-					change.created = formatter.format(new Date(change.created + '+00:00'))
+					change.created = moment(change.created + '+00:00').format('L LTS')
 				})
 			}
 		})
@@ -801,9 +806,6 @@ OCA.Onlyoffice.getConfigUrl = function() {
 	}
 	if (guestName && guestName !== 'null') {
 		params.push('guestName=' + encodeURIComponent(guestName))
-	}
-	if (OCA.Onlyoffice.anchor) {
-		params.push('anchor=' + encodeURIComponent(OCA.Onlyoffice.anchor))
 	}
 
 	if (OCA.Onlyoffice.inframe || OCA.Onlyoffice.directToken) {
