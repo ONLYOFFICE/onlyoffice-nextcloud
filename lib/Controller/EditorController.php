@@ -263,10 +263,13 @@ class EditorController extends Controller {
     ): DataResponse {
         $this->logger->debug("Search users");
         $result = [];
-        $currentUserGroups = [];
 
         if (!$this->appConfig->isUserAllowedToUse()) {
             return new DataResponse();
+        }
+
+        if (!$this->config->isMentionsEnabled()) {
+            return $result;
         }
 
         if (!$this->shareManager->allowEnumeration()) {
@@ -468,6 +471,10 @@ class EditorController extends Controller {
 
         if (!$this->appConfig->isUserAllowedToUse()) {
             return new DataResponse(["error" => $this->trans->t("Not permitted")]);
+        }
+
+        if (!$this->config->isMentionsEnabled()) {
+            return ["error" => $this->trans->t("Mentions are not enabled")];
         }
 
         if (empty($emails)) {
