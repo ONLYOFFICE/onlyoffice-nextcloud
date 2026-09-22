@@ -86,9 +86,9 @@ class DocumentService {
      */
     public function getConvertedUri(
         string $document_uri,
-        string $from_extension,
-        string $to_extension,
-        string $document_revision_id,
+        ?string $from_extension = null,
+        ?string $to_extension = null,
+        ?string $document_revision_id = null,
         string $region = "",
         bool $toForm = false
     ): string {
@@ -118,10 +118,10 @@ class DocumentService {
      */
     public function sendRequestToConvertService(
         string $document_uri,
-        string $from_extension,
-        string $to_extension,
-        string $document_revision_id,
-        bool $is_async,
+        ?string $from_extension = null,
+        ?string $to_extension = null,
+        ?string $document_revision_id = null,
+        ?bool $is_async = null,
         string $region = "",
         bool $toForm = false,
         array $thumbnail = [],
