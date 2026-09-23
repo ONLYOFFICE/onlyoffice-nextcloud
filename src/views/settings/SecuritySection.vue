@@ -33,14 +33,14 @@
   SPDX-License-Identifier: AGPL-3.0-only
 -->
 <script setup lang="ts">
-import { ref, computed } from 'vue'
 import { t } from '@nextcloud/l10n'
+import { computed, ref } from 'vue'
 import NcButton from '@nextcloud/vue/components/NcButton'
 import NcCheckboxRadioSwitch from '@nextcloud/vue/components/NcCheckboxRadioSwitch'
-import NcSettingsSelectGroup from '@nextcloud/vue/components/NcSettingsSelectGroup'
 import NcSelectTags from '@nextcloud/vue/components/NcSelectTags'
-import { saveSecuritySettings } from '../../services/SettingsService'
-import { useAutosave } from './useAutosave'
+import NcSettingsSelectGroup from '@nextcloud/vue/components/NcSettingsSelectGroup'
+import { saveSecuritySettings } from '../../services/SettingsService.ts'
+import { useAutosave } from './useAutosave.ts'
 
 interface WatermarkSettings {
 	enabled: boolean
@@ -124,7 +124,8 @@ function applyWatermarkText() {
 <template>
 	<div class="section section-onlyoffice section-onlyoffice-watermark">
 		<p>
-			<input id="onlyoffice-plugins"
+			<input
+				id="onlyoffice-plugins"
 				v-model="plugins"
 				type="checkbox"
 				class="checkbox">
@@ -132,7 +133,8 @@ function applyWatermarkText() {
 		</p>
 
 		<p>
-			<input id="onlyoffice-macros"
+			<input
+				id="onlyoffice-macros"
 				v-model="macros"
 				type="checkbox"
 				class="checkbox">
@@ -145,7 +147,8 @@ function applyWatermarkText() {
 		</p>
 		<div class="onlyoffice-tables">
 			<div>
-				<input id="onlyoffice-protection-all"
+				<input
+					id="onlyoffice-protection-all"
 					v-model="protection"
 					type="radio"
 					class="radio"
@@ -154,7 +157,8 @@ function applyWatermarkText() {
 				<label for="onlyoffice-protection-all">{{ t('onlyoffice', 'All users') }}</label>
 			</div>
 			<div>
-				<input id="onlyoffice-protection-owner"
+				<input
+					id="onlyoffice-protection-owner"
 					v-model="protection"
 					type="radio"
 					class="radio"
@@ -171,7 +175,8 @@ function applyWatermarkText() {
 			{{ t('onlyoffice', 'Secure view enables you to secure documents by embedding a watermark') }}
 		</p>
 		<p>
-			<NcCheckboxRadioSwitch id="onlyoffice-watermark-enabled"
+			<NcCheckboxRadioSwitch
+				id="onlyoffice-watermark-enabled"
 				v-model="watermark.enabled"
 				type="switch">
 				{{ t('onlyoffice', 'Enable watermarking') }}
@@ -189,7 +194,8 @@ function applyWatermarkText() {
 				{{ t('onlyoffice', 'Supported placeholders') }}: {userId}, {userDisplayName}, {email}, {date}, {themingName}
 			</p>
 			<p class="onlyoffice-watermark-text">
-				<input id="onlyoffice-watermark-text"
+				<input
+					id="onlyoffice-watermark-text"
 					v-model="watermarkText"
 					type="text"
 					:placeholder="t('onlyoffice', 'DO NOT SHARE THIS') + ' {userId} {date}'"
@@ -204,14 +210,16 @@ function applyWatermarkText() {
 			<!-- Tags -->
 			<template v-if="tagsEnabled">
 				<p>
-					<input id="onlyoffice-watermark-all-tags"
+					<input
+						id="onlyoffice-watermark-all-tags"
 						v-model="watermark.allTags"
 						type="checkbox"
 						class="checkbox">
 					<label for="onlyoffice-watermark-all-tags">{{ t('onlyoffice', 'Show watermark on tagged files') }}</label>
 				</p>
 				<p class="block-inline">
-					<NcSelectTags v-if="watermark.allTags"
+					<NcSelectTags
+						v-if="watermark.allTags"
 						v-model="watermark.allTagsList"
 						:multiple="true" />
 				</p>
@@ -219,21 +227,24 @@ function applyWatermarkText() {
 
 			<!-- Groups -->
 			<p>
-				<input id="onlyoffice-watermark-all-groups"
+				<input
+					id="onlyoffice-watermark-all-groups"
 					v-model="watermark.allGroups"
 					type="checkbox"
 					class="checkbox">
 				<label for="onlyoffice-watermark-all-groups">{{ t('onlyoffice', 'Show watermark for users of groups') }}</label>
 			</p>
 			<p class="block-inline">
-				<NcSettingsSelectGroup v-if="watermark.allGroups"
+				<NcSettingsSelectGroup
+					v-if="watermark.allGroups"
 					v-model="watermark.allGroupsList"
 					:label="t('core', 'Groups')" />
 			</p>
 
 			<!-- Share-based watermarks -->
 			<p>
-				<input id="onlyoffice-watermark-share-all"
+				<input
+					id="onlyoffice-watermark-share-all"
 					v-model="watermark.shareAll"
 					type="checkbox"
 					class="checkbox">
@@ -241,7 +252,8 @@ function applyWatermarkText() {
 			</p>
 			<!-- shareRead is hidden when shareAll is on (already implied) -->
 			<p v-if="!watermark.shareAll">
-				<input id="onlyoffice-watermark-share-read"
+				<input
+					id="onlyoffice-watermark-share-read"
 					v-model="watermark.shareRead"
 					type="checkbox"
 					class="checkbox">
@@ -253,7 +265,8 @@ function applyWatermarkText() {
 			<!-- Link-based watermarks -->
 			<p>{{ t('onlyoffice', 'Link shares') }}</p>
 			<p>
-				<input id="onlyoffice-watermark-link-all"
+				<input
+					id="onlyoffice-watermark-link-all"
 					v-model="watermark.linkAll"
 					type="checkbox"
 					class="checkbox">
@@ -262,14 +275,16 @@ function applyWatermarkText() {
 			<!-- link-specific options hidden when linkAll is on (already implies all) -->
 			<template v-if="!watermark.linkAll">
 				<p>
-					<input id="onlyoffice-watermark-link-secure"
+					<input
+						id="onlyoffice-watermark-link-secure"
 						v-model="watermark.linkSecure"
 						type="checkbox"
 						class="checkbox">
 					<label for="onlyoffice-watermark-link-secure">{{ t('onlyoffice', 'Show watermark for download hidden shares') }}</label>
 				</p>
 				<p>
-					<input id="onlyoffice-watermark-link-read"
+					<input
+						id="onlyoffice-watermark-link-read"
 						v-model="watermark.linkRead"
 						type="checkbox"
 						class="checkbox">
@@ -277,14 +292,16 @@ function applyWatermarkText() {
 				</p>
 				<template v-if="tagsEnabled">
 					<p>
-						<input id="onlyoffice-watermark-link-tags"
+						<input
+							id="onlyoffice-watermark-link-tags"
 							v-model="watermark.linkTags"
 							type="checkbox"
 							class="checkbox">
 						<label for="onlyoffice-watermark-link-tags">{{ t('onlyoffice', 'Show watermark on link shares with specific system tags') }}</label>
 					</p>
 					<p class="block-inline">
-						<NcSelectTags v-if="watermark.linkTags"
+						<NcSelectTags
+							v-if="watermark.linkTags"
 							v-model="watermark.linkTagsList"
 							:multiple="true" />
 					</p>

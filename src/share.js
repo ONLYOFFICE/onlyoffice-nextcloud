@@ -33,52 +33,41 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { createApp } from 'vue'
-import { t } from '@nextcloud/l10n'
+import { FileType, registerSidebarTab } from '@nextcloud/files'
 import { loadState } from '@nextcloud/initial-state'
-import AppDarkSvg from '../img/app-dark.svg?raw'
+import { t } from '@nextcloud/l10n'
+import { defineCustomElement } from 'vue'
 import ShareTab from './views/share/ShareTab.vue'
+import AppDarkSvg from '../img/app-dark.svg?raw'
 import { getFileExtension } from './utils/files.ts'
 
 const formats = loadState('onlyoffice', 'settings', { formats: {} }).formats ?? {}
+const tagName = 'onlyoffice-files-advanced-sidebar-tab'
 
-let appInstance = null
-let componentVm = null
-
-const advancedTab = new OCA.Files.Sidebar.Tab({
+registerSidebarTab({
 	id: 'onlyofficeSharingTabView',
-	name: t('onlyoffice', 'Advanced'),
-	iconSvg: AppDarkSvg,
+	displayName: t(OCA.Onlyoffice.AppName, 'Advanced'),
+	iconSvgInline: AppDarkSvg,
+	tagName,
+	order: 0,
 
-	mount(el, fileInfo) {
-		appInstance = createApp(ShareTab)
-		componentVm = appInstance.mount(el)
-		componentVm.update(fileInfo)
-	},
-
-	update(fileInfo) {
-		componentVm?.update(fileInfo)
-	},
-
-	destroy() {
-		appInstance?.unmount()
-		appInstance = null
-		componentVm = null
-	},
-
-	enabled(fileInfo) {
-		if (fileInfo.isDirectory()) return false
-		const ext = getFileExtension(fileInfo.name)
-		const format = formats[ext]
-		if (!(format && (format.review || format.comment || format.fillForms || format.modifyFilter))) return false
-		const sharingTabActive = document.querySelector('#sharing.active, #tab-button-sharing.active')
-		if (sharingTabActive && componentVm) {
-			componentVm.update(fileInfo)
+	enabled({ node }) {
+		if (node.type === FileType.File) {
+			const ext = getFileExtension(node.basename)
+			const format = formats[ext]
+			if (format && (format.review
+				|| format.comment
+				|| format.fillForms
+				|| format.modifyFilter)) {
+				return true
+			}
 		}
-		return true
+		return false
+	},
+
+	async onInit() {
+		window.customElements.define(tagName, defineCustomElement(ShareTab, {
+			shadowRoot: false,
+		}))
 	},
 })
-
-if (OCA.Files?.Sidebar?.registerTab) {
-	OCA.Files.Sidebar.registerTab(advancedTab)
-}

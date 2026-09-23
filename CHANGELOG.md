@@ -5,13 +5,13 @@
 - changed common and security admin settings to save automatically
 - added supported languages to the Help Center link
 
-## 9.14.2
+## 10.1.2
 
 ## Changed
 - stop Firefox collapsing the page when toggling checkboxes
 - fixed an issue where the editor was not using the user's preferred language
 
-## 9.14.0
+## 10.1.0
 
 ### Added
 - restrict external storage admin setting
@@ -19,13 +19,19 @@
 - cover circle shares in advanced permissions
 
 ### Changed
+- compatible with Nextcloud 34
 - fixed createUrl and template URLs being incorrectly decoded
 - fixed extra permissions being unavailable for user shares when admin resharing is disabled
 - fixed insecure direct object reference in share extra permissions API
-- updated PHP codebase to Nextcloud 32 API
+- updated PHP codebase to Nextcloud 33 API
 - adopted PHP 8.1 syntax, internal PHP refactoring
 - migrated from legacy hooks to event listeners
 - fixed opening editor for shared link
+
+## 10.0.0
+## Changed
+- compatible with Nextcloud 33
+- Nextcloud v32 is no longer supported
 
 ## 9.13.0
 

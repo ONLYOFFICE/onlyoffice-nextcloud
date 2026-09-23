@@ -33,8 +33,8 @@
   SPDX-License-Identifier: AGPL-3.0-only
 -->
 <script setup lang="ts">
-import { computed } from 'vue'
 import { getLanguage, t } from '@nextcloud/l10n'
+import { computed } from 'vue'
 
 const helpcenterLanguages: Record<string, string> = {
 	de: 'de',

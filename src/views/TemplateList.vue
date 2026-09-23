@@ -34,7 +34,8 @@
 -->
 <template>
 	<ul class="onlyoffice-template-container">
-		<TemplateItem v-for="template in templates"
+		<TemplateItem
+			v-for="template in templates"
 			:key="template.id"
 			:template="template"
 			@delete="handleDelete" />
@@ -42,19 +43,26 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import type { Template } from '../types.ts'
+
 import { showError, showSuccess } from '@nextcloud/dialogs'
 import { t } from '@nextcloud/l10n'
+import { onMounted, onUnmounted, ref } from 'vue'
 import TemplateItem from '../components/TemplateItem.vue'
-import { getTemplates, addTemplate, deleteTemplate } from '../services/TemplateService'
-import type { Template } from '../types'
+import { addTemplate, deleteTemplate, getTemplates } from '../services/TemplateService.ts'
 
 const templates = ref<Template[]>([])
 
-const handleAdd = async (event: Event) => {
+/**
+ *
+ * @param event
+ */
+async function handleAdd(event: Event) {
 	const input = event.target as HTMLInputElement
 	const file = input.files?.[0]
-	if (!file) return
+	if (!file) {
+		return
+	}
 	input.value = ''
 
 	const response = await addTemplate(file)
@@ -66,14 +74,20 @@ const handleAdd = async (event: Event) => {
 	showSuccess(t('onlyoffice', 'Template successfully added'))
 }
 
-const handleDelete = async (id: number) => {
+/**
+ *
+ * @param id
+ */
+async function handleDelete(id: number) {
 	const response = await deleteTemplate(id)
 	if ('error' in response) {
 		showError(t('onlyoffice', 'Error') + ': ' + response.error)
 		return
 	}
-	const idx = templates.value.findIndex(item => item.id === id)
-	if (idx !== -1) templates.value.splice(idx, 1)
+	const idx = templates.value.findIndex((item) => item.id === id)
+	if (idx !== -1) {
+		templates.value.splice(idx, 1)
+	}
 	showSuccess(t('onlyoffice', 'Template successfully deleted'))
 }
 

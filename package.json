@@ -1,6 +1,6 @@
 {
     "name": "onlyoffice",
-    "version": "9.14.2",
+    "version": "10.1.2",
     "description": "ONLYOFFICE app allows you to view, edit and collaborate on text documents, spreadsheets and presentations within Nextcloud using ONLYOFFICE Docs. This will create a new Edit in ONLYOFFICE action within the document library for Office documents. This allows multiple users to co-author documents in real time from the familiar web interface and save the changes back to your file storage.",
     "homepage": "https://www.onlyoffice.com",
     "author": "Ascensio System SIA <integration@onlyoffice.com> (https://www.onlyoffice.com)",
@@ -26,11 +26,11 @@
         "dev": "vite build --mode development"
     },
     "dependencies": {
-        "@nextcloud/auth": "^2.5.2",
+        "@nextcloud/auth": "^2.5.3",
         "@nextcloud/axios": "^2.5.2",
         "@nextcloud/dialogs": "^7.3.0",
         "@nextcloud/event-bus": "^3.3.3",
-        "@nextcloud/files": "^3.12.2",
+        "@nextcloud/files": "^4.0.0",
         "@nextcloud/initial-state": "^3.0.0",
         "@nextcloud/l10n": "^3.4.1",
         "@nextcloud/paths": "^2.4.0",
@@ -41,14 +41,14 @@
     },
     "devDependencies": {
         "@nextcloud/browserslist-config": "^3.1.2",
-        "@nextcloud/eslint-config": "^8.4.1",
-        "@nextcloud/stylelint-config": "^3.0.1",
+        "@nextcloud/eslint-config": "^9.0.0-rc.9",
+        "@nextcloud/stylelint-config": "^3.2.0",
         "@nextcloud/vite-config": "^2.5.2",
         "@playwright/test": "^1.61.0",
         "@types/node": "^25.4.0",
         "@vue/tsconfig": "^0.5.1",
-        "stylelint": "^16.26.1",
-        "stylelint-config-standard": "^36.0.1",
+        "stylelint": "^17.4.0",
+        "stylelint-config-standard": "^40.0.0",
         "typescript": "^5.9.3",
         "vite": "^7.3.1"
     }

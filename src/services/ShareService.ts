@@ -49,18 +49,24 @@ export interface ShareExtra {
 export interface SetShareData {
 	extraId: number
 	shareId: string
-	fileId: number
+	fileId: string
 	permissions: number
 }
 
-export const getShares = async (fileId: number): Promise<ShareExtra[]> => {
-	const response = await axios.get<{ ocs: { data: ShareExtra[] } }>(
-		generateOcsUrl(`apps/onlyoffice/api/v1/shares/${fileId}`),
-	)
+/**
+ *
+ * @param fileId
+ */
+export async function getShares(fileId: string): Promise<ShareExtra[]> {
+	const response = await axios.get<{ ocs: { data: ShareExtra[] } }>(generateOcsUrl(`apps/onlyoffice/api/v1/shares/${fileId}`))
 	return response.data.ocs.data
 }
 
-export const setShares = async (data: SetShareData): Promise<ShareExtra> => {
+/**
+ *
+ * @param data
+ */
+export async function setShares(data: SetShareData): Promise<ShareExtra> {
 	const response = await axios.put<{ ocs: { data: ShareExtra } }>(
 		generateOcsUrl('apps/onlyoffice/api/v1/shares'),
 		data,

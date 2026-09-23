@@ -33,9 +33,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import type { AddressSettingsResponse } from '../types.ts'
+
 import axios from '@nextcloud/axios'
 import { generateUrl } from '@nextcloud/router'
-import type { AddressSettingsResponse } from '../types'
 
 export interface AddressSettingsData {
 	documentserver: string
@@ -77,7 +78,11 @@ export interface SecuritySettingsData {
 	protection: string
 }
 
-export const saveAddressSettings = async (data: AddressSettingsData): Promise<AddressSettingsResponse> => {
+/**
+ *
+ * @param data
+ */
+export async function saveAddressSettings(data: AddressSettingsData): Promise<AddressSettingsResponse> {
 	const response = await axios.put<AddressSettingsResponse>(
 		generateUrl('apps/onlyoffice/ajax/settings/address'),
 		data,
@@ -85,14 +90,25 @@ export const saveAddressSettings = async (data: AddressSettingsData): Promise<Ad
 	return response.data
 }
 
-export const saveCommonSettings = async (data: CommonSettingsData): Promise<void> => {
+/**
+ *
+ * @param data
+ */
+export async function saveCommonSettings(data: CommonSettingsData): Promise<void> {
 	await axios.put(generateUrl('apps/onlyoffice/ajax/settings/common'), data)
 }
 
-export const saveSecuritySettings = async (data: SecuritySettingsData): Promise<void> => {
+/**
+ *
+ * @param data
+ */
+export async function saveSecuritySettings(data: SecuritySettingsData): Promise<void> {
 	await axios.put(generateUrl('apps/onlyoffice/ajax/settings/security'), data)
 }
 
-export const clearHistory = async (): Promise<void> => {
+/**
+ *
+ */
+export async function clearHistory(): Promise<void> {
 	await axios.delete(generateUrl('apps/onlyoffice/ajax/settings/history'))
 }

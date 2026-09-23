@@ -33,7 +33,8 @@
   SPDX-License-Identifier: AGPL-3.0-only
 -->
 <template>
-	<NcDialog class="onlyoffice-download-picker"
+	<NcDialog
+		class="onlyoffice-download-picker"
 		:name="t('onlyoffice', 'Download as')"
 		:buttons="buttons"
 		@update:open="$emit('close', null)">
@@ -52,10 +53,10 @@
 </template>
 
 <script setup lang="ts">
-import NcDialog from '@nextcloud/vue/components/NcDialog'
 import { t } from '@nextcloud/l10n'
 import { generateUrl } from '@nextcloud/router'
 import { computed, ref } from 'vue'
+import NcDialog from '@nextcloud/vue/components/NcDialog'
 
 declare const appName: string
 

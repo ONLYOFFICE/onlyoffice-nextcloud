@@ -34,7 +34,8 @@
 -->
 <script setup lang="ts">
 import { provide, reactive, ref, watch } from 'vue'
-import { tabListKey, type TabMeta } from './tabs'
+import { type TabMeta } from './tabs.ts'
+import { tabListKey } from './tabs.ts'
 
 const props = withDefaults(defineProps<{ modelValue?: string }>(), { modelValue: '' })
 const emit = defineEmits<{ 'update:modelValue': [id: string] }>()
@@ -44,6 +45,7 @@ const activeId = ref(props.modelValue)
 
 /**
  * Set the active tab and notify the parent v-model.
+ *
  * @param id the tab id to activate
  */
 function setActive(id: string) {
@@ -56,6 +58,7 @@ function setActive(id: string) {
 
 /**
  * Activate a tab.
+ *
  * @param id the tab id to activate
  */
 function select(id: string) {
@@ -67,6 +70,7 @@ function select(id: string) {
 
 /**
  * Add a tab to the list.
+ *
  * @param tab the tab metadata
  */
 function register(tab: TabMeta): TabMeta {
@@ -80,6 +84,7 @@ function register(tab: TabMeta): TabMeta {
 
 /**
  * Remove a tab from the list.
+ *
  * @param id the tab id to remove
  */
 function unregister(id: string) {
@@ -111,7 +116,8 @@ provide(tabListKey, { activeId, register, unregister, select })
 <template>
 	<div class="tab-list">
 		<div class="tab-list__tabs" role="tablist">
-			<button v-for="tab in tabs"
+			<button
+				v-for="tab in tabs"
 				:key="tab.id"
 				type="button"
 				role="tab"

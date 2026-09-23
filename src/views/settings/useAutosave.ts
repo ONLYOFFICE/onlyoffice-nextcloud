@@ -33,10 +33,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ref, watch } from 'vue'
 import type { Ref } from 'vue'
+
 import { showError, showLoading } from '@nextcloud/dialogs'
 import { t } from '@nextcloud/l10n'
+import { ref, watch } from 'vue'
 
 interface AutosaveOptions<T> {
 	build: () => T
@@ -73,7 +74,7 @@ export function useAutosave<T>(options: AutosaveOptions<T>): { saving: Ref<boole
 					break
 				}
 				if (!toast) {
-					toast = showLoading(t('onlyoffice', 'Saving …'))
+					toast = showLoading(t('onlyoffice', 'Saving …'))
 				}
 				await save(payload)
 				lastSaved = JSON.stringify(build())

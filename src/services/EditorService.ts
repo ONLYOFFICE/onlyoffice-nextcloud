@@ -53,15 +53,28 @@ export interface SendMentionData {
 	emails: string[]
 }
 
-const encodePath = (path: string): string =>
-	path.split('/').map(encodeURIComponent).join('/')
+/**
+ *
+ * @param path
+ */
+function encodePath(path: string): string {
+	return path.split('/').map(encodeURIComponent).join('/')
+}
 
-export const getConfig = async (url: string): Promise<unknown> => {
+/**
+ *
+ * @param url
+ */
+export async function getConfig(url: string): Promise<unknown> {
 	const response = await axios.get<unknown>(url)
 	return response.data
 }
 
-export const getHistory = async (fileId: number): Promise<unknown> => {
+/**
+ *
+ * @param fileId
+ */
+export async function getHistory(fileId: number): Promise<unknown> {
 	const response = await axios.get<unknown>(
 		generateUrl('apps/onlyoffice/ajax/history', { fileId }),
 		{ params: { fileId } },
@@ -69,7 +82,12 @@ export const getHistory = async (fileId: number): Promise<unknown> => {
 	return response.data
 }
 
-export const getVersionData = async (fileId: number, version: number): Promise<unknown> => {
+/**
+ *
+ * @param fileId
+ * @param version
+ */
+export async function getVersionData(fileId: number, version: number): Promise<unknown> {
 	const response = await axios.get<unknown>(
 		generateUrl('apps/onlyoffice/ajax/version'),
 		{ params: { fileId, version } },
@@ -77,7 +95,12 @@ export const getVersionData = async (fileId: number, version: number): Promise<u
 	return response.data
 }
 
-export const restoreVersion = async (fileId: number, version: number): Promise<unknown> => {
+/**
+ *
+ * @param fileId
+ * @param version
+ */
+export async function restoreVersion(fileId: number, version: number): Promise<unknown> {
 	const response = await axios.put<unknown>(
 		generateUrl('apps/onlyoffice/ajax/restore'),
 		{ fileId, version },
@@ -85,7 +108,11 @@ export const restoreVersion = async (fileId: number, version: number): Promise<u
 	return response.data
 }
 
-export const saveAs = async (saveData: Record<string, unknown>): Promise<unknown> => {
+/**
+ *
+ * @param saveData
+ */
+export async function saveAs(saveData: Record<string, unknown>): Promise<unknown> {
 	const response = await axios.post<unknown>(
 		generateUrl('apps/onlyoffice/ajax/save'),
 		saveData,
@@ -93,7 +120,11 @@ export const saveAs = async (saveData: Record<string, unknown>): Promise<unknown
 	return response.data
 }
 
-export const getFileUrl = async (filePath: string): Promise<unknown> => {
+/**
+ *
+ * @param filePath
+ */
+export async function getFileUrl(filePath: string): Promise<unknown> {
 	const response = await axios.get<unknown>(
 		generateUrl('apps/onlyoffice/ajax/url'),
 		{ params: { filePath } },
@@ -101,7 +132,11 @@ export const getFileUrl = async (filePath: string): Promise<unknown> => {
 	return response.data
 }
 
-export const fetchReference = async (data: Record<string, unknown>): Promise<unknown> => {
+/**
+ *
+ * @param data
+ */
+export async function fetchReference(data: Record<string, unknown>): Promise<unknown> {
 	const response = await axios.post<unknown>(
 		generateUrl('apps/onlyoffice/ajax/reference'),
 		data,
@@ -109,12 +144,21 @@ export const fetchReference = async (data: Record<string, unknown>): Promise<unk
 	return response.data
 }
 
-export const fetchEmails = async (): Promise<unknown> => {
+/**
+ * Fetches all sender email addresses for the currently logged-in user.
+ *
+ * @return A promise resolving to the list of email addresses from the server.
+ */
+export async function fetchEmails(): Promise<unknown> {
 	const response = await axios.get<unknown[]>(generateUrl('apps/onlyoffice/ajax/emails'))
 	return response.data
 }
 
-export const getUserInfo = async (userIds: unknown[]): Promise<unknown[]> => {
+/**
+ *
+ * @param userIds
+ */
+export async function getUserInfo(userIds: unknown[]): Promise<unknown[]> {
 	const response = await axios.get<unknown[]>(
 		generateUrl('apps/onlyoffice/ajax/userInfo'),
 		{ params: { userIds: JSON.stringify(userIds) } },
@@ -122,7 +166,11 @@ export const getUserInfo = async (userIds: unknown[]): Promise<unknown[]> => {
 	return response.data
 }
 
-export const getUsers = async (params: GetUsersParams): Promise<unknown[]> => {
+/**
+ *
+ * @param params
+ */
+export async function getUsers(params: GetUsersParams): Promise<unknown[]> {
 	const { fileId, operationType, ...rest } = params
 	const response = await axios.get<unknown[]>(
 		generateUrl('apps/onlyoffice/ajax/users'),
@@ -131,7 +179,11 @@ export const getUsers = async (params: GetUsersParams): Promise<unknown[]> => {
 	return response.data
 }
 
-export const sendMention = async (data: SendMentionData): Promise<unknown> => {
+/**
+ *
+ * @param data
+ */
+export async function sendMention(data: SendMentionData): Promise<unknown> {
 	const response = await axios.post<unknown>(
 		generateUrl('apps/onlyoffice/ajax/mention'),
 		data,
@@ -139,7 +191,12 @@ export const sendMention = async (data: SendMentionData): Promise<unknown> => {
 	return response.data
 }
 
-export const setFavorite = async (filePath: string, favorite: boolean): Promise<void> => {
+/**
+ *
+ * @param filePath
+ * @param favorite
+ */
+export async function setFavorite(filePath: string, favorite: boolean): Promise<void> {
 	await axios.post(
 		generateUrl(`apps/files/api/v1/files/${encodePath(filePath)}`),
 		{ tags: favorite ? [TAG_FAVORITE] : [] },

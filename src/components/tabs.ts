@@ -32,7 +32,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { onMounted, onUnmounted, ref, watch, type InjectionKey, type Ref } from 'vue'
+import { type InjectionKey, type Ref } from 'vue'
+import { onMounted, onUnmounted, ref, watch } from 'vue'
 
 export interface TabMeta {
 	id: string
@@ -51,6 +52,7 @@ export const tabListKey: InjectionKey<TabListContext> = Symbol('onlyoffice:tab-l
 
 /**
  * Sync the active tab id with the URL hash so it survives a reload.
+ *
  * @param valid the allowed tab ids
  * @param fallback the tab id used when the hash is empty or unknown
  */

@@ -42,6 +42,7 @@ namespace OCA\Onlyoffice\Tests\PHP;
 use DateTime;
 use DateInterval;
 use OCA\Onlyoffice\AppConfig;
+use OCP\Config\IUserConfig;
 use OCP\IAppConfig;
 use OCP\ICache;
 use OCP\ICacheFactory;
@@ -58,6 +59,7 @@ class AppConfigTest extends TestCase {
 
     private IAppConfig&MockObject $appConfig;
     private IConfig&MockObject $config;
+    private IUserConfig&MockObject $userConfig;
     private LoggerInterface&MockObject $logger;
     private AppConfig $subject;
 
@@ -68,6 +70,7 @@ class AppConfigTest extends TestCase {
 
         $this->appConfig = $this->createMock(IAppConfig::class);
         $this->config = $this->createMock(IConfig::class);
+        $this->userConfig = $this->createMock(IUserConfig::class);
         $this->logger = $this->createMock(LoggerInterface::class);
 
         $cache = $this->createMock(ICache::class);
@@ -78,6 +81,7 @@ class AppConfigTest extends TestCase {
             $this->appName,
             $this->appConfig,
             $this->config,
+            $this->userConfig,
             $this->logger,
             $cacheFactory,
         );

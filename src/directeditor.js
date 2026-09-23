@@ -33,9 +33,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-OCA.Onlyoffice = Object.assign({}, OCA.Onlyoffice)
+OCA.Onlyoffice = { ...OCA.Onlyoffice }
 
-const callMobileMessage = function(messageName, attributes) {
+/**
+ *
+ * @param messageName
+ * @param attributes
+ */
+function callMobileMessage(messageName, attributes) {
 	let message = messageName
 	if (typeof attributes !== 'undefined') {
 		message = {
@@ -43,7 +48,7 @@ const callMobileMessage = function(messageName, attributes) {
 			Values: attributes,
 		}
 	}
-	let attributesString = null
+	let attributesString
 	try {
 		attributesString = JSON.stringify(attributes)
 	} catch (e) {
@@ -61,8 +66,8 @@ const callMobileMessage = function(messageName, attributes) {
 
 	// iOS webkit fallback
 	if (window.webkit
-        && window.webkit.messageHandlers
-        && window.webkit.messageHandlers.DirectEditingMobileInterface) {
+		&& window.webkit.messageHandlers
+		&& window.webkit.messageHandlers.DirectEditingMobileInterface) {
 		window.webkit.messageHandlers.DirectEditingMobileInterface.postMessage(message)
 	}
 

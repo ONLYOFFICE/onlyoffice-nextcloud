@@ -100,6 +100,7 @@
       <code><![CDATA[\OCP\Server]]></code>
       <code><![CDATA[private]]></code>
       <code><![CDATA[private]]></code>
+      <code><![CDATA[private]]></code>
     </UndefinedClass>
   </file>
   <file src="lib/AppInfo/Application.php">

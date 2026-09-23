@@ -255,15 +255,14 @@ class ExtraPermissions {
             WHERE `share_id` = ?
         ");
         $result = $select->execute([$shareId]);
-        $values = $result->fetch();
-        $value = is_array($values) ? $values : [];
+        $row = $result->fetchAssociative();
 
         $result = [];
-        if (!empty($value)) {
+        if ($row !== false) {
             $result = [
-                "id" => (int)$value["id"],
-                "share_id" => (string)$value["share_id"],
-                "permissions" => (int)$value["permissions"]
+                "id" => (int)$row["id"],
+                "share_id" => (string)$row["share_id"],
+                "permissions" => (int)$row["permissions"]
             ];
         }
 
@@ -289,15 +288,15 @@ class ExtraPermissions {
         " . $condition);
 
         $result = $select->execute($shareIds);
-        $values = $result->fetchAll();
+        $rows = $result->fetchAllAssociative();
 
         $result = [];
-        if (is_array($values)) {
-            foreach ($values as $value) {
+        if ($rows !== false) {
+            foreach ($rows as $row) {
                 $result[] = [
-                    "id" => (int)$value["id"],
-                    "share_id" => (string)$value["share_id"],
-                    "permissions" => (int)$value["permissions"]
+                    "id" => (int)$row["id"],
+                    "share_id" => (string)$row["share_id"],
+                    "permissions" => (int)$row["permissions"]
                 ];
             }
         }

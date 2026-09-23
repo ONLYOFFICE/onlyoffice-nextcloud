@@ -34,7 +34,7 @@
 -->
 <script setup lang="ts">
 import { computed, inject, onBeforeUnmount, watch } from 'vue'
-import { tabListKey } from './tabs'
+import { tabListKey } from './tabs.ts'
 
 const props = withDefaults(defineProps<{
 	id: string
