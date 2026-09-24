@@ -416,6 +416,11 @@
       <code><![CDATA[SimpleMigrationStep]]></code>
     </UndefinedClass>
   </file>
+  <file src="lib/Migration/Version091501Date20260925000000.php">
+    <UndefinedClass>
+      <code><![CDATA[SimpleMigrationStep]]></code>
+    </UndefinedClass>
+  </file>
   <file src="lib/Notifier.php">
     <UndefinedClass>
       <code><![CDATA[INotifier]]></code>
