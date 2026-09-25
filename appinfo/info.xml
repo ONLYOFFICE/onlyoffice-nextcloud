@@ -51,5 +51,6 @@ Whether you’re working with internal teams or external collaborators, the ONLY
     </commands>
     <background-jobs>
         <job>OCA\Onlyoffice\Cron\EditorsCheck</job>
+        <job>OCA\Onlyoffice\Cron\HistoryCleanup</job>
     </background-jobs>
 </info>

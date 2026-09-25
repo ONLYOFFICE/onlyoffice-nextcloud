@@ -47,6 +47,8 @@ use OCP\Security\CSP\AddContentSecurityPolicyEvent;
 use OCA\Files\Event\LoadAdditionalScriptsEvent;
 use OCA\Files_Sharing\Event\BeforeTemplateRenderedEvent;
 use OCA\Files_Versions\Events\VersionRestoredEvent;
+use OCA\GroupFolders\Event\GroupVersionsExpireDeleteFileEvent;
+use OCA\GroupFolders\Event\GroupVersionsExpireDeleteVersionEvent;
 use OCA\Viewer\Event\LoadViewer;
 use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\Controller\JobListController;
@@ -62,6 +64,7 @@ use OCA\Onlyoffice\Listeners\ContentSecurityPolicyListener;
 use OCA\Onlyoffice\Listeners\DocumentUnsavedListener;
 use OCA\Onlyoffice\Listeners\FileListener;
 use OCA\Onlyoffice\Listeners\FileVersionsListener;
+use OCA\Onlyoffice\Listeners\GroupFolderVersionsListener;
 use OCA\Onlyoffice\Listeners\MailMergeEndedListener;
 use OCA\Onlyoffice\Listeners\RegisterTemplateFileCreatorListener;
 use OCA\Onlyoffice\Listeners\ShareListener;
@@ -109,6 +112,8 @@ class Application extends App implements IBootstrap {
         $context->registerEventListener(BeforeUserDeletedEvent::class, UserListener::class);
         $context->registerEventListener(UserDeletedEvent::class, UserListener::class);
         $context->registerEventListener(VersionRestoredEvent::class, FileVersionsListener::class);
+        $context->registerEventListener(GroupVersionsExpireDeleteVersionEvent::class, GroupFolderVersionsListener::class);
+        $context->registerEventListener(GroupVersionsExpireDeleteFileEvent::class, GroupFolderVersionsListener::class);
         $context->registerEventListener(MailMergeEndedEvent::class, MailMergeEndedListener::class);
         $context->registerEventListener(RegisterTemplateCreatorEvent::class, RegisterTemplateFileCreatorListener::class);
 

@@ -38,12 +38,12 @@ namespace OCA\Onlyoffice;
 
 use OC\Files\Node\File;
 use OC\Files\View;
-use OC\User\Database;
 use OCA\Files_Sharing\External\Storage as SharingExternalStorage;
 use OCA\GroupFolders\Mount\GroupFolderStorage;
 use OCP\Files\FileInfo;
 use OCP\Files\IRootFolder;
 use OCP\IUser;
+use OCP\IUserManager;
 
 /**
  * File versions
@@ -367,27 +367,41 @@ class FileVersions {
     }
 
     /**
+     * Delete all versions of a group folder file that no longer exists
+     *
+     * @param int $fileId - file id
+     */
+    public static function deleteGroupFolderVersions(int $fileId): void {
+        \OCP\Log\logger('onlyoffice')->debug("deleteGroupFolderVersions $fileId", ["app" => self::$appName]);
+
+        $view = new View("/" . self::$groupFolderName);
+
+        $path = self::$appName . "/" . $fileId;
+        if ($view->file_exists($path)) {
+            $view->unlink($path);
+        }
+    }
+
+    /**
      * Clear all version history
      */
     public static function clearHistory(): void {
         $logger = \OCP\Log\logger('onlyoffice');
 
-        $userDatabase = new Database();
-        $userIds = $userDatabase->getUsers();
+        $userManager = \OCP\Server::get(IUserManager::class);
 
         $view = new View("/");
-        $groupFolderView = new View("/" . self::$groupFolderName);
-
-        foreach ($userIds as $userId) {
-            $path = $userId . "/" . self::$appName;
+        $userManager->callForSeenUsers(function (IUser $user) use ($view): void {
+            $path = $user->getUID() . "/" . self::$appName;
 
             if ($view->file_exists($path)) {
                 $view->unlink($path);
             }
+        });
 
-            if ($groupFolderView->file_exists($path)) {
-                $groupFolderView->unlink($path);
-            }
+        $groupFolderView = new View("/" . self::$groupFolderName);
+        if ($groupFolderView->file_exists(self::$appName)) {
+            $groupFolderView->unlink(self::$appName);
         }
 
         $logger->debug("clear all history", ["app" => self::$appName]);

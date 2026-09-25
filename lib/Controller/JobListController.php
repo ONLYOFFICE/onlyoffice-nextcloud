@@ -38,6 +38,7 @@ namespace OCA\Onlyoffice\Controller;
 
 use OCA\Onlyoffice\AppConfig;
 use OCA\Onlyoffice\Cron\EditorsCheck;
+use OCA\Onlyoffice\Cron\HistoryCleanup;
 use OCP\AppFramework\Controller;
 use OCP\BackgroundJob\IJob;
 use OCP\BackgroundJob\IJobList;
@@ -100,10 +101,19 @@ class JobListController extends Controller {
     }
 
     /**
+     * Add HistoryCleanup job to the list
+     *
+     */
+    private function checkHistoryCleanupJob(): void {
+        $this->addJob(HistoryCleanup::class);
+    }
+
+    /**
      * Method for sequentially calling checks of all jobs
      *
      */
     public function checkAllJobs(): void {
         $this->checkEditorsCheckJob();
+        $this->checkHistoryCleanupJob();
     }
 }

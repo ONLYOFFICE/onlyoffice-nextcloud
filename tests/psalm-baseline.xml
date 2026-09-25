@@ -161,6 +161,11 @@
       <code><![CDATA[TimedJob]]></code>
     </UndefinedClass>
   </file>
+  <file src="lib/Cron/HistoryCleanup.php">
+    <UndefinedClass>
+      <code><![CDATA[TimedJob]]></code>
+    </UndefinedClass>
+  </file>
   <file src="lib/DirectEditor.php">
     <UndefinedClass>
       <code><![CDATA[IEditor]]></code>
@@ -283,7 +288,6 @@
   <file src="lib/FileVersions.php">
     <UndefinedClass>
       <code><![CDATA[?File]]></code>
-      <code><![CDATA[Database]]></code>
       <code><![CDATA[FileInfo]]></code>
       <code><![CDATA[FileInfo]]></code>
       <code><![CDATA[FileInfo]]></code>
@@ -296,13 +300,14 @@
       <code><![CDATA[IUser]]></code>
       <code><![CDATA[View]]></code>
       <code><![CDATA[View]]></code>
-      <code><![CDATA[View]]></code>
+      <code><![CDATA[\OCP\Server]]></code>
       <code><![CDATA[\OCP\Server]]></code>
     </UndefinedClass>
     <UndefinedDocblockClass>
       <code><![CDATA[FileInfo]]></code>
     </UndefinedDocblockClass>
     <UndefinedFunction>
+      <code><![CDATA[\OCP\Log\logger('onlyoffice')]]></code>
       <code><![CDATA[\OCP\Log\logger('onlyoffice')]]></code>
     </UndefinedFunction>
   </file>
@@ -359,6 +364,11 @@
     </UndefinedClass>
   </file>
   <file src="lib/Listeners/FilesListener.php">
+    <UndefinedClass>
+      <code><![CDATA[IEventListener]]></code>
+    </UndefinedClass>
+  </file>
+  <file src="lib/Listeners/GroupFolderVersionsListener.php">
     <UndefinedClass>
       <code><![CDATA[IEventListener]]></code>
     </UndefinedClass>
