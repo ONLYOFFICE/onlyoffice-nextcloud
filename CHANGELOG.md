@@ -1,5 +1,7 @@
 # Change Log
 
+## 9.15.1
+
 ### Changed
 - reset the stored original review display mode to the default value
 
