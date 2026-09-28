@@ -427,6 +427,9 @@ class EditorController extends Controller {
 
         if ($userIds !== null && is_array($userIds)) {
             foreach ($userIds as $userId) {
+                if (!is_string($userId)) {
+                    continue;
+                }
                 $userData = [];
                 $user = $this->userManager->get($this->getUserId($userId));
                 if (!empty($user)) {
