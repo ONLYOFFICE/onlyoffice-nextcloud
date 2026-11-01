@@ -66,10 +66,11 @@ class PreviewTest extends TestCase {
      * Fake formats list, shaped like AppConfig::getFormats(), used to derive the preview-capable mime types.
      */
     private const FORMATS = [
-        ["mime" => ["application/pdf"], "convert" => ["jpg"]],
-        ["mime" => ["application/vnd.ms-word.document.macroEnabled.12"], "convert" => ["jpg"]],
-        ["mime" => ["text/rtf"], "convert" => ["jpg"]],
-        ["mime" => ["image/png"], "convert" => []],
+        ["name" => "pdf", "mime" => ["application/pdf"], "convert" => ["jpg"]],
+        ["name" => "docm", "mime" => ["application/vnd.ms-word.document.macroEnabled.12"], "convert" => ["jpg"]],
+        ["name" => "rtf", "mime" => ["text/rtf"], "convert" => ["jpg"]],
+        ["name" => "mht", "mime" => ["message/rfc822"], "convert" => ["jpg"]],
+        ["name" => "png", "mime" => ["image/png"], "convert" => []],
     ];
 
     /**
@@ -79,6 +80,7 @@ class PreviewTest extends TestCase {
         "application/pdf",
         "application/vnd.ms-word.document.macroEnabled.12",
         "text/rtf",
+        "message/rfc822",
     ];
 
     public function setUp(): void {
@@ -110,11 +112,12 @@ class PreviewTest extends TestCase {
     }
 
     /**
-     * Preview::$previewMimeTypes is a static memoization cache; it must be cleared between tests
+     * Preview::$previewMimeTypes and Preview::$previewExtensions are static memoization caches; they must be cleared between tests
      * so each test's mocked AppConfig::getFormats() is actually consulted instead of a prior test's result.
      */
     private function resetPreviewMimeTypesCache(): void {
         (new \ReflectionProperty(Preview::class, "previewMimeTypes"))->setValue(null, null);
+        (new \ReflectionProperty(Preview::class, "previewExtensions"))->setValue(null, null);
     }
 
     /**
@@ -147,6 +150,7 @@ class PreviewTest extends TestCase {
     private function makeFile(
         int $size,
         string $mime,
+        string $extension,
         bool $isExternalStorage = false
     ): FileInfo&MockObject {
         $storage = $this->createStub(IStorage::class);
@@ -156,6 +160,7 @@ class PreviewTest extends TestCase {
         $file = $this->createMock(FileInfo::class);
         $file->method("getSize")->willReturn($size);
         $file->method("getMimetype")->willReturn($mime);
+        $file->method("getExtension")->willReturn($extension);
         $file->method("getStorage")->willReturn($storage);
 
         return $file;
@@ -167,7 +172,7 @@ class PreviewTest extends TestCase {
     public function testIsAvailableReturnsFalseWhenPreviewIsDisabled(): void {
         $this->appConfig->method("getPreview")->willReturn(false);
 
-        $file = $this->makeFile(1024, "application/pdf");
+        $file = $this->makeFile(1024, "application/pdf", "pdf");
         $this->assertFalse($this->preview->isAvailable($file));
     }
 
@@ -178,7 +183,7 @@ class PreviewTest extends TestCase {
         $this->appConfig->method("getPreview")->willReturn(true);
         $this->appConfig->method("getLimitThumbSize")->willReturn(10 * 1024 * 1024);
 
-        $file = $this->makeFile(0, "application/pdf");
+        $file = $this->makeFile(0, "application/pdf", "pdf");
         $this->assertFalse($this->preview->isAvailable($file));
     }
 
@@ -189,7 +194,7 @@ class PreviewTest extends TestCase {
         $this->appConfig->method("getPreview")->willReturn(true);
         $this->appConfig->method("getLimitThumbSize")->willReturn(1024);
 
-        $file = $this->makeFile(2048, "application/pdf");
+        $file = $this->makeFile(2048, "application/pdf", "pdf");
         $this->assertFalse($this->preview->isAvailable($file));
     }
 
@@ -200,7 +205,7 @@ class PreviewTest extends TestCase {
         $this->appConfig->method("getPreview")->willReturn(true);
         $this->appConfig->method("getLimitThumbSize")->willReturn(10 * 1024 * 1024);
 
-        $file = $this->makeFile(1024, "image/png");
+        $file = $this->makeFile(1024, "image/png", "png");
         $this->assertFalse($this->preview->isAvailable($file));
     }
 
@@ -211,7 +216,7 @@ class PreviewTest extends TestCase {
         $this->appConfig->method("getPreview")->willReturn(true);
         $this->appConfig->method("getLimitThumbSize")->willReturn(10 * 1024 * 1024);
 
-        $file = $this->makeFile(1024, "application/pdf", true);
+        $file = $this->makeFile(1024, "application/pdf", "pdf", true);
         $this->assertFalse($this->preview->isAvailable($file));
     }
 
@@ -222,7 +227,30 @@ class PreviewTest extends TestCase {
         $this->appConfig->method("getPreview")->willReturn(true);
         $this->appConfig->method("getLimitThumbSize")->willReturn(10 * 1024 * 1024);
 
-        $file = $this->makeFile(1024, "application/pdf");
+        $file = $this->makeFile(1024, "application/pdf", "pdf");
+        $this->assertTrue($this->preview->isAvailable($file));
+    }
+
+    /**
+     * Rejects files whose mime type is supported but whose extension is not, e.g. eml files that Nextcloud
+     * also maps to message/rfc822 (mht), as the document server converts by extension and would fail.
+     */
+    public function testIsAvailableReturnsFalseWhenExtensionNotSupported(): void {
+        $this->appConfig->method("getPreview")->willReturn(true);
+        $this->appConfig->method("getLimitThumbSize")->willReturn(10 * 1024 * 1024);
+
+        $file = $this->makeFile(1024, "message/rfc822", "eml");
+        $this->assertFalse($this->preview->isAvailable($file));
+    }
+
+    /**
+     * Matches the extension case-insensitively, so upper-case file names still get a preview.
+     */
+    public function testIsAvailableReturnsTrueForUpperCaseExtension(): void {
+        $this->appConfig->method("getPreview")->willReturn(true);
+        $this->appConfig->method("getLimitThumbSize")->willReturn(10 * 1024 * 1024);
+
+        $file = $this->makeFile(1024, "message/rfc822", "MHT");
         $this->assertTrue($this->preview->isAvailable($file));
     }
 }
