@@ -1,5 +1,10 @@
 # Change Log
 
+##
+
+### Changed
+- skip preview generation for files whose extension the document server cannot convert, e.g. `eml` files with the `message/rfc822` mime type
+
 ## 10.2.1
 
 ### Changed

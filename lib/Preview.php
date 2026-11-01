@@ -67,6 +67,11 @@ class Preview implements IProviderV2 {
      */
     private static ?array $previewMimeTypes = null;
 
+    /**
+     * The extensions of formats that the document server can convert to a thumbnail
+     */
+    private static ?array $previewExtensions = null;
+
     public function __construct(
         private readonly string $appName,
         private readonly IRootFolder $root,
@@ -98,6 +103,30 @@ class Preview implements IProviderV2 {
         }
 
         return self::$previewMimeTypes = array_values(array_unique($result));
+    }
+
+    /**
+     * Get the extensions of formats that the document server can convert to a jpg thumbnail
+     *
+     * A mime type can be shared with formats the document server does not support,
+     * e.g. Nextcloud assigns message/rfc822 (mht, mhtml) to eml files as well
+     */
+    private static function getPreviewExtensions(): array {
+        if (self::$previewExtensions !== null) {
+            return self::$previewExtensions;
+        }
+
+        $appConfig = Server::get(AppConfig::class);
+        $onlyofficeFormats = $appConfig->getFormats();
+        $result = [];
+
+        foreach ($onlyofficeFormats as $onlyOfficeFormat) {
+            if (!empty($onlyOfficeFormat["name"]) && \in_array(self::THUMBEXTENSION, $onlyOfficeFormat["convert"], true)) {
+                $result[] = strtolower($onlyOfficeFormat["name"]);
+            }
+        }
+
+        return self::$previewExtensions = array_values(array_unique($result));
     }
 
     /**
@@ -138,6 +167,9 @@ class Preview implements IProviderV2 {
         }
         $mimeTypes = array_map("strtolower", self::getPreviewMimeTypes());
         if (!in_array(strtolower($file->getMimetype()), $mimeTypes, true)) {
+            return false;
+        }
+        if (!in_array(strtolower($file->getExtension()), self::getPreviewExtensions(), true)) {
             return false;
         }
         return !$file->getStorage()->instanceOfStorage(SharingExternalStorage::class);
